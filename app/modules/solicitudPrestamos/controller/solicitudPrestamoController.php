@@ -1,6 +1,7 @@
 <?php 
 
 include_once __DIR__ . '/../../../helpers/renderView.php';
+include_once __DIR__ . '/../model/getElements.php';
 
 class solicitudController{
 
@@ -18,6 +19,8 @@ class solicitudController{
         switch ($vista) {
             case 'solicitud':
                 $render::renderView('solicitudPrestamosView.php');
+                //Renderizar también el footer.
+                
                 break;
             case 'consulta':
                 $render::renderView('consultarSolicitudView.php');

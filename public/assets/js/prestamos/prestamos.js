@@ -1,10 +1,10 @@
 // const title = document.getElementById('menuTitle');
 // const menuTitleConsult = document.getElementById('menuTitleConsult');
-// const btnSubmit = document.getElementById('btnSubmit');
+ const btnSubmit = document.getElementById('btnSubmit');
 // console.log({title,menuTitleConsult});
 // menuTitleConsult.innerText = 'Consultar Prestamos';
 // title.innerText = 'Registrar solicitud';
-// btnSubmit.innerText = 'Reservar';
+ btnSubmit.innerText = 'Reservar';
 // table.classList.add('table');
 // table.setAttribute('scope','row');
 

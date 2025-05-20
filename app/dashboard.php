@@ -4,6 +4,10 @@ include_once 'modules/solicitudPrestamos/controller/solicitudPrestamoController.
 
 $sltPrestamos = new solicitudController();
 
+$mapfiles = new RenderView();
+
+$mapfiles::mapAssets('js','prestamos.js');
+
 ?>
 
 <!DOCTYPE html>
@@ -24,12 +28,7 @@ $sltPrestamos = new solicitudController();
 
 <div class="container-sm">
     <?php 
-    /**
-     * 
-     * leer árticulo y aplicar. 
-     * https://guiaphp.com/desarrollo/patron-singleton-en-php-garantizando-una-unica-instancia/
-     */
-    //TODO: Implementar patron singleton.
+   
     if ($sltPrestamos instanceof solicitudController) {
      $sltPrestamos::prestamos('solicitud');
     }
@@ -42,6 +41,5 @@ include_once '../public/partials/footer.php';
 ?>
 
 </footer>
-
 </body>
 </html>

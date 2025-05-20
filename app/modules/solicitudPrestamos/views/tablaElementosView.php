@@ -77,9 +77,6 @@
             <td>1</td>
             <td><input type="checkbox"></td>
         </tr>
-        
-        
-        
     </tbody>
     </thead>
 </table>
