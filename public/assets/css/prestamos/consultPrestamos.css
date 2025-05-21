@@ -2,23 +2,23 @@
 tblElementsConsult:root {'tblElementsConsult'}; */
 
 @media (min-width: 1200px) {
+  #solicPrestamos {
+    display: flex;
+    flex-direction: row;
+  }
 
-    #containerConsult {
-        display: grid;
-        height: auto;
-        margin: 0 auto;
-        width: 100%;
-        grid-template-columns: 1fr;
-        grid-template-areas:
-          "inputSearch"
-          "tblElementsConsult";
-        gap: 0.5rem;
-        border: 1px solid black;
-
-    
-      }
-
-  
+  #containerConsult {
+    display: grid;
+    height: auto;
+    margin: 0 auto;
+    width: 100%;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "inputSearch"
+      "tblElementsConsult";
+    gap: 0.5rem;
+    border: 1px solid black;
+  }
 
   #inputSearch {
     display: grid;
@@ -31,17 +31,16 @@ tblElementsConsult:root {'tblElementsConsult'}; */
     background-color: red;
   }
 
-  #search{
+  #search {
     display: flex;
     flex-direction: column;
-    #inputSearch{
-        width: 30%;
+    #inputSearch {
+      width: 30%;
     }
 
-    #menuTitleConsult{
-        text-align: center;
-        font-size: 2rem;
+    #menuTitleConsult {
+      text-align: center;
+      font-size: 2rem;
     }
-
   }
 }

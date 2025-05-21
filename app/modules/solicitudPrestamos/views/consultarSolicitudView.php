@@ -1,3 +1,7 @@
+<div class="d-flex justify-content-center align-items-center" style="height: 90vh;">
+
+<div class="container-sm container">
+
 <div id="containerConsult">
     <div id="search">
         <span id="menuTitleConsult">Consultar solicitud</span>
@@ -10,4 +14,5 @@
 
     ?>
 
+</div>
 </div>

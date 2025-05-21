@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-05-2025 a las 23:01:59
+-- Tiempo de generación: 20-05-2025 a las 23:34:42
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -40,7 +40,8 @@ CREATE TABLE `areas` (
 INSERT INTO `areas` (`ar_cod`, `ar_nombre`, `ar_descripcion`) VALUES
 (1, 'Multimedia', NULL),
 (2, 'Fotografia', NULL),
-(3, 'General', NULL);
+(3, 'General', NULL),
+(4, 'Aulas De Computo', NULL);
 
 -- --------------------------------------------------------
 
@@ -74,10 +75,26 @@ CREATE TABLE `elementos` (
 --
 
 INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_nombre`, `elm_existencia`, `elm_uni_medida`, `elm_cod_tp_elemento`, `elm_cod_estado`, `elm_area_cod`) VALUES
-(1, 1235685, 'Camara Canon EOS Rebel T7i ', 1, 0, 1, 3, 2),
-(2, 0, 'Memorias Micro SD Serie 18 32GB', 1, NULL, 2, 1, 3),
-(3, 0, 'Bombillas de disparo', NULL, NULL, 2, 1, 3),
-(4, NULL, 'Soporte General Fotografia', NULL, NULL, 1, 1, 2);
+(5, 3001, 'Cámara Canon EOS 90D', 2, 1, 1, 1, 2),
+(6, 3002, 'Micrófono de solapa Rode', 5, 1, 1, 1, 1),
+(7, 3003, 'Trípode profesional Manfrotto', 4, 1, 1, 1, 2),
+(8, 3004, 'Cinta gaffer negra 30m', 20, 1, 2, 1, 1),
+(9, 3005, 'Proyector Epson PowerLite', 3, 1, 1, 2, 1),
+(10, 3006, 'Marcadores Acrílicos', 100, 1, 2, 1, 3),
+(11, 3007, 'Bombilla Flash Godox', 30, 1, 2, 1, 3),
+(12, 3008, 'Teclado Logitech K120', 10, 1, 1, 1, 4),
+(13, 3009, 'Monitor LG 24” Full HD', 5, 1, 1, 2, 4),
+(14, 3010, 'Mouse inalámbrico Genius', 15, 1, 1, 1, 4),
+(15, 3011, 'Lente Canon 50mm f/1.8', 3, 1, 1, 3, 2),
+(16, 3012, 'Cables HDMI 2m', 25, 1, 2, 1, 1),
+(17, 3013, 'Audífonos cerrados Sony', 6, 1, 1, 1, 1),
+(18, 3014, 'Tinta para impresora Epson', 50, 1, 2, 1, 3),
+(19, 3015, 'Iluminador LED Neewer', 7, 1, 1, 1, 2),
+(20, 3016, 'Memorias SD 64GB Sandisk', 20, 1, 2, 1, 2),
+(21, 3017, 'Pantalla de proyección portátil', 2, 1, 1, 1, 1),
+(22, 3018, 'Paquete de hojas fotográficas A4', 200, 1, 2, 1, 3),
+(23, 3019, 'Mini cámara GoPro Hero', 4, 1, 1, 1, 2),
+(24, 3020, 'Cable USB-C para cámaras', 40, 1, 2, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -493,7 +510,7 @@ ALTER TABLE `usuarios_roles`
 -- AUTO_INCREMENT de la tabla `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `bitacora`
@@ -505,7 +522,7 @@ ALTER TABLE `bitacora`
 -- AUTO_INCREMENT de la tabla `elementos`
 --
 ALTER TABLE `elementos`
-  MODIFY `elm_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `elm_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `entradas_salidas`

@@ -48,7 +48,7 @@ class RenderView{
         foreach ($fileAssets as $key => $value) {
             $filesAssets = basename($value);
             $nameAssetsFiles [] = $fileAssets[$key];
-            //var_dump($nameAssetsFiles);
+            var_dump($nameAssetsFiles);
         }
     }
 }

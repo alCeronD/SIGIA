@@ -1,26 +1,39 @@
 /* 
 Este documento contiene todos los estilos que se repiten sus componentes, como botones, Tablas, menus, entre otros.
 */
-*{
-    box-sizing: border-box;
-    margin: 0px;
-    padding: 0px;
-}   
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+}
+
+/* Es el tamaño en donde se va a trabajar todas la vista */
+.container {
+  margin: 0 auto;
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
+  height: calc(100vh - 100px);
+  border: 1px solid black;
+  flex-direction: column;
+}
+
 
 /* Estilos del footer. */
-#mainMenu{
-    height: 10vh;
-    display: flex ;
-    color: black;
-    justify-content: center;
-    align-items: center;
-    li{
-        list-style: none;
-        text-decoration: none;   
-        display: flex;
-        flex-direction: row;
+#mainMenu {
+  height: 10vh;
+  display: flex;
+  color: black;
+  justify-content: center;
+  align-items: center;
+  li {
+    list-style: none;
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+  }
 
-    }
+  background-color: yellow;
 }
 
 /* Estilos de botones */
@@ -28,3 +41,11 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
 /* Estilos de tablas */
 
 /* Estilos de inputs */
+
+/* Estilos de los contenedores */
+
+@media (min-width: 800px) and (max-width: 900px) {
+  body {
+    background-color: green;
+  }
+}

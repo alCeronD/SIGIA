@@ -1,3 +1,8 @@
+
+<div class="d-flex justify-content-center align-items-center" style="height: 90vh;">
+
+<div class="container-sm container">
+
 <div id="solicPrestamos">
     
 <span id="menuTitle">Registrar solicitud</span>
@@ -65,14 +70,27 @@
         <label for="observaciones">Observaciones</label>
         <textarea name="observaciones" id="observaciones" placeholder="Digite una observación en caso de que sea requerida."></textarea>
     </div>
-
     <div class="tableView">
-        <?php include_once 'tablaElementosView.php'; ?>
-    </div>
+        <!-- Modal que me permite visualizar la tabla -->
+        <button id="btnAddElements" type="button"></button>
 
+        <?php require_once 'tablaPreviewElementos.php'; ?>
+        </div>
+        <!-- Aca debe de visualizar los elementos que vayan a ser agregados. -->
+        
+        <!-- <?php //include_once 'tablaElementosView.php'; ?> -->
+    </div>
     <div class="inputBtn">
         <button type="submit" id="btnSubmit"></button>
     </div>
 </form>
 
+<div id="modalAddElements">
+    <?php require_once 'tablaAddElementsView.php'; ?>
 </div>
+
+</div>
+
+</div>
+</div>
+

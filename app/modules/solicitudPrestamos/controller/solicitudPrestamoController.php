@@ -1,7 +1,7 @@
 <?php 
 
 include_once __DIR__ . '/../../../helpers/renderView.php';
-include_once __DIR__ . '/../model/getElements.php';
+//include_once __DIR__ . '/../model/getElements.php';
 
 class solicitudController{
 

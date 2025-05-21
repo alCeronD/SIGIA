@@ -1,6 +1,5 @@
 <?php
 
-use Dba\Connection;
 
 //Este modelo me sirve para llamar a los elementos que esten disponibles, la idea es llevarlos a la vista de solicitud de prestamos.
 include_once __DIR__ . '/../../../config/conn.php';
