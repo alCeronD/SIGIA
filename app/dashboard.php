@@ -14,6 +14,8 @@ include_once '../public/partials/header.php';
 ?>
 
   <?php 
+
+  
    
     if ($sltPrestamos instanceof solicitudController) {
      $sltPrestamos::prestamos('solicitud');

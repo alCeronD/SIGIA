@@ -14,7 +14,7 @@
         <ul>A</ul>
         <ul>B</ul>
         <ul>C</ul>
-        <ul>D</ul>
+        <ul><a href="<?php echo $value=3; ?>">Configuración</a></ul>
     </li>
 
 </footer>
