@@ -5,8 +5,13 @@
 class RenderView{
 
     //Función para devolver la vista.
-    public static function renderView(String $file){
-        $path = __DIR__ . "/../modules/solicitudPrestamos/views/$file";
+    public static function renderView(String $modules,String $file ){
+
+        self::mapFiles($modules);
+
+        $path = __DIR__ . "/../modules/$modules/views/$file";
+
+        //var_dump($path);
 
         if (!$file) {
             return;
@@ -15,11 +20,13 @@ class RenderView{
         if (file_exists($path)) {
             include_once $path;
         }
+
+
     }
 
-    //Función para mapear los documentos, esto lo voy a usar para validar si el documento enviado es igual al que existe.
-    private static function mapFiles(){
-        $relativePath = __DIR__ . '/../modules/solicitudPrestamos/views/';
+    //Función para mapear las vistas de todos los modulos
+    private static function mapFiles(String $modules){
+        $relativePath = __DIR__ . "/../modules/$modules/views/";
         $nameFiles = [];
 
         $fle = glob($relativePath . '*',GLOB_MARK);
@@ -29,12 +36,11 @@ class RenderView{
         foreach ($fle as $files) {
             $prestamosFiles = basename($files);
             $nameFiles[] = $prestamosFiles;
-            //var_dump($nameFiles);
         }
     }
 
     //Todo: hacer función para matear los helpers.
-    public static function mapAssets(String $folder, String $file){
+    private static function mapAssets(String $folder, String $file){
 
         //Ruta relativa para renderizar los assets de javascript.
         //$relativePathAssets = __DIR__ ."/../public/assets/$folder/$file";
