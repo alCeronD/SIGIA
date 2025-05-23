@@ -1,5 +1,5 @@
 <?php 
-
+dd("haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 include_once '../proyecto_sigia/app/helpers/getUrl.php';
 echo "<div class='container'>";
 
