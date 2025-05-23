@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-05-2025 a las 23:34:42
+-- Tiempo de generación: 23-05-2025 a las 23:26:55
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -236,18 +236,19 @@ CREATE TABLE `prestamos_elementos` (
 
 CREATE TABLE `roles` (
   `rl_id` int(11) NOT NULL,
-  `rl_nombre` varchar(100) NOT NULL
+  `rl_nombre` varchar(100) NOT NULL,
+  `rl_descripcion` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `roles`
 --
 
-INSERT INTO `roles` (`rl_id`, `rl_nombre`) VALUES
-(1, 'Almacenista'),
-(2, 'Administrador'),
-(3, 'SubDirector'),
-(4, 'Instructor');
+INSERT INTO `roles` (`rl_id`, `rl_nombre`, `rl_descripcion`) VALUES
+(1, 'Almacenista', NULL),
+(2, 'Administrador', NULL),
+(3, 'SubDirector', NULL),
+(4, 'Instructor', NULL);
 
 -- --------------------------------------------------------
 
