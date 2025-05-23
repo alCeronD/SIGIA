@@ -94,3 +94,5 @@
 </div>
 </div>
 
+
+<script type="module" src="../public/assets/js/solicitudPrestamos/solicitudPrestamos.js.js"></script>

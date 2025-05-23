@@ -40,12 +40,9 @@ class Conection{
 
         $this->conn = new mysqli($this->host,$this->user,$this->password,$this->db);
 
-        if ($this->conn) {
-            echo 'conexión exitosa';
-        }else{
+        if (!$this->conn) {
             echo "conexión fallo ".$this->conn->connect_error;
         }
-
         return $this->conn;
 
 

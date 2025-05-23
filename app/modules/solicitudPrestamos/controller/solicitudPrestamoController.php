@@ -14,41 +14,48 @@ class solicitudController
     public static function prestamos(String $vista = '')
     {
 
+        /**
+         * 
+         * Clase que permite buscar la ruta y devolverla para renderizarla en base al controlador.
+         */
         $render = new RenderView();
         if (!isset($render)) return;
 
+        //var_dump($render);
         //Este renderizado de vista es exclusivo del modulo de PRESTAMOS
         switch ($vista) {
             case 'solicitud':
-                $render::renderView('solicitudPrestamos', 'solicitudPrestamosView.php');
+                require_once $render->renderView('solicitudPrestamos', 'solicitudPrestamosView.php');
                 //Renderizar también el footer.
+                //var_dump($render->renderView('solicitudPrestamos', 'solicitudPrestamosView.php'));
 
                 break;
             case 'consulta':
-                $render::renderView('solicitudPrestamos', 'consultarSolicitudView.php');
+                require_once $render->renderView('solicitudPrestamos', 'consultarSolicitudView.php');
                 break;
             default:
                 // en caso de que no se envie algun parámetro, lo ideal sería mostrar el index principal.
                 break;
         }
+
     }
 
     // Función para renderizar la vista del modulo de configuración.
-    public static function configModule($vista)
-    {
-        $render = new RenderView();
-        if (!isset($render)) return;
+    // public static function configModule($vista)
+    // {
+    //     $render = new RenderView();
+    //     if (!isset($render)) return;
 
 
-        switch ($vista) {
-            case 'solicitud':
-                $render::renderView('solicitudPrestamosView.php', 'solicitudPrestamos');
-                //Renderizar también el footer.
+    //     switch ($vista) {
+    //         case 'solicitud':
+    //             $render->renderView('solicitudPrestamosView.php', 'solicitudPrestamos');
+    //             //Renderizar también el footer.
 
-                break;
-            default:
-                // en caso de que no se envie algun parámetro, lo ideal sería mostrar el index principal.
-                break;
-        }
-    }
+    //             break;
+    //         default:
+    //             // en caso de que no se envie algun parámetro, lo ideal sería mostrar el index principal.
+    //             break;
+    //     }
+    // }
 }

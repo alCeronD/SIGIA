@@ -4,25 +4,33 @@
 
 class RenderView{
 
-    //Función para devolver la vista.
-    public static function renderView(String $modules,String $file ){
+    private $urlRender;
 
-        self::mapFiles($modules);
+    private $module;
+    private $file;
 
-        $path = __DIR__ . "/../modules/$modules/views/$file";
-
-        //var_dump($path);
-
-        if (!$file) {
-            return;
-        }
-
-        if (file_exists($path)) {
-            include_once $path;
-        }
-
+    public function __construct(String $module = '', String $file = ''){
+        $this->module = $module;
+        $this->file = $file;
 
     }
+
+    //Función para devolver la ruta.
+    public function renderView(String $modules, String $file){
+    self::mapFiles($modules);
+
+    $path = __DIR__ . "/../modules/$modules/views/$file";
+
+    if (!$file) {
+        return null;
+    }
+
+    if (file_exists($path)) {
+        return $path;
+    }
+
+    return null;
+}
 
     //Función para mapear las vistas de todos los modulos
     private static function mapFiles(String $modules){

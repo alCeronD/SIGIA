@@ -5,4 +5,16 @@
  * 
  */
 
+require_once __DIR__ . '/../../../helpers/renderView.php';
+
+class LoginController{
+    
+    public function __construct(){
+        $this->getName();
+    }
+
+    public function getName(){
+        return 'hello world';
+    }
+}
 ?>

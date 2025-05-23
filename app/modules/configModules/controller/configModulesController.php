@@ -1,13 +1,32 @@
 <?php 
 
-// Controlador que me va a indicar que va a ejecutar del modelo.
+// incluyo la clase para usar el renderizado de la vista.
+require_once __DIR__ . '/../../../helpers/renderView.php';
 
-require_once '../model/configModulesModel.php';
+class ConfigModulesController{
+    private $configModel;
 
-//Capturar los datos desde javascript.
-header("Content-Type: application/json");
+    private $render;
 
-$input = json_decode(file_get_contents("php://input"), true);
+    private $module;
+    private $file;
+
+    public function __construct(String $module, String $file){
+
+        $this->module = $module;
+        $this->file= $file;
+        $this->render = new RenderView($module,$file);
+    }
+
+    //Me devuelve la ruta de la vista.
+public function render(){
+    return $this->render->renderView($this->module, $this->file);
+}
+
+
+
+
+}
 
 
 ?>

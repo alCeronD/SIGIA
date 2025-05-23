@@ -3,9 +3,8 @@
 Implementar o buscar la forma de como implementar los scripts de manera dinamica, dependiendo del modulo que se este visualizando.
 
 -->
-<script src="../public/assets/libraries/bootstrap/js/bootstrap.js"></script>
-<script type="module" src="../public/assets/js/prestamos/prestamos.js"></script>
 
+<!-- <script src="../public/assets/libraries/bootstrap/js/bootstrap.js"></script> -->
 <?php
 
 /**
@@ -14,7 +13,7 @@ Implementar o buscar la forma de como implementar los scripts de manera dinamica
 
 ?>
 <footer class="bg-info text-white text-center" id="">
-    <menu id="mainMenu">
+    <nav id="mainMenu">
         <ul class="horizontalMenu">
             <li>
                 <a href="dashboard.php?value=5">Inicio</a>
@@ -56,7 +55,7 @@ Implementar o buscar la forma de como implementar los scripts de manera dinamica
             </li>
         </ul>
 
-    </menu>
+    </nav>
 
 
 </footer>

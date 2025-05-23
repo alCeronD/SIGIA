@@ -1,9 +1,11 @@
 <?php
 
-include_once 'modules/solicitudPrestamos/controller/solicitudPrestamoController.php';
-$sltPrestamos = new solicitudController();
+//require_once 'helpers/renderView.php';
+//$render = new RenderView();
 
-$mapfiles = new RenderView();
+//Controlador modulo solicitudPrestamos.
+require_once 'modules/solicitudPrestamos/controller/solicitudPrestamoController.php';
+$sltPrestamos = new solicitudController();
 
 ?>
 <?php
@@ -25,31 +27,39 @@ include_once '../public/partials/header.php';
     //Modulo prestamos
     case '3':
       if ($sltPrestamos instanceof solicitudController) {
+        
         $sltPrestamos::prestamos('solicitud');
       }
       break;
     //Caso para ejecutar el modulo de prestamos.
     case '4':
-
+      $sltPrestamos = new solicitudController();
       if ($sltPrestamos instanceof solicitudController) {
+        //Esto es una función estática en donde no retorna ningún valor, ahí se incluye la vista.
         $sltPrestamos::prestamos('consulta');
       }
       break;
 
     case '5':
-      $mapfiles->renderView('dashBoard', 'viewDashboard.php');
+      //$render->renderView('dashBoard', 'viewDashboard.php');
       break;
 
     //Tipo documento
     case '6':
-      $mapfiles->renderView('configModules', 'tpDocumentoView.php');
+      require_once '';
+      //$render->renderView('configModules', 'tpDocumentoView.php');
       break;
 
       //Area
     case '7':
-      $mapfiles->renderView('configModules','areaView.php');
+          require_once 'modules/configModules/controller/configModulesController.php';
+          $configModulesController = new ConfigModulesController('configModules', 'areaView.php');
+      $path = $configModulesController->render();
+      //Incluyo la vista.
+      require_once $path;
       break;
     default:
+    //La idea de este default es que redireccione a login.
 
       break;
   }
