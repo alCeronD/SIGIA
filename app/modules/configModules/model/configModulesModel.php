@@ -14,7 +14,7 @@ class ConfigModulesModel
     {
         $this->mysqli = new Conection();
     }
-    public function selectTable(String $nameTable)
+    public function select(String $nameTable)
     {
 
         $conn = $this->mysqli->getConnect();
@@ -32,13 +32,33 @@ class ConfigModulesModel
         return $data;
     }
 
-    public function insertData(String $value) {}
-
-    public function deleteRow(int $id) {}
-    public function updateRow(int $id, String $value) {}
-
-    public function getNombre()
+    public function insert(String $value, String $tableName)
     {
-        return 'nombre desde modelo';
+        $conn = $this->mysqli->getConnect();
+        $sql = "INSERT INTO $tableName values ($value)";
+
+        $stmt = $conn->prepare($sql);
+        if (!$stmt->execute()) {
+            return null;
+        }
+
+        return true;
     }
+
+    public function delete(int $tableName, String $fila, String $pk, String $value, String $pkValue)
+    {
+        $conn = $this->mysqli->getConnect();
+
+        $sql = "UPDATE $tableName SET $fila = $value WHERE $pk = $pkValue";
+        //$stmt = $conn->prepare($sql);
+        var_dump($sql);
+    }
+
+    //Actualiza formando la consulta.
+    public function update(String $tableName, String $value, String $pk)
+    {
+        $conn = $this->mysqli->getConnect();
+        $sql = "";
+    }
+
 }

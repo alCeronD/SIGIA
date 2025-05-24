@@ -1,4 +1,4 @@
-export class Ajax{
+class ajax{
     
     //Devuelve un objeto de tipo ajax.
     constructor() {
@@ -16,11 +16,8 @@ export class Ajax{
         });
     }
 
+    
     send(){
         this.request.send(data);
     }
-}
-
-export default{
-    Ajax
 }

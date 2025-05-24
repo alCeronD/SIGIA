@@ -1,3 +1,13 @@
+// const title = document.getElementById('menuTitle');
+// const menuTitleConsult = document.getElementById('menuTitleConsult');
+
+// console.log({title,menuTitleConsult});
+// menuTitleConsult.innerText = 'Consultar Prestamos';
+// title.innerText = 'Registrar solicitud';
+// table.classList.add('table');
+// table.setAttribute('scope','row');
+
+
 const btnSubmit = document.getElementById('btnSubmit');
 btnSubmit.innerText = 'Reservar';
 
@@ -12,6 +22,7 @@ modalTitle.innerText = 'Elementos disponibles';
 btnAddElements.addEventListener('click',(btnTarget)=>{
     btnTarget.preventDefault();
     btnTarget.stopPropagation();
+    console.log(btnTarget.target);
 
     //visualizar modal.
     modalAddElements.style.display = "flex";

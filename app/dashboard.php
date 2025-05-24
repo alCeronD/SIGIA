@@ -54,9 +54,9 @@ include_once '../public/partials/header.php';
     case '7':
           require_once 'modules/configModules/controller/configModulesController.php';
           $configModulesController = new ConfigModulesController('configModules', 'areaView.php');
-      $path = $configModulesController->render();
+      
       //Incluyo la vista.
-      require_once $path;
+      require_once $path = $configModulesController->render();
       break;
     default:
     //La idea de este default es que redireccione a login.

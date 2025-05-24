@@ -1,17 +1,69 @@
-<!-- Vista de area -->
+<!-- TODO: Mover al archivo específico de la vista de area. -->
+<style>
+    #modalArea {
+        display: none;
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        height: auto;
+        /* Could be more or less, depending on screen size */
+    }
+
+    .close{
+        cursor: pointer;
+    }
+</style>
 
 <div class="container">
     <h1>Vista areas</h1>
     <div class="form">
         <form id="formArea">
-            <input type="text" name="ar_nombre" id="nombreArea" placeholder="Nombre area...">
-            <textarea name="ar_descripcion" placeholder="Descripción..." id="descripcionArea"></textarea>
-            <button type="submit" id="btnArea">Agregar</button>
+            <input type="text" name="ar_nombre" id="nombreArea" placeholder="Nombre area..." value="">
+            <textarea name="ar_descripcion" placeholder="Descripción..." id="descripcionArea" value=""></textarea>
+            <button type="submit" id="btnAreaUpdate">Actualizar</button>
         </form>
     </div>
     <!-- Tabla de vista. -->
     <?php require_once 'tableView.php'; ?>
-    
+
+</div>
+
+<!-- Modal -->
+<div id="modalArea" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <span id="modalTitle">Actualizar registro</span>
+        <form id="areaUpdateForm">
+            <input type="text" name="ar_nombre" id="nombreAreaUpdate" placeholder="Nombre area...">
+            <textarea name="ar_descripcion" id="descripcionAreaUpdate" placeholder="Descripción..." ></textarea>
+            <button type="click" id="btnAreaUpdate">Agregar</button>
+        </form>
+    </div>
+
 </div>
 
 <!-- En la vista importar si o si el archivo específico a cada modulo -->
