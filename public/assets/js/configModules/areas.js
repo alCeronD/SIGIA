@@ -124,13 +124,13 @@ document.addEventListener('DOMContentLoaded',()=>{
 areaUpdateForm.addEventListener('submit',(e)=>{
     e.stopPropagation();
     e.preventDefault();
-    console.log(e.target);
 
     let form = new FormData(areaUpdateForm);
     let dta = Object.fromEntries(form);
 
     //Guardo la pk.
     dta['ar_cod'] = idPk;
+    dta['tableName'] = table;
 
     let data = JSON.stringify(dta);
     console.log(data);

@@ -36,7 +36,59 @@ class ConfigModulesController{
     }
 
     //Función para actualizar la información de un registro en base a la tabla.
-    public function updateRow(){
+    public function updateRow(array $data=[]){
+        //Ciclar la consulta.
+        $values = $data['values'];
+        //Este es un arreglo en donde tiene las llaves del arreglo de los valores.
+        $keysValues = array_keys($values);
+        //arreglo en donde están las llaves.
+        $pk = $data['pk'];
+        //Acceso específicamente al nombre de la tabla.
+        $tableName = $data['tableName'][0];
+
+        $sql = "UPDATE `$tableName` SET ";
+        $set =[];
+
+
+        //Separo los valores por un guión y lo guardo en un arreglo.
+        foreach ($keysValues as $keys) {
+            $val= addslashes($values[$keys]);
+            // var_dump($val);
+            $set [] = "`$keys` = '".addslashes($val)."'";
+        }
+
+        //concateno el arreglo set con la consulta sql.
+        $sql .= implode(',',$set);
+        //Extraigo el valor de la clave primaria, estaba usando array_keys y values pero me devolvía los valores en arreglos.
+        $pkValue = reset($pk);
+        $pkRow = key($pk);
+        $sql .= " WHERE $pkRow = $pkValue";
+
+        var_dump($sql);
+
+
+        //var_dump($pk);
+        //Concateno el where.
+        //$sql .= "WHERE $pk = $pk";
+
+        
+
+
+        //concateno la primary key para validar la consulta.
+        //var_dump($data);        
+        
+        // $sql .= " WHERE $pk = $pk";
+        // var_dump($sql);
+
+
+
+
+
+
+        //var_dump($values);
+        //var_dump($pk);
+
+
 
         return null;
     }
