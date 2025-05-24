@@ -48,7 +48,7 @@
             
                 include_once $controllerPath;
                 $nombreClase = $controlador . "Controller";
-    
+                // dd($nombreClase);
                 include_once 'app/config/conn.php'; 
                 $conexion = (new Conection())->getConnect();
                 $objeto = new $nombreClase($conexion);

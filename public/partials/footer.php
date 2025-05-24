@@ -20,13 +20,13 @@
 <!-- admin     -->
 <?php if ($rol == 2):?>
   <footer class="mac-footer d-flex justify-content-around align-items-center">
-          <a href="#" class="footer-icon text-center">
+          <a href="../app/dashboard.php" class="footer-icon text-center">
             <i class="fas fa-home"></i><br><small>Inicio</small>
           </a>
           <a href="#" class="footer-icon text-center">
             <i class="fa-solid fa-circle-user"></i></i><br><small>Perfil</small>
           </a>
-          <a href="#" class="footer-icon text-center">
+          <a href="<?php echo getUrl("usuarios","usuarios",funcion: "userView"); ?>" class="footer-icon text-center">
             <i class="fa-solid fa-user-plus"></i></i><br><small>Crear usuario</small>
           </a>
           <a href="#" class="footer-icon text-center">
