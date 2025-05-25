@@ -62,8 +62,6 @@ class ConfigModulesController{
         $sql ="SELECT * FROM $tableName WHERE $statusColum IN (1,0)";
         
         return $model->select($sql);
-
-
     }
 
     //Función para actualizar la información de un registro en base a la tabla.
@@ -135,6 +133,13 @@ class ConfigModulesController{
 
 
         return $data;
+    }
+
+    
+    public function deleteRow(){
+
+
+
     }
 
 

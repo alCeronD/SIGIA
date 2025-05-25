@@ -6,6 +6,7 @@
                 <th>Id</th>
                 <th>Nombre areas</th>
                 <th>Descripción</th>
+                <th>Estatus</th>
                 <th>Opción</th>
             </tr>
         </thead>

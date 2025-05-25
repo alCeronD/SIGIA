@@ -38,6 +38,7 @@ function fetchData(){
         
         if (objAjax.request.status) {
             data.forEach(dta => {
+                console.log(dta);
 
                 //boton de acción
                 const btnUpdate = document.createElement('button');
@@ -50,6 +51,7 @@ function fetchData(){
                 const tdId = document.createElement("td");
                 const tdName = document.createElement("td");
                 const tdDescript = document.createElement("td");
+                const tdStatus = document.createElement("td");
                 const tdAccion = document.createElement("td");
                 // Asigno el botón a ambos elementos.
 
@@ -58,14 +60,17 @@ function fetchData(){
                 tdId.textContent = dta.ar_cod;
                 tdName.textContent = dta.ar_nombre;
                 tdDescript.textContent = dta.ar_descripcion;
+
+                //Dependiendo del estatus, en html se verá visible activo o inactivo pero sabemos que 1 es activo y 0 inactivo.
+                tdStatus.textContent = dta.ar_status === 1 ? 'Activo' : 'Inactivo';
+
                 tdAccion.append(btnUpdate,btnDelete);
                 tr.appendChild(tdId);
                 tr.appendChild(tdName);
                 tr.appendChild(tdDescript);
+                tr.appendChild(tdStatus);
                 tr.appendChild(tdAccion);
 
-                //tdAccion.appendChild(btnDelete);
-                //tdAccion.appendChild(btnUpdate);
 
                 //Evento de update.
                 btnUpdate.addEventListener('click',(f) =>{
