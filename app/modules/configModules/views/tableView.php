@@ -4,7 +4,7 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Nombre areas</th>
+                <th>Nombre Elemento</th>
                 <th>Descripción</th>
                 <th>Estatus</th>
                 <th>Opción</th>
@@ -12,7 +12,6 @@
         </thead>
         <tbody id="tableBody">
             <!-- Renderizado con javascript. -->
-
         </tbody>
     </table>
 </div>

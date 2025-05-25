@@ -38,7 +38,6 @@ function fetchData(){
         
         if (objAjax.request.status) {
             data.forEach(dta => {
-                console.log(dta);
 
                 //boton de acción
                 const btnUpdate = document.createElement('button');
@@ -64,6 +63,15 @@ function fetchData(){
                 //Dependiendo del estatus, en html se verá visible activo o inactivo pero sabemos que 1 es activo y 0 inactivo.
                 tdStatus.textContent = dta.ar_status === 1 ? 'Activo' : 'Inactivo';
 
+                //Coloco el color rojo verde segun su estado.
+                if (dta.ar_status === 1) {
+                    tdStatus.textContent = 'Activo';
+                    tdStatus.style.color = 'green';
+                } else {
+                    tdStatus.textContent = 'Inactivo';
+                    tdStatus.style.color = 'red';
+                }
+
                 tdAccion.append(btnUpdate,btnDelete);
                 tr.appendChild(tdId);
                 tr.appendChild(tdName);
@@ -72,7 +80,7 @@ function fetchData(){
                 tr.appendChild(tdAccion);
 
 
-                //Evento de update.
+                //Update Event
                 btnUpdate.addEventListener('click',(f) =>{
                     //Guardo el botón
                     let btndl = f.target;
@@ -98,11 +106,51 @@ function fetchData(){
                 });
 
 
-                //Evento de delete
+                //Delete Event
                 btnDelete.addEventListener('click', (e)=>{
-                    console.log(e.target);
 
-                    objAjax.request.open('PUT','');
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    let btnDlt = e.target;
+                    let row = btnDlt.closest('tr');
+                    const celda = row.querySelectorAll('td');
+
+                    //Extraigo la información del query selector y guardo en variables.
+                    let idPk = celda[0].textContent;
+                    let status = celda[3].textContent;
+                    //Dependiendo del texto en html defino si es 0 para inactivo o 1 para activo para enviar a backend para actualizar.
+                    status = status === 'Activo' ? 1 : 0;
+
+                    //let nombreArea = celda[1].textContent;
+                    //let descripcion = celda[2].textContent;
+
+
+                    if (confirm('¿Esta seguro de inhabilitar este elemento?')) {
+
+                        objAjax.request.open('DELETE',
+                            `modules/configModules/api/apiConfigModules.php?idPk=${encodeURIComponent(idPk)}&status=${encodeURIComponent(status)}&tableName=${encodeURIComponent(table)}`,
+                            true);
+
+                        //se valida el mensaje de exito.
+                        objAjax.request.onload = ()=>{
+                            let dta = objAjax.request.responseText;
+
+                            //Si el valor es true del update, mostrar alert.
+                            if (data.status) {
+                                console.log('hello world');
+                            }
+
+                        }
+                        //Establecer que tipo de respuesta me puede recibir, en este caso, un json.
+                        //objAjax.request.setRequestHeader('Accept', 'application/json');
+                        objAjax.request.send();
+                    }
+
+
+                    
+
+                    
 
                 });
 

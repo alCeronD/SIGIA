@@ -136,7 +136,27 @@ class ConfigModulesController{
     }
 
     
-    public function deleteRow(){
+    //Creo la consulta sql.
+    public function deleteRow(array $data=[]){
+
+        //Validar en el arreglo si el dato enviado corresponde a uno de los status.
+        $status = [0, 1];
+        //validar si está definido.
+        if (!$data) {
+            exit();
+        }
+        var_dump($data);   
+        //Captura nombre de la tabla.
+        $tableName = (String) $data['tableName'];
+        //Me captura el valor del estatus
+        $valueColumn = (int) $data['values']['ar_status'];
+        //Capturar nombre de la columa
+        $nameColum = (String) key($data['values']);
+        //Capturar el nombre de la columna de la primary key
+        $pkColumName = (String) $data['pk']['column'];
+        //Capturar el valor de la primary key.
+        $pkValue = (int) $data['pk']['value'];
+
 
 
 
