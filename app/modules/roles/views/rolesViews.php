@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 <?php 
 
@@ -6,6 +7,17 @@ require_once 'rolesRegistrar.php';
 ?>
 
 <!-- <div class="container mt-5"> -->
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Roles</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+>>>>>>> 751a1fa (edward_commit)
     <h2 class="mb-4 text-center">Listado de Roles</h2>
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
@@ -38,9 +50,15 @@ require_once 'rolesRegistrar.php';
             <?php endif; ?>
         </tbody>
     </table>
+<<<<<<< HEAD
 <!-- </div> -->
 
 <?php
 // include_once '../proyecto_sigia/public/partials/footer.php';
 
 ?>
+=======
+</div>
+</body>
+</html>
+>>>>>>> 751a1fa (edward_commit)

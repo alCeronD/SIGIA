@@ -1,9 +1,15 @@
 <?php
+<<<<<<< HEAD
 // require_once './app/modules/roles/model/rolesModel.php';
 // require_once __DIR__ . './app/modules/roles/model/rolesModel.php';
 
 include_once __DIR__ . '/../model/rolesModel.php';
 class rolesController {
+=======
+require_once './app/modules/roles/model/rolesModel.php';
+
+class ControllerRol {
+>>>>>>> 751a1fa (edward_commit)
     private $modeloRol;
 
     public function __construct($conexion) {
@@ -12,6 +18,7 @@ class rolesController {
 
     public function mostrarRoles() {
         $roles = $this->modeloRol->obtenerRoles();
+<<<<<<< HEAD
         return include __DIR__ . './../views/rolesViews.php';
     }
     
@@ -19,6 +26,11 @@ class rolesController {
         return include __DIR__ . './../views/rolesEditar.php';
     }
     
+=======
+        include './app/modules/roles/views/rolesViews.php';
+    }
+
+>>>>>>> 751a1fa (edward_commit)
     public function registrarRoles(){
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $rol_nombre = $_POST['rol_nombre'];
@@ -26,14 +38,22 @@ class rolesController {
 
         if ($exito) {
             echo "<div class='alert alert-success text-center'>Rol registrado correctamente.</div>";
+<<<<<<< HEAD
             // header("Location: index.php?action=rolesListar");
             header("Location: dashboard.php");
+=======
+            header("Location: index.php?action=rolesListar");
+>>>>>>> 751a1fa (edward_commit)
             exit();
         } else {
             echo "<div class='alert alert-danger text-center'>Error al registrar el Rol.</div>";
         }
     } else {
+<<<<<<< HEAD
         return include __DIR__ .  './../views/rolesRegistrar.php';
+=======
+        include './app/modules/roles/views/rolesRegistrar.php';
+>>>>>>> 751a1fa (edward_commit)
     }
 }
 
@@ -62,7 +82,11 @@ public function editarRol() {
             }
         }
         if ($rol_actual) {
+<<<<<<< HEAD
             return include __DIR__ . './../views/rolesEditar.php';
+=======
+            include './app/modules/roles/views/rolesEditar.php';
+>>>>>>> 751a1fa (edward_commit)
         } else {
             echo "<div class='alert alert-danger text-center'>Rol no encontrado.</div>";
         }
