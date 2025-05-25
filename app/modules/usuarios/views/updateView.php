@@ -16,7 +16,6 @@ $rolSesion = $usuarioSesion['rol_id'];
     <form method="POST" action="<?= getUrl('usuarios','usuarios','updateUser') ?>" class="w-75 mx-auto text-start row g-3">
       <input type="hidden" name="usu_id" value="<?= htmlspecialchars($usuario['usu_id']) ?>">
 
-      <!-- Bloque 1 -->
       <div class="col-md-6">
         <div class="mb-3">
           <label for="usu_docum" class="form-label">Documento</label>
@@ -36,7 +35,6 @@ $rolSesion = $usuarioSesion['rol_id'];
         </div>
       </div>
 
-      <!-- Bloque 2 -->
       <div class="col-md-6">
         <div class="mb-3">
           <label for="usu_email" class="form-label">Email</label>
