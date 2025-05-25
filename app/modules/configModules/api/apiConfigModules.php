@@ -4,6 +4,7 @@
 // Este documento recibe todas las solicitudes de ajax.
 header("Content-Type: application/json");
 $input = json_decode(file_get_contents("php://input"), true);
+
 require_once __DIR__ . '/../controller/configModulesController.php';
 $configController = new ConfigModulesController('', '');
 
@@ -15,8 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     //creo el objeto del controlador.
 
     //Creo arreglo para validar que el valor enviado es igual al que voy a solicitar en la base de datos.
-    $tableName = $_GET['tableName'];
-    $status = $_GET['status'];
+    $tableName = $_GET['tableName']??  null;
+    $status = $_GET['status'] ?? null;
 
     if (!in_array($tableName, $tables)) {
         exit();
@@ -78,22 +79,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
 }
 
+
+$method = $_SERVER['REQUEST_METHOD'];
+if ($method === 'POST' && isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
+    $method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
+}
+
 //DELETE
-if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-    
+if ($method === 'DELETE') {
     /**
      * Esta función sirve para análizar toda la url que recibo y las variables que se encuentren ahí se guardan en un arreglo con su clave y valor.
      */
-    parse_str($_SERVER['QUERY_STRING'], $params);
+    // parse_str($_SERVER['QUERY_STRING'], $params);
 
-    $idPk = $params['idPk'] ?? null;
-    $status = $params['status'] ?? null;
-    $tableName = $params['tableName'] ?? null;
+    // $idPk = $params['idPk'] ?? null;
+    // $status = $params['status'] ?? null;
+    // $tableName = $params['tableName'] ?? null;
+
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    $idPk = $input['idPk'] ?? null;
+    $status = $input['status'] ?? null;
+    $tableName = $input['tableName'] ?? null;
 
     //Si el nombre de la tabla no está en el arreglo de tablas, este debe detener el script.
     if (!in_array($tableName,$tables)) {
        exit();
     }
+
+    // var_dump($input);
+    // var_dump($idPk);
+    // var_dump($status);
+    // var_dump($tableName);
+    // exit(); // para detener y revisar
 
     $statusCols = [
         'areas' => ['status' => 'ar_status', 'pk' => 'ar_cod'],
@@ -112,9 +130,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         'pk' => ['column' => $pkCol, 'value' => (int)$idPk]
     ];
 
+    if ($configController->deleteRow($data)) {
 
+        http_response_code(200);
 
-    // $data = $configModulesController->deleteRow($params);
-    $configController->deleteRow($data);
+        echo json_encode([
+            'status'=>true,
+            'message'=>'Registro actualizado'
+        ]);
 
+    }else{
+        http_response_code(500);
+        echo json_encode([
+            'status'=>false,
+            'message'=>'Error al actualizar el registro.'
+        ]);
+    }
 }

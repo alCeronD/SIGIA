@@ -28,6 +28,7 @@ class ConfigModulesModel
             $data[] = $row;
         }
 
+        $conn->close();
         return $data;
     }
 
@@ -44,13 +45,35 @@ class ConfigModulesModel
         return true;
     }
 
-    public function delete(int $tableName, String $fila, String $pk, String $value, String $pkValue)
+    public function delete(String $sql, String $types,array $values)
     {
-        $conn = $this->mysqli->getConnect();
 
-        $sql = "UPDATE $tableName SET $fila = $value WHERE $pk = $pkValue";
-        //$stmt = $conn->prepare($sql);
-        var_dump($sql);
+        $conn = $this->mysqli->getConnect();
+        try {
+
+
+            $stmt = $conn->prepare($sql);
+
+            $refs = [];
+            //Paso los valores por referencia, esto sirve para usar el call_user_func_array
+            foreach ($values as $key => $value) {
+                $refs[$key] = &$values[$key]; 
+            }
+
+            array_unshift($refs, $types);
+            //var_dump($stmt);
+            call_user_func_array([$stmt, 'bind_param'], $refs);
+                if (!$stmt->execute()) {
+                return "Error al ejecutar la consulta: " . $stmt->error;;
+            }
+            
+        } catch (mysqli_sql_exception $e) {
+            return "Excepción capturada: " . $e->getMessage();
+        }
+
+        return true;
+
+
     }
 
     //Actualiza formando la consulta.

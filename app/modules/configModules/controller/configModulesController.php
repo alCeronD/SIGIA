@@ -74,7 +74,6 @@ class ConfigModulesController{
         $pk = $data['pk'];
         //Acceso específicamente al nombre de la tabla.
         $tableName = $data['tableName'][0];
-
         //Tipos de datos para preparar la consulta
 
         //Valores para bind_param
@@ -145,7 +144,6 @@ class ConfigModulesController{
         if (!$data) {
             exit();
         }
-        var_dump($data);   
         //Captura nombre de la tabla.
         $tableName = (String) $data['tableName'];
         //Me captura el valor del estatus
@@ -157,13 +155,19 @@ class ConfigModulesController{
         //Capturar el valor de la primary key.
         $pkValue = (int) $data['pk']['value'];
 
+        if ($valueColumn == 1) {
+            $valueColumn = 0;
+        }elseif ($valueColumn == 0) {
+            $valueColumn = 1;
+        }
 
-
-
+        $sql = "UPDATE `$tableName` SET `$nameColum` = ? WHERE `$pkColumName` = ?";
+        $types = "ii"; // ambos son enteros
+        $values = [$valueColumn, $pkValue];
+        $model = new ConfigModulesModel();
+        $dataResult = $model->delete($sql, $types, $values);
+        return $dataResult;
     }
-
-
-
 }
 
 
