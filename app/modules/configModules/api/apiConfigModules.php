@@ -20,11 +20,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $tables = ['areas', 'roles', 'categorias', 'marcas'];
 
     $tableName = $_GET['tableName'];
+
+    $status = $_GET['status'];
+
+        
     if (!in_array($tableName, $tables)) {
         exit();
     }
 
-    $data = $configController->getData($tableName);
+    //Si el estatus es false, es decir, algo inactivo, terminar el script.
+    if (!in_array($status, ['0', '1'])) {
+        exit();
+    }
+    //var_dump($data);
+
+
+
+
+
+    //aca se ejecuta todo.
+     $data = $configController->getData($tableName, $status);
 
     http_response_code(200);
     echo json_encode([

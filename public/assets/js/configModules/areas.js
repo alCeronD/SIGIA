@@ -6,6 +6,10 @@ const formulario = document.querySelector('#formArea');
 const objAjax = new Ajax();
 //Nombre de la tabla.
 let table = 'areas';
+
+//Estatus del registro, si está activo o no. 1= activo, 0 =inactivo
+let status = 1;
+
 //Modal
 const myModal = document.querySelector('#modalArea');
 //Cuerpo de tabla.
@@ -21,8 +25,9 @@ let descripcion;
 function fetchData(){
 
     tableBody.innerHTML = '';
+    let dataFetch = [table, status];
 
-    objAjax.request.open('GET',`modules/configModules/api/apiConfigModules.php?tableName=${encodeURIComponent(table)}`);
+    objAjax.request.open('GET',`modules/configModules/api/apiConfigModules.php?tableName=${encodeURIComponent(table)}&status=${encodeURIComponent(status)}`);
     
     //Aca va la respuesta y el renderizado de los datos en la tabla.
     objAjax.request.onload = ()=>{
@@ -122,8 +127,7 @@ formulario.addEventListener('submit',(event)=>{
 
 // Apenas cargue la información, ejecutar la función fetchData para traer la info usando ajax.
 document.addEventListener('DOMContentLoaded',()=>{
-
-    // objAjax.request.open('GET',`modules/configModules/controller/configModulesController.php?tableName=${encodeURIComponent(table)}`);
+    //Apenas cargue el documeento me renderiza la información.
     fetchData();
 
 });
@@ -164,7 +168,6 @@ areaUpdateForm.addEventListener('submit',(e)=>{
         }
 
     }
-
     objAjax.request.send(data);
 
 });

@@ -14,11 +14,10 @@ class ConfigModulesModel
     {
         $this->mysqli = new Conection();
     }
-    public function select(String $nameTable)
+    public function select(String $sql)
     {
 
         $conn = $this->mysqli->getConnect();
-        $sql = "SELECT * FROM $nameTable";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();

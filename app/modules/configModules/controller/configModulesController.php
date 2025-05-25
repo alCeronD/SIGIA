@@ -30,9 +30,40 @@ class ConfigModulesController{
     }
 
     //Función para traer la información de la tabla en específico.
-    public function getData(String $tableName){
+    public function getData(String $tableName, String $status){
+        
         $model = new ConfigModulesModel();
-        return $model->select($tableName);
+        //las tablas, las voy a comparar segun el area crear la consulta.
+        $statusTables = ['areas','tipo_documento','roles','categorias','marcas'];
+        $statusColum ='';
+        if (in_array($tableName, $statusTables)) {
+            
+            switch ($tableName) {
+                case 'areas':
+                    $statusColum = 'ar_status';
+                    break;
+                case 'tipo_documento':
+                    $statusColum = 'tp_status';
+                    break;
+                case 'roles':
+                    $statusColum = 'rl_status';
+                    break;
+                case 'categorias':
+                    $statusColum = 'ca_status';
+                    break;
+                case 'marcas':
+                    $statusColum = 'ma_status';
+                    break;
+                default:
+                    exit();
+            }
+        }
+        //Traigame todos los registros de la tabla cuando su estado sea activo(1) e inactivo(0).
+        $sql ="SELECT * FROM $tableName WHERE $statusColum IN (1,0)";
+        
+        return $model->select($sql);
+
+
     }
 
     //Función para actualizar la información de un registro en base a la tabla.
