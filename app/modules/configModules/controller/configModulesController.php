@@ -46,54 +46,66 @@ class ConfigModulesController{
         //Acceso específicamente al nombre de la tabla.
         $tableName = $data['tableName'][0];
 
+        //Tipos de datos para preparar la consulta
+
+        //Valores para bind_param
+        $prepareValues = [];
+        $types=[];
         $sql = "UPDATE `$tableName` SET ";
         $set =[];
 
 
-        //Separo los valores por un guión y lo guardo en un arreglo.
+
+        //Recorro los valores para validar su tipo, creo el tipo de valor al cual voy a asignar y guardo los datos en un arreglo específico
         foreach ($keysValues as $keys) {
-            $val= addslashes($values[$keys]);
-            // var_dump($val);
-            $set [] = "`$keys` = '".addslashes($val)."'";
+            $set[] = "`$keys` = ?";
+            //extraigo el valor expecífico para validar su tipo
+            $val = $values[$keys];
+            if (is_int($val)) {
+                $types []= 'i';
+            }elseif (is_float($val) || is_double($val)){
+                $types []= 'd';
+
+            }else{
+                $types []='s';
+            }
+
+            //Guardo el valor en el arreglo para enviar los datos a actualizar
+            $prepareValues[] = $val;
+
         }
 
+        //Creo un string en donde cada posición del arreglo está separada por una coma (,) para concatenar.
+        $set2 = implode(',',$set);
         //concateno el arreglo set con la consulta sql.
-        $sql .= implode(',',$set);
-        //Extraigo el valor de la clave primaria, estaba usando array_keys y values pero me devolvía los valores en arreglos.
+        $sql .= $set2;
+        
+        // //Extraigo el valor de la clave primaria, estaba usando array_keys y values pero me devolvía los valores en arreglos.
         $pkValue = reset($pk);
         $pkRow = key($pk);
-        $sql .= " WHERE $pkRow = $pkValue";
+        $sql .= " WHERE $pkRow = ?";
 
-        var_dump($sql);
+        //Agregar la pk.
+        $types []="i";
 
-
-        //var_dump($pk);
-        //Concateno el where.
-        //$sql .= "WHERE $pk = $pk";
-
-        
+        //Envio la primary key
+        $prepareValues [] = $pkValue;
 
 
-        //concateno la primary key para validar la consulta.
-        //var_dump($data);        
-        
-        // $sql .= " WHERE $pk = $pk";
-        // var_dump($sql);
+        $model = new ConfigModulesModel();
+
+        //Por ahora devuelve un true.
+        /**
+         * @var $sql - consulta concatenada
+         * @var $prepareValues - los valores para actualizar
+         * @var $types - los tipos de datos según $prepareValues.
+         */
+        $data = $model->update($sql,$prepareValues,$types);
 
 
-
-
-
-
-        //var_dump($values);
-        //var_dump($pk);
-
-
-
-        return null;
+        return $data;
     }
 
-    //Función para Inhabilitar la información de un registro en base a la tabla.
 
 
 }

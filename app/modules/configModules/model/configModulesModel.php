@@ -55,10 +55,37 @@ class ConfigModulesModel
     }
 
     //Actualiza formando la consulta.
-    public function update(String $tableName, String $value, String $pk)
+    public function update(String $sql, array $prepareValues, array $types)
     {
         $conn = $this->mysqli->getConnect();
-        $sql = "";
+
+        try {
+            $tp = implode('',$types);
+            $stmt = $conn->prepare($sql);
+            $val = [];
+            $val[] = $tp;
+
+            foreach ($prepareValues as $key => $value) {
+                //Uso el valor por referencia.
+                $val[] = &$prepareValues[$key];
+            }
+
+            call_user_func_array([$stmt,'bind_param'],$val);
+            if (!$stmt->execute()) {
+                return false;
+            }
+
+        
+        } catch (PDOException $th) {
+            return $th->getMessage();
+        }
+
+        //Cerrar conexión.
+        $stmt->close();
+
+        return true;
+        
+
     }
 
 }

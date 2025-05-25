@@ -58,10 +58,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         ]
     ];
 
+    //Ejecuto la función, debe devolver un true, si es así devolver como respuesta a ajax.
+    if ($configController->updateRow($values)) {
+        http_response_code(200);
 
+        echo json_encode([
+            'status'=>true,
+            'message'=>'Registro actualizado'
+        ]);
 
-    $configController->updateRow($values);
-    
+    }
 
 }
 

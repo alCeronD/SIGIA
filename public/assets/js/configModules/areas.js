@@ -8,7 +8,8 @@ const objAjax = new Ajax();
 let table = 'areas';
 //Modal
 const myModal = document.querySelector('#modalArea');
-
+//Cuerpo de tabla.
+const tableBody = document.querySelector('#tableBody');
 //Boton de update del modal
 const areaUpdateForm = document.querySelector('#areaUpdateForm');
 
@@ -17,21 +18,10 @@ let nombreArea;
 let descripcion;
 
 
-formulario.addEventListener('submit',(event)=>{
-    event.preventDefault();
-    event.stopPropagation();
+function fetchData(){
 
-    let form = new FormData(formulario);
-    let data = JSON.stringify(Object.fromEntries(form));
-    console.log(data);
+    tableBody.innerHTML = '';
 
-});
-
-
-// Apenas cargue la información, ejecutar la función fetchData para traer la info usando ajax.
-document.addEventListener('DOMContentLoaded',()=>{
-
-    // objAjax.request.open('GET',`modules/configModules/controller/configModulesController.php?tableName=${encodeURIComponent(table)}`);
     objAjax.request.open('GET',`modules/configModules/api/apiConfigModules.php?tableName=${encodeURIComponent(table)}`);
     
     //Aca va la respuesta y el renderizado de los datos en la tabla.
@@ -39,7 +29,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         //Capturo la respuesta
         let response = JSON.parse(objAjax.request.responseText);
         let data = response.data;
-        const tableBody = document.querySelector('#tableBody');
+
         
         if (objAjax.request.status) {
             data.forEach(dta => {
@@ -116,6 +106,25 @@ document.addEventListener('DOMContentLoaded',()=>{
     objAjax.request.setRequestHeader("Accept","application/json");
     //Enviar datos a get para visualziar las areas
     objAjax.request.send();
+}
+
+
+formulario.addEventListener('submit',(event)=>{
+    event.preventDefault();
+    event.stopPropagation();
+
+    let form = new FormData(formulario);
+    let data = JSON.stringify(Object.fromEntries(form));
+    console.log(data);
+
+});
+
+
+// Apenas cargue la información, ejecutar la función fetchData para traer la info usando ajax.
+document.addEventListener('DOMContentLoaded',()=>{
+
+    // objAjax.request.open('GET',`modules/configModules/controller/configModulesController.php?tableName=${encodeURIComponent(table)}`);
+    fetchData();
 
 });
 
@@ -140,7 +149,19 @@ areaUpdateForm.addEventListener('submit',(e)=>{
     
 
     objAjax.request.onload = ()=>{
+        //Transformo en un texto la respuesta.
+        let dataStatus = objAjax.request.responseText;
+        //Transformo en un json la respuesta.
+        dataStatus = JSON.parse(dataStatus);
+        if (dataStatus.status) {
+            alert('registro actualizado');
+            //Cerrar el modal
+            myModal.style.display = "none";
 
+            //Renderizo nuevamente la data.
+            fetchData();
+
+        }
 
     }
 
