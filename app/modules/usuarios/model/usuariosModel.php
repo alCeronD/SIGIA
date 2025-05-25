@@ -53,7 +53,6 @@ class usuarios {
     }
 
     public function update() {
-        dd("llego a update modelo");
     }
     
     public function search() {

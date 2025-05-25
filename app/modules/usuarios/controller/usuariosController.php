@@ -74,12 +74,15 @@ class usuariosController{
     }
     
     public function updateUser(){
-        dd("llego a update controllador");
         
     }
     
     public function offUser(){
+        
+    }
     
+    public function updateUserView(){
+       include_once '../proyecto_sigia/app/modules/usuarios/views/updateView.php';
     }
 }
 

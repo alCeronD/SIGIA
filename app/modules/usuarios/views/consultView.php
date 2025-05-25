@@ -25,7 +25,7 @@ include_once '../proyecto_sigia/public/partials/header.php';
                   <td><?= htmlspecialchars($usuario['usu_apellidos']) ?></td>
                   <td><?= htmlspecialchars($usuario['rl_nombre']) ?></td>
                   <td>
-                    <a href="<?= getUrl('usuarios', 'usuarios', 'updateUser') ?>" class="btn btn-sm btn-warning me-1">
+                    <a href="<?= getUrl('usuarios', 'usuarios', 'updateUserView') ?>" class="btn btn-sm btn-warning me-1">
                       <i class="bi bi-pencil-square"></i> Editar
                     </a>
                     <a href="<?= getUrl('usuarios', 'usuarios', 'delete') ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">
