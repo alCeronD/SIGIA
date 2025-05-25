@@ -87,14 +87,6 @@ if ($method === 'POST' && isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
 
 //DELETE
 if ($method === 'DELETE') {
-    /**
-     * Esta función sirve para análizar toda la url que recibo y las variables que se encuentren ahí se guardan en un arreglo con su clave y valor.
-     */
-    // parse_str($_SERVER['QUERY_STRING'], $params);
-
-    // $idPk = $params['idPk'] ?? null;
-    // $status = $params['status'] ?? null;
-    // $tableName = $params['tableName'] ?? null;
 
     $input = json_decode(file_get_contents('php://input'), true);
 
@@ -107,11 +99,6 @@ if ($method === 'DELETE') {
        exit();
     }
 
-    // var_dump($input);
-    // var_dump($idPk);
-    // var_dump($status);
-    // var_dump($tableName);
-    // exit(); // para detener y revisar
 
     $statusCols = [
         'areas' => ['status' => 'ar_status', 'pk' => 'ar_cod'],
