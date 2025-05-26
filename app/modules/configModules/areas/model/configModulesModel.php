@@ -10,7 +10,8 @@ class ConfigModulesModel
     private $mysqli;
 
     //puede que no necesite constructor.
-    public function __construct(){
+    public function __construct()
+    {
         $this->mysqli = new Conection();
     }
     public function select(String $sql)
@@ -31,20 +32,35 @@ class ConfigModulesModel
         return $data;
     }
 
-    public function insert(String $value, String $tableName)
+    public function insert(String $sql = '', String $types = '', array $values = [], String $tableName = '', String $pkNameColum = '')
     {
         $conn = $this->mysqli->getConnect();
-        $sql = "INSERT INTO $tableName values ($value)";
 
         $stmt = $conn->prepare($sql);
-        if (!$stmt->execute()) {
-            return null;
+        if (!$stmt) {
+            die("Prepare failed: " . $conn->error);
         }
 
-        return true;
+        $bindParams = [];
+        foreach ($values as $key => $value) {
+            $bindParams[] = &$values[$key];
+        }
+
+        array_unshift($bindParams, $types);
+        call_user_func_array([$stmt, 'bind_param'], $bindParams);
+
+        if (!$stmt->execute()) {
+            die("Execute failed: " . $stmt->error);
+        }
+
+        $insertedId = $conn->insert_id;
+
+        $conn->close();
+
+        return $insertedId;
     }
 
-    public function delete(String $sql, String $types,array $values)
+    public function delete(String $sql, String $types, array $values)
     {
 
         $conn = $this->mysqli->getConnect();
@@ -56,23 +72,20 @@ class ConfigModulesModel
             $refs = [];
             //Paso los valores por referencia, esto sirve para usar el call_user_func_array
             foreach ($values as $key => $value) {
-                $refs[$key] = &$values[$key]; 
+                $refs[$key] = &$values[$key];
             }
 
             array_unshift($refs, $types);
             //var_dump($stmt);
             call_user_func_array([$stmt, 'bind_param'], $refs);
-                if (!$stmt->execute()) {
+            if (!$stmt->execute()) {
                 return "Error al ejecutar la consulta: " . $stmt->error;;
             }
-            
         } catch (mysqli_sql_exception $e) {
             return "Excepción capturada: " . $e->getMessage();
         }
 
         return true;
-
-
     }
 
     //Actualiza formando la consulta.
@@ -81,7 +94,7 @@ class ConfigModulesModel
         $conn = $this->mysqli->getConnect();
 
         try {
-            $tp = implode('',$types);
+            $tp = implode('', $types);
             $stmt = $conn->prepare($sql);
             $val = [];
             $val[] = $tp;
@@ -91,12 +104,10 @@ class ConfigModulesModel
                 $val[] = &$prepareValues[$key];
             }
 
-            call_user_func_array([$stmt,'bind_param'],$val);
+            call_user_func_array([$stmt, 'bind_param'], $val);
             if (!$stmt->execute()) {
                 return false;
             }
-
-        
         } catch (PDOException $th) {
             return $th->getMessage();
         }
@@ -105,8 +116,5 @@ class ConfigModulesModel
         $stmt->close();
 
         return true;
-        
-
     }
-
 }

@@ -42,7 +42,7 @@
         <form id="formArea">
             <input type="text" name="ar_nombre" id="nombreArea" placeholder="Nombre area..." value="">
             <textarea name="ar_descripcion" placeholder="Descripción..." id="descripcionArea" value=""></textarea>
-            <button type="submit" id="btnAreaUpdate">Actualizar</button>
+            <button type="submit" id="btnAreaUpdate">Registrar</button>
         </form>
     </div>
     <!-- Tabla de vista. -->

@@ -163,6 +163,53 @@ class ConfigModulesController{
         $dataResult = $model->delete($sql, $types, $values);
         return $dataResult;
     }
+
+    public function addRow(array $data=[]){
+
+        if (!$data) {
+            exit();
+        }
+
+        //Nombres de las columnas de la tabla
+        $keysValues = array_keys($data['values']);
+        
+        //Valores de las columnas 
+        $values = array_values($data['values']);
+
+        $pkNameColum = $data['pkNameColum'];
+
+        //Extraigo el nombre de la tabla, en este caso me interesa el el value de tableName, no su clave
+        $tableName = $data['tableName'];
+
+        //var_dump($keysValues,$values,$tableName);
+
+        $sql = "INSERT INTO `$tableName` SET ";
+
+        //Estructura SET de consulta.
+        $set = [];
+        //Tipos de valores.
+        foreach ($keysValues as $keys) {
+            $set[] = "`$keys` = ?";
+        }
+
+        //Tipos de datos
+        $types = "ss";
+
+        $set2 = implode(', ',$set);
+
+        $sql .= $set2;
+
+        $model = new ConfigModulesModel();
+
+        $lastInsertId = $model->insert($sql,$types,$values, $tableName, $pkNameColum);
+
+        $selectSql = "SELECT * FROM $tableName WHERE $pkNameColum = $lastInsertId";
+        $insertedRow = $model->select($selectSql);
+
+        return $insertedRow;
+
+    
+    }
 }
 
 

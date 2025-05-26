@@ -24,6 +24,7 @@ if ($method === 'POST' && isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
     $method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
 }
 
+
 //SELECT
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     //creo el objeto del controlador.
@@ -129,4 +130,51 @@ if ($method === 'DELETE') {
             'message'=>'Error al actualizar el registro.'
         ]);
     }
+}
+
+//INSERT
+if ($method === 'POST') {
+    $ar_nombre = $input['ar_nombre'];
+    $ar_descripcion = $input['ar_descripcion'];
+    $tableName = $input['tableName'];
+
+    if (!in_array($tableName,$tables)) {
+       exit();
+    }
+
+    //Comparo si el valor esta para asociar el valor de la pk
+    if (in_array($tableName,$tables)) {
+        $pkColum = $statusCols[$tableName]['pk'];
+    }
+
+    $data = [
+    'tableName' => $tableName,
+    'values' => [
+        'ar_nombre' => (string) $ar_nombre,
+        'ar_descripcion' => (string) $ar_descripcion
+    ],
+    'pkNameColum' => $pkColum
+    ];
+
+    ;
+
+
+
+    if ($configController->addRow($data)) {
+
+        http_response_code(200);
+
+        echo json_encode([
+            'status'=>true,
+            'message'=>'Area registrada correctamente'
+        ]);
+
+    }else{
+        http_response_code(500);
+        echo json_encode([
+            'status'=>false,
+            'message'=>'Error al registrar el nuevo elemento'
+        ]);
+    }
+
 }

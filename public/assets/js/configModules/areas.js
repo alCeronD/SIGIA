@@ -168,6 +168,13 @@ function fetchData() {
   objAjax.request.send();
 }
 
+// Apenas cargue la información, ejecutar la función fetchData para traer la info usando ajax.
+document.addEventListener("DOMContentLoaded", () => {
+  //Apenas cargue el documeento me renderiza la información.
+  fetchData();
+});
+
+
 
 //Enviar datos al formulario.
 formulario.addEventListener("submit", (event) => {
@@ -175,14 +182,37 @@ formulario.addEventListener("submit", (event) => {
   event.stopPropagation();
 
   let form = new FormData(formulario);
-  let data = JSON.stringify(Object.fromEntries(form));
-  console.log(data);
-});
+  let dt = Object.fromEntries(form);
+  console.log(dt);
 
-// Apenas cargue la información, ejecutar la función fetchData para traer la info usando ajax.
-document.addEventListener("DOMContentLoaded", () => {
-  //Apenas cargue el documeento me renderiza la información.
-  fetchData();
+  let data = JSON.stringify({
+    ar_nombre: dt.ar_nombre,
+    ar_descripcion: dt.ar_descripcion,
+    tableName: table
+  });
+
+  //Ajax Post.
+  objAjax.request.open('POST',"modules/configModules/areas/api/apiConfigModules.php",true);
+
+  // objAjax.request.setRequestHeader(
+  //             "X-HTTP-Method-Override",
+  //             "POST"
+  //           );
+  objAjax.request.setRequestHeader("Content-Type",
+              "application/json");
+
+  objAjax.request.onload = ()=>{
+    /**
+     * 1. traer la respuesta en jsontypetext
+     * 2. validar el estatus en true or false
+     * 3. adicionar el elemento en la tabla.
+     * 
+     */
+
+
+  }
+  objAjax.request.setRequestHeader("Accept", "application/json");
+  objAjax.request.send(data);
 });
 
 //Update del formulario

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-05-2025 a las 23:26:55
+-- Tiempo de generación: 26-05-2025 a las 03:12:02
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -30,18 +30,19 @@ SET time_zone = "+00:00";
 CREATE TABLE `areas` (
   `ar_cod` int(11) NOT NULL,
   `ar_nombre` varchar(30) NOT NULL,
-  `ar_descripcion` varchar(100) DEFAULT NULL
+  `ar_descripcion` varchar(100) DEFAULT NULL,
+  `ar_status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `areas`
 --
 
-INSERT INTO `areas` (`ar_cod`, `ar_nombre`, `ar_descripcion`) VALUES
-(1, 'Multimedia', NULL),
-(2, 'Fotografia', NULL),
-(3, 'General', NULL),
-(4, 'Aulas De Computo', NULL);
+INSERT INTO `areas` (`ar_cod`, `ar_nombre`, `ar_descripcion`, `ar_status`) VALUES
+(1, 'Multimedia', 'hello world multimedia', 1),
+(2, 'Fotografía', 'hello world3ss', 0),
+(3, 'General', 'elementos conss\n', 0),
+(4, 'Aulas De Computo', 'asdads', 1);
 
 -- --------------------------------------------------------
 
@@ -51,6 +52,19 @@ INSERT INTO `areas` (`ar_cod`, `ar_nombre`, `ar_descripcion`) VALUES
 
 CREATE TABLE `bitacora` (
   `btr_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `categoria`
+--
+
+CREATE TABLE `categoria` (
+  `ca_id` int(11) NOT NULL,
+  `ca_nombre` varchar(50) NOT NULL,
+  `ca_descripcion` varchar(200) NOT NULL,
+  `ca_status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -176,6 +190,19 @@ INSERT INTO `estados_usuarios` (`est_id`, `est_nombre`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `marca`
+--
+
+CREATE TABLE `marca` (
+  `ma_id` int(11) NOT NULL,
+  `ma_nombre` varchar(50) NOT NULL,
+  `ma_descripcion` varchar(200) NOT NULL,
+  `ma_status` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `permisos`
 --
 
@@ -237,18 +264,19 @@ CREATE TABLE `prestamos_elementos` (
 CREATE TABLE `roles` (
   `rl_id` int(11) NOT NULL,
   `rl_nombre` varchar(100) NOT NULL,
-  `rl_descripcion` varchar(100) DEFAULT NULL
+  `rl_descripcion` varchar(100) DEFAULT NULL,
+  `rl_status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `roles`
 --
 
-INSERT INTO `roles` (`rl_id`, `rl_nombre`, `rl_descripcion`) VALUES
-(1, 'Almacenista', NULL),
-(2, 'Administrador', NULL),
-(3, 'SubDirector', NULL),
-(4, 'Instructor', NULL);
+INSERT INTO `roles` (`rl_id`, `rl_nombre`, `rl_descripcion`, `rl_status`) VALUES
+(1, 'Almacenista', NULL, 1),
+(2, 'Administrador', NULL, 1),
+(3, 'SubDirector', NULL, 0),
+(4, 'Instructor', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -281,21 +309,22 @@ INSERT INTO `roles_permisos` (`rlp_id`, `rlp_id_permiso`, `rlp_id_rl`) VALUES
 CREATE TABLE `tipo_documento` (
   `tp_id` int(11) NOT NULL,
   `tp_sigla` varchar(15) NOT NULL,
-  `tp_nombre` varchar(15) DEFAULT NULL
+  `tp_nombre` varchar(15) DEFAULT NULL,
+  `tp_status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipo_documento`
 --
 
-INSERT INTO `tipo_documento` (`tp_id`, `tp_sigla`, `tp_nombre`) VALUES
-(1, 'CC', 'Cédula de Ciuda'),
-(2, 'CE', 'Cédula de Extra'),
-(3, 'TI', 'Tarjeta de Iden'),
-(4, 'PAS', 'Pasaporte'),
-(5, 'RC', 'Registro Civil'),
-(6, 'NIT', 'Número de Ident'),
-(7, 'RUT', 'Registro Único ');
+INSERT INTO `tipo_documento` (`tp_id`, `tp_sigla`, `tp_nombre`, `tp_status`) VALUES
+(1, 'CC', 'Cédula de Ciuda', 0),
+(2, 'CE', 'Cédula de Extra', 0),
+(3, 'TI', 'Tarjeta de Iden', 0),
+(4, 'PAS', 'Pasaporte', 0),
+(5, 'RC', 'Registro Civil', 0),
+(6, 'NIT', 'Número de Ident', 0),
+(7, 'RUT', 'Registro Único ', 0);
 
 -- --------------------------------------------------------
 
@@ -399,6 +428,12 @@ ALTER TABLE `bitacora`
   ADD PRIMARY KEY (`btr_id`);
 
 --
+-- Indices de la tabla `categoria`
+--
+ALTER TABLE `categoria`
+  ADD PRIMARY KEY (`ca_id`);
+
+--
 -- Indices de la tabla `elementos`
 --
 ALTER TABLE `elementos`
@@ -431,6 +466,12 @@ ALTER TABLE `estados_prestamos`
 --
 ALTER TABLE `estados_usuarios`
   ADD PRIMARY KEY (`est_id`);
+
+--
+-- Indices de la tabla `marca`
+--
+ALTER TABLE `marca`
+  ADD PRIMARY KEY (`ma_id`);
 
 --
 -- Indices de la tabla `permisos`
@@ -520,6 +561,12 @@ ALTER TABLE `bitacora`
   MODIFY `btr_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `categoria`
+--
+ALTER TABLE `categoria`
+  MODIFY `ca_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `elementos`
 --
 ALTER TABLE `elementos`
@@ -548,6 +595,12 @@ ALTER TABLE `estados_prestamos`
 --
 ALTER TABLE `estados_usuarios`
   MODIFY `est_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `marca`
+--
+ALTER TABLE `marca`
+  MODIFY `ma_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `permisos`
