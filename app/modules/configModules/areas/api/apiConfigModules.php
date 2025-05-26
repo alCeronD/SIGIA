@@ -145,13 +145,16 @@ if ($method === 'POST') {
     //Comparo si el valor esta para asociar el valor de la pk
     if (in_array($tableName,$tables)) {
         $pkColum = $statusCols[$tableName]['pk'];
+        $valueStatus = $statusCols[$tableName]['status'];
     }
 
     $data = [
     'tableName' => $tableName,
     'values' => [
         'ar_nombre' => (string) $ar_nombre,
-        'ar_descripcion' => (string) $ar_descripcion
+        'ar_descripcion' => (string) $ar_descripcion,
+        // 1= activo , 0 = inactivo.
+        'ar_status' => 1
     ],
     'pkNameColum' => $pkColum
     ];

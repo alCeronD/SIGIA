@@ -176,12 +176,15 @@ class ConfigModulesController{
         //Valores de las columnas 
         $values = array_values($data['values']);
 
+        //Nombre de la columna de la primary key
         $pkNameColum = $data['pkNameColum'];
+
+        //Nombre de la columna del status segun la tabla.
+        $statatusNameColum = $data['values']['ar_status'];
 
         //Extraigo el nombre de la tabla, en este caso me interesa el el value de tableName, no su clave
         $tableName = $data['tableName'];
 
-        //var_dump($keysValues,$values,$tableName);
 
         $sql = "INSERT INTO `$tableName` SET ";
 
@@ -192,12 +195,16 @@ class ConfigModulesController{
             $set[] = "`$keys` = ?";
         }
 
+        //Agrego el statusName Como ultimo registro.
+        //$set[] = "`$statatusNameColum` = ?";
+
         //Tipos de datos
-        $types = "ss";
+        $types = "ssi";
 
         $set2 = implode(', ',$set);
 
         $sql .= $set2;
+
 
         $model = new ConfigModulesModel();
 

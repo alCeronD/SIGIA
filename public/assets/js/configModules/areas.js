@@ -177,13 +177,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 //Enviar datos al formulario.
+// Enviar datos al formulario
 formulario.addEventListener("submit", (event) => {
   event.preventDefault();
   event.stopPropagation();
 
   let form = new FormData(formulario);
   let dt = Object.fromEntries(form);
-  console.log(dt);
 
   let data = JSON.stringify({
     ar_nombre: dt.ar_nombre,
@@ -191,32 +191,52 @@ formulario.addEventListener("submit", (event) => {
     tableName: table
   });
 
-  //Ajax Post.
-  objAjax.request.open('POST',"modules/configModules/areas/api/apiConfigModules.php",true);
-
-  // objAjax.request.setRequestHeader(
-  //             "X-HTTP-Method-Override",
-  //             "POST"
-  //           );
-  objAjax.request.setRequestHeader("Content-Type",
-              "application/json");
-
-  objAjax.request.onload = ()=>{
-    /**
-     * 1. traer la respuesta en jsontypetext
-     * 2. validar el estatus en true or false
-     * 3. adicionar el elemento en la tabla.
-     * 
-     */
-
-    let data = objAjax.request.responseText;
-    data = JSON.parse(data);
-    console.log(data);
-
-
-  }
+  // Ajax POST
+  objAjax.request.open('POST', "modules/configModules/areas/api/apiConfigModules.php", true);
+  objAjax.request.setRequestHeader("Content-Type", "application/json");
   objAjax.request.setRequestHeader("Accept", "application/json");
-  objAjax.request.send(data);
+
+  objAjax.request.onload = () => {
+      const response = JSON.parse(objAjax.request.responseText);
+
+      if (response.status) {
+        const lastRow = response.data;
+
+        // Reiniciar el formulario
+        formulario.reset();
+
+        // Crear nueva fila
+        const tableBody = document.getElementById("tableBody");
+        const tr = document.createElement("tr");
+
+        const tdId = document.createElement("td");
+        const tdName = document.createElement("td");
+        const tdStatus = document.createElement("td");
+        const tdDescription = document.createElement("td");
+        const tdAccions = document.createElement("td");
+
+        tdId.innerHTML = lastRow.ar_cod;
+        tdName.innerHTML = lastRow.ar_nombre;
+        tdDescription.innerHTML = lastRow.ar_descripcion;
+        tdStatus.innerHTML = lastRow.ar_status === 1 ? 'Activo' : 'Inactivo';
+
+        tr.appendChild(tdId);
+        tr.appendChild(tdName);
+        tr.appendChild(tdDescription);
+        tr.appendChild(tdStatus);
+        tr.appendChild(tdAccions);
+
+        tableBody.appendChild(tr);
+
+        console.log("Registro agregado exitosamente.");
+      } else {
+        console.error("Error desde servidor:", response.message || "Error desconocido.");
+      }
+
+    
+  };
+
+  objAjax.request.send(data); // Esto debe ir fuera de onload
 });
 
 //Update del formulario
