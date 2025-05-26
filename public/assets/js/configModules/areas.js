@@ -204,30 +204,8 @@ formulario.addEventListener("submit", (event) => {
 
         // Reiniciar el formulario
         formulario.reset();
-
-        // Crear nueva fila
-        const tableBody = document.getElementById("tableBody");
-        const tr = document.createElement("tr");
-
-        const tdId = document.createElement("td");
-        const tdName = document.createElement("td");
-        const tdStatus = document.createElement("td");
-        const tdDescription = document.createElement("td");
-        const tdAccions = document.createElement("td");
-
-        tdId.innerHTML = lastRow.ar_cod;
-        tdName.innerHTML = lastRow.ar_nombre;
-        tdDescription.innerHTML = lastRow.ar_descripcion;
-        tdStatus.innerHTML = lastRow.ar_status === 1 ? 'Activo' : 'Inactivo';
-
-        tr.appendChild(tdId);
-        tr.appendChild(tdName);
-        tr.appendChild(tdDescription);
-        tr.appendChild(tdStatus);
-        tr.appendChild(tdAccions);
-
-        tableBody.appendChild(tr);
-
+        //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
+        fetchData();
         console.log("Registro agregado exitosamente.");
       } else {
         console.error("Error desde servidor:", response.message || "Error desconocido.");
