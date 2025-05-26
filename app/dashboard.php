@@ -48,12 +48,19 @@ include_once __DIR__ . '/../public/partials/header.php';
 
       //Area
     case '7':
-          require_once 'modules/configModules/areas/controller/configModulesController.php';
+          require_once 'modules/configModules/controller/configModulesController.php';
           $configModulesController = new ConfigModulesController('configModules', 'areaView.php');
           $path = $configModulesController->render();
           require_once $path;
       //Incluyo la vista.
       break;
+
+    case '8':
+          require_once 'modules/configModules/controller/configModulesController.php';
+          $configModulesController = new ConfigModulesController('configModules', 'tpDocumentoView.php');
+          $path = $configModulesController->render();
+          require_once $path;
+          break;
     default:
     //La idea de este default es que redireccione a login.
 

@@ -2,7 +2,7 @@
 
 // incluyo la clase para usar el renderizado de la vista.
 require_once __DIR__ . '/../model/configModulesModel.php';
-require_once __DIR__ . '/../../../../helpers/renderView.php';
+require_once __DIR__ . '/../../../helpers/renderView.php';
 
 
 class ConfigModulesController{

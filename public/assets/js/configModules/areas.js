@@ -23,11 +23,11 @@ let descripcion;
 
 function fetchData() {
   tableBody.innerHTML = "";
-  let dataFetch = [table, status];
+  //let dataFetch = [table, status];
 
   objAjax.request.open(
     "GET",
-    `modules/configModules/areas/api/apiConfigModules.php?tableName=${encodeURIComponent(
+    `modules/configModules/api/apiConfigModules.php?tableName=${encodeURIComponent(
       table
     )}&status=${encodeURIComponent(status)}`
   );
@@ -39,6 +39,13 @@ function fetchData() {
     let data = response.data;
 
     if (objAjax.request.status) {
+      console.log(objAjax.request.responseText);
+      if (data.length === 0) {
+        const spanMessage = document.createElement("span");
+        spanMessage.innerText = "Sin registros";
+        tableBody.appendChild(spanMessage);
+      }
+
       data.forEach((dta) => {
         //boton de acción
         const btnUpdate = document.createElement("button");
@@ -132,7 +139,7 @@ function fetchData() {
 
             objAjax.request.open(
               "POST",
-              "modules/configModules/areas/api/apiConfigModules.php",
+              "modules/configModules/api/apiConfigModules.php",
               true
             );
             objAjax.request.setRequestHeader(
@@ -192,7 +199,7 @@ formulario.addEventListener("submit", (event) => {
   });
 
   // Ajax POST
-  objAjax.request.open('POST', "modules/configModules/areas/api/apiConfigModules.php", true);
+  objAjax.request.open('POST', "modules/configModules/api/apiConfigModules.php", true);
   objAjax.request.setRequestHeader("Content-Type", "application/json");
   objAjax.request.setRequestHeader("Accept", "application/json");
 
@@ -233,7 +240,7 @@ areaUpdateForm.addEventListener("submit", (e) => {
 
   objAjax.request.open(
     "PUT",
-    `modules/configModules/areas/api/apiConfigModules.php?data=${encodeURIComponent(
+    `modules/configModules/api/apiConfigModules.php?data=${encodeURIComponent(
       data
     )}`
   );

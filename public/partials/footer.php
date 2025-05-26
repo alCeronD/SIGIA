@@ -43,7 +43,7 @@ Implementar o buscar la forma de como implementar los scripts de manera dinamica
                         <a href="dashboard.php?value=7">Areas</a>
                     </li>
                     <li>
-                        <a href="#">Tipo documento</a>
+                        <a href="dashboard.php?value=8">Tipo documento</a>
                     </li>
                     <li>
                         <a href="#">Marcas</a>

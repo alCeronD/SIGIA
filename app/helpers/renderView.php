@@ -19,14 +19,16 @@ class RenderView{
     public function renderView(String $modules, String $file){
     self::mapFiles($modules);
 
-    if ($modules == 'configModules' || $file = 'areaView.php') {
+    if ($modules == 'configModules' && $file == 'areaView.php') {
         $path = __DIR__ . "/../modules/$modules/areas/views/$file";
         return $path;
     }
 
-
+    if ($modules == 'configModules' && $file == 'tpDocumentoView.php') {
+        $path = __DIR__ . "/../modules/$modules/tipoDocumento/views/$file";
+        return $path;
+    }
     $path = __DIR__ . "/../modules/$modules/views/$file";
-
     if (!$file) {
         return null;
     }
