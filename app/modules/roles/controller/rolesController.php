@@ -1,7 +1,7 @@
 <?php
 require_once './app/modules/roles/model/rolesModel.php';
 
-class ControllerRol {
+class rolesController {
     private $modeloRol;
 
     public function __construct($conexion) {
@@ -12,6 +12,12 @@ class ControllerRol {
         $roles = $this->modeloRol->obtenerRoles();
         include './app/modules/roles/views/rolesViews.php';
     }
+    
+    public function editarRolesView(){
+        include_once '../proyecto_sigia/app/modules/roles/views/rolesEditar.php';
+    }
+    
+    
 
     public function registrarRoles(){
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {

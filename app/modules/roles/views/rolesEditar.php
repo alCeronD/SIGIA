@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Rol</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+
+<?php
+// session_start();
+include_once '../proyecto_sigia/app/helpers/session.php';
+include_once '../proyecto_sigia/public/partials/header.php';
+if (!isset($_SESSION['usuario'])) {
+    header("Location: /proyecto_sigia/index.php");
+    exit();
+}
+
+
+?>
+
 <div class="container mt-5">
     <h2 class="mb-4 text-center">Editar Rol</h2>
 
@@ -22,5 +27,8 @@
         </div>
     </form>
 </div>
-</body>
-</html>
+
+<?php
+include_once '../proyecto_sigia/public/partials/footer.php';
+
+?>

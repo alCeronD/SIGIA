@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Listado de Roles</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+<?php
+// session_start();
+include_once '../proyecto_sigia/app/helpers/session.php';
+include_once '../proyecto_sigia/public/partials/header.php';
+if (!isset($_SESSION['usuario'])) {
+    header("Location: /proyecto_sigia/index.php");
+    exit();
+}
+?>
 <div class="container mt-5">
     <h2 class="mb-4 text-center">Listado de Roles</h2>
     <table class="table table-bordered table-striped">
@@ -40,5 +41,8 @@
         </tbody>
     </table>
 </div>
-</body>
-</html>
+
+<?php
+include_once '../proyecto_sigia/public/partials/footer.php';
+
+?>

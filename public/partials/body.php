@@ -2,7 +2,6 @@
 $rol = $_SESSION['usuario']['rol_id'];
 $nombre = $_SESSION['usuario']['nombre'];
 
-// print_r("body rol id llegando a dashboard ".$rol." - Si llego");die();
 ?>
 
 

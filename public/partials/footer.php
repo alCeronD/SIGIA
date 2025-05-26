@@ -1,14 +1,14 @@
 <?php
-if (!isset($rol)) {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+if (isset($rol)) {
+  if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
     $rol = $_SESSION['usuario']['rol_id'] ?? null;
-}
-?>
+  }
 
+  ?>
 <!-- tendero -->
- <?php if ($rol == 1): ?> 
+<?php if ($rol == 1): ?> 
   <footer class="mac-footer d-flex justify-content-around align-items-center">
             <a href="#" class="footer-icon text-center">
               <i class="fas fa-home"></i><br><small>Inicio</small>
@@ -38,7 +38,7 @@ if (!isset($rol)) {
           <a href="<?php echo getUrl("usuarios","usuarios","userView"); ?>" class="footer-icon text-center">
             <i class="fa-solid fa-user-plus"></i></i><br><small>Crear usuario</small>
           </a>
-          <a href="#" class="footer-icon text-center">
+          <a href="<?php echo getUrl("roles","roles","mostrarRoles"); ?>" class="footer-icon text-center">
             <i class="fa-solid fa-users-gear"></i></i><br><small>Permisos - Rol</small>
           </a>
           <a href="#" class="footer-icon text-center">

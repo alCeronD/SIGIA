@@ -63,7 +63,6 @@ class usuariosController{
         }
     }
     public function consultUser(){
-        session_start();
         include_once __DIR__ . '/../model/usuariosModel.php';
     
         $modeloUsuarios = new usuarios($this->conn);

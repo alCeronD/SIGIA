@@ -13,7 +13,7 @@
     }
     
 
-    function getUrl (String $modulo, String $controlador, String $funcion, $parametros=false,$pagina=false){
+    function getUrl (String $modulo, String $controlador, String $funcion, $parametros='',$pagina=false){
         
         //Colocar validaciones a los tipo de datos
         if(!is_string($modulo)){
@@ -48,7 +48,8 @@
             
                 include_once $controllerPath;
                 $nombreClase = $controlador . "Controller";
-                // dd($nombreClase);
+                // dd($modulo);
+                
                 include_once 'app/config/conn.php'; 
                 $conexion = (new Conection())->getConnect();
                 $objeto = new $nombreClase($conexion);

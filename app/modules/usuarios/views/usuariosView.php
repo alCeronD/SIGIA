@@ -1,13 +1,10 @@
 <?php
-session_start();
+include_once '../proyecto_sigia/app/helpers/session.php';
 include_once '../proyecto_sigia/public/partials/header.php';
 if (!isset($_SESSION['usuario'])) {
     header("Location: /proyecto_sigia/index.php");
     exit();
 }
-
-$usuario = $_SESSION['usuario'];
-$rol = $usuario['rol_id'];
 ?>
 
 <main class="flex-grow-1 d-flex align-items-center justify-content-center">
