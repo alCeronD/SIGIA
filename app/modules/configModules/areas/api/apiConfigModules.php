@@ -156,17 +156,16 @@ if ($method === 'POST') {
     'pkNameColum' => $pkColum
     ];
 
-    ;
 
 
-
-    if ($configController->addRow($data)) {
+    if ($data = $configController->addRow($data)) {
 
         http_response_code(200);
 
         echo json_encode([
             'status'=>true,
-            'message'=>'Area registrada correctamente'
+            'message'=>'Area registrada correctamente',
+            'data' => $data
         ]);
 
     }else{

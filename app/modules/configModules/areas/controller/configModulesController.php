@@ -201,12 +201,9 @@ class ConfigModulesController{
 
         $model = new ConfigModulesModel();
 
-        $lastInsertId = $model->insert($sql,$types,$values, $tableName, $pkNameColum);
+        $data = $model->insert($sql,$types,$values, $tableName, $pkNameColum);
 
-        $selectSql = "SELECT * FROM $tableName WHERE $pkNameColum = $lastInsertId";
-        $insertedRow = $model->select($selectSql);
-
-        return $insertedRow;
+        return $data;
 
     
     }

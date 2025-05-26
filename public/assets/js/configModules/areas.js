@@ -209,6 +209,10 @@ formulario.addEventListener("submit", (event) => {
      * 
      */
 
+    let data = objAjax.request.responseText;
+    data = JSON.parse(data);
+    console.log(data);
+
 
   }
   objAjax.request.setRequestHeader("Accept", "application/json");
