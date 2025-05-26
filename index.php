@@ -12,7 +12,6 @@
  * Estudiar como funciona los enrutadores o el frontController para solo usar index.php como enrutador de todas las vistas.
  * 
  */
-
  require_once 'app/helpers/renderView.php';
  require_once 'app/modules/login/controller/loginController.php';
  $render = new RenderView();

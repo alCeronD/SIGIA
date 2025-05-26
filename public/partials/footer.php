@@ -59,9 +59,6 @@ Implementar o buscar la forma de como implementar los scripts de manera dinamica
 
 
 </footer>
-
-
-
 </body>
 
 </html>

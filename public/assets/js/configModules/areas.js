@@ -27,7 +27,7 @@ function fetchData() {
 
   objAjax.request.open(
     "GET",
-    `modules/configModules/api/apiConfigModules.php?tableName=${encodeURIComponent(
+    `modules/configModules/areas/api/apiConfigModules.php?tableName=${encodeURIComponent(
       table
     )}&status=${encodeURIComponent(status)}`
   );
@@ -132,7 +132,7 @@ function fetchData() {
 
             objAjax.request.open(
               "POST",
-              "modules/configModules/api/apiConfigModules.php",
+              "modules/configModules/areas/api/apiConfigModules.php",
               true
             );
             objAjax.request.setRequestHeader(
@@ -146,7 +146,6 @@ function fetchData() {
 
             objAjax.request.onload = () => {
               let dta = JSON.parse(objAjax.request.responseText);
-              console.log(dta);
 
               if (dta.status === false) {
                 alert("Error al actualizar el registro.");
@@ -169,6 +168,8 @@ function fetchData() {
   objAjax.request.send();
 }
 
+
+//Enviar datos al formulario.
 formulario.addEventListener("submit", (event) => {
   event.preventDefault();
   event.stopPropagation();
@@ -197,11 +198,10 @@ areaUpdateForm.addEventListener("submit", (e) => {
   dta["tableName"] = table;
 
   let data = JSON.stringify(dta);
-  console.log(data);
 
   objAjax.request.open(
     "PUT",
-    `modules/configModules/api/apiConfigModules.php?data=${encodeURIComponent(
+    `modules/configModules/areas/api/apiConfigModules.php?data=${encodeURIComponent(
       data
     )}`
   );

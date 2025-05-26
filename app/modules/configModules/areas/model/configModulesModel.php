@@ -2,7 +2,7 @@
 
 
 // Este es el modelo que tendrá el crud general para las tablas Categoría, tipoDocumento,Area, Marca.
-require_once __DIR__ . '/../../../config/conn.php';
+require_once __DIR__ . '/../../../../config/conn.php';
 
 //Crud general para todos los elementos.
 class ConfigModulesModel
@@ -10,8 +10,7 @@ class ConfigModulesModel
     private $mysqli;
 
     //puede que no necesite constructor.
-    public function __construct()
-    {
+    public function __construct(){
         $this->mysqli = new Conection();
     }
     public function select(String $sql)

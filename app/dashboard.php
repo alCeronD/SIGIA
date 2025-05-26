@@ -1,15 +1,11 @@
 <?php
 
-//require_once 'helpers/renderView.php';
-//$render = new RenderView();
-
-//Controlador modulo solicitudPrestamos.
 require_once 'modules/solicitudPrestamos/controller/solicitudPrestamoController.php';
 $sltPrestamos = new solicitudController();
 
 ?>
 <?php
-include_once '../public/partials/header.php';
+include_once __DIR__ . '/../public/partials/header.php';
 ?>
 
   <?php
@@ -52,11 +48,11 @@ include_once '../public/partials/header.php';
 
       //Area
     case '7':
-          require_once 'modules/configModules/controller/configModulesController.php';
+          require_once 'modules/configModules/areas/controller/configModulesController.php';
           $configModulesController = new ConfigModulesController('configModules', 'areaView.php');
-      
+          $path = $configModulesController->render();
+          require_once $path;
       //Incluyo la vista.
-      require_once $path = $configModulesController->render();
       break;
     default:
     //La idea de este default es que redireccione a login.
@@ -67,6 +63,6 @@ include_once '../public/partials/header.php';
   ?>
 
 <?php
-include_once '../public/partials/footer.php';
+include_once __DIR__ . '/../public/partials/footer.php';
 exit();
 ?>

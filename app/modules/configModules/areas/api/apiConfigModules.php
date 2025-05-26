@@ -9,7 +9,20 @@ require_once __DIR__ . '/../controller/configModulesController.php';
 $configController = new ConfigModulesController('', '');
 
 
-$tables = ['areas', 'roles', 'categorias', 'marcas'];
+$statusCols = [
+    'areas' => ['status' => 'ar_status', 'pk' => 'ar_cod'],
+    'roles' => ['status' => 'rl_status', 'pk' => 'rl_cod'],
+    'categorias' => ['status' => 'ca_status', 'pk' => 'ca_cod'],
+    'marcas' => ['status' => 'ma_status', 'pk' => 'ma_cod'],
+];
+
+$tables = ['areas', 'roles', 'categorias', 'marcas', 'tipo_documento'];
+
+
+$method = $_SERVER['REQUEST_METHOD'];
+if ($method === 'POST' && isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
+    $method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
+}
 
 //SELECT
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -28,10 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!in_array($status, ['0', '1'])) {
         exit();
     }
-    //var_dump($data);
 
     //aca se ejecuta todo.
-     $data = $configController->getData($tableName, $status);
+    $data = $configController->getData($tableName, $status);
 
      //TODO: Crear una estructura de función para estandarizar las respuestas en para enviar a javascript.
     http_response_code(200);
@@ -49,9 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $ar_descripcion = $input['ar_descripcion'];
     $ar_cod = $input['ar_cod'];
     $tableName = $input['tableName'];
-
-
-
+    
     $keys=['values','tableName',$input['ar_cod'],['ar_nombre','ar_descripcion',]];
     $values=[];
 
@@ -79,12 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
 }
 
-
-$method = $_SERVER['REQUEST_METHOD'];
-if ($method === 'POST' && isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
-    $method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
-}
-
 //DELETE
 if ($method === 'DELETE') {
 
@@ -98,14 +102,6 @@ if ($method === 'DELETE') {
     if (!in_array($tableName,$tables)) {
        exit();
     }
-
-
-    $statusCols = [
-        'areas' => ['status' => 'ar_status', 'pk' => 'ar_cod'],
-        'roles' => ['status' => 'rl_status', 'pk' => 'rl_cod'],
-        'categorias' => ['status' => 'ca_status', 'pk' => 'ca_cod'],
-        'marcas' => ['status' => 'ma_status', 'pk' => 'ma_cod'],
-    ];
 
     $statusCol = $statusCols[$tableName]['status'];
     $pkCol = $statusCols[$tableName]['pk'];

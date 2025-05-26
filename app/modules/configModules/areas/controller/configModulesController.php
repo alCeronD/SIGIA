@@ -1,13 +1,9 @@
 <?php 
 
 // incluyo la clase para usar el renderizado de la vista.
-require_once __DIR__ . '/../../../helpers/renderView.php';
 require_once __DIR__ . '/../model/configModulesModel.php';
-//Si su valor es diferente de false
-// if (strpos($_SERVER['HTTP_ACCEPT'],'application/json') !== false) {
+require_once __DIR__ . '/../../../../helpers/renderView.php';
 
-
-// }
 
 class ConfigModulesController{
     private $configModel;
@@ -134,7 +130,6 @@ class ConfigModulesController{
         return $data;
     }
 
-    
     //Creo la consulta sql.
     public function deleteRow(array $data=[]){
 
