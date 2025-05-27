@@ -146,7 +146,7 @@ function fetchData() {
             );
 
             objAjax2.request.onload = () => {
-              let dta = JSON.parse(objAjax22.request.responseText);
+              let dta = JSON.parse(objAjax2.request.responseText);
 
               if (dta.status === false) {
                 alert("Error al actualizar el registro.");

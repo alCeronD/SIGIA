@@ -142,8 +142,17 @@ class ConfigModulesController{
         }
         //Captura nombre de la tabla.
         $tableName = (String) $data['tableName'];
+
+        //TODO: Esto debe ser dinámico
         //Me captura el valor del estatus
-        $valueColumn = (int) $data['values']['ar_status'];
+        if ($tableName == 'tipo_documento') {
+            $valueColumn = (int) $data['values']['tp_status'];
+        }
+        
+        if ($tableName == 'areas') {
+            $valueColumn = (int) $data['values']['ar_status'];
+        }
+
         //Capturar nombre de la columa
         $nameColum = (String) key($data['values']);
         //Capturar el nombre de la columna de la primary key
