@@ -41,8 +41,8 @@
     <h1>Vista tipo documento</h1>
     <div class="form">
         <form id="formTp">
-            <input type="text" name="ar_nombre" id="nombreArea" placeholder="Nombre area..." value="">
-            <textarea name="ar_descripcion" placeholder="Descripción..." id="descripcionArea" value=""></textarea>
+            <input type="text" name="tp_sigla" id="nombreArea" placeholder="Sigla tipo documento" value="">
+            <textarea name="tp_nombre" placeholder="Nombre tipo documento" id="descripcionArea" value=""></textarea>
             <button type="submit" id="btnAreaUpdate">Registrar</button>
         </form>
     </div>

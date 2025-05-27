@@ -180,45 +180,50 @@ class ConfigModulesController{
             exit();
         }
 
+
         //Nombres de las columnas de la tabla
         $keysValues = array_keys($data['values']);
-        
-        //Valores de las columnas 
-        $values = array_values($data['values']);
 
+
+
+        //var_dump($keysValues);
+        //var_dump($values);
         //Nombre de la columna de la primary key
-        $pkNameColum = $data['pkNameColum'];
+        //$pkNameColum = $data['pkNameColum'];
 
         //Nombre de la columna del status segun la tabla.
-        $statatusNameColum = $data['values']['ar_status'];
 
         //Extraigo el nombre de la tabla, en este caso me interesa el el value de tableName, no su clave
         $tableName = $data['tableName'];
+        //Los valores de las filas con sus respectivas columnas.
+        $dataValues = $data['values'];
+        //Valores de las columnas 
 
+        $val = array_values($dataValues);
 
         $sql = "INSERT INTO `$tableName` SET ";
-
         //Estructura SET de consulta.
         $set = [];
         //Tipos de valores.
-        foreach ($keysValues as $keys) {
+        foreach ($dataValues as $keys => $values) {
             $set[] = "`$keys` = ?";
         }
 
+        
+        
         //Agrego el statusName Como ultimo registro.
         //$set[] = "`$statatusNameColum` = ?";
-
+        
         //Tipos de datos
         $types = "ssi";
-
+        
         $set2 = implode(', ',$set);
-
+        
         $sql .= $set2;
-
-
+        
         $model = new ConfigModulesModel();
-
-        $data = $model->insert($sql,$types,$values, $tableName, $pkNameColum);
+        //$data = $model->insert($sql,$types,$values, $tableName, );
+        $data = $model->insert($sql,$types,$val);
 
         return $data;
 

@@ -31,7 +31,7 @@ class ConfigModulesModel
         return $data;
     }
 
-public function insert(String $sql = '', String $types = '', array $values = [], String $tableName = '', String $pkNameColum = '')
+public function insert(String $sql = '', String $types = '', array $values = [], String $tableName = '')
 {
     $conn = $this->mysqli->getConnect();
 
@@ -39,6 +39,7 @@ public function insert(String $sql = '', String $types = '', array $values = [],
     if (!$stmt) {
         die("Prepare failed: " . $conn->error);
     }
+
 
     $bindParams = [];
     foreach ($values as $key => $value) {
@@ -56,26 +57,26 @@ public function insert(String $sql = '', String $types = '', array $values = [],
 
     //Creo consulta para traer el ultimo elemento registrado en base al lastId.
     //TODO: Esto me lo debe ejecutar si o si el select, para ello debo de crear otra función llamada select, serán 2 funciones con el mismo nombre, lo intentaremos hacer usando polimorfismo.
-    $selectSql = "SELECT * FROM `$tableName` WHERE `$pkNameColum` = ?";
+    // $selectSql = "SELECT * FROM `$tableName` WHERE `$pkNameColum` = ?";
 
-    $stmtLastRow = $conn->prepare($selectSql);
-    if (!$stmtLastRow) {
-        die("Prepare failed (select): " . $conn->error);
-    }
+    // $stmtLastRow = $conn->prepare($selectSql);
+    // if (!$stmtLastRow) {
+    //     die("Prepare failed (select): " . $conn->error);
+    // }
 
-    $stmtLastRow->bind_param('i', $insertedId);
+    // $stmtLastRow->bind_param('i', $insertedId);
 
-    if (!$stmtLastRow->execute()) {
-        die("Execute failed (select): " . $stmtLastRow->error);
-    }
+    // if (!$stmtLastRow->execute()) {
+    //     die("Execute failed (select): " . $stmtLastRow->error);
+    // }
 
-    $result = $stmtLastRow->get_result();
-    $resultLastRow = $result->fetch_assoc();
+    // $result = $stmtLastRow->get_result();
+    // $resultLastRow = $result->fetch_assoc();
 
     // Cerrar la conexión
     $conn->close();
 
-    return $resultLastRow;
+    return true;
 }
 
     public function delete(String $sql, String $types,array $values)

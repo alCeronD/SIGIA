@@ -17,6 +17,8 @@ $statusCols = [
     'marcas' => ['status' => 'ma_status', 'pk' => 'ma_cod'],
     'tipo_documento' => ['status' => 'tp_status' , 'pk' => 'tp_id']
 ];
+
+//Variable para comparar que existan las tablas.
 $tables = ['areas', 'roles', 'categorias', 'marcas', 'tipo_documento'];
 
 $schema = [
@@ -29,7 +31,7 @@ $schema = [
         'pk' => 'tp_id',
         'filas' => ['tp_sigla', 'tp_nombre'],
         'status' => 'tp_status',
-    ],    
+    ],
 ];
 
 
@@ -188,31 +190,38 @@ if ($method === 'DELETE') {
 
 //INSERT
 if ($method === 'POST') {
-    $ar_nombre = $input['ar_nombre'];
-    $ar_descripcion = $input['ar_descripcion'];
+    //$ar_nombre = $input['ar_nombre'];
+    //$ar_descripcion = $input['ar_descripcion'];
+
+
+    //Extraigo el nombre de la tabla.
     $tableName = $input['tableName'];
+
+    $schemaTable = $schema[$tableName];
+
+    $datas = [];
+    //En base a la tabla traigo sus valores y lo guardo en otro arreglo que es el arreglo que voy a mandar a crear la consulta.
+    foreach ($schemaTable['filas'] as $value) {
+        $datas[$value] = $input[$value] ?? null;
+    }
+
+
+    if (in_array($tableName, $tables)) {
+        $statusField = $schemaTable['status'];
+        $datas[$statusField] = 1; 
+    }
 
     if (!in_array($tableName,$tables)) {
        exit();
     }
 
     //Comparo si el valor esta para asociar el valor de la pk
-    if (in_array($tableName,$tables)) {
-        $pkColum = $statusCols[$tableName]['pk'];
-        $valueStatus = $statusCols[$tableName]['status'];
-    }
 
     $data = [
     'tableName' => $tableName,
-    'values' => [
-        'ar_nombre' => (string) $ar_nombre,
-        'ar_descripcion' => (string) $ar_descripcion,
-        // 1= activo , 0 = inactivo.
-        'ar_status' => 1
-    ],
-    'pkNameColum' => $pkColum
+    'values' => $datas,
     ];
-
+    // var_dump($data);
 
 
     if ($data = $configController->addRow($data)) {

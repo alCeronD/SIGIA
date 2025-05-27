@@ -171,6 +171,7 @@ function fetchData() {
 
 fetchData();
 
+//Formulario de update
 tpUpdateForm.addEventListener("submit", (e) => {
   e.stopPropagation();
   e.preventDefault();
@@ -208,4 +209,46 @@ tpUpdateForm.addEventListener("submit", (e) => {
     }
   };
   objAjax2.request.send(data);
+});
+
+//Formulario de insert.
+formulario.addEventListener("submit", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let form = new FormData(formulario);
+  let dt = Object.fromEntries(form);
+
+  let data = JSON.stringify({
+    tp_sigla: dt.tp_sigla,
+    tp_nombre: dt.tp_nombre,
+    tableName: table
+  });
+
+  console.log(data);
+
+  // Ajax POST
+  objAjax2.request.open('POST', "modules/configModules/api/apiConfigModules.php", true);
+  objAjax2.request.setRequestHeader("Content-Type", "application/json");
+  objAjax2.request.setRequestHeader("Accept", "application/json");
+
+  objAjax2.request.onload = () => {
+      const response = JSON.parse(objAjax2.request.responseText);
+      if (response.status) {
+        const lastRow = response.data;
+        console.log(lastRow);
+        // Reiniciar el formulario
+        formulario.reset();
+        //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
+        fetchData();
+        console.log("Registro agregado exitosamente.");
+      } else {
+        console.error("Error desde servidor:", response.message || "Error desconocido.");
+      }
+
+    
+  };
+
+  //Enviar los datos a registrar.
+  objAjax2.request.send(data); 
 });

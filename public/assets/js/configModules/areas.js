@@ -182,7 +182,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-//Enviar datos al formulario.
 // Enviar datos al formulario
 formulario.addEventListener("submit", (event) => {
   event.preventDefault();
