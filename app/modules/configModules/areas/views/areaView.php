@@ -46,7 +46,7 @@
         </form>
     </div>
     <!-- Tabla de vista. -->
-    <?php require_once 'tableView.php'; ?>
+    <?php require_once 'tableViewArea.php'; ?>
 
 </div>
 
