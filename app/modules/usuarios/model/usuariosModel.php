@@ -2,7 +2,7 @@
 
 include_once '../proyecto_sigia/app/config/conn.php';
 
-class usuarios {
+class usuarios {    
     public $usu_id;
     public $usu_docum;
     public $usu_nombres;
@@ -12,6 +12,7 @@ class usuarios {
     public $usu_telefono;
     public $usu_id_estado;
     public $usu_tp_id;
+    private $campos =['usu_docum','usu_nombres','usu_apellidos','usu_email','usu_telefono'];
     private $conn;
 
     public function __construct($conexion) {
@@ -52,16 +53,45 @@ class usuarios {
         }
     }
 
-    public function update() {
+    public function update($datos,$id) {
+        
+        $datos;
+        $cadena = "";
+        
+        foreach ($datos as $campo => $value) {
+            $cadena .= "$campo = '$value' ,";
+        }
+        $cadena = trim($cadena,",");
+        $query ="UPDATE usuarios SET $cadena WHERE usu_id = '$id'";
+        // dd($query);
+        $resultado = $this->conn->query($query);
+        
+        if ($resultado) {
+            return true;
+        }else {
+            return "Error al actualizar: " . $this->conn->error;
+        }
+        
+    }
+    
+    public function organization($datos){
+        $cadena = '';
+        foreach ($datos as $key => $value) {
+            # code...
+        }
     }
     
     public function search() {
         $usuarios = [];
-
+        
         $query = "
             SELECT 
+                u.usu_id,
+                u.usu_docum,
                 u.usu_nombres,
                 u.usu_apellidos,
+                u.usu_email,
+                u.usu_telefono,
                 r.rl_nombre
             FROM 
                 usuarios u
@@ -81,5 +111,32 @@ class usuarios {
     
         return $usuarios;
         }
+        
+    public function searchU($id){
+        
+        if ($id) {
+       $query = "SELECT 
+                    usu_id,
+                    usu_docum,
+                    usu_nombres,
+                    usu_apellidos,
+                    usu_email,
+                    usu_telefono
+                FROM usuarios WHERE usu_id = '$id'";
+        $resultado = $this->conn->query($query);
+        // var_dump($resultado);
+        
+            if ($resultado && $resultado->num_rows > 0) {
+                return $resultado->fetch_assoc();
+            } else {
+                return null; 
+            }
+        }else {
+            return null; 
+        }
     }
+}
+
+    
+
 ?>

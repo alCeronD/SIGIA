@@ -34,6 +34,7 @@ class loginController {
                     u.usu_nombres,
                     u.usu_apellidos,
                     u.usu_telefono,
+                    u.usu_email,
                     r.rl_id, 
                     r.rl_nombre
                 FROM 
@@ -57,13 +58,15 @@ class loginController {
 
     
                     $_SESSION['usuario'] = [
+                        'id_usuario' => $datos['usu_id'],
                         'documento' => $datos['usu_docum'],
                         'password' => $datos['usu_password'],
                         'rol_id' => $datos['rl_id'],
                         'rol_nombre' => $datos['rl_nombre'],
                         'nombre' => $datos['usu_nombres'],      
                         'apellido' => $datos['usu_apellidos'],
-                        'telefono' => $datos['usu_telefono']
+                        'telefono' => $datos['usu_telefono'],
+                        'correo' => $datos['usu_email']
                     ];
                     // var_dump($_SESSION['usuario']['rol_id']);die();
                     switch ($_SESSION['usuario']['rol_id']) {

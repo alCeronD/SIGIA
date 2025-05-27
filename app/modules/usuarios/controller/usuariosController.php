@@ -73,6 +73,22 @@ class usuariosController{
     }
     
     public function updateUser(){
+        include_once __DIR__ . '/../model/usuariosModel.php';
+        
+        $id = $_POST['usu_id'];
+        unset($_POST['usu_id']);
+        
+        
+        $dato = new usuarios($this->conn);
+        $dato->update($_POST,$id);
+        
+        $modeloUsuarios = new usuarios($this->conn);
+        $usuarios = $modeloUsuarios->search();
+    
+        
+        if ($dato) {
+            include_once __DIR__ . '/../views/consultView.php';
+        }
         
     }
     
@@ -81,7 +97,20 @@ class usuariosController{
     }
     
     public function updateUserView(){
-       include_once '../proyecto_sigia/app/modules/usuarios/views/updateView.php';
+        include_once __DIR__ . '/../model/usuariosModel.php';
+        
+        $id = $_GET['usu_id'];    
+        
+        $datos = new usuarios($this->conn);
+        
+        $usuarioUpdate = $datos->searchU($id);
+        // print_r($usuarioUpdate);die();
+    
+       include_once __DIR__ . '/../views/updateView.php';
+    }
+    
+    public function deleteUserView(){
+       include_once '../proyecto_sigia/app/modules/usuarios/views/deleteView.php';
     }
 }
 

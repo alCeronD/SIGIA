@@ -13,7 +13,7 @@
     }
     
 
-    function getUrl (String $modulo, String $controlador, String $funcion, $parametros='',$pagina=false){
+    function getUrl (String $modulo, String $controlador, String $funcion, $parametros=false,$pagina=false){
         
         //Colocar validaciones a los tipo de datos
         if(!is_string($modulo)){
@@ -26,12 +26,12 @@
         }
 
         $url="$pagina.php?modulo=$modulo&controlador=$controlador&funcion=$funcion";
-        if ($parametros!=false) {
+        if ($parametros) {
             foreach ($parametros as $key => $value){
                 $url.="&$key=$value";
             }
         }
-
+        // dd($url);
         return $url;
     }
     

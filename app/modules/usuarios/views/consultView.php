@@ -2,9 +2,10 @@
 include_once '../proyecto_sigia/app/helpers/session.php';
 include_once '../proyecto_sigia/public/partials/header.php';
 if (!isset($_SESSION['usuario'])) {
-    header("Location: /proyecto_sigia/index.php");
-    exit();
+  header("Location: /proyecto_sigia/index.php");
+  exit();
 }
+// dd($usuarios);
 ?>
 
 <main class="flex-grow-1 d-flex align-items-center justify-content-center">
@@ -30,10 +31,10 @@ if (!isset($_SESSION['usuario'])) {
                   <td><?= htmlspecialchars($usuario['usu_apellidos']) ?></td>
                   <td><?= htmlspecialchars($usuario['rl_nombre']) ?></td>
                   <td>
-                    <a href="<?= getUrl('usuarios', 'usuarios', 'updateUserView') ?>" class="btn btn-sm btn-warning me-1">
+                    <a href="<?= getUrl('usuarios', 'usuarios', 'updateUserView',['usu_id'=>$usuario['usu_id']]) ?>" class="btn btn-sm btn-warning me-1">
                       <i class="bi bi-pencil-square"></i> Editar
                     </a>
-                    <a href="<?= getUrl('usuarios', 'usuarios', 'delete') ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">
+                    <a href="<?= getUrl('usuarios', 'usuarios', 'deleteUserView',['usu_id'=>$usuario['usu_id']]) ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">
                       <i class="bi bi-trash"></i> Eliminar
                     </a>
                   </td>
