@@ -9,14 +9,29 @@ require_once __DIR__ . '/../controller/configModulesController.php';
 $configController = new ConfigModulesController('', '');
 
 
+//Cambiar statusCols y tables por $schema.
 $statusCols = [
     'areas' => ['status' => 'ar_status', 'pk' => 'ar_cod'],
     'roles' => ['status' => 'rl_status', 'pk' => 'rl_cod'],
     'categorias' => ['status' => 'ca_status', 'pk' => 'ca_cod'],
     'marcas' => ['status' => 'ma_status', 'pk' => 'ma_cod'],
 ];
-
 $tables = ['areas', 'roles', 'categorias', 'marcas', 'tipo_documento'];
+
+$schema = [
+    'areas' => [
+        'pk' => 'ar_cod',
+        'filas' => ['ar_nombre', 'ar_descripcion'],
+        'status' => 'ar_status',
+    ],
+    'tipo_documento' => [
+        'pk' => 'tp_id',
+        'filas' => ['tp_sigla', 'tp_nombre'],
+        'status' => 'tp_status',
+    ],    
+];
+
+
 
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -58,23 +73,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 //UPDATE
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+
     //LLAMAR A LOS CONTROLADORES Y CREAR EL GRUD GENERAL
-    $ar_nombre = $input['ar_nombre'];
-    $ar_descripcion = $input['ar_descripcion'];
-    $ar_cod = $input['ar_cod'];
-    $tableName = $input['tableName'];
-    
-    $keys=['values','tableName',$input['ar_cod'],['ar_nombre','ar_descripcion',]];
+
+    $tableName = isset($input['tableName']) ? $input['tableName'] : null;
+
+    //Tabla que voy a usar para hacer las operaciones.
+    $tableDef = $schema[$tableName];
+
+    $data = [];
+    foreach ($tableDef['filas'] as $field) {
+        $data[$field] = $input[$field] ?? null;
+
+    }
+
+    if ($tableName == 'areas') {
+        $nombreField = $data['ar_nombre'];
+        $descripcionField = $data['ar_descripcion'];
+        $codField = $input['ar_cod'];
+    }
+
+    if ($tableName == 'tipo_documento') {
+        $nombreField = $data['tp_sigla'];
+        $descripcionField = $data['tp_nombre'];
+        $codField = $input['tp_id'];   
+    }
+
+    //$keys=['values','tableName',$input['ar_cod'],['ar_nombre','ar_descripcion']];
     $values=[];
 
-    $values = [
+        $values = [
         'values' => [
-            'ar_nombre' => $ar_nombre,
-            'ar_descripcion' => $ar_descripcion
+            $schema[$tableName]['filas'][0] => $nombreField,
+            $schema[$tableName]['filas'][1] => $descripcionField
         ],
         'tableName' => [$tableName],
         'pk' => [
-            'ar_cod' => $ar_cod
+            $schema[$tableName]['pk'] => $codField
         ]
     ];
 

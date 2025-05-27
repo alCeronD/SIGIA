@@ -39,7 +39,6 @@ function fetchData() {
     let data = response.data;
 
     if (objAjax.request.status) {
-      console.log(objAjax.request.responseText);
       if (data.length === 0) {
         const spanMessage = document.createElement("span");
         spanMessage.innerText = "Sin registros";

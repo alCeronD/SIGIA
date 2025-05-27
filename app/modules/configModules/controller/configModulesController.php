@@ -103,7 +103,8 @@ class ConfigModulesController{
         $set2 = implode(',',$set);
         //concateno el arreglo set con la consulta sql.
         $sql .= $set2;
-        
+
+
         // //Extraigo el valor de la clave primaria, estaba usando array_keys y values pero me devolvía los valores en arreglos.
         $pkValue = reset($pk);
         $pkRow = key($pk);

@@ -10,7 +10,8 @@ const myModal = document.querySelector("#modalTp");
 //Cuerpo de tabla.
 const tableBody = document.querySelector("#tableBody");
 //Boton de update del modal
-const areaUpdateForm = document.querySelector("#tpUpdateForm");
+const tpUpdateForm = document.querySelector("#tpUpdateForm");
+console.log(tpUpdateForm);
 
 let idPk;
 let nombreTp;
@@ -35,7 +36,7 @@ function fetchData() {
     console.log(response);
 
     if (objAjax2.request.status) {
-      //console.log(objAjax2.request.responseText);
+      //console.log(objAjax22.request.responseText);
       if (data.length === 0) {
         const spanMessage = document.createElement("span");
         spanMessage.innerText = "Sin registros";
@@ -145,7 +146,7 @@ function fetchData() {
             );
 
             objAjax2.request.onload = () => {
-              let dta = JSON.parse(objAjax2.request.responseText);
+              let dta = JSON.parse(objAjax22.request.responseText);
 
               if (dta.status === false) {
                 alert("Error al actualizar el registro.");
@@ -169,3 +170,42 @@ function fetchData() {
 }
 
 fetchData();
+
+tpUpdateForm.addEventListener("submit", (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+
+  let form = new FormData(tpUpdateForm);
+  let dta = Object.fromEntries(form);
+
+  //Guardo la pk.
+  dta["tp_id"] = idPk;
+  dta["tableName"] = table;
+
+  let data = JSON.stringify(dta);
+  console.log(data);
+
+  objAjax2.request.open(
+    "PUT",
+    `modules/configModules/api/apiConfigModules.php?data=${encodeURIComponent(
+      data
+    )}`
+  );
+  objAjax2.request.setRequestHeader("Content-Type", "application/json");
+
+  objAjax2.request.onload = () => {
+    //Transformo en un texto la respuesta.
+    let dataStatus = objAjax2.request.responseText;
+    //Transformo en un json la respuesta.
+    dataStatus = JSON.parse(dataStatus);
+    if (dataStatus.status) {
+      alert("registro actualizado");
+      //Cerrar el modal
+      myModal.style.display = "none";
+
+      //Renderizo nuevamente la data.
+      fetchData();
+    }
+  };
+  objAjax2.request.send(data);
+});

@@ -38,7 +38,7 @@
 <!-- Vista del tipo de documento -->
 
 <div class="container">
-    <h1>Vista areas</h1>
+    <h1>Vista tipo documento</h1>
     <div class="form">
         <form id="formTp">
             <input type="text" name="ar_nombre" id="nombreArea" placeholder="Nombre area..." value="">
@@ -57,7 +57,7 @@
     <div class="modal-content">
         <span class="close">&times;</span>
         <span id="modalTitle">Actualizar registro</span>
-        <form id="areaUpdateForm">
+        <form id="tpUpdateForm">
             <input type="text" name="tp_sigla" id="siglaTp_documento" placeholder="Sigla ...">
             <input type="text" name="tp_nombre" id="descripcionTp_documento" placeholder="Nombre..." ></input>
             <button type="click" id="btnAreaUpdate">Agregar</button>
