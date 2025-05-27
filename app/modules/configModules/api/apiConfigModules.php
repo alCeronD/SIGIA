@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     //aca se ejecuta todo.
     $data = $configController->getData($tableName, $status);
+    //var_dump($tableName, $status);
 
      //TODO: Crear una estructura de función para estandarizar las respuestas en para enviar a javascript.
     http_response_code(200);

@@ -58,8 +58,8 @@
         <span class="close">&times;</span>
         <span id="modalTitle">Actualizar registro</span>
         <form id="areaUpdateForm">
-            <input type="text" name="ar_nombre" id="nombreAreaUpdate" placeholder="Nombre area...">
-            <textarea name="ar_descripcion" id="descripcionAreaUpdate" placeholder="Descripción..." ></textarea>
+            <input type="text" name="tp_sigla" id="siglaTp_documento" placeholder="Sigla ...">
+            <input type="text" name="tp_nombre" id="descripcionTp_documento" placeholder="Nombre..." ></input>
             <button type="click" id="btnAreaUpdate">Agregar</button>
         </form>
     </div>
