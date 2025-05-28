@@ -1,17 +1,18 @@
 <?php 
-// include_once '../app/helpers/session.php';
 
-session_start();
-include_once '../app/helpers/getUrl.php';
+// session_start();
+// include_once '../app/helpers/getUrl.php';
 
-if (!isset($_SESSION['usuario'])) {
-    header("Location: /proyecto_sigia/index.php");
-    exit();
-}
+// if (!isset($_SESSION['usuario'])) {
+//     header("Location: /proyecto_sigia/index.php");
+//     exit();
+// }
+
+require_once '../app/helpers/session.php';
 $usuario = $_SESSION['usuario'];
 $rol = $usuario['rol_id'];
 
-// var_dump($usuario);
+// var_dump($rol);
 
 include('../public/partials/header.php');
 include('../public/partials/body.php');

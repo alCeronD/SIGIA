@@ -10,7 +10,7 @@ include_once '../proyecto_sigia/public/partials/header.php';
     <input type="hidden" name="usu_id" value="<?= htmlspecialchars($usuarioUpdate['usu_id']) ?>">
 
     <label>Documento:</label>
-    <input type="text" name="usu_docum" value="<?= isset($usuarioUpdate['usu_docum']) ? htmlspecialchars($usuarioUpdate['usu_docum']) : '' ?>" required>
+    <input type="text" name="usu_docum" value="<?= isset($usuarioUpdate['usu_docum']) ? htmlspecialchars($usuarioUpdate['usu_docum']) : '' ?>" required disabled>
     <br />
 
     <label>Nombres:</label>

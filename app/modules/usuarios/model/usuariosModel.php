@@ -1,5 +1,6 @@
 <?php
 
+use Dba\Connection;
 include_once '../proyecto_sigia/app/config/conn.php';
 
 class usuarios {    
@@ -19,27 +20,37 @@ class usuarios {
         $this->conn = $conexion;
     }
 
-    public function create($data) {
+    public function create(array $data = []) {
+
+        // Valida si el tipo de dato recibido es de tipo array.
+        if (!is_array($data)) {
+           exit();
+        }
+
         $usu_docum     = $this->conn->real_escape_string($data['usu_docum']);
         $usu_nombres   = $this->conn->real_escape_string($data['usu_nombres']);
         $usu_apellidos = $this->conn->real_escape_string($data['usu_apellidos']);
         $usu_password  = password_hash($data['usu_password'], PASSWORD_DEFAULT);
         $usu_email     = $this->conn->real_escape_string($data['usu_email']);
+        $usu_direccion = $this->conn->real_escape_string($data['usu_direccion']);
         $usu_telefono  = $this->conn->real_escape_string($data['usu_telefono']);
         $rol_id        = (int)$data['rol_id'];
-    
+        //1 activo = 2 inactivo.
+        $usu_id_estado = 1;
+        $usu_tp_id = 3;
+
         $query = "
             INSERT INTO usuarios 
-            (usu_docum, usu_nombres, usu_apellidos, usu_password, usu_email, usu_telefono)
+            (usu_docum, usu_nombres, usu_apellidos, usu_password, usu_email, usu_direccion ,usu_telefono,usu_id_estado,usu_tp_id)
             VALUES 
-            ('$usu_docum', '$usu_nombres', '$usu_apellidos', '$usu_password', '$usu_email', '$usu_telefono')
+            ('$usu_docum', '$usu_nombres', '$usu_apellidos', '$usu_password', '$usu_email', '$usu_direccion' ,'$usu_telefono', '$usu_id_estado','$usu_tp_id')
         ";
-    
+
         if ($this->conn->query($query)) {
             $usu_id = $this->conn->insert_id;
     
             $queryRol = "
-                INSERT INTO usuarios_roles (usu_id, usr_rl_id) 
+                INSERT INTO usuarios_roles (usr_usu_id, usr_rl_id) 
                 VALUES ($usu_id, $rol_id)
             ";
     
@@ -61,6 +72,7 @@ class usuarios {
         foreach ($datos as $campo => $value) {
             $cadena .= "$campo = '$value' ,";
         }
+
         $cadena = trim($cadena,",");
         $query ="UPDATE usuarios SET $cadena WHERE usu_id = '$id'";
         // dd($query);
@@ -96,7 +108,7 @@ class usuarios {
             FROM 
                 usuarios u
             JOIN 
-                usuarios_roles ur ON u.usu_id = ur.usu_id
+                usuarios_roles ur ON u.usu_id = ur.usr_usu_id
             JOIN 
                 roles r ON ur.usr_rl_id = r.rl_id
         ";
@@ -112,8 +124,13 @@ class usuarios {
         return $usuarios;
         }
         
-    public function searchU($id){
-        
+    //Busca un registro específico.
+    public function searchU(int $id=0){
+
+        if (!is_int($id)) {
+            exit();
+        }
+
         if ($id) {
        $query = "SELECT 
                     usu_id,

@@ -8,7 +8,7 @@ class loginController {
     private $password;
     private $conn;
     
-    function __construct($conexion) {
+    public function __construct($conexion) {
         $this->conn = $conexion;
     }
     
@@ -20,16 +20,17 @@ class loginController {
         session_start();
     
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $this->documento = $_POST['docum'];
-            $this->password = $_POST['pass'];
-    
+            
+            $password = $this->password = $_POST['pass'];
+            $documento =$this->documento = $_POST['docum'];
+
             if (!$this->conn) {
                 die("Conexión fallida");
             }
     
-            $query = "
-                SELECT 
-                    u.usu_docum, 
+            $query = "SELECT 
+                    u.usu_id,
+                    u.usu_docum,
                     u.usu_password, 
                     u.usu_nombres,
                     u.usu_apellidos,
@@ -39,24 +40,30 @@ class loginController {
                     r.rl_nombre
                 FROM 
                     usuarios u
-                JOIN 
-                    usuarios_roles ur ON u.usu_id = ur.usu_id
-                JOIN 
+                INNER JOIN  
+                    usuarios_roles ur ON u.usu_id = ur.usr_usu_id
+                INNER JOIN 
                     roles r ON ur.usr_rl_id = r.rl_id
                 WHERE 
-                    u.usu_docum = '$this->documento'
-                LIMIT 1
-            ";
-    
-            $resultado = $this->conn->query($query);
-            if ($resultado->num_rows > 0) {
-                $datos = $resultado->fetch_assoc();
-                
-                // print_r($datos);die();
-                
-                if (password_verify($this->password, $datos['usu_password'])) {
+                    u.usu_docum = ?";
 
-    
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param('i', $documento);
+            
+            if (!$stmt->execute()) {
+                exit();
+            }
+
+            $saveData = $stmt->get_result();
+
+            if ($saveData->num_rows > 0) {
+                $datos = $saveData->fetch_assoc();
+                // dd($datos);
+
+                    
+                    
+                    if (password_verify($password, $datos['usu_password'])) {
+                    // print()
                     $_SESSION['usuario'] = [
                         'id_usuario' => $datos['usu_id'],
                         'documento' => $datos['usu_docum'],
@@ -68,27 +75,29 @@ class loginController {
                         'telefono' => $datos['usu_telefono'],
                         'correo' => $datos['usu_email']
                     ];
-                    // var_dump($_SESSION['usuario']['rol_id']);die();
+                    unset($_SESSION['usuario']['password']);
                     switch ($_SESSION['usuario']['rol_id']) {
-                        case 1: 
-                            
-                        case 2: 
+                        case 1:
+                        case 2:
+                        case 4:
                             header("Location: /proyecto_sigia/app/dashboard.php");
                             break;
-                        case 4: 
                         default:
-                            header("Location: /proyecto_sigia/index.php"); // no Rol
+                            header("Location: /proyecto_sigia/index.php");
                             break;
                     }
+
     
                     exit();
                 } else {
+
                     // Contraseña incorrecta
                     header("Location: /proyecto_sigia/index.php");
                     exit();
                 }
     
             } else {
+
                 // Usuario no encontrado
                 header("Location: /proyecto_sigia/index.php");
                 exit();

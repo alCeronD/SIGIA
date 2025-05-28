@@ -26,12 +26,14 @@ if (!isset($_SESSION['usuario'])) {
           <input type="text" class="form-control" id="usu_apellidos" name="usu_apellidos" required>
         </div>
         <div class="mb-3">
+          <label for="usu_apellidos" class="form-label">Direccion</label>
+          <input type="text" class="form-control" id="usu_direccion" name="usu_direccion" required>
+        </div>
+        <div class="mb-3">
           <label for="usu_password" class="form-label">Contraseña</label>
           <input type="password" class="form-control" id="usu_password" name="usu_password" required>
         </div>
       </div>
-
-
 
       <div class="col-md-6">
         <div class="mb-3">
@@ -42,6 +44,7 @@ if (!isset($_SESSION['usuario'])) {
           <label for="usu_telefono" class="form-label">Teléfono</label>
           <input type="tel" class="form-control" id="usu_telefono" name="usu_telefono" required>
         </div>
+        <!-- ROL -->
         <div class="mb-3">
           <label for="rol_id" class="form-label">Rol</label>
           <select class="form-select" id="rol_id" name="rol_id" required>
@@ -53,6 +56,19 @@ if (!isset($_SESSION['usuario'])) {
           <?php endforeach; ?>
         </select>
         </div>
+        <!-- TIPO DE DOCUMENTO -->
+          <div class="mb-3">
+          <label for="rol_id" class="form-label">Tipo documento</label>
+          <select class="form-select" id="usu_tp_id" name="usu_tp_id" required>
+          <option value="">Seleccione un rol</option>
+          <?php foreach ($rowTp as $tp): ;?>
+            <option value="<?php echo $tp['tp_id']; ?>">
+              <?php echo htmlspecialchars($tp['tp_sigla']." - ".$tp['tp_nombre']); ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+        </div>
+
       </div>
 
       <div class="col-12">

@@ -24,6 +24,7 @@ class usuariosController{
         
         $roles = [];
         
+        //TODO: mandar a modelo.
         $resultado = $this->conn->query("SELECT * FROM roles");
             if ($resultado && $resultado->num_rows > 0) {
                  while ($row = $resultado->fetch_assoc()) {
@@ -32,8 +33,16 @@ class usuariosController{
                 }  
             }
             // dd($roles);
-            include_once __DIR__ . '/../views/usuariosView.php';
-        }
+        $rowTp = $this->conn->query("SELECT * FROM tipo_documento");
+            if ($rowTp && $rowTp->num_rows > 0) {
+                 while ($row = $rowTp->fetch_assoc()) {
+                    $tp_documento[] = $row;
+                    
+                }  
+            }
+            // dd($roles);
+        include_once __DIR__ . '/../views/usuariosView.php';
+    }
     public function createUser(){
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -49,8 +58,11 @@ class usuariosController{
                 'usu_apellidos' => $_POST['usu_apellidos'],
                 'usu_password'  => $_POST['usu_password'],
                 'usu_email'     => $_POST['usu_email'],
+                'usu_direccion' => $_POST['usu_direccion'],
                 'usu_telefono'  => $_POST['usu_telefono'],
-                'rol_id'        => $_POST['rol_id']
+                'usu_id_estado' => 1,
+                'usu_tp_id' => $_POST['usu_tp_id'],
+                'rol_id'        => $_POST['rol_id'],
             ];
     
             $resultado = $usuariosModel->create($datos);
@@ -96,6 +108,7 @@ class usuariosController{
         
     }
     
+    //
     public function updateUserView(){
         include_once __DIR__ . '/../model/usuariosModel.php';
         
