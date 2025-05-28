@@ -12,7 +12,6 @@ require_once '../app/helpers/session.php';
 $usuario = $_SESSION['usuario'];
 $rol = $usuario['rol_id'];
 
-// var_dump($rol);
 
 include('../public/partials/header.php');
 include('../public/partials/body.php');

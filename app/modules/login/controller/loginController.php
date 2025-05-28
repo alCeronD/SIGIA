@@ -45,20 +45,7 @@ class loginController {
                 INNER JOIN 
                     roles r ON ur.usr_rl_id = r.rl_id
                 WHERE 
-<<<<<<< HEAD
                     u.usu_docum = ?";
-=======
-                    u.usu_docum = '$this->documento'
-            ";
-    
-            $resultado = $this->conn->query($query);
-            if ($resultado->num_rows > 0) {
-                $datos = $resultado->fetch_assoc();
-                
-                // print_r($datos);die();
-                
-                if (password_verify($this->password, $datos['usu_password'])) {
->>>>>>> 54726b9 (cambios)
 
             $stmt = $this->conn->prepare($query);
             $stmt->bind_param('i', $documento);
@@ -66,15 +53,12 @@ class loginController {
             if (!$stmt->execute()) {
                 exit();
             }
-
             $saveData = $stmt->get_result();
-
+            
             if ($saveData->num_rows > 0) {
                 $datos = $saveData->fetch_assoc();
-                // dd($datos);
+                 //dd($datos['usu_password']);
 
-                    
-                    
                     if (password_verify($password, $datos['usu_password'])) {
                     // print()
                     $_SESSION['usuario'] = [
@@ -88,10 +72,10 @@ class loginController {
                         'telefono' => $datos['usu_telefono'],
                         'correo' => $datos['usu_email']
                     ];
-                    unset($_SESSION['usuario']['password']);
                     switch ($_SESSION['usuario']['rol_id']) {
                         case 1:
                         case 2:
+                        case 3:
                         case 4:
                             header("Location: /proyecto_sigia/app/dashboard.php");
                             break;
