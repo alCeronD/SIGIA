@@ -7,10 +7,6 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
   padding: 0px;
 }
 
-body{
-  background-color: red;
-}
-
 /* Es el tamaño en donde se va a trabajar todas la vista */
 .container {
   margin: 0 auto;

@@ -3,9 +3,7 @@ $rol = $_SESSION['usuario']['rol_id'];
 $nombre = $_SESSION['usuario']['nombre'];
 
 ?>
-
-
-<main class="flex-grow-1 d-flex align-items-center justify-content-center">
+<!-- <main class="flex-grow-1 d-flex align-items-center justify-content-center"> -->
   <div class="container text-center">
     <h1>Bienvenido, <?php echo $nombre; ?></h1>
     <?php if ($rol == 1):  ?>
@@ -18,4 +16,4 @@ $nombre = $_SESSION['usuario']['nombre'];
         <p>No tienes permiso.</p>
     <?php endif; ?>
   </div>
-</main>
+<!-- </main> -->
