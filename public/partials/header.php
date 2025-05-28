@@ -1,3 +1,11 @@
+<?php
+
+// if (!isset($_SESSION['usuario'])) {
+//     header("Location: /proyecto_sigia/index.php");
+//     exit();
+// }
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>

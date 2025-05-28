@@ -12,16 +12,6 @@ require_once '../app/helpers/session.php';
 $usuario = $_SESSION['usuario'];
 $rol = $usuario['rol_id'];
 
-// $data = !isset($data) ? getUrl('dashboard','dashboard','dashboard') : $data ;
-//$data = 'modules/dashboard/views/dashboardView.php';
- //$_GET['modulo'] = 'dashboard';
- //$_GET['funcion'] = 'dashboard';
- //$_GET['controlador'] = 'dashboard';
-
-
-
-// var_dump($resolve);
-
 
 ?>
 
