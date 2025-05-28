@@ -19,11 +19,7 @@ class RolModelo {
                 $roles[] = $fila;
             }
         } else {
-<<<<<<< HEAD
             echo " Error al ejecutar la consulta: " . $this->conn->error;
-=======
-            echo "❌ Error al ejecutar la consulta: " . $this->conn->error;
->>>>>>> 751a1fa (edward_commit)
         }
 
         return $roles;
