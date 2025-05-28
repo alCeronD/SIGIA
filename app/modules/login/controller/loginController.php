@@ -45,7 +45,20 @@ class loginController {
                 INNER JOIN 
                     roles r ON ur.usr_rl_id = r.rl_id
                 WHERE 
+<<<<<<< HEAD
                     u.usu_docum = ?";
+=======
+                    u.usu_docum = '$this->documento'
+            ";
+    
+            $resultado = $this->conn->query($query);
+            if ($resultado->num_rows > 0) {
+                $datos = $resultado->fetch_assoc();
+                
+                // print_r($datos);die();
+                
+                if (password_verify($this->password, $datos['usu_password'])) {
+>>>>>>> 54726b9 (cambios)
 
             $stmt = $this->conn->prepare($query);
             $stmt->bind_param('i', $documento);
