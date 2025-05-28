@@ -1,25 +1,14 @@
 <?php 
 
-/**
- * mostramos enrutador y este debe de redireccionar a login.
- * 
- * 
- */
+include_once '../proyecto_sigia/app/helpers/getUrl.php';
+echo "<div class='container'>";
+
+if (isset($_GET['modulo'])){
+    resolve();
+}else{
+    // dd(getUrl('login','loginController','index',false,'login'));
+    redirect(getUrl('login','login','index',false,false));
+}
 
 
-//TODO: 
-/**
- * Estudiar como funciona los enrutadores o el frontController para solo usar index.php como enrutador de todas las vistas.
- * 
- */
- require_once 'app/helpers/renderView.php';
- require_once 'app/modules/login/controller/loginController.php';
- $render = new RenderView();
 
- $loginController = new LoginController();
-
- echo $loginController->getName();
-
- $render->renderView('login','loginView.php');
-
-?>

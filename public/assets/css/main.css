@@ -1,6 +1,7 @@
 /* 
 Este documento contiene todos los estilos que se repiten sus componentes, como botones, Tablas, menus, entre otros.
 */
+<<<<<<< HEAD
 * {
   box-sizing: border-box;
   margin: 0px;
@@ -82,4 +83,10 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
   body {
     background-color: green;
   }
+=======
+*{
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+>>>>>>> d99da80 (commit brahiam)
 }

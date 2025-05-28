@@ -1,64 +1,64 @@
-<!-- TODO: -->
-<!-- 
-Implementar o buscar la forma de como implementar los scripts de manera dinamica, dependiendo del modulo que se este visualizando.
 
--->
+<!-- tendero -->
+ <?php if ($rol == 1): ?> 
+  <footer class="mac-footer d-flex justify-content-around align-items-center">
+            <a href="#" class="footer-icon text-center">
+              <i class="fas fa-home"></i><br><small>Inicio</small>
+            </a>
+            <a href="#" class="footer-icon text-center">
+              <i class="fa-solid fa-circle-user"></i></i><br><small>Perfil almacenista</small>
+            </a>
+            <a href="#" class="footer-icon text-center">
+              <i class="fas fa-cog"></i><br><small>Config</small>
+            </a>
+            <a href="<?php echo getUrl("login","login","logout"); ?>" class="footer-icon text-center">
+              <i class="fas fa-sign-out-alt"></i><br><small>cerrar sesion</small>
+            </a>
+  </footer>
+<?php endif; ?>
 
-<!-- <script src="../public/assets/libraries/bootstrap/js/bootstrap.js"></script> -->
-<?php
-
-/**
- * En el archivo footer.php sería nuestro menú que va encabezar todo
-*/
-
-?>
-<footer class="bg-info text-white text-center" id="">
-    <nav id="mainMenu">
-        <ul class="horizontalMenu">
-            <li>
-                <a href="dashboard.php?value=5">Inicio</a>
-            </li>
-            <li>
-                <a href="#">Prestamos</a>
-                <ul class="verticalMenu">
-                    <li>
-                        <a href="dashboard.php?value=3">Solicitar</a>
-                    </li>
-                    <li>
-                        <a href="dashboard.php?value=4">Consultar prestamos</a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="#">Elementos</a>
-            </li>
-            <li>
-                <a href="#">Usuarios</a>
-            </li>
-            <li>
-                <a href="#">Configuración</a>
-                <!-- Elementos internos del menú -->
-                <ul class="verticalMenu">
-                    <li>
-                        <a href="dashboard.php?value=7">Areas</a>
-                    </li>
-                    <li>
-                        <a href="dashboard.php?value=8">Tipo documento</a>
-                    </li>
-                    <li>
-                        <a href="#">Marcas</a>
-                    </li>
-                    <li>
-                        <a href="#">Categorias</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-
-    </nav>
+<!-- admin     -->
+<?php if ($rol == 2):?>
+  <footer class="mac-footer d-flex justify-content-around align-items-center">
+          <a href="#" class="footer-icon text-center">
+            <i class="fas fa-home"></i><br><small>Inicio</small>
+          </a>
+          <a href="#" class="footer-icon text-center">
+            <i class="fa-solid fa-circle-user"></i></i><br><small>Perfil</small>
+          </a>
+          <a href="#" class="footer-icon text-center">
+            <i class="fa-solid fa-user-plus"></i></i><br><small>Crear usuario</small>
+          </a>
+          <a href="#" class="footer-icon text-center">
+            <i class="fa-solid fa-users-gear"></i></i><br><small>Permisos - Rol</small>
+          </a>
+          <a href="#" class="footer-icon text-center">
+            <i class="fas fa-cog"></i><br><small>Config</small>
+          </a>
+          <a href="<?php echo getUrl("login","login","logout"); ?>" class="footer-icon text-center">
+            <i class="fas fa-sign-out-alt"></i><br><small>cerrar sesion</small>
+          </a>
+  </footer>
+<?php endif; ?>
+  <!-- Instructor -->
+  <?php if ($rol == 3): ?> 
+  <footer class="mac-footer d-flex justify-content-around align-items-center">
+          <a href="#" class="footer-icon text-center">
+            <i class="fas fa-home"></i><br><small>Inicio Instructor</small>
+          </a>
+          <a href="#" class="footer-icon text-center">
+            <i class="fa-solid fa-circle-user"></i></i><br><small>Perfil</small>
+          </a>
+          <a href="#" class="footer-icon text-center">
+            <i class="fas fa-cog"></i><br><small>Config</small>
+          </a>
+          <a href="<?php echo getUrl("login","login","logout"); ?>" class="footer-icon text-center">
+            <i class="fas fa-sign-out-alt"></i><br><small>cerrar sesion</small>
+          </a>
+  </footer>
+  <?php endif; ?>
 
 
-</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

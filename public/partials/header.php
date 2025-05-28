@@ -1,15 +1,15 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Estilo Mac</title>
 
-    <!-- TODO: la idea es renderizar todos estos archivos para que a la hora de renderizar la vista, se renderice también con la vista de css y js... -->
-    <link rel="stylesheet" href="../public/assets/css/main.css">
-    <!-- <link rel="stylesheet" href="../public/assets/css/prestamos/solicitudPrestamos.css"> -->
-    <!-- <link rel="stylesheet" href="../public/assets/css/prestamos/consultPrestamos.css"> -->
-    <!-- <link rel="stylesheet" href="../public/assets/libraries/bootstrap/css/bootstrap.min.css"> -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link href="css/mac-style.css" rel="stylesheet">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
