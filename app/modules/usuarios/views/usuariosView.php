@@ -1,14 +1,13 @@
 <?php
-include_once '../proyecto_sigia/app/helpers/session.php';
-include_once '../proyecto_sigia/public/partials/header.php';
-if (!isset($_SESSION['usuario'])) {
-    header("Location: /proyecto_sigia/index.php");
-    exit();
-}
+// include_once '../proyecto_sigia/app/helpers/session.php';
+// include_once '../proyecto_sigia/public/partials/header.php';
+// if (!isset($_SESSION['usuario'])) {
+//     header("Location: /proyecto_sigia/index.php");
+//     exit();
+// }
 ?>
 
-<main class="flex-grow-1 d-flex align-items-center justify-content-center">
-  <div class="container text-center">
+  <!-- <div class="container text-center"> -->
     <form method="POST" action="<?php echo getUrl('usuarios','usuarios','createUser'); ?>" class="w-75 mx-auto text-start row g-3">
 
 
@@ -79,5 +78,5 @@ if (!isset($_SESSION['usuario'])) {
 </main>
 
 <?php
-include_once '../proyecto_sigia/public/partials/footer.php';
+// include_once '../proyecto_sigia/public/partials/footer.php';
 ?>

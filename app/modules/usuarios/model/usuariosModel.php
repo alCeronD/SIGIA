@@ -1,7 +1,5 @@
 <?php
 
-use Dba\Connection;
-include_once '../proyecto_sigia/app/config/conn.php';
 
 class usuarios {    
     public $usu_id;

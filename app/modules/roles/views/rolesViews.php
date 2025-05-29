@@ -1,13 +1,11 @@
-<?php
-// session_start();
-include_once '../proyecto_sigia/app/helpers/session.php';
-include_once '../proyecto_sigia/public/partials/header.php';
-if (!isset($_SESSION['usuario'])) {
-    header("Location: /proyecto_sigia/index.php");
-    exit();
-}
+
+<?php 
+
+require_once 'rolesRegistrar.php';
+
 ?>
-<div class="container mt-5">
+
+<!-- <div class="container mt-5"> -->
     <h2 class="mb-4 text-center">Listado de Roles</h2>
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
@@ -40,9 +38,9 @@ if (!isset($_SESSION['usuario'])) {
             <?php endif; ?>
         </tbody>
     </table>
-</div>
+<!-- </div> -->
 
 <?php
-include_once '../proyecto_sigia/public/partials/footer.php';
+// include_once '../proyecto_sigia/public/partials/footer.php';
 
 ?>

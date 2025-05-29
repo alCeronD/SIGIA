@@ -1,6 +1,7 @@
 <?php
 include_once __DIR__ . '/../model/usuariosModel.php';
-include_once '../proyecto_sigia/app/config/conn.php'; 
+// include_once '../proyecto_sigia/app/config/conn.php'; 
+include_once __DIR__ . '/../../../config/conn.php';
 
 class usuariosController{
 
@@ -15,7 +16,7 @@ class usuariosController{
 
     private $conn;
 
-    function __construct($conexion) {
+    public function __construct($conexion) {
         $this->conn = $conexion;
     }
 
@@ -41,7 +42,7 @@ class usuariosController{
                 }  
             }
             // dd($roles);
-        include_once __DIR__ . '/../views/usuariosView.php';
+        return include __DIR__ . '/../views/usuariosView.php';
     }
     public function createUser(){
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -75,17 +76,19 @@ class usuariosController{
         }
     }
     public function consultUser(){
-        include_once __DIR__ . '/../model/usuariosModel.php';
+        // include_once __DIR__ . '/../model/usuariosModel.php';
     
         $modeloUsuarios = new usuarios($this->conn);
     
         $usuarios = $modeloUsuarios->search();
     
-        include_once __DIR__ . '/../views/consultView.php';
+        $path = __DIR__ . '/../views/consultView.php';
+        // var_dump($path);
+        return include $path;
     }
     
     public function updateUser(){
-        include_once __DIR__ . '/../model/usuariosModel.php';
+        //include_once __DIR__ . '/../model/usuariosModel.php';
         
         $id = $_POST['usu_id'];
         unset($_POST['usu_id']);
@@ -99,18 +102,17 @@ class usuariosController{
     
         
         if ($dato) {
-            include_once __DIR__ . '/../views/consultView.php';
+            return include_once __DIR__ . '/../views/consultView.php';
         }
         
     }
-    
     public function offUser(){
         
     }
     
     //
     public function updateUserView(){
-        include_once __DIR__ . '/../model/usuariosModel.php';
+        //include_once __DIR__ . '/../model/usuariosModel.php';
         
         $id = $_GET['usu_id'];    
         
@@ -119,16 +121,12 @@ class usuariosController{
         $usuarioUpdate = $datos->searchU($id);
         // print_r($usuarioUpdate);die();
     
-       include_once __DIR__ . '/../views/updateView.php';
+       return include_once __DIR__ . '/../views/updateView.php';
     }
     
     public function deleteUserView(){
        include_once '../proyecto_sigia/app/modules/usuarios/views/deleteView.php';
     }
 }
-
-
-
-
 
 ?>

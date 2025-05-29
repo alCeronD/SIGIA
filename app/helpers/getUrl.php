@@ -35,22 +35,28 @@
         return $url;
     }
     
-    function resolve(){
-        $modulo = $_GET['modulo'];
-        $controlador = $_GET['controlador'];
-        $funcion = $_GET['funcion'];
+    function resolve($modulo = 'dashboard', $controlador = 'dashboard',$funcion = 'dashboard'){
+
+        if (isset($_GET['modulo'])) {
+            $modulo = $_GET['modulo'];
+            $controlador = $_GET['controlador'];
+            $funcion = $_GET['funcion'];
+        }
+        
     
-        $controllerPath = "app/modules/$modulo/controller/{$controlador}Controller.php";
+        $controllerPath = __DIR__ . "/../modules/$modulo/controller/{$controlador}Controller.php";
+
         // dd($controllerPath);
-    
-        if (is_dir("app/modules/$modulo")){
+        
+        if (is_dir(__DIR__ . "/../modules/$modulo")){
+            // var_dump($controllerPath);
             if (is_file($controllerPath)) {
             
                 include_once $controllerPath;
                 $nombreClase = $controlador . "Controller";
                 // dd($modulo);
                 
-                include_once 'app/config/conn.php'; 
+                include_once __DIR__. '/../config/conn.php'; 
                 $conexion = (new Conection())->getConnect();
                 $objeto = new $nombreClase($conexion);
                 

@@ -19,7 +19,7 @@ class RolModelo {
                 $roles[] = $fila;
             }
         } else {
-            echo "❌ Error al ejecutar la consulta: " . $this->conn->error;
+            echo " Error al ejecutar la consulta: " . $this->conn->error;
         }
 
         return $roles;

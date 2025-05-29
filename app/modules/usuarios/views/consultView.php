@@ -1,18 +1,15 @@
 <?php
-include_once '../proyecto_sigia/app/helpers/session.php';
-include_once '../proyecto_sigia/public/partials/header.php';
-if (!isset($_SESSION['usuario'])) {
-  header("Location: /proyecto_sigia/index.php");
-  exit();
-}
-// dd($usuarios);
+// include_once '../proyecto_sigia/app/helpers/session.php';
+// include_once '../proyecto_sigia/public/partials/header.php';
+// if (!isset($_SESSION['usuario'])) {
+//   header("Location: /proyecto_sigia/index.php");
+//   exit();
+// }
 ?>
 
-<main class="flex-grow-1 d-flex align-items-center justify-content-center">
-  <div class="container text-center">
+  <!-- <div class="container text-center"> -->
     <div class="w-100 mx-auto text-start">
       <h2 class="mb-4 text-center">Usuarios Registrados</h2>
-
       <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle">
           <thead class="table-dark text-center">
@@ -49,9 +46,8 @@ if (!isset($_SESSION['usuario'])) {
         </table>
       </div>
     </div>
-  </div>
-</main>
+  <!-- </div> -->
 
 <?php
-include_once '../proyecto_sigia/public/partials/footer.php';
+// include_once '../proyecto_sigia/public/partials/footer.php';
 ?>

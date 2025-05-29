@@ -1,6 +1,8 @@
 <?php
-require_once './app/modules/roles/model/rolesModel.php';
+// require_once './app/modules/roles/model/rolesModel.php';
+// require_once __DIR__ . './app/modules/roles/model/rolesModel.php';
 
+include_once __DIR__ . '/../model/rolesModel.php';
 class rolesController {
     private $modeloRol;
 
@@ -10,15 +12,13 @@ class rolesController {
 
     public function mostrarRoles() {
         $roles = $this->modeloRol->obtenerRoles();
-        include './app/modules/roles/views/rolesViews.php';
+        return include __DIR__ . './../views/rolesViews.php';
     }
     
     public function editarRolesView(){
-        include_once '../proyecto_sigia/app/modules/roles/views/rolesEditar.php';
+        return include __DIR__ . './../views/rolesEditar.php';
     }
     
-    
-
     public function registrarRoles(){
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $rol_nombre = $_POST['rol_nombre'];
@@ -26,13 +26,14 @@ class rolesController {
 
         if ($exito) {
             echo "<div class='alert alert-success text-center'>Rol registrado correctamente.</div>";
-            header("Location: index.php?action=rolesListar");
+            // header("Location: index.php?action=rolesListar");
+            header("Location: dashboard.php");
             exit();
         } else {
             echo "<div class='alert alert-danger text-center'>Error al registrar el Rol.</div>";
         }
     } else {
-        include './app/modules/roles/views/rolesRegistrar.php';
+        return include __DIR__ .  './../views/rolesRegistrar.php';
     }
 }
 
@@ -61,7 +62,7 @@ public function editarRol() {
             }
         }
         if ($rol_actual) {
-            include './app/modules/roles/views/rolesEditar.php';
+            return include __DIR__ . './../views/rolesEditar.php';
         } else {
             echo "<div class='alert alert-danger text-center'>Rol no encontrado.</div>";
         }

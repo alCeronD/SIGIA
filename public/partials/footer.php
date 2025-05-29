@@ -43,13 +43,13 @@ if (isset($rol)) {
           <ul class="verticalMenu">
             <!-- Consultar usuario -->
             <li>
-              <a href="<?php echo getUrl("usuarios", "usuarios", "consultUser"); ?>" class="footer-icon text-center">
+              <a href="<?php echo getUrl("usuarios", "usuarios", "consultUser",false,'dashboard'); ?>" class="footer-icon text-center">
                 Consultar usuario
               </a>
             </li>
             <!-- Crear usuario -->
             <li>
-              <a href="<?php echo getUrl("usuarios", "usuarios", "userView"); ?>" class="footer-icon text-center">
+              <a href="<?php echo getUrl("usuarios", "usuarios", "userView",false,'dashboard'); ?>" class="footer-icon text-center">
                 Crear usuario
               </a>
             </li>
@@ -73,8 +73,8 @@ if (isset($rol)) {
               <a href="#">Categorias</a>
             </li>
             <li>
-                <a href="<?php echo getUrl("roles", "roles", "mostrarRoles"); ?>" class="footer-icon text-center">
-                <small>Roles</small>
+                <a href="<?php echo getUrl("roles", "roles", "mostrarRoles",false,'dashboard'); ?>" class="footer-icon text-center">
+                  Roles
               </a>
             </li>
             
