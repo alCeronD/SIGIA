@@ -94,7 +94,6 @@ class loginController {
                 }
     
             } else {
-
                 // Usuario no encontrado
                 header("Location: /proyecto_sigia/index.php");
                 exit();
