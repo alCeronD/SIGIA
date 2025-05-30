@@ -69,7 +69,7 @@ class usuariosController{
             $resultado = $usuariosModel->create($datos);
     
             if ($resultado === true) {
-                echo "<script>alert('Usuario registrado exitosamente'); window.location.href = '" . getUrl('usuarios','usuarios','userView') . "';</script>";
+                echo "<script>alert('Usuario registrado exitosamente'); window.location.href = '" . getUrl('usuarios','usuarios','userView', false, 'dashboard') . "';</script>";
             } else {
                 echo $resultado;
             }

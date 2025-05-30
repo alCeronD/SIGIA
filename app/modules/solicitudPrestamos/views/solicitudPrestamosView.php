@@ -1,8 +1,3 @@
-
-<div class="d-flex justify-content-center align-items-center" style="height: 90vh;">
-
-<div class="container-sm container">
-
 <div id="solicPrestamos">
     
 <span id="menuTitle">Registrar solicitud</span>
@@ -90,9 +85,5 @@
 </div>
 
 </div>
-
-</div>
-</div>
-
 
 <script type="module" src="../public/assets/js/solicitudPrestamos/solicitudPrestamos.js.js"></script>

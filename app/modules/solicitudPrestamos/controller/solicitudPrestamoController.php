@@ -3,7 +3,7 @@
 include_once __DIR__ . '/../../../helpers/renderView.php';
 //include_once __DIR__ . '/../model/getElements.php';
 
-class solicitudController
+class SolicitudPrestamoController
 {
 
     /**
@@ -40,22 +40,14 @@ class solicitudController
 
     }
 
-    // Función para renderizar la vista del modulo de configuración.
-    // public static function configModule($vista)
-    // {
-    //     $render = new RenderView();
-    //     if (!isset($render)) return;
+    public function solicitudPrestamosView(){
 
+        return include_once __DIR__ . '/../views/solicitudPrestamosView.php';
+    }
+    public function consultarPrestamoViews(){
 
-    //     switch ($vista) {
-    //         case 'solicitud':
-    //             $render->renderView('solicitudPrestamosView.php', 'solicitudPrestamos');
-    //             //Renderizar también el footer.
+        return include_once __DIR__ . '/../views/consultarSolicitudView.php';
+    }
 
-    //             break;
-    //         default:
-    //             // en caso de que no se envie algun parámetro, lo ideal sería mostrar el index principal.
-    //             break;
-    //     }
-    // }
+    
 }
