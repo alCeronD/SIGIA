@@ -53,10 +53,10 @@
           <!-- Elementos internos del menú -->
           <ul class="verticalMenu">
             <li>
-              <a href="dashboard.php?value=7">Areas</a>
+              <a href="<?php echo getUrl("configModules", "configModules", "renderViewArea",false,'dashboard'); ?>">Areas</a>
             </li>
             <li>
-              <a href="dashboard.php?value=8">Tipo documento</a>
+              <a href="<?php echo getUrl("configModules", "configModules", "renderViewTp",false,'dashboard'); ?>">Tipo documento</a>
             </li>
             <li>
               <a href="#">Marcas</a>
@@ -101,7 +101,7 @@
 <?php endif; ?>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 </body>
 
 </html>

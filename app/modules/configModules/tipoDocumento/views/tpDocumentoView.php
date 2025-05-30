@@ -36,8 +36,6 @@
     }
 </style>
 <!-- Vista del tipo de documento -->
-
-<div class="container">
     <h1>Vista tipo documento</h1>
     <div class="form">
         <form id="formTp">
@@ -47,8 +45,6 @@
         </form>
     </div>
     <?php require_once 'tableViewtpDocumento.php'; ?>
-
-</div>
 
 <!-- Modal -->
 <div id="modalTp" class="modal">

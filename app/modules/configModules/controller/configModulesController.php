@@ -13,17 +13,26 @@ class ConfigModulesController{
     private $module;
     private $file;
 
-    public function __construct(String $module, String $file){
+    public function __construct(){
 
-        $this->module = $module;
-        $this->file= $file;
-        $this->render = new RenderView($module,$file);
+        // $this->module = $module;
+        // $this->file= $file;
+        // $this->render = new RenderView($module,$file);
+    
     }
 
-    //Me devuelve la ruta de la vista.
-    public function render(){
-        return $this->render->renderView($this->module, $this->file);
+    //Me devuelve la ruta de la vista del modulo de areas.
+    public function renderViewArea(){
+        //return $this->render->renderView($this->module, $this->file);
+        return include_once  __DIR__ . '/../areas/views/areaView.php';
     }
+    public function renderViewTp(){
+
+        //return $this->render->renderView($this->module, $this->file);
+        return include_once  __DIR__ . '/../tipoDocumento/views/tpDocumentoView.php';
+    }
+    
+
 
     //Función para traer la información de la tabla en específico.
     public function getData(String $tableName, String $status){

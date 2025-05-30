@@ -36,7 +36,7 @@
     }
 </style>
 
-<div class="container">
+
     <h1>Vista areas</h1>
     <div class="form">
         <form id="formArea">
@@ -48,7 +48,6 @@
     <!-- Tabla de vista. -->
     <?php require_once 'tableViewArea.php'; ?>
 
-</div>
 
 <!-- Modal -->
 <div id="modalArea" class="modal">

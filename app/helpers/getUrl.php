@@ -42,12 +42,11 @@
             $controlador = $_GET['controlador'];
             $funcion = $_GET['funcion'];
         }
-        
-    
+
         $controllerPath = __DIR__ . "/../modules/$modulo/controller/{$controlador}Controller.php";
 
         // dd($controllerPath);
-        
+
         if (is_dir(__DIR__ . "/../modules/$modulo")){
             // var_dump($controllerPath);
             if (is_file($controllerPath)) {
