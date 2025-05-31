@@ -8,7 +8,7 @@
             <td>Opciones</td>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="marcaTblBody">
         <!-- renderizado con javascript -->
     </tbody>
 </table>

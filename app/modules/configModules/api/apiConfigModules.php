@@ -6,7 +6,7 @@ header("Content-Type: application/json");
 $input = json_decode(file_get_contents("php://input"), true);
 
 require_once __DIR__ . '/../controller/configModulesController.php';
-$configController = new ConfigModulesController('', '');
+$configController = new ConfigModulesController();
 
 
 //Cambiar statusCols y tables por $schema.
@@ -32,6 +32,11 @@ $schema = [
         'filas' => ['tp_sigla', 'tp_nombre'],
         'status' => 'tp_status',
     ],
+    'marcas' =>[
+        'pk' => 'ma_id',
+        'filas' => ['ma_nombre','ma_descripcion'],
+        'status' => 'ma_status'
+    ]
 ];
 
 
