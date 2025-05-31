@@ -70,7 +70,7 @@
               <a href="<?php echo getUrl("configModules", "configModules", "renderViewTp", false, 'dashboard'); ?>">Tipo documento</a>
             </li>
             <li>
-              <a href="#">Marcas</a>
+              <a href="<?php echo getUrl('configModules','configModules','renderViewMarca',false,'dashboard'); ?>">Marcas</a>
             </li>
             <li>
               <a href="#">Categorias</a>

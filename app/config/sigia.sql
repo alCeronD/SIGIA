@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-05-2025 a las 03:12:02
+-- Tiempo de generación: 30-05-2025 a las 23:34:00
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -39,10 +39,12 @@ CREATE TABLE `areas` (
 --
 
 INSERT INTO `areas` (`ar_cod`, `ar_nombre`, `ar_descripcion`, `ar_status`) VALUES
-(1, 'Multimedia', 'hello world multimedia', 1),
-(2, 'Fotografía', 'hello world3ss', 0),
+(1, 'Multimedia', 'hellmultimedia', 1),
+(2, 'Fotografía', 'aca hay camaras', 0),
 (3, 'General', 'elementos conss\n', 0),
-(4, 'Aulas De Computo', 'asdads', 1);
+(4, 'Aulas De Computo', 'asdads', 1),
+(5, 'Area de diseño', 'esta area pertencece a gente de dudosa procedencia', 1),
+(6, 'Aulas De Computo', 'asdasd', 1);
 
 -- --------------------------------------------------------
 
@@ -275,7 +277,7 @@ CREATE TABLE `roles` (
 INSERT INTO `roles` (`rl_id`, `rl_nombre`, `rl_descripcion`, `rl_status`) VALUES
 (1, 'Almacenista', NULL, 1),
 (2, 'Administrador', NULL, 1),
-(3, 'SubDirector', NULL, 0),
+(3, 'SubDirector', NULL, 1),
 (4, 'Instructor', NULL, 1);
 
 -- --------------------------------------------------------
@@ -318,13 +320,14 @@ CREATE TABLE `tipo_documento` (
 --
 
 INSERT INTO `tipo_documento` (`tp_id`, `tp_sigla`, `tp_nombre`, `tp_status`) VALUES
-(1, 'CC', 'Cédula de Ciuda', 0),
-(2, 'CE', 'Cédula de Extra', 0),
+(1, 'CC', 'Cédula de Ciuda', 1),
+(2, 'CE', 'Cédula de Ex', 0),
 (3, 'TI', 'Tarjeta de Iden', 0),
 (4, 'PAS', 'Pasaporte', 0),
 (5, 'RC', 'Registro Civil', 0),
 (6, 'NIT', 'Número de Ident', 0),
-(7, 'RUT', 'Registro Único ', 0);
+(7, 'RUT', 'Registro Único ', 0),
+(8, 'OTRA PRUEBAD E ', 'ASDASDSAD', 0);
 
 -- --------------------------------------------------------
 
@@ -376,7 +379,7 @@ CREATE TABLE `usuarios` (
   `usu_docum` int(11) NOT NULL,
   `usu_nombres` varchar(50) DEFAULT NULL,
   `usu_apellidos` varchar(50) DEFAULT NULL,
-  `usu_password` varchar(50) DEFAULT NULL,
+  `usu_password` varchar(200) DEFAULT NULL,
   `usu_email` varchar(50) DEFAULT NULL,
   `usu_direccion` varchar(100) NOT NULL,
   `usu_telefono` varchar(50) DEFAULT NULL,
@@ -389,7 +392,8 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `usu_password`, `usu_email`, `usu_direccion`, `usu_telefono`, `usu_id_estado`, `usu_tp_id`) VALUES
-(1, 0, 'Jhon', 'Doe', 'jhondoe123', 'jhondoe@gmail.com', '', '123465', 1, 1);
+(17, 123, 'Jhon', 'doe', '$2y$10$AHMDSF3OgELz.5iF5KdhJ.trlu0aRFLhXYVuZpbKcj9NIYo1RuKzi', 'jhondoe@gmail.com', '', '123465', 1, 1),
+(20, 12345, 'Gorge ', 'paez', '$2y$10$qJC3K1L0eItzWkDnxO2T3u.xvqmqWfxYJ4lAD39Dc8GlUpbdZyD92', 'jorge@sena.edu.co', 'calle 3 # 73 - 02', '2347234', 1, 3);
 
 -- --------------------------------------------------------
 
@@ -408,8 +412,8 @@ CREATE TABLE `usuarios_roles` (
 --
 
 INSERT INTO `usuarios_roles` (`usr_id`, `usr_usu_id`, `usr_rl_id`) VALUES
-(1, 1, 4),
-(2, 1, 1);
+(26, 17, 2),
+(29, 20, 4);
 
 --
 -- Índices para tablas volcadas
@@ -541,8 +545,8 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `usuarios_roles`
   ADD PRIMARY KEY (`usr_id`),
-  ADD KEY `fk_usr_usu_id` (`usr_usu_id`),
-  ADD KEY `fk_usr_rl_id` (`usr_rl_id`);
+  ADD UNIQUE KEY `usr_usu_id` (`usr_usu_id`),
+  ADD UNIQUE KEY `usr_rl_id` (`usr_rl_id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -552,7 +556,7 @@ ALTER TABLE `usuarios_roles`
 -- AUTO_INCREMENT de la tabla `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `bitacora`
@@ -594,7 +598,7 @@ ALTER TABLE `estados_prestamos`
 -- AUTO_INCREMENT de la tabla `estados_usuarios`
 --
 ALTER TABLE `estados_usuarios`
-  MODIFY `est_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `est_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `marca`
@@ -636,7 +640,7 @@ ALTER TABLE `roles_permisos`
 -- AUTO_INCREMENT de la tabla `tipo_documento`
 --
 ALTER TABLE `tipo_documento`
-  MODIFY `tp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `tp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_elemento`
@@ -654,13 +658,13 @@ ALTER TABLE `tipo_prestamo`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `usu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `usu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_roles`
 --
 ALTER TABLE `usuarios_roles`
-  MODIFY `usr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `usr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- Restricciones para tablas volcadas

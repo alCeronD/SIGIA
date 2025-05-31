@@ -42,6 +42,7 @@ class SolicitudPrestamoController
 
     public function solicitudPrestamosView(){
 
+
         return include_once __DIR__ . '/../views/solicitudPrestamosView.php';
     }
     public function consultarPrestamoViews(){

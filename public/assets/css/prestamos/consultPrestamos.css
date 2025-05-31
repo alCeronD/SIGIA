@@ -1,6 +1,8 @@
 /* search:root {'search'};
 tblElementsConsult:root {'tblElementsConsult'}; */
-
+body{
+  background-color: red;
+}
 @media (min-width: 1200px) {
   #solicPrestamos {
     display: flex;

@@ -1,5 +1,7 @@
 <?php
 
+    // $_SESSION['value'] = (int) 0;
+
     function redirect($url){
         echo "<script type='text/javascript'>"
         ."window.location.href='$url'"
@@ -60,6 +62,19 @@
                 $objeto = new $nombreClase($conexion);
                 
                 if (method_exists($objeto, $funcion)) {
+                    if ($funcion == 'solicitudPrestamosView') {
+                        //dd('hello world');
+                        // session_start();
+                        unset($_SESSION['value']);
+                        $_SESSION['value'] = 2;
+                        $value = $_SESSION['value'];
+                    }
+
+                    if ($funcion == 'consultarPrestamoViews') {
+                        $_SESSION['value'] = 1;
+                        $value = $_SESSION['value'];
+                    }
+
                     $objeto->$funcion();
                 } else {
                     echo "La función no existe";

@@ -32,6 +32,11 @@ class ConfigModulesController{
         return include_once  __DIR__ . '/../tipoDocumento/views/tpDocumentoView.php';
     }
     
+    public function renderViewMarca(){
+        
+        return include_once  __DIR__ . '/../marcas/views/marcaView.php';
+    }
+    
 
 
     //Función para traer la información de la tabla en específico.

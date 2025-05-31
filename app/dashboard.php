@@ -1,10 +1,11 @@
 <?php 
 
 // session_start();
-include_once '../app/helpers/getUrl.php';
+// include_once '../app/helpers/getUrl.php';
 
 require_once '../app/helpers/session.php';
 $usuario = $_SESSION['usuario'];
+// dd($usuario);
 $rol = $usuario['rol_id'];
 
 
