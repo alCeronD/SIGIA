@@ -37,8 +37,6 @@ class ConfigModulesController{
         return include_once  __DIR__ . '/../marcas/views/marcaView.php';
     }
     
-
-
     //Función para traer la información de la tabla en específico.
     public function getData(String $tableName, String $status){
         
@@ -166,6 +164,11 @@ class ConfigModulesController{
         if ($tableName == 'areas') {
             $valueColumn = (int) $data['values']['ar_status'];
         }
+        
+        if ($tableName == 'marcas') {
+            $valueColumn = (int) $data['values']['ma_status'];
+            
+        }
 
         //Capturar nombre de la columa
         $nameColum = (String) key($data['values']);
@@ -186,6 +189,7 @@ class ConfigModulesController{
         $model = new ConfigModulesModel();
         $dataResult = $model->delete($sql, $types, $values);
         return $dataResult;
+        //return null;
     }
 
     public function addRow(array $data=[]){

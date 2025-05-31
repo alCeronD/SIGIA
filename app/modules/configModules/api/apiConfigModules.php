@@ -14,7 +14,7 @@ $statusCols = [
     'areas' => ['status' => 'ar_status', 'pk' => 'ar_cod'],
     'roles' => ['status' => 'rl_status', 'pk' => 'rl_cod'],
     'categorias' => ['status' => 'ca_status', 'pk' => 'ca_cod'],
-    'marcas' => ['status' => 'ma_status', 'pk' => 'ma_cod'],
+    'marcas' => ['status' => 'ma_status', 'pk' => 'ma_id'],
     'tipo_documento' => ['status' => 'tp_status' , 'pk' => 'tp_id']
 ];
 
@@ -151,10 +151,6 @@ if ($method === 'DELETE') {
     $tableDef = $schema[$tableName];
 
     $data = [];
-    // foreach ($tableDef['filas'] as $field) {
-    //     $data[$field] = $input[$field] ?? null;
-
-    // }
 
     if ($tableName == 'areas') {
         $statusCol = $statusCols[$tableName]['status'];
@@ -166,6 +162,11 @@ if ($method === 'DELETE') {
         $pkCol = $statusCols[$tableName]['pk'];
     }
 
+    if ($tableName == 'marcas') {
+        $statusCol = $statusCols[$tableName]['status'];
+        $pkCol = $statusCols[$tableName]['pk'];
+    }
+
     // Crear estructura esperada
     $data = [
         'tableName' => $tableName,
@@ -173,7 +174,7 @@ if ($method === 'DELETE') {
         'pk' => ['column' => $pkCol, 'value' => (int)$idPk]
     ];
 
-    //var_dump($data);
+    // var_dump($data);
 
     if ($configController->deleteRow($data)) {
 

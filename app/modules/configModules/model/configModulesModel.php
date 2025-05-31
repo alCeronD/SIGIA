@@ -82,9 +82,9 @@ public function insert(String $sql = '', String $types = '', array $values = [],
     public function delete(String $sql, String $types,array $values)
     {
 
-        $conn = $this->mysqli->getConnect();
         try {
-
+            
+            $conn = $this->mysqli->getConnect();
 
             $stmt = $conn->prepare($sql);
 
@@ -95,10 +95,9 @@ public function insert(String $sql = '', String $types = '', array $values = [],
             }
 
             array_unshift($refs, $types);
-            //var_dump($stmt);
             call_user_func_array([$stmt, 'bind_param'], $refs);
                 if (!$stmt->execute()) {
-                return "Error al ejecutar la consulta: " . $stmt->error;;
+                return "Error al ejecutar la consulta: $stmt->error";
             }
             
         } catch (mysqli_sql_exception $e) {
@@ -106,8 +105,6 @@ public function insert(String $sql = '', String $types = '', array $values = [],
         }
 
         return true;
-
-
     }
 
     //Actualiza formando la consulta.
