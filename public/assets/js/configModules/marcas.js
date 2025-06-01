@@ -89,7 +89,6 @@ function fetchData() {
           idPk = celda[0].textContent;
           nombreMarca = celda[1].textContent;
           descripcionMarca = celda[2].textContent;
-
           //Inputs del modal
           let nombreAreaUpdate = document.querySelector("#nombreAreaUpdate");
           let descripcionAreaUpdate = document.querySelector(
@@ -204,3 +203,42 @@ formMarca.addEventListener('submit', (f)=>{
 
 
 });
+
+//Formulario de actualización
+marcaUpdateForm.addEventListener('submit', (e)=>{
+  e.preventDefault();
+  e.stopPropagation();
+
+  
+  let form = new FormData(marcaUpdateForm);
+  let dta = Object.fromEntries(form);
+
+
+  dta["ma_id"] = idPk;
+  dta["tableName"] = table;
+
+  console.log({dta});
+
+  let data = JSON.stringify(dta);
+
+  objAjax.request.open(
+    "PUT",
+    `modules/configModules/api/apiConfigModules.php?data=${encodeURIComponent(
+      data
+    )}`
+  );
+  objAjax.request.setRequestHeader("Content-Type", "application/json");
+
+  objAjax.request.onload = ()=>{
+    let response = objAjax.request.responseText;
+    let dataResponse = JSON.parse(response);
+    console.log(dataResponse);
+
+    if (dataResponse.status) {
+      alert('registro actualizado.');
+      myModal.style.display = 'none';
+    }
+  }
+
+  objAjax.request.send(data);
+})

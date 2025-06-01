@@ -40,7 +40,7 @@
 <form action="" id="marcaForm">
     <input type="text" name="ma_nombre" id="nombreMarca" placeholder="Nombre marca">
     <input type="text" name="ma_descripcion" id="descripcionMarca" placeholder="Descripción marca">
-    <button type="submit">Guardar</button>
+    <button type="button">Guardar</button>
 </form>
 <?php require_once 'tableMarcaView.php'; ?>
 
@@ -52,8 +52,8 @@
         <span class="close">&times;</span>
         <span id="modalTitle">Actualizar registro</span>
         <form id="marcaUpdateForm">
-            <input type="text" name="ar_nombre" id="nombreAreaUpdate" placeholder="Nombre area...">
-            <textarea name="ar_descripcion" id="descripcionAreaUpdate" placeholder="Descripción..." ></textarea>
+            <input type="text" name="ma_nombre" id="nombreAreaUpdate" placeholder="Nombre area...">
+            <textarea name="ma_descripcion" id="descripcionAreaUpdate" placeholder="Descripción..." ></textarea>
             <button type="click" id="btnAreaUpdate">Agregar</button>
         </form>
     </div>

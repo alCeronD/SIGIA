@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
     //LLAMAR A LOS CONTROLADORES Y CREAR EL GRUD GENERAL
-
+    //var_dump($input);
     $tableName = isset($input['tableName']) ? $input['tableName'] : null;
 
     //Tabla que voy a usar para hacer las operaciones.
@@ -95,6 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
     }
 
+    //var_dump($data);
+
     if ($tableName == 'areas') {
         $nombreField = $data['ar_nombre'];
         $descripcionField = $data['ar_descripcion'];
@@ -105,6 +107,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $nombreField = $data['tp_sigla'];
         $descripcionField = $data['tp_nombre'];
         $codField = $input['tp_id'];   
+    }
+
+    if ($tableName == 'marcas') {
+        $nombreField = $data['ma_nombre'];
+        $descripcionField = $data['ma_descripcion'];
+        $codField = $input['ma_id'];  
     }
 
     //$keys=['values','tableName',$input['ar_cod'],['ar_nombre','ar_descripcion']];
