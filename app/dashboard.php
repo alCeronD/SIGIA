@@ -12,7 +12,7 @@ require_once '../app/helpers/session.php';
 $usuario = $_SESSION['usuario'];
 $rol = $usuario['rol_id'];
 
-dd("pero que pasaoooooo");
+// dd("pero que pasaoooooo");
 ?>
 
 <?php include '../public/partials/header.php'; ?>
