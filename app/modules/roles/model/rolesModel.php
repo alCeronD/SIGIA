@@ -45,10 +45,10 @@ class RolModelo {
         }
     }
 
-    public function insertarRoles($rol_nombre){
-    $sql = "INSERT INTO roles (rl_nombre) VALUES ('$rol_nombre')";
-    $resultado = $this->conn->query($sql);
-
+    public function insertarRoles($rol_nombre,$rol_descripcion){
+        $rol_status = 1;
+        $sql = "INSERT INTO roles (rl_nombre,rl_descripcion,rl_status) VALUES ('$rol_nombre', '$rol_descripcion','$rol_status')";
+        $resultado = $this->conn->query($sql);
     if ($resultado) {
         return true;
     } else {

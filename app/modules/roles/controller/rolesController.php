@@ -25,16 +25,18 @@ class rolesController {
         }
     }
     
-    public function registrarRoles(){
+    public function registrarRol(){
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $rol_nombre = $_POST['rol_nombre'];
-            $exito = $this->modeloRol->insertarRoles($rol_nombre);
+            $rol_descripcion = $_POST['rol_descripcion'];
+            $exito = $this->modeloRol->insertarRoles($rol_nombre,$rol_descripcion);
 
             if ($exito) {
-                echo "<div class='alert alert-success text-center'>Rol registrado correctamente.</div>";
-                // header("Location: index.php?action=rolesListar");
-                header("Location: dashboard.php");
-                exit();
+
+                $this->mostrarRoles();
+                echo "<script>alert('Rol registrado exitosamente'); window.location.href = '" . getUrl('roles','roles','mostrarRoles',false,'dashboard') . "';</script>";
+                return;
+
             } else {
                 echo "<div class='alert alert-danger text-center'>Error al registrar el Rol.</div>";
             }
@@ -42,8 +44,6 @@ class rolesController {
             return include __DIR__ .  './../views/rolesRegistrar.php';
         }
     }
-
-
 
 
     public function editarRol() {

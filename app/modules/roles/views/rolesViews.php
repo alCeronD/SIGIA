@@ -1,5 +1,8 @@
 <?php require_once __DIR__ . '/../../../helpers/session.php'; ?>
-    <h2 class="mb-4 text-center">Listado de Roles</h2>
+
+<?php require_once 'rolesRegistrar.php'; ?>
+
+<h2 class="mb-4 text-center">Listado de Roles</h2>
     <table class="table table-bordered table-striped" >
         <thead class="table-dark">
             <tr>
