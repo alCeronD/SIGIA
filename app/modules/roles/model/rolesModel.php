@@ -49,8 +49,10 @@ public function actualizarRol($rol_id, $rol_nombre) {
     }
 }
 
-public function eliminarRol($rl_id) {
-    $sql = "DELETE FROM roles WHERE rl_id = $rl_id";
+public function eliminarRol($rl_id,$status) {
+    $sql = "UPDATE roles SET rl_status =$status WHERE rl_id = $rl_id";
+    //dd($sql);
+    // $sql = "DELETE FROM roles WHERE rl_id = $rl_id";
     $resultado = $this->conn->query($sql);
 
     if ($resultado) {

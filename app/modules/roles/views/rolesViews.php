@@ -1,32 +1,28 @@
-
-<?php 
-
-require_once 'rolesRegistrar.php';
-
-?>
-
-<!-- <div class="container mt-5"> -->
+<?php require_once __DIR__ . '/../../../helpers/session.php'; ?>
     <h2 class="mb-4 text-center">Listado de Roles</h2>
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped" >
         <thead class="table-dark">
             <tr>
                 <th>ID</th>
                 <th>Nombre del Rol</th>
+                <th>Descripción</th>
+                <th>Status</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            <?php if (!empty($roles)) : ?>
+            <?php 
+            if (!empty($roles)) : ?>
                 <?php foreach ($roles as $rol) : ?>
                     <tr>
                         <td><?php echo $rol['rl_id']; ?></td>
                         <td><?php echo htmlspecialchars($rol['rl_nombre']); ?></td>
+                        <td><?php echo htmlspecialchars($rol['rl_descripcion']);?></td>
+                        <td><?php echo $value = ($rol['rl_status'] == 1) ? 'Activo': 'Inactivo'; htmlspecialchars($value);?></td>
                         <td>
                             <a href="index.php?action=rolesEditar&id=<?php echo $rol['rl_id']; ?>" class="btn btn-sm btn-warning">Editar</a>
-                            <a href="index.php?action=rolesEliminar&id=<?php echo $rol['rl_id']; ?>" 
-                               class="btn btn-sm btn-danger"
-                               onclick="return confirm('¿Estás seguro de eliminar este rol? Esta acción no se puede deshacer.');">
-                               Eliminar
+                            <a href="<?= getUrl('roles', 'roles', 'eliminarRol', ['rl_id' => $rol['rl_id'], 'rl_status' => $rol['rl_status']],'dashboard') ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de inactivar este registro?');">
+                                Eliminar
                             </a>
                         </td>
                     </tr>
@@ -38,9 +34,3 @@ require_once 'rolesRegistrar.php';
             <?php endif; ?>
         </tbody>
     </table>
-<!-- </div> -->
-
-<?php
-// include_once '../proyecto_sigia/public/partials/footer.php';
-
-?>

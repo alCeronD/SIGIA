@@ -1,6 +1,5 @@
 <?php
-// require_once './app/modules/roles/model/rolesModel.php';
-// require_once __DIR__ . './app/modules/roles/model/rolesModel.php';
+
 
 include_once __DIR__ . '/../model/rolesModel.php';
 class rolesController {
@@ -70,21 +69,25 @@ public function editarRol() {
 }
 
 public function eliminarRol() {
-    if (isset($_GET['id'])) {
-        $rl_id = $_GET['id'];
-        $exito = $this->modeloRol->eliminarRol($rl_id);
+    //dd($_GET);
+    if (isset($_GET['rl_id'])) {
+        $rl_id = $_GET['rl_id'];
+        $status = ($_GET['rl_status'] == 0) ? 1 : 0;
+        $exito = $this->modeloRol->eliminarRol($rl_id,$status);
 
         if ($exito) {
-            echo "<div class='alert alert-success text-center'>Rol eliminado correctamente.</div>";
+            echo "<script>alert('Rol inhabilitado exitosamente.');</script>";
+            self::mostrarRoles();
+            return;
         } else {
-            echo "<div class='alert alert-danger text-center'>Error al eliminar el rol.</div>";
+            echo "<script>alert('Error al inhabilitar el rol.');</script>";
+            self::mostrarRoles();
+            return;
         }
     } else {
         echo "<div class='alert alert-warning text-center'>ID de rol no especificado.</div>";
     }
 
-    // Redirigir o volver al listado de roles después de la acción
-    header("Location: index.php?action=rolesListar");
     exit();
 
 }
