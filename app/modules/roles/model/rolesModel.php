@@ -25,6 +25,26 @@ class RolModelo {
         return $roles;
     }
 
+    public function obtenerRol(int $id = 0){
+
+        if (!is_int($id)) {
+            exit();
+        }
+
+        if ($id) {
+        $query = "SELECT * FROM roles WHERE rl_id = $id";
+        $resultado = $this->conn->query($query);
+        
+            if ($resultado && $resultado->num_rows > 0) {
+                return $resultado->fetch_assoc();
+            } else {
+                return null; 
+            }
+        }else {
+            return null; 
+        }
+    }
+
     public function insertarRoles($rol_nombre){
     $sql = "INSERT INTO roles (rl_nombre) VALUES ('$rol_nombre')";
     $resultado = $this->conn->query($sql);
@@ -37,8 +57,8 @@ class RolModelo {
     }
 }
 
-public function actualizarRol($rol_id, $rol_nombre) {
-    $sql = "UPDATE roles SET rl_nombre = '$rol_nombre' WHERE rl_id = $rol_id";
+public function actualizarRol($rol_id, $rol_nombre,$rol_descripcion) {
+    $sql = "UPDATE roles SET rl_nombre = '$rol_nombre', rl_descripcion = '$rol_descripcion' WHERE rl_id = $rol_id";
     $resultado = $this->conn->query($sql);
 
     if ($resultado) {
@@ -51,8 +71,6 @@ public function actualizarRol($rol_id, $rol_nombre) {
 
 public function eliminarRol($rl_id,$status) {
     $sql = "UPDATE roles SET rl_status =$status WHERE rl_id = $rl_id";
-    //dd($sql);
-    // $sql = "DELETE FROM roles WHERE rl_id = $rl_id";
     $resultado = $this->conn->query($sql);
 
     if ($resultado) {
@@ -62,8 +80,6 @@ public function eliminarRol($rl_id,$status) {
         return false;
     }
 }
-
-
 
 }
 ?>
