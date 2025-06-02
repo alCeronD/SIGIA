@@ -76,13 +76,15 @@ public function eliminarRol() {
         $exito = $this->modeloRol->eliminarRol($rl_id,$status);
 
         if ($exito) {
-            echo "<script>alert('Rol inhabilitado exitosamente.');</script>";
-            self::mostrarRoles();
+            
+            $this->mostrarRoles();
+            echo "<script>alert('Categoría registrada exitosamente'); window.location.href = '" . getUrl('roles','roles','mostrarRoles',false,'dashboard') . "';</script>";
             return;
         } else {
             echo "<script>alert('Error al inhabilitar el rol.');</script>";
-            self::mostrarRoles();
+            $this->mostrarRoles();
             return;
+
         }
     } else {
         echo "<div class='alert alert-warning text-center'>ID de rol no especificado.</div>";
