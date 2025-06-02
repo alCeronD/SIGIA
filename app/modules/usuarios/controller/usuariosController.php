@@ -1,6 +1,5 @@
 <?php
 include_once __DIR__ . '/../model/usuariosModel.php';
-// include_once '../proyecto_sigia/app/config/conn.php'; 
 include_once __DIR__ . '/../../../config/conn.php';
 
 class usuariosController{
@@ -27,20 +26,20 @@ class usuariosController{
         
         //TODO: mandar a modelo.
         $resultado = $this->conn->query("SELECT * FROM roles");
-            if ($resultado && $resultado->num_rows > 0) {
-                 while ($row = $resultado->fetch_assoc()) {
-                    $roles[] = $row;
-                    
-                }  
-            }
-            // dd($roles);
+        if ($resultado && $resultado->num_rows > 0) {
+             while ($row = $resultado->fetch_assoc()) {
+                $roles[] = $row;
+                
+            }  
+        }
+        // dd($roles);
         $rowTp = $this->conn->query("SELECT * FROM tipo_documento");
-            if ($rowTp && $rowTp->num_rows > 0) {
-                 while ($row = $rowTp->fetch_assoc()) {
-                    $tp_documento[] = $row;
-                    
-                }  
-            }
+        if ($rowTp && $rowTp->num_rows > 0) {
+             while ($row = $rowTp->fetch_assoc()) {
+                $tp_documento[] = $row;
+                
+            }  
+        }
             // dd($roles);
         return include __DIR__ . '/../views/usuariosView.php';
     }
@@ -76,7 +75,6 @@ class usuariosController{
         }
     }
     public function consultUser(){
-        // include_once __DIR__ . '/../model/usuariosModel.php';
     
         $modeloUsuarios = new usuarios($this->conn);
     
@@ -88,12 +86,9 @@ class usuariosController{
     }
     
     public function updateUser(){
-        //include_once __DIR__ . '/../model/usuariosModel.php';
         
         $id = $_POST['usu_id'];
         unset($_POST['usu_id']);
-        
-        
         $dato = new usuarios($this->conn);
         $dato->update($_POST,$id);
         
@@ -127,6 +122,30 @@ class usuariosController{
     public function deleteUserView(){
        include_once '../proyecto_sigia/app/modules/usuarios/views/deleteView.php';
     }
+    
+    public function cambiarEstadoUsuario() {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $usu_id = $_GET['usu_id'];
+    
+            $query = "UPDATE usuarios 
+                      SET usu_id_estado = CASE 
+                        WHEN usu_id_estado = 1 THEN 2 
+                        ELSE 1 END 
+                      WHERE usu_id = ?";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("i", $usu_id);
+            
+            if ($stmt->execute()) {
+                echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" . getUrl('usuarios','usuarios','consultUser', false, 'dashboard') . "';</script>";
+            } else {
+                echo "Error al cambiar estado: " . $stmt->error;
+            }
+        } else {
+            echo "Método no permitido";
+        }
+    }
+        
 }
 
 ?>

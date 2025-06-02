@@ -8,7 +8,7 @@ $usuario = $_SESSION['usuario'];
 // dd($usuario);
 $rol = $usuario['rol_id'];
 
-
+// dd("pero que pasaoooooo");
 ?>
 
 <?php include '../public/partials/header.php'; ?>

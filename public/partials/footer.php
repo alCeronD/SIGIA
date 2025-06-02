@@ -73,14 +73,14 @@
               <a href="<?php echo getUrl('configModules','configModules','renderViewMarca',false,'dashboard'); ?>">Marcas</a>
             </li>
             <li>
-              <a href="#">Categorias</a>
-            </li>
-            <li>
               <a href="<?php echo getUrl("roles", "roles", "mostrarRoles", false, 'dashboard'); ?>" class="footer-icon text-center">
                 Roles
               </a>
             </li>
-
+            <li>
+              <a href="<?php echo getUrl("categorias", "categorias", "consultCategoriasView",false,'dashboard'); ?>">Categorias</a>
+            </li>
+            
           </ul>
         </li>
         <!-- Cerrar sesión -->

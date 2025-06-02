@@ -122,6 +122,8 @@ class usuarios {
         return $usuarios;
         }
         
+    
+    
     //Busca un registro específico.
     public function searchU(int $id=0){
 
@@ -150,6 +152,9 @@ class usuarios {
             return null; 
         }
     }
+    
+    
+
 }
 
     

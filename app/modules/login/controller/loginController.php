@@ -57,9 +57,9 @@ class loginController {
             
             if ($saveData->num_rows > 0) {
                 $datos = $saveData->fetch_assoc();
-                 //dd($datos['usu_password']);
-
-                    if (password_verify($password, $datos['usu_password'])) {
+                    $password_hash = $datos['usu_password'];
+                    
+                    if (password_verify($password,$password_hash)) {
                     // print()
                     $_SESSION['usuario'] = [
                         'id_usuario' => $datos['usu_id'],
@@ -89,7 +89,8 @@ class loginController {
                 } else {
 
                     // Contraseña incorrecta
-                    header("Location: /proyecto_sigia/index.php");
+                    dd("Contraseña incorrecta");
+                    // header("Location: /proyecto_sigia/index.php");
                     exit();
                 }
     
