@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-05-2025 a las 23:34:00
+-- Tiempo de generación: 02-06-2025 a las 19:59:57
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -39,12 +39,13 @@ CREATE TABLE `areas` (
 --
 
 INSERT INTO `areas` (`ar_cod`, `ar_nombre`, `ar_descripcion`, `ar_status`) VALUES
-(1, 'Multimedia', 'hellmultimedia', 1),
+(1, 'Multimedia', 'hellmasdedia', 1),
 (2, 'Fotografía', 'aca hay camaras', 0),
 (3, 'General', 'elementos conss\n', 0),
 (4, 'Aulas De Computo', 'asdads', 1),
 (5, 'Area de diseño', 'esta area pertencece a gente de dudosa procedencia', 1),
-(6, 'Aulas De Computo', 'asdasd', 1);
+(6, 'Aulas De Computo', 'asdasd', 1),
+(7, 'Aulas De Computo', 'sdd', 1);
 
 -- --------------------------------------------------------
 
@@ -192,15 +193,26 @@ INSERT INTO `estados_usuarios` (`est_id`, `est_nombre`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `marca`
+-- Estructura de tabla para la tabla `marcas`
 --
 
-CREATE TABLE `marca` (
+CREATE TABLE `marcas` (
   `ma_id` int(11) NOT NULL,
   `ma_nombre` varchar(50) NOT NULL,
   `ma_descripcion` varchar(200) NOT NULL,
   `ma_status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `marcas`
+--
+
+INSERT INTO `marcas` (`ma_id`, `ma_nombre`, `ma_descripcion`, `ma_status`) VALUES
+(1, 'hp', 'marcas', 0),
+(2, 'epson', 'moad', 1),
+(3, 'esony', 'modasdsad', 1),
+(4, 'canon', 'asdasd', 1),
+(5, 'asdasd', 'sss', 1);
 
 -- --------------------------------------------------------
 
@@ -275,10 +287,11 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`rl_id`, `rl_nombre`, `rl_descripcion`, `rl_status`) VALUES
-(1, 'Almacenista', NULL, 1),
-(2, 'Administrador', NULL, 1),
-(3, 'SubDirector', NULL, 1),
-(4, 'Instructor', NULL, 1);
+(1, 'Almacenista', 'rol de almacenista que cumple la función de no se.', 1),
+(2, 'Administrador', '111', 1),
+(3, 'SubDirector', '123123', 1),
+(4, 'Instructor', '1412312', 1),
+(5, 'informacion', 'asdasd', 1);
 
 -- --------------------------------------------------------
 
@@ -299,7 +312,6 @@ CREATE TABLE `roles_permisos` (
 INSERT INTO `roles_permisos` (`rlp_id`, `rlp_id_permiso`, `rlp_id_rl`) VALUES
 (1, 1, 2),
 (2, 3, 4),
-(3, 2, 1),
 (4, 2, 2);
 
 -- --------------------------------------------------------
@@ -320,9 +332,9 @@ CREATE TABLE `tipo_documento` (
 --
 
 INSERT INTO `tipo_documento` (`tp_id`, `tp_sigla`, `tp_nombre`, `tp_status`) VALUES
-(1, 'CC', 'Cédula de Ciuda', 1),
+(1, 'CC', 'Cédula de Ciuda', 0),
 (2, 'CE', 'Cédula de Ex', 0),
-(3, 'TI', 'Tarjeta de Iden', 0),
+(3, 'TI', 'Tarjeta de Iden', 1),
 (4, 'PAS', 'Pasaporte', 0),
 (5, 'RC', 'Registro Civil', 0),
 (6, 'NIT', 'Número de Ident', 0),
@@ -472,9 +484,9 @@ ALTER TABLE `estados_usuarios`
   ADD PRIMARY KEY (`est_id`);
 
 --
--- Indices de la tabla `marca`
+-- Indices de la tabla `marcas`
 --
-ALTER TABLE `marca`
+ALTER TABLE `marcas`
   ADD PRIMARY KEY (`ma_id`);
 
 --
@@ -556,7 +568,7 @@ ALTER TABLE `usuarios_roles`
 -- AUTO_INCREMENT de la tabla `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `bitacora`
@@ -568,7 +580,7 @@ ALTER TABLE `bitacora`
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `ca_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ca_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `elementos`
@@ -601,10 +613,10 @@ ALTER TABLE `estados_usuarios`
   MODIFY `est_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de la tabla `marca`
+-- AUTO_INCREMENT de la tabla `marcas`
 --
-ALTER TABLE `marca`
-  MODIFY `ma_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `marcas`
+  MODIFY `ma_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `permisos`
@@ -628,7 +640,7 @@ ALTER TABLE `prestamos_elementos`
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `rl_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `rl_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `roles_permisos`
@@ -712,13 +724,6 @@ ALTER TABLE `roles_permisos`
 ALTER TABLE `usuarios`
   ADD CONSTRAINT `fk_usu_id_estado` FOREIGN KEY (`usu_id_estado`) REFERENCES `estados_usuarios` (`est_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_usu_tp_id` FOREIGN KEY (`usu_tp_id`) REFERENCES `tipo_documento` (`tp_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `usuarios_roles`
---
-ALTER TABLE `usuarios_roles`
-  ADD CONSTRAINT `fk_usr_rl_id` FOREIGN KEY (`usr_rl_id`) REFERENCES `roles` (`rl_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_usr_usu_id` FOREIGN KEY (`usr_usu_id`) REFERENCES `usuarios` (`usu_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
