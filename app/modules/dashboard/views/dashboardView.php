@@ -1,1 +1,1 @@
-<h1>Hello world dashboard</h1>
+<h1 id="titleDashboard">Hello world dashboard</h1>

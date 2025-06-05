@@ -40,6 +40,7 @@ class usuariosController{
                 
             }  
         }
+        $_SESSION['css'] = 'usuarios/usuarios.css';
             // dd($roles);
         return include __DIR__ . '/../views/usuariosView.php';
     }
@@ -81,6 +82,7 @@ class usuariosController{
         $usuarios = $modeloUsuarios->search();
     
         $path = __DIR__ . '/../views/consultView.php';
+        $_SESSION['css'] = 'usuarios/usuarios.css';
         // var_dump($path);
         return include $path;
     }

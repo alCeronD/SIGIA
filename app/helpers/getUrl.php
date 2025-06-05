@@ -1,5 +1,7 @@
 <?php
 
+
+
     // $_SESSION['value'] = (int) 0;
 
     function redirect($url){
@@ -46,11 +48,7 @@
         }
 
         $controllerPath = __DIR__ . "/../modules/$modulo/controller/{$controlador}Controller.php";
-
-        // dd($controllerPath);
-
         if (is_dir(__DIR__ . "/../modules/$modulo")){
-            // var_dump($controllerPath);
             if (is_file($controllerPath)) {
             
                 include_once $controllerPath;
@@ -60,20 +58,14 @@
                 include_once __DIR__. '/../config/conn.php'; 
                 $conexion = (new Conection())->getConnect();
                 $objeto = new $nombreClase($conexion);
+
+                    
+
+                    
                 
                 if (method_exists($objeto, $funcion)) {
-                    if ($funcion == 'solicitudPrestamosView') {
-                        //dd('hello world');
-                        // session_start();
-                        unset($_SESSION['value']);
-                        $_SESSION['value'] = 2;
-                        $value = $_SESSION['value'];
-                    }
+                    
 
-                    if ($funcion == 'consultarPrestamoViews') {
-                        $_SESSION['value'] = 1;
-                        $value = $_SESSION['value'];
-                    }
 
                     $objeto->$funcion();
                 } else {
