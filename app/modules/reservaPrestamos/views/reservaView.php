@@ -63,18 +63,26 @@
                 <label for="observaciones" class="labelForm">Observaciones</label>
                 <textarea name="observaciones" class="inputForm" id="observaciones" placeholder="Digite una observación en caso de que sea requerida."></textarea>
             </div>
+
+            <div class="inputAddElements">
+                <button type="button" id="btnAddElements"></button>
+            </div>
+
+            <!-- Contenedor que va a tener los elementos que seran prestados -->
+            <div class="tableElements">
+                <?php require_once 'tablePreviewElements.php'; ?>
+            </div>
+
             <div class="inputBtn">
                 <button type="submit" id="btnSubmit"></button>
             </div>
         </form>
-
-
     </div>
 </div>
 
-<div id="modalAddElements" style="display: none;">
-    <?php require_once 'tablaAddElementsView.php'; ?>
+<!-- Contenedor que contiene el modal de las tablas de elementos devolutivos y consumibles -->
+<div id="addElements">
+    <?php require_once 'viewAddElements.php'; ?>
 </div>
 
-
-<script type="module" src="../public/assets/js/solicitudPrestamos/solicitudPrestamos.js"></script>
+<script type="module" src="../public/assets/js/reservaPrestamos/reservaPrestamos.js"></script>

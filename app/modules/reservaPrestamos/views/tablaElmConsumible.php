@@ -1,19 +1,6 @@
-<!-- Este archivo va a contener una tabla en la que mi idea principal es visualizar los elementos que el usuario instructor puede solicitar. -->
-<div class="filterElements">
-    <div class="checkBoxDevolutivo">
-        <label for="checkBoxFilter">
-            <span>Devolutivo</span>
-            <input type="radio" name="" id="">
-            <span>Consumible</span>
-            <input type="radio" name="" id="">
-        </label>
-    </div>
-    <div class="search">
-        <input type="text" name="" id="" placeholder="buscar Elemento...">
-    </div>
-</div>
-
-<table id="tableElements">
+<div class="">
+    <legend>Elementos Consumibles</legend>
+    <table id="">
     <thead>
         <tr>
             <th>Código</th>
@@ -71,12 +58,7 @@
             <td>2</td>
             <td><input type="checkbox"></td>
         </tr>
-        <tr>
-            <td>567834923</td>
-            <td>Monitor Atomos Ninja V</td>
-            <td>1</td>
-            <td><input type="checkbox"></td>
-        </tr>
     </tbody>
     </thead>
 </table>
+</div>

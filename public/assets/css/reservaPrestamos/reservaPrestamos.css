@@ -9,73 +9,126 @@
     "inputBtn";
 }
 
+:root {
+  --secundary: #004034;
+}
+
 /* Bloque del menu del modulo */
 .menuTitle {
   display: inline-block;
   width: 100%;
   align-self: start; /* o center/end según necesidad */
   justify-self: start;
+}
 
-  #textTitle{
-    font-size: 2rem;
-  }
+#textTitle {
+  font-size: 2rem;
 }
 
 /* Formulario */
 #formSolicitudPrestamo {
   display: grid;
-  grid-template-areas: 
+  grid-template-areas:
     "cedula nombre apellido"
     "telefono email areaDestino"
-    "fechaReserva horaInicioFin fechaDevolucion"
-    "inputObservaciones inputObservaciones inputObservaciones"
-    "inputBtn inputBtn inputBtn"
-    ;
+    "fechaReserva fechaDevolucion horaInicioFin"
+    ". inputObservaciones ."
+    "tableElements tableElements tableElements"
+    ". inputBtn .";
   grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
   gap: 1rem;
 }
 
-.cedula            { grid-area: cedula; }
-.nombre            { grid-area: nombre; }
-.apellido          { grid-area: apellido; }
-.telefono          { grid-area: telefono; }
-.email             { grid-area: email; }
-.areaDestino       { grid-area: areaDestino; }
-.fechaReserva      { grid-area: fechaReserva; }
-.horaInicioFin     { grid-area: horaInicioFin; }
-.fechaDevolucion   { grid-area: fechaDevolucion; }
-.inputObservaciones { grid-area: inputObservaciones; }
+/* Areas del formulario */
+.cedula {
+  grid-area: cedula;
+}
+.nombre {
+  grid-area: nombre;
+}
+.apellido {
+  grid-area: apellido;
+}
+.telefono {
+  grid-area: telefono;
+}
+.email {
+  grid-area: email;
+}
+.areaDestino {
+  grid-area: areaDestino;
+}
+.fechaReserva {
+  grid-area: fechaReserva;
+}
+.horaInicioFin {
+  grid-area: horaInicioFin;
+}
+.fechaDevolucion {
+  grid-area: fechaDevolucion;
+}
+.inputObservaciones {
+  grid-area: inputObservaciones;
+}
 
-.inputContent{
-    display: flex;
-    flex-direction: column;
-    /* background-color: blueviolet; */
+.tableElements {
+  grid-area: tableElements;
+}
+
+#observaciones {
+  resize: none;
+  width: 100%;
+  height: 50px;
+}
+
+.tableElmDevolutivos {
+  grid-area: tableElmDevolutivos;
+}
+.tablaElmConsumible {
+  grid-area: tablaElmConsumible;
+}
+
+.inputContent {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .labelForm {
+    font-size: 1.3rem;
+    margin-top: 0.3rem;
+    border-radius: 10px;
+    height: 2rem;
+  }
+
+  .inputForm {
     width: 100%;
-
-    .labelForm{
-        font-size: 1.3rem;
-        margin-top: 0.3rem;
-        border-radius: 10px;
-        height: 2rem;
-    }
-
-    .inputForm{
-        width: 100%;
-        height: 50%;
-         border: none;
-        border-bottom: 2px solid #ccc;
-        border-right: none;
-    }
-
+    height: 50%;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    border-right: none;
+  }
 }
 
 /* TODO: Agregar efecto focus cuando presione el input al cual voy a usar */
-input[type=text]:focus{
-    border: 3px solid blue;
+.inputForm:focus {
+  outline: none;
+  border: 2px solid #007bff;
 }
 
+/* Estilos de la tabla */
+table {
+  width: 100%;
+  table-layout: fixed;
+  word-wrap: break-word;
+}
 
-
+td,
+th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: wrap;
+}
 
 /* Boton */
 .inputBtn {
@@ -83,4 +136,75 @@ input[type=text]:focus{
   grid-area: inputBtn;
   width: 100%;
   justify-items: center;
+}
+
+/* Estilos del modal */
+#modalAddElements {
+  display: none;
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  height: auto;
+  /* Could be more or less, depending on screen size */
+}
+
+.close {
+  cursor: pointer;
+  width: 1.8rem;
+}
+
+#modalAddElements legend {
+  font-size: 1rem;
+}
+
+#modal-title {
+  background-color: var(--secundary);
+  color: white;
+  display: flex;
+  height: auto;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-radius: 8px 8px 0 0;
+}
+
+#modal-title #modalTitle {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+#modal-title button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2rem;
+  color: white;
+  padding: 0.3rem;
+  line-height: 1;
+}
+
+#modal-title .close {
+  font-size: 2rem;
+  color: white;
 }

@@ -1,6 +1,5 @@
 <?php
 
-//TODO: Si esto crece, separar tdas las responsabilidades por diferentes archivos, si es para la tabla areas, crear su respectivo archivo como también para las otras tablas.
 // Este documento recibe todas las solicitudes de ajax.
 header("Content-Type: application/json");
 $input = json_decode(file_get_contents("php://input"), true);
@@ -39,14 +38,10 @@ $schema = [
     ]
 ];
 
-
-
-
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method === 'POST' && isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
     $method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
 }
-
 
 //SELECT
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -204,10 +199,6 @@ if ($method === 'DELETE') {
 
 //INSERT
 if ($method === 'POST') {
-    //$ar_nombre = $input['ar_nombre'];
-    //$ar_descripcion = $input['ar_descripcion'];
-
-
     //Extraigo el nombre de la tabla.
     $tableName = $input['tableName'];
 

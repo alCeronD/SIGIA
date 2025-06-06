@@ -9,7 +9,7 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
 /* Variables para los colores */
 :root {
   --primary: #1e90ff;
-  --secundary: #ffffff;
+  --secundary: #004034;
   --btnSubmit : rgba(128, 255, 0, 0.371);
   --btnInfo : green;
   --other: gray;
@@ -18,14 +18,22 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
 body{
   font-family: monospace;
 }
-.container {
+.container{
   display: flex;
-  width: 70%;
-  margin: 0 auto;
   height: calc(100vh - 100px);
   border: 1px solid black;
+  width: 100%;
   padding: 1.5rem;
+  /* El contenedor y todo lo que hay internamente va a tener un Máximo de 1200px de tamaño */
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: auto;
 
+}
+
+.container * {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 
@@ -39,13 +47,13 @@ body{
   align-items: center;
   justify-content: center;
 
-  background-color: yellow;
+  /* background-color: yellow; */
 
   /* Estilos del menú */
   .horizontalMenu {
     display: flex;
-
-    li {
+  }
+  li {
       margin-left: 0.5rem;
       list-style: none;
       text-decoration: none;
@@ -53,7 +61,6 @@ body{
       flex-direction: row;
       position: relative;
     }
-  }
   /* Etiquetas a del menu */
   .horizontalMenu > li > a {
     display: block;

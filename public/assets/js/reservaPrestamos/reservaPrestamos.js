@@ -6,19 +6,17 @@ const table = document.querySelector('#tableElements');
 const modalAddElements = document.querySelector('#modalAddElements');
 const btnAddElements = document.getElementById('btnAddElements');
 const modalTitle = document.querySelector('#modalTitle');
-btnAddElements.innerText = '+';
+const btnCloseButton = document.querySelector('.close');
+btnAddElements.innerText = 'Seleccionar elementos';
 modalTitle.innerText = 'Elementos disponibles';
 
 btnAddElements.addEventListener('click',(btnTarget)=>{
+    console.log('hello world');
     btnTarget.preventDefault();
     btnTarget.stopPropagation();
 
     //visualizar modal.
     modalAddElements.style.display = "flex";
-    modalAddElements.style.justifyContent = "center";
-    modalAddElements.style.flexDirection = "column";
-
-
 });
 
 
@@ -40,3 +38,10 @@ inputElement.forEach(element =>{
 
 });
 
+//TODO: mejorar código y validar cuando vaya a cerrar la ventana.
+btnCloseButton.addEventListener('click', (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+
+    modalAddElements.style.display = 'none';
+});
