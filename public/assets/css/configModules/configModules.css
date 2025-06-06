@@ -2,3 +2,7 @@
 #myModal{
     display: none;
 }
+
+.container{
+    background-color: bisque;
+}
