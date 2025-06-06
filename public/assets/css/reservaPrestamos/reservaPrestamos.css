@@ -1,0 +1,86 @@
+.content {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto repeat(2, 1fr);
+  grid-template-areas:
+    "menuTitle"
+    "solicPrestamos"
+    "inputBtn";
+}
+
+/* Bloque del menu del modulo */
+.menuTitle {
+  display: inline-block;
+  width: 100%;
+  align-self: start; /* o center/end según necesidad */
+  justify-self: start;
+
+  #textTitle{
+    font-size: 2rem;
+  }
+}
+
+/* Formulario */
+#formSolicitudPrestamo {
+  display: grid;
+  grid-template-areas: 
+    "cedula nombre apellido"
+    "telefono email areaDestino"
+    "fechaReserva horaInicioFin fechaDevolucion"
+    "inputObservaciones inputObservaciones inputObservaciones"
+    "inputBtn inputBtn inputBtn"
+    ;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.cedula            { grid-area: cedula; }
+.nombre            { grid-area: nombre; }
+.apellido          { grid-area: apellido; }
+.telefono          { grid-area: telefono; }
+.email             { grid-area: email; }
+.areaDestino       { grid-area: areaDestino; }
+.fechaReserva      { grid-area: fechaReserva; }
+.horaInicioFin     { grid-area: horaInicioFin; }
+.fechaDevolucion   { grid-area: fechaDevolucion; }
+.inputObservaciones { grid-area: inputObservaciones; }
+
+.inputContent{
+    display: flex;
+    flex-direction: column;
+    /* background-color: blueviolet; */
+    width: 100%;
+
+    .labelForm{
+        font-size: 1.3rem;
+        margin-top: 0.3rem;
+        border-radius: 10px;
+        height: 2rem;
+    }
+
+    .inputForm{
+        width: 100%;
+        height: 50%;
+         border: none;
+        border-bottom: 2px solid #ccc;
+        border-right: none;
+    }
+
+}
+
+/* TODO: Agregar efecto focus cuando presione el input al cual voy a usar */
+input[type=text]:focus{
+    border: 3px solid blue;
+}
+
+
+
+
+/* Boton */
+.inputBtn {
+  display: grid;
+  grid-area: inputBtn;
+  width: 100%;
+  justify-items: center;
+}

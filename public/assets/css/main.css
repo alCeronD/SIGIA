@@ -6,17 +6,30 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
   margin: 0px;
   padding: 0px;
 }
+/* Variables para los colores */
+:root {
+  --primary: #1e90ff;
+  --secundary: #ffffff;
+  --btnSubmit : rgba(128, 255, 0, 0.371);
+  --btnInfo : green;
+  --other: gray;
+}
 
-/* Es el tamaño en donde se va a trabajar todas la vista */
+body{
+  font-family: monospace;
+}
 .container {
-  margin: 0 auto;
-  width: 50%;
   display: flex;
-  justify-content: flex-end;
+  width: 70%;
+  margin: 0 auto;
   height: calc(100vh - 100px);
   border: 1px solid black;
-  flex-direction: column;
+  padding: 1.5rem;
+
 }
+
+
+
 
 /* Estilos del footer. */
 #mainMenu {

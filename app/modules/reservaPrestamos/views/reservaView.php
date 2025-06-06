@@ -1,0 +1,80 @@
+<div class="content">
+    <div class="menuTitle">
+        <span id="textTitle">Registrar solicitud</span>
+    </div>
+    <div id="solicPrestamos">
+        <form action="" method="post" id="formSolicitudPrestamo">
+            <div class="inputContent cedula">
+                <label for="cedula" class="labelForm">Cédula: *</label>
+                <input type="number" class="inputForm" name="cedula" id="cedula" placeholder="Identificación...">
+            </div>
+
+            <div class="inputContent nombre">
+                <label for="nombre" class="labelForm">Nombre: *</label>
+                <input type="text" class="inputForm" name="nombre" id="nombre" placeholder="Nombre...">
+            </div>
+
+            <div class="inputContent apellido">
+                <label for="apellido" class="labelForm">Apellido: *</label>
+                <input type="text" class="inputForm" name="apellido" id="apellido" placeholder="Apellido...">
+            </div>
+
+            <div class="inputContent telefono">
+                <label for="telefono" class="labelForm">Teléfono: *</label>
+                <input type="tel" class="inputForm" name="telefono" id="telefono" placeholder="Teléfono...">
+            </div>
+
+            <div class="inputContent email">
+                <label for="email" class="labelForm">Email:</label>
+                <input type="email" class="inputForm" name="email" id="email" placeholder="Correo electrónico...">
+            </div>
+
+            <div class="inputContent areaDestino">
+                <label for="areaDestino" class="labelForm">Área de destino: *</label>
+                <select name="areaDestino" id="areaDestino">
+                    <option value="">---</option>
+                    <option value="centro">Centro</option>
+                    <option value="externo">Externo</option>
+                </select>
+            </div>
+
+            <div class="inputContent fechaReserva">
+                <label for="fechaReserva" class="labelForm">Fecha Reserva: *</label>
+                <input type="date" class="inputForm" name="fechaReserva" id="fechaReserva">
+            </div>
+
+            <div class="inputContent horaInicioFin">
+                <div class="horaInicio">
+                    <label for="inicio" class="labelForm">Hora inicio:</label>
+                    <input type="time" class="inputForm" id="inicio" name="inicio">
+                </div>
+                <div class="horaFin">
+                    <label for="fin" class="labelForm">Hora fin:</label>
+                    <input type="time" class="inputForm" id="fin" name="fin">
+                </div>
+            </div>
+
+            <div class="inputContent fechaDevolucion">
+                <label for="fechaDevolucion" class="labelForm">Fecha Devolución: *</label>
+                <input type="date" class="inputForm" name="fechaDevolucion" id="fechaDevolucion">
+            </div>
+
+            <div class="inputObservaciones">
+                <label for="observaciones" class="labelForm">Observaciones</label>
+                <textarea name="observaciones" class="inputForm" id="observaciones" placeholder="Digite una observación en caso de que sea requerida."></textarea>
+            </div>
+            <div class="inputBtn">
+                <button type="submit" id="btnSubmit"></button>
+            </div>
+        </form>
+
+
+    </div>
+</div>
+
+<div id="modalAddElements" style="display: none;">
+    <?php require_once 'tablaAddElementsView.php'; ?>
+</div>
+
+
+<script type="module" src="../public/assets/js/solicitudPrestamos/solicitudPrestamos.js"></script>
