@@ -58,6 +58,14 @@
             </li>
           </ul>
         </li>
+        <!-- Modulo elementos -->
+         <li>
+          <a href="#">Elementos</a>
+          <ul class="verticalMenu">
+            <li><a href="#">ver Elementos</a></li>
+            <li><a href="#">Registrar elementos</a></li>
+          </ul>
+         </li>
         <!-- Configuración -->
         <li>
           <a href="#">Configuración</a>

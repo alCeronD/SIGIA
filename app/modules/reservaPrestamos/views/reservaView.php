@@ -1,10 +1,11 @@
 <!-- la función getUrl se puede acceder porque la tenemos incluida directamente en el dashboard. -->
+
 <div class="content">
     <div class="menuTitle">
         <span id="textTitle">Registrar solicitud</span>
-        <a href="<?php echo getUrl('dashboard','dashboard','dashboard',false,'dashboard');?>" 
-     class="close-btn" 
-     title="Volver al dashboard">&times;</a>
+        <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
+            class="close-btn"
+            title="Volver al dashboard">&times;</a>
     </div>
     <div id="solicPrestamos">
         <form action="" method="post" id="formSolicitudPrestamo">

@@ -37,7 +37,7 @@ class ReservaModel
             INNER JOIN areas ar ON
             	el.elm_area_cod = ar.ar_cod
             WHERE
-            el.elm_cod_estado = 1 AND el.elm_cod_tp_elemento = 1 AND ar.ar_status = 1;";
+            el.elm_cod_estado = 1 AND el.elm_cod_tp_elemento = 1 AND ar.ar_status = 1";
 
         $stmt = $conn->prepare($sql);
 

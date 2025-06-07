@@ -4,13 +4,9 @@
 
 class ScanFiles{
 
-    private array $filesCss;
-
     private array $nameAssetsFiles;
 
     private array $nameFilesCss;
-
-    private $urlRender;
 
     private $modulo;
     private $file;
@@ -27,11 +23,12 @@ class ScanFiles{
         }
 
         $relativePathAssets = __DIR__ . "/../../public/assets/css/$module";
-
         $fileAssets = glob($relativePathAssets. '*',GLOB_MARK);
         
         foreach ($fileAssets as $key => $value) {
             $filesAssets = basename($value);
+
+            //var_dump($filesAssets);
 
             if (!str_contains($filesAssets,'.css')) {
 
@@ -39,6 +36,7 @@ class ScanFiles{
             }
 
         }
+
     }
 
     //Funcion que sirve para crear arreglo en donde puedo guardar los archivos css según su modulo.
@@ -60,8 +58,14 @@ class ScanFiles{
         }
         $path = "../public/assets/css/$module/";
         $cssFile = reset($nameFiles[$module]);
+        $cssFile = key($nameFiles[$module]);
+
         return $path . $cssFile;
     }
 }
+
+$objName = new ScanFiles('configModules');
+
+$objName->mapAssets('configModules');
 
 ?>

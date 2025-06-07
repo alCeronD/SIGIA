@@ -18,6 +18,8 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
 body{
   font-family: monospace;
 }
+
+
 .container{
   display: flex;
   height: calc(100vh - 100px);
@@ -26,7 +28,7 @@ body{
   padding: 1.5rem;
   /* El contenedor y todo lo que hay internamente va a tener un Máximo de 1200px de tamaño */
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto 12px;
   overflow-x: auto;
   margin-bottom: 0vh;
 }
@@ -42,9 +44,6 @@ body{
   text-decoration: none;
   font-size: 2rem;
 }
-
-
-
 
 /* Estilos del footer. */
 #mainMenu {
@@ -102,6 +101,7 @@ body{
 /* Estilos de tablas */
 
 /* Estilos de inputs */
+
 
 /* Estilos de los contenedores */
 
