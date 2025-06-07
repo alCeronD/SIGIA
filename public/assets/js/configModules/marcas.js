@@ -132,6 +132,7 @@ function fetchData() {
               "modules/configModules/api/apiConfigModules.php",
               true
             );
+            //Mando por post pero sobreescribo el método a delete.
             objAjax.request.setRequestHeader(
               "X-HTTP-Method-Override",
               "DELETE"
@@ -209,15 +210,11 @@ marcaUpdateForm.addEventListener('submit', (e)=>{
   e.preventDefault();
   e.stopPropagation();
 
-  
   let form = new FormData(marcaUpdateForm);
   let dta = Object.fromEntries(form);
 
-
   dta["ma_id"] = idPk;
   dta["tableName"] = table;
-
-  console.log({dta});
 
   let data = JSON.stringify(dta);
 

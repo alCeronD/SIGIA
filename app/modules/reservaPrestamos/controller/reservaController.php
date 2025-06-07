@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../../helpers/getUrl.php';
 
 // Recibir la respuesta de la solicitud.
 $method = $_SERVER['REQUEST_METHOD'];
+//header("Content-Type: application/json");
 
 class ReservaController{
     private $model;
@@ -29,6 +30,10 @@ class ReservaController{
 
     public function getUsers(){
         $data = $this->model->selectUsers();
+
+        if ($data != null) {
+            success('Usuarios activos',$data);
+        }
     }
 }
 
@@ -38,13 +43,26 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
+        $case = $_GET['action'] ?? '';
+
+        switch ($case) {
+            case 'users':
+                if (method_exists($controller,'getUsers')) {
+                    $controller->getUsers();
+                }
+                break;
+            
+            default:
+            //TODO: Retornar un valor no valido.
+                # code...
+                break;
+        }
+
+
         if (method_exists($controller,'getElementosDevolutivos')) {
             $controller->getElementosDevolutivos();
         }
-
-        if (method_exists($controller,'getUsers')) {
-            $controller->getUsers();
-        }
+        
 
     }elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
         //aca debe de ejecutarse la función del controlador para agregar el prestamo

@@ -63,12 +63,43 @@ class ReservaModel
     }
     
     public function selectUsers(){
-        $conn = $this->conect;
-
+        
         try {
+            $conn = $this->conect->getConnect();
+
+            $sql = "SELECT 
+                us.usu_docum AS 'nroDocumento',
+                us.usu_nombres AS 'nombres',
+                us.usu_apellidos AS 'apellidos',
+                us.usu_telefono AS 'telefono',
+                us.usu_email AS 'email',
+                r.rl_nombre AS 'rol'
+                FROM usuarios us
+                INNER JOIN estados_usuarios es_u ON
+                es_u.est_id = us.usu_id_estado
+                INNER JOIN usuarios_roles usr ON 
+                usr.usr_usu_id = us.usu_id 
+                INNER JOIN roles r 
+                ON usr.usr_rl_id = r.rl_id
+                WHERE r.rl_id != 2 AND r.rl_status = 1 AND us.usu_id_estado = 1";
+            $stmt = $conn->prepare($sql);
+            
+            if (!$stmt->execute()) {
+                return null;
+            }
+
+            $rows = $stmt->get_result();
+
+            $data = [];
+
+            while ($row = $rows->fetch_assoc()) {
+                $data[] = $row;
+            }
+
+            return $data;
             
         } catch (\Throwable $th) {
-            
+            return $th->getMessage();
         }
     }
 }

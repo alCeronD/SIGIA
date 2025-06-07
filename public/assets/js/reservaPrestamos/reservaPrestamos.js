@@ -8,7 +8,8 @@ const modalAddElements = document.querySelector('#modalAddElements');
 const modalUsers = document.querySelector('#modalUsers');
 const btnAddElements = document.getElementById('btnAddElements');
 const modalTitle = document.querySelector('#modalTitle');
-// const btnCloseButton = document.querySelector('.close');
+
+// Selecciono el elemento específico.
 const btnCloseElements = document.querySelector('#modalAddElements .close-modal');
 const btnCloseUsers = document.querySelector('#modalUsers .close-modal');
 
@@ -88,17 +89,17 @@ btnSearchUser.addEventListener('click',(event) =>{
     event.preventDefault();
 
     // Enviar petición para traer la lista de usuarios.
-    // objAjax.request.open('GET','modules/reservaPrestamos/controller/reservaController.php',true);
-    // objAjax.request.setRequestHeader('X-Requested-With','XMLHttpRequest');
-    // objAjax.request.onload = () =>{
-    //     let response = objAjax.request.responseText;
-    //     let data = JSON.parse(response);
-    //     console.log(data);
+        objAjax.request.open('GET','modules/reservaPrestamos/controller/reservaController.php?action=users',true);
+        objAjax.request.setRequestHeader('X-Requested-With','XMLHttpRequest');
+        objAjax.request.onload = () =>{
+        let response = objAjax.request.responseText;
+        let data = JSON.parse(response);
+        console.log(data);
 
-    // }
+    }
 
-    // objAjax.request.setRequestHeader('Accept', 'application/json');
-    // objAjax.request.send();
+    objAjax.request.setRequestHeader('Accept', 'application/json');
+    objAjax.request.send();
 
     modalUsers.style.display = 'flex';
 });
