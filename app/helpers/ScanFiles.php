@@ -64,8 +64,6 @@ class ScanFiles{
     }
 }
 
-$objName = new ScanFiles('configModules');
 
-$objName->mapAssets('configModules');
 
 ?>

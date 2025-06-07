@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
         //Transformo la respuesta
         let response = JSON.parse(objAjax.request.responseText);
         dataDevolutivos = response.data;
-        //console.log(data);
+        console.log(dataDevolutivos);
     }
     //Específicamos que respuesta queremos recibir
     objAjax.request.setRequestHeader('Accept', 'application/json');
