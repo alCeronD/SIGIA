@@ -26,6 +26,10 @@ class ReservaController{
         $data = $this->model->selectElements();
         success('Registros',$data);
     }
+
+    public function getUsers(){
+        $data = $this->model->selectUsers();
+    }
 }
 
 $controller = new ReservaController();
@@ -38,6 +42,10 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             $controller->getElementosDevolutivos();
         }
 
+        if (method_exists($controller,'getUsers')) {
+            $controller->getUsers();
+        }
+
     }elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
         //aca debe de ejecutarse la función del controlador para agregar el prestamo
         echo 'hello world';
@@ -45,7 +53,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     exit();
 
 }
-
+//Por defecto me ejecuta la vista, en caso de que no sea una petición.
 $controller->reservaView();
 
 ?>

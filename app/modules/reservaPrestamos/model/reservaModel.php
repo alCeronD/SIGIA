@@ -58,8 +58,17 @@ class ReservaModel
         return $data;
 
         } catch (\Throwable $th) {
-            echo json_encode(["error" => "Excepción: " . $th->getMessage()]);
-            exit();
+            return  $th->getMessage();
+        }
+    }
+    
+    public function selectUsers(){
+        $conn = $this->conect;
+
+        try {
+            
+        } catch (\Throwable $th) {
+            
         }
     }
 }

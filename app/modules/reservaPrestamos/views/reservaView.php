@@ -7,7 +7,11 @@
             class="close-btn"
             title="Volver al dashboard">&times;</a>
     </div>
-    <div id="solicPrestamos">
+    <div class="searchUser">
+        <label for="">Instructor: </label>
+        <button type="button" id="searchBtn"></button>
+    </div>
+    <div class="solicPrestamos">
         <form action="" method="post" id="formSolicitudPrestamo">
             <div class="inputContent cedula">
                 <label for="cedula" class="labelForm">Cédula: *</label>
@@ -89,5 +93,10 @@
 <div id="addElements">
     <?php require_once 'viewAddElements.php'; ?>
 </div>
+
+<!-- Contenedor modal que contiene los registros de los usuarios -->
+ <div id="users">
+    <?php require_once 'tableUsers.php'; ?>
+ </div>
 
 <script type="module" src="../public/assets/js/reservaPrestamos/reservaPrestamos.js"></script>

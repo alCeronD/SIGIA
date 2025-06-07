@@ -5,7 +5,7 @@
         <div id="modal-title">
             <span id="modalTitle">Elementos disponibles</span>
             <button type="button" id="closeModalBtn">
-                <span class="close">&times;</span>
+                <span class="close-modal">&times;</span>
             </button>
         </div>
         <!-- Tabla de elementos devolutivos -->

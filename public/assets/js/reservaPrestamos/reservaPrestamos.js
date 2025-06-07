@@ -1,17 +1,26 @@
 import { Ajax } from "../libraries/ajax.js";
+import { closeModal } from "../libraries/cases.js";
 
 const objAjax = new Ajax();
 const btnSubmit = document.getElementById('btnSubmit');
 const tableDevolutivos = document.querySelector('#bodyDevolutions');
 const modalAddElements = document.querySelector('#modalAddElements');
+const modalUsers = document.querySelector('#modalUsers');
 const btnAddElements = document.getElementById('btnAddElements');
 const modalTitle = document.querySelector('#modalTitle');
-const btnCloseButton = document.querySelector('.close');
+// const btnCloseButton = document.querySelector('.close');
+const btnCloseElements = document.querySelector('#modalAddElements .close-modal');
+const btnCloseUsers = document.querySelector('#modalUsers .close-modal');
+
+
+
+const btnSearchUser = document.querySelector('#searchBtn');
 let dataDevolutivos = {};
 let dataConsumibles = {};
 btnAddElements.innerText = 'Seleccionar elementos';
 modalTitle.innerText = 'Elementos disponibles';
 btnSubmit.innerText = 'Reservar';
+btnSearchUser.innerText = 'Consultar';
 
 // AJAX GET ELEMENTS
 /**
@@ -20,13 +29,12 @@ btnSubmit.innerText = 'Reservar';
 
 document.addEventListener('DOMContentLoaded', ()=>{
     objAjax.request.open('GET','modules/reservaPrestamos/controller/reservaController.php',true);
-     objAjax.request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    objAjax.request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
     objAjax.request.onload = ()=>{
         //Transformo la respuesta
         let response = JSON.parse(objAjax.request.responseText);
         dataDevolutivos = response.data;
-        console.log(dataDevolutivos);
     }
     //Específicamos que respuesta queremos recibir
     objAjax.request.setRequestHeader('Accept', 'application/json');
@@ -34,6 +42,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 });
 
+// Abrir modal de elementos disponibles devolutivos y consumibles.
 btnAddElements.addEventListener('click',(btnTarget)=>{
     btnTarget.preventDefault();
     btnTarget.stopPropagation();
@@ -70,13 +79,28 @@ btnAddElements.addEventListener('click',(btnTarget)=>{
     });
 });
 
+closeModal(modalAddElements, btnCloseElements);
 
-// Cerrar el modal.
-btnCloseButton.addEventListener('click', (event)=>{
+
+//Abrir modal usuarios
+btnSearchUser.addEventListener('click',(event) =>{
     event.stopPropagation();
     event.preventDefault();
 
-    modalAddElements.style.display = 'none';
+    // Enviar petición para traer la lista de usuarios.
+    // objAjax.request.open('GET','modules/reservaPrestamos/controller/reservaController.php',true);
+    // objAjax.request.setRequestHeader('X-Requested-With','XMLHttpRequest');
+    // objAjax.request.onload = () =>{
+    //     let response = objAjax.request.responseText;
+    //     let data = JSON.parse(response);
+    //     console.log(data);
 
+    // }
+
+    // objAjax.request.setRequestHeader('Accept', 'application/json');
+    // objAjax.request.send();
+
+    modalUsers.style.display = 'flex';
 });
-
+//Cerrar modal
+closeModal(modalUsers, btnCloseUsers);
