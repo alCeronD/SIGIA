@@ -14,7 +14,7 @@
         </div>
         <!-- Tabla de elementos consumibles -->
         <div class="tablaElmConsumible">
-            <?php include_once 'tablaElmConsumible.php'; ?>
+            <?php //include_once 'tablaElmConsumible.php'; ?>
         </div>
     </div>
 </div>

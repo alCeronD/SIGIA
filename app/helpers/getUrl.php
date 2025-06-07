@@ -59,10 +59,6 @@
                 $conexion = (new Conection())->getConnect();
                 $objeto = new $nombreClase($conexion);
 
-                    
-
-                    
-                
                 if (method_exists($objeto, $funcion)) {
                     
 
@@ -72,12 +68,14 @@
                     echo "La función no existe";
                 }
             } else {
-                echo "El controlador no existe";
+                throw new Exception("El controlador $controllerPath no existe.");
             }
         } else {
             echo "El módulo no existe";
         }
     }
+
+
     
     
     ?>

@@ -2,7 +2,7 @@
 
 <div id="">
     <legend>Elementos devolutivos</legend>
-    <table id="tblElements">
+    <table id="">
         <thead>
             <tr>
                 <th>Código</th>
@@ -12,8 +12,8 @@
             </tr>
         </thead>
         <!-- Renderizado con javascript. -->
-        <tbody>
-            <tr>
+        <tbody id="bodyDevolutions">
+            <!-- <tr>
                 <td>ELM-001</td>
                 <td>Cámara DSLR Canon EOS 90D</td>
                 <td>3</td>
@@ -60,9 +60,8 @@
                 <td>Pilas recargables AA Panasonic Eneloop</td>
                 <td>40</td>
                 <td><button>+</button></td>
-            </tr>
+            </tr> -->
             
         </tbody>
     </table>
-
 </div>
