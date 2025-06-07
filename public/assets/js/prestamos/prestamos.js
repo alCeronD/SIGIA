@@ -1,13 +1,3 @@
-// const title = document.getElementById('menuTitle');
-// const menuTitleConsult = document.getElementById('menuTitleConsult');
-
-// console.log({title,menuTitleConsult});
-// menuTitleConsult.innerText = 'Consultar Prestamos';
-// title.innerText = 'Registrar solicitud';
-// table.classList.add('table');
-// table.setAttribute('scope','row');
-
-
 const btnSubmit = document.getElementById('btnSubmit');
 btnSubmit.innerText = 'Reservar';
 

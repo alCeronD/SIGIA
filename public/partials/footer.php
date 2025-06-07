@@ -51,13 +51,21 @@
           <a href="#">Prestamos</a>
           <ul class="verticalMenu">
             <li>
-              <a href="<?php echo getUrl("configModules", "configModules", "renderViewArea", false, 'dashboard'); ?>">Solicitar Prestamo</a>
+              <a href="<?php echo getUrl("reservaPrestamos", "reserva", "reservaView", false, 'dashboard'); ?>">Reserva</a>
             </li>
             <li>
               <a href="<?php echo getUrl("configModules", "configModules", "renderViewArea", false, 'dashboard'); ?>">Ver prestamos</a>
             </li>
           </ul>
         </li>
+        <!-- Modulo elementos -->
+         <li>
+          <a href="#">Elementos</a>
+          <ul class="verticalMenu">
+            <li><a href="#">ver Elementos</a></li>
+            <li><a href="#">Registrar elementos</a></li>
+          </ul>
+         </li>
         <!-- Configuración -->
         <li>
           <a href="#">Configuración</a>

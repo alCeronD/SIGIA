@@ -6,16 +6,43 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
   margin: 0px;
   padding: 0px;
 }
+/* Variables para los colores */
+:root {
+  --primary: #1e90ff;
+  --secundary: #004034;
+  --btnSubmit : rgba(128, 255, 0, 0.371);
+  --btnInfo : green;
+  --other: gray;
+}
 
-/* Es el tamaño en donde se va a trabajar todas la vista */
-.container {
-  margin: 0 auto;
-  width: 50%;
+body{
+  font-family: monospace;
+}
+
+
+.container{
   display: flex;
-  justify-content: flex-end;
   height: calc(100vh - 100px);
   border: 1px solid black;
-  flex-direction: column;
+  width: 100%;
+  padding: 1.5rem;
+  /* El contenedor y todo lo que hay internamente va a tener un Máximo de 1200px de tamaño */
+  max-width: 1200px;
+  margin: 0 auto 12px;
+  overflow-x: auto;
+  margin-bottom: 0vh;
+}
+
+.container * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Botón de cerrar */
+.close-btn{
+  border: none;
+  text-decoration: none;
+  font-size: 2rem;
 }
 
 /* Estilos del footer. */
@@ -26,13 +53,13 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
   align-items: center;
   justify-content: center;
 
-  background-color: yellow;
+  /* background-color: yellow; */
 
   /* Estilos del menú */
   .horizontalMenu {
     display: flex;
-
-    li {
+  }
+  li {
       margin-left: 0.5rem;
       list-style: none;
       text-decoration: none;
@@ -40,7 +67,6 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
       flex-direction: row;
       position: relative;
     }
-  }
   /* Etiquetas a del menu */
   .horizontalMenu > li > a {
     display: block;
@@ -75,6 +101,7 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
 /* Estilos de tablas */
 
 /* Estilos de inputs */
+
 
 /* Estilos de los contenedores */
 

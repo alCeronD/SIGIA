@@ -1,4 +1,4 @@
-*{
+/* *{
     box-sizing: border-box;
     margin: 0px;
     padding: 0px;
@@ -47,4 +47,9 @@ body {
 
 .footer-icon:hover {
   color: #007aff;
+} */
+#titleDashboard{
+  text-align: center;
+  font-size: 2rem;
+  font-family: monospace;
 }

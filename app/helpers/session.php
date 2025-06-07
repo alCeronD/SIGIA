@@ -6,6 +6,6 @@ if (!isset($_SESSION['usuario'])) {
     exit();
 }
 
-include_once 'getUrl.php';
-
+$usuario = $_SESSION['usuario'];
+$rol = $usuario['rol_id'];
 ?>
