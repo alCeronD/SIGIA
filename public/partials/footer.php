@@ -116,10 +116,10 @@
           <a href="#">Prestamos</a>
           <ul class="verticalMenu">
             <li>
-              <a href="<?php echo getUrl("solicitudPrestamos", "SolicitudPrestamo", "solicitudPrestamosView", false, 'dashboard'); ?>">Solicitar Prestamo</a>
+              <a href="<?php echo getUrl("solicitudPrestamos", "solicitudPrestamos", "registrarPrestamosView", false, 'dashboard'); ?>">Solicitar Prestamo</a>
             </li>
             <li>
-              <a href="<?php echo getUrl("solicitudPrestamos", "solicitudPrestamo", "consultarPrestamoViews", false, 'dashboard'); ?>">Ver prestamos</a>
+              <a href="<?php echo getUrl("solicitudPrestamos", "solicitudPrestamos", "consultarPrestamoViews", false, 'dashboard'); ?>">Ver prestamos</a>
             </li>
           </ul>
         </li>

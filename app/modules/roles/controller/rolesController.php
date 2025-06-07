@@ -13,7 +13,7 @@ class rolesController {
 
     public function mostrarRoles() {
         $roles = $this->modeloRol->obtenerRoles();
-        return include __DIR__ . './../views/rolesViews.php';
+        return include_once __DIR__ . '../../views/rolesViews.php';
     }
     
     public function editarRolesView(){

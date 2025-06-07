@@ -1,7 +1,7 @@
 <div class="w-100 mx-auto text-start">
   <h2 class="mb-4 text-center">Categorías Registradas</h2>
 
-  <div class="card p-4 mb-4 shadow-sm">
+  <div class="card p-4 mb-4 shadow-sm prueba">
     <h5 class="mb-3">Registrar Nueva Categoría</h5>
     <form action="<?= getUrl('categorias', 'categorias', 'createCategoria') ?>" method="POST">
       <div class="row g-3 align-items-center">
