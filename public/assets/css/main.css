@@ -28,12 +28,19 @@ body{
   max-width: 1200px;
   margin: 0 auto;
   overflow-x: auto;
-
+  margin-bottom: 0vh;
 }
 
 .container * {
   max-width: 100%;
   box-sizing: border-box;
+}
+
+/* Botón de cerrar */
+.close-btn{
+  border: none;
+  text-decoration: none;
+  font-size: 2rem;
 }
 
 

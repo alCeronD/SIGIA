@@ -17,8 +17,12 @@
 .menuTitle {
   display: inline-block;
   width: 100%;
-  align-self: start; /* o center/end según necesidad */
+  align-self: start;
   justify-self: start;
+  background-color: yellow;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
 }
 
 #textTitle {
@@ -36,7 +40,9 @@
     "tableElements tableElements tableElements"
     ". inputBtn .";
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: auto;
+  grid-template-rows: repeat(4, 1fr);
+  height: fit-content;
+  max-height: 100%;
   gap: 1rem;
 }
 
@@ -93,6 +99,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+}
 
   .labelForm {
     font-size: 1.3rem;
@@ -108,7 +115,7 @@
     border-bottom: 2px solid #ccc;
     border-right: none;
   }
-}
+
 
 /* TODO: Agregar efecto focus cuando presione el input al cual voy a usar */
 .inputForm:focus {
