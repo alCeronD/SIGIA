@@ -28,8 +28,8 @@ class ReservaController{
         success('Registros',$data);
     }
 
-    public function getUsers(){
-        $data = $this->model->selectUsers();
+    public function getUsers($page){
+        $data = $this->model->selectUsers($page);
 
         if ($data != null) {
             success('Usuarios activos',$data);
@@ -44,11 +44,14 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         $case = $_GET['action'] ?? '';
+        //valor de la página.
+        $pages = $_GET['pages'] ?? 4;
 
         switch ($case) {
             case 'users':
+
                 if (method_exists($controller,'getUsers')) {
-                    $controller->getUsers();
+                    $controller->getUsers($pages);
                 }
                 break;
             
@@ -57,7 +60,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 # code...
                 break;
         }
-
 
         if (method_exists($controller,'getElementosDevolutivos')) {
             $controller->getElementosDevolutivos();

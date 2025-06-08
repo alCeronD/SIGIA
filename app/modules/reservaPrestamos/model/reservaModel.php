@@ -62,10 +62,45 @@ class ReservaModel
         }
     }
     
-    public function selectUsers(){
-        
+    public function selectUsers($pages){
+
         try {
+
             $conn = $this->conect->getConnect();
+            $conn->begin_transaction();
+            //Creo que esto va en otra función a parte.
+            $count = "SELECT COUNT(*) AS 'Total'
+                        FROM
+                            usuarios us
+                        INNER JOIN estados_usuarios es_u ON
+                            es_u.est_id = us.usu_id_estado
+                        INNER JOIN usuarios_roles usr ON
+                            usr.usr_usu_id = us.usu_id
+                        INNER JOIN roles r ON
+                            usr.usr_rl_id = r.rl_id
+                        WHERE
+                    r.rl_id != 2 AND r.rl_status = 1 AND us.usu_id_estado = 1";
+            
+            $stmtCount = $conn->prepare($count);
+
+            //Cambiar, se ejecuta pero no debe de ir un exit, debe de ir un return.
+            $stmtCount->execute();
+
+            $result = $stmtCount->get_result();
+            $registros = $result->fetch_assoc()['Total'];
+            
+            /**
+             *  LIMIT = el limite de los registros que devuelve
+             *  OFFSET = salte N, es el parámetro que le mandamos, es la ventana que se va a devolver. le indigamos que se salte los primeros N RESULTADOS. Este es el parámetro.
+             * 
+             * OFFSET 0 = Devuelve los primeros resultados basados en el limit
+             * OFFSET 20 limit 20 = se salta los primeros 20 resultados y devuelve los 20 siguientes, devuelve filas entre la posició 20 Y 40.
+             */
+            //page es la página que vamos a ver.
+
+            //Redondeo el valor de la página hacía arriba.
+            $limit = 4;
+            $page = ceil($registros / $limit);
 
             $sql = "SELECT 
                 us.usu_docum AS 'nroDocumento',
@@ -81,9 +116,10 @@ class ReservaModel
                 usr.usr_usu_id = us.usu_id 
                 INNER JOIN roles r 
                 ON usr.usr_rl_id = r.rl_id
-                WHERE r.rl_id != 2 AND r.rl_status = 1 AND us.usu_id_estado = 1";
+                WHERE r.rl_id != 2 AND r.rl_status = 1 AND us.usu_id_estado = 1 LIMIT ? OFFSET ?";
+
             $stmt = $conn->prepare($sql);
-            
+            $stmt->bind_param('ii',$pages,$limit);
             if (!$stmt->execute()) {
                 return null;
             }
@@ -91,15 +127,27 @@ class ReservaModel
             $rows = $stmt->get_result();
 
             $data = [];
-
             while ($row = $rows->fetch_assoc()) {
                 $data[] = $row;
             }
 
-            return $data;
-            
+            $results = [
+                'data' => $data,
+                'pages' => $page
+            ];
+
+
+            $conn->commit();
+            $conn->close();
+            return $results;
+
+            //var_dump($data);
         } catch (\Throwable $th) {
+            $conn->rollback();
             return $th->getMessage();
         }
     }
 }
+
+// $objPrueba = new ReservaModel();
+// $objPrueba->selectUsers();

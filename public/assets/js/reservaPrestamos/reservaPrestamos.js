@@ -69,6 +69,8 @@ areaDestino.addEventListener('change', ()=>{
 let dataDevolutivos = {};
 let dataConsumibles = {};
 let button;
+const valuePage = document.querySelector('#valuePage');
+
 btnAddElements.innerText = 'Seleccionar elementos';
 modalTitle.innerText = 'Elementos disponibles';
 btnSubmit.innerText = 'Reservar';
@@ -80,6 +82,7 @@ btnSearchUser.innerText = 'Consultar';
  */
 
 document.addEventListener('DOMContentLoaded', ()=>{
+    
     objAjax.request.open('GET','modules/reservaPrestamos/controller/reservaController.php',true);
     objAjax.request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
@@ -133,6 +136,8 @@ btnAddElements.addEventListener('click',(btnTarget)=>{
 
 closeModal(modalAddElements, btnCloseElements);
 
+
+
 //Abrir modal usuarios
 btnSearchUser.addEventListener('click',(event) =>{
     event.stopPropagation();
@@ -144,12 +149,25 @@ btnSearchUser.addEventListener('click',(event) =>{
 
         try {
             let data = JSON.parse(objAjax.request.responseText);
-            if (!data || !data.status || !Array.isArray(data.data)) {
+            if (!data || !data.status || !Array.isArray(data.data.data)) {
                 throw new Error("Datos inválidos");
             }
 
-            let users = data.data;
-            tableUsers.innerHTML = '';
+            //Implemento los selects basado en la cantidad de páginas que hay.
+            let users = data.data.data;
+            let pages = data.data.pages;
+
+            //Limpio los selects, evito que hayan duplicados.
+            valuePage.innerHTML = '';
+            for (let index = 1; index <= pages; index++) {
+                let pagesOptions = document.createElement('option');
+                pagesOptions.value = index;
+                pagesOptions.innerHTML = index;
+                valuePage.append(pagesOptions);
+            }
+            //por defecto, lo coloco en 1.
+            valuePage.value = '1';
+
 
             tableUsers.innerHTML = '';
             users.forEach(us =>{
@@ -182,8 +200,9 @@ btnSearchUser.addEventListener('click',(event) =>{
                 trTableUsers.appendChild(tdRol);
                 trTableUsers.appendChild(tdAcciones);
                 tdAcciones.appendChild(btnAdd);
+            });
 
-        });
+
             
         } catch (error) {
             console.error("Error al procesar la respuesta:", error);
@@ -242,15 +261,53 @@ tableUsers.addEventListener('click',(e)=>{
  * Paginación usuarios
  */
 
+valuePage.addEventListener('change', (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+
+    //pageSelect
+    const pageSelect = event.target.value;
+    
+    if (pageSelect) {
+        console.log(pageSelect);
+        
+    }
+});
+
+
+
+let pages = 1;
 btnPreview.addEventListener('click', (event)=>{
     event.stopPropagation();
     event.preventDefault();
-    console.log(event.target);
+
+    pages = pages === 1 ? 1 : pages - 1;
+    
+    console.log('decremento'+pages);
 });
 
 btnNext.addEventListener('click',(event)=>{
     event.stopPropagation();
     event.preventDefault();
-    console.log(event.target);
+    pages++;
+    console.log('aumento'+pages);
 
-})
+    //TODO: Si se le envía más parámetros, buscar como funciona URLSearchParams para poder enviar muchos parámetros en forma de objeto.
+    objAjax.request.open('GET',`modules/reservaPrestamos/controller/reservaController.php?pages=${encodeURIComponent(
+      pages
+    )}&action=users`,true);
+    objAjax.request.setRequestHeader('X-Requested-With','XMLHttpRequest');
+
+    objAjax.request.onload = ()=>{
+        let response = JSON.parse(objAjax.request.responseText);
+
+        console.log(response);
+    }
+    
+    
+    objAjax.request.setRequestHeader('accept','application/json');
+    objAjax.request.send();
+
+});
+
+

@@ -25,8 +25,14 @@
             </table>
             <!-- Contenedor que contiene los botones previews y next de la Página -->
             <div class="buttons">
-                <input type="button" value="<" id="next">
-                <input type="button" value=">" id="preview">
+                <input type="button" value="<" id="preview">
+                <div class="page">
+                    <select name="" id="valuePage">
+                        <!-- renderizar por javascript -->
+                    </select>
+                </div>
+                <input type="button" value=">" id="next">
+
             </div>
         </div>
     </div>
