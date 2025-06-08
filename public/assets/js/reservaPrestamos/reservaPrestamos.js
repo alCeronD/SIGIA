@@ -4,18 +4,69 @@ import { closeModal } from "../libraries/cases.js";
 const objAjax = new Ajax();
 const btnSubmit = document.getElementById('btnSubmit');
 const tableDevolutivos = document.querySelector('#bodyDevolutions');
+const tableUsers = document.querySelector('#tableBodyUsers');
 const modalAddElements = document.querySelector('#modalAddElements');
 const modalUsers = document.querySelector('#modalUsers');
 const btnAddElements = document.getElementById('btnAddElements');
 const modalTitle = document.querySelector('#modalTitle');
-
-// Selecciono el elemento específico.
+const areaDestino = document.querySelector('#areaDestino');
+const horaInicio = document.querySelector('.horaInicio');
+const horaFin = document.querySelector('.horaFin');
+const horaInicioFin = document.querySelector('.horaInicioFin');
 const btnCloseElements = document.querySelector('#modalAddElements .close-modal');
 const btnCloseUsers = document.querySelector('#modalUsers .close-modal');
-
-
-
 const btnSearchUser = document.querySelector('#searchBtn');
+horaInicio.style.visibility  = 'hidden';
+horaInicio.style.opacity  = '0';
+horaFin.style.visibility = 'hidden';
+horaFin.style.opacity  = '0';
+horaInicioFin.style.visibility = 'hidden';
+horaInicioFin.style.opacity = '0';
+
+areaDestino.addEventListener('change', ()=>{
+    let value = areaDestino.options[areaDestino.selectedIndex];
+    //console.log(value);
+    if (value.value === 'centro') {
+        //TODO: Mejorar a función para mostrar los elementos
+        //TODO: Cambiar los input de tipo type, en vez de que esten ocultos, implementarlos en el html cuando su valor sea centro.
+        horaInicio.style.visibility  = 'visible';
+        horaInicio.style.opacity  = '1';
+        horaFin.style.visibility = 'visible';
+        horaFin.style.opacity  = '1';
+        horaInicioFin.style.visibility = 'visible';
+        horaInicioFin.style.opacity = '1';
+    }
+    console.log(value);
+    if (value.value === 'externo' || value.value === '---') {
+        //TODO: mejorar a función para ocultar los elementos.
+        horaInicio.style.visibility  = 'hidden';
+        horaInicio.style.opacity  = '0';
+        horaFin.style.visibility = 'hidden';
+        horaFin.style.opacity  = '0';
+        horaInicioFin.style.visibility = 'hidden';
+        horaInicioFin.style.opacity = '0';
+    }
+
+});
+
+//Inputs del formulario
+let inputNombre = document.querySelector('#nombre');
+let inputNroDocumento = document.querySelector('#cedula');
+let inputApellido = document.querySelector('#apellido');
+let inputTelefono = document.querySelector('#telefono');
+let inputEmail = document.querySelector('#email');
+//Inhabilito los inputs para evitar que el usuario digite los campos.
+inputNombre.readOnly = true;
+inputNroDocumento.readOnly = true;
+inputApellido.readOnly = true;
+inputTelefono.readOnly = true;
+inputEmail.readOnly = true;
+
+tableUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
+
+
+// Selecciono el elemento específico.
+
 let dataDevolutivos = {};
 let dataConsumibles = {};
 btnAddElements.innerText = 'Seleccionar elementos';
@@ -82,26 +133,109 @@ btnAddElements.addEventListener('click',(btnTarget)=>{
 
 closeModal(modalAddElements, btnCloseElements);
 
-
+let button;
 //Abrir modal usuarios
 btnSearchUser.addEventListener('click',(event) =>{
     event.stopPropagation();
     event.preventDefault();
-
     // Enviar petición para traer la lista de usuarios.
-        objAjax.request.open('GET','modules/reservaPrestamos/controller/reservaController.php?action=users',true);
-        objAjax.request.setRequestHeader('X-Requested-With','XMLHttpRequest');
-        objAjax.request.onload = () =>{
-        let response = objAjax.request.responseText;
-        let data = JSON.parse(response);
-        console.log(data);
+    objAjax.request.open('GET','modules/reservaPrestamos/controller/reservaController.php?action=users',true);
+    objAjax.request.setRequestHeader('X-Requested-With','XMLHttpRequest');
+    objAjax.request.onload = () =>{
 
+        try {
+            let data = JSON.parse(objAjax.request.responseText);
+            if (!data || !data.status || !Array.isArray(data.data)) {
+                throw new Error("Datos inválidos");
+            }
+
+            let users = data.data;
+            tableUsers.innerHTML = '';
+
+            tableUsers.innerHTML = '';
+            users.forEach(us =>{
+                let btnAdd = document.createElement('button');
+                button = btnAdd;
+                btnAdd.innerText = 'Seleccionar';
+                btnAdd.setAttribute('type','button');
+                let trTableUsers = document.createElement('tr');
+                let tdNroDocumento = document.createElement('td');
+                let tdNombre = document.createElement('td');
+                let tdApellido = document.createElement('td');
+                let tdTelefono = document.createElement('td');
+                let tdEmail = document.createElement('td');
+                let tdRol = document.createElement('td');
+                let tdAcciones = document.createElement('td');
+
+                tdNroDocumento.textContent = us.nroDocumento;
+                tdNombre.textContent = us.nombres;
+                tdApellido.textContent = us.apellidos;
+                tdTelefono.textContent = us.telefono;
+                tdEmail.textContent = us.email;
+                tdRol.textContent = us.rol;
+
+                tableUsers.appendChild(trTableUsers);
+                trTableUsers.appendChild(tdNroDocumento);
+                trTableUsers.appendChild(tdNombre);
+                trTableUsers.appendChild(tdApellido);
+                trTableUsers.appendChild(tdTelefono);
+                trTableUsers.appendChild(tdEmail);
+                trTableUsers.appendChild(tdRol);
+                trTableUsers.appendChild(tdAcciones);
+                tdAcciones.appendChild(btnAdd);
+
+        });
+            
+        } catch (error) {
+            console.error("Error al procesar la respuesta:", error);
+            tableUsers.innerHTML = '<tr><td colspan="6">Sin resultados</td></tr>';
+        }
+                
+            
     }
 
     objAjax.request.setRequestHeader('Accept', 'application/json');
     objAjax.request.send();
 
     modalUsers.style.display = 'flex';
+
+
 });
 //Cerrar modal
 closeModal(modalUsers, btnCloseUsers);
+
+//Delegar evento sobre la tabla.
+tableUsers.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    e.preventDefault();
+
+    //Capturo la información y le doy utilidad a ella solamente cuando presiono el evento es de tipo BUTTON.
+    if (e.target.tagName === 'BUTTON') {
+
+        //Me devuelve la fila en base al botón que se ha presionado.
+        let elements =  e.target.closest('tr');
+        let nroDocumento = elements.children[0].textContent;
+        let nombre = elements.children[1].textContent;
+        let apellido = elements.children[2].textContent;
+        let telefono = elements.children[3].textContent;
+        let email = elements.children[4].textContent;
+
+        inputNombre.value = '';
+        inputNroDocumento.value = '';
+        inputApellido.value = '';
+        inputTelefono.value = '';
+        inputEmail.value = '';
+
+        inputNroDocumento.value = nroDocumento;
+        inputNombre.value = nombre;
+        inputApellido.value = apellido;
+        inputTelefono.value = telefono;
+        inputEmail.value = email;
+
+
+        //Cerrar el modal justo que el administrador elija al usuario.
+        modalUsers.style.display = 'none';
+    }
+
+});
+

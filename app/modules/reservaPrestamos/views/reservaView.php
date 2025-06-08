@@ -2,7 +2,7 @@
 
 <div class="content">
     <div class="menuTitle">
-        <span id="textTitle">Registrar solicitud</span>
+        <span id="textTitle">Registrar Prestamo</span>
         <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
@@ -14,22 +14,22 @@
     <div class="solicPrestamos">
         <form action="" method="post" id="formSolicitudPrestamo">
             <div class="inputContent cedula">
-                <label for="cedula" class="labelForm">Cédula: *</label>
+                <label for="cedula" class="labelForm">Cédula: </label>
                 <input type="number" class="inputForm" name="cedula" id="cedula" placeholder="Identificación...">
             </div>
 
             <div class="inputContent nombre">
-                <label for="nombre" class="labelForm">Nombre: *</label>
+                <label for="nombre" class="labelForm">Nombre: </label>
                 <input type="text" class="inputForm" name="nombre" id="nombre" placeholder="Nombre...">
             </div>
 
             <div class="inputContent apellido">
-                <label for="apellido" class="labelForm">Apellido: *</label>
+                <label for="apellido" class="labelForm">Apellido: </label>
                 <input type="text" class="inputForm" name="apellido" id="apellido" placeholder="Apellido...">
             </div>
 
             <div class="inputContent telefono">
-                <label for="telefono" class="labelForm">Teléfono: *</label>
+                <label for="telefono" class="labelForm">Teléfono: </label>
                 <input type="tel" class="inputForm" name="telefono" id="telefono" placeholder="Teléfono...">
             </div>
 
@@ -41,7 +41,7 @@
             <div class="inputContent areaDestino">
                 <label for="areaDestino" class="labelForm">Área de destino: *</label>
                 <select name="areaDestino" id="areaDestino">
-                    <option value="">---</option>
+                    <option value="---">---</option>
                     <option value="centro">Centro</option>
                     <option value="externo">Externo</option>
                 </select>
