@@ -32,7 +32,6 @@
                     </select>
                 </div>
                 <input type="button" value=">" id="next">
-
             </div>
         </div>
     </div>

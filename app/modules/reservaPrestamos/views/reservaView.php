@@ -68,7 +68,7 @@
                 <input type="date" class="inputForm" name="fechaDevolucion" id="fechaDevolucion">
             </div>
 
-            <div class="inputObservaciones">
+            <div class="inputContent inputObservaciones">
                 <label for="observaciones" class="labelForm">Observaciones</label>
                 <textarea name="observaciones" class="inputForm" id="observaciones" placeholder="Digite una observación en caso de que sea requerida."></textarea>
             </div>
@@ -90,6 +90,7 @@
 </div>
 
 <!-- Contenedor que contiene el modal de las tablas de elementos devolutivos y consumibles -->
+
 <div id="addElements">
     <?php require_once 'viewAddElements.php'; ?>
 </div>
