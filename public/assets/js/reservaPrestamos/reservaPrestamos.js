@@ -81,9 +81,11 @@ btnSearchUser.innerText = 'Consultar';
  * TODO: Cambiar a función.
  */
 
-document.addEventListener('DOMContentLoaded', ()=>{
-    
-    objAjax.request.open('GET','modules/reservaPrestamos/controller/reservaController.php',true);
+/**
+ * Función de renderizado de los instructores.
+ */
+function fetchData(){
+        objAjax.request.open('GET','modules/reservaPrestamos/controller/reservaController.php',true);
     objAjax.request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
     objAjax.request.onload = ()=>{
@@ -95,6 +97,79 @@ document.addEventListener('DOMContentLoaded', ()=>{
     objAjax.request.setRequestHeader('Accept', 'application/json');
     objAjax.request.send();
 
+}
+function resetTable(resetToFirstPage = false){
+
+    if (resetToFirstPage) {
+        pages = 1;
+    }
+    //TODO: Si se le envía más parámetros, buscar como funciona URLSearchParams para poder enviar muchos parámetros en forma de objeto.
+    objAjax.request.open('GET',`modules/reservaPrestamos/controller/reservaController.php?pages=${encodeURIComponent(
+      pages
+    )}&action=users`,true);
+    objAjax.request.setRequestHeader('X-Requested-With','XMLHttpRequest');
+
+    objAjax.request.onload = ()=>{
+        let response = JSON.parse(objAjax.request.responseText);
+        let data = response.data.data;
+        let allPages = response.data.pages;
+
+        //Evitar que no se aumente la página más allá del número de páginas.
+        if (pages > allPages) {
+            pages = allPages;
+        }
+        //Limpio los selects, evito que hayan duplicados.
+            valuePage.innerHTML = '';
+            for (let index = 1; index <= allPages; index++) {
+                let pagesOptions = document.createElement('option');
+                pagesOptions.value = index;
+                pagesOptions.innerHTML = index;
+                valuePage.append(pagesOptions);
+            }
+            //por defecto, lo coloco en 1.
+            valuePage.value = String(allPages);
+
+            tableUsers.innerHTML = '';
+            data.forEach(us =>{
+                let btnAdd = document.createElement('button');
+                button = btnAdd;
+                btnAdd.innerText = 'Seleccionar';
+                btnAdd.setAttribute('type','button');
+                let trTableUsers = document.createElement('tr');
+                let tdNroDocumento = document.createElement('td');
+                let tdNombre = document.createElement('td');
+                let tdApellido = document.createElement('td');
+                let tdTelefono = document.createElement('td');
+                let tdEmail = document.createElement('td');
+                let tdRol = document.createElement('td');
+                let tdAcciones = document.createElement('td');
+
+                tdNroDocumento.textContent = us.nroDocumento;
+                tdNombre.textContent = us.nombres;
+                tdApellido.textContent = us.apellidos;
+                tdTelefono.textContent = us.telefono;
+                tdEmail.textContent = us.email;
+                tdRol.textContent = us.rol;
+
+                tableUsers.appendChild(trTableUsers);
+                trTableUsers.appendChild(tdNroDocumento);
+                trTableUsers.appendChild(tdNombre);
+                trTableUsers.appendChild(tdApellido);
+                trTableUsers.appendChild(tdTelefono);
+                trTableUsers.appendChild(tdEmail);
+                trTableUsers.appendChild(tdRol);
+                trTableUsers.appendChild(tdAcciones);
+                tdAcciones.appendChild(btnAdd);
+            });
+
+    }
+    
+    objAjax.request.setRequestHeader('accept','application/json');
+    objAjax.request.send();
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+    fetchData();
 });
 
 // Abrir modal de elementos disponibles devolutivos y consumibles.
@@ -136,91 +211,18 @@ btnAddElements.addEventListener('click',(btnTarget)=>{
 
 closeModal(modalAddElements, btnCloseElements);
 
-
-
 //Abrir modal usuarios
 btnSearchUser.addEventListener('click',(event) =>{
     event.stopPropagation();
     event.preventDefault();
-    // Enviar petición para traer la lista de usuarios.
-    objAjax.request.open('GET','modules/reservaPrestamos/controller/reservaController.php?action=users',true);
-    objAjax.request.setRequestHeader('X-Requested-With','XMLHttpRequest');
-    objAjax.request.onload = () =>{
 
-        try {
-            let data = JSON.parse(objAjax.request.responseText);
-            if (!data || !data.status || !Array.isArray(data.data.data)) {
-                throw new Error("Datos inválidos");
-            }
-
-            //Implemento los selects basado en la cantidad de páginas que hay.
-            let users = data.data.data;
-            let pages = data.data.pages;
-
-            //Limpio los selects, evito que hayan duplicados.
-            valuePage.innerHTML = '';
-            for (let index = 1; index <= pages; index++) {
-                let pagesOptions = document.createElement('option');
-                pagesOptions.value = index;
-                pagesOptions.innerHTML = index;
-                valuePage.append(pagesOptions);
-            }
-            //por defecto, lo coloco en 1.
-            valuePage.value = '1';
-
-
-            tableUsers.innerHTML = '';
-            users.forEach(us =>{
-                let btnAdd = document.createElement('button');
-                button = btnAdd;
-                btnAdd.innerText = 'Seleccionar';
-                btnAdd.setAttribute('type','button');
-                let trTableUsers = document.createElement('tr');
-                let tdNroDocumento = document.createElement('td');
-                let tdNombre = document.createElement('td');
-                let tdApellido = document.createElement('td');
-                let tdTelefono = document.createElement('td');
-                let tdEmail = document.createElement('td');
-                let tdRol = document.createElement('td');
-                let tdAcciones = document.createElement('td');
-
-                tdNroDocumento.textContent = us.nroDocumento;
-                tdNombre.textContent = us.nombres;
-                tdApellido.textContent = us.apellidos;
-                tdTelefono.textContent = us.telefono;
-                tdEmail.textContent = us.email;
-                tdRol.textContent = us.rol;
-
-                tableUsers.appendChild(trTableUsers);
-                trTableUsers.appendChild(tdNroDocumento);
-                trTableUsers.appendChild(tdNombre);
-                trTableUsers.appendChild(tdApellido);
-                trTableUsers.appendChild(tdTelefono);
-                trTableUsers.appendChild(tdEmail);
-                trTableUsers.appendChild(tdRol);
-                trTableUsers.appendChild(tdAcciones);
-                tdAcciones.appendChild(btnAdd);
-            });
-
-
-            
-        } catch (error) {
-            console.error("Error al procesar la respuesta:", error);
-            tableUsers.innerHTML = '<tr><td colspan="6">Sin resultados</td></tr>';
-        }
-                
-            
-    }
-
-    objAjax.request.setRequestHeader('Accept', 'application/json');
-    objAjax.request.send();
+    //Vuelvo a reiniciar la tabla para que inicie en la Página #1.
+    resetTable(true);
 
     modalUsers.style.display = 'flex';
 
-
 });
-//Cerrar modal
-closeModal(modalUsers, btnCloseUsers);
+
 
 //Delegar evento sobre la tabla.
 tableUsers.addEventListener('click',(e)=>{
@@ -274,8 +276,7 @@ valuePage.addEventListener('change', (event)=>{
     }
 });
 
-
-
+//Botón de evento para marcar el preview de la página.
 let pages = 1;
 btnPreview.addEventListener('click', (event)=>{
     event.stopPropagation();
@@ -286,28 +287,17 @@ btnPreview.addEventListener('click', (event)=>{
     console.log('decremento'+pages);
 });
 
+//Botón para marcar el next de la página.
 btnNext.addEventListener('click',(event)=>{
     event.stopPropagation();
     event.preventDefault();
     pages++;
     console.log('aumento'+pages);
 
-    //TODO: Si se le envía más parámetros, buscar como funciona URLSearchParams para poder enviar muchos parámetros en forma de objeto.
-    objAjax.request.open('GET',`modules/reservaPrestamos/controller/reservaController.php?pages=${encodeURIComponent(
-      pages
-    )}&action=users`,true);
-    objAjax.request.setRequestHeader('X-Requested-With','XMLHttpRequest');
-
-    objAjax.request.onload = ()=>{
-        let response = JSON.parse(objAjax.request.responseText);
-
-        console.log(response);
-    }
+    resetTable();
     
-    
-    objAjax.request.setRequestHeader('accept','application/json');
-    objAjax.request.send();
-
 });
 
-
+closeModal(modalUsers, btnCloseUsers);
+//Con el true se devuelve a la primera página.
+resetTable(true);

@@ -44,8 +44,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         $case = $_GET['action'] ?? '';
-        //valor de la página.
-        $pages = $_GET['pages'] ?? 4;
+        //valor de la página, por defecto, es la página #1.
+        $pages = $_GET['pages'] ?? 1;
 
         switch ($case) {
             case 'users':

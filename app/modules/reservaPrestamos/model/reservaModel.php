@@ -83,8 +83,10 @@ class ReservaModel
             
             $stmtCount = $conn->prepare($count);
 
-            //Cambiar, se ejecuta pero no debe de ir un exit, debe de ir un return.
-            $stmtCount->execute();
+
+            if (!$stmtCount->execute()) {
+                return null;
+            }
 
             $result = $stmtCount->get_result();
             $registros = $result->fetch_assoc()['Total'];
@@ -99,8 +101,12 @@ class ReservaModel
             //page es la página que vamos a ver.
 
             //Redondeo el valor de la página hacía arriba.
-            $limit = 4;
+            $limit = 5;
+
+            //Este valor lo envió al front para colocar el número de páginas que hay.
             $page = ceil($registros / $limit);
+
+            $offset = ($pages - 1) * $limit;
 
             $sql = "SELECT 
                 us.usu_docum AS 'nroDocumento',
@@ -116,10 +122,10 @@ class ReservaModel
                 usr.usr_usu_id = us.usu_id 
                 INNER JOIN roles r 
                 ON usr.usr_rl_id = r.rl_id
-                WHERE r.rl_id != 2 AND r.rl_status = 1 AND us.usu_id_estado = 1 LIMIT ? OFFSET ?";
+                WHERE r.rl_id != 2 AND r.rl_status = 1 AND us.usu_id_estado = 1 ORDER BY us.usu_docum ASC LIMIT ? OFFSET ?";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param('ii',$pages,$limit);
+            $stmt->bind_param('ii',$limit,$offset);
             if (!$stmt->execute()) {
                 return null;
             }
@@ -141,13 +147,9 @@ class ReservaModel
             $conn->close();
             return $results;
 
-            //var_dump($data);
         } catch (\Throwable $th) {
             $conn->rollback();
             return $th->getMessage();
         }
     }
 }
-
-// $objPrueba = new ReservaModel();
-// $objPrueba->selectUsers();
