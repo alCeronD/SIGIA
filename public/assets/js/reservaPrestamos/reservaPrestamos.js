@@ -85,7 +85,7 @@ btnSearchUser.innerText = 'Consultar';
  * Función de renderizado de los instructores.
  */
 function fetchData(){
-        objAjax.request.open('GET','modules/reservaPrestamos/controller/reservaController.php',true);
+    objAjax.request.open('GET','modules/reservaPrestamos/controller/reservaController.php',true);
     objAjax.request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
     objAjax.request.onload = ()=>{
@@ -169,7 +169,7 @@ function resetTable(resetToFirstPage = false){
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
-    fetchData();
+    fetchData(true);
 });
 
 // Abrir modal de elementos disponibles devolutivos y consumibles.
@@ -223,7 +223,6 @@ btnSearchUser.addEventListener('click',(event) =>{
 
 });
 
-
 //Delegar evento sobre la tabla.
 tableUsers.addEventListener('click',(e)=>{
     e.stopPropagation();
@@ -262,7 +261,6 @@ tableUsers.addEventListener('click',(e)=>{
 /**
  * Paginación usuarios
  */
-
 valuePage.addEventListener('change', (event)=>{
     event.stopPropagation();
     event.preventDefault();
@@ -283,8 +281,11 @@ btnPreview.addEventListener('click', (event)=>{
     event.preventDefault();
 
     pages = pages === 1 ? 1 : pages - 1;
+
+    console.log(pages);
+    //Decrementa la página por el valor del pages.
+    resetTable();
     
-    console.log('decremento'+pages);
 });
 
 //Botón para marcar el next de la página.
@@ -294,6 +295,7 @@ btnNext.addEventListener('click',(event)=>{
     pages++;
     console.log('aumento'+pages);
 
+    //Aumenta la Página hasta que llega al final.
     resetTable();
     
 });
