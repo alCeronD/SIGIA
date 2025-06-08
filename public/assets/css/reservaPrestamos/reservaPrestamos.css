@@ -185,13 +185,12 @@ th {
 
 .modal-content {
   background-color: #fefefe;
-  margin: 10% auto;
+  margin: 5% auto;
   /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
   width: 50%;
-  height: auto;
-  /* Could be more or less, depending on screen size */
+  height: fit-content;  
 }
 
 .close {
@@ -231,4 +230,10 @@ th {
 #modal-title .close {
   font-size: 2rem;
   color: white;
+}
+
+/* Botones previo y next de las tablas */
+.buttons{
+  display: flex;
+  justify-content: space-between;
 }

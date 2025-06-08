@@ -15,6 +15,7 @@
                         <td>Apellido</td>
                         <td>Teléfono</td>
                         <td>Email</td>
+                        <td>Rol</td>
                         <td>Acciones</td>
                     </tr>
                 </thead>
@@ -22,6 +23,11 @@
                     <!-- Renderizado con javascript. -->
                 </tbody>
             </table>
+            <!-- Contenedor que contiene los botones previews y next de la Página -->
+            <div class="buttons">
+                <input type="button" value="<" id="next">
+                <input type="button" value=">" id="preview">
+            </div>
         </div>
     </div>
 </div>

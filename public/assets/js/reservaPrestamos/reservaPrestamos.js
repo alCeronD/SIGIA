@@ -22,6 +22,22 @@ horaFin.style.visibility = 'hidden';
 horaFin.style.opacity  = '0';
 horaInicioFin.style.visibility = 'hidden';
 horaInicioFin.style.opacity = '0';
+//Inputs del formulario
+let inputNombre = document.querySelector('#nombre');
+let inputNroDocumento = document.querySelector('#cedula');
+let inputApellido = document.querySelector('#apellido');
+let inputTelefono = document.querySelector('#telefono');
+let inputEmail = document.querySelector('#email');
+//Inhabilito los inputs para evitar que el usuario digite los campos.
+inputNombre.readOnly = true;
+inputNroDocumento.readOnly = true;
+inputApellido.readOnly = true;
+inputTelefono.readOnly = true;
+inputEmail.readOnly = true;
+//En caso de que sean muchos registros.
+tableUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
+const btnPreview = document.querySelector('#preview');
+const btnNext = document.querySelector('#next');
 
 areaDestino.addEventListener('change', ()=>{
     let value = areaDestino.options[areaDestino.selectedIndex];
@@ -49,26 +65,10 @@ areaDestino.addEventListener('change', ()=>{
 
 });
 
-//Inputs del formulario
-let inputNombre = document.querySelector('#nombre');
-let inputNroDocumento = document.querySelector('#cedula');
-let inputApellido = document.querySelector('#apellido');
-let inputTelefono = document.querySelector('#telefono');
-let inputEmail = document.querySelector('#email');
-//Inhabilito los inputs para evitar que el usuario digite los campos.
-inputNombre.readOnly = true;
-inputNroDocumento.readOnly = true;
-inputApellido.readOnly = true;
-inputTelefono.readOnly = true;
-inputEmail.readOnly = true;
-
-tableUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
-
-
 // Selecciono el elemento específico.
-
 let dataDevolutivos = {};
 let dataConsumibles = {};
+let button;
 btnAddElements.innerText = 'Seleccionar elementos';
 modalTitle.innerText = 'Elementos disponibles';
 btnSubmit.innerText = 'Reservar';
@@ -133,7 +133,6 @@ btnAddElements.addEventListener('click',(btnTarget)=>{
 
 closeModal(modalAddElements, btnCloseElements);
 
-let button;
 //Abrir modal usuarios
 btnSearchUser.addEventListener('click',(event) =>{
     event.stopPropagation();
@@ -239,3 +238,19 @@ tableUsers.addEventListener('click',(e)=>{
 
 });
 
+/**
+ * Paginación usuarios
+ */
+
+btnPreview.addEventListener('click', (event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    console.log(event.target);
+});
+
+btnNext.addEventListener('click',(event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+    console.log(event.target);
+
+})
