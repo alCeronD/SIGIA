@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../../helpers/getUrl.php';
 
 // Recibir la respuesta de la solicitud.
 $method = $_SERVER['REQUEST_METHOD'];
-//header("Content-Type: application/json");
 
 class ReservaController{
     private $model;
@@ -23,8 +22,8 @@ class ReservaController{
     }
 
     //Función para mandar los elementos devolutivos al javscript.
-    public function getElementosDevolutivos(){
-        $data = $this->model->selectElements();
+    public function getElementosDevolutivos(int $pages){
+        $data = $this->model->selectElements($pages);
         success('Registros',$data);
     }
 
@@ -44,26 +43,29 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         $case = $_GET['action'] ?? '';
+        //var_dump($case);
         //valor de la página, por defecto, es la página #1.
         $pages = $_GET['pages'] ?? 1;
 
         switch ($case) {
             case 'users':
-
                 if (method_exists($controller,'getUsers')) {
                     $controller->getUsers($pages);
                 }
                 break;
-            
+
+            case 'elements':
+                //var_dump($pages);
+                if (method_exists($controller,'getElementosDevolutivos')) {
+                    $controller->getElementosDevolutivos($pages);
+                }
             default:
             //TODO: Retornar un valor no valido.
                 # code...
                 break;
         }
 
-        if (method_exists($controller,'getElementosDevolutivos')) {
-            $controller->getElementosDevolutivos();
-        }
+
         
 
     }elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {

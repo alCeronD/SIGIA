@@ -66,8 +66,7 @@ areaDestino.addEventListener('change', ()=>{
 });
 
 // Selecciono el elemento específico.
-let dataDevolutivos = {};
-let dataConsumibles = {};
+let objData = {};
 let button;
 const valuePage = document.querySelector('#valuePage');
 
@@ -75,6 +74,8 @@ btnAddElements.innerText = 'Seleccionar elementos';
 modalTitle.innerText = 'Elementos disponibles';
 btnSubmit.innerText = 'Reservar';
 btnSearchUser.innerText = 'Consultar';
+// Variable para definir las páginas de los valores retornados.
+let pages = 1;
 
 // AJAX GET ELEMENTS
 /**
@@ -82,23 +83,24 @@ btnSearchUser.innerText = 'Consultar';
  */
 
 /**
- * Función de renderizado de los instructores.
+ * Función de renderizado de los instructores o elementos.
  */
-function fetchData(){
-    objAjax.request.open('GET','modules/reservaPrestamos/controller/reservaController.php',true);
+function fetchData(page = 1, action = ''){
+    objAjax.request.open('GET',`modules/reservaPrestamos/controller/reservaController.php?pages=${encodeURIComponent(page)}&action=${encodeURIComponent(action)}`,true);
     objAjax.request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
     objAjax.request.onload = ()=>{
         //Transformo la respuesta
         let response = JSON.parse(objAjax.request.responseText);
-        dataDevolutivos = response.data;
+        objData = response.data.data;
     }
     //Específicamos que respuesta queremos recibir
     objAjax.request.setRequestHeader('Accept', 'application/json');
     objAjax.request.send();
-
 }
-function resetTable(resetToFirstPage = false){
+
+//Función para reestablecer los elementos a la página 1.
+function resetTable(resetToFirstPage = false, action = ''){
 
     if (resetToFirstPage) {
         pages = 1;
@@ -106,9 +108,8 @@ function resetTable(resetToFirstPage = false){
     //TODO: Si se le envía más parámetros, buscar como funciona URLSearchParams para poder enviar muchos parámetros en forma de objeto.
     objAjax.request.open('GET',`modules/reservaPrestamos/controller/reservaController.php?pages=${encodeURIComponent(
       pages
-    )}&action=users`,true);
+    )}&action=${encodeURIComponent(action)}`,true);
     objAjax.request.setRequestHeader('X-Requested-With','XMLHttpRequest');
-
     objAjax.request.onload = ()=>{
         let response = JSON.parse(objAjax.request.responseText);
         let data = response.data.data;
@@ -118,7 +119,7 @@ function resetTable(resetToFirstPage = false){
         if (pages > allPages) {
             pages = allPages;
         }
-        //Limpio los selects, evito que hayan duplicados.
+            //Limpio los selects, evito que hayan duplicados.
             valuePage.innerHTML = '';
             for (let index = 1; index <= allPages; index++) {
                 let pagesOptions = document.createElement('option');
@@ -169,7 +170,7 @@ function resetTable(resetToFirstPage = false){
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
-    fetchData(true);
+    fetchData(1, 'elements');
 });
 
 // Abrir modal de elementos disponibles devolutivos y consumibles.
@@ -183,7 +184,7 @@ btnAddElements.addEventListener('click',(btnTarget)=>{
     //Limpiar la tabla antes de renderizarla, esto se hace para evitar duplicados.
     tableDevolutivos.innerHTML = "";
     //Implementar los datos en en la tabla.
-    dataDevolutivos.forEach(dta => {
+    objData.forEach(dta => {
 
         let codigo = dta.codigo;
         let elemento = dta.elemento;
@@ -204,8 +205,6 @@ btnAddElements.addEventListener('click',(btnTarget)=>{
         trTable.appendChild(tdElemento);
         trTable.appendChild(tdArea);
 
-
-        
     });
 });
 
@@ -275,7 +274,6 @@ valuePage.addEventListener('change', (event)=>{
 });
 
 //Botón de evento para marcar el preview de la página.
-let pages = 1;
 btnPreview.addEventListener('click', (event)=>{
     event.stopPropagation();
     event.preventDefault();
@@ -303,3 +301,29 @@ btnNext.addEventListener('click',(event)=>{
 closeModal(modalUsers, btnCloseUsers);
 //Con el true se devuelve a la primera página.
 resetTable(true);
+
+
+/**
+ * Paginación elementos disponibles
+ * 
+ */
+
+const previewElement = document.querySelector('#previewElement');
+const nextElement = document.querySelector('#nextElement');
+// Selector = Puede que no lo use.
+const valuePageElement = document.querySelector('#valuePageElement');
+
+
+previewElement.addEventListener('click',()=>{
+    
+    pages = (pages === 1) ? 1 : pages - 1;
+    console.log(pages);
+    fetchData(pages,'elements');
+});
+
+nextElement.addEventListener('click',()=>{
+    pages++;
+    console.log(pages);
+    fetchData(pages,'elements');
+
+});
