@@ -43,7 +43,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         $case = $_GET['action'] ?? '';
-        //var_dump($case);
         //valor de la página, por defecto, es la página #1.
         $pages = $_GET['pages'] ?? 1;
 
