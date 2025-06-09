@@ -10,9 +10,9 @@
                 <th>Tipo</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tableBodyPreviewElements">
             <!-- cuerpo renderizado con javascript. -->
-            <tr>
+            <!-- <tr>
                 <td>327482347</td>
                 <td>Cámara HXR-NX800</td>
                 <td>1</td>
@@ -59,7 +59,7 @@
                 <td>Trípode Manfrotto 190X</td>
                 <td>2</td>
                 <td><input type="checkbox"></td>
-            </tr>
+            </tr> -->
         </tbody>
 
     </table>

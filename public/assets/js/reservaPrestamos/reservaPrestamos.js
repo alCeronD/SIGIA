@@ -5,6 +5,7 @@ const objAjax = new Ajax();
 const btnSubmit = document.getElementById('btnSubmit');
 const tableDevolutivos = document.querySelector('#bodyDevolutions');
 const tableUsers = document.querySelector('#tableBodyUsers');
+const tablePreviewElements = document.querySelector('#tableBodyPreviewElements');
 const modalAddElements = document.querySelector('#modalAddElements');
 const modalUsers = document.querySelector('#modalUsers');
 const btnAddElements = document.getElementById('btnAddElements');
@@ -183,6 +184,10 @@ function resetTableUsers(action = '',resetToFirstPage = false){
     objAjax.request.send();
 }
 
+//Este arreglo lo voy a crear con el fin de guardar los ids de los elementos para saber cuales son los elementos seleccionados.
+let ids = [];
+//Aca se van a guardar los input de tipo Checkbox.
+let addElements;
 function resetTableElements(action = '', pages = 1 ,resetFirstPage = false){
 
     //Si el valor es true pues devuelvo la página al principio.
@@ -194,7 +199,6 @@ function resetTableElements(action = '', pages = 1 ,resetFirstPage = false){
     if (pages > pagesElements) {
         pages = pagesElements;
     }
-
 
     objAjax.request.open('GET',`modules/reservaPrestamos/controller/reservaController.php?pages=${encodeURIComponent(
       pages
@@ -212,33 +216,76 @@ function resetTableElements(action = '', pages = 1 ,resetFirstPage = false){
         let elemento = dta.elemento;
         let area = dta.area;
 
+        addElements = document.createElement('input');
+        addElements.setAttribute('type','checkbox');
+        addElements.setAttribute('class','checkboxInput');
+        addElements.setAttribute('data-id',codigo);
+
         let trTable = document.createElement('tr');
         let tdCodigo = document.createElement('td');
         let tdElemento = document.createElement('td');
         let tdArea = document.createElement('td');
+        let tdAccion = document.createElement('td');
 
         //A los elementos td les implemento su contenido, su contenido es la información de la tabla
         tdCodigo.textContent = codigo;
         tdElemento.textContent = elemento;
         tdArea.textContent = area;
+        tdAccion.appendChild(addElements);
 
         tableDevolutivos.appendChild(trTable);
         trTable.appendChild(tdCodigo);
         trTable.appendChild(tdElemento);
         trTable.appendChild(tdArea);
+        trTable.append(tdAccion);
 
+
+        /**
+         * Objetivo = con el select, buscar los campos de la fila y guardarlos en un arreglo para implementarlos en la tablaPreviewElements.
+         */
+        addElements.addEventListener('click',(event)=>{
+            let isChecked = event.target.checked;
+            if (isChecked) {
+                console.log(event.target.getAttribute('data-id'));
+            }
+
+            let inputChecked = event.target;
+            //Uso parentNode para traer todos los elementos de la fila, Excepto, el elemento que activo el evento, es decir, el input checkbox.
+            let info = inputChecked.closest('tr');
+
+            //La idea es hacer un append de estos registros a la tabla. tblPreviewElements.
+            let codigo = info.children[0].textContent;
+            let nombre = info.children[1].textContent;
+            let area = info.children[2].textContent;
+
+
+            let trTablePreview = document.createElement('tr');
+
+            let tdCodigo = document.createElement('td');
+            let tdNombre = document.createElement('td');
+            let tdArea = document.createElement('td');
+
+            tablePreviewElements.appendChild(trTablePreview);
+
+            tdCodigo.textContent = codigo;
+            tdNombre.textContent = nombre;
+            tdArea.textContent = area;
+
+            trTablePreview.appendChild(tdCodigo);
+            trTablePreview.appendChild(tdNombre);
+            trTablePreview.appendChild(tdArea);
+
+            console.log({codigo,nombre,area});
+        });
     });
+
+
 
 
     }
 
     objAjax.request.setRequestHeader('accept','application/json');
     objAjax.request.send();
-
-
-
-
-    //Limpio el body de la tabla.
 
 }
 
@@ -268,7 +315,7 @@ btnSearchUser.addEventListener('click',(event) =>{
 
 });
 
-//Delegar evento sobre la tabla.
+//Delegar evento sobre la tabla usuarios
 tableUsers.addEventListener('click',(e)=>{
     e.stopPropagation();
     e.preventDefault();
@@ -302,6 +349,17 @@ tableUsers.addEventListener('click',(e)=>{
     }
 
 });
+
+//Delegar evento sobre la tabla elementos
+/**
+ * Esta es solo la interacción con la tabla de elementos preview, que sirven para poder eliminar un registro si no lo quiero antes de enviar el prestamo.
+ */
+tablePreviewElements.addEventListener('click',(event)=>{
+    event.stopPropagation();
+    event.preventDefault();
+
+});
+
 
 /**
  * Paginación usuarios
@@ -370,3 +428,8 @@ nextElement.addEventListener('click',()=>{
 //Cerrar el modal de elementos
 closeModal(modalAddElements, btnCloseElements);
 resetTableElements('elements',pgElementsDevolutivos,true);
+
+
+/**
+ * Agregar elementos seleccionados a la tabla previewElements
+ */
