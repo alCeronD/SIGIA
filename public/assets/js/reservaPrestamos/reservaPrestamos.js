@@ -52,7 +52,6 @@ areaDestino.addEventListener('change', ()=>{
         horaInicioFin.style.visibility = 'visible';
         horaInicioFin.style.opacity = '1';
     }
-    console.log(value);
     if (value.value === 'externo' || value.value === '---') {
         //TODO: mejorar a función para ocultar los elementos.
         horaInicio.style.visibility  = 'hidden';
@@ -70,18 +69,13 @@ let objDataElements = {};
 let objDataUsers = {};
 let button;
 const valuePage = document.querySelector('#valuePage');
-
 btnAddElements.innerText = 'Seleccionar elementos';
 modalTitle.innerText = 'Elementos disponibles';
 btnSubmit.innerText = 'Reservar';
 btnSearchUser.innerText = 'Consultar';
-// Variable para definir las páginas de los valores retornados.
-let pages = 1;
-
-// AJAX GET ELEMENTS
-/**
- * TODO: Cambiar a función.
- */
+// variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
+let pagesUsers;
+let pagesElements;
 
 /**
  * Función de renderizado de los instructores o elementos.
@@ -96,17 +90,17 @@ function fetchData(action = '',page = 1){
             //Transformo la respuesta
             let response = JSON.parse(objAjax.request.responseText);
             objDataElements = response.data.data;
-            console.log({"response elements":objDataElements});
+            pagesElements = response.data.pages;
+            //console.log(response);
+            //console.log({"response elements":objDataElements});
         }
 
         if (action === 'users') {
             let response = JSON.parse(objAjax.request.responseText);
             objDataUsers = response.data.data;
-            console.log({"response usuarios":objDataUsers});
+            //console.log(response);
+            //console.log({"response usuarios":objDataUsers});
         }
-
-         
-        
     }
     //Específicamos que respuesta queremos recibir
     objAjax.request.setRequestHeader('Accept', 'application/json');
@@ -114,32 +108,29 @@ function fetchData(action = '',page = 1){
 }
 
 //Función para reestablecer los elementos a la página 1.
-//TODO: Separar esta función para instructores o elementos.
-function resetTable(action = '',resetToFirstPage = false){
+function resetTableUsers(action = '',resetToFirstPage = false){
 
     if (resetToFirstPage) {
-        pages = 1;
+        pgUsers  = 1;
     }
     //TODO: Si se le envía más parámetros, buscar como funciona URLSearchParams para poder enviar muchos parámetros en forma de objeto.
     objAjax.request.open('GET',`modules/reservaPrestamos/controller/reservaController.php?pages=${encodeURIComponent(
-      pages
+      pgUsers 
     )}&action=${encodeURIComponent(action)}`,true);
     objAjax.request.setRequestHeader('X-Requested-With','XMLHttpRequest');
     objAjax.request.onload = ()=>{
 
         valuePage.innerHTML = '';
         if (action === 'users') {
-            console.log(action);
 
             let response = JSON.parse(objAjax.request.responseText);
             let data = response.data.data;
             let allPages = response.data.pages;
 
-            console.log(data);
 
             //Evitar que no se aumente la página más allá del número de páginas.
-            if (pages > allPages) {
-                pages = allPages;
+            if (pgUsers > allPages) {
+                pgUsers = allPages;
             }
             
             //Limpio los selects, evito que hayan duplicados.
@@ -150,7 +141,7 @@ function resetTable(action = '',resetToFirstPage = false){
                 valuePage.append(pagesOptions);
             }
             //por defecto, lo coloco en 1.
-            valuePage.value = String(allPages);
+            valuePage.value = String(pgUsers);
 
             tableUsers.innerHTML = '';
             data.forEach(us =>{
@@ -192,24 +183,30 @@ function resetTable(action = '',resetToFirstPage = false){
     objAjax.request.send();
 }
 
-document.addEventListener('DOMContentLoaded', ()=>{
-    fetchData('elements', 1);
-});
-// Abrir modal de elementos disponibles devolutivos y consumibles.
-btnAddElements.addEventListener('click',(btnTarget)=>{
-    btnTarget.preventDefault();
-    btnTarget.stopPropagation();
-    
-    //visualizar modal.
-    modalAddElements.style.display = "flex";
+function resetTableElements(action = '', pages = 1 ,resetFirstPage = false){
 
-    fetchData('elements',pages);
+    //Si el valor es true pues devuelvo la página al principio.
+    if (resetFirstPage) {
+        pages = 1;
+    }
 
-    //Limpiar la tabla antes de renderizarla, esto se hace para evitar duplicados.
-    tableDevolutivos.innerHTML = "";
-    console.log(objDataElements);
-    //Implementar los datos en en la tabla.
-    objDataElements.forEach(dta => {
+        //Evitar que el numero de páginas sea mayor a las páginas de los elementos.
+    if (pages > pagesElements) {
+        pages = pagesElements;
+    }
+
+
+    objAjax.request.open('GET',`modules/reservaPrestamos/controller/reservaController.php?pages=${encodeURIComponent(
+      pages
+    )}&action=${encodeURIComponent(action)}`,true);
+    objAjax.request.setRequestHeader('X-Requested-With','XMLHttpRequest');
+    objAjax.request.onload = ()=>{
+
+        let response = JSON.parse(objAjax.request.responseText);
+        objDataElements = response.data.data;
+            tableDevolutivos.innerHTML = "";
+        //Implementar los datos en en la tabla.
+        objDataElements.forEach(dta => {
 
         let codigo = dta.codigo;
         let elemento = dta.elemento;
@@ -231,9 +228,33 @@ btnAddElements.addEventListener('click',(btnTarget)=>{
         trTable.appendChild(tdArea);
 
     });
+
+
+    }
+
+    objAjax.request.setRequestHeader('accept','application/json');
+    objAjax.request.send();
+
+
+
+
+    //Limpio el body de la tabla.
+
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+    fetchData('elements', 1);
 });
-
-
+// Abrir modal de elementos disponibles devolutivos y consumibles.
+btnAddElements.addEventListener('click',(btnTarget)=>{
+    btnTarget.preventDefault();
+    btnTarget.stopPropagation();
+    
+    //visualizar modal.
+    modalAddElements.style.display = "flex";
+    //Uso esta función para renderizar por defecto los elementos de tipo devolutivo, en la página 1.
+    resetTableElements('elements',1);
+});
 
 //Abrir modal usuarios
 btnSearchUser.addEventListener('click',(event) =>{
@@ -241,7 +262,7 @@ btnSearchUser.addEventListener('click',(event) =>{
     event.preventDefault();
 
     //Vuelvo a reiniciar la tabla para que inicie en la Página #1.
-    resetTable('users',true);
+    resetTableUsers('users',true);
 
     modalUsers.style.display = 'flex';
 
@@ -285,29 +306,24 @@ tableUsers.addEventListener('click',(e)=>{
 /**
  * Paginación usuarios
  */
-valuePage.addEventListener('change', (event)=>{
+valuePage.addEventListener('change', (event) => {
     event.stopPropagation();
     event.preventDefault();
 
-    //pageSelect
-    const pageSelect = event.target.value;
-    
-    if (pageSelect) {
-        console.log(pageSelect);
-        
-    }
+    pgUsers = Number(event.target.value);
+    resetTableUsers('users');
 });
 
+let pgUsers = 1;
 //Botón de evento para marcar el preview de la página.
 btnPreview.addEventListener('click', (event)=>{
     event.stopPropagation();
     event.preventDefault();
 
-    pages = pages === 1 ? 1 : pages - 1;
+    pgUsers = pgUsers === 1 ? 1 : pgUsers - 1;
 
-    console.log(pages);
     //Decrementa la página por el valor del pages.
-    resetTable('users');
+    resetTableUsers('users');
     
 });
 
@@ -315,42 +331,42 @@ btnPreview.addEventListener('click', (event)=>{
 btnNext.addEventListener('click',(event)=>{
     event.stopPropagation();
     event.preventDefault();
-    pages++;
-    console.log('aumento'+pages);
+    pgUsers++;
 
     //Aumenta la Página hasta que llega al final.
-    resetTable('users');
+    resetTableUsers('users');
     
 });
 
 closeModal(modalUsers, btnCloseUsers);
 //Con el true se devuelve a la primera página.
-resetTable('',true);
-
+resetTableUsers('',true);
 
 /**
- * Paginación elementos disponibles
+ * Paginación elementos devolutivos disponibles
  * 
  */
-
+let pgElementsDevolutivos = 1;
 const previewElement = document.querySelector('#previewElement');
 const nextElement = document.querySelector('#nextElement');
-// Selector = Puede que no lo use.
+// Selector = Puede que no lo use. Este selector es para colocar la cantidad de páginas que tengo basado en la cantidad de elementos de la tabla.
 const valuePageElement = document.querySelector('#valuePageElement');
-
 previewElement.addEventListener('click',()=>{
-    
-    pages = (pages === 1) ? 1 : pages - 1;
-    console.log(pages);
-    fetchData('elements',pages);
+    pgElementsDevolutivos = (pgElementsDevolutivos === 1) ? 1 : pgElementsDevolutivos - 1;
+    console.log({"decremento":pgElementsDevolutivos});
+    resetTableElements('elements',pgElementsDevolutivos);
 });
 
 nextElement.addEventListener('click',()=>{
-    pages++;
-    console.log(pages);
-    fetchData('elements',pages);
+    console.log({"aumento":pgElementsDevolutivos});
+    // Validación adicional para evitar que se desacople la información.
+    if (pgElementsDevolutivos < pagesElements) {
+        pgElementsDevolutivos++;
+        // pgElementsDevolutivos++;
+    }
+    resetTableElements('elements',pgElementsDevolutivos);
 });
 
 //Cerrar el modal de elementos
 closeModal(modalAddElements, btnCloseElements);
-resetTable('',true);
+resetTableElements('elements',pgElementsDevolutivos,true);
