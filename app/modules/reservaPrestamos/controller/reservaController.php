@@ -1,7 +1,8 @@
 <?php 
-
+require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../model/reservaModel.php';
 require_once __DIR__ . '/../../../helpers/getUrl.php';
+
 
 // Recibir la respuesta de la solicitud.
 $method = $_SERVER['REQUEST_METHOD'];
@@ -21,12 +22,44 @@ class ReservaController{
         return include_once __DIR__ . '/../views/reservaView.php';
     }
 
+    //Función para agregar la reserva.
+    public function setReserva(array $data=[]){
+
+        //Validar usuario. para guardar su rol. y su tipo de prestamo, reserva o solicitud.
+        if ($_SESSION['rol_id'] == 2 || $_SESSION['rol_id'] == 1) {
+            $pres_rol = $_SESSION['rol_id'];
+            //Reserva
+            $tp_pres = 2;
+        }
+        if ($_SESSION['rol_id'] == 4) {
+            $pres_rol = $_SESSION['rol_id'];
+            //Solicitud
+            $tp_pres = 1;
+        }
+
+        $codigosElementos = $data["codigosElementos"];
+
+        unset($data["codigosElementos"]);
+        //Transformo los códigos en enteros.
+        foreach ($codigosElementos as $key => $value) {
+            $codigosElementos[$key] = (int) $value;
+        }
+
+
+        //TODO: Usar array_combine para cambiar los nombres de las claves.
+        $newKeys = ['pres_fch_slcitud','pres_fch_reserva','pres_hor_inicio','pres_hor_fin','pres_fch_entrega','pres_observacion','pres_destino','pres_estado','tp_pres','pres_rol'];
+
+
+        //$this->model->insertReserva($data);
+    }
+
     //Función para mandar los elementos devolutivos al javscript.
     public function getElementosDevolutivos(int $pages){
         $data = $this->model->selectElements($pages);
         success('Registros',$data);
     }
 
+    
     public function getUsers($page){
         $data = $this->model->selectUsers($page);
 
@@ -67,9 +100,16 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
         
 
-    }elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        //aca debe de ejecutarse la función del controlador para agregar el prestamo
-        echo 'hello world';
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $input = file_get_contents("php://input");
+
+        $data = json_decode($input, true);
+
+        $controller->setReserva($data);
+
+
     }
     exit();
 

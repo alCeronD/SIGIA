@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . '/../../../helpers/session.php';
 include_once __DIR__ . '/../../../config/conn.php';
 
 class ReservaModel
@@ -11,7 +11,11 @@ class ReservaModel
         $this->conect = new Conection();
     }
 
-    public function addReserva() {}
+    public function insertReserva(array $data=[]) {
+
+
+        
+    }
 
     public function updateReserva() {}
 

@@ -12,7 +12,7 @@
         <button type="button" id="searchBtn"></button>
     </div>
     <div class="solicPrestamos">
-        <form action="" method="post" id="formSolicitudPrestamo">
+        <form id="formSolicitudPrestamo">
             <div class="inputContent cedula">
                 <label for="cedula" class="labelForm">Cédula: </label>
                 <input type="number" class="inputForm" name="cedula" id="cedula" placeholder="Identificación...">

@@ -16,11 +16,10 @@ const areaDestino = document.querySelector("#areaDestino");
 const horaInicio = document.querySelector(".horaInicio");
 const horaFin = document.querySelector(".horaFin");
 const horaInicioFin = document.querySelector(".horaInicioFin");
-const btnCloseElements = document.querySelector(
-  "#modalAddElements .close-modal"
-);
+const btnCloseElements = document.querySelector("#modalAddElements .close-modal");
 const btnCloseUsers = document.querySelector("#modalUsers .close-modal");
 const btnSearchUser = document.querySelector("#searchBtn");
+const formSolicitudPrestamo = document.querySelector('#formSolicitudPrestamo');
 horaInicio.style.visibility = "hidden";
 horaInicio.style.opacity = "0";
 horaFin.style.visibility = "hidden";
@@ -334,6 +333,7 @@ tableDevolutivos.addEventListener("click", (event) => {
     let trTablePreview = document.createElement("tr");
 
     let tdCodigo = document.createElement("td");
+    tdCodigo.setAttribute('class','codigoElemento');
     let tdNombre = document.createElement("td");
     let tdArea = document.createElement("td");
 
@@ -433,3 +433,53 @@ resetTableElements("elements", pgElementsDevolutivos, true);
 /**
  * Agregar elementos seleccionados a la tabla previewElements
  */
+
+
+/**
+ * Submit al formulario.
+ */
+
+formSolicitudPrestamo.addEventListener("submit",(event)=>{
+  event.preventDefault();
+  event.stopPropagation();
+
+  let rows = {
+    codigo: []
+  };
+  let td;
+
+  let info = new FormData(formSolicitudPrestamo);
+  //Data de formulario
+  let data = Object.fromEntries(info);
+
+  //Data de elementos.
+  const filas = document.querySelectorAll('.tableElements .previewElements #tableBodyPreviewElements tr');
+  //Capturo el codigo del elemento y lo guardo.
+  filas.forEach((fl) =>{
+    td = document.querySelectorAll('.tableElements .previewElements #tableBodyPreviewElements .codigoElemento');
+  });
+
+  td.forEach((tds)=>{
+    //Guardo el elemento.
+    rows.codigo.push(tds.textContent);
+
+  });
+
+    //Evita duplicidad pero para enviar el formulario, debo de arreglarlo para que no se agregue a la vista.
+    rows.codigo = rows.codigo.filter((value, index, self) => self.indexOf(value) === index);
+    let codigosElementos = rows.codigo;
+    //Agrego los códigos de los elementos al data.
+    data.codigosElementos = codigosElementos;
+
+  objAjax.request.open("POST","modules/reservaPrestamos/controller/reservaController.php");
+  objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+  
+  let dataJson = JSON.stringify(data);
+  console.log(dataJson);
+
+
+  objAjax.request.setRequestHeader("accept", "application/json");
+  objAjax.request.send(dataJson);
+
+
+})
