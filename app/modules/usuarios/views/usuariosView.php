@@ -1,15 +1,6 @@
-<?php
-// include_once '../proyecto_sigia/app/helpers/session.php';
-// include_once '../proyecto_sigia/public/partials/header.php';
-// if (!isset($_SESSION['usuario'])) {
-//     header("Location: /proyecto_sigia/index.php");
-//     exit();
-// }
-?>
 
-  <!-- <div class="container text-center"> -->
+
     <form method="POST" action="<?php echo getUrl('usuarios','usuarios','createUser'); ?>" class="w-75 mx-auto text-start row g-3">
-
 
       <div class="col-md-6">
         <div class="mb-3">
@@ -76,7 +67,3 @@
     </form>
   </div>
 </main>
-
-<?php
-// include_once '../proyecto_sigia/public/partials/footer.php';
-?>

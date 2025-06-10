@@ -46,18 +46,13 @@ class solicitudPrestamosController{
                 foreach ($elementos_seleccionados as $elemento_id) {
                     $prestamoElemento->create($lastId, $usuario_id ,$elemento_id);
                 }
-                
-                if ($prestamoElemento) {
+                if ($prestamoElemento == true) {
+                    // dd("hola llegue");
+                    echo "<script>alert('Usuario registrado exitosamente'); window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
                     
-                    dd("llega aqui?");
-                    
-                    // return include_once __DIR__ . '/../views/solicitudPrestamosView.php';
-                    // return $this->registrarPrestamosView();
-                    // return getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView');
-
-
-                }else{
-                    echo "llorelo";
+                }else {
+                    echo "<script>alert('Usuario no se registro'); window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
+                    // dd("error aqui");
                 }
                 exit;
             } else {
