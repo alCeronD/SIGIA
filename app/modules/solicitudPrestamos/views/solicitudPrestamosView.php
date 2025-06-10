@@ -55,7 +55,6 @@
                 <textarea class="inputForm" id="pres_observacion" name="pres_observacion" rows="3" required></textarea>
             </div><br>
             
-            <!-- Filtro por Área -->
           <div class="mb-3 col-12">
             <label for="filtro_area" class="form-label">Filtrar por Área</label>
             <select class="form-select" id="filtro_area" name="filtro_area">
@@ -66,7 +65,6 @@
             </select>
           </div><br>
           
-          <!-- Tabla de Elementos Devolutivos -->
           <div class="mb-3 col-12">
             <h4 class="mt-4">Elementos Devolutivos</h4>
             <table class="table table-bordered table-hover">
