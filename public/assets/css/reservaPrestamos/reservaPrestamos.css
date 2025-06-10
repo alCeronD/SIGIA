@@ -43,7 +43,6 @@
   width: 100%;
   align-self: start;
   justify-self: start;
-  background-color: yellow;
   height: auto;
   display: flex;
   justify-content: space-between;
@@ -64,10 +63,10 @@
     "tableElements tableElements tableElements"
     ". inputBtn .";
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  height: fit-content;
-  max-height: 100%;
+  grid-template-rows: repeat(4, auto) 1fr auto;
   gap: 1rem;
+  overflow: auto; /* Para permitir scroll si es necesario */
+  min-height: 0;  /* Clave */
 }
 
 /* Areas del formulario */
@@ -158,7 +157,9 @@
 /* Estilos de la tabla */
 table {
   width: 100%;
-  table-layout: fixed;
+  max-width: 100%;
+  /* TODO: buscar que es esto. */
+  table-layout: auto;
   word-wrap: break-word;
 }
 
@@ -175,10 +176,14 @@ th {
   grid-area: inputBtn;
   width: 100%;
   justify-items: center;
+  min-height: 3rem;
 }
 
+/* Campo de busqueda */
+
 /* Estilos del modal */
-#modalAddElements {
+#modalAddElements,
+#modalUsers {
   display: none;
   position: fixed;
   /* Stay in place */
@@ -200,13 +205,11 @@ th {
 
 .modal-content {
   background-color: #fefefe;
-  margin: 10% auto;
+  margin: 5% auto;
   /* 15% from the top and centered */
   padding: 20px;
-  border: 1px solid #888;
   width: 50%;
-  height: auto;
-  /* Could be more or less, depending on screen size */
+  height: fit-content;
 }
 
 .close {
@@ -246,4 +249,10 @@ th {
 #modal-title .close {
   font-size: 2rem;
   color: white;
+}
+
+/* Botones previo y next de las tablas */
+.buttons {
+  display: flex;
+  justify-content: space-between;
 }

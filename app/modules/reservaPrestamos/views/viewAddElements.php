@@ -5,11 +5,7 @@
         <div id="modal-title">
             <span id="modalTitle">Elementos disponibles</span>
             <button type="button" id="closeModalBtn">
-<<<<<<< HEAD
                 <span class="close-modal">&times;</span>
-=======
-                <span class="close">&times;</span>
->>>>>>> 90bfcc2 (Home y elementos)
             </button>
         </div>
         <!-- Tabla de elementos devolutivos -->
