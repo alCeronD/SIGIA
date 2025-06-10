@@ -23,21 +23,20 @@ body{
 .container{
   display: flex;
   height: calc(100vh - 100px);
-  /* border: 1px solid black; */
+  border: 1px solid black;
   width: 100%;
-  padding: 0;
+  padding: 1.5rem;
   /* El contenedor y todo lo que hay internamente va a tener un Máximo de 1200px de tamaño */
   max-width: 1200px;
   margin: 0 auto 12px;
+  overflow-x: auto;
   margin-bottom: 0vh;
-  overflow: hidden;
-  border: 5px solid red;
 }
 
-/* .container * {
+.container * {
   max-width: 100%;
   box-sizing: border-box;
-} */
+}
 
 /* Botón de cerrar */
 .close-btn{
@@ -48,7 +47,6 @@ body{
 
 /* Estilos del footer. */
 #mainMenu {
-  border: 1px solid black;
   height: 10vh;
   display: flex;
   color: black;

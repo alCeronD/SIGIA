@@ -77,4 +77,3 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 //Por defecto me ejecuta la vista, en caso de que no sea una petición.
 $controller->reservaView();
 
-?>

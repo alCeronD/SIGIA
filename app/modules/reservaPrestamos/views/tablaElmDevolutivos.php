@@ -61,6 +61,7 @@
                 <td>40</td>
                 <td><button>+</button></td>
             </tr> -->
+<<<<<<< HEAD
         </tbody>
 
     </table>
@@ -74,3 +75,9 @@
         <input type="button" value=">" id="nextElement">
     </div>
 </div>
+=======
+            
+        </tbody>
+    </table>
+</div>
+>>>>>>> 90bfcc2 (Home y elementos)
