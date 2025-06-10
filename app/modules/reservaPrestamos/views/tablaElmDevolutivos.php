@@ -61,7 +61,16 @@
                 <td>40</td>
                 <td><button>+</button></td>
             </tr> -->
-            
         </tbody>
+
     </table>
+    <div class="buttons">
+        <input type="button" value="<" id="previewElement">
+        <div class="page">
+            <select name="" id="valuePageElement">
+                <!-- renderizar por javascript -->
+            </select>
+        </div>
+        <input type="button" value=">" id="nextElement">
+    </div>
 </div>

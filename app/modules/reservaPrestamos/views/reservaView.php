@@ -7,25 +7,28 @@
             class="close-btn"
             title="Volver al dashboard">&times;</a>
     </div>
-    <div id="solicPrestamos">
+    <div class="searchUser">
+        <label for="">Instructor: </label>
+        <button type="button" id="searchBtn"></button>
+    </div>
+    <div class="solicPrestamos">
         <form action="" method="post" id="formSolicitudPrestamo">
             <div class="inputContent cedula">
-                <label for="cedula" class="labelForm">Cédula: *</label>
+                <label for="cedula" class="labelForm">Cédula: </label>
                 <input type="number" class="inputForm" name="cedula" id="cedula" placeholder="Identificación...">
             </div>
 
             <div class="inputContent nombre">
-                <label for="nombre" class="labelForm">Nombre: *</label>
+                <label for="nombre" class="labelForm">Nombre: </label>
                 <input type="text" class="inputForm" name="nombre" id="nombre" placeholder="Nombre...">
             </div>
-
             <div class="inputContent apellido">
                 <label for="apellido" class="labelForm">Apellido: *</label>
                 <input type="text" class="inputForm" name="apellido" id="apellido" placeholder="Apellido...">
             </div>
 
             <div class="inputContent telefono">
-                <label for="telefono" class="labelForm">Teléfono: *</label>
+                <label for="telefono" class="labelForm">Teléfono: </label>
                 <input type="tel" class="inputForm" name="telefono" id="telefono" placeholder="Teléfono...">
             </div>
 
@@ -64,7 +67,7 @@
                 <input type="date" class="inputForm" name="fechaDevolucion" id="fechaDevolucion">
             </div>
 
-            <div class="inputObservaciones">
+            <div class="inputContent inputObservaciones">
                 <label for="observaciones" class="labelForm">Observaciones</label>
                 <textarea name="observaciones" class="inputForm" id="observaciones" placeholder="Digite una observación en caso de que sea requerida."></textarea>
             </div>
@@ -89,5 +92,10 @@
 <div id="addElements">
     <?php require_once 'viewAddElements.php'; ?>
 </div>
+
+<!-- Contenedor modal que contiene los registros de los usuarios -->
+ <div id="users">
+    <?php require_once 'tableUsers.php'; ?>
+ </div>
 
 <script type="module" src="../public/assets/js/reservaPrestamos/reservaPrestamos.js"></script>
