@@ -15,11 +15,16 @@
     "menuTitle"
     "searchUser"
     "solicPrestamos";
+
+    height: 100%;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
 }
 
 /* Areas del content */
 .menuTitle {
   grid-area: menuTitle;
+
 }
 
 .searchUser {
@@ -39,17 +44,16 @@
 
 /* Bloque del menu del modulo */
 .menuTitle {
-  display: inline-block;
-  width: 100%;
-  align-self: start;
-  justify-self: start;
-  height: auto;
+
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+
 }
 
 #textTitle {
-  font-size: 2rem;
+    font-size: 20pt;
+
 }
 
 /* Formulario */
@@ -123,12 +127,13 @@
 }
 
 .inputContent {
+
   display: flex;
-  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   width: 100%;
-  min-height: 0;
-  /* su tamaño mínimo va a ser 0. */
-  min-width: 0;
+  height: 35px;
+  gap: .5em;
 }
 
 .labelForm {
