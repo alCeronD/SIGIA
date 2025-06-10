@@ -473,10 +473,38 @@ formSolicitudPrestamo.addEventListener("submit",(event)=>{
 
   objAjax.request.open("POST","modules/reservaPrestamos/controller/reservaController.php");
   objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-  
-  let dataJson = JSON.stringify(data);
-  console.log(dataJson);
 
+  //Elimino las propiedades que no necesito.
+    delete data["nombre"];
+    delete data["apellido"];
+    delete data["telefono"];
+    delete data["email"];
+
+
+    if (data["areaDestino"].length === 0) {
+      //TODO:Agregar alerta de que debe ser un campo obligatorio.
+      console.log('area debe ser obligatoria');
+    }
+
+    //Si el area destino es mayor, es decir, si su valor es igual a centro, valida si contiene valores en las horas.
+    if (data["areaDestino"].length > 0 && data["areaDestino"] === 'centro') {
+
+      data["inicio"] = data["inicio"].length > 0 ? data["inicio"] : false;
+      data["fin"] = data["fin"].length > 0 ? data["fin"] : false;
+
+      if ((!data["inicio"]) || (!data["fin"])) {
+        console.log('hora inicio y fin deben ser obligatorias');
+      }
+    }
+
+    //Si selecciono externo, no debe de tener hora de inicio y fin..
+    if (data["areaDestino"] === 'externo') {
+      data["inicio"] = null;
+      data["fin"] = null;
+    }
+
+
+  let dataJson = JSON.stringify(data);
 
   objAjax.request.setRequestHeader("accept", "application/json");
   objAjax.request.send(dataJson);

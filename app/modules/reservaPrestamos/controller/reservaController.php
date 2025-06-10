@@ -26,15 +26,21 @@ class ReservaController{
     public function setReserva(array $data=[]){
 
         //Validar usuario. para guardar su rol. y su tipo de prestamo, reserva o solicitud.
-        if ($_SESSION['rol_id'] == 2 || $_SESSION['rol_id'] == 1) {
-            $pres_rol = $_SESSION['rol_id'];
+        if (($_SESSION['usuario']['rol_id'] == 2) || ($_SESSION['usuario']['rol_id'] == 1)) {
+            $pres_rol = $_SESSION['usuario']['rol_id'];
             //Reserva
             $tp_pres = 2;
+            //Estado
+            $pres_estado = 1;
+
         }
-        if ($_SESSION['rol_id'] == 4) {
-            $pres_rol = $_SESSION['rol_id'];
+        if (($_SESSION['usuario']['rol_id'] == 4)) {
+            $pres_rol = $_SESSION['usuario']['rol_id'];
             //Solicitud
             $tp_pres = 1;
+            //Estado
+            $pres_estado = 3;
+
         }
 
         $codigosElementos = $data["codigosElementos"];
@@ -45,12 +51,68 @@ class ReservaController{
             $codigosElementos[$key] = (int) $value;
         }
 
+        //var_dump($data);
+
+        /**
+         * array(
+         * "cedula"           => "100002",
+         * "areaDestino"      => "centro",
+         * "fechaReserva"     => "2025-06-16",
+         * "inicio"           => "16:38",
+         * "fin"              => "18:38",
+         * "fechaDevolucion"  => "2025-06-19",
+         * "observaciones"    => "hola"
+         *)
+         */
+
+         /**
+          *  pres_fch_reserva = fechaReserva
+          * pres_hor_inicio = inicio
+          * pres_hor_fin = fin
+          * pres_fch_entrega = fechaDevolucion
+          * pres_observacion = observaciones
+          * pres_destino = areaDestino 
+          *
+          */
+
 
         //TODO: Usar array_combine para cambiar los nombres de las claves.
-        $newKeys = ['pres_fch_slcitud','pres_fch_reserva','pres_hor_inicio','pres_hor_fin','pres_fch_entrega','pres_observacion','pres_destino','pres_estado','tp_pres','pres_rol'];
+        // $newKeys = ['pres_fch_slcitud','pres_fch_reserva','pres_hor_inicio','pres_hor_fin','pres_fch_entrega','pres_observacion','pres_destino','pres_estado','tp_pres','pres_rol'];
+
+        // $newsKeys = ['pres_fch_reserva','pres_hor_inicio','pres_hor_fin','pres_fch_entrega','pres_observacion','pres_destino'];
+
+        // // foreach ($data as $key => $value) {
+        // //     var_dump($key);
+        // // }
+        // array_combine($data,$newsKeys);
+        // var_dump($data);
 
 
-        //$this->model->insertReserva($data);
+        $data['pres_rol'] = $pres_rol;
+        $data['tp_pres'] = $tp_pres;
+
+        //Cambiar nombre de la llave.
+        $data['pres_fch_reserva'] = $data['fechaReserva'];
+        unset($data['fechaReserva']);
+
+        $data['pres_hor_inicio'] = $data['inicio'];
+        unset($data['inicio']);
+
+        $data['pres_hor_fin'] = $data['fin'];
+        unset($data['fin']);
+
+        $data['pres_fch_entrega'] = $data['fechaDevolucion'];
+        unset($data['fechaDevolucion']);
+
+        $data['pres_observacion'] = $data['observaciones'];
+        unset($data['observaciones']);
+
+        $data['pres_destino'] = $data['areaDestino'];
+        unset($data['areaDestino']);
+
+        $data['pres_estado'] = $pres_estado;
+
+        $this->model->insertReserva($data,$codigosElementos);
     }
 
     //Función para mandar los elementos devolutivos al javscript.
