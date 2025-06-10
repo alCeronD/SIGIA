@@ -5,6 +5,8 @@ require_once __DIR__ .'/helpers/getUrl.php';
 $modulo = $_GET['modulo'] ?? 'dashboard';
 $controllerFile = new ScanFiles($modulo);
 $css = $controllerFile->addUrl($modulo);
+
+
 if ($css) {
     $_SESSION['css'] = $css;
 } else {

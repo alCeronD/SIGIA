@@ -1,3 +1,4 @@
+
 <!-- tendero -->
 <?php if ($rol == 1): ?>
   <footer class="mac-footer d-flex justify-content-around align-items-center">
