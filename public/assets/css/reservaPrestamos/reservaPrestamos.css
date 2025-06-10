@@ -8,7 +8,6 @@
   /* evito desbordamiento */
   min-height: 0;
   max-height: 100%;
-  padding: 1.5rem;
   grid-template-columns: 1fr;
   grid-template-rows: auto auto 100%;
   grid-template-areas:

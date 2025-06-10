@@ -15,7 +15,7 @@
     <div class="option-card">
         <h5>Prestamos de Elementos</h5>
         <p>Consulta los prestamos Actuales.</p>
-        <a class="btn-secondary btnGetUrl" href="<?php echo getUrl("reserva", "reserva", "reservaview", false, 'dashboard'); ?>">Ver prestamos</a>
+        <a class="btn-secondary btnGetUrl" href="<?php echo getUrl("reservaPrestamos", "reserva", "reservaView", false, 'dashboard'); ?>">Ver prestamos</a>
     </div>
     <div class="option-card">
         <h5>Usuarios</h5>
