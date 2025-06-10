@@ -10,6 +10,7 @@ if ($css) {
 } else {
     unset($_SESSION['css']);
 }
+
 require_once '../public/partials/header.php'; 
 ?>
 
