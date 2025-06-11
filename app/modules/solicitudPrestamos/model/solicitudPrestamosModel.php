@@ -80,24 +80,67 @@ class solicitudPrestamos {
         }
     }
 
+    // public function search() {
+    //     try {
+    //         $sql = "SELECT 
+    //                     p.pres_cod,
+    //                     p.pres_fch_slcitud,
+    //                     p.pres_fch_reserva,
+    //                     p.pres_hor_inicio,
+    //                     p.pres_hor_fin,
+    //                     p.pres_fch_entrega,
+    //                     p.pres_observacion,
+    //                     p.pres_destino,
+    //                     p.pres_estado,
+    //                     tp.tp_nombre AS tipo_prestamo
+    //                 FROM 
+    //                     prestamos p
+    //                 LEFT JOIN 
+    //                     tipo_prestamo tp ON p.tp_pres = tp.tp_pre
+    //                 ORDER BY 
+    //                     p.pres_fch_slcitud DESC";
+    
+    //         $stmt = $this->conn->prepare($sql);
+    //         $stmt->execute();
+    
+    //         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    //     } catch (PDOException $e) {
+    //         return 'Error al consultar los préstamos: ' . $e->getMessage();
+    //     }
+    // }
     public function search() {
-        $query = "SELECT e.*, a.ar_cod, a.ar_nombre
-                FROM elementos e
-                JOIN areas a ON e.elm_area_cod = a.ar_cod
-                LIMIT 0, 25
-                ";
-        $result = $this->conn->query($query);
-
-        $prestamos = [];
-
-        if ($result && $result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $prestamos[] = $row;
-            }
+        $sql = "SELECT 
+                    p.pres_cod,
+                    p.pres_fch_slcitud,
+                    p.pres_fch_reserva,
+                    p.pres_hor_inicio,
+                    p.pres_hor_fin,
+                    p.pres_fch_entrega,
+                    p.pres_observacion,
+                    p.pres_destino,
+                    p.pres_estado,
+                    tp.tp_nombre AS tipo_prestamo
+                FROM 
+                    prestamos p
+                LEFT JOIN 
+                    tipo_prestamo tp ON p.tp_pres = tp.tp_pre
+                ORDER BY 
+                    p.pres_fch_slcitud DESC";
+    
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        
+        $result = $stmt->get_result();
+        $data = [];
+    
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
         }
-
-        return $prestamos;
+    
+        return $data;
     }
+
 
     public function searchU(int $id) {
         if (!is_int($id)) {

@@ -90,7 +90,7 @@
               <a href="<?php echo getUrl("solicitudPrestamos", "solicitudPrestamos", "registrarPrestamosView", false, 'dashboard'); ?>">Solicitar Prestamo</a>
             </li>
             <li>
-              <a href="<?php echo getUrl("solicitudPrestamos", "solicitudPrestamos", "consultarPrestamoViews", false, 'dashboard'); ?>">Ver prestamos</a>
+              <a href="<?php echo getUrl("solicitudPrestamos", "solicitudPrestamos", "consultarPrestamosView", false, 'dashboard'); ?>">Ver prestamos</a>
             </li>
           </ul>
         </li>
