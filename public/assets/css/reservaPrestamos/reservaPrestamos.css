@@ -1,6 +1,12 @@
 :root {
   --secundary: #004034;
 }
+/* 
+
+-- MODULO RESERVA INSERT
+
+*/
+
 
 .content {
   display: grid;
@@ -212,7 +218,7 @@ th {
   margin: 5% auto;
   /* 15% from the top and centered */
   padding: 20px;
-  width: 50%;
+  width: 70%;
   height: fit-content;
 }
 
@@ -225,7 +231,7 @@ th {
   font-size: 1rem;
 }
 
-#modal-title {
+.modal-title {
   background-color: var(--secundary);
   color: white;
   display: flex;
@@ -235,12 +241,12 @@ th {
   border-radius: 8px 8px 0 0;
 }
 
-#modal-title #modalTitle {
+.modal-title #modalTitle {
   font-size: 2rem;
   font-weight: bold;
 }
 
-#modal-title button {
+.modal-title button {
   background: none;
   border: none;
   cursor: pointer;
@@ -250,7 +256,7 @@ th {
   line-height: 1;
 }
 
-#modal-title .close {
+.modal-title .close {
   font-size: 2rem;
   color: white;
 }
@@ -259,4 +265,179 @@ th {
 .buttons {
   display: flex;
   justify-content: space-between;
+}
+
+
+/* 
+
+--- MODULO CONSULT RESERVA SELECT
+
+*/
+
+#contentConsultar{
+  display: grid;
+  padding: 1.5rem;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+
+
+}
+
+#contentConsultar #search{
+  border: 1px solid black;
+  background-color: bisque;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+}
+
+.searchInput{
+  display: flex;
+  align-items: flex-start;
+}
+
+.reservas{
+  background-color: aqua;
+  height: calc(90vh - 20vh);
+
+}
+
+/* Modal de consultaDetail */
+
+#tableElementsConsult legend {
+  font-size: 1rem;
+}
+
+#modalDetail {
+  display: none;
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+#modalContentDetail {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas:
+    "modalTitleDetail"
+    "infoDetail"
+    "tableContainer";
+  gap: 2rem;
+}
+
+.modalTitleDetail {
+  grid-area: modalTitleDetail;
+}
+
+.infoDetail {
+  grid-area: infoDetail;
+}
+
+.tableContainer {
+  grid-area: tableContainer;
+}
+
+.modal-title {
+  background-color: var(--secundary);
+  color: white;
+  display: flex;
+  height: auto;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-radius: 8px 8px 0 0;
+}
+
+.modal-title.modalTitleDetail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%; 
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+  /* Hace que los elementos bajen si no alcanzan basado en el tamaño del elemento padre. */
+  flex-wrap: wrap; 
+}
+
+.modal-title #modalTitle {
+  font-size: 1rem;
+  /* Hace que se adapte al espacio disponible */
+  flex: 1;
+  min-width: 0; 
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal-title button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2rem;
+  color: white;
+  padding: 0.3rem;
+  line-height: 1;
+}
+
+.modal-title .close {
+  font-size: 2rem;
+  color: white;
+}
+
+#formDetail{
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  grid-template-rows: auto;
+  grid-template-areas: 
+  "nroIdentidad nombreCompleto"
+  "fechaReserva fechaSolicitud"
+  "fechaDevolucion ."
+  "observaciones ."
+  ;
+  gap: 0.3rem;
+}
+
+#formDetail .nroIdentidad {
+  grid-area: nroIdentidad;
+}
+
+#formDetail .nombreCompleto {
+  grid-area: nombreCompleto;
+}
+
+#formDetail .fechaReserva {
+  grid-area: fechaReserva;
+}
+
+#formDetail .fechaSolicitud {
+  grid-area: fechaSolicitud;
+}
+
+#formDetail .fechaDevolucion {
+  grid-area: fechaDevolucion;
+}
+
+#formDetail .observaciones {
+  grid-area: observaciones;
+}
+
+#formDetail .labelFormDetail{
+  font-size: 12pt;
 }

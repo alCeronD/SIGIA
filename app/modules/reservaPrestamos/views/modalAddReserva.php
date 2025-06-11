@@ -2,7 +2,7 @@
 <div id="modalAddElements" class="modal" style="display: none;">
     <!-- Modal content -->
     <div class="modal-content">
-        <div id="modal-title">
+        <div class="modal-title">
             <span id="modalTitle">Elementos disponibles</span>
             <button type="button" id="closeModalBtn">
                 <span class="close-modal">&times;</span>
