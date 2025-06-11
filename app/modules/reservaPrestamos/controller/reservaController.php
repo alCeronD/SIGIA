@@ -87,10 +87,6 @@ class ReservaController{
         // array_combine($data,$newsKeys);
         // var_dump($data);
 
-
-        $data['pres_rol'] = $pres_rol;
-        $data['tp_pres'] = $tp_pres;
-
         //Cambiar nombre de la llave.
         $data['pres_fch_reserva'] = $data['fechaReserva'];
         unset($data['fechaReserva']);
@@ -112,7 +108,12 @@ class ReservaController{
 
         $data['pres_estado'] = $pres_estado;
 
-        $this->model->insertReserva($data,$codigosElementos);
+        $data['pres_rol'] = $pres_rol;
+        $data['tp_pres'] = $tp_pres;
+
+
+        $response = $this->model->insertReserva($data,$codigosElementos);
+        var_dump($response);
     }
 
     //Función para mandar los elementos devolutivos al javscript.

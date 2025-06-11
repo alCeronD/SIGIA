@@ -12,39 +12,42 @@ class ReservaModel
     }
 
     public function insertReserva(array $data=[], array $elements=[]) {
+        
         $conn = $this->conect->getConnect();
-
-
-
         try {
-            $conn->begin_transaction();
+            //$conn->begin_transaction();
+
+            $cedula = $data["cedula"];
+            unset($data["cedula"]);
 
             //Primera transacción, insertar los registros en el prestamo.
             $presSql = "INSERT INTO prestamos (pres_fch_slcitud,pres_fch_reserva,pres_hor_inicio,pres_hor_fin,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?,?,?,?)";
 
             $stmtPres = $conn->prepare($presSql);
 
-            extract($data);
+            if (!$stmtPres) {
+                return 'error';
+            }
+
+            //Debo usar esta por el tema de la versión de php.
+            extract($data,EXTR_PREFIX_ALL,'p');
+
             $stmtPres->bind_param(
                 'ssssssiii',
-                $pres_fch_reserva,
-                $pres_hor_inicio,
-                $pres_hor_fin,
-                $pres_fch_entrega,
-                $pres_observacion,
-                $pres_destino,
-                $pres_estado,
-                $tp_pres,
-                $pres_rol
+                $p_pres_fch_reserva,
+                $p_pres_hor_inicio,
+                $p_pres_hor_fin,
+                $p_pres_fch_entrega,
+                $p_pres_observacion,
+                $p_pres_destino,
+                $p_pres_estado,
+                $p_tp_pres,
+                $p_pres_rol
             );
 
             if (!$stmtPres->execute()) {
-                return null;
+                return $conn->error;
             }
-
-            
-
-
 
 
             //Segunda transacción insertar los registros en la tabla prestamos_elementos.
@@ -53,7 +56,8 @@ class ReservaModel
 
             //$conn->commit();
         } catch (\Throwable $th) {
-            $conn->rollback();
+            //$conn->rollback();
+            return $th->getMessage();
         }
 
 

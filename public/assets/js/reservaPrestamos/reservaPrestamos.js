@@ -446,7 +446,7 @@ formSolicitudPrestamo.addEventListener("submit",(event)=>{
   let rows = {
     codigo: []
   };
-  let td;
+  let td=[];
 
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
@@ -455,9 +455,11 @@ formSolicitudPrestamo.addEventListener("submit",(event)=>{
   //Data de elementos.
   const filas = document.querySelectorAll('.tableElements .previewElements #tableBodyPreviewElements tr');
   //Capturo el codigo del elemento y lo guardo.
+  //TODO: Validar que cuando el usuario presione el botón de enviar aplique un return cuando no se ha diligenciado ningún campo.
   filas.forEach((fl) =>{
     td = document.querySelectorAll('.tableElements .previewElements #tableBodyPreviewElements .codigoElemento');
   });
+
 
   td.forEach((tds)=>{
     //Guardo el elemento.
@@ -481,33 +483,28 @@ formSolicitudPrestamo.addEventListener("submit",(event)=>{
     delete data["email"];
 
 
-    if (data["areaDestino"].length === 0) {
-      //TODO:Agregar alerta de que debe ser un campo obligatorio.
-      console.log('area debe ser obligatoria');
+    if (!data["areaDestino"]) {
+      alert("El área de destino es obligatoria.");
+      return;
     }
 
     //Si el area destino es mayor, es decir, si su valor es igual a centro, valida si contiene valores en las horas.
-    if (data["areaDestino"].length > 0 && data["areaDestino"] === 'centro') {
-
-      data["inicio"] = data["inicio"].length > 0 ? data["inicio"] : false;
-      data["fin"] = data["fin"].length > 0 ? data["fin"] : false;
-
-      if ((!data["inicio"]) || (!data["fin"])) {
-        console.log('hora inicio y fin deben ser obligatorias');
+    //TODO: Mejorar logica antes de validar todo.
+    if (data["areaDestino"] === "centro") {
+      if (!data["inicio"] || !data["fin"]) {
+        alert("La hora de inicio y fin son obligatorias para el centro.");
+        return;
       }
-    }
-
-    //Si selecciono externo, no debe de tener hora de inicio y fin..
-    if (data["areaDestino"] === 'externo') {
+    } else if (data["areaDestino"] === "externo") {
+      // Eliminar las horas si no aplican
       data["inicio"] = null;
       data["fin"] = null;
     }
+    
+        let dataJson = JSON.stringify(data);
 
 
-  let dataJson = JSON.stringify(data);
-
-  objAjax.request.setRequestHeader("accept", "application/json");
-  objAjax.request.send(dataJson);
-
-
-})
+        objAjax.request.setRequestHeader("accept", "application/json");
+        objAjax.request.send(dataJson);
+    
+});
