@@ -319,7 +319,7 @@ class ReservaModel
   pre.pres_fch_reserva AS fechaReserva,
   pre.pres_hor_inicio AS horaInicio,
   pre.pres_hor_fin AS horaFin,
-  pre.pres_fch_entrega AS fechaDevolución,
+  pre.pres_fch_entrega AS fechaDevolucion,
   pre.pres_observacion AS observacion,
   esp.es_pr_nombre AS estadoPrestamo,
   r.rl_nombre AS rol,

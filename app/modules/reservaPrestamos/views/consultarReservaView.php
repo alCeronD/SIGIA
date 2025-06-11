@@ -11,4 +11,8 @@
     </div>
 </div>
 
+<div class="detailReserva">
+<?php require_once 'modalDetailReserva.php'; ?>
+</div>
+
 <script type="module" src="../public/assets/js/reservaPrestamos/consultarReserva.js"></script>

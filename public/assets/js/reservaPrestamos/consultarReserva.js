@@ -5,6 +5,14 @@ const objAjax = new Ajax();
 
 //Cuerpo de la tabla para renderizar los datos.
 const tbodyReservaConsult = document.querySelector('#tbodyReservaConsult');
+const modalDetail = document.querySelector('#modalDetail');
+const btnCloseElements = document.querySelector(
+  "#modalDetail .close-modal"
+);
+const formDetail = document.querySelector('#formDetail');
+//TODO: mejorarlo.
+let data = {};
+const BodydetailReserva = document.querySelector('#BodydetailReserva');
 const action = 'reservas';
 function getReservas(){
 
@@ -21,19 +29,20 @@ function getReservas(){
             
         }
 
-        let data = response.data.data;
+        data = response.data.data;
 
         tbodyReservaConsult.innerHTML = '';
         data.forEach((dta)=>{
 
             let tr = document.createElement('tr');
             let btnAdd = document.createElement('button');
-            btnAdd.setAttribute('class','addElements');
-            
             let btnDetail = document.createElement('button');
-            btnDetail.setAttribute('class', 'btnDetail');
             btnDetail.innerText = 'Detalle';
             btnAdd.innerHTML= '+';
+            btnDetail.setAttribute('class', 'btnDetail');
+            btnDetail.setAttribute('data-id',`${dta.codigo}`);
+            btnAdd.setAttribute('class','addElements');
+            btnAdd.setAttribute('data-add',`${dta.codigo}`);
             let tdCodigo = document.createElement('td');
             let tdNombreCompleto = document.createElement('td');
             
@@ -54,10 +63,7 @@ function getReservas(){
             tr.appendChild(tdTipo);
             tr.append(btnDetail,btnAdd);
 
-
-
-
-        })
+        });
 
     }
 
@@ -66,8 +72,55 @@ function getReservas(){
 
 }
 
-
 document.addEventListener('DOMContentLoaded', ()=>{
     getReservas();
 
 });
+
+tbodyReservaConsult.addEventListener('click', (event) =>{
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.target.tagName === 'BUTTON' && event.target.getAttribute(['data-id'])) {
+        let dataTr = event.target.closest('tr');
+        //let codigo = dataTr.children[0].textContent;
+        const nroIdentidad = document.querySelector('#formDetail #nroIdentidad');
+        const nombre = document.querySelector('#formDetail #nombreCompleto');
+        const fechaReserva = document.querySelector('#formDetail #fechaReserva');
+        const fechaSolicitud = document.querySelector('#formDetail #fechaSolicitud');
+        const fechaDevolucion = document.querySelector('#formDetail #fechaDevolucion');
+        const observaciones = document.querySelector('#formDetail #observaciones');
+
+        //Busco todos los input que tengan la clase inputFormDetail y los ciclo para aplicar un readOnly con el fin de que el usuario solo pueda leer la información, no manipularla.
+        const readOnly = document.querySelectorAll('#formDetail .inputFormDetail').forEach((input)=>{
+            input.readOnly=true;
+        });
+                
+        let nombreCompleto = dataTr.children[1].textContent;
+        let tipo = dataTr.children[2].textContent;
+        let estado = dataTr.children[3].textContent;
+
+        const codigo = parseInt(event.target.getAttribute('data-id'));
+        const reserva = data.find(item => item.codigo === codigo);
+
+        
+        console.log({"reserva dentro del btn":reserva});
+        console.log({codigo,nombreCompleto,tipo,estado});
+
+        modalDetail.style.display = 'flex';
+        nombre.value = nombreCompleto;
+        fechaReserva.value = reserva.fechaReserva;
+        fechaSolicitud.value = reserva.fechaSolicitud;
+        fechaDevolucion.value = reserva.fechaDevolucion;
+        nroIdentidad.value = reserva.nroIdentidad;
+        observaciones.value = reserva.observacion;
+
+        
+    }
+
+    if (event.target.tagName === 'BUTTON' && event.target.getAttribute(['data-add'])) {
+        console.log(event.target);
+        
+    }
+});
+
+closeModal(modalDetail,btnCloseElements);

@@ -90,7 +90,7 @@
 
 <!-- Contenedor que contiene el modal de las tablas de elementos devolutivos y consumibles -->
 <div id="addElements">
-    <?php require_once 'viewAddElements.php'; ?>
+    <?php require_once 'modalAddReserva.php'; ?>
 </div>
 
 <!-- Contenedor modal que contiene los registros de los usuarios -->
