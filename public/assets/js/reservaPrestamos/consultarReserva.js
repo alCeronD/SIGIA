@@ -107,19 +107,38 @@ tbodyReservaConsult.addEventListener('click', (event) =>{
         objAjax.request.open('GET',`modules/reservaPrestamos/controller/reservaController.php?codigo=${encodeURIComponent(codigo)}&action=${encodeURIComponent(action)}`,true);
         objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
-
-
         objAjax.request.onload = ()=>{
             
             let response = JSON.parse(objAjax.request.responseText);
-            console.log({response});
+
+            let elementos = response.data;
+            BodydetailReserva.innerHTML = '';
+            elementos.forEach((elm) =>{
+                const trTable = document.createElement('tr');
+                const tdCodigo = document.createElement('td');
+                const tdNombre = document.createElement('td');
+                const tdAccion = document.createElement('td');
+                
+                //Posiblemente lo haga para aca agregar elmeentos.
+                let btnAdd = document.createElement('button');
+                btnAdd.innerText = 'btnEjemplo'; 
+                tdCodigo.innerText = elm.codigo;
+                tdNombre.innerText = elm.nombre;
+
+                BodydetailReserva.appendChild(trTable);
+                tdAccion.append(btnAdd);
+                trTable.appendChild(tdCodigo);
+                trTable.appendChild(tdNombre);
+                trTable.appendChild(tdAccion);
+
+
+
+            });
         }
 
         objAjax.request.setRequestHeader("Accept", "application/json");
         objAjax.request.send();
-        console.log({"reserva dentro del btn":reserva});
-        console.log({codigo,nombreCompleto,tipo,estado});
-
+        
         modalDetail.style.display = 'flex';
         nombre.value = nombreCompleto;
         fechaReserva.value = reserva.fechaReserva;
@@ -138,3 +157,5 @@ tbodyReservaConsult.addEventListener('click', (event) =>{
 });
 
 closeModal(modalDetail,btnCloseElements);
+//Limpiar la tabla apenas se cierre el modal.
+BodydetailReserva.innerHTML = '';
