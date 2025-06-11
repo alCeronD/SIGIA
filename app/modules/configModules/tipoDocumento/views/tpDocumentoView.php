@@ -1,40 +1,4 @@
-<!-- css modal -->
- <style>
-    #modalTp {
-        display: none;
-        position: fixed;
-        /* Stay in place */
-        z-index: 1;
-        /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%;
-        /* Full width */
-        height: 100%;
-        /* Full height */
-        overflow: auto;
-        /* Enable scroll if needed */
-        background-color: rgb(0, 0, 0);
-        /* Fallback color */
-        background-color: rgba(0, 0, 0, 0.4);
-        /* Black w/ opacity */
-    }
 
-    .modal-content {
-        background-color: #fefefe;
-        margin: 10% auto;
-        /* 15% from the top and centered */
-        padding: 20px;
-        border: 1px solid #888;
-        width: 50%;
-        height: auto;
-        /* Could be more or less, depending on screen size */
-    }
-
-    .close{
-        cursor: pointer;
-    }
-</style>
 <!-- Vista del tipo de documento -->
     <h1>Vista tipo documento</h1>
     <div class="form">
@@ -50,7 +14,7 @@
 <div id="modalTp" class="modal">
 
     <!-- Modal content -->
-    <div class="modal-content">
+    <div class="modal-content-tp">
         <span class="close">&times;</span>
         <span id="modalTitle">Actualizar registro</span>
         <form id="tpUpdateForm">
