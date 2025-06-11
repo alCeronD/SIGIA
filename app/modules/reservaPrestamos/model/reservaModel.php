@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../../../helpers/session.php';
 include_once __DIR__ . '/../../../config/conn.php';
 
+
+//TODO: en los mensajes de retorno, definir una estructura de retorno específica, así evitar devolver o valores null, o un string, la idea es que devuelva un array con su status y mensaje, en todos los retornos.
 class ReservaModel
 {
     private $conect;
@@ -11,8 +13,9 @@ class ReservaModel
         $this->conect = new Conection();
     }
 
-    public function insertReserva(array $data=[], array $elements=[]) {
-        
+    public function insertReserva(array $data = [], array $elements = [])
+    {
+
         $conn = $this->conect->getConnect();
         try {
             //$conn->begin_transaction();
@@ -23,7 +26,7 @@ class ReservaModel
             //primera id del usuario.
             $sqlIdUser = "SELECT usu_id AS 'id' FROM usuarios WHERE usu_docum = ?";
             $stmtUser = $conn->prepare($sqlIdUser);
-            $stmtUser->bind_param('i',$cedula);
+            $stmtUser->bind_param('i', $cedula);
             if (!$stmtUser->execute()) {
                 $conn->rollback();
                 return $stmtUser->error;
@@ -45,7 +48,7 @@ class ReservaModel
                 return $conn->error;
             }
             //Debo usar esta por el tema de la versión de php.
-            extract($data,EXTR_PREFIX_ALL,'p');
+            extract($data, EXTR_PREFIX_ALL, 'p');
             $stmtPres->bind_param(
                 'ssssssiii',
                 $p_pres_fch_reserva,
@@ -62,7 +65,7 @@ class ReservaModel
                 return $conn->error;
             }
             $lastId = $conn->insert_id;
-            
+
 
             //tercera para actualizar el estado de los elementos.
             $updateStatusElements = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
@@ -70,13 +73,12 @@ class ReservaModel
             $stmtUpdateStatus = $conn->prepare($updateStatusElements);
             $status = 3;
             foreach ($elements as $elementos) {
-                $stmtUpdateStatus->bind_param('ii',$status,$elementos);
+                $stmtUpdateStatus->bind_param('ii', $status, $elementos);
 
                 if (!$stmtUpdateStatus->execute()) {
                     $conn->rollback();
                     $val = $stmtUpdateStatus->error;
                 }
-
             }
 
 
@@ -91,24 +93,22 @@ class ReservaModel
                 if (!$stmtElementos->execute()) {
                     $conn->rollback();
                     return $stmtElementos->error;
-                    
                 }
             }
 
 
             $result = [
-                'data'=> [],
-                'status'=>true
+                'data' => [],
+                'status' => true
             ];
 
             $conn->commit();
-            return $result;
         } catch (\Throwable $th) {
             //$conn->rollback();
             return $th->getMessage();
         }
 
-
+        return $result;
     }
 
     public function updateReserva() {}
@@ -150,7 +150,7 @@ class ReservaModel
             $limit = 10;
 
             //Numero de páginas en base a la cantidad de elementos, redondeo hacía el número más grande.
-            
+
             /**
              * @var $page - Es el parámetro que le mando a los elementos.
              */
@@ -176,7 +176,7 @@ class ReservaModel
 
             $stmt = $conn->prepare($sql);
 
-            $stmt->bind_param('ii',$limit, $offset);
+            $stmt->bind_param('ii', $limit, $offset);
 
             if (!$stmt->execute()) {
                 echo json_encode(["error" => "Error al ejecutar la consulta"]);
@@ -207,7 +207,8 @@ class ReservaModel
     }
 
     //Función apra traer los elementos, posiblemente da implementarla en el modelo de usuarios.
-    public function selectUsers($pages){
+    public function selectUsers($pages)
+    {
 
         try {
 
@@ -293,7 +294,74 @@ class ReservaModel
             return $results;
         } catch (\Throwable $th) {
             $conn->rollback();
+            $conn->close();
             return $th->getMessage();
+        }
+    }
+
+    //Funcion para visualizar las reservas.
+    /**
+     * Summary of selectReservas TODO: Cambiar a Páginado con javascript.
+     * @return array{data: array, message: string, status: bool|string}
+     */
+
+    public function selectReservas()
+    {
+        $conn = $this->conect->getConnect();
+        try {
+
+            $sqlReservas = "SELECT DISTINCT
+  pre.pres_cod AS codigo,
+  us.usu_docum AS nroIdentidad,
+  us.usu_nombres AS nombre,
+  us.usu_apellidos AS apellido,
+  pre.pres_fch_slcitud AS fechaSolicitud,
+  pre.pres_fch_reserva AS fechaReserva,
+  pre.pres_hor_inicio AS horaInicio,
+  pre.pres_hor_fin AS horaFin,
+  pre.pres_fch_entrega AS fechaDevolución,
+  pre.pres_observacion AS observacion,
+  esp.es_pr_nombre AS estadoPrestamo,
+  r.rl_nombre AS rol,
+  tp_pre.tp_nombre AS tipoPrestamo
+                FROM prestamos pre
+                INNER JOIN prestamos_elementos pre_el ON pre_el.pres_cod = pre.pres_cod
+                INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
+                INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
+                INNER JOIN roles r ON r.rl_id = pre.pres_rol
+                INNER JOIN tipo_prestamo tp_pre ON tp_pre.tp_pre = pre.tp_pres;";
+
+            $stmtResevas = $conn->prepare($sqlReservas);
+
+            if (!$stmtResevas->execute()) {
+
+                $result = [
+                    'status' => false,
+                    'data' => [],
+                    'message' => $stmtResevas->error_list
+                ];
+                return $result;
+            }
+            $resultReservas = $stmtResevas->get_result();
+
+            $dataReservas = [];
+            while ($row = $resultReservas->fetch_assoc()) {
+                $dataReservas[] = $row;
+            }
+
+            $result = [
+                'status' => true,
+                'data' => $dataReservas,
+                'message' => 'reservas'
+            ];
+            return $result;
+        } catch (\Throwable $e) {
+
+            $result = [
+                'status' => false,
+                'message' => $e->getMessage()
+            ];
+            return $result;
         }
     }
 }

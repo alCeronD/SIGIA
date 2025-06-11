@@ -1,13 +1,15 @@
-<table id="tableElements">
+<table id="tableElementsConsult">
     <thead>
         <tr>
             <th>Código</th>
-            <th>Nombre Elemento</th>
-            <th>Cantidad</th>
+            <th>A nombre de</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Acciones</th>
         </tr>
-    <tbody>
+    <tbody id="tbodyReservaConsult">
         <!-- cuerpo renderizado con javascript. -->
-        <tr>
+        <!-- <tr>
             <td>327482347</td>
             <td>Cámara HXR-NX800</td>
             <td>1</td>
@@ -51,7 +53,7 @@
             <td>567834923</td>
             <td>Monitor Atomos Ninja V</td>
             <td>1</td>
-        </tr>
+        </tr> -->
     </tbody>
     </thead>
 </table>

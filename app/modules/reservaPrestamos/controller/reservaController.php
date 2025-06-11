@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../model/reservaModel.php';
 require_once __DIR__ . '/../../../helpers/getUrl.php';
@@ -7,23 +7,54 @@ require_once __DIR__ . '/../../../helpers/getUrl.php';
 // Recibir la respuesta de la solicitud.
 $method = $_SERVER['REQUEST_METHOD'];
 
-class ReservaController{
+class ReservaController
+{
     private $model;
 
-    public function __construct(){
+    public function __construct()
+    {
         $reservaModel = new ReservaModel();
         $this->model = $reservaModel;
         include_once __DIR__ . '/../../../helpers/response.php';
     }
 
-    //Muestra la vista de reserva.
+    //Muestra la vista de reserva formulario.
     public function reservaView(){
 
         return include_once __DIR__ . '/../views/reservaView.php';
     }
 
-    //Función para agregar la reserva.
-    public function setReserva(array $data=[]){
+    public function consultaReservaView() {
+
+        return include_once __DIR__ . '/../views/consultarReservaView.php';
+    }
+
+    public function getElementosDevolutivos(int $pages)
+    {
+        $data = $this->model->selectElements($pages);
+        success('Registros', $data);
+    }
+    public function getUsers($page)
+    {
+        $data = $this->model->selectUsers($page);
+
+        if ($data != null) {
+            success('Usuarios activos', $data);
+        }
+    }
+
+    //Función para traer las reservas
+    public function getReservas() {
+        $data = $this->model->selectReservas();
+        if (!$data['status']) {
+            fail('error', $data);
+        }
+        success('Registros', $data);
+    }
+
+    //Función para establecer datos para realizar su reserva.
+    public function setReserva(array $data = [])
+    {
 
         //Validar usuario. para guardar su rol. y su tipo de prestamo, reserva o solicitud.
         if (($_SESSION['usuario']['rol_id'] == 2) || ($_SESSION['usuario']['rol_id'] == 1)) {
@@ -32,7 +63,6 @@ class ReservaController{
             $tp_pres = 2;
             //Estado
             $pres_estado = 1;
-
         }
         if (($_SESSION['usuario']['rol_id'] == 4)) {
             $pres_rol = $_SESSION['usuario']['rol_id'];
@@ -40,7 +70,6 @@ class ReservaController{
             $tp_pres = 1;
             //Estado
             $pres_estado = 3;
-
         }
 
         $codigosElementos = $data["codigosElementos"];
@@ -75,24 +104,12 @@ class ReservaController{
         $data['pres_rol'] = $pres_rol;
         $data['tp_pres'] = $tp_pres;
 
-        $response = $this->model->insertReserva($data,$codigosElementos);
-        success('Prestamo exitoso',$response);
+        $response = $this->model->insertReserva($data, $codigosElementos);
+        success('Prestamo exitoso', $response);
     }
 
-    //Función para mandar los elementos devolutivos al javscript.
-    public function getElementosDevolutivos(int $pages){
-        $data = $this->model->selectElements($pages);
-        success('Registros',$data);
-    }
+    //Función para mandar los elementos devolutivos al DOM.
 
-    
-    public function getUsers($page){
-        $data = $this->model->selectUsers($page);
-
-        if ($data != null) {
-            success('Usuarios activos',$data);
-        }
-    }
 }
 
 $controller = new ReservaController();
@@ -107,25 +124,30 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
         switch ($case) {
             case 'users':
-                if (method_exists($controller,'getUsers')) {
+                if (method_exists($controller, 'getUsers')) {
                     $controller->getUsers($pages);
                 }
                 break;
 
             case 'elements':
                 //var_dump($pages);
-                if (method_exists($controller,'getElementosDevolutivos')) {
+                if (method_exists($controller, 'getElementosDevolutivos')) {
                     $controller->getElementosDevolutivos($pages);
                 }
+                break;
+            case 'reservas':
+
+                if (method_exists($controller,'getReservas')) {
+                    $controller->getReservas();
+                }
+
+
+                break;
             default:
-            //TODO: Retornar un valor no valido.
+                //TODO: Retornar un valor no valido.
                 # code...
                 break;
         }
-
-
-        
-
     }
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -134,11 +156,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         $data = json_decode($input, true);
 
         $controller->setReserva($data);
-
-
     }
     exit();
-
 }
 //Por defecto me ejecuta la vista, en caso de que no sea una petición.
-$controller->reservaView();
+//$controller->reservaView();
