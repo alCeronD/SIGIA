@@ -20,11 +20,11 @@ class solicitudPrestamosController{
         
         // Me traigo el listado de los elementos al front
         $objetoElemento = new solicitudPrestamos($this->conn);
-        $elementos = $objetoElemento->search();
-        
+        $elementos = $objetoElemento->searchElements();
         // Me traigo el listado de areas para el filtro por area
         $objetoArea = new ConfigModulesModel();
         $areas = $objetoArea->select("SELECT * FROM areas");
+        // dd($elementos);
         
         return include_once __DIR__ . '/../views/solicitudPrestamosView.php';
     }
