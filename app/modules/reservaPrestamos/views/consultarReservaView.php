@@ -2,9 +2,9 @@
     <div id="search">
         <div class="searchInput">
             <span id="menuTitleConsult">Reservas y solicitudes</span>
-            <input type="text" name="" id="inputSearch">
+            <!-- <input type="text" name="" id="inputSearch"> -->
         </div>
-        <span class="close" title="volver a dashboard">&times;</span>
+        <a class="close close-btn"  title="volver a dashboard" href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>">&times;</a>
     </div>
     <div class="reservas">
         <?php require_once 'tablaConsultarSolicitudView.php'; ?>

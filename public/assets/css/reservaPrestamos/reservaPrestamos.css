@@ -281,26 +281,27 @@ th {
   max-width: 100%;
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
-
-
 }
 
 #contentConsultar #search{
-  border: 1px solid black;
-  background-color: bisque;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 
 }
 
+#contentConsultar #menuTitleConsult{
+  font-size: 13pt;
+
+}
+
 .searchInput{
   display: flex;
-  align-items: flex-start;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .reservas{
-  background-color: aqua;
   height: calc(90vh - 20vh);
 
 }
