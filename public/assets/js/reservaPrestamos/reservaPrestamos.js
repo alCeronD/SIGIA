@@ -500,11 +500,29 @@ formSolicitudPrestamo.addEventListener("submit",(event)=>{
       data["inicio"] = null;
       data["fin"] = null;
     }
+    let dataJson = JSON.stringify(data);
+
+    //TODO: transformar en sweet alert.
+    if (confirm('¿Deseas registrar los siguientes elementos?')) {
+      objAjax.request.onload = ()=>{
+        let response = JSON.parse(objAjax.request.responseText);
+        console.log(response);
+
+        if (response.status) {
+          alert('Reserva realizada con exito');
+          //Limpio el formulario y la tabla.
+          formSolicitudPrestamo.reset();
+          tablePreviewElements.innerHTML = '';
+        }
+      }
+
+
+          objAjax.request.setRequestHeader("accept", "application/json");
+    objAjax.request.send(dataJson);
+    }
     
-        let dataJson = JSON.stringify(data);
 
 
-        objAjax.request.setRequestHeader("accept", "application/json");
-        objAjax.request.send(dataJson);
+
     
 });

@@ -113,7 +113,8 @@ class ReservaController{
 
 
         $response = $this->model->insertReserva($data,$codigosElementos);
-        var_dump($response);
+
+        success('Prestamo exitoso',$response);
     }
 
     //Función para mandar los elementos devolutivos al javscript.

@@ -52,9 +52,13 @@ class ReservaModel
 
             //Segunda transacción insertar los registros en la tabla prestamos_elementos.
 
+            $result = [
+                'data'=> [],
+                'status'=>true
+            ];
 
-
-            //$conn->commit();
+            $conn->commit();
+            return $result;
         } catch (\Throwable $th) {
             //$conn->rollback();
             return $th->getMessage();
