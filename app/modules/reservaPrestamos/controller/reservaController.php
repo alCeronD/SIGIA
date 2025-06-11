@@ -51,42 +51,6 @@ class ReservaController{
             $codigosElementos[$key] = (int) $value;
         }
 
-        //var_dump($data);
-
-        /**
-         * array(
-         * "cedula"           => "100002",
-         * "areaDestino"      => "centro",
-         * "fechaReserva"     => "2025-06-16",
-         * "inicio"           => "16:38",
-         * "fin"              => "18:38",
-         * "fechaDevolucion"  => "2025-06-19",
-         * "observaciones"    => "hola"
-         *)
-         */
-
-         /**
-          *  pres_fch_reserva = fechaReserva
-          * pres_hor_inicio = inicio
-          * pres_hor_fin = fin
-          * pres_fch_entrega = fechaDevolucion
-          * pres_observacion = observaciones
-          * pres_destino = areaDestino 
-          *
-          */
-
-
-        //TODO: Usar array_combine para cambiar los nombres de las claves.
-        // $newKeys = ['pres_fch_slcitud','pres_fch_reserva','pres_hor_inicio','pres_hor_fin','pres_fch_entrega','pres_observacion','pres_destino','pres_estado','tp_pres','pres_rol'];
-
-        // $newsKeys = ['pres_fch_reserva','pres_hor_inicio','pres_hor_fin','pres_fch_entrega','pres_observacion','pres_destino'];
-
-        // // foreach ($data as $key => $value) {
-        // //     var_dump($key);
-        // // }
-        // array_combine($data,$newsKeys);
-        // var_dump($data);
-
         //Cambiar nombre de la llave.
         $data['pres_fch_reserva'] = $data['fechaReserva'];
         unset($data['fechaReserva']);
@@ -111,9 +75,7 @@ class ReservaController{
         $data['pres_rol'] = $pres_rol;
         $data['tp_pres'] = $tp_pres;
 
-
         $response = $this->model->insertReserva($data,$codigosElementos);
-
         success('Prestamo exitoso',$response);
     }
 
