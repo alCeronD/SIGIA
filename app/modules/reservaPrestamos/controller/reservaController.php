@@ -43,18 +43,9 @@ class ReservaController
         }
     }
 
-    //Función para traer las reservas
-    public function getReservas() {
-        $data = $this->model->selectReservas();
-        if (!$data['status']) {
-            fail('error', $data);
-        }
-        success('Registros', $data);
-    }
-
+    
     //Función para establecer datos para realizar su reserva.
-    public function setReserva(array $data = [])
-    {
+    public function setReserva(array $data = []){
 
         //Validar usuario. para guardar su rol. y su tipo de prestamo, reserva o solicitud.
         if (($_SESSION['usuario']['rol_id'] == 2) || ($_SESSION['usuario']['rol_id'] == 1)) {
@@ -108,6 +99,23 @@ class ReservaController
         success('Prestamo exitoso', $response);
     }
 
+    //Función para traer las reservas
+    public function getReservas( ) {
+        // Me trae solo la información de la reserva.
+        $data = $this->model->selectDetailReserva();
+        if (!$data['status']) {
+            fail('error', $data);
+        }
+        //Trae los elementos de la reserva.
+        success('Registros', $data);
+    }
+
+    public function getElementsReserva($codigo ){
+        $dataDetail = $this->model->selectElementsReserva($codigo);
+        success('Elementos relacionados al codigo',$dataDetail);
+    }
+
+
     //Función para mandar los elementos devolutivos al DOM.
 
 }
@@ -121,6 +129,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         $case = $_GET['action'] ?? '';
         //valor de la página, por defecto, es la página #1.
         $pages = $_GET['pages'] ?? 1;
+
+        $codigo = $_GET['codigo'] ?? 0;
 
         switch ($case) {
             case 'users':
@@ -140,9 +150,15 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 if (method_exists($controller,'getReservas')) {
                     $controller->getReservas();
                 }
-
-
                 break;
+
+            case 'reservaDetailElements';
+
+            if (method_exists($controller,'getElementsReserva')) {
+                $controller->getElementsReserva($codigo);
+            }
+
+            break;
             default:
                 //TODO: Retornar un valor no valido.
                 # code...

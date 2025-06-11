@@ -102,7 +102,21 @@ tbodyReservaConsult.addEventListener('click', (event) =>{
         const codigo = parseInt(event.target.getAttribute('data-id'));
         const reserva = data.find(item => item.codigo === codigo);
 
-        
+        let action = 'reservaDetailElements';
+
+        objAjax.request.open('GET',`modules/reservaPrestamos/controller/reservaController.php?codigo=${encodeURIComponent(codigo)}&action=${encodeURIComponent(action)}`,true);
+        objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+
+
+        objAjax.request.onload = ()=>{
+            
+            let response = JSON.parse(objAjax.request.responseText);
+            console.log({response});
+        }
+
+        objAjax.request.setRequestHeader("Accept", "application/json");
+        objAjax.request.send();
         console.log({"reserva dentro del btn":reserva});
         console.log({codigo,nombreCompleto,tipo,estado});
 
@@ -114,9 +128,9 @@ tbodyReservaConsult.addEventListener('click', (event) =>{
         nroIdentidad.value = reserva.nroIdentidad;
         observaciones.value = reserva.observacion;
 
-        
     }
 
+    //Para adicionar elementos en caso de que sea requerido.
     if (event.target.tagName === 'BUTTON' && event.target.getAttribute(['data-add'])) {
         console.log(event.target);
         

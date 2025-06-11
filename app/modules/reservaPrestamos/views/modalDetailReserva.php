@@ -1,13 +1,12 @@
 <div id="modalDetail" class="modal" style="display: none;">
-  <div class="modal-content">
-    <div class="modal-title">
+  <div class="modal-content " id="modalContentDetail">
+    <div class="modal-title modalTitleDetail">
       <span id="modalTitle">Reserva #</span>
       <button type="button" id="closeModalBtn">
         <span class="close-modal">&times;</span>
       </button>
     </div>
-
-    <div id="infoDetail">
+    <div class="infoDetail">
       <form action="" id="formDetail">
         <div class="inputContent inputContentDetail nroIdentidad">
           <label for="nroIdentidad" class="labelForm labelFormDetail">Nro Identificación:</label>
@@ -45,10 +44,9 @@
       <table>
         <thead>
           <tr>
-            <th>Item #1</th>
-            <th>Item #2</th>
-            <th>Item #3</th>
-            <th>Item #4</th>
+            <th>Codigo </th>
+            <th>Nombre</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody id="BodydetailReserva">

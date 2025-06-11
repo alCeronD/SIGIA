@@ -305,31 +305,31 @@ class ReservaModel
      * @return array{data: array, message: string, status: bool|string}
      */
 
-    public function selectReservas()
+    public function selectDetailReserva()
     {
         $conn = $this->conect->getConnect();
         try {
 
             $sqlReservas = "SELECT DISTINCT
-  pre.pres_cod AS codigo,
-  us.usu_docum AS nroIdentidad,
-  us.usu_nombres AS nombre,
-  us.usu_apellidos AS apellido,
-  pre.pres_fch_slcitud AS fechaSolicitud,
-  pre.pres_fch_reserva AS fechaReserva,
-  pre.pres_hor_inicio AS horaInicio,
-  pre.pres_hor_fin AS horaFin,
-  pre.pres_fch_entrega AS fechaDevolucion,
-  pre.pres_observacion AS observacion,
-  esp.es_pr_nombre AS estadoPrestamo,
-  r.rl_nombre AS rol,
-  tp_pre.tp_nombre AS tipoPrestamo
+                pre.pres_cod AS codigo,
+                us.usu_docum AS nroIdentidad,
+                us.usu_nombres AS nombre,
+                us.usu_apellidos AS apellido,
+                pre.pres_fch_slcitud AS fechaSolicitud,
+                pre.pres_fch_reserva AS fechaReserva,
+                pre.pres_hor_inicio AS horaInicio,
+                pre.pres_hor_fin AS horaFin,
+                pre.pres_fch_entrega AS fechaDevolucion,
+                pre.pres_observacion AS observacion,
+                esp.es_pr_nombre AS estadoPrestamo,
+                r.rl_nombre AS rol,
+                tp_pre.tp_nombre AS tipoPrestamo
                 FROM prestamos pre
                 INNER JOIN prestamos_elementos pre_el ON pre_el.pres_cod = pre.pres_cod
                 INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
                 INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
                 INNER JOIN roles r ON r.rl_id = pre.pres_rol
-                INNER JOIN tipo_prestamo tp_pre ON tp_pre.tp_pre = pre.tp_pres;";
+                INNER JOIN tipo_prestamo tp_pre ON tp_pre.tp_pre = pre.tp_pres";
 
             $stmtResevas = $conn->prepare($sqlReservas);
 
@@ -362,6 +362,46 @@ class ReservaModel
                 'message' => $e->getMessage()
             ];
             return $result;
+        }
+    }
+
+
+
+    public function selectElementsReserva(int $codigo = 0){
+        $conn = $this->conect->getConnect();
+        try {
+            //Consulta para traer los elementos basado en el código del prestamo.
+            $sqlElementsReserva = "SELECT 
+                el.elm_cod AS 'codigo',
+                el.elm_nombre AS 'nombre'
+                FROM elementos el
+                RIGHT JOIN prestamos_elementos prel ON
+                el.elm_cod = prel.pres_el_elem_cod 
+                LEFT JOIN prestamos pre ON
+                pre.pres_cod = prel.pres_cod
+                WHERE prel.pres_cod = ?";
+
+                $stmtResevasElm = $conn->prepare($sqlElementsReserva);
+                $stmtResevasElm->bind_param('i',$codigo);
+
+                if (!$stmtResevasElm->execute()) {
+                    return null;
+                }
+
+                $resultSave = $stmtResevasElm->get_result();
+
+                $data = [];
+
+                while ($row = $resultSave->fetch_assoc()) {
+                    $data [] = $row;
+                }
+
+                return $data;
+
+
+                
+        } catch (\Throwable $th) {
+            return $th->getMessage();
         }
     }
 }
