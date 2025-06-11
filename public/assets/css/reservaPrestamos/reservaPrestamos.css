@@ -20,7 +20,6 @@
     "menuTitle"
     "searchUser"
     "solicPrestamos";
-
     height: 100%;
     overflow-y: auto !important;
     overflow-x: hidden !important;
@@ -33,10 +32,10 @@
 }
 
 .searchUser {
-  background-color: green;
   grid-area: searchUser;
   min-height: 0;
   height: 3rem;
+  font-size: 13pt;
 }
 
 .solicPrestamos {
