@@ -1,6 +1,6 @@
 <div id="contentConsultar">
     <div id="search">
-        <div class="searchInput">
+        <div class="searchInput menuTitle">
             <span id="menuTitleConsult">Reservas y solicitudes</span>
             <!-- <input type="text" name="" id="inputSearch"> -->
         </div>

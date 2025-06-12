@@ -1,46 +1,65 @@
+
+/* Estructura General de todas las tablas.. */
+.contentLayout {
+    width: 100%;
+    height: 85vh;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 1.5rem;
+}
+
+/* Estructura general del layout del formulario. */
+.formLayout{
+  border: 1px solid black;
+  display: grid;
+  gap: 0.3rem;
+  grid-template-columns: 1fr;
+  grid-template-rows: 5vh 1fr;
+}
+
+/* Esta estructura menu corresponde al titulo  */
+.menuTitle{
+  width: 100%;
+}
+
+
 /* ------- */
 /* MODULO AREAS */
 .contentArea {
-  width: 100%;
-  height: 85vh;
-  display: grid;
   grid-template-areas:
     "titleArea titleArea"
-    "form tblAreas";
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr;
-  gap: 1.5rem;
+    "formAr tblAreas";
 }
 
 .titleArea {
   grid-area: titleArea;
-  width: 100%;
+    display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.form {
-  grid-area: form;
+.formAr {
+  grid-area: formAr;
   width: 100%;
   height: 25vh;
 
 }
 
 #formArea {
-  border: 1px solid black;
-  display: grid;
+
   grid-template-areas: 
-  "contentAreaNem"
-  "contentDescript"
-  "contentSubmit";
-  gap: 0.3rem;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto;
+    "contentAreaNem"
+    "contentDescript"
+    "contentSubmit";
+
 }
 
 /* Acceder a los hijos el formulario */
 #formArea > div:nth-child(1), #formArea > div:nth-child(2){
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
 }
 
 .contentAreaNem{
@@ -61,10 +80,9 @@
   grid-area: contentSubmit;
 }
 
-
-
 .tblAreas {
   grid-area: tblAreas;
+  background-color: red;
 }
 
 #btnAreaUpdate {
@@ -129,6 +147,63 @@
 
 /* ------ */
 /* MODULO TIPO DOCUMENTO */
+.contentTpDocumento {
+  grid-template-areas:
+    "titleTp titleTp"
+    "formTpDocumento tableTpDocumento";
+  border: 1px solid black;
+}
+
+.titleTp{
+  grid-area: titleTp;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.formTpDocumento{
+  grid-area: formTpDocumento;
+  height: 25vh;
+}
+.tblTpDocumento{
+  grid-area: tableTpDocumento;
+  background-color: yellow;
+
+}
+#formTp{  
+  grid-template-areas: 
+  "tpSiglaContent"
+  "tpDescripcion"
+  "tpButton";
+  
+}
+
+.tpSiglaContent{
+  grid-area: tpSiglaContent;
+}
+
+.tpDescripcion{
+  grid-area: tpDescripcion;
+}
+#descripcionTp{
+  width: 100%;
+  resize: none;
+  height: 10rem;
+}
+
+
+.tpButton{
+  grid-area: tpButton;
+}
+
+/* Acceder a los hijos el formulario */
+#formTp > div:nth-child(1), #formTp > div:nth-child(2){
+  display: flex;
+  flex-direction: column;
+}
+
+
 
 /* CAMBIAR LOS LA ESTRUCTURA GENERAL DEL MODAL. */
 #modalTp {

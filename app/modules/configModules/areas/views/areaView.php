@@ -1,11 +1,13 @@
 <!-- TODO: Mover al archivo específico de la vista de area. -->
-<div class="contentArea">
-    <div class="titleArea">
-        <span>Areas:</span>
-
+<div class="contentArea contentLayout">
+    <div class="titleArea menuTitle">
+        <span id="textTitleAreas">Areas</span>
+        <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
+            class="close-btn"
+            title="Volver al dashboard">&times;</a>
     </div>
-    <div class="form">
-        <form id="formArea">
+    <div class="formAr">
+        <form id="formArea" class="formLayout">
             <div class="contentAreaNem">
                 <label for="ar_nombre">Area</label>
                 <input type="text" name="ar_nombre" id="nombreArea" placeholder="Nombre area..." value="">

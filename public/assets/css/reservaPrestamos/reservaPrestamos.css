@@ -276,7 +276,6 @@ th {
 
 #contentConsultar{
   display: grid;
-  padding: 1.5rem;
   width: 100%;
   min-width: 0;
   max-width: 100%;
