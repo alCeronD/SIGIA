@@ -140,7 +140,6 @@
   width: 100%;
 }
 
-
 .close {
   cursor: pointer;
 }
@@ -192,7 +191,6 @@
   height: 10rem;
 }
 
-
 .tpButton{
   grid-area: tpButton;
 }
@@ -202,8 +200,6 @@
   display: flex;
   flex-direction: column;
 }
-
-
 
 /* CAMBIAR LOS LA ESTRUCTURA GENERAL DEL MODAL. */
 #modalTp {
@@ -237,6 +233,8 @@
   /* Could be more or less, depending on screen size */
 }
 
-.close {
-  cursor: pointer;
-}
+/* ---- */
+
+/* MODULO MARCAS */
+
+/* ---- */
