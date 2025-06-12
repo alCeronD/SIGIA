@@ -74,9 +74,11 @@ let objDataElements = {};
 let objDataUsers = {};
 let button;
 const valuePage = document.querySelector("#valuePage");
-btnAddElements.innerText = "Seleccionar elementos";
+btnAddElements.innerText = "Devolutivos";
+btnAddElements.setAttribute('class','btnClick');
 modalTitle.innerText = "Elementos disponibles";
 btnSubmit.innerText = "Reservar";
+btnSubmit.setAttribute('class', 'btnSubmit');
 btnSearchUser.innerText = "Consultar";
 // variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
 let pagesUsers;

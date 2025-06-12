@@ -6,9 +6,17 @@
     </div>
     <div class="form">
         <form id="formArea">
-            <input type="text" name="ar_nombre" id="nombreArea" placeholder="Nombre area..." value="">
-            <textarea name="ar_descripcion" placeholder="Descripción..." id="descripcionArea" value=""></textarea>
-            <button type="submit" id="btnAreaUpdate">Registrar</button>
+            <div class="contentAreaNem">
+                <label for="ar_nombre">Area</label>
+                <input type="text" name="ar_nombre" id="nombreArea" placeholder="Nombre area..." value="">
+            </div>
+            <div class="contentDescript">
+                <label for="ar_descripcion">Descripción</label>
+                <textarea name="ar_descripcion" placeholder="Descripción general del area" id="descripcionArea" value=""></textarea>
+            </div>
+            <div class="contentSubmit">
+                <button type="submit" id="btnAreaUpdate" class="btnSubmit">Registrar</button>
+            </div>
         </form>
     </div>
 

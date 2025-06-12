@@ -147,6 +147,7 @@ class ReservaModel
             $resultCount = $stmtCount->get_result();
             $rows = $resultCount->fetch_assoc()['Total'];
 
+            //TODO: implementar paginado valor limit de manera gglobal.
             $limit = 10;
 
             //Numero de páginas en base a la cantidad de elementos, redondeo hacía el número más grande.
@@ -228,8 +229,7 @@ class ReservaModel
                     r.rl_id != 2 AND r.rl_status = 1 AND us.usu_id_estado = 1";
 
             $stmtCount = $conn->prepare($count);
-
-
+            
             if (!$stmtCount->execute()) {
                 return null;
             }

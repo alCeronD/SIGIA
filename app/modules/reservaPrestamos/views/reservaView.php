@@ -9,7 +9,7 @@
     </div>
     <div class="searchUser">
         <label for="">Instructor: </label>
-        <button type="button" id="searchBtn"></button>
+        <button type="button" id="searchBtn" class="btnClick"></button>
     </div>
     <div class="solicPrestamos">
         <form id="formSolicitudPrestamo">
@@ -68,7 +68,7 @@
             </div>
 
             <div class="inputContent inputObservaciones">
-                <label for="observaciones" class="labelForm">Observaciones</label>
+                <label for="observaciones" class="labelForm">Observaciones:</label>
                 <textarea name="observaciones" class="inputForm" id="observaciones" placeholder="Digite una observación en caso de que sea requerida."></textarea>
             </div>
 

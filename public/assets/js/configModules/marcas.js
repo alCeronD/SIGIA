@@ -29,7 +29,6 @@ function fetchData() {
     //Capturo la respuesta
     let response = JSON.parse(objAjax.request.responseText);
     let data = response.data;
-    console.log(data);
 
     if (objAjax.request.status) {
       if (data.length === 0) {
@@ -172,7 +171,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 
 //Formulario de registro.
-formMarca.addEventListener('submit', (f)=>{
+formMarca.addEventListener("submit", (f)=>{
     f.stopPropagation();
     f.preventDefault();
     let form = new FormData(formMarca);
@@ -190,7 +189,6 @@ formMarca.addEventListener('submit', (f)=>{
 
         let response = objAjax.request.responseText;
         let responseData = JSON.parse(response);
-        console.log(responseData);
 
         if (responseData.status) {
             alert('registro adicionado con exito');
@@ -199,9 +197,7 @@ formMarca.addEventListener('submit', (f)=>{
         }
     }
 
-
     objAjax.request.send(data);
-
 
 });
 
@@ -229,7 +225,6 @@ marcaUpdateForm.addEventListener('submit', (e)=>{
   objAjax.request.onload = ()=>{
     let response = objAjax.request.responseText;
     let dataResponse = JSON.parse(response);
-    console.log(dataResponse);
 
     if (dataResponse.status) {
       alert('registro actualizado.');

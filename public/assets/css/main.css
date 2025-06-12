@@ -29,6 +29,7 @@ body{
   font-weight: 700;
   font-size: 1.8rem;
   padding: 20px 0;
+  height: 10vh;
   text-align: center;
   font-family: "Segoe UI", Roboto, Oxygen, "Open Sans", "Helvetica Neue", sans-serif;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -37,10 +38,10 @@ body{
 }
 
 .container{
-  border: 1px solid black;
+  /* border: 1px solid black; */
   display: flex;
   width: 70%;
-  height: 90vh;
+  height: 80vh;
   padding: 2%;
   margin: 0 auto;
   position: relative;
@@ -59,11 +60,12 @@ body{
   font-size: 2rem;
 }
 
+
 /* Estilos de menu */
 #mainMenu {
     background-color: #2c5e42;
     width: 100%;
-    height: calc(7vh);
+    height: calc(10vh);
     margin: 0 auto;
     padding: 1%;
     position: fixed;
@@ -150,6 +152,31 @@ body{
 /* Estilos de tablas */
 
 /* Estilos de inputs */
+
+/* Clase general  de botones, contiene la forma del boton el tamaño.*/
+.btn{
+  margin: 1rem;
+}
+
+
+
+/* Clase específica */
+/* .btnClick{
+  background-color:var(--secundary);
+  color: white
+
+}
+
+
+
+.btnSubmit{
+  background-color: #6c757d;
+  color: white;
+  border: 1px;
+  border-radius: 10px;
+  width: auto;
+  height: 20pt;
+} */
 
 
 /* Estilos de los contenedores */

@@ -40,7 +40,7 @@
 <form action="" id="marcaForm">
     <input type="text" name="ma_nombre" id="nombreMarca" placeholder="Nombre marca">
     <input type="text" name="ma_descripcion" id="descripcionMarca" placeholder="Descripción marca">
-    <button type="button">Guardar</button>
+    <button type="submit">Guardar</button>
 </form>
 <?php require_once 'tableMarcaView.php'; ?>
 
