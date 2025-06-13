@@ -3,13 +3,13 @@
         <thead>
             <tr>
                 <th>Código</th>
-                <th>Nombre Elemento</th>
+                <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Estatus</th>
                 <th>Opción</th>
             </tr>
         </thead>
-        <tbody id="tableBody">
+        <tbody id="tableBodyArea">
             <!-- Renderizado con javascript. -->
         </tbody>
     </table>

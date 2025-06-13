@@ -8,7 +8,7 @@ let table = 'tipo_documento';
 let status = 1;
 const myModal = document.querySelector("#modalTp");
 //Cuerpo de tabla.
-const tableBody = document.querySelector("#tableBody");
+const tableBodyTp = document.querySelector("#tableBodyTp");
 //Boton de update del modal
 const tpUpdateForm = document.querySelector("#tpUpdateForm");
 console.log(tpUpdateForm);
@@ -18,7 +18,7 @@ let nombreTp;
 let descripcion;
 
 function fetchData() {
-  tableBody.innerHTML = "";
+  tableBodyTp.innerHTML = "";
   //let dataFetch = [table, status];
 
   objAjax2.request.open(
@@ -59,7 +59,7 @@ function fetchData() {
         const tdAccion = document.createElement("td");
         // Asigno el botón a ambos elementos.
 
-        tableBody.appendChild(tr);
+        tableBodyTp.appendChild(tr);
 
         tdId.textContent = dta.tp_id;
         tdName.textContent = dta.tp_sigla;

@@ -9,7 +9,7 @@
                 <th>Opción</th>
             </tr>
         </thead>
-        <tbody id="tableBody">
+        <tbody id="tableBodyTp">
             <!-- Renderizado con javascript. -->
         </tbody>
     </table>

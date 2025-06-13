@@ -89,6 +89,13 @@
 
 #tableConfigMarca,#tableConfigArea, #tableConfigTp{
   width: 100%;
+
+}
+
+#tableBodyArea tr td:last-child {
+  background-color: yellow;
+  display: flex;
+  flex-direction: row;
 }
 
 #btnAreaUpdate {
@@ -156,7 +163,6 @@
   grid-template-areas:
     "titleTp titleTp"
     "formTpDocumento tableTpDocumento";
-  border: 1px solid black;
 }
 
 .titleTp{
@@ -208,6 +214,12 @@
 #formTp > div:nth-child(3){
   text-align: center;
 }
+
+#tableBodyTp tr td:last-child {
+  display: flex;
+  flex-direction: row;
+}
+
 
 /* CAMBIAR LOS LA ESTRUCTURA GENERAL DEL MODAL. */
 #modalTp {
@@ -304,6 +316,11 @@ grid-template-areas: "contentMarcaN"
 #btnMarca{
   width: 50%;
   text-align: center;
+}
+
+#marcaTblBody tr td:last-child {
+  display: flex;
+  flex-direction: row;
 }
 
 #modalMarca {

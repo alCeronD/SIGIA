@@ -13,7 +13,7 @@ let status = 1;
 //Modal
 const myModal = document.querySelector("#modalArea");
 //Cuerpo de tabla.
-const tableBody = document.querySelector("#tableBody");
+const tableBody = document.querySelector("#tableBodyArea");
 //Boton de update del modal
 const areaUpdateForm = document.querySelector("#areaUpdateForm");
 
@@ -22,7 +22,7 @@ let nombreArea;
 let descripcion;
 
 function fetchData() {
-  tableBody.innerHTML = "";
+  tableBodyArea.innerHTML = "";
   //let dataFetch = [table, status];
 
   objAjax.request.open(
