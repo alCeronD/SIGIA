@@ -28,24 +28,36 @@
     </div>
 </div>
 
-    
+
 
 <!-- Modal -->
 <div id="modalArea" class="modal">
     <!-- Modal content -->
-    <div class="modal-content">
-            <div class="titleSection">
+    <div class="modalContentArea">
+        <div class="titleSection">
             <span id="modalTitle">Actualizar registro</span>
             <button type="button" id="closeModalBtn">
                 <span class="close-modal">&times;</span>
             </button>
-            </div>
-        <form id="areaUpdateForm" class="formUpdate">
-            <input type="text" name="ar_nombre" id="nombreAreaUpdate" placeholder="Nombre area...">
-            <textarea name="ar_descripcion" id="descripcionAreaUpdate" placeholder="Descripción..." ></textarea>
-            <button type="click" id="btnAreaUpdate">Agregar</button>
-        </form>
-        
+        </div>
+        <div class="formUpdate">
+            <form id="areaUpdateForm" class="formLayout">
+                <div class="arNombreUpdate">
+                    <label for="ar_nombre">Nombre:</label>
+                    <input type="text" name="ar_nombre" id="nombreAreaUpdate" placeholder="Nombre area...">
+                </div>
+                <div class="arDescripUpdate">
+                    <label for="ar_descripcion">Descripción:</label>
+                    <textarea name="ar_descripcion" id="descripcionAreaUpdate" placeholder="Descripción..."></textarea>
+                </div>
+                <div class="arBtnUpdate">
+
+                    <button type="click" id="btnAreaUpdate">Agregar</button>
+                </div>
+            </form>
+        </div>
+
+
     </div>
 </div>
 

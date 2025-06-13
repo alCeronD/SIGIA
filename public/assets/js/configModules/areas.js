@@ -50,9 +50,8 @@ function fetchData() {
         const btnUpdate = document.createElement("button");
         const btnDelete = document.createElement("button");
         btnUpdate.setAttribute("class", "btnUpdate");
-        btnUpdate.innerText = "Actualizar";
         btnDelete.setAttribute("class", "btnDelete");
-        btnDelete.innerText = "Eliminar";
+        btnUpdate.innerText = "Actualizar";
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
         const tdName = document.createElement("td");
@@ -74,10 +73,14 @@ function fetchData() {
         if (dta.ar_status === 1) {
           tdStatus.textContent = "Activo";
           tdStatus.style.color = "green";
+          btnDelete.innerText = "Inhabilitar";
         } else {
           tdStatus.textContent = "Inactivo";
+          btnDelete.innerText = "Habilitar";
           tdStatus.style.color = "red";
         }
+
+
 
         tdAccion.append(btnUpdate, btnDelete);
         tr.appendChild(tdId);

@@ -50,7 +50,6 @@ function fetchData() {
         btnUpdate.setAttribute("class", "btnUpdate");
         btnUpdate.innerText = "Actualizar";
         btnDelete.setAttribute("class", "btnDelete");
-        btnDelete.innerText = "Eliminar";
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
         const tdName = document.createElement("td");
@@ -58,23 +57,25 @@ function fetchData() {
         const tdStatus = document.createElement("td");
         const tdAccion = document.createElement("td");
         // Asigno el botón a ambos elementos.
-
+        
         tableBodyTp.appendChild(tr);
-
+        
         tdId.textContent = dta.tp_id;
         tdName.textContent = dta.tp_sigla;
         tdDescript.textContent = dta.tp_nombre;
-
+        
         //Dependiendo del estatus, en html se verá visible activo o inactivo pero sabemos que 1 es activo y 0 inactivo.
         tdStatus.textContent = dta.tp_status === 1 ? "Activo" : "Inactivo";
-
+        
         //Coloco el color rojo verde segun su estado.
         if (dta.tp_status === 1) {
           tdStatus.textContent = "Activo";
           tdStatus.style.color = "green";
+          btnDelete.innerText = "Inhabilitar";
         } else {
           tdStatus.textContent = "Inactivo";
           tdStatus.style.color = "red";
+          btnDelete.innerText = "Habilitar";
         }
 
         tdAccion.append(btnUpdate, btnDelete);
