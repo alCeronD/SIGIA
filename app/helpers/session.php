@@ -8,4 +8,5 @@ if (!isset($_SESSION['usuario'])) {
 
 $usuario = $_SESSION['usuario'];
 $rol = $usuario['rol_id'];
+
 ?>

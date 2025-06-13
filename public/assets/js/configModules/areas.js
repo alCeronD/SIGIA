@@ -109,6 +109,17 @@ function fetchData() {
 
           //Abro el modal.
           myModal.style.display = "flex";
+
+          const closeModalBtn = document.querySelector('#closeModalBtn');
+
+          closeModalBtn.addEventListener('click',(event)=>{
+            event.preventDefault();
+            event.stopPropagation();
+
+            myModal.style.display = "none";
+
+          })
+
         });
 
         //Delete Event
@@ -179,8 +190,6 @@ document.addEventListener("DOMContentLoaded", () => {
   //Apenas cargue el documeento me renderiza la información.
   fetchData();
 });
-
-
 
 // Enviar datos al formulario
 formulario.addEventListener("submit", (event) => {

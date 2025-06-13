@@ -19,19 +19,14 @@ class solicitudPrestamosController{
         $apellido = $_SESSION['usuario']['apellido'];
         $rol_nombre = $_SESSION['usuario']['rol_nombre'];
         
-        // Me traigo el listado de los elementos al front
-        $objetoElemento = new ElementoModelo($this->conn);
-        $elementos = $objetoElemento->searchElements();
-        // Datos de paginacion
-        
-        
-        
-        
         // Me traigo el listado de areas para el filtro por area
         $objetoArea = new ConfigModulesModel();
         $areas = $objetoArea->select("SELECT * FROM areas");
-        // dd($elementos);
         
+        // Me traigo el listado de los elementos al front
+        $objetoElemento = new ElementoModelo($this->conn);
+        $elementos = $objetoElemento->searchElements();
+          
         return include_once __DIR__ . '/../views/solicitudPrestamosView.php';
     }
     

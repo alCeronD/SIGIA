@@ -31,7 +31,7 @@
               <a href="<?php echo getUrl("reservaPrestamos", "reserva", "reservaView", false, 'dashboard'); ?>">Reserva</a>
             </li>
             <li>
-              <a href="<?php echo getUrl("configModules", "configModules", "renderViewArea", false, 'dashboard'); ?>">Ver prestamos</a>
+              <a href="<?php echo getUrl("reservaPrestamos", "reserva", "consultaReservaView", false, 'dashboard'); ?>">Ver prestamos</a>
             </li>
           </ul>
         </li>

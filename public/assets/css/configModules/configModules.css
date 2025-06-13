@@ -1,6 +1,104 @@
 /* ------- */
 /* MODULO AREAS */
+.contentArea {
+  width: 100%;
+  height: 85vh; 
+  display: grid;
+  grid-template-areas: 
+    "titleArea titleArea"
+    "form tblAreas";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 1.5rem;
+}
+
+.titleArea {
+  grid-area: titleArea;
+  width: 100%;
+}
+.form {
+    grid-area: form;
+    width: 100%;
+    height: auto; 
+    
+}
+
+#formArea{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+
+}
+
+#descripcionArea{
+    resize: none;
+    height: 10rem;
+}
+
+.tblAreas {
+  grid-area: tblAreas;
+}
+
+
 #modalArea {
+  display: none;
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+.modal-content {
+  background-color: #ffffff;
+  margin: 10% auto;
+  /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  height: auto;
+  display: grid;
+  grid-template-areas: 
+  "titleSection"
+  "formUpdate";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+}
+
+.titleSection{
+    grid-area: titleSection;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.formUpdate{
+    grid-area: formUpdate;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+
+.close {
+  cursor: pointer;
+}
+
+/* ------ */
+/* MODULO TIPO DOCUMENTO */
+
+#modalTp {
         display: none;
         position: fixed;
         /* Stay in place */
@@ -20,7 +118,7 @@
         /* Black w/ opacity */
     }
 
-    .modal-content {
+    .modal-content-tp {
         background-color: #fefefe;
         margin: 10% auto;
         /* 15% from the top and centered */
@@ -34,6 +132,3 @@
     .close{
         cursor: pointer;
     }
-
-
-/* ------ */
