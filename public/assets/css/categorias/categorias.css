@@ -1,3 +1,63 @@
-.prueba {
-    background: rgb(63, 100, 182);
+:root {
+  --primary: #1e90ff;
+  --secundary: #2c5e42;
+  --btnSubmit: #80ff005e;
+  --btnInfo: #008000;
+  --other: #808080;
+  --white: #ffffff;
 }
+
+/* Botón para ir al dashboard. */
+.close {
+  cursor: pointer;
+}
+
+.contentCategorias{
+    grid-template-areas: "titleCategorias titleCategorias"
+    "formCta tblCategoria";
+}
+
+.titleCategorias{
+    grid-area: titleCategorias;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+.formCta{
+    grid-area: formCta;
+}
+
+.tblCategoria{
+    grid-area: tblCategoria;
+}
+
+#formCategoria{
+    grid-template-areas: "contentNombreCa"
+    "contentDescripCa"
+    "contentBtnCa";
+}
+
+.contentNombreCa{
+    grid-area: contentNombreCa;
+}
+
+.contentDescripCa{
+    grid-area: contentDescripCa;
+}
+
+.contentBtnCa{
+    grid-area: contentBtnCa;
+}
+
+#formCategoria > div:nth-child(1), #formCategoria > div:nth-child(2){
+    display: flex;
+    flex-direction: column;
+}
+
+#formCategoria > div:nth-child(3){
+    text-align: center;
+    background-color: yellow;
+}
+
