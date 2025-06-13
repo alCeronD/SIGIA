@@ -270,32 +270,70 @@
 #modalTp {
   display: none;
   position: fixed;
-  /* Stay in place */
   z-index: 1;
-  /* Sit on top */
   left: 0;
   top: 0;
   width: 100%;
-  /* Full width */
   height: 100%;
-  /* Full height */
   overflow: auto;
-  /* Enable scroll if needed */
   background-color: rgb(0, 0, 0);
-  /* Fallback color */
+  /* Color de fondo */
   background-color: rgba(0, 0, 0, 0.4);
-  /* Black w/ opacity */
 }
 
 .modal-content-tp {
-  background-color: #fefefe;
+  background-color: #ffffff;
   margin: 10% auto;
   /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 50%;
+  width: 30%;
+  height: fit-content;
+  display: grid;
+  grid-template-areas:
+    "titleSection"
+    "formUpdate";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+}
+
+#tpUpdateForm{
+
+  display: grid;
+  grid-template-areas: "contentTpSigla"
+  "contentTpNombre"
+  "contentTpBtn";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+}
+
+.contentTpSigla{
+  grid-area: contentTpSigla;
+  gap: 0.3rem;
+
+}
+
+.contentTpNombre{
+  grid-area: contentTpNombre;
+  gap: 0.3rem;
+
+}
+
+.contentTpBtn{
+  grid-area: contentTpBtn;
+}
+
+#tpUpdateForm > div:nth-child(1), #tpUpdateForm > div:nth-child(2){
+  display: flex;
+  flex-direction: column;
+  justify-items: flex-start;
+}
+
+#tpUpdateForm > div:nth-child(3){
+  width: 100%;
   height: auto;
-  /* Could be more or less, depending on screen size */
+  text-align: center;
+  /* Centrar el boton. */
 }
 
 /* ---- */

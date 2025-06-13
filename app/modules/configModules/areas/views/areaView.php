@@ -28,8 +28,6 @@
     </div>
 </div>
 
-
-
 <!-- Modal -->
 <div id="modalArea" class="modal">
     <!-- Modal content -->

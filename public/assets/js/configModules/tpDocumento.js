@@ -1,4 +1,5 @@
 import { Ajax } from "../libraries/ajax.js";
+import {closeModal} from "../libraries/cases.js";
 
 const formulario = document.querySelector("#formTp");
 const objAjax2 = new Ajax();
@@ -6,13 +7,12 @@ const objAjax2 = new Ajax();
 let table = 'tipo_documento';
 
 let status = 1;
-const myModal = document.querySelector("#modalTp");
 //Cuerpo de tabla.
 const tableBodyTp = document.querySelector("#tableBodyTp");
-//Boton de update del modal
+//Formulario update.
 const tpUpdateForm = document.querySelector("#tpUpdateForm");
-console.log(tpUpdateForm);
-
+const closeModalBtn = document.querySelector('.closeModalBtn');
+const myModal = document.querySelector("#modalTp");
 let idPk;
 let nombreTp;
 let descripcion;
@@ -33,14 +33,13 @@ function fetchData() {
     //Capturo la respuesta
     let response = JSON.parse(objAjax2.request.responseText);
     let data = response.data;
-    console.log(response);
 
     if (objAjax2.request.status) {
       //console.log(objAjax22.request.responseText);
       if (data.length === 0) {
         const spanMessage = document.createElement("span");
         spanMessage.innerText = "Sin registros";
-        tableBody.appendChild(spanMessage);
+        tableBodyTp.appendChild(spanMessage);
       }
 
       data.forEach((dta) => {
@@ -203,8 +202,7 @@ tpUpdateForm.addEventListener("submit", (e) => {
     if (dataStatus.status) {
       alert("registro actualizado");
       //Cerrar el modal
-      myModal.style.display = "none";
-
+      myModal.style.display = 'none';
       //Renderizo nuevamente la data.
       fetchData();
     }
@@ -212,11 +210,13 @@ tpUpdateForm.addEventListener("submit", (e) => {
   objAjax2.request.send(data);
 });
 
+
 //Formulario de insert.
 formulario.addEventListener("submit", (event) => {
+
   event.preventDefault();
   event.stopPropagation();
-
+  
   let form = new FormData(formulario);
   let dt = Object.fromEntries(form);
 
@@ -225,8 +225,6 @@ formulario.addEventListener("submit", (event) => {
     tp_nombre: dt.tp_nombre,
     tableName: table
   });
-
-  console.log(data);
 
   // Ajax POST
   objAjax2.request.open('POST', "modules/configModules/api/apiConfigModules.php", true);
@@ -250,6 +248,9 @@ formulario.addEventListener("submit", (event) => {
     
   };
 
-  //Enviar los datos a registrar.
   objAjax2.request.send(data); 
 });
+
+
+//Cerrar el modal.
+closeModal(myModal,closeModalBtn);

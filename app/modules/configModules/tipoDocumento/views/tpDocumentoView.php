@@ -31,13 +31,30 @@
 <div id="modalTp" class="modal">
     <!-- Modal content -->
     <div class="modal-content-tp">
-        <span class="close">&times;</span>
-        <span id="modalTitle">Actualizar registro</span>
-        <form id="tpUpdateForm">
-            <input type="text" name="tp_sigla" id="siglaTp_documento" placeholder="Sigla ...">
-            <input type="text" name="tp_nombre" id="descripcionTp_documento" placeholder="Nombre..."></input>
-            <button type="click" id="btnAreaUpdate">Agregar</button>
+        <div class="titleSection">
+            <span id="modalTitle">Tipo de documento</span>
+            <button type="button" class="closeModalBtn">
+                <span class="close-modal">&times;</span>
+            </button>
+        </div>
+        <!-- <span class="close">&times;</span>
+        <span id="modalTitle">Actualizar registro</span> -->
+        <div class="formUpdateTp">
+            <form id="tpUpdateForm">
+            <div class="contentTpSigla">
+                <label for="tp_sigla">Sigla:</label>
+                <input type="text" name="tp_sigla" id="siglaTp_documento" placeholder="Sigla ...">
+            </div>
+            <div class="contentTpNombre">
+                <label for="tp_nombre">Nombre:</label>
+                <input type="text" name="tp_nombre" id="descripcionTp_documento" placeholder="Nombre..."></input>
+            </div>
+            <div class="contentTpBtn">
+                <button type="click" id="btnTpUpdate">Guardar cambios</button>
+            </div>
         </form>
+        </div>
+        
     </div>
 
 </div>
