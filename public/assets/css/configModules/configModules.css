@@ -1,3 +1,12 @@
+:root {
+  --primary: #1e90ff;           
+  --secundary: #2c5e42;         
+  --btnSubmit: #80ff005e;       
+  --btnInfo: #008000;           
+  --other: #808080;             
+  --white: #ffffff;             
+}
+
 
 /* Estructura General de todas las tablas.. */
 .contentLayout {
@@ -103,10 +112,9 @@
 }
 
 #btnAreaUpdate {
-  width: 50%;
+  width: fit-content;
   text-align: center;
 }
-
 
 #modalArea {
   display: none;
@@ -129,7 +137,7 @@
   padding: 20px;
   border: 1px solid #888;
   width: 30%;
-  height: 30vh;
+  height: fit-content;
   display: grid;
   grid-template-areas:
     "titleSection"
@@ -144,6 +152,21 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  background-color: var(--secundary);
+  padding: 1rem 1.5rem;
+  border-radius: 8px 8px 0 0;
+  align-items: center;
+  color: var(--white);
+}
+
+.closeModalBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2rem;
+  color: var(--white);
+  padding: 0.3rem;
+  line-height: 1;
 }
 
 .formUpdate {
@@ -154,6 +177,7 @@
 #areaUpdateForm > div:nth-child(1), #areaUpdateForm > div:nth-child(2) {
   display: flex;
   flex-direction: column;
+  gap: 0.3rem;
 }
 
 /* Corresponde al botón. */
@@ -161,13 +185,15 @@
   text-align: center;
   width: 100%;
   gap: 0.5rem;
+  margin-top: 0.2rem;
 }
 
 #areaUpdateForm{
   grid-template-areas: "arNombreUpdate"
   "arDescripUpdate"
   "arBtnUpdate";
-  gap: 1.5rem;
+  gap: 0rem;
+  margin-top:0.3rem;
 }
 
 /* Input descripcion */
@@ -343,24 +369,24 @@ grid-template-areas: "contentMarcaN"
 }
 
 #modalMarca {
-        display: none;
-        position: fixed;
-        /* Stay in place */
-        z-index: 1;
-        /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%;
-        /* Full width */
-        height: 100%;
-        /* Full height */
-        overflow: auto;
-        /* Enable scroll if needed */
-        background-color: rgb(0, 0, 0);
-        /* Fallback color */
-        background-color: rgba(0, 0, 0, 0.4);
-        /* Black w/ opacity */
-    }
+  display: none;
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+  }
 
     .modal-content {
         background-color: #fefefe;

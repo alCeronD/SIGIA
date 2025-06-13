@@ -246,7 +246,7 @@ th {
   font-weight: bold;
 }
 
-.modal-title button {
+.modal-title .closeModalBtn {
   background: none;
   border: none;
   cursor: pointer;

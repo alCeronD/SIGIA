@@ -36,7 +36,7 @@
     <div class="modalContentArea">
         <div class="titleSection">
             <span id="modalTitle">Actualizar registro</span>
-            <button type="button" id="closeModalBtn">
+            <button type="button" class="closeModalBtn">
                 <span class="close-modal">&times;</span>
             </button>
         </div>
@@ -52,7 +52,7 @@
                 </div>
                 <div class="arBtnUpdate">
 
-                    <button type="click" id="btnAreaUpdate">Agregar</button>
+                    <button type="click" id="btnAreaUpdate">Actualizar</button>
                 </div>
             </form>
         </div>

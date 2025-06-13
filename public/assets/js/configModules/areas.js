@@ -113,7 +113,7 @@ function fetchData() {
           //Abro el modal.
           myModal.style.display = "flex";
 
-          const closeModalBtn = document.querySelector('#closeModalBtn');
+          const closeModalBtn = document.querySelector('.closeModalBtn');
 
           closeModalBtn.addEventListener('click',(event)=>{
             event.preventDefault();
