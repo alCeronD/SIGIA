@@ -56,5 +56,34 @@ class ElementoModelo {
 
         return $stmt->execute();
     }
+    
+    public function searchElements() {
+
+        $query = "SELECT
+            e.*,
+            a.ar_cod,
+            a.ar_nombre,
+            ee.est_nombre
+        FROM
+            elementos e
+        JOIN areas a ON
+            e.elm_area_cod = a.ar_cod
+        JOIN estados_elementos ee ON
+            e.elm_cod_estado = ee.est_el_cod
+        WHERE
+            ee.est_el_cod = 1
+        ";
+        
+        $result = $this->conn->query($query);
+        $cantRegi = mysqli_num_rows($result);
+        $prestamos = [];
+
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $prestamos[] = $row;
+            }
+        }
+        return $prestamos;
+    }
 }
 ?>

@@ -66,7 +66,7 @@
           </div><br>
           
           <div class="mb-3 col-12">
-            <h4 class="mt-4">Elementos Devolutivos</h4>
+            <h4 class="mt-4" id="tabla-elementos">Elementos Devolutivos</h4>
             <table class="table table-bordered table-hover">
               <thead class="table-light">
               <br>
@@ -92,6 +92,13 @@
             </table>
           </div>
           <br>
+          
+          <div class="page container-fluid col-12"> 
+            <ul id="paginacion" class="pagination justify-content-center">
+            </ul>
+          </div>
+
+          
           <div class="inputBtn">
               <button type="submit" id="btnSubmit" class="btnForm">Registrar Préstamo</button>
           </div>
@@ -101,18 +108,57 @@
 <!-- <script type="module" src="../../../../public/assets/js/solicitudPrestamos/solicitudPrestamos.js"></script> -->
 <!-- <script type="module" src="/public//assets//js//solicitudPrestamos/solicitudPrestamos.js"></script> -->
 <script>
-document.getElementById('filtro_area').addEventListener('change', function () {
-    const selectedArea = this.value;
-    const filas = document.querySelectorAll('#tabla-elementos-devolutivos tr');
+document.addEventListener('DOMContentLoaded', function () {
+  const filtroArea = document.getElementById('filtro_area');
+  const filasOriginales = Array.from(document.querySelectorAll('#tabla-elementos-devolutivos tr'));
+  const paginacion = document.getElementById('paginacion');
+  const itemsPorPagina = 5;
+  let filasFiltradas = [];
 
-    filas.forEach(fila => {
+  filtroArea.addEventListener('change', () => {
+    const selectedArea = filtroArea.value;
+    filasFiltradas = filasOriginales.filter(fila => {
       const area = fila.getAttribute('data-area');
-      if (selectedArea === "" || area === selectedArea) {
-        fila.style.display = "";
-      } else {
-        fila.style.display = "none";
-      }
+      return selectedArea === "" || area === selectedArea;
     });
+    actualizarTabla(1);
+    generarPaginacion();
   });
 
+  function actualizarTabla(pagina) {
+    filasOriginales.forEach(fila => fila.style.display = 'none');
+
+    const inicio = (pagina - 1) * itemsPorPagina;
+    const fin = inicio + itemsPorPagina;
+
+    const paginaActual = filasFiltradas.slice(inicio, fin);
+    paginaActual.forEach(fila => fila.style.display = '');
+  }
+
+  function generarPaginacion() {
+    paginacion.innerHTML = '';
+    const totalPaginas = Math.ceil(filasFiltradas.length / itemsPorPagina);
+
+    for (let i = 1; i <= totalPaginas; i++) {
+      const li = document.createElement('li');
+      li.classList.add('page-item');
+      li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+      li.addEventListener('click', (e) => {
+        e.preventDefault();
+        actualizarTabla(i);
+        document.querySelectorAll('#paginacion li').forEach(el => el.classList.remove('active'));
+        li.classList.add('active');
+      });
+      paginacion.appendChild(li);
+    }
+
+    if (paginacion.firstChild) {
+      paginacion.firstChild.classList.add('active');
+      actualizarTabla(1);
+    }
+  }
+
+  filasFiltradas = filasOriginales;
+  generarPaginacion();
+});
 </script>

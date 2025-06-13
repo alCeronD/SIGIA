@@ -1,5 +1,11 @@
+<style>
+  .consulta-container {
+    width: 100%;
+    background: rgb(240, 248, 255);
+  }
+</style>
 
-    <div class="w-100 mx-auto text-start">
+    <div class="consulta-container">
       <h2 class="mb-4 text-center">Usuarios Registrados</h2>
       <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle">
@@ -36,9 +42,4 @@
           </tbody>
         </table>
       </div>
-    </div>
-  <!-- </div> -->
-
-<?php
-// include_once '../proyecto_sigia/public/partials/footer.php';
-?>
+  </div>

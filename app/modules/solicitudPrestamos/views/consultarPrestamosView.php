@@ -11,21 +11,21 @@
           <th>Acciones: </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="tabla-prestamos">
         <?php if (!empty($prestamos)): ?>
           <?php foreach ($prestamos as $prestamo): ?>
-            <tr class="text-center">
+            <tr class="text-center fila-prestamo">
               <td><?= htmlspecialchars($prestamo['pres_cod']) ?></td>
               <td><?= htmlspecialchars($nombre) ?></td>
               <td><?= htmlspecialchars($prestamo['pres_fch_slcitud']) ?></td>
               <td><?= htmlspecialchars($prestamo['tipo_prestamo']) ?></td>
               <td>
                 <a href="<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'verDetallePrestamo', ['pres_cod' => $prestamo['pres_cod']]) ?>" class="btn btn-sm btn-info me-1">
-                    <i class="bi bi-trash"></i> Ver detalle
+                    <i class="bi bi-eye"></i> Ver detalle
                 </a>
                 <br>
-                <a href="<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'eliminarPrestamo', ['pres_cod' => $prestamo['pres_cod']]) ?>" class="btn btn-sm btn-danger">
-                    <i class="bi bi-trash"></i> Aprobar/No aprobar
+                <a href="<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'eliminarPrestamo', ['pres_cod' => $prestamo['pres_cod']]) ?>" class="btn btn-sm btn-danger mt-1">
+                    <i class="bi bi-x-circle"></i> Aprobar/No aprobar
                 </a>
               </td>
             </tr>
@@ -37,5 +37,54 @@
         <?php endif; ?>
       </tbody>
     </table>
+    
+    <div class="page container-fluid col-12">
+      <ul id="paginacion-prestamos" class="pagination justify-content-center"></ul>
+    </div>
+    
   </div>
 </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const filas = Array.from(document.querySelectorAll('.fila-prestamo'));
+  const paginacion = document.getElementById('paginacion-prestamos');
+  const itemsPorPagina = 5;
+  let totalPaginas = Math.ceil(filas.length / itemsPorPagina);
+
+  function mostrarPagina(pagina) {
+    const inicio = (pagina - 1) * itemsPorPagina;
+    const fin = inicio + itemsPorPagina;
+
+    filas.forEach((fila, index) => {
+      fila.style.display = index >= inicio && index < fin ? '' : 'none';
+    });
+
+    document.querySelectorAll('#paginacion-prestamos li').forEach(el => el.classList.remove('active'));
+    const liActivo = document.querySelector(`#paginacion-prestamos li[data-pagina="${pagina}"]`);
+    if (liActivo) liActivo.classList.add('active');
+  }
+
+  function generarPaginacion() {
+    paginacion.innerHTML = '';
+    for (let i = 1; i <= totalPaginas; i++) {
+      const li = document.createElement('li');
+      li.classList.add('page-item');
+      li.setAttribute('data-pagina', i);
+      li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+      li.addEventListener('click', function (e) {
+        e.preventDefault();
+        mostrarPagina(i);
+      });
+      paginacion.appendChild(li);
+    }
+
+    if (totalPaginas > 0) {
+      mostrarPagina(1);
+    }
+  }
+
+  generarPaginacion();
+});
+</script>

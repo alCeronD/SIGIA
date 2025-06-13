@@ -80,24 +80,7 @@ class solicitudPrestamos {
         }
     }
 
-    public function searchElements() {
-       
-        $query = "SELECT e.*, a.ar_cod, a.ar_nombre
-                FROM elementos e
-                JOIN areas a ON e.elm_area_cod = a.ar_cod
-                LIMIT 0, 25
-                ";
-        $result = $this->conn->query($query);
-
-        $prestamos = [];
-
-        if ($result && $result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $prestamos[] = $row;
-            }
-        }
-        return $prestamos;
-    }
+    
     public function search() {
         $sql = "SELECT 
                     p.pres_cod,
