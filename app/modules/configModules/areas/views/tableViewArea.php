@@ -1,9 +1,8 @@
 <!-- Tabla para incluir en las diferentes vistas de area, tipo de documento, rol y marca -->
-<div class="table">
-    <table id="tableConfig">
+    <table class="tableConfig" id="tableConfigArea">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>Código</th>
                 <th>Nombre Elemento</th>
                 <th>Descripción</th>
                 <th>Estatus</th>
@@ -14,4 +13,4 @@
             <!-- Renderizado con javascript. -->
         </tbody>
     </table>
-</div>
+

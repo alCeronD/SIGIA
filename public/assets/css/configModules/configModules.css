@@ -4,25 +4,24 @@
     width: 100%;
     height: 85vh;
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 20% 1fr;
     grid-template-rows: auto 1fr;
     gap: 1.5rem;
 }
 
 /* Estructura general del layout del formulario. */
 .formLayout{
-  border: 1px solid black;
   display: grid;
   gap: 0.3rem;
   grid-template-columns: 1fr;
   grid-template-rows: 5vh 1fr;
+  width: 100%;
 }
 
 /* Esta estructura menu corresponde al titulo  */
 .menuTitle{
   width: 100%;
 }
-
 
 /* ------- */
 /* MODULO AREAS */
@@ -62,6 +61,10 @@
   flex-direction: column;
 }
 
+#formArea > div:nth-child(3){
+  text-align: center;
+}
+
 .contentAreaNem{
   grid-area: contentAreaNem;
 }
@@ -82,7 +85,10 @@
 
 .tblAreas {
   grid-area: tblAreas;
-  background-color: red;
+}
+
+#tableConfigMarca,#tableConfigArea, #tableConfigTp{
+  width: 100%;
 }
 
 #btnAreaUpdate {
@@ -167,8 +173,6 @@
 }
 .tblTpDocumento{
   grid-area: tableTpDocumento;
-  background-color: yellow;
-
 }
 #formTp{  
   grid-template-areas: 
@@ -199,6 +203,10 @@
 #formTp > div:nth-child(1), #formTp > div:nth-child(2){
   display: flex;
   flex-direction: column;
+}
+
+#formTp > div:nth-child(3){
+  text-align: center;
 }
 
 /* CAMBIAR LOS LA ESTRUCTURA GENERAL DEL MODAL. */
@@ -238,3 +246,93 @@
 /* MODULO MARCAS */
 
 /* ---- */
+.contentMarca{
+  grid-template-areas: "titleMarca titleMarca"
+  "formMarca tblMarca";
+}
+
+.titleMarca{
+  grid-area: titleMarca;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.formMarca{
+  grid-area: formMarca;
+}
+
+.tblMarca{
+  grid-area: tblMarca;
+}
+
+#marcaForm{
+grid-template-areas: "contentMarcaN"
+"contentMarcaD"
+"contentSubmitMa";
+}
+
+.contentMarcaN{
+  grid-area: contentMarcaN;
+}
+
+.contentMarcaD{
+  grid-area: contentMarcaD;
+}
+
+.contentSubmitMa{
+  grid-area: contentSubmitMa;
+}
+
+#marcaForm > div:nth-child(1), #formTp > div:nth-child(2){
+  display: flex;
+  flex-direction: column;
+}
+
+/* Posición del botón */
+#marcaForm > div:nth-child(3){
+  text-align: center;
+}
+
+#descripcionMarca{
+  width: 100%;
+  resize: none;
+  height: 10rem;
+}
+
+#btnMarca{
+  width: 50%;
+  text-align: center;
+}
+
+#modalMarca {
+        display: none;
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        height: auto;
+        /* Could be more or less, depending on screen size */
+    }

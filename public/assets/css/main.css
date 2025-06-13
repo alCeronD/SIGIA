@@ -38,7 +38,6 @@ body{
 }
 
 .container{
-  /* border: 1px solid black; */
   display: flex;
   width: 70%;
   height: 80vh;
