@@ -2,6 +2,7 @@
 include_once __DIR__ . '/../model/solicitudPrestamosModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
+include_once __DIR__ . '/../../elementos/model/elementosModel.php';
 include_once __DIR__ . '/../../../helpers/session.php';
 
 class solicitudPrestamosController{
@@ -19,8 +20,13 @@ class solicitudPrestamosController{
         $rol_nombre = $_SESSION['usuario']['rol_nombre'];
         
         // Me traigo el listado de los elementos al front
-        $objetoElemento = new solicitudPrestamos($this->conn);
+        $objetoElemento = new ElementoModelo($this->conn);
         $elementos = $objetoElemento->searchElements();
+        // Datos de paginacion
+        
+        
+        
+        
         // Me traigo el listado de areas para el filtro por area
         $objetoArea = new ConfigModulesModel();
         $areas = $objetoArea->select("SELECT * FROM areas");
