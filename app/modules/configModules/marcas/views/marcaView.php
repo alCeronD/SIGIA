@@ -30,14 +30,28 @@
 <!-- Modal -->
 <div id="modalMarca" class="modal">
     <!-- Modal content -->
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <span id="modalTitle">Actualizar registro</span>
-        <form id="marcaUpdateForm">
-            <input type="text" name="ma_nombre" id="nombreAreaUpdate" placeholder="Nombre area...">
-            <textarea name="ma_descripcion" id="descripcionAreaUpdate" placeholder="Descripción..."></textarea>
-            <button type="click" id="btnAreaUpdate">Agregar</button>
-        </form>
+    <div class="modal-content-ma">
+        <div class="titleSection">
+            <span id="modalTitle">Actualizar registro</span>
+            <button type="button" class="closeModalBtn">
+                <span class="close-modal">&times;</span>
+            </button>
+        </div>
+        <div class="marcaUpdate">
+            <form id="marcaUpdateForm">
+                <div class="nombreMaUpdte">
+                    <label for="ma_nombre">Nombre:</label>
+                    <input type="text" name="ma_nombre" id="nombreMarcaUpdate" placeholder="Nombre area...">
+                </div>
+                <div class="descripMaUpdte">
+                    <label for="ma_descripcion">Descripción</label>
+                    <textarea name="ma_descripcion" id="descripcionMarcaUpdate" placeholder="Descripción..."></textarea>
+                </div>
+                <div class="btnMaUpdate">
+                    <button type="click" id="btnMarcaUpdate">Agregar</button>
+                </div>
+            </form>
+        </div>
     </div>
 
 </div>

@@ -1,25 +1,24 @@
 :root {
-  --primary: #1e90ff;           
-  --secundary: #2c5e42;         
-  --btnSubmit: #80ff005e;       
-  --btnInfo: #008000;           
-  --other: #808080;             
-  --white: #ffffff;             
+  --primary: #1e90ff;
+  --secundary: #2c5e42;
+  --btnSubmit: #80ff005e;
+  --btnInfo: #008000;
+  --other: #808080;
+  --white: #ffffff;
 }
-
 
 /* Estructura General de todas las tablas.. */
 .contentLayout {
-    width: 100%;
-    height: 85vh;
-    display: grid;
-    grid-template-columns: 20% 1fr;
-    grid-template-rows: auto 1fr;
-    gap: 1.5rem;
+  width: 100%;
+  height: 85vh;
+  display: grid;
+  grid-template-columns: 20% 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 1.5rem;
 }
 
 /* Estructura general del layout del formulario. */
-.formLayout{
+.formLayout {
   display: grid;
   gap: 0.3rem;
   grid-template-columns: 1fr;
@@ -28,7 +27,7 @@
 }
 
 /* Esta estructura menu corresponde al titulo  */
-.menuTitle{
+.menuTitle {
   width: 100%;
 }
 
@@ -47,7 +46,7 @@
 
 .titleArea {
   grid-area: titleArea;
-    display: flex;
+  display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -57,43 +56,40 @@
   grid-area: formAr;
   width: 100%;
   height: 25vh;
-
 }
 
 #formArea {
-
-  grid-template-areas: 
+  grid-template-areas:
     "contentAreaNem"
     "contentDescript"
     "contentSubmit";
-
 }
 
 /* Acceder a los hijos el formulario */
-#formArea > div:nth-child(1), #formArea > div:nth-child(2){
+#formArea > div:nth-child(1),
+#formArea > div:nth-child(2) {
   display: flex;
   flex-direction: column;
 }
 
-#formArea > div:nth-child(3){
+#formArea > div:nth-child(3) {
   text-align: center;
 }
 
-.contentAreaNem{
+.contentAreaNem {
   grid-area: contentAreaNem;
 }
-.contentDescript{
+.contentDescript {
   grid-area: contentDescript;
-
 }
 
-.contentDescript #descripcionArea{
+.contentDescript #descripcionArea {
   width: 100%;
   resize: none;
   height: 10rem;
 }
 
-.contentSubmit{
+.contentSubmit {
   grid-area: contentSubmit;
 }
 
@@ -101,9 +97,10 @@
   grid-area: tblAreas;
 }
 
-#tableConfigMarca,#tableConfigArea, #tableConfigTp{
+#tableConfigMarca,
+#tableConfigArea,
+#tableConfigTp {
   width: 100%;
-
 }
 
 #tableBodyArea tr td:last-child {
@@ -174,30 +171,32 @@
   width: 100%;
 }
 
-#areaUpdateForm > div:nth-child(1), #areaUpdateForm > div:nth-child(2) {
+#areaUpdateForm > div:nth-child(1),
+#areaUpdateForm > div:nth-child(2) {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
 }
 
 /* Corresponde al botón. */
-#areaUpdateForm > div:nth-child(3){
+#areaUpdateForm > div:nth-child(3) {
   text-align: center;
   width: 100%;
   gap: 0.5rem;
   margin-top: 0.2rem;
 }
 
-#areaUpdateForm{
-  grid-template-areas: "arNombreUpdate"
-  "arDescripUpdate"
-  "arBtnUpdate";
+#areaUpdateForm {
+  grid-template-areas:
+    "arNombreUpdate"
+    "arDescripUpdate"
+    "arBtnUpdate";
   gap: 0rem;
-  margin-top:0.3rem;
+  margin-top: 0.3rem;
 }
 
 /* Input descripcion */
-#descripcionAreaUpdate{
+#descripcionAreaUpdate {
   resize: none;
   height: 8vh;
   padding: 0.3rem;
@@ -211,7 +210,7 @@
     "formTpDocumento tableTpDocumento";
 }
 
-.titleTp{
+.titleTp {
   grid-area: titleTp;
   display: flex;
   flex-direction: row;
@@ -219,45 +218,45 @@
   justify-content: space-between;
 }
 
-.formTpDocumento{
+.formTpDocumento {
   grid-area: formTpDocumento;
   height: 25vh;
 }
-.tblTpDocumento{
+.tblTpDocumento {
   grid-area: tableTpDocumento;
 }
-#formTp{  
-  grid-template-areas: 
-  "tpSiglaContent"
-  "tpDescripcion"
-  "tpButton";
-  
+#formTp {
+  grid-template-areas:
+    "tpSiglaContent"
+    "tpDescripcion"
+    "tpButton";
 }
 
-.tpSiglaContent{
+.tpSiglaContent {
   grid-area: tpSiglaContent;
 }
 
-.tpDescripcion{
+.tpDescripcion {
   grid-area: tpDescripcion;
 }
-#descripcionTp{
+#descripcionTp {
   width: 100%;
   resize: none;
   height: 10rem;
 }
 
-.tpButton{
+.tpButton {
   grid-area: tpButton;
 }
 
 /* Acceder a los hijos el formulario */
-#formTp > div:nth-child(1), #formTp > div:nth-child(2){
+#formTp > div:nth-child(1),
+#formTp > div:nth-child(2) {
   display: flex;
   flex-direction: column;
 }
 
-#formTp > div:nth-child(3){
+#formTp > div:nth-child(3) {
   text-align: center;
 }
 
@@ -297,39 +296,38 @@
   grid-template-rows: auto 1fr;
 }
 
-#tpUpdateForm{
-
+#tpUpdateForm {
   display: grid;
-  grid-template-areas: "contentTpSigla"
-  "contentTpNombre"
-  "contentTpBtn";
+  grid-template-areas:
+    "contentTpSigla"
+    "contentTpNombre"
+    "contentTpBtn";
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
 }
 
-.contentTpSigla{
+.contentTpSigla {
   grid-area: contentTpSigla;
   gap: 0.3rem;
-
 }
 
-.contentTpNombre{
+.contentTpNombre {
   grid-area: contentTpNombre;
   gap: 0.3rem;
-
 }
 
-.contentTpBtn{
+.contentTpBtn {
   grid-area: contentTpBtn;
 }
 
-#tpUpdateForm > div:nth-child(1), #tpUpdateForm > div:nth-child(2){
+#tpUpdateForm > div:nth-child(1),
+#tpUpdateForm > div:nth-child(2) {
   display: flex;
   flex-direction: column;
   justify-items: flex-start;
 }
 
-#tpUpdateForm > div:nth-child(3){
+#tpUpdateForm > div:nth-child(3) {
   width: 100%;
   height: auto;
   text-align: center;
@@ -341,12 +339,13 @@
 /* MODULO MARCAS */
 
 /* ---- */
-.contentMarca{
-  grid-template-areas: "titleMarca titleMarca"
-  "formMarca tblMarca";
+.contentMarca {
+  grid-template-areas:
+    "titleMarca titleMarca"
+    "formMarca tblMarca";
 }
 
-.titleMarca{
+.titleMarca {
   grid-area: titleMarca;
   display: flex;
   flex-direction: row;
@@ -354,49 +353,51 @@
   align-items: center;
 }
 
-.formMarca{
+.formMarca {
   grid-area: formMarca;
 }
 
-.tblMarca{
+.tblMarca {
   grid-area: tblMarca;
 }
 
-#marcaForm{
-grid-template-areas: "contentMarcaN"
-"contentMarcaD"
-"contentSubmitMa";
+#marcaForm {
+  grid-template-areas:
+    "contentMarcaN"
+    "contentMarcaD"
+    "contentSubmitMa";
 }
 
-.contentMarcaN{
+.contentMarcaN {
   grid-area: contentMarcaN;
 }
 
-.contentMarcaD{
+.contentMarcaD {
   grid-area: contentMarcaD;
 }
 
-.contentSubmitMa{
+.contentSubmitMa {
   grid-area: contentSubmitMa;
 }
 
-#marcaForm > div:nth-child(1), #formTp > div:nth-child(2){
+#marcaForm > div:nth-child(1),
+#formTp > div:nth-child(2) {
   display: flex;
   flex-direction: column;
 }
 
 /* Posición del botón */
-#marcaForm > div:nth-child(3){
+#marcaForm > div:nth-child(3) {
   text-align: center;
 }
 
-#descripcionMarca{
+#descripcionMarca {
   width: 100%;
   resize: none;
   height: 10rem;
 }
 
-#btnMarca{
+#btnMarca {
   width: 50%;
   text-align: center;
 }
@@ -405,6 +406,8 @@ grid-template-areas: "contentMarcaN"
   display: flex;
   flex-direction: row;
 }
+
+/* Modal de marca */
 
 #modalMarca {
   display: none;
@@ -424,15 +427,58 @@ grid-template-areas: "contentMarcaN"
   /* Fallback color */
   background-color: rgba(0, 0, 0, 0.4);
   /* Black w/ opacity */
-  }
+}
 
-    .modal-content {
-        background-color: #fefefe;
-        margin: 10% auto;
-        /* 15% from the top and centered */
-        padding: 20px;
-        border: 1px solid #888;
-        width: 50%;
-        height: auto;
-        /* Could be more or less, depending on screen size */
-    }
+.modal-content-ma {
+  background-color: var(--white);
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30%;
+    height: fit-content;
+    display: grid;
+    grid-template-areas:
+        "titleSection"
+        "marcaUpdate";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+}
+
+.titleSection{
+  grid-area: titleSection;
+}
+
+.marcaUpdate{
+  grid-area: marcaUpdate;
+}
+
+#marcaUpdateForm{
+  display: grid;
+  grid-template-areas: "nombreMaUpdte"
+  "descripMaUpdte"
+  "btnMaUpdate";
+}
+
+.nombreMaUpdte{
+  grid-area: nombreMaUpdte;
+}
+
+.descripMaUpdte{
+  grid-area: descripMaUpdte;
+}
+
+.btnMaUpdate{
+  grid-area: btnMaUpdate;
+}
+
+#marcaUpdateForm > div:nth-child(1), #marcaUpdateForm > div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+}
+
+#descripcionMarcaUpdate{
+  resize: none;
+  height: 8vh;
+  padding: 0.3rem;
+}
+

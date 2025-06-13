@@ -1,9 +1,11 @@
 import { Ajax } from "../libraries/ajax.js";
+import { closeModal } from "../libraries/cases.js";
 
 const tableBody = document.querySelector('#marcaTblBody');
 const formMarca = document.querySelector('#marcaForm');
 const myModal = document.querySelector('#modalMarca');
 const marcaUpdateForm = document.querySelector('#marcaUpdateForm');
+const closeModalBtn = document.querySelector('.closeModalBtn');
 const btnDelete = document.querySelector('#btnDelete');
 const btnUpdate = document.querySelector('#btnUpdate');
 let table = "marcas";
@@ -30,7 +32,6 @@ function fetchData() {
     let response = JSON.parse(objAjax.request.responseText);
     let data = response.data;
 
-    if (objAjax.request.status) {
       if (data.length === 0) {
         const spanMessage = document.createElement("span");
         spanMessage.innerText = "Sin registros";
@@ -91,9 +92,9 @@ function fetchData() {
           nombreMarca = celda[1].textContent;
           descripcionMarca = celda[2].textContent;
           //Inputs del modal
-          let nombreAreaUpdate = document.querySelector("#nombreAreaUpdate");
+          let nombreAreaUpdate = document.querySelector("#nombreMarcaUpdate");
           let descripcionAreaUpdate = document.querySelector(
-            "#descripcionAreaUpdate"
+            "#descripcionMarcaUpdate"
           );
           //Adjunto los valores al input del modal.
           nombreAreaUpdate.value = nombreMarca;
@@ -117,9 +118,6 @@ function fetchData() {
           let status = celda[3].textContent;
           //Dependiendo del texto en html defino si es 0 para inactivo o 1 para activo para enviar a backend para actualizar.
           status = status === "Activo" ? 1 : 0;
-
-          //let nombreArea = celda[1].textContent;
-          //let descripcion = celda[2].textContent;
 
           if (confirm("¿Está seguro de inhabilitar este elemento?")) {
             const data = JSON.stringify({
@@ -158,7 +156,6 @@ function fetchData() {
           }
         });
       });
-    }
   };
 
   //Establezco que su envio de solicitud es mediante un json.
@@ -230,9 +227,13 @@ marcaUpdateForm.addEventListener('submit', (e)=>{
 
     if (dataResponse.status) {
       alert('registro actualizado.');
+      fetchData();
       myModal.style.display = 'none';
     }
   }
 
   objAjax.request.send(data);
-})
+});
+
+//Cerrar modal
+closeModal(myModal,closeModalBtn);
