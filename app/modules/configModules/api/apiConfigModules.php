@@ -5,6 +5,7 @@ header("Content-Type: application/json");
 $input = json_decode(file_get_contents("php://input"), true);
 
 require_once __DIR__ . '/../controller/configModulesController.php';
+require_once __DIR__ . '/../../../helpers/response.php';
 $configController = new ConfigModulesController();
 
 //Cambiar statusCols y tables por $schema.
@@ -105,7 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $codField = $input['ma_id'];  
     }
 
-    //$keys=['values','tableName',$input['ar_cod'],['ar_nombre','ar_descripcion']];
     $values=[];
 
         $values = [
@@ -172,8 +172,6 @@ if ($method === 'DELETE') {
         'pk' => ['column' => $pkCol, 'value' => (int)$idPk]
     ];
 
-    // var_dump($data);
-
     if ($configController->deleteRow($data)) {
 
         http_response_code(200);
@@ -205,6 +203,20 @@ if ($method === 'POST') {
         $datas[$value] = $input[$value] ?? null;
     }
 
+    if ($tableName == 'areas') {
+        $nameColum = 'ar_nombre';
+    }
+    if ($tableName == 'tipo_documento') {
+        $nameColum = 'tp_sigla';
+    }
+    if ($tableName == 'marcas') {
+        $nameColum = 'ma_nombre';
+    }
+
+
+    $valueNameColum = $input[$nameColum];
+
+
 
     if (in_array($tableName, $tables)) {
         $statusField = $schemaTable['status'];
@@ -221,25 +233,20 @@ if ($method === 'POST') {
     'tableName' => $tableName,
     'values' => $datas,
     ];
-    // var_dump($data);
 
-
-    if ($data = $configController->addRow($data)) {
+    if ($configController->validate($nameColum,$tableName,$valueNameColum)) {
+        fail('Entrada duplicada');
+    }
+        if ($data = $configController->addRow($data)) {
 
         http_response_code(200);
 
         echo json_encode([
             'status'=>true,
-            'message'=>'Area registrada correctamente',
+            'message'=>'Registro agregado exitosamente',
             'data' => $data
         ]);
-
-    }else{
-        http_response_code(500);
-        echo json_encode([
-            'status'=>false,
-            'message'=>'Error al registrar el nuevo elemento'
-        ]);
     }
+
 
 }

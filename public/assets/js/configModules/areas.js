@@ -215,7 +215,6 @@ formulario.addEventListener("submit", (event) => {
 
   objAjax.request.onload = () => {
       const response = JSON.parse(objAjax.request.responseText);
-
       if (response.status) {
         const lastRow = response.data;
 
@@ -223,12 +222,10 @@ formulario.addEventListener("submit", (event) => {
         formulario.reset();
         //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
         fetchData();
-        console.log("Registro agregado exitosamente.");
+        alert(response.message);
       } else {
-        console.error("Error desde servidor:", response.message || "Error desconocido.");
+        alert(response.message);
       }
-
-    
   };
 
   objAjax.request.send(data); // Esto debe ir fuera de onload

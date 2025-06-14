@@ -36,8 +36,8 @@ class ConfigModulesController{
         
         return include_once  __DIR__ . '/../marcas/views/marcaView.php';
     }
-    
-    //Función para traer la información de la tabla en específico.
+
+    // Traer la información de una tabla en especifico.
     public function getData(String $tableName, String $status){
         
         $model = new ConfigModulesModel();
@@ -202,7 +202,6 @@ class ConfigModulesController{
         //Nombres de las columnas de la tabla
         $keysValues = array_keys($data['values']);
 
-
         //Extraigo el nombre de la tabla, en este caso me interesa el el value de tableName, no su clave
         $tableName = $data['tableName'];
         //Los valores de las filas con sus respectivas columnas.
@@ -217,18 +216,21 @@ class ConfigModulesController{
         foreach ($dataValues as $keys => $values) {
             $set[] = "`$keys` = ?";
         }
-    
+        
         //Tipos de datos
         $types = "ssi";
         $set2 = implode(', ',$set);
         $sql .= $set2;
         $model = new ConfigModulesModel();
-        //$data = $model->insert($sql,$types,$values, $tableName, );
-        $data = $model->insert($sql,$types,$val);
-
+        $data = $model->insert($sql,$types,$val,$tableName);
+        
         return $data;
-
+    }
     
+    public function validate(String $nameColum, String $tableName, String $nameValueColum){
+        $model = new ConfigModulesModel();
+        $result = $model->validateUnique($nameColum,$tableName, $nameValueColum);
+        return $result;
     }
 }
 
