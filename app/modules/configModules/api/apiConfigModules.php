@@ -7,7 +7,6 @@ $input = json_decode(file_get_contents("php://input"), true);
 require_once __DIR__ . '/../controller/configModulesController.php';
 $configController = new ConfigModulesController();
 
-
 //Cambiar statusCols y tables por $schema.
 $statusCols = [
     'areas' => ['status' => 'ar_status', 'pk' => 'ar_cod'],
@@ -55,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit();
     }
 
-    //Si el estatus es false, es decir, algo inactivo, terminar el script.
     //TODO:Arreglar esta parte, si yo quiero traer solamente los elementos activos, inactivos o todos los elementos, con esto podemos dar un mayor acceso y re usabilidad.
     if (!in_array($status, ['0', '1'])) {
         exit();
@@ -78,7 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
     //LLAMAR A LOS CONTROLADORES Y CREAR EL GRUD GENERAL
-    //var_dump($input);
     $tableName = isset($input['tableName']) ? $input['tableName'] : null;
 
     //Tabla que voy a usar para hacer las operaciones.
@@ -89,8 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $data[$field] = $input[$field] ?? null;
 
     }
-
-    //var_dump($data);
 
     if ($tableName == 'areas') {
         $nombreField = $data['ar_nombre'];

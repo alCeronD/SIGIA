@@ -203,19 +203,10 @@ class ConfigModulesController{
         $keysValues = array_keys($data['values']);
 
 
-
-        //var_dump($keysValues);
-        //var_dump($values);
-        //Nombre de la columna de la primary key
-        //$pkNameColum = $data['pkNameColum'];
-
-        //Nombre de la columna del status segun la tabla.
-
         //Extraigo el nombre de la tabla, en este caso me interesa el el value de tableName, no su clave
         $tableName = $data['tableName'];
         //Los valores de las filas con sus respectivas columnas.
         $dataValues = $data['values'];
-        //Valores de las columnas 
 
         $val = array_values($dataValues);
 
@@ -226,19 +217,11 @@ class ConfigModulesController{
         foreach ($dataValues as $keys => $values) {
             $set[] = "`$keys` = ?";
         }
-
-        
-        
-        //Agrego el statusName Como ultimo registro.
-        //$set[] = "`$statatusNameColum` = ?";
-        
+    
         //Tipos de datos
         $types = "ssi";
-        
         $set2 = implode(', ',$set);
-        
         $sql .= $set2;
-        
         $model = new ConfigModulesModel();
         //$data = $model->insert($sql,$types,$values, $tableName, );
         $data = $model->insert($sql,$types,$val);
