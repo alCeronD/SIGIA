@@ -314,47 +314,47 @@ tableUsers.addEventListener("click", (e) => {
 tableDevolutivos.addEventListener("click", (event) => {
   event.stopPropagation();
 
-
   //Valido si el evento ejecutado corresponde a un input con la clase checkboxInput.
   if (event.target.matches(".checkboxInput")) {
 
     let isChecked = event.target.checked;
     if (isChecked) {
       let inputChecked = event.target;
-      //Uso parentNode para traer todos los elementos de la fila, Excepto, el elemento que activo el evento, es decir, el input checkbox.
       let info = inputChecked.closest("tr");
-
+      
       //La idea es hacer un append de estos registros a la tabla. tblPreviewElements.
       let codigo = info.children[0].textContent;
       let nombre = info.children[1].textContent;
       let area = info.children[2].textContent;
       let trTablePreview = document.createElement("tr");
-
       let tdCodigo = document.createElement("td");
       tdCodigo.setAttribute("class", "codigoElemento");
       let tdNombre = document.createElement("td");
       let tdArea = document.createElement("td");
 
-      tablePreviewElements.appendChild(trTablePreview);
+      //Capturo el valor del checkbox
+      let valueInput = event.target.getAttribute("data-id");
+      //Valido, si el arreglo no contiene el valueInput, entonces que implemente el valor ahí.
+      if (!ids.includes(valueInput)) {
+          ids.push(valueInput);
 
-      tdCodigo.textContent = codigo;
-      tdNombre.textContent = nombre;
-      tdArea.textContent = area;
+          tablePreviewElements.appendChild(trTablePreview);
+          tdCodigo.textContent = codigo;
+          tdNombre.textContent = nombre;
+          tdArea.textContent = area;
+          trTablePreview.appendChild(tdCodigo);
+          trTablePreview.appendChild(tdNombre);
+          trTablePreview.appendChild(tdArea);
 
-      trTablePreview.appendChild(tdCodigo);
-      trTablePreview.appendChild(tdNombre);
-      trTablePreview.appendChild(tdArea);
+      }else{
+        alert('el elemento seleccionado ya está seleccionado.');
+        //Reinicio el evento.
+        event.preventDefault();
+      }
+
+
     }
   }
-});
-
-//Delegar evento sobre la tabla elementos
-/**
- * Esta es solo la interacción con la tabla de elementos preview, que sirven para poder eliminar un registro si no lo quiero antes de enviar el prestamo.
- */
-tablePreviewElements.addEventListener("click", (event) => {
-  event.stopPropagation();
-  event.preventDefault();
 });
 
 /**
