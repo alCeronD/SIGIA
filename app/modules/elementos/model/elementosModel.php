@@ -10,6 +10,8 @@ class ElementoModelo {
     public function obtenerElementos() {
         $elementos = [];
         $sql = "SELECT * FROM elementos";
+       
+
         $resultado = $this->conn->query($sql);
 
         if ($resultado) {

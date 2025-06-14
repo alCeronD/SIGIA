@@ -1,10 +1,3 @@
-
-    <style>
-        
-
-       
-        
-    </style>
         <div class="dashboard-grid">
             <div class="option-card">
                 <h5>Consular Elementos</h5>
