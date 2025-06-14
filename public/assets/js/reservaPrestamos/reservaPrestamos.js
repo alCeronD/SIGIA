@@ -103,15 +103,13 @@ function fetchData(action = "", page = 1) {
       let response = JSON.parse(objAjax.request.responseText);
       objDataElements = response.data.data;
       pagesElements = response.data.pages;
-      //console.log(response);
-      //console.log({"response elements":objDataElements});
+
     }
 
     if (action === "users") {
       let response = JSON.parse(objAjax.request.responseText);
       objDataUsers = response.data.data;
-      //console.log(response);
-      //console.log({"response usuarios":objDataUsers});
+
     }
   };
   //Específicamos que respuesta queremos recibir
@@ -231,7 +229,6 @@ function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
       addElements.setAttribute("type", "checkbox");
       addElements.setAttribute("class", "checkboxInput");
       addElements.setAttribute("data-id", codigo);
-
       let trTable = document.createElement("tr");
       let tdCodigo = document.createElement("td");
       let tdElemento = document.createElement("td");
@@ -317,11 +314,9 @@ tableUsers.addEventListener("click", (e) => {
 tableDevolutivos.addEventListener("click", (event) => {
   event.stopPropagation();
 
+
   //Valido si el evento ejecutado corresponde a un input con la clase checkboxInput.
   if (event.target.matches(".checkboxInput")) {
-    /**
-     * Objetivo = con el select, buscar los campos de la fila y guardarlos en un arreglo para implementarlos en la tablaPreviewElements.
-     */
 
     let isChecked = event.target.checked;
     if (isChecked) {
@@ -333,7 +328,6 @@ tableDevolutivos.addEventListener("click", (event) => {
       let codigo = info.children[0].textContent;
       let nombre = info.children[1].textContent;
       let area = info.children[2].textContent;
-
       let trTablePreview = document.createElement("tr");
 
       let tdCodigo = document.createElement("td");
@@ -350,8 +344,6 @@ tableDevolutivos.addEventListener("click", (event) => {
       trTablePreview.appendChild(tdCodigo);
       trTablePreview.appendChild(tdNombre);
       trTablePreview.appendChild(tdArea);
-
-      console.log({ codigo, nombre, area });
     }
   }
 });
@@ -414,12 +406,10 @@ const valuePageElement = document.querySelector("#valuePageElement");
 previewElement.addEventListener("click", () => {
   pgElementsDevolutivos =
     pgElementsDevolutivos === 1 ? 1 : pgElementsDevolutivos - 1;
-  console.log({ decremento: pgElementsDevolutivos });
   resetTableElements("elements", pgElementsDevolutivos);
 });
 
 nextElement.addEventListener("click", () => {
-  console.log({ aumento: pgElementsDevolutivos });
   // Validación adicional para evitar que se desacople la información.
   if (pgElementsDevolutivos < pagesElements) {
     pgElementsDevolutivos++;
@@ -435,7 +425,6 @@ resetTableElements("elements", pgElementsDevolutivos, true);
 /**
  * Submit al formulario.
  */
-
 formSolicitudPrestamo.addEventListener("submit", (event) => {
   event.preventDefault();
   event.stopPropagation();
@@ -470,6 +459,7 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   rows.codigo = rows.codigo.filter(
     (value, index, self) => self.indexOf(value) === index
   );
+
   let codigosElementos = rows.codigo;
   //Agrego los códigos de los elementos al data.
   data.codigosElementos = codigosElementos;

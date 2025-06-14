@@ -11,55 +11,7 @@
             </tr>
         </thead>
         <tbody id="tableBodyPreviewElements">
-            <!-- cuerpo renderizado con javascript. -->
-            <!-- <tr>
-                <td>327482347</td>
-                <td>Cámara HXR-NX800</td>
-                <td>1</td>
-                <td><input type="checkbox"></td>
-            </tr>
-            <tr>
-                <td>234823498</td>
-                <td>Trípode Manfrotto 190X</td>
-                <td>2</td>
-                <td><input type="checkbox"></td>
-            </tr>
-            <tr>
-                <td>234823498</td>
-                <td>Trípode Manfrotto 190X</td>
-                <td>2</td>
-                <td><input type="checkbox"></td>
-            </tr>
-            <tr>
-                <td>234823498</td>
-                <td>Trípode Manfrotto 190X</td>
-                <td>2</td>
-                <td><input type="checkbox"></td>
-            </tr>
-            <tr>
-                <td>234823498</td>
-                <td>Trípode Manfrotto 190X</td>
-                <td>2</td>
-                <td><input type="checkbox"></td>
-            </tr>
-            <tr>
-                <td>234823498</td>
-                <td>Trípode Manfrotto 190X</td>
-                <td>2</td>
-                <td><input type="checkbox"></td>
-            </tr>
-            <tr>
-                <td>234823498</td>
-                <td>Trípode Manfrotto 190X</td>
-                <td>2</td>
-                <td><input type="checkbox"></td>
-            </tr>
-            <tr>
-                <td>234823498</td>
-                <td>Trípode Manfrotto 190X</td>
-                <td>2</td>
-                <td><input type="checkbox"></td>
-            </tr> -->
+            
         </tbody>
 
     </table>
