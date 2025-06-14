@@ -5,16 +5,15 @@
 require_once __DIR__ . '/../../../config/conn.php';
 
 //Crud general para todos los elementos.
-class ConfigModulesModel
-{
+class ConfigModulesModel{
     private $mysqli;
-
+    private $conn;
     //puede que no necesite constructor.
     public function __construct(){
         $this->mysqli = new Conection();
     }
-    public function select(String $sql)
-    {
+    
+    public function select(String $sql){
 
         $conn = $this->mysqli->getConnect();
 
@@ -31,56 +30,54 @@ class ConfigModulesModel
         return $data;
     }
 
-public function insert(String $sql = '', String $types = '', array $values = [], String $tableName = '')
-{
-    $conn = $this->mysqli->getConnect();
+    public function insert(String $sql = '', String $types = '', array $values = [], String $tableName = ''){
+            
+        $conn = $this->mysqli->getConnect();
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Prepare failed: " . $conn->error);
+        }
+    
+    
+        $bindParams = [];
+        foreach ($values as $key => $value) {
+            $bindParams[] = &$values[$key];
+        }
+    
+        array_unshift($bindParams, $types);
+        call_user_func_array([$stmt, 'bind_param'], $bindParams);
+    
+        if (!$stmt->execute()) {
+            die("Execute failed: " . $stmt->error);
+        }
+    
+        $insertedId = $conn->insert_id;
+    
+        //Creo consulta para traer el ultimo elemento registrado en base al lastId.
+        //TODO: Esto me lo debe ejecutar si o si el select, para ello debo de crear otra función llamada select, serán 2 funciones con el mismo nombre, lo intentaremos hacer usando polimorfismo.
+        // $selectSql = "SELECT * FROM `$tableName` WHERE `$pkNameColum` = ?";
+    
+        // $stmtLastRow = $conn->prepare($selectSql);
+        // if (!$stmtLastRow) {
+        //     die("Prepare failed (select): " . $conn->error);
+        // }
+    
+        // $stmtLastRow->bind_param('i', $insertedId);
+    
+        // if (!$stmtLastRow->execute()) {
+        //     die("Execute failed (select): " . $stmtLastRow->error);
+        // }
+    
+        // $result = $stmtLastRow->get_result();
+        // $resultLastRow = $result->fetch_assoc();
+    
+        // Cerrar la conexión
+        $conn->close();
+    
+        return true;
+        }
 
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        die("Prepare failed: " . $conn->error);
-    }
-
-
-    $bindParams = [];
-    foreach ($values as $key => $value) {
-        $bindParams[] = &$values[$key];
-    }
-
-    array_unshift($bindParams, $types);
-    call_user_func_array([$stmt, 'bind_param'], $bindParams);
-
-    if (!$stmt->execute()) {
-        die("Execute failed: " . $stmt->error);
-    }
-
-    $insertedId = $conn->insert_id;
-
-    //Creo consulta para traer el ultimo elemento registrado en base al lastId.
-    //TODO: Esto me lo debe ejecutar si o si el select, para ello debo de crear otra función llamada select, serán 2 funciones con el mismo nombre, lo intentaremos hacer usando polimorfismo.
-    // $selectSql = "SELECT * FROM `$tableName` WHERE `$pkNameColum` = ?";
-
-    // $stmtLastRow = $conn->prepare($selectSql);
-    // if (!$stmtLastRow) {
-    //     die("Prepare failed (select): " . $conn->error);
-    // }
-
-    // $stmtLastRow->bind_param('i', $insertedId);
-
-    // if (!$stmtLastRow->execute()) {
-    //     die("Execute failed (select): " . $stmtLastRow->error);
-    // }
-
-    // $result = $stmtLastRow->get_result();
-    // $resultLastRow = $result->fetch_assoc();
-
-    // Cerrar la conexión
-    $conn->close();
-
-    return true;
-}
-
-    public function delete(String $sql, String $types,array $values)
-    {
+    public function delete(String $sql, String $types,array $values){
 
         try {
             
@@ -108,8 +105,7 @@ public function insert(String $sql = '', String $types = '', array $values = [],
     }
 
     //Actualiza formando la consulta.
-    public function update(String $sql, array $prepareValues, array $types)
-    {
+    public function update(String $sql, array $prepareValues, array $types){
         $conn = $this->mysqli->getConnect();
 
         try {
@@ -140,5 +136,9 @@ public function insert(String $sql = '', String $types = '', array $values = [],
         
 
     }
+    
+    ////////////////////////
+    
+
 
 }

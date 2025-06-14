@@ -13,7 +13,7 @@ let status = 1;
 //Modal
 const myModal = document.querySelector("#modalArea");
 //Cuerpo de tabla.
-const tableBody = document.querySelector("#tableBody");
+const tableBody = document.querySelector("#tableBodyArea");
 //Boton de update del modal
 const areaUpdateForm = document.querySelector("#areaUpdateForm");
 
@@ -22,7 +22,7 @@ let nombreArea;
 let descripcion;
 
 function fetchData() {
-  tableBody.innerHTML = "";
+  tableBodyArea.innerHTML = "";
   //let dataFetch = [table, status];
 
   objAjax.request.open(
@@ -50,9 +50,8 @@ function fetchData() {
         const btnUpdate = document.createElement("button");
         const btnDelete = document.createElement("button");
         btnUpdate.setAttribute("class", "btnUpdate");
-        btnUpdate.innerText = "Actualizar";
         btnDelete.setAttribute("class", "btnDelete");
-        btnDelete.innerText = "Eliminar";
+        btnUpdate.innerText = "Actualizar";
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
         const tdName = document.createElement("td");
@@ -74,10 +73,14 @@ function fetchData() {
         if (dta.ar_status === 1) {
           tdStatus.textContent = "Activo";
           tdStatus.style.color = "green";
+          btnDelete.innerText = "Inhabilitar";
         } else {
           tdStatus.textContent = "Inactivo";
+          btnDelete.innerText = "Habilitar";
           tdStatus.style.color = "red";
         }
+
+
 
         tdAccion.append(btnUpdate, btnDelete);
         tr.appendChild(tdId);
@@ -109,6 +112,17 @@ function fetchData() {
 
           //Abro el modal.
           myModal.style.display = "flex";
+
+          const closeModalBtn = document.querySelector('.closeModalBtn');
+
+          closeModalBtn.addEventListener('click',(event)=>{
+            event.preventDefault();
+            event.stopPropagation();
+
+            myModal.style.display = "none";
+
+          })
+
         });
 
         //Delete Event
@@ -179,8 +193,6 @@ document.addEventListener("DOMContentLoaded", () => {
   //Apenas cargue el documeento me renderiza la información.
   fetchData();
 });
-
-
 
 // Enviar datos al formulario
 formulario.addEventListener("submit", (event) => {

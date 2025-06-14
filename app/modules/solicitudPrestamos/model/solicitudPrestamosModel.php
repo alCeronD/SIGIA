@@ -22,7 +22,7 @@ class solicitudPrestamos {
         if (!is_array($data)) {
             exit();
         }
-
+    
         $pres_fch_slcitud  = $this->conn->real_escape_string($data['pres_fch_slcitud']);
         $pres_fch_reserva  = $this->conn->real_escape_string($data['pres_fch_reserva']);
         $pres_hor_inicio   = $this->conn->real_escape_string($data['pres_hor_inicio']);
@@ -30,11 +30,11 @@ class solicitudPrestamos {
         $pres_fch_entrega  = $this->conn->real_escape_string($data['pres_fch_entrega']);
         $pres_observacion  = $this->conn->real_escape_string($data['pres_observacion']);
         $pres_destino      = $this->conn->real_escape_string($data['pres_destino']);
-        $pres_estado       = (int)$data['pres_estado'];
-        $tp_pres           = (int)$data['tp_pres'];
-
+        $pres_estado       = 3;
+        $tp_pres           = 2;
+    
         $query = "
-            INSERT INTO solicitud_prestamos (
+            INSERT INTO prestamos (
                 pres_fch_slcitud, pres_fch_reserva, pres_hor_inicio, pres_hor_fin,
                 pres_fch_entrega, pres_observacion, pres_destino, pres_estado, tp_pres
             ) VALUES (
@@ -42,39 +42,75 @@ class solicitudPrestamos {
                 '$pres_fch_entrega', '$pres_observacion', '$pres_destino', $pres_estado, $tp_pres
             )
         ";
-
+    
         if ($this->conn->query($query)) {
-            return true;
+            return $this->conn->insert_id; 
         } else {
             return "Error al registrar el préstamo: " . $this->conn->error;
         }
     }
 
+    public function update($datos, $id) {
+        $cadena = "";
+
+        foreach ($datos as $campo => $value) {
+            $cadena .= "$campo = '" . $this->conn->real_escape_string($value) . "',";
+        }
+
+        $cadena = rtrim($cadena, ",");
+        $query = "UPDATE solicitud_prestamos SET $cadena WHERE pres_cod = '$id'";
+        $resultado = $this->conn->query($query);
+
+        if ($resultado) {
+            return true;
+        } else {
+            return "Error al actualizar el préstamo: " . $this->conn->error;
+        }
+    }
+
+    public function delete(int $id) {
+        $query = "DELETE FROM solicitud_prestamos WHERE pres_cod = '$id'";
+        $resultado = $this->conn->query($query);
+
+        if ($resultado) {
+            return true;
+        } else {
+            echo "Problemas al eliminar el préstamo";
+            exit();
+        }
+    }
+
+    
     public function search() {
-        $query = "SELECT 
-                    e.elm_cod,
-                    e.elm_placa,
-                    e.elm_nombre,
-                    e.elm_existencia,
-                    e.elm_uni_medida,
-                    e.elm_cod_tp_elemento,
-                    e.elm_cod_estado,
-                    e.elm_area_cod,
-                    c.ca_nombre AS categoria_nombre
-                  FROM elementos e
-                  INNER JOIN categoria c ON e.elm_cod_tp_elemento = c.ca_id";
+        $sql = "SELECT 
+                    p.pres_cod,
+                    p.pres_fch_slcitud,
+                    p.pres_fch_reserva,
+                    p.pres_hor_inicio,
+                    p.pres_hor_fin,
+                    p.pres_fch_entrega,
+                    p.pres_observacion,
+                    p.pres_destino,
+                    p.pres_estado,
+                    tp.tp_nombre AS tipo_prestamo
+                FROM 
+                    prestamos p
+                LEFT JOIN 
+                    tipo_prestamo tp ON p.tp_pres = tp.tp_pre
+                ORDER BY 
+                    p.pres_fch_slcitud DESC";
     
-        $result = $this->conn->query($query);
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        
+        $result = $stmt->get_result();
+        $data = [];
     
-        $elementos = [];
-    
-        if ($result && $result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $elementos[] = $row;
-            }
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
         }
     
-        return $elementos;
+        return $data;
     }
 
 
@@ -92,6 +128,10 @@ class solicitudPrestamos {
             return null;
         }
     }
+    
+    
+
+    
 }
 
 ?>

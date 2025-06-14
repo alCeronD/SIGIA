@@ -9,10 +9,10 @@
     </div>
     <div class="searchUser">
         <label for="">Instructor: </label>
-        <button type="button" id="searchBtn"></button>
+        <button type="button" id="searchBtn" class="btnClick"></button>
     </div>
     <div class="solicPrestamos">
-        <form action="" method="post" id="formSolicitudPrestamo">
+        <form id="formSolicitudPrestamo">
             <div class="inputContent cedula">
                 <label for="cedula" class="labelForm">Cédula: </label>
                 <input type="number" class="inputForm" name="cedula" id="cedula" placeholder="Identificación...">
@@ -68,7 +68,7 @@
             </div>
 
             <div class="inputContent inputObservaciones">
-                <label for="observaciones" class="labelForm">Observaciones</label>
+                <label for="observaciones" class="labelForm">Observaciones:</label>
                 <textarea name="observaciones" class="inputForm" id="observaciones" placeholder="Digite una observación en caso de que sea requerida."></textarea>
             </div>
 
@@ -90,7 +90,7 @@
 
 <!-- Contenedor que contiene el modal de las tablas de elementos devolutivos y consumibles -->
 <div id="addElements">
-    <?php require_once 'viewAddElements.php'; ?>
+    <?php require_once 'modalAddReserva.php'; ?>
 </div>
 
 <!-- Contenedor modal que contiene los registros de los usuarios -->

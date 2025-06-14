@@ -1,0 +1,40 @@
+
+#paginacion {
+  list-style: none; 
+  padding-left: 0;  
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-direction: row; 
+}
+
+
+  #paginacion .page-item {
+    width: 40px; 
+    text-align: center;
+  }
+
+  #paginacion .page-link {
+    width: 100%;
+    padding: 6px 10px;
+  }
+#paginacion-prestamos {
+  list-style: none; 
+  padding-left: 0;  
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-direction: row; 
+}
+
+#paginacion-prestamos .page-item {
+  width: 40px; 
+  text-align: center;
+}
+
+#paginacion-prestamos .page-link {
+  width: 100%;
+  padding: 6px 10px;
+}

@@ -1,6 +1,6 @@
 <div class="modal" id="modalUsers" style="display: none;">
     <div class="modal-content">
-        <div id="modal-title">
+        <div class="modal-title">
             <span id="modalTitle">Instructores</span>
                 <button type="button" id="closeModalBtn">
                     <span class="close-modal">&times;</span>

@@ -21,6 +21,7 @@ const btnCloseElements = document.querySelector(
 );
 const btnCloseUsers = document.querySelector("#modalUsers .close-modal");
 const btnSearchUser = document.querySelector("#searchBtn");
+const formSolicitudPrestamo = document.querySelector("#formSolicitudPrestamo");
 horaInicio.style.visibility = "hidden";
 horaInicio.style.opacity = "0";
 horaFin.style.visibility = "hidden";
@@ -73,9 +74,11 @@ let objDataElements = {};
 let objDataUsers = {};
 let button;
 const valuePage = document.querySelector("#valuePage");
-btnAddElements.innerText = "Seleccionar elementos";
+btnAddElements.innerText = "Devolutivos";
+btnAddElements.setAttribute('class','btnClick');
 modalTitle.innerText = "Elementos disponibles";
 btnSubmit.innerText = "Reservar";
+btnSubmit.setAttribute('class', 'btnSubmit');
 btnSearchUser.innerText = "Consultar";
 // variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
 let pagesUsers;
@@ -323,34 +326,33 @@ tableDevolutivos.addEventListener("click", (event) => {
     let isChecked = event.target.checked;
     if (isChecked) {
       let inputChecked = event.target;
-    //Uso parentNode para traer todos los elementos de la fila, Excepto, el elemento que activo el evento, es decir, el input checkbox.
-    let info = inputChecked.closest("tr");
+      //Uso parentNode para traer todos los elementos de la fila, Excepto, el elemento que activo el evento, es decir, el input checkbox.
+      let info = inputChecked.closest("tr");
 
-    //La idea es hacer un append de estos registros a la tabla. tblPreviewElements.
-    let codigo = info.children[0].textContent;
-    let nombre = info.children[1].textContent;
-    let area = info.children[2].textContent;
+      //La idea es hacer un append de estos registros a la tabla. tblPreviewElements.
+      let codigo = info.children[0].textContent;
+      let nombre = info.children[1].textContent;
+      let area = info.children[2].textContent;
 
-    let trTablePreview = document.createElement("tr");
+      let trTablePreview = document.createElement("tr");
 
-    let tdCodigo = document.createElement("td");
-    let tdNombre = document.createElement("td");
-    let tdArea = document.createElement("td");
+      let tdCodigo = document.createElement("td");
+      tdCodigo.setAttribute("class", "codigoElemento");
+      let tdNombre = document.createElement("td");
+      let tdArea = document.createElement("td");
 
-    tablePreviewElements.appendChild(trTablePreview);
+      tablePreviewElements.appendChild(trTablePreview);
 
-    tdCodigo.textContent = codigo;
-    tdNombre.textContent = nombre;
-    tdArea.textContent = area;
+      tdCodigo.textContent = codigo;
+      tdNombre.textContent = nombre;
+      tdArea.textContent = area;
 
-    trTablePreview.appendChild(tdCodigo);
-    trTablePreview.appendChild(tdNombre);
-    trTablePreview.appendChild(tdArea);
+      trTablePreview.appendChild(tdCodigo);
+      trTablePreview.appendChild(tdNombre);
+      trTablePreview.appendChild(tdArea);
 
-    console.log({ codigo, nombre, area });
+      console.log({ codigo, nombre, area });
     }
-
-    
   }
 });
 
@@ -431,5 +433,101 @@ closeModal(modalAddElements, btnCloseElements);
 resetTableElements("elements", pgElementsDevolutivos, true);
 
 /**
- * Agregar elementos seleccionados a la tabla previewElements
+ * Submit al formulario.
  */
+
+formSolicitudPrestamo.addEventListener("submit", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let rows = {
+    codigo: [],
+  };
+  let td = [];
+
+  let info = new FormData(formSolicitudPrestamo);
+  //Data de formulario
+  let data = Object.fromEntries(info);
+
+  //Data de elementos.
+  const filas = document.querySelectorAll(
+    ".tableElements .previewElements #tableBodyPreviewElements tr"
+  );
+  //Capturo el codigo del elemento y lo guardo.
+  //TODO: Validar que cuando el usuario presione el botón de enviar aplique un return cuando no se ha diligenciado ningún campo.
+  filas.forEach((fl) => {
+    td = document.querySelectorAll(
+      ".tableElements .previewElements #tableBodyPreviewElements .codigoElemento"
+    );
+  });
+
+  td.forEach((tds) => {
+    //Guardo el elemento.
+    rows.codigo.push(tds.textContent);
+  });
+
+  //Evita duplicidad pero para enviar el formulario, debo de arreglarlo para que no se agregue a la vista.
+  rows.codigo = rows.codigo.filter(
+    (value, index, self) => self.indexOf(value) === index
+  );
+  let codigosElementos = rows.codigo;
+  //Agrego los códigos de los elementos al data.
+  data.codigosElementos = codigosElementos;
+
+  objAjax.request.open(
+    "POST",
+    "modules/reservaPrestamos/controller/reservaController.php"
+  );
+  objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+  //Elimino las propiedades que no necesito.
+  delete data["nombre"];
+  delete data["apellido"];
+  delete data["telefono"];
+  delete data["email"];
+
+  if (!data["areaDestino"]) {
+    alert("El área de destino es obligatoria.");
+    return;
+  }
+
+  //Si el area destino es mayor, es decir, si su valor es igual a centro, valida si contiene valores en las horas.
+  //TODO: Mejorar logica antes de validar todo.
+  if (data["areaDestino"] === "centro") {
+    if (!data["inicio"] || !data["fin"]) {
+      alert("La hora de inicio y fin son obligatorias para el centro.");
+      return;
+    }
+  } else if (data["areaDestino"] === "externo") {
+    // Eliminar las horas si no aplican
+    data["inicio"] = null;
+    data["fin"] = null;
+  }
+  let dataJson = JSON.stringify(data);
+
+  //TODO: transformar en sweet alert.
+  if (confirm("¿Deseas registrar los siguientes elementos?")) {
+    objAjax.request.onload = () => {
+      let response = JSON.parse(objAjax.request.responseText);
+      console.log(response);
+
+      if (response.status) {
+        alert("Reserva realizada con exito");
+        //Limpio el formulario y la tabla.
+        formSolicitudPrestamo.reset();
+        tablePreviewElements.innerHTML = "";
+
+        //Oculto inputs de tipo time.
+        horaInicio.style.visibility = "hidden";
+        horaInicio.style.opacity = "0";
+        horaFin.style.visibility = "hidden";
+        horaFin.style.opacity = "0";
+        horaInicioFin.style.visibility = "hidden";
+        horaInicioFin.style.opacity = "0";
+      }
+    };
+
+    objAjax.request.setRequestHeader("accept", "application/json");
+    objAjax.request.send(dataJson);
+  }
+});

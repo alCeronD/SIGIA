@@ -1,4 +1,5 @@
 import { Ajax } from "../libraries/ajax.js";
+import {closeModal} from "../libraries/cases.js";
 
 const formulario = document.querySelector("#formTp");
 const objAjax2 = new Ajax();
@@ -6,19 +7,18 @@ const objAjax2 = new Ajax();
 let table = 'tipo_documento';
 
 let status = 1;
-const myModal = document.querySelector("#modalTp");
 //Cuerpo de tabla.
-const tableBody = document.querySelector("#tableBody");
-//Boton de update del modal
+const tableBodyTp = document.querySelector("#tableBodyTp");
+//Formulario update.
 const tpUpdateForm = document.querySelector("#tpUpdateForm");
-console.log(tpUpdateForm);
-
+const closeModalBtn = document.querySelector('.closeModalBtn');
+const myModal = document.querySelector("#modalTp");
 let idPk;
 let nombreTp;
 let descripcion;
 
 function fetchData() {
-  tableBody.innerHTML = "";
+  tableBodyTp.innerHTML = "";
   //let dataFetch = [table, status];
 
   objAjax2.request.open(
@@ -33,14 +33,13 @@ function fetchData() {
     //Capturo la respuesta
     let response = JSON.parse(objAjax2.request.responseText);
     let data = response.data;
-    console.log(response);
 
     if (objAjax2.request.status) {
       //console.log(objAjax22.request.responseText);
       if (data.length === 0) {
         const spanMessage = document.createElement("span");
         spanMessage.innerText = "Sin registros";
-        tableBody.appendChild(spanMessage);
+        tableBodyTp.appendChild(spanMessage);
       }
 
       data.forEach((dta) => {
@@ -50,7 +49,6 @@ function fetchData() {
         btnUpdate.setAttribute("class", "btnUpdate");
         btnUpdate.innerText = "Actualizar";
         btnDelete.setAttribute("class", "btnDelete");
-        btnDelete.innerText = "Eliminar";
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
         const tdName = document.createElement("td");
@@ -58,23 +56,25 @@ function fetchData() {
         const tdStatus = document.createElement("td");
         const tdAccion = document.createElement("td");
         // Asigno el botón a ambos elementos.
-
-        tableBody.appendChild(tr);
-
+        
+        tableBodyTp.appendChild(tr);
+        
         tdId.textContent = dta.tp_id;
         tdName.textContent = dta.tp_sigla;
         tdDescript.textContent = dta.tp_nombre;
-
+        
         //Dependiendo del estatus, en html se verá visible activo o inactivo pero sabemos que 1 es activo y 0 inactivo.
         tdStatus.textContent = dta.tp_status === 1 ? "Activo" : "Inactivo";
-
+        
         //Coloco el color rojo verde segun su estado.
         if (dta.tp_status === 1) {
           tdStatus.textContent = "Activo";
           tdStatus.style.color = "green";
+          btnDelete.innerText = "Inhabilitar";
         } else {
           tdStatus.textContent = "Inactivo";
           tdStatus.style.color = "red";
+          btnDelete.innerText = "Habilitar";
         }
 
         tdAccion.append(btnUpdate, btnDelete);
@@ -202,8 +202,7 @@ tpUpdateForm.addEventListener("submit", (e) => {
     if (dataStatus.status) {
       alert("registro actualizado");
       //Cerrar el modal
-      myModal.style.display = "none";
-
+      myModal.style.display = 'none';
       //Renderizo nuevamente la data.
       fetchData();
     }
@@ -211,11 +210,13 @@ tpUpdateForm.addEventListener("submit", (e) => {
   objAjax2.request.send(data);
 });
 
+
 //Formulario de insert.
 formulario.addEventListener("submit", (event) => {
+
   event.preventDefault();
   event.stopPropagation();
-
+  
   let form = new FormData(formulario);
   let dt = Object.fromEntries(form);
 
@@ -224,8 +225,6 @@ formulario.addEventListener("submit", (event) => {
     tp_nombre: dt.tp_nombre,
     tableName: table
   });
-
-  console.log(data);
 
   // Ajax POST
   objAjax2.request.open('POST', "modules/configModules/api/apiConfigModules.php", true);
@@ -249,6 +248,9 @@ formulario.addEventListener("submit", (event) => {
     
   };
 
-  //Enviar los datos a registrar.
   objAjax2.request.send(data); 
 });
+
+
+//Cerrar el modal.
+closeModal(myModal,closeModalBtn);

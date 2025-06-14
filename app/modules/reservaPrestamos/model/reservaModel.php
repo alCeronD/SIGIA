@@ -1,7 +1,9 @@
 <?php
-
+require_once __DIR__ . '/../../../helpers/session.php';
 include_once __DIR__ . '/../../../config/conn.php';
 
+
+//TODO: en los mensajes de retorno, definir una estructura de retorno específica, así evitar devolver o valores null, o un string, la idea es que devuelva un array con su status y mensaje, en todos los retornos.
 class ReservaModel
 {
     private $conect;
@@ -11,7 +13,103 @@ class ReservaModel
         $this->conect = new Conection();
     }
 
-    public function addReserva() {}
+    public function insertReserva(array $data = [], array $elements = [])
+    {
+
+        $conn = $this->conect->getConnect();
+        try {
+            //$conn->begin_transaction();
+
+            $cedula = (int) $data["cedula"];
+            unset($data["cedula"]);
+
+            //primera id del usuario.
+            $sqlIdUser = "SELECT usu_id AS 'id' FROM usuarios WHERE usu_docum = ?";
+            $stmtUser = $conn->prepare($sqlIdUser);
+            $stmtUser->bind_param('i', $cedula);
+            if (!$stmtUser->execute()) {
+                $conn->rollback();
+                return $stmtUser->error;
+            }
+            $resultId = $stmtUser->get_result();
+            $userRow = $resultId->fetch_assoc();
+            if (!$userRow) {
+                $conn->rollback();
+                return "Usuario con cédula $cedula no encontrado.";
+            }
+            $id = (int) $userRow['id'];
+            //segunda transacción, insertar los registros en el prestamo.
+            $presSql = "INSERT INTO prestamos (pres_fch_slcitud,pres_fch_reserva,pres_hor_inicio,pres_hor_fin,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?,?,?,?)";
+
+            $stmtPres = $conn->prepare($presSql);
+
+            if (!$stmtPres) {
+                $conn->rollback();
+                return $conn->error;
+            }
+            //Debo usar esta por el tema de la versión de php.
+            extract($data, EXTR_PREFIX_ALL, 'p');
+            $stmtPres->bind_param(
+                'ssssssiii',
+                $p_pres_fch_reserva,
+                $p_pres_hor_inicio,
+                $p_pres_hor_fin,
+                $p_pres_fch_entrega,
+                $p_pres_observacion,
+                $p_pres_destino,
+                $p_pres_estado,
+                $p_tp_pres,
+                $p_pres_rol
+            );
+            if (!$stmtPres->execute()) {
+                return $conn->error;
+            }
+            $lastId = $conn->insert_id;
+
+
+            //tercera para actualizar el estado de los elementos.
+            $updateStatusElements = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
+
+            $stmtUpdateStatus = $conn->prepare($updateStatusElements);
+            $status = 3;
+            foreach ($elements as $elementos) {
+                $stmtUpdateStatus->bind_param('ii', $status, $elementos);
+
+                if (!$stmtUpdateStatus->execute()) {
+                    $conn->rollback();
+                    $val = $stmtUpdateStatus->error;
+                }
+            }
+
+
+
+
+            //cuarta transacción insertar los registros en la tabla prestamos_elementos.
+            $sqlElementos = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod) VALUES(?,?,?)";
+            $stmtElementos = $conn->prepare($sqlElementos);
+            foreach ($elements as $value) {
+                $stmtElementos->bind_param('iii', $lastId, $id, $value);
+
+                if (!$stmtElementos->execute()) {
+                    $conn->rollback();
+                    return $stmtElementos->error;
+                }
+            }
+
+
+            $result = [
+                'data' => [],
+                'status' => true
+            ];
+
+            $conn->commit();
+        } catch (\Throwable $th) {
+            //$conn->rollback();
+            return $th->getMessage();
+        }
+
+        return $result;
+    }
 
     public function updateReserva() {}
 
@@ -49,10 +147,11 @@ class ReservaModel
             $resultCount = $stmtCount->get_result();
             $rows = $resultCount->fetch_assoc()['Total'];
 
+            //TODO: implementar paginado valor limit de manera gglobal.
             $limit = 10;
 
             //Numero de páginas en base a la cantidad de elementos, redondeo hacía el número más grande.
-            
+
             /**
              * @var $page - Es el parámetro que le mando a los elementos.
              */
@@ -74,11 +173,11 @@ class ReservaModel
             INNER JOIN areas ar ON
             	el.elm_area_cod = ar.ar_cod
             WHERE
-            el.elm_cod_estado = 1 AND el.elm_cod_tp_elemento = 1 AND ar.ar_status = 1 ORDER BY el.elm_cod ASC LIMIT ? OFFSET ?";
+            el.elm_cod_estado = 1 AND el.elm_cod_tp_elemento = 1 AND ar.ar_status = 1 ORDER BY el.elm_cod DESC LIMIT ? OFFSET ?";
 
             $stmt = $conn->prepare($sql);
 
-            $stmt->bind_param('ii',$limit, $offset);
+            $stmt->bind_param('ii', $limit, $offset);
 
             if (!$stmt->execute()) {
                 echo json_encode(["error" => "Error al ejecutar la consulta"]);
@@ -109,7 +208,8 @@ class ReservaModel
     }
 
     //Función apra traer los elementos, posiblemente da implementarla en el modelo de usuarios.
-    public function selectUsers($pages){
+    public function selectUsers($pages)
+    {
 
         try {
 
@@ -129,8 +229,7 @@ class ReservaModel
                     r.rl_id != 2 AND r.rl_status = 1 AND us.usu_id_estado = 1";
 
             $stmtCount = $conn->prepare($count);
-
-
+            
             if (!$stmtCount->execute()) {
                 return null;
             }
@@ -195,6 +294,113 @@ class ReservaModel
             return $results;
         } catch (\Throwable $th) {
             $conn->rollback();
+            $conn->close();
+            return $th->getMessage();
+        }
+    }
+
+    //Funcion para visualizar las reservas.
+    /**
+     * Summary of selectReservas TODO: Cambiar a Páginado con javascript.
+     * @return array{data: array, message: string, status: bool|string}
+     */
+
+    public function selectDetailReserva()
+    {
+        $conn = $this->conect->getConnect();
+        try {
+
+            $sqlReservas = "SELECT DISTINCT
+                pre.pres_cod AS codigo,
+                us.usu_docum AS nroIdentidad,
+                us.usu_nombres AS nombre,
+                us.usu_apellidos AS apellido,
+                pre.pres_fch_slcitud AS fechaSolicitud,
+                pre.pres_fch_reserva AS fechaReserva,
+                pre.pres_hor_inicio AS horaInicio,
+                pre.pres_hor_fin AS horaFin,
+                pre.pres_fch_entrega AS fechaDevolucion,
+                pre.pres_observacion AS observacion,
+                esp.es_pr_nombre AS estadoPrestamo,
+                r.rl_nombre AS rol,
+                tp_pre.tp_nombre AS tipoPrestamo
+                FROM prestamos pre
+                INNER JOIN prestamos_elementos pre_el ON pre_el.pres_cod = pre.pres_cod
+                INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
+                INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
+                INNER JOIN roles r ON r.rl_id = pre.pres_rol
+                INNER JOIN tipo_prestamo tp_pre ON tp_pre.tp_pre = pre.tp_pres";
+
+            $stmtResevas = $conn->prepare($sqlReservas);
+
+            if (!$stmtResevas->execute()) {
+
+                $result = [
+                    'status' => false,
+                    'data' => [],
+                    'message' => $stmtResevas->error_list
+                ];
+                return $result;
+            }
+            $resultReservas = $stmtResevas->get_result();
+
+            $dataReservas = [];
+            while ($row = $resultReservas->fetch_assoc()) {
+                $dataReservas[] = $row;
+            }
+
+            $result = [
+                'status' => true,
+                'data' => $dataReservas,
+                'message' => 'reservas'
+            ];
+            return $result;
+        } catch (\Throwable $e) {
+
+            $result = [
+                'status' => false,
+                'message' => $e->getMessage()
+            ];
+            return $result;
+        }
+    }
+
+
+
+    public function selectElementsReserva(int $codigo = 0){
+        $conn = $this->conect->getConnect();
+        try {
+            //Consulta para traer los elementos basado en el código del prestamo.
+            $sqlElementsReserva = "SELECT 
+                el.elm_cod AS 'codigo',
+                el.elm_nombre AS 'nombre'
+                FROM elementos el
+                RIGHT JOIN prestamos_elementos prel ON
+                el.elm_cod = prel.pres_el_elem_cod 
+                LEFT JOIN prestamos pre ON
+                pre.pres_cod = prel.pres_cod
+                WHERE prel.pres_cod = ?";
+
+                $stmtResevasElm = $conn->prepare($sqlElementsReserva);
+                $stmtResevasElm->bind_param('i',$codigo);
+
+                if (!$stmtResevasElm->execute()) {
+                    return null;
+                }
+
+                $resultSave = $stmtResevasElm->get_result();
+
+                $data = [];
+
+                while ($row = $resultSave->fetch_assoc()) {
+                    $data [] = $row;
+                }
+
+                return $data;
+
+
+                
+        } catch (\Throwable $th) {
             return $th->getMessage();
         }
     }

@@ -1,9 +1,11 @@
 import { Ajax } from "../libraries/ajax.js";
+import { closeModal } from "../libraries/cases.js";
 
 const tableBody = document.querySelector('#marcaTblBody');
 const formMarca = document.querySelector('#marcaForm');
 const myModal = document.querySelector('#modalMarca');
 const marcaUpdateForm = document.querySelector('#marcaUpdateForm');
+const closeModalBtn = document.querySelector('.closeModalBtn');
 const btnDelete = document.querySelector('#btnDelete');
 const btnUpdate = document.querySelector('#btnUpdate');
 let table = "marcas";
@@ -29,9 +31,7 @@ function fetchData() {
     //Capturo la respuesta
     let response = JSON.parse(objAjax.request.responseText);
     let data = response.data;
-    console.log(data);
 
-    if (objAjax.request.status) {
       if (data.length === 0) {
         const spanMessage = document.createElement("span");
         spanMessage.innerText = "Sin registros";
@@ -44,7 +44,6 @@ function fetchData() {
         btnUpdate.setAttribute("class", "btnUpdate");
         btnUpdate.innerText = "Actualizar";
         btnDelete.setAttribute("class", "btnDelete");
-        btnDelete.innerText = "Eliminar";
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
         const tdName = document.createElement("td");
@@ -66,9 +65,12 @@ function fetchData() {
         if (dta.ma_status === 1) {
           tdStatus.textContent = "Activo";
           tdStatus.style.color = "green";
+          btnDelete.innerText = "Inhabilitar";
+          
         } else {
           tdStatus.textContent = "Inactivo";
           tdStatus.style.color = "red";
+          btnDelete.innerText = "Habilitar";
         }
 
         tdAccion.append(btnUpdate, btnDelete);
@@ -90,9 +92,9 @@ function fetchData() {
           nombreMarca = celda[1].textContent;
           descripcionMarca = celda[2].textContent;
           //Inputs del modal
-          let nombreAreaUpdate = document.querySelector("#nombreAreaUpdate");
+          let nombreAreaUpdate = document.querySelector("#nombreMarcaUpdate");
           let descripcionAreaUpdate = document.querySelector(
-            "#descripcionAreaUpdate"
+            "#descripcionMarcaUpdate"
           );
           //Adjunto los valores al input del modal.
           nombreAreaUpdate.value = nombreMarca;
@@ -116,9 +118,6 @@ function fetchData() {
           let status = celda[3].textContent;
           //Dependiendo del texto en html defino si es 0 para inactivo o 1 para activo para enviar a backend para actualizar.
           status = status === "Activo" ? 1 : 0;
-
-          //let nombreArea = celda[1].textContent;
-          //let descripcion = celda[2].textContent;
 
           if (confirm("¿Está seguro de inhabilitar este elemento?")) {
             const data = JSON.stringify({
@@ -157,7 +156,6 @@ function fetchData() {
           }
         });
       });
-    }
   };
 
   //Establezco que su envio de solicitud es mediante un json.
@@ -172,7 +170,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 
 //Formulario de registro.
-formMarca.addEventListener('submit', (f)=>{
+formMarca.addEventListener("submit", (f)=>{
     f.stopPropagation();
     f.preventDefault();
     let form = new FormData(formMarca);
@@ -190,7 +188,6 @@ formMarca.addEventListener('submit', (f)=>{
 
         let response = objAjax.request.responseText;
         let responseData = JSON.parse(response);
-        console.log(responseData);
 
         if (responseData.status) {
             alert('registro adicionado con exito');
@@ -199,9 +196,7 @@ formMarca.addEventListener('submit', (f)=>{
         }
     }
 
-
     objAjax.request.send(data);
-
 
 });
 
@@ -229,13 +224,16 @@ marcaUpdateForm.addEventListener('submit', (e)=>{
   objAjax.request.onload = ()=>{
     let response = objAjax.request.responseText;
     let dataResponse = JSON.parse(response);
-    console.log(dataResponse);
 
     if (dataResponse.status) {
       alert('registro actualizado.');
+      fetchData();
       myModal.style.display = 'none';
     }
   }
 
   objAjax.request.send(data);
-})
+});
+
+//Cerrar modal
+closeModal(myModal,closeModalBtn);

@@ -1,17 +1,15 @@
 <!-- Tabla para incluir en las diferentes vistas de area, tipo de documento, rol y marca -->
-<div class="table">
-    <table id="tableConfig">
+    <table class="" id="tableConfigTp">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Nombre Elemento</th>
-                <th>Descripción</th>
+                <th>Código</th>
+                <th>Sigla</th>
+                <th>Tipo documento</th>
                 <th>Estatus</th>
                 <th>Opción</th>
             </tr>
         </thead>
-        <tbody id="tableBody">
+        <tbody id="tableBodyTp">
             <!-- Renderizado con javascript. -->
         </tbody>
     </table>
-</div>

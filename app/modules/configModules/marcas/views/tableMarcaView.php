@@ -1,11 +1,11 @@
-<table>
+<table class="tableConfig"  id="tableConfigMarca">
     <thead>
         <tr>
-            <td>Id</td>
-            <td>Nombre</td>
-            <td>Descripción</td>
-            <td>Estatus</td>
-            <td>Opciones</td>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Estatus</th>
+            <th>Opciones</th>
         </tr>
     </thead>
     <tbody id="marcaTblBody">

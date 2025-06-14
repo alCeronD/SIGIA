@@ -1,6 +1,16 @@
-<main class="flex-grow-1">
-  <div class="w-100 mx-auto text-start">
-    <div class="card p-4 my-5 shadow-sm">
+<style>
+  .editar-categoria-container {
+    width: 100%;
+    max-width: 900px;
+    background: rgb(240, 248, 255); /* Color suave */
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+</style>
+
+
+    <div class="editar-categoria-container">
       <h5 class="mb-4 text-center">Editar Categoría</h5>
 
       <form method="POST" action="<?= getUrl('categorias', 'categorias', 'updateCategoria', false, 'dashboard') ?>">
@@ -35,5 +45,4 @@
         </div>
       </form>
     </div>
-  </div>
-</main>
+
