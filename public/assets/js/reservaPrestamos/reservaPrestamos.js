@@ -8,7 +8,10 @@ const tableUsers = document.querySelector("#tableBodyUsers");
 const tablePreviewElements = document.querySelector(
   "#tableBodyPreviewElements"
 );
-const modalAddElements = document.querySelector("#modalAddElements");
+
+
+const modalAddDevolutivos = document.querySelector("#modalAddDevolutivos");
+const modalAddConsumibles = document.querySelector('#modalAddConsumible');
 const modalUsers = document.querySelector("#modalUsers");
 const btnAddElements = document.querySelector("#btnAddElements");
 const btnAddConsumibles = document.querySelector('#btnAddConsumibles');
@@ -17,9 +20,12 @@ const areaDestino = document.querySelector("#areaDestino");
 const horaInicio = document.querySelector(".horaInicio");
 const horaFin = document.querySelector(".horaFin");
 const horaInicioFin = document.querySelector(".horaInicioFin");
-const btnCloseElements = document.querySelector(
-  "#modalAddElements .close-modal"
+const btnCloseDevolutivos = document.querySelector(
+  "#modalAddDevolutivos .close-modal"
 );
+
+const btnCloseConsumible = document.querySelector('#modalAddConsumible .close-modal');
+
 const btnCloseUsers = document.querySelector("#modalUsers .close-modal");
 const btnSearchUser = document.querySelector("#searchBtn");
 const formSolicitudPrestamo = document.querySelector("#formSolicitudPrestamo");
@@ -225,7 +231,6 @@ function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
 
     try {
       let response = JSON.parse(objAjax.request.responseText);
-      console.log(response);
       resolve(response.data.data);
     } catch (error) {
       reject(error);
@@ -284,7 +289,7 @@ btnAddElements.addEventListener("click", (btnTarget) => {
   });
 
   //visualizar modal.
-  modalAddElements.style.display = "flex";
+  modalAddDevolutivos.style.display = "flex";
   //Uso esta función para renderizar por defecto los elementos de tipo devolutivo, en la página 1.
 });
 
@@ -292,10 +297,41 @@ btnAddElements.addEventListener("click", (btnTarget) => {
 btnAddConsumibles.addEventListener("click", (event)=>{
   event.stopPropagation();
   event.preventDefault();
-  console.log(event.target);
+  //Respuesta de la promesa.
   resetTableElements("consumibles",1).then((result)=>{
-    
+    const tblBodyConsumibles = document.querySelector('#tblBodyConsumibles');
+    tblBodyConsumibles.innerHTML = "";
+    result.forEach((data)=>{
+      let trConsumbile = document.createElement('tr');
+
+      let tdCodigo = document.createElement('td');
+      let tdNombre = document.createElement('td');
+      let tdCantidad = document.createElement('td');
+      let tdOpciones = document.createElement('td');
+      let cantidadInput = document.createElement('input');
+      cantidadInput.setAttribute('type','number');
+      cantidadInput.setAttribute('min',0);
+      cantidadInput.setAttribute('data-cantidad',data.cantidad);
+      let checkBoxSelect = document.createElement('input');
+      checkBoxSelect.setAttribute('type','checkbox');
+      checkBoxSelect.setAttribute('data-id',data.codigo);
+
+      tdCodigo.innerText = data.codigo;
+      tdNombre.innerText = data.elemento;
+      tdCantidad.innerText = data.cantidad;
+      cantidadInput.value = data.cantidad;
+
+      tblBodyConsumibles.appendChild(trConsumbile);
+      trConsumbile.appendChild(tdCodigo);
+      trConsumbile.appendChild(tdNombre);
+      trConsumbile.appendChild(tdCantidad);
+      trConsumbile.appendChild(tdOpciones);
+      tdOpciones.append(cantidadInput,checkBoxSelect);
+
+    });
   });
+
+  modalAddConsumibles.style.display = 'flex';
 
 });
 
@@ -392,13 +428,6 @@ tableDevolutivos.addEventListener("click", (event) => {
 /**
  * Paginación usuarios
  */
-valuePage.addEventListener("change", (event) => {
-  event.stopPropagation();
-  event.preventDefault();
-
-  pgUsers = Number(event.target.value);
-  resetTableUsers("users");
-});
 
 let pgUsers = 1;
 //Botón de evento para marcar el preview de la página.
@@ -516,10 +545,26 @@ nextElement.addEventListener("click", () => {
 /**
  * Paginación elementos consumibles disponibles.
  */
+document.querySelector('#previewElementConsumible').addEventListener('click', (event)=>{
+  event.stopPropagation();
+  event.preventDefault();
+
+  console.log(event.target);
+});
+
+document.querySelector('#nextElementConsumible').addEventListener('click',(event)=>{
+  event.stopPropagation();
+  event.preventDefault();
+  console.log(event.target);
+})
 
 //Cerrar el modal de elementos devolutivos
-closeModal(modalAddElements, btnCloseElements);
+closeModal(modalAddDevolutivos, btnCloseDevolutivos);
 resetTableElements("elements", pgElementsDevolutivos, true);
+
+//Cerrar el modal de elementos consumibles
+closeModal(modalAddConsumibles, btnCloseConsumible);
+resetTableElements("consumibles",1,true);
 
 /**
  * Submit al formulario.

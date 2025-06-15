@@ -49,7 +49,6 @@ class ReservaController
         }
     }
 
-    
     //Función para establecer datos para realizar su reserva.
     public function setReserva(array $data = []){
 
@@ -120,9 +119,6 @@ class ReservaController
         $dataDetail = $this->model->selectElementsReserva($codigo);
         success('Elementos relacionados al codigo',$dataDetail);
     }
-
-
-    //Función para mandar los elementos devolutivos al DOM.
 
 }
 

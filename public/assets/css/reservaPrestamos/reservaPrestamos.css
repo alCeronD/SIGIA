@@ -190,8 +190,8 @@ th {
 /* Campo de busqueda */
 
 /* Estilos del modal */
-#modalAddElements,
-#modalUsers {
+#modalAddDevolutivos,
+#modalUsers,#modalAddConsumible {
   display: none;
   position: fixed;
   /* Stay in place */
@@ -225,7 +225,7 @@ th {
   width: 1.8rem;
 }
 
-#modalAddElements legend {
+#modalAddDevolutivos, #modalAddConsumible legend {
   font-size: 1rem;
 }
 
