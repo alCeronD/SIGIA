@@ -122,6 +122,7 @@ function fetchData(action = "", page = 1) {
     if (action === "users") {
       let response = JSON.parse(objAjax.request.responseText);
       objDataUsers = response.data.data;
+      // pagesElementsConsumible = response.data.pages;
 
     }
   };
@@ -231,6 +232,7 @@ function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
 
     try {
       let response = JSON.parse(objAjax.request.responseText);
+      pagesElements = response.data.pages;
       resolve(response.data.data);
     } catch (error) {
       reject(error);
@@ -338,7 +340,7 @@ btnAddConsumibles.addEventListener("click", (event)=>{
           event.target.value = data.cantidad;
         }
       });
-      
+
     });
   });
 
@@ -474,10 +476,8 @@ let pgElementsDevolutivos = 1;
 const previewElement = document.querySelector("#previewElement");
 const nextElement = document.querySelector("#nextElement");
 // Selector = Puede que no lo use. Este selector es para colocar la cantidad de páginas que tengo basado en la cantidad de elementos de la tabla.
-const valuePageElement = document.querySelector("#valuePageElement");
 previewElement.addEventListener("click", () => {
-  pgElementsDevolutivos =
-    pgElementsDevolutivos === 1 ? 1 : pgElementsDevolutivos - 1;
+  pgElementsDevolutivos = pgElementsDevolutivos === 1 ? 1 : pgElementsDevolutivos - 1;
 
       resetTableElements("elements", pgElementsDevolutivos).then((result)=>{
 
@@ -517,17 +517,16 @@ nextElement.addEventListener("click", () => {
   // Validación adicional para evitar que se desacople la información.
   if (pgElementsDevolutivos < pagesElements) {
     pgElementsDevolutivos++;
-    // pgElementsDevolutivos++;
   }
   resetTableElements("elements", pgElementsDevolutivos).then((result)=>{
-
+    
     tableDevolutivos.innerHTML = "";
     //Implementar los datos en en la tabla.
     result.forEach((dta) => {
       let codigo = dta.codigo;
       let elemento = dta.elemento;
       let area = dta.area;
-
+      
       addElements = document.createElement("input");
       addElements.setAttribute("type", "checkbox");
       addElements.setAttribute("class", "checkboxInput");
@@ -537,13 +536,13 @@ nextElement.addEventListener("click", () => {
       let tdElemento = document.createElement("td");
       let tdArea = document.createElement("td");
       let tdAccion = document.createElement("td");
-
+      
       //A los elementos td les implemento su contenido, su contenido es la información de la tabla
       tdCodigo.textContent = codigo;
       tdElemento.textContent = elemento;
       tdArea.textContent = area;
       tdAccion.appendChild(addElements);
-
+      
       tableDevolutivos.appendChild(trTable);
       trTable.appendChild(tdCodigo);
       trTable.appendChild(tdElemento);
@@ -555,18 +554,112 @@ nextElement.addEventListener("click", () => {
 
 /**
  * Paginación elementos consumibles disponibles.
- */
+*/
+let pagesConsumibles = 1;
 document.querySelector('#previewElementConsumible').addEventListener('click', (event)=>{
   event.stopPropagation();
   event.preventDefault();
 
-  console.log(event.target);
+
+  pagesConsumibles = pagesConsumibles === 1 ? 1 : pagesConsumibles - 1;
+
+  console.log(pagesConsumibles);
+  resetTableElements("consumibles",pagesConsumibles).then((result)=>{
+    const tblBodyConsumibles = document.querySelector('#tblBodyConsumibles');
+    tblBodyConsumibles.innerHTML = "";
+    result.forEach((data)=>{
+      let trConsumbile = document.createElement('tr');
+
+      let tdCodigo = document.createElement('td');
+      let tdNombre = document.createElement('td');
+      let tdCantidad = document.createElement('td');
+      let tdOpciones = document.createElement('td');
+      let cantidadInput = document.createElement('input');
+      cantidadInput.setAttribute('type','number');
+      cantidadInput.setAttribute('min',0);
+      cantidadInput.setAttribute('data-cantidad',data.cantidad);
+      let checkBoxSelect = document.createElement('input');
+      checkBoxSelect.setAttribute('type','checkbox');
+      checkBoxSelect.setAttribute('data-id',data.codigo);
+
+      tdCodigo.innerText = data.codigo;
+      tdNombre.innerText = data.elemento;
+      tdCantidad.innerText = data.cantidad;
+      cantidadInput.value = data.cantidad;
+
+      tblBodyConsumibles.appendChild(trConsumbile);
+      trConsumbile.appendChild(tdCodigo);
+      trConsumbile.appendChild(tdNombre);
+      trConsumbile.appendChild(tdCantidad);
+      trConsumbile.appendChild(tdOpciones);
+      tdOpciones.append(cantidadInput,checkBoxSelect);
+
+      // Evento para definir la cantidad de elementos consumibles sea menores a 0.
+      cantidadInput.addEventListener('input',(event)=>{
+        event.stopPropagation();
+        event.preventDefault();
+
+        if ((event.target.value < 0)) {
+          alert('Cantidad no disponible');
+          event.target.value = data.cantidad;
+        }
+      });
+
+    });
+  });
+  
 });
 
 document.querySelector('#nextElementConsumible').addEventListener('click',(event)=>{
   event.stopPropagation();
   event.preventDefault();
-  console.log(event.target);
+    if (pagesConsumibles < pagesElements) {
+    pagesConsumibles++;
+  }
+
+  resetTableElements("consumibles",pagesConsumibles).then((result)=>{
+    const tblBodyConsumibles = document.querySelector('#tblBodyConsumibles');
+    tblBodyConsumibles.innerHTML = "";
+    result.forEach((data)=>{
+      let trConsumbile = document.createElement('tr');
+
+      let tdCodigo = document.createElement('td');
+      let tdNombre = document.createElement('td');
+      let tdCantidad = document.createElement('td');
+      let tdOpciones = document.createElement('td');
+      let cantidadInput = document.createElement('input');
+      cantidadInput.setAttribute('type','number');
+      cantidadInput.setAttribute('min',0);
+      cantidadInput.setAttribute('data-cantidad',data.cantidad);
+      let checkBoxSelect = document.createElement('input');
+      checkBoxSelect.setAttribute('type','checkbox');
+      checkBoxSelect.setAttribute('data-id',data.codigo);
+
+      tdCodigo.innerText = data.codigo;
+      tdNombre.innerText = data.elemento;
+      tdCantidad.innerText = data.cantidad;
+      cantidadInput.value = data.cantidad;
+
+      tblBodyConsumibles.appendChild(trConsumbile);
+      trConsumbile.appendChild(tdCodigo);
+      trConsumbile.appendChild(tdNombre);
+      trConsumbile.appendChild(tdCantidad);
+      trConsumbile.appendChild(tdOpciones);
+      tdOpciones.append(cantidadInput,checkBoxSelect);
+
+      // Evento para definir la cantidad de elementos consumibles sea menores a 0.
+      cantidadInput.addEventListener('input',(event)=>{
+        event.stopPropagation();
+        event.preventDefault();
+
+        if ((event.target.value < 0)) {
+          alert('Cantidad no disponible');
+          event.target.value = data.cantidad;
+        }
+      });
+
+    });
+  });
 })
 
 //Cerrar el modal de elementos devolutivos
