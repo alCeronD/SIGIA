@@ -118,7 +118,7 @@ class ReservaModel
 
 
     //Función para traer los elementos, posiblemente deba implementarla en el modelo de elementos, no en el modelo de reserva.
-    public function selectElements(int $page = 1)
+    public function selectElements(int $page = 1, int $type = 1)
     {
 
         try {
@@ -136,9 +136,11 @@ class ReservaModel
                 INNER JOIN areas ar ON
                     el.elm_area_cod = ar.ar_cod
                 WHERE
-                el.elm_cod_estado = 1 AND el.elm_cod_tp_elemento = 1 AND ar.ar_status = 1";
+                el.elm_cod_estado = 1 AND el.elm_cod_tp_elemento = ? AND ar.ar_status = 1";
 
             $stmtCount = $conn->prepare($countElements);
+
+            $stmtCount->bind_param("i",$type);
 
             if (!$stmtCount->execute()) {
                 return null;
@@ -173,11 +175,11 @@ class ReservaModel
             INNER JOIN areas ar ON
             	el.elm_area_cod = ar.ar_cod
             WHERE
-            el.elm_cod_estado = 1 AND el.elm_cod_tp_elemento = 1 AND ar.ar_status = 1 ORDER BY el.elm_cod DESC LIMIT ? OFFSET ?";
+            el.elm_cod_estado = 1 AND el.elm_cod_tp_elemento = ? AND ar.ar_status = 1 ORDER BY el.elm_cod DESC LIMIT ? OFFSET ?";
 
             $stmt = $conn->prepare($sql);
 
-            $stmt->bind_param('ii', $limit, $offset);
+            $stmt->bind_param('iii', $type,$limit, $offset);
 
             if (!$stmt->execute()) {
                 echo json_encode(["error" => "Error al ejecutar la consulta"]);
@@ -204,6 +206,15 @@ class ReservaModel
             $conn->rollback();
             $conn->close();
             return  $th->getMessage();
+        }
+    }
+
+    public function selectElementsConsumibles(int $page = 1){
+        $conn = $this->conect->getConnect();
+        try {
+
+        } catch (\Throwable $th) {
+            //throw $th;
         }
     }
 
@@ -364,9 +375,6 @@ class ReservaModel
             return $result;
         }
     }
-
-
-
     public function selectElementsReserva(int $codigo = 0){
         $conn = $this->conect->getConnect();
         try {

@@ -10,7 +10,8 @@ const tablePreviewElements = document.querySelector(
 );
 const modalAddElements = document.querySelector("#modalAddElements");
 const modalUsers = document.querySelector("#modalUsers");
-const btnAddElements = document.getElementById("btnAddElements");
+const btnAddElements = document.querySelector("#btnAddElements");
+const btnAddConsumibles = document.querySelector('#btnAddConsumibles');
 const modalTitle = document.querySelector("#modalTitle");
 const areaDestino = document.querySelector("#areaDestino");
 const horaInicio = document.querySelector(".horaInicio");
@@ -76,6 +77,7 @@ let button;
 const valuePage = document.querySelector("#valuePage");
 btnAddElements.innerText = "Devolutivos";
 btnAddElements.setAttribute('class','btnClick');
+btnAddConsumibles.innerText = "Consumibles";
 modalTitle.innerText = "Elementos disponibles";
 btnSubmit.innerText = "Reservar";
 btnSubmit.setAttribute('class', 'btnSubmit');
@@ -256,7 +258,7 @@ function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
 document.addEventListener("DOMContentLoaded", () => {
   fetchData("elements", 1);
 });
-// Abrir modal de elementos disponibles devolutivos y consumibles.
+// Abrir modal de elementos disponibles devolutivos
 btnAddElements.addEventListener("click", (btnTarget) => {
   btnTarget.preventDefault();
   btnTarget.stopPropagation();
@@ -265,6 +267,14 @@ btnAddElements.addEventListener("click", (btnTarget) => {
   modalAddElements.style.display = "flex";
   //Uso esta función para renderizar por defecto los elementos de tipo devolutivo, en la página 1.
   resetTableElements("elements", 1);
+});
+
+btnAddConsumibles.addEventListener("click", (event)=>{
+  event.stopPropagation();
+  event.preventDefault();
+  console.log(event.target);
+  resetTableElements("consumibles",1);
+
 });
 
 //Abrir modal usuarios

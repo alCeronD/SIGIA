@@ -34,6 +34,12 @@ class ReservaController
         $data = $this->model->selectElements($pages);
         success('Registros', $data);
     }
+
+    public function getElementosConsumibles (int $pages = 1, int $type = 2){
+        $data = $this->model->selectElements($pages,$type);
+        success('elementos consumibles',$data);
+    }
+
     public function getUsers($page)
     {
         $data = $this->model->selectUsers($page);
@@ -145,6 +151,16 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                     $controller->getElementosDevolutivos($pages);
                 }
                 break;
+            case 'consumibles';
+            //Elemento de tipo consumible;
+            $type = 2;
+            if (method_exists($controller,'getElementosConsumibles')) {
+                $controller->getElementosConsumibles($pages,$type);
+            }
+
+            break;
+
+
             case 'reservas':
 
                 if (method_exists($controller,'getReservas')) {

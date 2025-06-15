@@ -73,7 +73,9 @@
             </div>
 
             <div class="inputAddElements">
+                <Span>Seleccione los elementos:</Span>
                 <button type="button" id="btnAddElements"></button>
+                <button type="button" id="btnAddConsumibles"></button>
             </div>
 
             <!-- Contenedor que va a tener los elementos que seran prestados -->
