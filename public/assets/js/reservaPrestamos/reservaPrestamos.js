@@ -100,6 +100,8 @@ let addElements;
 /**
  * Función de renderizado y peticiones, TODO: Re factorizar y mover a otros archivos.
  */
+  //TODO: Documentar la función usando JSDOC
+
 function fetchData(action = "", page = 1) {
   objAjax.request.open(
     "GET",
@@ -132,6 +134,7 @@ function fetchData(action = "", page = 1) {
 }
 
 //Función para reestablecer los elementos a la página 1.
+  //TODO: Documentar la función usando JSDOC
 function resetTableUsers(action = "", resetToFirstPage = false) {
   if (resetToFirstPage) {
     pgUsers = 1;
@@ -204,8 +207,10 @@ function resetTableUsers(action = "", resetToFirstPage = false) {
 
   objAjax.request.setRequestHeader("accept", "application/json");
   objAjax.request.send();
+
 }
 
+//TODO: Documentar la función usando JSDOC
 function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
 
   return new Promise((resolve,reject)=>{
@@ -242,6 +247,31 @@ function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
   objAjax.request.setRequestHeader("accept", "application/json");
   objAjax.request.send();
 
+  });
+}
+
+/**
+ * Se valida que la cantidad de los elementos consumibles no sea ni negativa ni mayor a la cantidad disponible.
+ * @constructor
+ * @param {input} cantidadInput - El input number
+ * @param {int} cantidad - cantidad Del elemento disponible.
+ */
+function definirCantidad(cantidadInput, cantidad) {
+  cantidadInput.addEventListener("change", (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    let valor = parseInt(event.target.value,10);
+
+    if (valor < 0) {
+      alert("Cantidad no disponible");
+      event.target.value = cantidad;
+    }
+
+    if (event.target.value > cantidad) {
+      alert(`Cantidad Máxima permitida ${cantidad}`);
+      cantidadInput.value = cantidad;
+    }
   });
 }
 
@@ -330,16 +360,11 @@ btnAddConsumibles.addEventListener("click", (event)=>{
       trConsumbile.appendChild(tdOpciones);
       tdOpciones.append(cantidadInput,checkBoxSelect);
 
-      // Evento para definir la cantidad de elementos consumibles sea menores a 0.
-      cantidadInput.addEventListener('input',(event)=>{
-        event.stopPropagation();
-        event.preventDefault();
+      let cantidad = data.cantidad;
+      definirCantidad(cantidadInput,cantidad);
+      
 
-        if ((event.target.value < 0)) {
-          alert('Cantidad no disponible');
-          event.target.value = data.cantidad;
-        }
-      });
+
 
     });
   });
@@ -561,6 +586,7 @@ document.querySelector('#previewElementConsumible').addEventListener('click', (e
 
   pagesConsumibles = pagesConsumibles === 1 ? 1 : pagesConsumibles - 1;
 
+  //TODO: el renderizado pasarlo a una función así reutilizarlo en 3 lugares, boton preview, boton next y cuando abre el modal.
   resetTableElements("consumibles",pagesConsumibles).then((result)=>{
     const tblBodyConsumibles = document.querySelector('#tblBodyConsumibles');
     tblBodyConsumibles.innerHTML = "";
@@ -590,18 +616,8 @@ document.querySelector('#previewElementConsumible').addEventListener('click', (e
       trConsumbile.appendChild(tdCantidad);
       trConsumbile.appendChild(tdOpciones);
       tdOpciones.append(cantidadInput,checkBoxSelect);
-
-      // Evento para definir la cantidad de elementos consumibles sea menores a 0.
-      cantidadInput.addEventListener('input',(event)=>{
-        event.stopPropagation();
-        event.preventDefault();
-
-        if ((event.target.value < 0)) {
-          alert('Cantidad no disponible');
-          event.target.value = data.cantidad;
-          console.log('hello world preview');
-        }
-      });
+      let cantidad = data.cantidad;
+      definirCantidad(cantidadInput,cantidad);
       
     });
   });
@@ -643,15 +659,8 @@ document.querySelector('#nextElementConsumible').addEventListener('click',(event
       trConsumbile.appendChild(tdOpciones);
       tdOpciones.append(cantidadInput,checkBoxSelect);
       
-      // Evento para definir la cantidad de elementos consumibles sea menores a 0.
-      cantidadInput.addEventListener('input',(event)=>{
-        event.stopPropagation();
-        event.preventDefault();
-        
-        if ((event.target.value < 0)) {
-          alert('Cantidad no disponible');
-        }
-      });
+      let cantidad = data.cantidad;
+      definirCantidad(cantidadInput,cantidad);
       
     });
   });
