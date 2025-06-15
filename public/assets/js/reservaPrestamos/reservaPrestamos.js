@@ -557,13 +557,10 @@ nextElement.addEventListener("click", () => {
 */
 let pagesConsumibles = 1;
 document.querySelector('#previewElementConsumible').addEventListener('click', (event)=>{
-  event.stopPropagation();
-  event.preventDefault();
 
 
   pagesConsumibles = pagesConsumibles === 1 ? 1 : pagesConsumibles - 1;
 
-  console.log(pagesConsumibles);
   resetTableElements("consumibles",pagesConsumibles).then((result)=>{
     const tblBodyConsumibles = document.querySelector('#tblBodyConsumibles');
     tblBodyConsumibles.innerHTML = "";
@@ -602,27 +599,26 @@ document.querySelector('#previewElementConsumible').addEventListener('click', (e
         if ((event.target.value < 0)) {
           alert('Cantidad no disponible');
           event.target.value = data.cantidad;
+          console.log('hello world preview');
         }
       });
-
+      
     });
   });
   
 });
 
 document.querySelector('#nextElementConsumible').addEventListener('click',(event)=>{
-  event.stopPropagation();
-  event.preventDefault();
-    if (pagesConsumibles < pagesElements) {
+  if (pagesConsumibles < pagesElements) {
     pagesConsumibles++;
   }
-
+  
   resetTableElements("consumibles",pagesConsumibles).then((result)=>{
     const tblBodyConsumibles = document.querySelector('#tblBodyConsumibles');
     tblBodyConsumibles.innerHTML = "";
     result.forEach((data)=>{
       let trConsumbile = document.createElement('tr');
-
+      
       let tdCodigo = document.createElement('td');
       let tdNombre = document.createElement('td');
       let tdCantidad = document.createElement('td');
@@ -634,33 +630,32 @@ document.querySelector('#nextElementConsumible').addEventListener('click',(event
       let checkBoxSelect = document.createElement('input');
       checkBoxSelect.setAttribute('type','checkbox');
       checkBoxSelect.setAttribute('data-id',data.codigo);
-
+      
       tdCodigo.innerText = data.codigo;
       tdNombre.innerText = data.elemento;
       tdCantidad.innerText = data.cantidad;
       cantidadInput.value = data.cantidad;
-
+      
       tblBodyConsumibles.appendChild(trConsumbile);
       trConsumbile.appendChild(tdCodigo);
       trConsumbile.appendChild(tdNombre);
       trConsumbile.appendChild(tdCantidad);
       trConsumbile.appendChild(tdOpciones);
       tdOpciones.append(cantidadInput,checkBoxSelect);
-
+      
       // Evento para definir la cantidad de elementos consumibles sea menores a 0.
       cantidadInput.addEventListener('input',(event)=>{
         event.stopPropagation();
         event.preventDefault();
-
+        
         if ((event.target.value < 0)) {
           alert('Cantidad no disponible');
-          event.target.value = data.cantidad;
         }
       });
-
+      
     });
   });
-})
+});
 
 //Cerrar el modal de elementos devolutivos
 closeModal(modalAddDevolutivos, btnCloseDevolutivos);
