@@ -250,6 +250,7 @@ function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
   });
 }
 
+//TODO: Función definir cantidad, Debo de validar que no se adicione el elemento si no hay cantidad digitada.
 /**
  * Se valida que la cantidad de los elementos consumibles no sea ni negativa ni mayor a la cantidad disponible.
  * @constructor
@@ -260,7 +261,6 @@ function definirCantidad(cantidadInput, cantidad) {
   cantidadInput.addEventListener("change", (event) => {
     event.stopPropagation();
     event.preventDefault();
-
 
     let valor = parseInt(event.target.value,10);
 
@@ -277,8 +277,6 @@ function definirCantidad(cantidadInput, cantidad) {
 
     //El valor insertado en cantidad lo actualizo en el data del input. Si el usuario digita una cantidad menor a la cantidad disponible, el valor se actualiza.
     cantidadInput.dataset.cantidad = event.target.value;
-
-    // console.log(event.target);
 
   });
 }
@@ -473,14 +471,40 @@ tableConsumible.addEventListener(('click'),(event)=>{
   event.stopPropagation();
 
   //Si se selecciona, debo de guardar el elemento en la tabla.
-  if (event.target.tagName === 'INPUT' && event.target.type === 'checkbox') {
+  if (event.target.tagName === 'INPUT' && event.target.type === 'checkbox' && event.target.checked) {
 
     let info = event.target.closest('tr');
     let inputCantidad = info.querySelector(`[type=number]`);
-    console.log(inputCantidad);
     let codigoConsu = info.children[0].textContent;
     let nombreConsu = info.children[1].textContent;
-    let cantidadConsu = info.children[3].value;
+    //let cantidadConsu = info.children[3].inputCantidad.dataset.cantidad;
+    let cantidadConsu = inputCantidad.value;
+    // console.log({codigoConsu,nombreConsu,cantidadConsu});
+    let checkboxChecked = event.target.checked;
+
+    let trConsu = document.createElement('tr');
+
+    let tdCodigoConsu = document.createElement('td');
+    let tdNombreConsu = document.createElement('td');
+    let tdAreaConsu = document.createElement('td');
+    let tdCantidadConsu = document.createElement('td');
+    tdCodigoConsu.textContent = codigoConsu;
+    tdNombreConsu.textContent = nombreConsu;
+    //Como el elemento es consumible defino su area como general.
+    tdAreaConsu.textContent = 'General';
+    tdCantidadConsu.textContent = cantidadConsu;
+    
+    if (checkboxChecked && (cantidadConsu === "")) {
+      alert('digite la cantidad requerida en base a su disponibilidad');
+      //Desmarcar el checkbox en caso de que no haya elegido cantidad al elemento.
+      event.target.checked = false;      
+    }else{
+      tablePreviewElements.appendChild(trConsu);
+      trConsu.appendChild(tdCodigoConsu);
+      trConsu.appendChild(tdNombreConsu);
+      trConsu.appendChild(tdAreaConsu);
+      trConsu.appendChild(tdCantidadConsu);
+    }
   }
 });
 
@@ -603,7 +627,6 @@ nextElement.addEventListener("click", () => {
 */
 let pagesConsumibles = 1;
 document.querySelector('#previewElementConsumible').addEventListener('click', (event)=>{
-
 
   pagesConsumibles = pagesConsumibles === 1 ? 1 : pagesConsumibles - 1;
 

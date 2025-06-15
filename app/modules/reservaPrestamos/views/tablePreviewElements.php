@@ -6,8 +6,9 @@
             <tr>
                 <th>Código</th>
                 <th>Nombre Elemento</th>
+                <th>Area</th>
                 <th>Cantidad</th>
-                <th>Tipo</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody id="tableBodyPreviewElements">
