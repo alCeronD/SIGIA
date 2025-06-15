@@ -328,6 +328,17 @@ btnAddConsumibles.addEventListener("click", (event)=>{
       trConsumbile.appendChild(tdOpciones);
       tdOpciones.append(cantidadInput,checkBoxSelect);
 
+      // Evento para definir la cantidad de elementos consumibles sea menores a 0.
+      cantidadInput.addEventListener('input',(event)=>{
+        event.stopPropagation();
+        event.preventDefault();
+
+        if ((event.target.value < 0)) {
+          alert('Cantidad no disponible');
+          event.target.value = data.cantidad;
+        }
+      });
+      
     });
   });
 
