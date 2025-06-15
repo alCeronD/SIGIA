@@ -157,6 +157,22 @@ html, body {
 
 /* Estilos de inputs */
 
+/* Inhabilitar flechas de los inputs de tipo number, para chrome, safari, edge y opera */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* inhabilitar feclas a inputs de tipo number en Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+
+
+
 /* Clase general  de botones, contiene la forma del boton el tamaño.*/
 .btn{
   margin: 1rem;
