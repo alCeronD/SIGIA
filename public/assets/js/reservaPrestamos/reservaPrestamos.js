@@ -71,7 +71,8 @@ areaDestino.addEventListener("change", () => {
 });
 
 // Selecciono el elemento específico.
-let objDataElements = {};
+let objDataConsumibles = {};
+let objDataDevolutivos = {};
 let objDataUsers = {};
 let button;
 const valuePage = document.querySelector("#valuePage");
@@ -103,7 +104,7 @@ function fetchData(action = "", page = 1) {
     if (action === "elements") {
       //Transformo la respuesta
       let response = JSON.parse(objAjax.request.responseText);
-      objDataElements = response.data.data;
+      objDataDevolutivos = response.data.data;
       pagesElements = response.data.pages;
 
     }
@@ -219,10 +220,11 @@ function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
   objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
   objAjax.request.onload = () => {
     let response = JSON.parse(objAjax.request.responseText);
-    objDataElements = response.data.data;
+
+    objDataDevolutivos = response.data.data;
     tableDevolutivos.innerHTML = "";
     //Implementar los datos en en la tabla.
-    objDataElements.forEach((dta) => {
+    objDataDevolutivos.forEach((dta) => {
       let codigo = dta.codigo;
       let elemento = dta.elemento;
       let area = dta.area;
@@ -249,6 +251,13 @@ function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
       trTable.appendChild(tdArea);
       trTable.append(tdAccion);
     });
+
+    if (response.data.type === 1) {
+      objDataDevolutivos = response.data.data;
+    }else if(response.data.type === 2){
+      objDataConsumibles = response.data.data;
+    }
+
   };
 
   objAjax.request.setRequestHeader("accept", "application/json");
@@ -263,10 +272,13 @@ btnAddElements.addEventListener("click", (btnTarget) => {
   btnTarget.preventDefault();
   btnTarget.stopPropagation();
 
+  resetTableElements("elements", 1);
+
+  
+
   //visualizar modal.
   modalAddElements.style.display = "flex";
   //Uso esta función para renderizar por defecto los elementos de tipo devolutivo, en la página 1.
-  resetTableElements("elements", 1);
 });
 
 btnAddConsumibles.addEventListener("click", (event)=>{

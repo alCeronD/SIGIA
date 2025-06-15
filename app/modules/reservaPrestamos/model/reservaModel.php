@@ -197,11 +197,11 @@ class ReservaModel
 
             $results = [
                 'data' => $data,
-                'pages' => $pages
+                'pages' => $pages,
+                'type'=>$type
             ];
 
             return $results;
-            //var_dump($data);
         } catch (\Throwable $th) {
             $conn->rollback();
             $conn->close();
