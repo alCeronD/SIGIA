@@ -92,7 +92,7 @@ let ids = [];
 let addElements;
 
 /**
- * Función de renderizado de los instructores o elementos.
+ * Función de renderizado y peticiones, TODO: Re factorizar y mover a otros archivos.
  */
 function fetchData(action = "", page = 1) {
   objAjax.request.open(
@@ -199,7 +199,6 @@ function resetTableUsers(action = "", resetToFirstPage = false) {
   objAjax.request.send();
 }
 
-
 function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
 
   return new Promise((resolve,reject)=>{
@@ -289,11 +288,14 @@ btnAddElements.addEventListener("click", (btnTarget) => {
   //Uso esta función para renderizar por defecto los elementos de tipo devolutivo, en la página 1.
 });
 
+//Abrir modal de elementos disponibles consumibles.
 btnAddConsumibles.addEventListener("click", (event)=>{
   event.stopPropagation();
   event.preventDefault();
   console.log(event.target);
-  resetTableElements("consumibles",1);
+  resetTableElements("consumibles",1).then((result)=>{
+    
+  });
 
 });
 
@@ -511,7 +513,11 @@ nextElement.addEventListener("click", () => {
   });
 });
 
-//Cerrar el modal de elementos
+/**
+ * Paginación elementos consumibles disponibles.
+ */
+
+//Cerrar el modal de elementos devolutivos
 closeModal(modalAddElements, btnCloseElements);
 resetTableElements("elements", pgElementsDevolutivos, true);
 

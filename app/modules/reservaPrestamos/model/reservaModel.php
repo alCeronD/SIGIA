@@ -160,24 +160,49 @@ class ReservaModel
             $offset = ($page - 1) * $limit;
             //Cantidad de páginas.
             $pages = (int) ceil($rows / $limit);
-            //var_dump($pages);
-            $sql = "SELECT
-                el.elm_cod AS codigo,
-                el.elm_nombre AS elemento,
-                tp.tp_el_nombre AS tipoElemento,
-                ar.ar_nombre AS area
-            FROM
-                elementos el
-            INNER JOIN tipo_elemento tp ON
-                tp.tp_el_cod = el.elm_cod_tp_elemento
-            INNER JOIN estados_elementos esl ON
-                esl.est_el_cod = el.elm_cod_estado
-            INNER JOIN areas ar ON
-            	el.elm_area_cod = ar.ar_cod
-            WHERE
-            el.elm_cod_estado = 1 AND el.elm_cod_tp_elemento = ? AND ar.ar_status = 1 ORDER BY el.elm_cod DESC LIMIT ? OFFSET ?";
 
-            $stmt = $conn->prepare($sql);
+            if ($type == 1) {
+                //Sql para devolutivos
+                $sqlDevolutivo = "SELECT
+                    el.elm_cod AS codigo,
+                    el.elm_nombre AS elemento,
+                    tp.tp_el_nombre AS tipoElemento,
+                    ar.ar_nombre AS area
+                FROM
+                    elementos el
+                INNER JOIN tipo_elemento tp ON
+                    tp.tp_el_cod = el.elm_cod_tp_elemento
+                INNER JOIN estados_elementos esl ON
+                    esl.est_el_cod = el.elm_cod_estado
+                INNER JOIN areas ar ON
+                    el.elm_area_cod = ar.ar_cod
+                WHERE
+                el.elm_cod_estado = 1 AND el.elm_cod_tp_elemento = ? AND ar.ar_status = 1 ORDER BY el.elm_cod ASC LIMIT ? OFFSET ?";
+                $stmt = $conn->prepare($sqlDevolutivo);
+            }
+            if ($type == 2) {
+                //Sql para consumibles.
+                $sqlConsumible = "SELECT
+                    el.elm_cod AS 'codigo',
+                    el.elm_nombre AS 'elemento',
+                    el.elm_existencia AS 'cantidad'
+                FROM
+                    elementos el
+                INNER JOIN tipo_elemento tp ON
+                    tp.tp_el_cod = el.elm_cod_tp_elemento
+                INNER JOIN estados_elementos esl ON
+                    esl.est_el_cod = el.elm_cod_estado
+                INNER JOIN areas ar ON
+                    el.elm_area_cod = ar.ar_cod
+                WHERE
+                    el.elm_existencia > 0 
+                    AND el.elm_cod_estado = 1 
+                    AND el.elm_cod_tp_elemento = ?
+                    AND ar.ar_status = 1
+                ORDER BY el.elm_nombre ASC LIMIT ? OFFSET ?";
+
+                $stmt = $conn->prepare($sqlConsumible);
+            }
 
             $stmt->bind_param('iii', $type,$limit, $offset);
 
