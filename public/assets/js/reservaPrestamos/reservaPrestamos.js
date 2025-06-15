@@ -261,17 +261,25 @@ function definirCantidad(cantidadInput, cantidad) {
     event.stopPropagation();
     event.preventDefault();
 
+
     let valor = parseInt(event.target.value,10);
 
     if (valor < 0) {
       alert("Cantidad no disponible");
-      event.target.value = cantidad;
+      event.target.value = valor;
+      console.log(event.target);
     }
 
     if (event.target.value > cantidad) {
       alert(`Cantidad Máxima permitida ${cantidad}`);
-      cantidadInput.value = cantidad;
+      cantidadInput.value = "";
     }
+
+    //El valor insertado en cantidad lo actualizo en el data del input. Si el usuario digita una cantidad menor a la cantidad disponible, el valor se actualiza.
+    cantidadInput.dataset.cantidad = event.target.value;
+
+    // console.log(event.target);
+
   });
 }
 
@@ -351,7 +359,6 @@ btnAddConsumibles.addEventListener("click", (event)=>{
       tdCodigo.innerText = data.codigo;
       tdNombre.innerText = data.elemento;
       tdCantidad.innerText = data.cantidad;
-      cantidadInput.value = data.cantidad;
 
       tblBodyConsumibles.appendChild(trConsumbile);
       trConsumbile.appendChild(tdCodigo);
@@ -362,9 +369,6 @@ btnAddConsumibles.addEventListener("click", (event)=>{
 
       let cantidad = data.cantidad;
       definirCantidad(cantidadInput,cantidad);
-      
-
-
 
     });
   });
@@ -460,6 +464,23 @@ tableDevolutivos.addEventListener("click", (event) => {
 
 
     }
+  }
+});
+
+//Delegar evento sobre la tabla de elementos consumibles
+const tableConsumible = document.querySelector('#tableConsumible');
+tableConsumible.addEventListener(('click'),(event)=>{
+  event.stopPropagation();
+
+  //Si se selecciona, debo de guardar el elemento en la tabla.
+  if (event.target.tagName === 'INPUT' && event.target.type === 'checkbox') {
+
+    let info = event.target.closest('tr');
+    let inputCantidad = info.querySelector(`[type=number]`);
+    console.log(inputCantidad);
+    let codigoConsu = info.children[0].textContent;
+    let nombreConsu = info.children[1].textContent;
+    let cantidadConsu = info.children[3].value;
   }
 });
 
@@ -608,7 +629,7 @@ document.querySelector('#previewElementConsumible').addEventListener('click', (e
       tdCodigo.innerText = data.codigo;
       tdNombre.innerText = data.elemento;
       tdCantidad.innerText = data.cantidad;
-      cantidadInput.value = data.cantidad;
+      // cantidadInput.value = data.cantidad;
 
       tblBodyConsumibles.appendChild(trConsumbile);
       trConsumbile.appendChild(tdCodigo);
@@ -650,7 +671,7 @@ document.querySelector('#nextElementConsumible').addEventListener('click',(event
       tdCodigo.innerText = data.codigo;
       tdNombre.innerText = data.elemento;
       tdCantidad.innerText = data.cantidad;
-      cantidadInput.value = data.cantidad;
+      // cantidadInput.value = data.cantidad;
       
       tblBodyConsumibles.appendChild(trConsumbile);
       trConsumbile.appendChild(tdCodigo);

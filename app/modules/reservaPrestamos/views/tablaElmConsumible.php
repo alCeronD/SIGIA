@@ -1,6 +1,6 @@
 <div class="">
     <legend>Elementos Consumibles</legend>
-    <table id="">
+    <table id="tableConsumible">
     <thead>
         <tr>
             <th>Código</th>
