@@ -2,7 +2,7 @@
 
 <h2 class="mb-4 text-center">Registrar Nuevo Elemento</h2>
 
-<form action="<?= getUrl('elementos', 'elementos', 'registrarElemento', false, 'dashboard') ?>" method="POST" class="container col-md-8">
+<form action="<?= getUrl('elementos', 'elementos', 'registrarElemento', false, 'dashboard') ?>" method="POST">
     <div class="mb-3">
         <label for="elm_placa" class="form-label">Placa</label>
         <input type="number" name="elm_placa" id="elm_placa" class="form-control" required>
