@@ -146,7 +146,7 @@ class ReservaModel
 
             //TODO: Registrar la salida del elemento, definir como la voy a implementar.
             //TODO: definir cuando voy a hacer una reserva, si tiene elementos consumibles, devolutivos o ambos.
-            
+            //TODO: los elementos consumibles no deben de cambiar su estado.
             $result = [
                 'data' => [],
                 'status' => true
