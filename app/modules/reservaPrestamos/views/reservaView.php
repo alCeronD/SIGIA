@@ -100,8 +100,6 @@
     <?php require_once 'modalAddConsumibles.php' ?>
 </div>
 
-
-
 <!-- Contenedor modal que contiene los registros de los usuarios -->
  <div id="users">
     <?php require_once 'tableUsers.php'; ?>

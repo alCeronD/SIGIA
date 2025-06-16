@@ -343,6 +343,7 @@ btnAddConsumibles.addEventListener("click", (event)=>{
       let trConsumbile = document.createElement('tr');
 
       let tdCodigo = document.createElement('td');
+      tdCodigo.setAttribute('class','codigoElemento');
       let tdNombre = document.createElement('td');
       let tdCantidad = document.createElement('td');
       let tdOpciones = document.createElement('td');
@@ -486,6 +487,7 @@ tableConsumible.addEventListener(('click'),(event)=>{
 
     let tdCodigoConsu = document.createElement('td');
     let tdNombreConsu = document.createElement('td');
+    tdCodigoConsu.setAttribute("class", "codigoElemento");
     let tdAreaConsu = document.createElement('td');
     let tdCantidadConsu = document.createElement('td');
     tdCodigoConsu.textContent = codigoConsu;
@@ -499,11 +501,21 @@ tableConsumible.addEventListener(('click'),(event)=>{
       //Desmarcar el checkbox en caso de que no haya elegido cantidad al elemento.
       event.target.checked = false;      
     }else{
-      tablePreviewElements.appendChild(trConsu);
-      trConsu.appendChild(tdCodigoConsu);
-      trConsu.appendChild(tdNombreConsu);
-      trConsu.appendChild(tdAreaConsu);
-      trConsu.appendChild(tdCantidadConsu);
+
+      //Valido que el elemento no este en la tabla, en caso de que este, evitar duplicidad.
+      if (!ids.includes(codigoConsu)) {
+        ids.push(codigoConsu);
+
+        tablePreviewElements.appendChild(trConsu);
+        trConsu.appendChild(tdCodigoConsu);
+        trConsu.appendChild(tdNombreConsu);
+        trConsu.appendChild(tdAreaConsu);
+        trConsu.appendChild(tdCantidadConsu);
+      }else{
+        alert('Elemento consumible ya ha sido agregado');
+        inputCantidad.value = "";
+        event.preventDefault();
+      }
     }
   }
 });
@@ -638,6 +650,7 @@ document.querySelector('#previewElementConsumible').addEventListener('click', (e
       let trConsumbile = document.createElement('tr');
 
       let tdCodigo = document.createElement('td');
+      tdCodigo.setAttribute('class','codigoElemento');
       let tdNombre = document.createElement('td');
       let tdCantidad = document.createElement('td');
       let tdOpciones = document.createElement('td');
@@ -680,6 +693,7 @@ document.querySelector('#nextElementConsumible').addEventListener('click',(event
       let trConsumbile = document.createElement('tr');
       
       let tdCodigo = document.createElement('td');
+      // tdCodigo.setAttribute('class','codigoElemento');
       let tdNombre = document.createElement('td');
       let tdCantidad = document.createElement('td');
       let tdOpciones = document.createElement('td');
@@ -725,46 +739,65 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   event.preventDefault();
   event.stopPropagation();
 
-  let rows = {
-    codigo: [],
+  // let rows = {
+  //   codigoElementos: {
+  //     "Devolutivos":[],
+  //     "Consumibles":[
+        
+  //     ]
+  //   },
+  // };
+
+    let rows = {
+    codigoElementos: {
+      devolutivos:[],
+      consumibles:[]
+    },
   };
-  let td = [];
+
+
+  let tdCodigoElemento = [];
+  let tdArea = [];
 
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
   let data = Object.fromEntries(info);
 
   //Data de elementos.
-  const filas = document.querySelectorAll(
+  let filas = document.querySelectorAll(
     ".tableElements .previewElements #tableBodyPreviewElements tr"
   );
   //Capturo el codigo del elemento y lo guardo.
   //TODO: Validar que cuando el usuario presione el botón de enviar aplique un return cuando no se ha diligenciado ningún campo.
   filas.forEach((fl) => {
-    td = document.querySelectorAll(
-      ".tableElements .previewElements #tableBodyPreviewElements .codigoElemento"
-    );
+
+
+    let tds = fl.querySelectorAll('td');
+    //4 Por la cantidad de columnas que hay
+    if (tds.length >= 3) {
+      let area = tds[2].textContent.trim();
+      let codigoElemento = tds[0].textContent.trim();
+      let cantidadElemento = tds[3] ? tds[3].textContent.trim() : '';
+      cantidadElemento = cantidadElemento ? parseInt(cantidadElemento, 10) : 1;
+      
+      console.log('Área encontrada:', area);
+      if (!tdArea.includes(area)) {
+        tdArea.push(area);
+      }
+
+
+      const elements = {codigo: codigoElemento, cantidad: cantidadElemento};
+      if (area === 'General') {
+        rows.codigoElementos.consumibles.push(elements);
+      }else{
+        rows.codigoElementos.devolutivos.push(elements);
+      }
+    }
   });
 
-  td.forEach((tds) => {
-    //Guardo el elemento.
-    rows.codigo.push(tds.textContent);
-  });
-
-  //Evita duplicidad pero para enviar el formulario, debo de arreglarlo para que no se agregue a la vista.
-  rows.codigo = rows.codigo.filter(
-    (value, index, self) => self.indexOf(value) === index
-  );
-
-  let codigosElementos = rows.codigo;
+  let codigosElementos = rows.codigoElementos;
   //Agrego los códigos de los elementos al data.
   data.codigosElementos = codigosElementos;
-
-  objAjax.request.open(
-    "POST",
-    "modules/reservaPrestamos/controller/reservaController.php"
-  );
-  objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
   //Elimino las propiedades que no necesito.
   delete data["nombre"];
@@ -776,6 +809,12 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     alert("El área de destino es obligatoria.");
     return;
   }
+
+  objAjax.request.open(
+    "POST",
+    "modules/reservaPrestamos/controller/reservaController.php"
+  );
+  objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
   //Si el area destino es mayor, es decir, si su valor es igual a centro, valida si contiene valores en las horas.
   //TODO: Mejorar logica antes de validar todo.
@@ -790,6 +829,8 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     data["fin"] = null;
   }
   let dataJson = JSON.stringify(data);
+
+  // console.log(data);
 
   //TODO: transformar en sweet alert.
   if (confirm("¿Deseas registrar los siguientes elementos?")) {
