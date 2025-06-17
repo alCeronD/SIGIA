@@ -1,6 +1,11 @@
 import { Ajax } from "../libraries/ajax.js";
 import { closeModal } from "../libraries/cases.js";
 
+let alto = window.screen.width;
+let ancho = window.screen.height;
+
+console.log({"alto":alto,"ancho":ancho});
+
 const objAjax = new Ajax();
 const btnSubmit = document.getElementById("btnSubmit");
 const tableDevolutivos = document.querySelector("#bodyDevolutions");

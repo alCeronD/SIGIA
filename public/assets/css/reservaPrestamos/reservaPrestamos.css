@@ -1,15 +1,15 @@
 :root {
   --secundary: #004034;
 }
-/* 
 
--- MODULO RESERVA INSERT
+  /* 
+
+-- MODULO RESERVA PRESTAMOS - reservar Prestamo.
 
 */
 
-/* Como mínimo el tamaño de los portatiles. */
-@media only screen and (min-width:1366px) and (min-height:768px){
-  
+/* Diseño base en resolusión 1366px por 766 */
+/* Ajustes para portátiles medianos */
 .content {
   display: grid;
   width: 100%;
@@ -440,4 +440,10 @@ th {
 #formDetail .labelFormDetail{
   font-size: 12pt;
 }
-}
+
+
+/* Resolusiones mayores a 1440 */
+@media screen and (min-width: 1440px) { 
+    
+
+ }
