@@ -1,68 +1,222 @@
 <?php require_once __DIR__ . '/../../../helpers/session.php'; ?>
 
-<h2 class="mb-4 text-center">Registrar Nuevo Elemento</h2>
+<style>
+  .container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 10px;
+  }
 
-<form action="<?= getUrl('elementos', 'elementos', 'registrarElemento', false, 'dashboard') ?>" method="POST">
-    <div class="mb-3">
-        <label for="elm_placa" class="form-label">Placa</label>
-        <input type="number" name="elm_placa" id="elm_placa" class="form-control" required>
-    </div>
+  .selector-container {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-    <div class="mb-3">
-        <label for="elm_nombre" class="form-label">Nombre</label>
-        <input type="text" name="elm_nombre" id="elm_nombre" class="form-control" required>
-    </div>
+  .selector-container label {
+    font-weight: bold;
+    font-size: 16px;
+  }
 
-    <div class="mb-3">
-        <label for="elm_existencia" class="form-label">Existencia</label>
-        <input type="number" name="elm_existencia" id="elm_existencia" class="form-control" required>
-    </div>
+  #tipo_selector {
+    width: 250px;
+    padding: 5px;
+    font-size: 14px;
+  }
 
-    <div class="mb-3">
-        <label for="elm_uni_medida" class="form-label">Unidad de Medida</label>
-        <select name="elm_uni_medida" id="elm_uni_medida" class="form-select" required>
-            <option value="">Seleccione...</option>
-            <option value="1">Unidad</option>
-            <option value="2">Caja</option>
-            <option value="3">Paquete</option>
-            <!-- Agrega más si es necesario -->
-        </select>
-    </div>
+  .form-section {
+    display: none;
+    margin-top: 10px;
+  }
 
-    <div class="mb-3">
-        <label for="elm_cod_tp_elemento" class="form-label">Tipo de Elemento</label>
-        <select name="elm_cod_tp_elemento" id="elm_cod_tp_elemento" class="form-select" required>
-            <option value="">Seleccione...</option>
-            <option value="1">Tecnológico</option>
-            <option value="2">Suministro</option>
-            <!-- Ajusta según los valores reales de tu tabla -->
-        </select>
-    </div>
+  .form-section.active {
+    display: block;
+  }
 
-    <div class="mb-3">
-        <label for="elm_cod_estado" class="form-label">Estado</label>
-        <select name="elm_cod_estado" id="elm_cod_estado" class="form-select" required>
-            <option value="">Seleccione...</option>
-            <option value="1">Activo</option>
-            <option value="2">Inactivo</option>
-            <option value="3">Dañado</option>
-        </select>
-    </div>
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
-    <div class="mb-3">
-        <label for="elm_area_cod" class="form-label">Área</label>
-        <select name="elm_area_cod" id="elm_area_cod" class="form-select" required>
-            <option value="">Seleccione...</option>
-            <option value="1">Producción</option>
-            <option value="2">Fotografía</option>
-            <option value="3">Diseño</option>
-            <option value="4">Soporte</option>
-            <!-- Agrega más si tienes otras áreas -->
-        </select>
-    </div>
+  label {
+    font-weight: bold;
+  }
 
-    <div class="text-center">
-        <button type="submit" class="btn btn-success">Guardar Elemento</button>
-        <a href="<?= getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') ?>" class="btn btn-secondary">Cancelar</a>
+  input, select {
+    padding: 6px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+</style>
+
+
+  <?php require_once __DIR__ . '/../../../helpers/session.php'; ?>
+
+<style>
+  .container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 10px;
+  }
+
+  .selector-container {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .selector-container label {
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  #tipo_selector {
+    width: 250px;
+    padding: 5px;
+    font-size: 14px;
+  }
+
+  .form-section {
+    display: none;
+    margin-top: 10px;
+  }
+
+  .form-section.active {
+    display: block;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  label {
+    font-weight: bold;
+  }
+
+  input, select {
+    padding: 6px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+</style>
+
+
+  <div class="selector-container">
+  <label for="tipo_selector">Tipo de Elemento:</label>
+  <select id="tipo_selector">
+    <option value="">Seleccione...</option>
+    <option value="devolutivo">Elemento Devolutivo</option>
+    <option value="consumible">Elemento Consumible</option>
+  </select>
+</div>
+
+<!-- Formulario Devolutivo -->
+<div id="form_devolutivo" class="form-section">
+  <form action="<?= getUrl('elementos', 'elementos', 'registrarElemento', false, 'dashboard') ?>" method="POST">
+    <input type="hidden" name="elm_cod_tp_elemento" id="tipo_devolutivo" value="1">
+    <input type="hidden" name="elm_existencia" value="1">
+    <input type="hidden" name="elm_cod_estado" value="1">
+
+    <label for="elm_placa">Placa</label>
+    <input type="number" name="elm_placa" id="elm_placa">
+
+    <label for="elm_nombre">Nombre</label>
+    <input type="text" name="elm_nombre" id="elm_nombre">
+
+    <label for="elm_uni_medida">Unidad de Medida</label>
+    <select name="elm_uni_medida" id="elm_uni_medida">
+      <option value="">Seleccione...</option>
+      <option value="1">Unidad</option>
+      <option value="2">Caja</option>
+      <option value="3">Paquete</option>
+    </select>
+
+    <label for="elm_area_cod">Área</label>
+    <select name="elm_area_cod" id="elm_area_cod">
+      <option value="">Seleccione...</option>
+      <?php foreach ($areas as $area): ?>
+        <option value="<?= $area['codigo'] ?>"><?= htmlspecialchars($area['nombre']) ?></option>
+      <?php endforeach; ?>
+    </select>
+
+    <div class="buttons">
+      <button type="submit">Guardar</button>
+      <a href="<?= getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') ?>">Cancelar</a>
     </div>
-</form>
+  </form>
+</div>
+
+<!-- Formulario Consumible -->
+<div id="form_consumible" class="form-section">
+  <form action="<?= getUrl('elementos', 'elementos', 'registrarElemento', false, 'dashboard') ?>" method="POST">
+    <input type="hidden" name="elm_cod_tp_elemento" id="tipo_consumible" value="2">
+    <input type="hidden" name="elm_cod_estado" value="1">
+
+    <label for="elm_placa">Placa</label>
+    <input type="number" name="elm_placa" id="elm_placa_c">
+
+    <label for="elm_nombre">Nombre</label>
+    <input type="text" name="elm_nombre" id="elm_nombre_c">
+
+    <label for="elm_existencia">Cantidad a Agregar</label>
+    <input type="number" name="elm_existencia" id="cantidad" min="1">
+
+    <label for="elm_uni_medida">Unidad de Medida</label>
+    <select name="elm_uni_medida" id="elm_uni_medida_c">
+      <option value="">Seleccione...</option>
+      <option value="1">Unidad</option>
+      <option value="2">Caja</option>
+      <option value="3">Paquete</option>
+    </select>
+
+    <label for="elm_area_cod">Área</label>
+    <select name="elm_area_cod" id="elm_area_cod_c">
+      <option value="">Seleccione...</option>
+      <?php foreach ($areas as $area): ?>
+        <option value="<?= $area['codigo'] ?>"><?= htmlspecialchars($area['nombre']) ?></option>
+      <?php endforeach; ?>
+    </select>
+
+    <div class="buttons">
+      <button type="submit">Agregar</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const selector = document.getElementById('tipo_selector');
+  const formDevolutivo = document.getElementById('form_devolutivo');
+  const formConsumible = document.getElementById('form_consumible');
+
+  selector.addEventListener('change', function () {
+    formDevolutivo.classList.remove('active');
+    formConsumible.classList.remove('active');
+
+    if (this.value === 'devolutivo') {
+      formDevolutivo.classList.add('active');
+    } else if (this.value === 'consumible') {
+      formConsumible.classList.add('active');
+    }
+  });
+</script>  

@@ -17,37 +17,40 @@ class elementosController {
     }
 
     public function registrarElemento() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Validar que existan todos los campos obligatorios
-            if (
-                isset($_POST['elm_placa'], $_POST['elm_nombre'], $_POST['elm_existencia'],
-                       $_POST['elm_uni_medida'], $_POST['elm_cod_tp_elemento'],
-                       $_POST['elm_cod_estado'], $_POST['elm_area_cod'])
-            ) {
-                $datos = [
-                    'elm_placa' => $_POST['elm_placa'],
-                    'elm_nombre' => $_POST['elm_nombre'],
-                    'elm_existencia' => $_POST['elm_existencia'],
-                    'elm_uni_medida' => $_POST['elm_uni_medida'],
-                    'elm_cod_tp_elemento' => $_POST['elm_cod_tp_elemento'],
-                    'elm_cod_estado' => $_POST['elm_cod_estado'],
-                    'elm_area_cod' => $_POST['elm_area_cod']
-                ];
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        // Validar que existan todos los campos obligatorios
+        if (
+            isset($_POST['elm_placa'], $_POST['elm_nombre'], $_POST['elm_existencia'],
+                   $_POST['elm_uni_medida'], $_POST['elm_cod_tp_elemento'],
+                   $_POST['elm_cod_estado'], $_POST['elm_area_cod'])
+        ) {
+            $datos = [
+                'elm_placa' => $_POST['elm_placa'],
+                'elm_nombre' => $_POST['elm_nombre'],
+                'elm_existencia' => $_POST['elm_existencia'],
+                'elm_uni_medida' => $_POST['elm_uni_medida'],
+                'elm_cod_tp_elemento' => $_POST['elm_cod_tp_elemento'],
+                'elm_cod_estado' => $_POST['elm_cod_estado'],
+                'elm_area_cod' => $_POST['elm_area_cod']
+            ];
 
-                $exito = $this->modeloElemento->insertarElemento($datos);
+            $exito = $this->modeloElemento->insertarElemento($datos);
 
-                if ($exito) {
-                    echo "<script>alert('Elemento registrado exitosamente'); window.location.href = '" . getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') . "';</script>";
-                } else {
-                    echo "<div class='alert alert-danger text-center'>Error al registrar el elemento.</div>";
-                }
+            if ($exito) {
+                echo "<script>alert('Elemento registrado exitosamente'); window.location.href = '" . getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') . "';</script>";
             } else {
-                echo "<div class='alert alert-danger text-center'>Faltan datos obligatorios para registrar.</div>";
+                echo "<div class='alert alert-danger text-center'>Error al registrar el elemento.</div>";
             }
         } else {
-            include __DIR__ . '/../views/elementosRegistrar.php';
+            echo "<div class='alert alert-danger text-center'>Faltan datos obligatorios para registrar.</div>";
         }
+    } else {
+        $modeloGenerico = new ConfigModulesModel();
+        $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
+        include __DIR__ . '/../views/elementosRegistrar.php';
     }
+}
+
 
     
 
@@ -94,8 +97,6 @@ public function editarElemento() {
         }
     }
 }
-
-
 
     public function cambiarEstadoElemento() {
         if (isset($_GET['elm_cod'])) {
