@@ -67,7 +67,7 @@ class ReservaModel
             //Capturo el id del prestamo, lo voy a usar para insertar en la tabla prestamos_elementos.
             $lastId = $conn->insert_id;
 
-            //tercera para actualizar el estado de los elementos devolutivos, Esta consulta funciona.
+            //tercera para actualizar el estado de los elementos devolutivos
             $updateStatusElements = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
             $stmtUpdateStatus = $conn->prepare($updateStatusElements);
             $status = 3;
@@ -110,6 +110,25 @@ class ReservaModel
                 $stmtConsumibles->bind_param('ii',$cantidadTotal,$value);
 
                 if (!$stmtConsumibles->execute()) {
+                    $conn->rollback();
+                    return $stmtConsumibles->error;
+                }
+            }
+
+            //Query para reportar la salida de los elementos consumibles.
+            $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn) VALUES(?,NOW(),?,?,?)";
+
+            $stmtSalida = $conn->prepare($sqlInsertSalida);
+            //Salida
+            $tipoMovimento = 2;
+
+            foreach ($codConsumibles as $element) {
+                //Extraigo la cantidad y el código del elemento.
+                $codConsumibles = $element['codigo'];
+                $cant= $element['cantidad'];
+                $stmtSalida->bind_param('iiii',$cant,$tipoMovimento,$id,$codConsumibles);
+
+                if (!$stmtSalida->execute()) {
                     $conn->rollback();
                     return $stmtConsumibles->error;
                 }

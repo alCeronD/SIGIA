@@ -68,12 +68,9 @@ class ReservaController
             $pres_estado = 3;
         }
 
-        //var_dump($data);
 
         $codConsumibles = $data["codigosElementos"]['consumibles'];
         $codDevolu = $data["codigosElementos"]['devolutivos'];
-        // var_dump($codConsumibles);
-        // var_dump($codDevolu);
 
         $ascDevolutivos = array_column($codDevolu, 'codigo');
         $ascConsu = array_column($codConsumibles, 'codigo');
@@ -83,15 +80,7 @@ class ReservaController
         //var_dump($codDevolu);
 
         unset($data["codigosElementos"]);
-        //Transformo los consumibles en enteros.
-        // foreach ($codConsumibles as $key => $value) {
-        //     $codConsumibles[$key] = (int) $value;
-        // }
 
-        // //Transformo los devolutivos en enteros.
-        // foreach ($codDevolu as $key => $value) {
-        //     $codDevolu[$key] = (int) $value;
-        // }
 
         //Cambiar nombre de la llave.
         $data['pres_fch_reserva'] = $data['fechaReserva'];
@@ -116,7 +105,6 @@ class ReservaController
 
         $data['pres_rol'] = $pres_rol;
         $data['tp_pres'] = $tp_pres;
-
         $response = $this->model->insertReserva($data, $codDevolu, $codConsumibles);
         success('Prestamo exitoso', $response);
     }
