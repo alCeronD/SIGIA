@@ -109,6 +109,11 @@ class ReservaController
         success('Prestamo exitoso', $response);
     }
 
+    public function setEndReserva(array $elementos = [], int $codigo = 0){
+        // $data = $this->model->endReserva($elementos,$codigo);
+        var_dump($this->model->endReserva($elementos,$codigo));
+    }
+
     //Función para traer las reservas
     public function getReservas( ) {
         // Me trae solo la información de la reserva.
@@ -186,10 +191,27 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $input = file_get_contents("php://input");
 
+        //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
         $data = json_decode($input, true);
-        //var_dump($data);
 
-        $controller->setReserva($data);
+
+        switch ($data['action']) {
+            case 'finalizar':
+
+                $elementos = $data['data']["elementos"];
+                $codigoReserva = $data['data']["codigoReserva"];
+                //var_dump($elementos);
+                //var_dump($codigoReserva);
+
+                //var_dump($data);
+                $controller->setEndReserva($elementos, $codigoReserva);
+                break;
+            
+            default:
+            $controller->setReserva($data);
+                break;
+        }
+
     }
     exit();
 }

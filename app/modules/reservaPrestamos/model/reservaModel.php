@@ -184,7 +184,57 @@ class ReservaModel
     public function updateReserva() {}
 
     //Función para finalizar la reserva y todos los elementos cambiar sus respectivos estados.
-    public function endReserva() {}
+    public function endReserva($elementos, $codigo) {
+        //Objetivo:
+        /**
+         * 1- Actualizar el estado de los elementos a disponible.
+         * 2- Actualizar el estado del prestamo a finalizado.
+         */
+        try {
+            $conn = $this->conect->getConnect();
+            $conn->begin_transaction();
+            $disponible = 1;
+            $sqlStatus = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
+
+            $stmtStatus = $conn->prepare($sqlStatus);
+
+            $codElementos = array_column($elementos,'codigo');
+
+            //Primera transacción.
+            foreach ($codElementos as $value) {
+                $stmtStatus->bind_param('ii',$disponible,$value);
+
+                if (!$stmtStatus->execute()) {
+                    
+                    $conn->rollback();
+                    // var_dump($stmtStatus->error);
+                    return $stmtStatus->error;
+                }
+            }
+            // //Finalizado
+            $prestamoStatus = 4;
+
+            //Segunda transacción.
+            $sqlEndReserva = "UPDATE prestamos SET pres_estado = ? WHERE pres_cod = ?";
+            $stmtEndReserva = $conn->prepare($sqlEndReserva);
+            $stmtEndReserva->bind_param('ii',$prestamoStatus,$codigo);
+
+            if (!$stmtEndReserva->execute()) {
+                $conn->rollback();
+                //var_dump($stmtStatus->error);
+                return $stmtEndReserva->error;
+            }
+
+            $conn->commit();
+            $conn->close();
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
+
+
+
+
+    }
 
 
     //Función para traer los elementos, posiblemente deba implementarla en el modelo de elementos, no en el modelo de reserva.
@@ -473,6 +523,7 @@ class ReservaModel
         $conn = $this->conect->getConnect();
         try {
             //Consulta para traer los elementos basado en el código del prestamo.
+            //TODO: Mejorar consulta, esta consulta debe de traerme la cantidad de los elementos consumibles.
             $sqlElementsReserva = "SELECT 
                 el.elm_cod AS 'codigo',
                 el.elm_nombre AS 'nombre'
@@ -482,6 +533,7 @@ class ReservaModel
                 LEFT JOIN prestamos pre ON
                 pre.pres_cod = prel.pres_cod
                 WHERE prel.pres_cod = ?";
+
 
                 $stmtResevasElm = $conn->prepare($sqlElementsReserva);
                 $stmtResevasElm->bind_param('i',$codigo);

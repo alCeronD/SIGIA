@@ -192,12 +192,13 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     objAjax.request.send();
 
     modalDetail.style.display = "flex";
-    // nombre.value = nombreCompleto;
-    // fechaReserva.value = reserva.fechaReserva;
-    // fechaSolicitud.value = reserva.fechaSolicitud;
-    // fechaDevolucion.value = reserva.fechaDevolucion;
-    // nroIdentidad.value = reserva.nroIdentidad;
-    // observaciones.value = reserva.observacion;
+    //TODO: transformar a texto span.
+    nombre.value = nombreCompleto;
+    fechaReserva.value = reserva.fechaReserva;
+    fechaSolicitud.value = reserva.fechaSolicitud;
+    fechaDevolucion.value = reserva.fechaDevolucion;
+    nroIdentidad.value = reserva.nroIdentidad;
+    observaciones.value = reserva.observacion;
   }
 
   //Para visualizar el detalle de elementos en caso de que sea requerido.
@@ -205,7 +206,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     event.target.getAttribute(["data-add"])
   ) {
     console.log(event.target);
-
   }
 
   //Finalizar el prestamo de los elementos.
@@ -220,15 +220,42 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       const dataResult = data.find(
         (dta) => (Number(dta.codigo) === codigoReserva)
       );
+      //Valida que sea true la respuesta de dataResult y que el codigo de la reserva este en el objeto elementos.
         if (dataResult && codigoReserva && elementos[codigoReserva]) {
         const reservaConElementos = elementos[codigoReserva];
         const listaElementos = reservaConElementos.elementos;
+
         console.log("Reserva:", reservaConElementos.reserva);
         console.log("Elementos asociados:", listaElementos);
+
+        //Debo enviar la lista de los elementos, el código del prestamo y el número de identificación.
+        let endReserva = {
+            "elementos":listaElementos,
+            "codigoReserva":reservaConElementos.reserva.codigo
+        }
+
+        const objEndReserva = new Ajax();
+
+        objEndReserva.request.open('POST','modules/reservaPrestamos/controller/reservaController.php');
+        objEndReserva.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        objEndReserva.request.setRequestHeader("Content-Type", "application/json");
+
+        let reservaJson = JSON.stringify({
+            data: endReserva,
+            action: 'finalizar'
+        });
+
+        objEndReserva.request.onload = ()=>{
+            let response = objEndReserva.request.responseText;
+            console.log(response);
+        }
+        objEndReserva.request.setRequestHeader("accept", "application/json");
+        objEndReserva.request.send(reservaJson);
+
+
         } else {
         console.warn("No se encontraron elementos asociados aún. Espera a que cargue la información.");
         }
-        
     }
   }
 });
