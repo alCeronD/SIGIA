@@ -42,11 +42,11 @@ let inputApellido = document.querySelector("#apellido");
 let inputTelefono = document.querySelector("#telefono");
 let inputEmail = document.querySelector("#email");
 //Inhabilito los inputs para evitar que el usuario digite los campos.
-inputNombre.readOnly = true;
-inputNroDocumento.readOnly = true;
-inputApellido.readOnly = true;
-inputTelefono.readOnly = true;
-inputEmail.readOnly = true;
+// inputNombre.readOnly = true;
+// inputNroDocumento.readOnly = true;
+// inputApellido.readOnly = true;
+// inputTelefono.readOnly = true;
+// inputEmail.readOnly = true;
 //En caso de que sean muchos registros.
 tableUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
 const btnPreview = document.querySelector("#preview");
@@ -402,17 +402,18 @@ tableUsers.addEventListener("click", (e) => {
     let telefono = elements.children[3].textContent;
     let email = elements.children[4].textContent;
 
-    inputNombre.value = "";
-    inputNroDocumento.value = "";
-    inputApellido.value = "";
-    inputTelefono.value = "";
-    inputEmail.value = "";
+    // inputNombre.value = "";
+    // inputNroDocumento.value = "";
+    // inputApellido.value = "";
+    // inputTelefono.value = "";
+    // inputEmail.value = "";
+    inputNroDocumento.textContent = nroDocumento;
+    inputNombre.textContent = nombre;
+    inputApellido.textContent = apellido;
+    inputTelefono.textContent = telefono;
+    inputEmail.textContent = email;
 
-    inputNroDocumento.value = nroDocumento;
-    inputNombre.value = nombre;
-    inputApellido.value = apellido;
-    inputTelefono.value = telefono;
-    inputEmail.value = email;
+    console.log(inputEmail);
 
     //Cerrar el modal justo que el administrador elija al usuario.
     modalUsers.style.display = "none";
@@ -439,6 +440,7 @@ tableDevolutivos.addEventListener("click", (event) => {
       let tdCodigo = document.createElement("td");
       tdCodigo.setAttribute("class", "codigoElemento");
       let tdNombre = document.createElement("td");
+      let tdCantidad = document.createElement('td');
       let tdArea = document.createElement("td");
 
       //Capturo el valor del checkbox
@@ -450,10 +452,12 @@ tableDevolutivos.addEventListener("click", (event) => {
           tablePreviewElements.appendChild(trTablePreview);
           tdCodigo.textContent = codigo;
           tdNombre.textContent = nombre;
+          tdCantidad.textContent = '1';
           tdArea.textContent = area;
           trTablePreview.appendChild(tdCodigo);
           trTablePreview.appendChild(tdNombre);
           trTablePreview.appendChild(tdArea);
+          trTablePreview.appendChild(tdCantidad);
 
       }else{
         alert('el elemento seleccionado ya está seleccionado.');
@@ -719,7 +723,6 @@ document.querySelector('#nextElementConsumible').addEventListener('click',(event
       
       let cantidad = data.cantidad;
       definirCantidad(cantidadInput,cantidad);
-      
     });
   });
 });
@@ -739,22 +742,12 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   event.preventDefault();
   event.stopPropagation();
 
-  // let rows = {
-  //   codigoElementos: {
-  //     "Devolutivos":[],
-  //     "Consumibles":[
-        
-  //     ]
-  //   },
-  // };
-
     let rows = {
     codigoElementos: {
       devolutivos:[],
       consumibles:[]
     },
   };
-
 
   let tdCodigoElemento = [];
   let tdArea = [];
@@ -763,6 +756,9 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   //Data de formulario
   let data = Object.fromEntries(info);
 
+  //Agrego la cedula al objeto data.
+  data.cedula = document.getElementById("cedula").textContent.trim();
+
   //Data de elementos.
   let filas = document.querySelectorAll(
     ".tableElements .previewElements #tableBodyPreviewElements tr"
@@ -770,7 +766,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   //Capturo el codigo del elemento y lo guardo.
   //TODO: Validar que cuando el usuario presione el botón de enviar aplique un return cuando no se ha diligenciado ningún campo.
   filas.forEach((fl) => {
-
 
     let tds = fl.querySelectorAll('td');
     //4 Por la cantidad de columnas que hay
@@ -785,7 +780,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
         tdArea.push(area);
       }
 
-
       const elements = {codigo: codigoElemento, cantidad: cantidadElemento};
       if (area === 'General') {
         rows.codigoElementos.consumibles.push(elements);
@@ -798,12 +792,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let codigosElementos = rows.codigoElementos;
   //Agrego los códigos de los elementos al data.
   data.codigosElementos = codigosElementos;
-
-  //Elimino las propiedades que no necesito.
-  delete data["nombre"];
-  delete data["apellido"];
-  delete data["telefono"];
-  delete data["email"];
 
   if (!data["areaDestino"]) {
     alert("El área de destino es obligatoria.");
@@ -829,19 +817,20 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     data["fin"] = null;
   }
   let dataJson = JSON.stringify(data);
-
-  // console.log(data);
-
   //TODO: transformar en sweet alert.
   if (confirm("¿Deseas registrar los siguientes elementos?")) {
     objAjax.request.onload = () => {
       let response = JSON.parse(objAjax.request.responseText);
-      console.log(response);
 
       if (response.status) {
         alert("Reserva realizada con exito");
-        //Limpio el formulario y la tabla.
+        //Limpio el formulario, tabla y campos de span.
         formSolicitudPrestamo.reset();
+        inputNroDocumento.textContent = "";
+        inputNombre.textContent = "";
+        inputApellido.textContent = "";
+        inputEmail.textContent = "";
+        inputTelefono.textContent = "";
         tablePreviewElements.innerHTML = "";
 
         //Oculto inputs de tipo time.

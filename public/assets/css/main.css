@@ -210,8 +210,6 @@ input[type="number"] {
 
 }
 
-
-
 .btnSubmit{
   background-color: #6c757d;
   color: white;
@@ -220,12 +218,8 @@ input[type="number"] {
   width: auto;
   height: 20pt;
 } */
-
-
 /* Estilos de los contenedores */
+/* Estilo para pantallas con esa resolución en adelante. */
+/* @media (min-width: 1366px) and (min-height: 768px) {
 
-@media (min-width: 800px) and (max-width: 900px) {
-  body {
-    background-color: green;
-  }
-}
+} */

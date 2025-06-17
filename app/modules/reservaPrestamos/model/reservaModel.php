@@ -87,6 +87,7 @@ class ReservaModel
             //Cuarta transacción, traer la cantidad disponible del elemento.
             $sqlGetCantidad = "SELECT elm_existencia FROM elementos WHERE elm_cod = ?";
             
+            
             //Cuarta transacción, reducir la cantidad de elementos a los elementos consumibles.
             $sqlConsumibles = "UPDATE elementos SET elm_existencia = ? WHERE elm_cod = ?";
             $stmtGetCantidad = $conn->prepare($sqlGetCantidad);
@@ -283,7 +284,6 @@ class ReservaModel
             return  $th->getMessage();
         }
     }
-
     public function selectElementsConsumibles(int $page = 1){
         $conn = $this->conect->getConnect();
         try {
@@ -292,7 +292,6 @@ class ReservaModel
             //throw $th;
         }
     }
-
     //Función apra traer los elementos, posiblemente da implementarla en el modelo de usuarios.
     public function selectUsers($pages)
     {

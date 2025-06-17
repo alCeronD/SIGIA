@@ -132,14 +132,12 @@
 }
 
 .inputContent {
-
   display: flex;
   justify-content: flex-start;
   /* align-items: center; */
   width: 100%;
   height: fit-content;
   /* gap: .5em; */
-  border: 1px solid black;
   flex-direction: column;
 }
 
