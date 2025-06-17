@@ -450,6 +450,7 @@ class ReservaModel
 
             $dataReservas = [];
             while ($row = $resultReservas->fetch_assoc()) {
+                
                 $dataReservas[] = $row;
             }
 
