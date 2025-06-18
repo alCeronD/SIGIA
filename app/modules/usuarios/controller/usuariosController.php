@@ -41,9 +41,9 @@ class usuariosController{
             }  
         }
         $_SESSION['css'] = 'usuarios/usuarios.css';
-            // dd($roles);
         return include __DIR__ . '/../views/usuariosView.php';
     }
+    
     public function createUser(){
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -67,7 +67,9 @@ class usuariosController{
             ];
     
             $resultado = $usuariosModel->create($datos);
-    
+            // Validaciones
+            //Pendiente realizar la consulta del Num_doc y si no esta que continue si el proceso
+            
             if ($resultado === true) {
                 echo "<script>alert('Usuario registrado exitosamente'); window.location.href = '" . getUrl('usuarios','usuarios','userView', false, 'dashboard') . "';</script>";
             } else {
@@ -75,12 +77,14 @@ class usuariosController{
             }
         }
     }
+    
+    
     public function consultUser(){
     
         $modeloUsuarios = new usuarios($this->conn);
     
         $usuarios = $modeloUsuarios->search();
-    
+        // dd($usuarios);
         $path = __DIR__ . '/../views/consultView.php';
         $_SESSION['css'] = 'usuarios/usuarios.css';
         // var_dump($path);
@@ -109,16 +113,13 @@ class usuariosController{
     
     //
     public function updateUserView(){
-        //include_once __DIR__ . '/../model/usuariosModel.php';
         
         $id = $_GET['usu_id'];    
-        
+        $_SESSION['css'] = 'usuarios/usuarios.css';
         $datos = new usuarios($this->conn);
         
         $usuarioUpdate = $datos->searchU($id);
-        // print_r($usuarioUpdate);die();
-    
-       return include_once __DIR__ . '/../views/updateView.php';
+       include_once __DIR__ . '/../../usuarios/views/updateView.php';
     }
     
     public function deleteUserView(){
@@ -131,7 +132,7 @@ class usuariosController{
     
             $query = "UPDATE usuarios 
                       SET usu_id_estado = CASE 
-                        WHEN usu_id_estado = 1 THEN 2 
+                        WHEN usu_id_estado = 1 THEN 0 
                         ELSE 1 END 
                       WHERE usu_id = ?";
             

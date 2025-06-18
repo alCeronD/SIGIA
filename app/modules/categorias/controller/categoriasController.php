@@ -21,7 +21,7 @@ private $conn;
     
     public function consultCategoriasView(){
         $modeloCategorias = new categorias($this->conn);
-    
+        $_SESSION['css'] = 'categorias/categorias.css';
         $categorias = $modeloCategorias->search();
         $path = __DIR__ . '/../views/categoriasConsultview.php';
         // var_dump($path);
@@ -30,6 +30,8 @@ private $conn;
     
     public function updateCategoriaView(){
         $categoria = $_GET['ca_id'];
+        $_SESSION['css'] = 'categorias/categorias.css';
+        
         $dato = new categorias($this->conn);
         $resultado = $dato->searchU($categoria);
         if ($resultado) {
@@ -60,6 +62,9 @@ private $conn;
             }
         }
     }
+
+
+
     
     public function updateCategoria(){
         

@@ -1,50 +1,57 @@
-<div class="w-100 mx-auto text-start">
-  <h2 class="mb-4 text-center">Préstamos Registrados</h2>
-  <div class="table-responsive">
-    <table class="table table-bordered table-hover align-middle">
-      <thead class="table-dark text-center">
-        <tr>
-          <th>ID: </th>
-          <th>Nombre Usuario: </th>
-          <th>Fecha de Solicitud: </th>
-          <th>Estado: </th>
-          <th>Acciones: </th>
-        </tr>
-      </thead>
-      <tbody id="tabla-prestamos">
-        <?php if (!empty($prestamos)): ?>
-          <?php foreach ($prestamos as $prestamo): ?>
-            <tr class="text-center fila-prestamo">
-              <td><?= htmlspecialchars($prestamo['pres_cod']) ?></td>
-              <td><?= htmlspecialchars($nombre) ?></td>
-              <td><?= htmlspecialchars($prestamo['pres_fch_slcitud']) ?></td>
-              <td><?= htmlspecialchars($prestamo['tipo_prestamo']) ?></td>
-              <td>
-                <a href="<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'verDetallePrestamo', ['pres_cod' => $prestamo['pres_cod']]) ?>" class="btn btn-sm btn-info me-1">
-                    <i class="bi bi-eye"></i> Ver detalle
-                </a>
-                <br>
-                <a href="<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'eliminarPrestamo', ['pres_cod' => $prestamo['pres_cod']]) ?>" class="btn btn-sm btn-danger mt-1">
-                    <i class="bi bi-x-circle"></i> Aprobar/No aprobar
-                </a>
-              </td>
-            </tr>
-          <?php endforeach; ?>
-        <?php else: ?>
+<div class="content">
+  <div class="w-100 mx-auto text-start">
+    <h2 class="mb-4 text-center">Préstamos Registrados</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark text-center">
           <tr>
-            <td colspan="5" class="text-center">No hay préstamos registrados.</td>
+            <th>ID</th>
+            <th>Nombre Usuario</th>
+            <th>Fecha de Solicitud</th>
+            <th>Estado</th>
+            <th>Acciones</th>
           </tr>
-        <?php endif; ?>
-      </tbody>
-    </table>
-    
-    <div class="page container-fluid col-12">
-      <ul id="paginacion-prestamos" class="pagination justify-content-center"></ul>
+        </thead>
+        <tbody id="tabla-prestamos">
+          <?php if (!empty($prestamos)): ?>
+            <?php foreach ($prestamos as $prestamo): ?>
+              <tr class="text-center fila-prestamo">
+                <td><?= htmlspecialchars($prestamo['pres_cod']) ?></td>
+                <td><?= htmlspecialchars($nombre) ?></td>
+                <td><?= htmlspecialchars($prestamo['pres_fch_reserva']) ?></td>
+                <td><?= htmlspecialchars($prestamo['tipo_prestamo']) ?></td>
+                <td>
+                  <button class="btn-ver-detalle" data-id="<?= $prestamo['pres_cod'] ?>">Ver detalle</button>
+                  <br>
+                  <a href="<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'eliminarPrestamo', ['pres_cod' => $prestamo['pres_cod']]) ?>" class="btn btn-sm btn-danger mt-1">
+                    Aprobar/No aprobar
+                  </a>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <tr>
+              <td colspan="5" class="text-center">No hay préstamos registrados.</td>
+            </tr>
+          <?php endif; ?>
+        </tbody>
+      </table>
+  
+      <div class="page container-fluid col-12">
+        <ul id="paginacion-prestamos" class="pagination justify-content-center"></ul>
+      </div>
     </div>
-    
+  </div>
+  
+  <div id="modalDetalle" class="modal-overlay" style="display: none;">
+    <div class="modal-container">
+      <button class="close-btn" style="position:absolute; top:10px; right:15px;">&times;</button>
+      <div id="contenidoDetalle" class="detalle-container">
+        <!-- Aquí se carga el detalle del préstamo vía fetch -->
+      </div>
+    </div>
   </div>
 </div>
-
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -86,5 +93,27 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   generarPaginacion();
+
+  // Modal
+  const modal = document.getElementById('modalDetalle');
+  const contenido = document.getElementById('contenidoDetalle');
+  const closeBtn = document.querySelector('.close-btn');
+
+  document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const id = this.dataset.id;
+      modal.style.display = 'block';
+      contenido.innerHTML = "<p>Cargando información...</p>";
+
+      fetch(`<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'verDetallePrestamo', false, 'ajax') ?>&pres_cod=${id}`)
+        .then(res => res.text())
+        .then(html => contenido.innerHTML = html)
+        .catch(() => contenido.innerHTML = "<p>Error al cargar el detalle</p>");
+    });
+  });
+
+  closeBtn.onclick = () => modal.style.display = "none";
+  window.onclick = e => { if (e.target == modal) modal.style.display = "none"; };
 });
 </script>
+

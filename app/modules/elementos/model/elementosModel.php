@@ -85,5 +85,13 @@ class ElementoModelo {
         }
         return $prestamos;
     }
+    
+    public function actualizarEstadoElemento($id, $nuevo_estado) {
+        $sql = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ii", $nuevo_estado, $id);
+        return $stmt->execute();
+    }
+
 }
 ?>
