@@ -40,7 +40,6 @@
           <a href="#">Elementos</a>
           <ul class="verticalMenu">
             <li><a href="<?php echo getUrl("elementos", "elementos", "mostrarElementos", false, 'dashboard'); ?>">ver Elementos</a></li>
-            <li><a href="<?php echo getUrl("elementos","elementos","registrarElemento",false, 'dashboard'); ?>">Registrar elementos</a></li>
           </ul>
         </li>
         <!-- Configuración -->

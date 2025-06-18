@@ -11,10 +11,28 @@ class elementosController {
         $this->modeloElemento = new ElementoModelo($conexion);
     }
 
-    public function mostrarElementos() {
-        $elementos = $this->modeloElemento->obtenerElemento();
-        include __DIR__ . '/../views/elementosView.php';
+ public function mostrarElementos() {
+    // Obtener los elementos
+    $elementos = $this->modeloElemento->obtenerElemento();
+
+    // Obtener las áreas
+    $modeloGenerico = new ConfigModulesModel();
+    $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
+
+    // Buscar el código del área "general"
+    $area_general_codigo = null;
+    foreach ($areas as $area) {
+        if (strtolower(trim($area['nombre'])) === 'general') {
+            $area_general_codigo = $area['codigo'];
+            break;
+        }
     }
+
+    // Incluir la vista pasando las variables
+    include __DIR__ . '/../views/elementosView.php';
+}
+
+
 
     public function registrarElemento() {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {

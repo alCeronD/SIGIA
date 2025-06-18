@@ -35,4 +35,28 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.classList.remove('show');
         }
     });
+
+    //filtro elementosViews
+    document.getElementById('filtroTipo').addEventListener('change', function() {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll('tbody tr');
+
+        filas.forEach(fila => {
+            const tipoFila = fila.getAttribute('data-tipo').toLowerCase();
+
+            if (filtro === 'todos' || tipoFila === filtro) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+        });
+    });
+
+
+    
+
+    
+
+
+
 });

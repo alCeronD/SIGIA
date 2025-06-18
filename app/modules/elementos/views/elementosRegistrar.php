@@ -1,4 +1,3 @@
-<?php require_once __DIR__ . '/../../../helpers/session.php'; ?>
 
 <style>
   .container {
@@ -57,12 +56,9 @@
     gap: 10px;
     margin-top: 12px;
   }
-</style>
 
 
-  <?php require_once __DIR__ . '/../../../helpers/session.php'; ?>
 
-<style>
   .container {
     max-width: 900px;
     margin: 20px auto;
@@ -121,8 +117,18 @@
   }
 </style>
 
+<?php
+// Buscar el código del área "general" en $areas
+$area_general_codigo = null;
+foreach ($areas as $area) {
+    if (strtolower(trim($area['nombre'])) === 'general') {
+        $area_general_codigo = $area['codigo'];
+        break;
+    }
+}
+?>
 
-  <div class="selector-container">
+<div class="selector-container">
   <label for="tipo_selector">Tipo de Elemento:</label>
   <select id="tipo_selector">
     <option value="">Seleccione...</option>
@@ -190,13 +196,15 @@
       <option value="3">Paquete</option>
     </select>
 
-    <label for="elm_area_cod">Área</label>
-    <select name="elm_area_cod" id="elm_area_cod_c">
-      <option value="">Seleccione...</option>
+    <label for="elm_area_cod_c">Área</label>
+    <select name="elm_area_cod_c_disabled" id="elm_area_cod_c" disabled>
       <?php foreach ($areas as $area): ?>
-        <option value="<?= $area['codigo'] ?>"><?= htmlspecialchars($area['nombre']) ?></option>
+        <option value="<?= $area['codigo'] ?>" <?= ($area['codigo'] == $area_general_codigo) ? 'selected' : '' ?>>
+          <?= htmlspecialchars($area['nombre']) ?>
+        </option>
       <?php endforeach; ?>
     </select>
+    <input type="hidden" name="elm_area_cod" value="<?= $area_general_codigo ?>">
 
     <div class="buttons">
       <button type="submit">Agregar</button>
@@ -219,4 +227,4 @@
       formConsumible.classList.add('active');
     }
   });
-</script>  
+</script>
