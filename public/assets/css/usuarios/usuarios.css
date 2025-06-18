@@ -1,0 +1,192 @@
+/* ------- */
+/* MODULO USUARIOS */
+.contentUsuarios {
+  width: 100%;
+  height: 85vh;
+  display: grid;
+  grid-template-areas:
+    "titleUsuarios"
+    "tblUsuarios";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+#textTitle{
+  font-size: 20pt;
+
+}
+
+.table {
+  grid-area: tblUsuarios;
+  width: 100%;
+  overflow-x: auto;
+}
+
+#tableConfig {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+}
+
+#tableConfig thead {
+  background-color: #f2f2f2;
+}
+
+#tableConfig th, #tableConfig td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+#tableConfig tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+#tableConfig tr:hover {
+  background-color: #f1f1f1;
+}
+
+.close {
+  cursor: pointer;
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: red;
+}
+
+/* ///////////CCS REGISTRAR USUARIOS///////////// */
+
+
+/* Encabezado del formulario con título y botón de cerrar */
+#formSolicitudPrestamo {
+  display: grid;
+  grid-template-areas:
+    "cedula      nombres       apellidos"
+    "telefono    email         rol"
+    "password    direccion     tipoDocumento"
+    ".           observaciones ."
+    ".           boton         .";
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1000px;
+  box-sizing: border-box;
+}
+
+.inputContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.labelForm {
+  font-size: 1.3rem;
+  margin-top: 0.3rem;
+  border-radius: 10px;
+  height: 2rem;
+}
+
+#formDetail .labelFormDetail{
+  font-size: 12pt;
+}
+
+.inputForm,
+textarea {
+  font-size: 1rem;
+  padding: 0.5rem;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  border-radius: 4px;
+}
+
+.inputForm:focus,
+textarea:focus {
+  border-bottom-color: #007bff;
+  outline: none;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 4rem;
+}
+
+.inputBtn {
+  display: grid;
+  grid-area: inputBtn;
+  width: 100%;
+  justify-items: center;
+  min-height: 3rem;
+}
+
+#btnSubmit {
+  padding: 0.75rem 2.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+#btnSubmit:hover {
+  background-color: #95999e;
+}
+
+/* //update usuarios// */
+.content{
+  width: 100%;
+  height: 85vh;
+  display: grid;
+  grid-template-areas:
+    "titleUsuarios"
+    "tblUsuarios";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.inputContentUpdate{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 35px;
+  gap: .5em;
+}
+
+
+.modal-custom {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content-custom {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 450px;
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.close-modal {
+  position: absolute;
+  right: 15px; top: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}

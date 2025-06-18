@@ -46,7 +46,7 @@ class usuarios {
 
         if ($this->conn->query($query)) {
             $usu_id = $this->conn->insert_id;
-    
+            // dd($usu_id);
             $queryRol = "
                 INSERT INTO usuarios_roles (usr_usu_id, usr_rl_id) 
                 VALUES ($usu_id, $rol_id)
@@ -95,30 +95,33 @@ class usuarios {
         $usuarios = [];
         
         $query = "
-            SELECT 
-                u.usu_id,
-                u.usu_docum,
-                u.usu_nombres,
-                u.usu_apellidos,
-                u.usu_email,
-                u.usu_telefono,
-                r.rl_nombre
-            FROM 
-                usuarios u
-            JOIN 
-                usuarios_roles ur ON u.usu_id = ur.usr_usu_id
-            JOIN 
-                roles r ON ur.usr_rl_id = r.rl_id
+            SELECT
+            u.usu_id,
+            u.usu_docum,
+            u.usu_nombres,
+            u.usu_apellidos,
+            u.usu_email,
+            u.usu_telefono,
+            r.rl_nombre,
+            eu.est_nombre AS estado_usuario
+        FROM
+            usuarios u
+        JOIN usuarios_roles ur ON
+            u.usu_id = ur.usr_usu_id
+        JOIN roles r ON
+            ur.usr_rl_id = r.rl_id
+        JOIN estados_usuarios eu ON
+            u.usu_id_estado = eu.est_id;
         ";
     
         $resultado = $this->conn->query($query);
-    
         if ($resultado && $resultado->num_rows > 0) {
             while ($fila = $resultado->fetch_assoc()) {
                 $usuarios[] = $fila;
             }
         }
-    
+        
+        // dd($usuarios);
         return $usuarios;
         }
         

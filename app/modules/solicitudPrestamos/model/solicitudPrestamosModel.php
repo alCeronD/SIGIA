@@ -18,11 +18,10 @@ class solicitudPrestamos {
         $this->conn = $conexion;
     }
 
-    public function create(array $data = []) {
+    public function create(array $data = [],$rol_usuario) {
         if (!is_array($data)) {
             exit();
         }
-    
         $pres_fch_slcitud  = $this->conn->real_escape_string($data['pres_fch_slcitud']);
         $pres_fch_reserva  = $this->conn->real_escape_string($data['pres_fch_reserva']);
         $pres_hor_inicio   = $this->conn->real_escape_string($data['pres_hor_inicio']);
@@ -32,14 +31,16 @@ class solicitudPrestamos {
         $pres_destino      = $this->conn->real_escape_string($data['pres_destino']);
         $pres_estado       = 3;
         $tp_pres           = 2;
-    
+        $pres_rol          = $rol_usuario;
+        
+        
         $query = "
             INSERT INTO prestamos (
                 pres_fch_slcitud, pres_fch_reserva, pres_hor_inicio, pres_hor_fin,
-                pres_fch_entrega, pres_observacion, pres_destino, pres_estado, tp_pres
+                pres_fch_entrega, pres_observacion, pres_destino, pres_estado, tp_pres, pres_rol
             ) VALUES (
                 '$pres_fch_slcitud', '$pres_fch_reserva', '$pres_hor_inicio', '$pres_hor_fin',
-                '$pres_fch_entrega', '$pres_observacion', '$pres_destino', $pres_estado, $tp_pres
+                '$pres_fch_entrega', '$pres_observacion', '$pres_destino', $pres_estado, $tp_pres, $pres_rol
             )
         ";
     
@@ -119,7 +120,9 @@ class solicitudPrestamos {
             exit();
         }
 
-        $query = "SELECT * FROM solicitud_prestamos WHERE pres_cod = $id";
+        // $query = "SELECT * FROM solicitud_prestamos WHERE pres_cod = $id";
+        $query = "SELECT * FROM prestamos WHERE pres_cod = $id";
+
         $resultado = $this->conn->query($query);
 
         if ($resultado && $resultado->num_rows > 0) {
