@@ -240,12 +240,10 @@ formulario.addEventListener("submit", (event) => {
         formulario.reset();
         //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
         fetchData();
-        console.log("Registro agregado exitosamente.");
+        alert(response.message);
       } else {
-        console.error("Error desde servidor:", response.message || "Error desconocido.");
+        alert(response.message);
       }
-
-    
   };
 
   objAjax2.request.send(data); 

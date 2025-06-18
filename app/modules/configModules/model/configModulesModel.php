@@ -5,15 +5,18 @@
 require_once __DIR__ . '/../../../config/conn.php';
 
 //Crud general para todos los elementos.
-class ConfigModulesModel{
+class ConfigModulesModel
+{
     private $mysqli;
     private $conn;
     //puede que no necesite constructor.
-    public function __construct(){
+    public function __construct()
+    {
         $this->mysqli = new Conection();
     }
-    
-    public function select(String $sql){
+
+    public function select(String $sql)
+    {
 
         $conn = $this->mysqli->getConnect();
 
@@ -30,57 +33,43 @@ class ConfigModulesModel{
         return $data;
     }
 
-    public function insert(String $sql = '', String $types = '', array $values = [], String $tableName = ''){
-            
+    public function insert(String $sql = '', String $types = '', array $values = [], String $tableName = '')
+    {
+
         $conn = $this->mysqli->getConnect();
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) {
-            die("Prepare failed: " . $conn->error);
-        }
-    
-    
-        $bindParams = [];
-        foreach ($values as $key => $value) {
-            $bindParams[] = &$values[$key];
-        }
-    
-        array_unshift($bindParams, $types);
-        call_user_func_array([$stmt, 'bind_param'], $bindParams);
-    
+
+
+            //Consulta insert sql.
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                die("Prepare failed: " . $conn->error);
+            }
+            $bindParams = [];
+            foreach ($values as $key => $value) {
+                $bindParams[] = &$values[$key];
+            }
+
+            array_unshift($bindParams, $types);
+            call_user_func_array([$stmt, 'bind_param'], $bindParams);
+
+
         if (!$stmt->execute()) {
             die("Execute failed: " . $stmt->error);
         }
-    
+
         $insertedId = $conn->insert_id;
-    
-        //Creo consulta para traer el ultimo elemento registrado en base al lastId.
-        //TODO: Esto me lo debe ejecutar si o si el select, para ello debo de crear otra función llamada select, serán 2 funciones con el mismo nombre, lo intentaremos hacer usando polimorfismo.
-        // $selectSql = "SELECT * FROM `$tableName` WHERE `$pkNameColum` = ?";
-    
-        // $stmtLastRow = $conn->prepare($selectSql);
-        // if (!$stmtLastRow) {
-        //     die("Prepare failed (select): " . $conn->error);
-        // }
-    
-        // $stmtLastRow->bind_param('i', $insertedId);
-    
-        // if (!$stmtLastRow->execute()) {
-        //     die("Execute failed (select): " . $stmtLastRow->error);
-        // }
-    
-        // $result = $stmtLastRow->get_result();
-        // $resultLastRow = $result->fetch_assoc();
-    
+
         // Cerrar la conexión
         $conn->close();
-    
-        return true;
-        }
 
-    public function delete(String $sql, String $types,array $values){
+        return true;
+    }
+
+    public function delete(String $sql, String $types, array $values)
+    {
 
         try {
-            
+
             $conn = $this->mysqli->getConnect();
 
             $stmt = $conn->prepare($sql);
@@ -88,15 +77,14 @@ class ConfigModulesModel{
             $refs = [];
             //Paso los valores por referencia, esto sirve para usar el call_user_func_array
             foreach ($values as $key => $value) {
-                $refs[$key] = &$values[$key]; 
+                $refs[$key] = &$values[$key];
             }
 
             array_unshift($refs, $types);
             call_user_func_array([$stmt, 'bind_param'], $refs);
-                if (!$stmt->execute()) {
+            if (!$stmt->execute()) {
                 return "Error al ejecutar la consulta: $stmt->error";
             }
-            
         } catch (mysqli_sql_exception $e) {
             return "Excepción capturada: " . $e->getMessage();
         }
@@ -105,11 +93,12 @@ class ConfigModulesModel{
     }
 
     //Actualiza formando la consulta.
-    public function update(String $sql, array $prepareValues, array $types){
+    public function update(String $sql, array $prepareValues, array $types)
+    {
         $conn = $this->mysqli->getConnect();
 
         try {
-            $tp = implode('',$types);
+            $tp = implode('', $types);
             $stmt = $conn->prepare($sql);
             $val = [];
             $val[] = $tp;
@@ -119,12 +108,10 @@ class ConfigModulesModel{
                 $val[] = &$prepareValues[$key];
             }
 
-            call_user_func_array([$stmt,'bind_param'],$val);
+            call_user_func_array([$stmt, 'bind_param'], $val);
             if (!$stmt->execute()) {
                 return false;
             }
-
-        
         } catch (PDOException $th) {
             return $th->getMessage();
         }
@@ -133,12 +120,25 @@ class ConfigModulesModel{
         $stmt->close();
 
         return true;
-        
-
     }
-    
-    ////////////////////////
-    
 
+    public function validateUnique(String $nameColum, String $tableName, String $nameValueColum)
+    {
+        $conn = $this->mysqli->getConnect();
+        $sqlUnique = "SELECT `$nameColum` FROM `$tableName` WHERE `$nameColum` = ?";
+        $stmtUnique = $conn->prepare($sqlUnique);
 
+        $stmtUnique->bind_param('s',$nameValueColum);
+
+        $stmtUnique->execute();
+        $valueResult = $stmtUnique->get_result();
+        $valueCompare = $valueResult->fetch_assoc();
+        //Si es null, significa que no hay coincidencias, lo que signficia que no es único.
+        if ($valueCompare == null) {
+            return false;
+        }
+
+        return true;
+        
+    }
 }

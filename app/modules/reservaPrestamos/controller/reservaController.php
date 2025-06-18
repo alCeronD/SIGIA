@@ -34,6 +34,12 @@ class ReservaController
         $data = $this->model->selectElements($pages);
         success('Registros', $data);
     }
+
+    public function getElementosConsumibles (int $pages = 1, int $type = 2){
+        $data = $this->model->selectElements($pages,$type);
+        success('elementos consumibles',$data);
+    }
+
     public function getUsers($page)
     {
         $data = $this->model->selectUsers($page);
@@ -43,7 +49,6 @@ class ReservaController
         }
     }
 
-    
     //Función para establecer datos para realizar su reserva.
     public function setReserva(array $data = []){
 
@@ -63,13 +68,19 @@ class ReservaController
             $pres_estado = 3;
         }
 
-        $codigosElementos = $data["codigosElementos"];
+
+        $codConsumibles = $data["codigosElementos"]['consumibles'];
+        $codDevolu = $data["codigosElementos"]['devolutivos'];
+
+        $ascDevolutivos = array_column($codDevolu, 'codigo');
+        $ascConsu = array_column($codConsumibles, 'codigo');
+        //Cordenar los elementos del arreglo basado en el código
+        array_multisort($codDevolu,SORT_ASC,$ascDevolutivos);
+        array_multisort($codConsumibles,SORT_ASC,$ascConsu);
+        //var_dump($codDevolu);
 
         unset($data["codigosElementos"]);
-        //Transformo los códigos en enteros.
-        foreach ($codigosElementos as $key => $value) {
-            $codigosElementos[$key] = (int) $value;
-        }
+
 
         //Cambiar nombre de la llave.
         $data['pres_fch_reserva'] = $data['fechaReserva'];
@@ -94,9 +105,17 @@ class ReservaController
 
         $data['pres_rol'] = $pres_rol;
         $data['tp_pres'] = $tp_pres;
-
-        $response = $this->model->insertReserva($data, $codigosElementos);
+        $response = $this->model->insertReserva($data, $codDevolu, $codConsumibles);
         success('Prestamo exitoso', $response);
+    }
+
+    public function setEndReserva(array $elementos = [], int $codigo = 0){
+        // $data = $this->model->endReserva($elementos,$codigo);
+        $data = $this->model->endReserva($elementos,$codigo);
+        if ($data['status']) {
+            success('Prestamo exitoso');
+        
+        }
     }
 
     //Función para traer las reservas
@@ -114,9 +133,6 @@ class ReservaController
         $dataDetail = $this->model->selectElementsReserva($codigo);
         success('Elementos relacionados al codigo',$dataDetail);
     }
-
-
-    //Función para mandar los elementos devolutivos al DOM.
 
 }
 
@@ -145,6 +161,16 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                     $controller->getElementosDevolutivos($pages);
                 }
                 break;
+            case 'consumibles';
+            //Elemento de tipo consumible;
+            $type = 2;
+            if (method_exists($controller,'getElementosConsumibles')) {
+                $controller->getElementosConsumibles($pages,$type);
+            }
+
+            break;
+
+
             case 'reservas':
 
                 if (method_exists($controller,'getReservas')) {
@@ -169,9 +195,30 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $input = file_get_contents("php://input");
 
+        //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
         $data = json_decode($input, true);
 
-        $controller->setReserva($data);
+        switch ($data['action']) {
+            case 'finalizar':
+
+                $elementos = $data['data']["elementos"];
+                $codigoReserva = $data['data']["codigoReserva"];
+                //var_dump($elementos);
+                //var_dump($codigoReserva);
+
+                //var_dump($data);
+                $controller->setEndReserva($elementos, $codigoReserva);
+                break;
+
+            case 'registrar':
+                $elementosPres = $data['data'];
+                $controller->setReserva($elementosPres);
+                break;
+                
+            default:
+                break;
+        }
+
     }
     exit();
 }

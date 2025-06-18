@@ -5,8 +5,8 @@ header("Content-Type: application/json");
 $input = json_decode(file_get_contents("php://input"), true);
 
 require_once __DIR__ . '/../controller/configModulesController.php';
+require_once __DIR__ . '/../../../helpers/response.php';
 $configController = new ConfigModulesController();
-
 
 //Cambiar statusCols y tables por $schema.
 $statusCols = [
@@ -55,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit();
     }
 
-    //Si el estatus es false, es decir, algo inactivo, terminar el script.
     //TODO:Arreglar esta parte, si yo quiero traer solamente los elementos activos, inactivos o todos los elementos, con esto podemos dar un mayor acceso y re usabilidad.
     if (!in_array($status, ['0', '1'])) {
         exit();
@@ -78,7 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
     //LLAMAR A LOS CONTROLADORES Y CREAR EL GRUD GENERAL
-    //var_dump($input);
     $tableName = isset($input['tableName']) ? $input['tableName'] : null;
 
     //Tabla que voy a usar para hacer las operaciones.
@@ -89,8 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $data[$field] = $input[$field] ?? null;
 
     }
-
-    //var_dump($data);
 
     if ($tableName == 'areas') {
         $nombreField = $data['ar_nombre'];
@@ -110,7 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $codField = $input['ma_id'];  
     }
 
-    //$keys=['values','tableName',$input['ar_cod'],['ar_nombre','ar_descripcion']];
     $values=[];
 
         $values = [
@@ -177,8 +172,6 @@ if ($method === 'DELETE') {
         'pk' => ['column' => $pkCol, 'value' => (int)$idPk]
     ];
 
-    // var_dump($data);
-
     if ($configController->deleteRow($data)) {
 
         http_response_code(200);
@@ -210,6 +203,20 @@ if ($method === 'POST') {
         $datas[$value] = $input[$value] ?? null;
     }
 
+    if ($tableName == 'areas') {
+        $nameColum = 'ar_nombre';
+    }
+    if ($tableName == 'tipo_documento') {
+        $nameColum = 'tp_sigla';
+    }
+    if ($tableName == 'marcas') {
+        $nameColum = 'ma_nombre';
+    }
+
+
+    $valueNameColum = $input[$nameColum];
+
+
 
     if (in_array($tableName, $tables)) {
         $statusField = $schemaTable['status'];
@@ -226,25 +233,20 @@ if ($method === 'POST') {
     'tableName' => $tableName,
     'values' => $datas,
     ];
-    // var_dump($data);
 
-
-    if ($data = $configController->addRow($data)) {
+    if ($configController->validate($nameColum,$tableName,$valueNameColum)) {
+        fail('Entrada duplicada');
+    }
+        if ($data = $configController->addRow($data)) {
 
         http_response_code(200);
 
         echo json_encode([
             'status'=>true,
-            'message'=>'Area registrada correctamente',
+            'message'=>'Registro agregado exitosamente',
             'data' => $data
         ]);
-
-    }else{
-        http_response_code(500);
-        echo json_encode([
-            'status'=>false,
-            'message'=>'Error al registrar el nuevo elemento'
-        ]);
     }
+
 
 }

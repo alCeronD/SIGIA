@@ -14,27 +14,26 @@
     <div class="solicPrestamos">
         <form id="formSolicitudPrestamo">
             <div class="inputContent cedula">
-                <label for="cedula" class="labelForm">Cédula: </label>
-                <input type="number" class="inputForm" name="cedula" id="cedula" placeholder="Identificación...">
+                <label for="cedula" class="labelForm">Cédula: <span id="cedula" name="cedula"></span> </label>
             </div>
 
             <div class="inputContent nombre">
-                <label for="nombre" class="labelForm">Nombre: </label>
-                <input type="text" class="inputForm" name="nombre" id="nombre" placeholder="Nombre...">
+                <label for="nombre" class="labelForm">Nombre: <span id="nombre" name="nombre"></span> </label>
+                <!-- <input type="text" class="inputForm" name="nombre" id="nombre" placeholder="Nombre..."> -->
             </div>
             <div class="inputContent apellido">
-                <label for="apellido" class="labelForm">Apellido: *</label>
-                <input type="text" class="inputForm" name="apellido" id="apellido" placeholder="Apellido...">
+                <label for="apellido" class="labelForm">Apellido: <span id="apellido" name="apellido"></span></label>
+                <!-- <input type="text" class="inputForm" name="apellido" id="apellido" placeholder="Apellido..."> -->
             </div>
 
             <div class="inputContent telefono">
-                <label for="telefono" class="labelForm">Teléfono: </label>
-                <input type="tel" class="inputForm" name="telefono" id="telefono" placeholder="Teléfono...">
+                <label for="telefono" class="labelForm">Teléfono: <span id="telefono" name="telefono"></span></label>
+                <!-- <input type="number" class="inputForm" name="telefono" id="telefono" placeholder="Teléfono..."> -->
             </div>
 
             <div class="inputContent email">
-                <label for="email" class="labelForm">Email:</label>
-                <input type="email" class="inputForm" name="email" id="email" placeholder="Correo electrónico...">
+                <label for="email" class="labelForm">Email: <span id="email" name="email"></span></label>
+                <!-- <input type="email" class="inputForm" name="email" id="email" placeholder="Correo electrónico..."> -->
             </div>
 
             <div class="inputContent areaDestino">
@@ -73,7 +72,9 @@
             </div>
 
             <div class="inputAddElements">
+                <Span>Seleccione los elementos:</Span>
                 <button type="button" id="btnAddElements"></button>
+                <button type="button" id="btnAddConsumibles"></button>
             </div>
 
             <!-- Contenedor que va a tener los elementos que seran prestados -->
@@ -90,7 +91,12 @@
 
 <!-- Contenedor que contiene el modal de las tablas de elementos devolutivos y consumibles -->
 <div id="addElements">
-    <?php require_once 'modalAddReserva.php'; ?>
+    <?php require_once 'modalAddDevolutivos.php'; ?>
+</div>
+
+<!-- Contenedor que tiene el modal de los elementos consumibles. -->
+<div id="addElementsConsumibles">
+    <?php require_once 'modalAddConsumibles.php' ?>
 </div>
 
 <!-- Contenedor modal que contiene los registros de los usuarios -->

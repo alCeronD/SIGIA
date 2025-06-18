@@ -6,6 +6,14 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
   margin: 0px;
   padding: 0px;
 }
+
+html, body {
+  height: 100%;
+  margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
 /* Variables para los colores */
 :root {
   --primary: #1e90ff;
@@ -15,10 +23,6 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
   --other: gray;
 }
 
-body{
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-}
 
 /* Estilo de header, corresponde al titulo que está en la parte de arriba. */
 .header {
@@ -153,6 +157,22 @@ body{
 
 /* Estilos de inputs */
 
+/* Inhabilitar flechas de los inputs de tipo number, para chrome, safari, edge y opera */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* inhabilitar feclas a inputs de tipo number en Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+
+
+
 /* Clase general  de botones, contiene la forma del boton el tamaño.*/
 .btn{
   margin: 1rem;
@@ -190,8 +210,6 @@ body{
 
 }
 
-
-
 .btnSubmit{
   background-color: #6c757d;
   color: white;
@@ -200,12 +218,8 @@ body{
   width: auto;
   height: 20pt;
 } */
-
-
 /* Estilos de los contenedores */
+/* Estilo para pantallas con esa resolución en adelante. */
+/* @media (min-width: 1366px) and (min-height: 768px) {
 
-@media (min-width: 800px) and (max-width: 900px) {
-  body {
-    background-color: green;
-  }
-}
+} */
