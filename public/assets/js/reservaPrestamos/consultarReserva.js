@@ -48,7 +48,6 @@ function getReservas() {
       let btnEnd = document.createElement("button");
       let btnDetail = document.createElement("button");
       btnDetail.innerText = "Detalle";
-      btnEnd.innerHTML = "Finalizar";
       btnDetail.setAttribute("class", "btnDetail btnClick");
       btnDetail.setAttribute("data-id", `${dta.codigo}`);
       btnAdd.setAttribute("class", "addElements");
@@ -67,6 +66,13 @@ function getReservas() {
       tdNombreCompleto.textContent = dta.nombre + " " + dta.apellido;
       tdEstado.textContent = dta.estadoPrestamo;
       tdTipo.textContent = dta.tipoPrestamo;
+
+      if (dta.estadoPrestamo != 'Finalizado') {
+        btnEnd.innerHTML = "Finalizar";
+        
+      }else{
+        btnEnd.style.display = 'none';
+      }
 
       tbodyReservaConsult.appendChild(tr);
       tr.appendChild(tdCodigo);
@@ -226,7 +232,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
 
       //Valida que sea true la respuesta de dataResult y que el codigo de la reserva este en el objeto elementos.
-        if (dataResult && codigoReserva && elementos[codigoReserva]) {
+      if (dataResult && codigoReserva && elementos[codigoReserva]) {
         const reservaConElementos = elementos[codigoReserva];
         const listaElementos = reservaConElementos.elementos;
 
@@ -263,6 +269,11 @@ tbodyReservaConsult.addEventListener("click", (event) => {
             if (response.status) {
               alert(`Prestamo # ${reservaConElementos.reserva.codigo} finalizada`);
 
+              //TODO: cambiar el texto de finalizado a validado.
+              let codigoAdd = reservaConElementos.reserva.codigo;
+              console.log(dataResult);
+              console.log(codigoAdd);
+              
             }
           }
         objEndReserva.request.setRequestHeader("accept", "application/json");
@@ -272,7 +283,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         } else {
         console.warn("No se encontraron elementos asociados aún. Espera a que cargue la información.");
         }
-    }
+      }
   }
 });
 

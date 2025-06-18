@@ -114,7 +114,7 @@ class ReservaController
         $data = $this->model->endReserva($elementos,$codigo);
         if ($data['status']) {
             success('Prestamo exitoso');
-            
+        
         }
     }
 
