@@ -214,12 +214,17 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     event.target.getAttribute(["data-end"])
   ) {
 
-    if (confirm("¿Esta seguro de finalizar el prestamo?")) {
+    
+
+
+
         //se compara con doble igual porque el json que recibe de data su codigo esta en string pero el getAttribute esta como entero.
-        const codigoReserva = Number(event.target.getAttribute(["data-end"]));
+      const codigoReserva = Number(event.target.getAttribute(["data-end"]));
       const dataResult = data.find(
-        (dta) => (Number(dta.codigo) === codigoReserva)
+          (dta) => (Number(dta.codigo) === codigoReserva)
       );
+
+
       //Valida que sea true la respuesta de dataResult y que el codigo de la reserva este en el objeto elementos.
         if (dataResult && codigoReserva && elementos[codigoReserva]) {
         const reservaConElementos = elementos[codigoReserva];
@@ -236,9 +241,15 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
         const objEndReserva = new Ajax();
 
-        objEndReserva.request.open('POST','modules/reservaPrestamos/controller/reservaController.php');
-        objEndReserva.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        objEndReserva.request.setRequestHeader("Content-Type", "application/json");
+        console.log(dataResult);
+
+        if (confirm(`¿Está seguro de finalizar el préstamo?\nEstos son los elementos que cambiarán a disponible:\n${
+          listaElementos.map(el => `- ${el.nombre}`).join('\n')
+        }`)) {
+
+          objEndReserva.request.open('POST','modules/reservaPrestamos/controller/reservaController.php');
+          objEndReserva.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+          objEndReserva.request.setRequestHeader("Content-Type", "application/json");
 
         let reservaJson = JSON.stringify({
             data: endReserva,
@@ -246,9 +257,14 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         });
 
         objEndReserva.request.onload = ()=>{
-            let response = objEndReserva.request.responseText;
+            let response = JSON.parse(objEndReserva.request.responseText);
             console.log(response);
-        }
+
+            if (response.status) {
+              alert(`Prestamo # ${reservaConElementos.reserva.codigo} finalizada`);
+
+            }
+          }
         objEndReserva.request.setRequestHeader("accept", "application/json");
         objEndReserva.request.send(reservaJson);
 

@@ -111,7 +111,11 @@ class ReservaController
 
     public function setEndReserva(array $elementos = [], int $codigo = 0){
         // $data = $this->model->endReserva($elementos,$codigo);
-        var_dump($this->model->endReserva($elementos,$codigo));
+        $data = $this->model->endReserva($elementos,$codigo);
+        if ($data['status']) {
+            success('Prestamo exitoso');
+            
+        }
     }
 
     //Función para traer las reservas
@@ -194,7 +198,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
         $data = json_decode($input, true);
 
-
         switch ($data['action']) {
             case 'finalizar':
 
@@ -206,9 +209,13 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 //var_dump($data);
                 $controller->setEndReserva($elementos, $codigoReserva);
                 break;
-            
+
+            case 'registrar':
+                $elementosPres = $data['data'];
+                $controller->setReserva($elementosPres);
+                break;
+                
             default:
-            $controller->setReserva($data);
                 break;
         }
 

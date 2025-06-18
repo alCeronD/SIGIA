@@ -227,10 +227,18 @@ class ReservaModel
 
             $conn->commit();
             $conn->close();
+
+            
         } catch (\Throwable $th) {
             return $th->getMessage();
         }
 
+        $result = [
+            'status'=>true,
+            'message'=>'Prestamo finalizado.'
+        ];
+
+        return $result;
 
 
 
