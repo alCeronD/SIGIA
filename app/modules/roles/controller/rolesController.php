@@ -16,14 +16,6 @@ class rolesController {
         return include_once __DIR__ . '../../views/rolesViews.php';
     }
     
-    public function editarRolesView(){
-
-        $idRol = $_GET['rl_id'];
-        $resultado = $this->modeloRol->obtenerRol($idRol);
-        if ($resultado) {
-            return include __DIR__ . './../views/rolesEditar.php';
-        }
-    }
     
     public function registrarRol(){
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
