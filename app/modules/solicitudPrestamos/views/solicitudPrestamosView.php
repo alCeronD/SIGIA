@@ -1,6 +1,6 @@
 <div class="content">
   <div class="menuTitle">
-    <span id="textTitle">Registrar Solicitud</span>
+    <span id="textTitle">Solicitud:</span>
     <a href="<?= getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
   </div>
 
