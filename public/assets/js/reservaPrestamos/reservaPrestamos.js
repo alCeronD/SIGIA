@@ -821,7 +821,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     data["inicio"] = null;
     data["fin"] = null;
   }
-  //let dataJson = JSON.stringify(data);
 
 
   let dataJson = JSON.stringify({

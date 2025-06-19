@@ -1,5 +1,5 @@
 <table id="tableElementsConsult">
-    <legend>Reservas:</legend>    
+    <legend>Listado de reservas:</legend>    
     <thead>
         <tr>
             <th>Código</th>

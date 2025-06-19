@@ -2,7 +2,7 @@
 
 <div class="content">
     <div class="menuTitle">
-        <span id="textTitle">Registrar solicitud</span>
+        <span id="textTitle">Reserva</span>
         <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
