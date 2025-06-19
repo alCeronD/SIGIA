@@ -1,6 +1,6 @@
 <div class="content">
   <div class="menuTitle">
-    <span id="textTitle">Registrar Préstamo</span>
+    <span id="textTitle">Registrar Solicitud</span>
     <a href="<?= getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
   </div>
 
@@ -24,15 +24,13 @@
         </div>
         
         <!-- Fila 2: Fecha de Solicitud, Reserva, Entrega -->
-       
-        
         <div class="inputContent">
           <label class="labelForm">Fecha de Reserva *</label>
           <input type="date" class="inputForm" name="pres_fch_reserva" required>
         </div>
         
         <div class="inputContent">
-          <label class="labelForm">Fecha de Entrega *</label>
+          <label class="labelForm">Fecha de Solicitud *</label>
           <input type="date" class="inputForm" name="pres_fch_entrega" required>
         </div>
         
@@ -46,8 +44,6 @@
           <label class="labelForm">Observaciones *</label>
           <textarea class="inputForm" name="pres_observacion" rows="3" required></textarea>
         </div>
-
-  
         <div class="contenedorElementos">
           <!-- Filtro por área -->
           <div class="filtroCentral">

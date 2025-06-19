@@ -68,3 +68,19 @@
 .tblRoles{
     grid-area: tblRoles;
 }
+
+.tblRoles table{
+    width: 100%;
+}
+
+.tblRoles table {
+    width: 100%;
+}
+
+/* Ajustar los botones de acciones */
+.tblRoles table td:last-child {
+    display: flex;
+    flex-direction: row;
+    gap: 0.3rem;
+    justify-content: center;
+}

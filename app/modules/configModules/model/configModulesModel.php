@@ -37,8 +37,6 @@ class ConfigModulesModel
     {
 
         $conn = $this->mysqli->getConnect();
-
-
             //Consulta insert sql.
             $stmt = $conn->prepare($sql);
             if (!$stmt) {

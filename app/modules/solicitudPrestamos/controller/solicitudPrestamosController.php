@@ -79,7 +79,6 @@ class solicitudPrestamosController{
             }
         }
     }
-
     public function verDetallePrestamo() {
         $id = $_GET['pres_cod'] ?? null;
     
@@ -189,12 +188,6 @@ class solicitudPrestamosController{
         </div>
         ";
     }
-
-
-
-    
-       
-    
 }
 
 ?>

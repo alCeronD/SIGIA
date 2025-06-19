@@ -174,9 +174,9 @@ input[type="number"] {
 
 
 /* Clase general  de botones, contiene la forma del boton el tamaño.*/
-.btn{
+/* .btn{
   margin: 1rem;
-}
+} */
 
 
 /* Estilos generales del modulo de configuración = Es la estructura de los siguientes modulos: areas, tipoDocumento, marca,categoria,roles */

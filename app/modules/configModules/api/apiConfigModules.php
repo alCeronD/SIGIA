@@ -227,8 +227,6 @@ if ($method === 'POST') {
        exit();
     }
 
-    //Comparo si el valor esta para asociar el valor de la pk
-
     $data = [
     'tableName' => $tableName,
     'values' => $datas,
@@ -240,13 +238,27 @@ if ($method === 'POST') {
         if ($data = $configController->addRow($data)) {
 
         http_response_code(200);
+            echo json_encode([
+                'status'=>true,
+                'message'=>'Registro agregado exitosamente',
+                'data' => $data
+            ]);
+        }
 
-        echo json_encode([
-            'status'=>true,
-            'message'=>'Registro agregado exitosamente',
-            'data' => $data
-        ]);
-    }
+
+
+    // if ($data = $configController->addRow($data)) {
+
+    //     http_response_code(200);
+
+    //     echo json_encode([
+    //         'status'=>true,
+    //         'message'=>'Registro agregado exitosamente',
+    //         'data' => $data
+    //     ]);
+
+
+
 
 
 }

@@ -23,7 +23,7 @@
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="tableBodyRoles">
                 <?php if (!empty($roles)) : ?>
                     <?php foreach ($roles as $rol) : ?>
                         <tr>
