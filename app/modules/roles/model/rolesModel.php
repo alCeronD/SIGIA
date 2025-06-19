@@ -70,7 +70,7 @@ public function actualizarRol($rol_id, $rol_nombre,$rol_descripcion) {
 }
 
 public function eliminarRol($rl_id,$status) {
-    $sql = "UPDATE roles SET rl_status =$status WHERE rl_id = $rl_id";
+    $sql = "UPDATE roles SET rl_status = $status WHERE rl_id = $rl_id";
     $resultado = $this->conn->query($sql);
 
     if ($resultado) {
