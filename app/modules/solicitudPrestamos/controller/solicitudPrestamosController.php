@@ -56,12 +56,10 @@ class solicitudPrestamosController{
             $data = $_POST;
             $datos = new solicitudPrestamos($this->conn);
             $lastId = $datos->create($data, $rol_id);
-        
             if (is_numeric($lastId)) {
                 include_once __DIR__ . '/../../configModules/prestamosElementos/model/prestamosElementosModel.php';
                 $prestamoElemento = new prestamoElementos($this->conn);
                 $elementoModel = new ElementoModelo($this->conn);
-                
                 foreach ($elementos_seleccionados as $elemento_id) {
                     $prestamoElemento->create($lastId, $usuario_id ,$elemento_id);
                     $elementoModel->actualizarEstadoElemento($elemento_id, 3);
@@ -79,6 +77,8 @@ class solicitudPrestamosController{
             }
         }
     }
+    
+    
     public function verDetallePrestamo() {
         $id = $_GET['pres_cod'] ?? null;
     
