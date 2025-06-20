@@ -1,3 +1,9 @@
+import { closeModal } from '../libraries/cases.js';
+
+    // Modal Detalle
+const modalDetalle = document.getElementById('modalDetalle');
+const contenidoDetalle = document.getElementById('contenidoDetalle');
+const btnCerrarModal = document.querySelector('.closeModalBtn');
   document.addEventListener('DOMContentLoaded', function () {
     const filas = Array.from(document.querySelectorAll('.fila-prestamo'));
     const paginacion = document.getElementById('paginacion-prestamos');
@@ -38,9 +44,9 @@
 
     generarPaginacion();
 
-    // Modal Detalle
-    const modalDetalle = document.getElementById('modalDetalle');
-    const contenidoDetalle = document.getElementById('contenidoDetalle');
+    //Función generada desde libraries/case.js
+    closeModal(modalDetalle,btnCerrarModal);
+
 
     // Abrir el modal y cargar contenido por AJAX
     document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
@@ -64,14 +70,3 @@
   function abrirModalDetalle() {
     document.getElementById("modalDetalle").style.display = "block";
   }
-
-  function cerrarModalDetalle() {
-    document.getElementById("modalDetalle").style.display = "none";
-  }
-
-  window.onclick = function (event) {
-    const modal = document.getElementById("modalDetalle");
-    if (event.target === modal) {
-      cerrarModalDetalle();
-    }
-  };
