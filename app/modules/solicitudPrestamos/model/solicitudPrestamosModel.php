@@ -35,29 +35,20 @@ class solicitudPrestamos {
         $tp_pres           = 2;
         $pres_rol          = $rol_usuario;
         
-        
-        // $query = "
-        //     INSERT INTO prestamos (
-        //         pres_fch_slcitud, pres_fch_reserva, pres_hor_inicio, pres_hor_fin,
-        //         pres_fch_entrega, pres_observacion, pres_destino, pres_estado, tp_pres, pres_rol
-        //     ) VALUES (
-        //         '$pres_fch_slcitud', '$pres_fch_reserva', '$pres_hor_inicio', '$pres_hor_fin',
-        //         '$pres_fch_entrega', '$pres_observacion', '$pres_destino', $pres_estado, $tp_pres, $pres_rol
-        //     )
-        // ";
         $query = "INSERT INTO prestamos (
                 pres_fch_slcitud, pres_fch_reserva,
                 pres_fch_entrega, pres_observacion, pres_destino, pres_estado, tp_pres, pres_rol
             ) VALUES (NOW(), '$pres_fch_reserva', '$pres_fch_entrega', '$pres_observacion', '$pres_destino', $pres_estado, $tp_pres, $pres_rol
             )
         ";
-    
+        
         if ($this->conn->query($query)) {
             return $this->conn->insert_id; 
         } else {
             return "Error al registrar el préstamo: " . $this->conn->error;
         }
     }
+    
     public function update($datos, $id) {
         $cadena = "";
 

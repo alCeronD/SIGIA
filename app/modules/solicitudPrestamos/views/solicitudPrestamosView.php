@@ -1,64 +1,71 @@
 <div class="content">
   <div class="menuTitle">
-    <span id="textTitle">Solicitud:</span>
-    <a href="<?= getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
+    <span id="textTitle">Registrar solicitud</span>
+    <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
   </div>
 
-    <div class="formCategoria">
-      <form action="<?= getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamo'); ?>" method="POST" id="formSolicitudPrestamo">
-  
-        <!-- Fila 1: Nombre, Apellido, Rol -->
-        <div class="inputContent">
-          <label class="labelForm">Nombre del Solicitante</label>
-          <input type="text" class="inputForm" value="<?= $nombre ?>" name="pres_nombre" maxlength="50" readonly>
-        </div>
-        
-        <div class="inputContent">
-          <label class="labelForm">Apellido del Solicitante</label>
-          <input type="text" class="inputForm" value="<?= $apellido ?>" name="pres_apellido" maxlength="50" readonly>
-        </div>
-        
-        <div class="inputContent">
-          <label class="labelForm">Rol del Solicitante</label>
-          <input type="text" class="inputForm" value="<?= $rol_nombre ?>" name="pres_rol" maxlength="50" readonly>
-        </div>
-        
-        <!-- Fila 2: Fecha de Solicitud, Reserva, Entrega -->
-        <div class="inputContent">
-          <label class="labelForm">Fecha de Reserva *</label>
-          <input type="date" class="inputForm" name="pres_fch_reserva" required>
-        </div>
-        
-        <div class="inputContent">
-          <label class="labelForm">Fecha de Solicitud *</label>
-          <input type="date" class="inputForm" name="pres_fch_entrega" required>
-        </div>
-        
-        <!-- Fila 3: Destino (col span 2), Observaciones (col span 3) -->
-        <div class="inputContent" style="grid-column: span 2;">
-          <label class="labelForm">Destino *</label>
-          <input type="text" class="inputForm" name="pres_destino" maxlength="30" required>
-        </div>
-        
-        <div class="inputObservaciones">
-          <label class="labelForm">Observaciones *</label>
-          <textarea class="inputForm" name="pres_observacion" rows="3" required></textarea>
-        </div>
-        <div class="contenedorElementos">
-          <!-- Filtro por área -->
-          <div class="filtroCentral">
-            <label class="labelForm" for="filtro_area">Filtrar por Área</label>
-            <select class="inputForm" id="filtro_area" name="filtro_area">
+  <div class="solicPrestamos">
+    <form id="formSolicitudPrestamo" method="POST" action="<?= getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamo'); ?>">
+
+      <div class="inputContent nombre">
+        <label class="labelForm">Nombre del Solicitante</label>
+        <input type="text" class="inputForm" value="<?= $nombre ?>" name="pres_nombre" readonly>
+      </div>
+
+      <div class="inputContent apellido">
+        <label class="labelForm">Apellido del Solicitante</label>
+        <input type="text" class="inputForm" value="<?= $apellido ?>" name="pres_apellido" readonly>
+      </div>
+
+      <div class="inputContent rol">
+        <label class="labelForm">Rol del Solicitante</label>
+        <input type="text" class="inputForm" value="<?= $rol_nombre ?>" name="pres_rol" readonly>
+      </div>
+
+      <div class="inputContent fechaReserva">
+        <label class="labelForm">Fecha de Reserva *</label>
+        <input type="date" class="inputForm" name="pres_fch_reserva" required>
+      </div>
+
+      <div class="inputContent fechaEntrega">
+        <label class="labelForm">Fecha de devolución *</label>
+        <input type="date" class="inputForm" name="pres_fch_entrega" required>
+      </div>
+
+      <div class="inputContent destino">
+        <label class="labelForm">Destino *</label>
+        <input type="text" class="inputForm" name="pres_destino" maxlength="30" required>
+      </div>
+
+      <div class="inputContent inputObservaciones">
+        <label class="labelForm">Observaciones *</label>
+        <textarea class="inputForm" name="pres_observacion" required rows="3"></textarea>
+      </div>
+
+      <div class="inputContent">
+        <label class="labelForm">Elementos a prestar</label>
+        <button type="button" class="btnForm" onclick="abrirModalElementos()">Seleccionar Elementos</button>
+      </div>
+
+      <div id="modalSeleccionElementos" class="modal">
+        <div class="modal-content">
+          <div class="modal-title">
+            <span id="modalTitle">Seleccionar Elementos</span>
+            <button class="closeModalBtn" type="button" onclick="cerrarModalElementos()">&times;</button>
+          </div>
+
+          <div class="inputContent filtroArea">
+            <label class="labelForm" for="filtro_area_modal">Filtrar por Área</label>
+            <select class="inputForm" id="filtro_area_modal" name="filtro_area_modal">
               <option value="">Todas las áreas</option>
               <?php foreach ($areas as $area): ?>
                 <option value="<?= $area['ar_cod']; ?>"><?= htmlspecialchars($area['ar_nombre']); ?></option>
               <?php endforeach; ?>
             </select>
           </div>
-        
-          <!-- Tabla de elementos -->
-          <div class="tablaElementos">
-            <h4 class="mt-4 mb-2" id="tabla-elementos">Elementos Devolutivos</h4>
+
+          <div class="tableElements mt-3">
+            <h4 class="mb-2">Elementos Devolutivos</h4>
             <table class="table table-bordered table-hover">
               <thead class="table-light">
                 <tr>
@@ -68,7 +75,7 @@
                   <th>Seleccionar</th>
                 </tr>
               </thead>
-              <tbody id="tabla-elementos-devolutivos">
+              <tbody id="tabla-elementos-devolutivos-modal">
                 <?php foreach ($elementos as $elemento): ?>
                   <tr data-area="<?= $elemento['ar_cod']; ?>">
                     <td><?= htmlspecialchars($elemento['elm_placa']); ?></td>
@@ -81,26 +88,44 @@
                 <?php endforeach; ?>
               </tbody>
             </table>
-        
-            <!-- Paginación -->
             <div class="page container-fluid col-12">
               <ul id="paginacion" class="pagination justify-content-center"></ul>
             </div>
           </div>
-        
-          <!-- Botón -->
-          <div class="inputBtn">
-            <button type="submit"  class="btnForm">Registrar Préstamo</button>
+
+          <div class="inputBtn mt-3">
+            <button type="button" class="btnForm" onclick="cerrarModalElementos()">Confirmar Selección</button>
           </div>
         </div>
-      </form>
-    </div>
+      </div>
+
+      <div class="inputBtn">
+        <button type="submit" class="btnForm">Registrar Préstamo</button>
+      </div>
+
+    </form>
+  </div>
 </div>
 
 <script>
+function abrirModalElementos() {
+  document.getElementById("modalSeleccionElementos").style.display = "block";
+}
+
+function cerrarModalElementos() {
+  document.getElementById("modalSeleccionElementos").style.display = "none";
+}
+
+window.onclick = function (event) {
+  const modal = document.getElementById("modalSeleccionElementos");
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+};
+
 document.addEventListener('DOMContentLoaded', function () {
-  const filtroArea = document.getElementById('filtro_area');
-  const filasOriginales = Array.from(document.querySelectorAll('#tabla-elementos-devolutivos tr'));
+  const filtroArea = document.getElementById('filtro_area_modal');
+  const filasOriginales = Array.from(document.querySelectorAll('#tabla-elementos-devolutivos-modal tr'));
   const paginacion = document.getElementById('paginacion');
   const itemsPorPagina = 5;
   let filasFiltradas = [];
@@ -117,10 +142,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function actualizarTabla(pagina) {
     filasOriginales.forEach(fila => fila.style.display = 'none');
-
     const inicio = (pagina - 1) * itemsPorPagina;
     const fin = inicio + itemsPorPagina;
-
     const paginaActual = filasFiltradas.slice(inicio, fin);
     paginaActual.forEach(fila => fila.style.display = '');
   }
@@ -148,7 +171,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  // Inicialización
   filasFiltradas = filasOriginales;
   generarPaginacion();
 });
+
 </script>
