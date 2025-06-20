@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-06-2025 a las 21:29:44
+-- Tiempo de generación: 20-06-2025 a las 23:07:43
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `areas` (
   `ar_cod` int(11) NOT NULL,
   `ar_nombre` varchar(30) NOT NULL,
-  `ar_descripcion` varchar(100) DEFAULT NULL,
+  `ar_descripcion` varchar(300) DEFAULT NULL,
   `ar_status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -39,11 +39,11 @@ CREATE TABLE `areas` (
 --
 
 INSERT INTO `areas` (`ar_cod`, `ar_nombre`, `ar_descripcion`, `ar_status`) VALUES
-(1, 'Multimedia', 'hel', 1),
-(2, 'Fotografía', 'aca hay camaras', 1),
-(3, 'General', 'elementos conss\n', 1),
-(4, 'Aulas De Computo', 'asdads', 1),
-(5, 'Area de diseño', 'esta area pertencece a gente de dudosa procedencia', 1);
+(1, 'Multimedia', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrup', 1),
+(2, 'Fotografía', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrupti voluptates iste eum illo dignissimos, quia essorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrupti voluptates iste eum illo dignissimos, quia esse quasi quo', 1),
+(3, 'General', 'orem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrupti voluptates iste eum illo dignissimos, quia esse quasi quo ipsa officiis quod provident quis sint vitae in dicta! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Atque velit, cum, sed doloremor', 1),
+(4, 'Aulas De Computo', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrup', 1),
+(5, 'Area de diseño', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrup', 1);
 
 -- --------------------------------------------------------
 
@@ -67,6 +67,15 @@ CREATE TABLE `categoria` (
   `ca_descripcion` varchar(200) NOT NULL,
   `ca_status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `categoria`
+--
+
+INSERT INTO `categoria` (`ca_id`, `ca_nombre`, `ca_descripcion`, `ca_status`) VALUES
+(3, 'elemento utilidad', 'asd', 1),
+(4, 'sony', 'asd', 1),
+(6, 'prueba informacionss', 'asdss', 0);
 
 -- --------------------------------------------------------
 
@@ -94,62 +103,66 @@ INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_nombre`, `elm_existencia`,
 (126, 1002, 'Proyector Epson', 1, 1, 1, 1, 2),
 (127, 1003, 'Monitor Samsung 24\"', 1, 1, 1, 1, 4),
 (128, 1004, 'Teclado mecánico Logitech', 1, 1, 1, 1, 5),
-(129, 1005, 'Ratón inalámbrico', 1, 1, 1, 1, 1),
-(130, 1006, 'Impresora laser Brother', 1, 1, 1, 1, 2),
-(131, 1007, 'Tablet Samsung Galaxy', 1, 1, 1, 1, 4),
+(129, 1005, 'Ratón inalámbrico', 1, 1, 1, 3, 1),
+(130, 1006, 'Impresora laser Brother', 1, 1, 1, 3, 2),
+(131, 1007, 'Tablet Samsung Galaxy', 1, 1, 1, 3, 4),
 (132, 1008, 'Cámara web Logitech', 1, 1, 1, 1, 5),
 (133, 1009, 'Parlantes Bose', 1, 1, 1, 1, 1),
 (134, 1010, 'Auriculares Sony', 1, 1, 1, 1, 2),
-(135, 1011, 'Switch Cisco 24 puertos', 1, 1, 1, 1, 4),
+(135, 1011, 'Switch Cisco 24 puertos', 1, 1, 1, 3, 4),
 (136, 1012, 'Cable HDMI 2 metros', 1, 1, 1, 1, 5),
 (137, 1013, 'Estabilizador APC 1000VA', 1, 1, 1, 1, 1),
-(138, 1014, 'Unidad USB 64GB', 1, 1, 1, 1, 2),
+(138, 1014, 'Unidad USB 64GB', 1, 1, 1, 3, 2),
 (139, 1015, 'Router TP-Link', 1, 1, 1, 1, 4),
-(140, 1016, 'Base para laptop', 1, 1, 1, 3, 5),
-(141, 1017, 'Disco duro externo 1TB', 1, 1, 1, 1, 1),
+(140, 1016, 'Base para laptop', 1, 1, 1, 1, 5),
+(141, 1017, 'Disco duro externo 1TB', 1, 1, 1, 3, 1),
 (142, 1018, 'Proyector portátil LG', 1, 1, 1, 1, 2),
 (143, 1019, 'Cable VGA 3 metros', 1, 1, 1, 1, 4),
 (144, 1020, 'Micrófono condensador', 1, 1, 1, 1, 5),
-(145, 1021, 'Soporte para monitor', 1, 1, 1, 1, 1),
-(146, 1022, 'Teclado inalámbrico Microsoft', 1, 1, 1, 3, 2),
-(147, 1023, 'Ratón óptico HP', 1, 1, 1, 3, 4),
-(148, 1024, 'Hub USB 4 puertos', 1, 1, 1, 3, 5),
-(149, 1025, 'Pantalla táctil Dell', 1, 1, 1, 3, 1),
-(150, 1026, 'Cámara de seguridad IP', 1, 1, 1, 3, 2),
-(151, 1027, 'Laptop Lenovo ThinkPad', 1, 1, 1, 3, 4),
-(152, 1028, 'Proyector 4K', 1, 1, 1, 3, 5),
-(153, 1029, 'Router inalámbrico Netgear', 1, 1, 1, 1, 1),
+(145, 1021, 'Soporte para monitor', 1, 1, 1, 3, 1),
+(146, 1022, 'Teclado inalámbrico Microsoft', 1, 1, 1, 1, 2),
+(147, 1023, 'Ratón óptico HP', 1, 1, 1, 1, 4),
+(148, 1024, 'Hub USB 4 puertos', 1, 1, 1, 1, 5),
+(149, 1025, 'Pantalla táctil Dell', 1, 1, 1, 1, 1),
+(150, 1026, 'Cámara de seguridad IP', 1, 1, 1, 1, 2),
+(151, 1027, 'Laptop Lenovo ThinkPad', 1, 1, 1, 1, 4),
+(152, 1028, 'Proyector 4K', 1, 1, 1, 1, 5),
+(153, 1029, 'Router inalámbrico Netgear', 1, 1, 1, 3, 1),
 (154, 1030, 'Micrófono inalámbrico Shure', 1, 1, 1, 1, 2),
-(155, 3001, 'Papel A4 paquete', 50, 2, 2, 1, 3),
+(155, 3001, 'Papel A4 paquete', 48, 2, 2, 1, 3),
 (156, 3002, 'Tinta para impresora negra', 30, 2, 2, 1, 3),
 (157, 3003, 'Tinta para impresora color', 25, 2, 2, 1, 3),
-(158, 3004, 'Marcadores permanentes', 40, 1, 2, 1, 3),
-(159, 3005, 'Bolígrafos azules', 100, 1, 2, 1, 3),
+(158, 3004, 'Marcadores permanentes', 28, 1, 2, 1, 3),
+(159, 3005, 'Bolígrafos azules', 18, 1, 2, 1, 3),
 (160, 3006, 'Resaltadores fluorescentes', 60, 1, 2, 1, 3),
-(161, 3007, 'Cinta adhesiva', 70, 2, 2, 1, 3),
-(162, 3008, 'Grapas para engrampadora', 90, 2, 2, 1, 3),
+(161, 3007, 'Cinta adhesiva', 2, 2, 2, 1, 3),
+(162, 3008, 'Grapas para engrampadora', 87, 2, 2, 1, 3),
 (163, 3009, 'Hojas para notas adhesivas', 80, 2, 2, 1, 3),
-(164, 3010, 'Cartuchos de tinta HP', 35, 1, 2, 1, 3),
-(165, 3011, 'Papel bond blanco', 55, 2, 2, 1, 3),
-(166, 3012, 'Papel bond color', 45, 2, 2, 1, 3),
-(167, 3013, 'Toners para impresora', 20, 1, 2, 1, 3),
-(168, 3014, 'Papel carbón', 40, 2, 2, 1, 3),
+(164, 3010, 'Cartuchos de tinta HP', 0, 1, 2, 1, 3),
+(165, 3011, 'Papel bond blanco', 40, 2, 2, 1, 3),
+(166, 3012, 'Papel bond color', 42, 2, 2, 1, 3),
+(167, 3013, 'Toners para impresora', 18, 1, 2, 1, 3),
+(168, 3014, 'Papel carbón', 27, 2, 2, 1, 3),
 (169, 3015, 'Papel fotográfico', 25, 2, 2, 1, 3),
-(170, 3016, 'Borradores para pizarras', 30, 1, 2, 1, 3),
-(171, 3017, 'Cintas correctoras', 75, 2, 2, 1, 3),
-(172, 3018, 'Clips metálicos', 150, 1, 2, 1, 3),
-(173, 3019, 'Cintas para embalaje', 65, 2, 2, 1, 3),
-(174, 3020, 'Tijeras', 20, 1, 2, 1, 3),
-(175, 3021, 'Gomas de borrar', 80, 1, 2, 1, 3),
+(170, 3016, 'Borradores para pizarras', 3, 1, 2, 1, 3),
+(171, 3017, 'Cintas correctoras', 2, 2, 2, 1, 3),
+(172, 3018, 'Clips metálicos', 21, 1, 2, 1, 3),
+(173, 3019, 'Cintas para embalaje', 0, 2, 2, 1, 3),
+(174, 3020, 'Tijeras', 19, 1, 2, 1, 3),
+(175, 3021, 'Gomas de borrar', 37, 1, 2, 1, 3),
 (176, 3022, 'Perforadoras de papel', 10, 1, 2, 1, 3),
-(177, 3023, 'Agendas para anotaciones', 15, 1, 2, 1, 3),
-(178, 3024, 'Sobres tamaño carta', 100, 2, 2, 1, 3),
-(179, 3025, 'Carpetas plásticas', 60, 2, 2, 1, 3),
-(180, 3026, 'Papel reciclado', 70, 2, 2, 1, 3),
+(177, 3023, 'Agendas para anotaciones', 6, 1, 2, 3, 3),
+(178, 3024, 'Sobres tamaño carta', 88, 2, 2, 1, 3),
+(179, 3025, 'Carpetas plásticas', 1, 2, 2, 1, 3),
+(180, 3026, 'Papel reciclado', 67, 2, 2, 1, 3),
 (181, 3027, 'Marcadores de pizarra blanca', 45, 1, 2, 1, 3),
-(182, 3028, 'Clips plásticos', 120, 1, 2, 1, 3),
-(183, 3029, 'Cinta doble faz', 30, 2, 2, 1, 3),
-(184, 3030, 'Sellos de goma', 25, 1, 2, 1, 3);
+(182, 3028, 'Clips plásticos', 64, 1, 2, 1, 3),
+(183, 3029, 'Cinta doble faz', 1, 2, 2, 1, 3),
+(184, 3030, 'Sellos de goma', 25, 1, 2, 1, 3),
+(187, 46575467, 'Cargador hp 107', 1, 1, 1, 1, 2),
+(188, 1, 'camara informacion', 1, 2, 1, 1, 1),
+(189, 333, 'cinca adeciva', 32, 1, 2, 1, 3),
+(190, 3534543, 'Información de elementos', 1, 1, 1, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -159,12 +172,64 @@ INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_nombre`, `elm_existencia`,
 
 CREATE TABLE `entradas_salidas` (
   `ent_sal_cod` int(11) NOT NULL,
-  `ent_sal_cantidad` int(11) NOT NULL,
-  `ent_fech_registro` date DEFAULT NULL,
-  `entr_tp_movmnt` varchar(100) DEFAULT '',
-  `ent_desc_mvnto` varchar(100) NOT NULL,
+  `ent_sal_cantidad` int(11) DEFAULT NULL,
+  `ent_fech_registro` timestamp NULL DEFAULT NULL,
+  `entr_tp_movmnt` int(11) DEFAULT NULL,
+  `ent_id_usu` int(11) DEFAULT NULL,
   `ent_sal_cod_elemtn` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `entradas_salidas`
+--
+
+INSERT INTO `entradas_salidas` (`ent_sal_cod`, `ent_sal_cantidad`, `ent_fech_registro`, `entr_tp_movmnt`, `ent_id_usu`, `ent_sal_cod_elemtn`) VALUES
+(51, 12, '2025-06-19 16:02:52', 2, 106, 171),
+(52, 1, '2025-06-19 16:05:30', 2, 108, 171),
+(53, 2, '2025-06-19 16:05:30', 2, 108, 182),
+(54, 12, '2025-06-19 16:12:57', 2, 116, 171),
+(55, 3, '2025-06-19 16:16:26', 2, 108, 161),
+(56, 3, '2025-06-19 16:19:48', 2, 108, 183),
+(57, 1, '2025-06-19 16:27:34', 2, 108, 183),
+(58, 3, '2025-06-19 16:29:32', 2, 112, 171),
+(59, 12, '2025-06-19 17:31:13', 2, 107, 172),
+(60, 3, '2025-06-19 17:31:13', 2, 107, 182),
+(61, 1, '2025-06-19 17:43:02', 2, 113, 171),
+(62, 1, '2025-06-19 17:43:26', 2, 111, 159),
+(63, 3, '2025-06-19 17:44:59', 2, 106, 171),
+(64, 2, '2025-06-19 17:51:52', 2, 108, 171),
+(65, 3, '2025-06-19 18:06:52', 2, 111, 159),
+(66, 2, '2025-06-19 19:09:54', 2, 107, 159),
+(67, 1, '2025-06-19 19:09:54', 2, 107, 164),
+(68, 12, '2025-06-19 19:09:54', 2, 107, 172),
+(69, 3, '2025-06-19 19:10:45', 2, 108, 165),
+(70, 2, '2025-06-19 19:10:45', 2, 108, 172),
+(71, 12, '2025-06-19 19:10:45', 2, 108, 175),
+(72, 2, '2025-06-19 21:45:52', 2, 107, 172),
+(73, 2, '2025-06-19 21:47:43', 2, 108, 161),
+(74, 3, '2025-06-19 21:47:43', 2, 108, 177),
+(75, 2, '2025-06-19 21:53:41', 2, 117, 172),
+(76, 1, '2025-06-19 21:53:41', 2, 117, 174),
+(77, 3, '2025-06-19 23:13:47', 2, 108, 171),
+(78, 12, '2025-06-19 23:13:47', 2, 108, 182),
+(79, 3, '2025-06-19 23:15:10', 2, 145, 172),
+(80, 2, '2025-06-19 23:15:10', 2, 145, 175),
+(81, 22, '2025-06-19 23:18:20', 2, 108, 172),
+(82, 2, '2025-06-19 23:20:21', 2, 108, 172),
+(83, 3, '2025-06-19 23:20:21', 2, 108, 175),
+(84, 3, '2025-06-19 23:21:24', 2, 107, 182),
+(85, 2, '2025-06-19 23:39:43', 2, 107, 159),
+(86, 12, '2025-06-19 23:39:43', 2, 107, 175),
+(87, 3, '2025-06-19 23:40:02', 2, 106, 172),
+(88, 2, '2025-06-19 23:46:13', 2, 108, 161),
+(89, 2, '2025-06-19 23:46:13', 2, 108, 175),
+(90, 12, '2025-06-20 02:42:24', 2, 115, 168),
+(91, 3, '2025-06-20 02:42:24', 2, 115, 180),
+(92, 2, '2025-06-20 03:23:28', 2, 145, 175),
+(93, 3, '2025-06-20 03:23:28', 2, 145, 182),
+(94, 2, '2025-06-20 21:05:08', 2, 108, 155),
+(95, 3, '2025-06-20 21:05:08', 2, 108, 162),
+(96, 12, '2025-06-20 21:05:08', 2, 108, 182);
 
 -- --------------------------------------------------------
 
@@ -248,11 +313,8 @@ CREATE TABLE `marcas` (
 --
 
 INSERT INTO `marcas` (`ma_id`, `ma_nombre`, `ma_descripcion`, `ma_status`) VALUES
-(1, 'hp', 'marcas', 0),
-(2, 'epson', 'moad', 1),
-(3, 'esony', 'modasdsad', 1),
-(4, 'canon', 'asdasd', 1),
-(5, 'asdasd', 'sss', 1);
+(13, 'canon', 'orem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrupti voluptates iste eum illo dignissimos, quia esse quasi quo ipsa officiis quod provident quis sint vitae', 1),
+(15, 'Sony', 'o ipsa officiis quod provident quis sint vitae', 1);
 
 -- --------------------------------------------------------
 
@@ -285,7 +347,7 @@ INSERT INTO `permisos` (`per_id`, `per_funcion`, `per_nmrbr_permiso`, `per_modul
 
 CREATE TABLE `prestamos` (
   `pres_cod` int(11) NOT NULL,
-  `pres_fch_slcitud` date DEFAULT NULL,
+  `pres_fch_slcitud` datetime DEFAULT NULL,
   `pres_fch_reserva` date DEFAULT NULL,
   `pres_hor_inicio` time DEFAULT NULL,
   `pres_hor_fin` time DEFAULT NULL,
@@ -302,8 +364,17 @@ CREATE TABLE `prestamos` (
 --
 
 INSERT INTO `prestamos` (`pres_cod`, `pres_fch_slcitud`, `pres_fch_reserva`, `pres_hor_inicio`, `pres_hor_fin`, `pres_fch_entrega`, `pres_observacion`, `pres_destino`, `pres_estado`, `tp_pres`, `pres_rol`) VALUES
-(40, '2025-06-11', '2025-06-11', NULL, NULL, '2025-06-13', 'asdasd', 'externo', 1, 2, 2),
-(41, '2025-06-11', '2025-06-11', '11:12:00', '11:12:00', '2025-06-11', 'a nombre del instructor x, lo usa el aprendiz y.', 'centro', 1, 2, 2);
+(210, '2025-06-19 18:39:43', '2025-06-19', NULL, NULL, '2025-06-20', '', 'externo', 4, 2, 2),
+(211, '2025-06-19 18:40:02', '2025-06-19', NULL, NULL, '2025-06-20', '', 'externo', 4, 2, 2),
+(212, '2025-06-19 18:46:13', '2025-06-19', NULL, NULL, '0000-00-00', 'pruebas de informacion', 'externo', 4, 2, 2),
+(213, '2025-06-19 21:42:24', '2025-06-19', NULL, NULL, '2025-06-20', 'Solicitud de elementos para el señor en el area de fotografía.', 'externo', 4, 2, 2),
+(214, '2025-06-19 22:23:28', '2025-06-12', NULL, NULL, '2025-06-21', '', 'externo', 4, 2, 2),
+(215, '2025-06-19 23:12:58', '2025-06-21', NULL, NULL, '2025-06-26', 'pruebas de solicitud, nos e que hacer aca.', 'centro', 4, 2, 4),
+(216, '2025-06-19 23:14:13', '2025-06-21', NULL, NULL, '2025-06-21', 'asdasd', 'centro', 3, 2, 4),
+(217, '2025-06-20 00:05:02', '2025-06-20', NULL, NULL, '2025-06-21', 'pruebas de solicitud, nos e que hacer aca.', 'centro', 3, 2, 4),
+(218, '2025-06-20 15:00:52', '2025-06-21', NULL, NULL, '2025-06-20', 'Informaci[on del destino.', 'centro', 4, 2, 4),
+(219, '2025-06-20 15:18:13', '2025-06-21', NULL, NULL, '2025-06-23', 'prueba de información.', 'centro', 3, 2, 4),
+(220, '2025-06-20 16:05:08', '2025-06-20', NULL, NULL, '2025-06-21', '', 'externo', 1, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -323,14 +394,113 @@ CREATE TABLE `prestamos_elementos` (
 --
 
 INSERT INTO `prestamos_elementos` (`pres_el_cod`, `pres_cod`, `pres_el_usu_id`, `pres_el_elem_cod`) VALUES
-(37, 40, 108, 152),
-(38, 40, 108, 150),
-(39, 40, 108, 149),
-(40, 40, 108, 148),
-(41, 40, 108, 147),
-(42, 41, 107, 140),
-(43, 41, 107, 146),
-(44, 41, 107, 151);
+(422, NULL, 111, 127),
+(423, NULL, 111, 129),
+(424, NULL, 111, 125),
+(425, NULL, 111, 128),
+(426, NULL, 110, 126),
+(427, NULL, 110, 132),
+(428, NULL, 109, 130),
+(429, NULL, 109, 134),
+(430, NULL, 109, 125),
+(431, NULL, 109, 128),
+(432, NULL, 109, 125),
+(433, NULL, 109, 128),
+(434, NULL, 107, 128),
+(435, NULL, 107, 131),
+(436, NULL, 107, 134),
+(437, NULL, 107, 159),
+(438, NULL, 107, 164),
+(439, NULL, 107, 172),
+(440, NULL, 108, 130),
+(441, NULL, 108, 137),
+(442, NULL, 108, 143),
+(443, NULL, 108, 145),
+(444, NULL, 108, 165),
+(445, NULL, 108, 172),
+(446, NULL, 108, 175),
+(447, NULL, 107, 130),
+(448, NULL, 107, 134),
+(449, NULL, 107, 140),
+(450, NULL, 107, 144),
+(451, NULL, 107, 172),
+(452, NULL, 108, 129),
+(453, NULL, 108, 132),
+(454, NULL, 108, 134),
+(455, NULL, 108, 161),
+(456, NULL, 108, 177),
+(457, NULL, 106, 129),
+(458, NULL, 106, 132),
+(459, NULL, 106, 134),
+(460, NULL, 117, 131),
+(461, NULL, 117, 147),
+(462, NULL, 117, 150),
+(463, NULL, 117, 172),
+(464, NULL, 117, 174),
+(465, NULL, 108, 128),
+(466, NULL, 108, 130),
+(467, NULL, 108, 134),
+(468, NULL, 108, 171),
+(469, NULL, 108, 182),
+(470, NULL, 145, 127),
+(471, NULL, 145, 131),
+(472, NULL, 145, 134),
+(473, NULL, 145, 172),
+(474, NULL, 145, 175),
+(475, NULL, 108, 130),
+(476, NULL, 108, 133),
+(477, NULL, 108, 129),
+(478, NULL, 108, 133),
+(479, NULL, 108, 134),
+(480, NULL, 108, 172),
+(481, NULL, 108, 129),
+(482, NULL, 108, 133),
+(483, NULL, 108, 134),
+(484, NULL, 108, 172),
+(485, NULL, 108, 175),
+(486, NULL, 107, 127),
+(487, NULL, 107, 132),
+(488, NULL, 107, 182),
+(489, 210, 107, 128),
+(490, 210, 107, 130),
+(491, 210, 107, 134),
+(492, 210, 107, 159),
+(493, 210, 107, 175),
+(494, 211, 106, 132),
+(495, 211, 106, 133),
+(496, 211, 106, 137),
+(497, 211, 106, 172),
+(498, 212, 108, 141),
+(499, 212, 108, 144),
+(500, 212, 108, 150),
+(501, 212, 108, 153),
+(502, 212, 108, 161),
+(503, 212, 108, 175),
+(504, 213, 115, 125),
+(505, 213, 115, 130),
+(506, 213, 115, 168),
+(507, 213, 115, 180),
+(508, 214, 145, 128),
+(509, 214, 145, 130),
+(510, 214, 145, 134),
+(511, 214, 145, 175),
+(512, 214, 145, 182),
+(513, 215, 145, 133),
+(514, 215, 145, 170),
+(515, 216, 145, 129),
+(516, 216, 145, 141),
+(517, 217, 145, 145),
+(518, 217, 145, 153),
+(519, 217, 145, 177),
+(520, 218, 145, 149),
+(521, 218, 145, 126),
+(522, 219, 145, 130),
+(523, 220, 108, 131),
+(524, 220, 108, 135),
+(525, 220, 108, 138),
+(526, 220, 108, 155),
+(527, 220, 108, 162),
+(528, 220, 108, 182);
 
 -- --------------------------------------------------------
 
@@ -341,7 +511,7 @@ INSERT INTO `prestamos_elementos` (`pres_el_cod`, `pres_cod`, `pres_el_usu_id`, 
 CREATE TABLE `roles` (
   `rl_id` int(11) NOT NULL,
   `rl_nombre` varchar(100) NOT NULL,
-  `rl_descripcion` varchar(100) DEFAULT NULL,
+  `rl_descripcion` text DEFAULT NULL,
   `rl_status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -350,7 +520,7 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`rl_id`, `rl_nombre`, `rl_descripcion`, `rl_status`) VALUES
-(1, 'Almacenista', 'rol de almacenista que cumple la función de no se.', 1),
+(1, 'Almacenista', 'romque molestiae corrupti volupcing elit. Atque velit, cum, sed dolorem', 1),
 (2, 'Administrador', '111', 1),
 (3, 'SubDirector', '123123', 1),
 (4, 'Instructor', '1412312', 1);
@@ -394,13 +564,13 @@ CREATE TABLE `tipo_documento` (
 --
 
 INSERT INTO `tipo_documento` (`tp_id`, `tp_sigla`, `tp_nombre`, `tp_status`) VALUES
-(1, 'CC', 'Cédula de Ciuda', 0),
-(2, 'CE', 'Cédula de Ex', 0),
+(1, 'CC', 'Cédula de Ciuda', 1),
+(2, 'CE', 'Cédula', 1),
 (3, 'TI', 'Tarjeta de Iden', 1),
-(4, 'PAS', 'Pasaporte', 0),
-(5, 'RC', 'Registro Civil', 0),
-(6, 'NIT', 'Número de Ident', 0),
-(7, 'RUT', 'Registro Único ', 0);
+(4, 'PAS', 'Pasaporte', 1),
+(5, 'RC', 'Registro Civil', 1),
+(6, 'NIT', 'Número de Ident', 1),
+(7, 'RUT', 'Registro Único ', 1);
 
 -- --------------------------------------------------------
 
@@ -421,6 +591,25 @@ CREATE TABLE `tipo_elemento` (
 INSERT INTO `tipo_elemento` (`tp_el_cod`, `tp_el_nombre`, `tp_el_descripcion`) VALUES
 (1, 'Devolutivo', NULL),
 (2, 'Consumible', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_movimiento`
+--
+
+CREATE TABLE `tipo_movimiento` (
+  `cod_tp` int(11) NOT NULL,
+  `cod_tp_nombre` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_movimiento`
+--
+
+INSERT INTO `tipo_movimiento` (`cod_tp`, `cod_tp_nombre`) VALUES
+(1, 'Entrada'),
+(2, 'Salida');
 
 -- --------------------------------------------------------
 
@@ -468,7 +657,7 @@ INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `
 (106, 123, 'Jhon', 'doe', '$2y$10$AHMDSF3OgELz.5iF5KdhJ.trlu0aRFLhXYVuZpbKcj9NIYo1RuKzi', 'jhondoe@gmail.com', '', '123465', 1, 1),
 (107, 100001, 'Juan', 'Pérez', '1234', 'juan.perez@example.com', 'Calle 1', '3000000001', 1, 1),
 (108, 100002, 'María', 'López', 'abcd', 'maria.lopez@example.com', 'Calle 2', '3000000002', 1, 2),
-(109, 100003, 'Pedro', 'Gómez', 'pass123', 'pedro.gomez@example.com', 'Calle 3', '3000000003', 1, 1),
+(109, 100003, 'Alejandro', 'Cruz', 'pass123', 'pedro.gomez@example.com', 'Calle 3', '3000000003', 1, 1),
 (110, 100004, 'Laura', 'Martínez', 'qwerty', 'laura.martinez@example.com', 'Calle 4', '3000000004', 1, 3),
 (111, 100005, 'Carlos', 'Ruiz', '123456', 'carlos.ruiz@example.com', 'Calle 5', '3000000005', 1, 1),
 (112, 100006, 'Ana', 'Fernández', 'hello', 'ana.fernandez@example.com', 'Calle 6', '3000000006', 1, 2),
@@ -496,7 +685,11 @@ INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `
 (134, 100028, 'Helena', 'Navarro', 'helena2025', 'helena.navarro@example.com', 'Calle 28', '3000000028', 1, 2),
 (135, 100029, 'Ignacio', 'Mendoza', 'ignacio', 'ignacio.mendoza@example.com', 'Calle 29', '3000000029', 1, 3),
 (136, 100030, 'Jimena', 'Lopez', 'jimena123', 'jimena.lopez@example.com', 'Calle 30', '3000000030', 1, 1),
-(137, 555, 'alejandro', 'ceron', '$2y$10$zZDMorvOwpCJH5D6VvMb6ORv6IePjNCom6D3Prsq9pF57bR9eqr5i', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3);
+(137, 555, 'alejandro', 'ceron', '$2y$10$zZDMorvOwpCJH5D6VvMb6ORv6IePjNCom6D3Prsq9pF57bR9eqr5i', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3),
+(138, 123, 'alejandro', 'Pérez', '$2y$10$Kbs/gKo1R2DqeI/HL8N5Du8qIrcJYfkTdPiHrJK8iA8ZMsCP0SaoS', 'juan.perez@example.com', 'calle 2 d oeste # 74 e 02', '3000000001', 1, 3),
+(145, 444, 'dato dummy', 'ceron', '$2y$10$.hmra.OAsqGED038f9bsOORL.cNnzCgGr.i/0xVEA.fuWukkUCSU6', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3),
+(146, 0, 'dasdasd', 'ceron', '$2y$10$U5wJ2COSZ3aABWj.rOegwOv3aOf.1u44iQTlelHao123ggZHHAftK', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3),
+(147, 500000, 'dasdasd', 'ceron', '$2y$10$xo.C3p25NfRxVyEf.HUbleet/pF.3R23vX0X9KVLBiiXgaAUUemoK', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3);
 
 -- --------------------------------------------------------
 
@@ -546,7 +739,9 @@ INSERT INTO `usuarios_roles` (`usr_id`, `usr_usu_id`, `usr_rl_id`) VALUES
 (1153, 134, 3),
 (1154, 135, 4),
 (1155, 136, 1),
-(1156, 137, 4);
+(1158, 138, 1),
+(1165, 145, 4),
+(1166, 146, 3);
 
 --
 -- Índices para tablas volcadas
@@ -584,7 +779,9 @@ ALTER TABLE `elementos`
 --
 ALTER TABLE `entradas_salidas`
   ADD PRIMARY KEY (`ent_sal_cod`),
-  ADD KEY `fk_ent_sal_cod_elemnt` (`ent_sal_cod_elemtn`);
+  ADD KEY `fk_ent_sal_cod_elemnt` (`ent_sal_cod_elemtn`),
+  ADD KEY `entr_tp_movmnt` (`entr_tp_movmnt`),
+  ADD KEY `ent_id_usu` (`ent_id_usu`);
 
 --
 -- Indices de la tabla `estados_elementos`
@@ -661,6 +858,12 @@ ALTER TABLE `tipo_elemento`
   ADD PRIMARY KEY (`tp_el_cod`);
 
 --
+-- Indices de la tabla `tipo_movimiento`
+--
+ALTER TABLE `tipo_movimiento`
+  ADD PRIMARY KEY (`cod_tp`);
+
+--
 -- Indices de la tabla `tipo_prestamo`
 --
 ALTER TABLE `tipo_prestamo`
@@ -691,7 +894,7 @@ ALTER TABLE `usuarios_roles`
 -- AUTO_INCREMENT de la tabla `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT de la tabla `bitacora`
@@ -703,19 +906,19 @@ ALTER TABLE `bitacora`
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `ca_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ca_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `elementos`
 --
 ALTER TABLE `elementos`
-  MODIFY `elm_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=185;
+  MODIFY `elm_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=191;
 
 --
 -- AUTO_INCREMENT de la tabla `entradas_salidas`
 --
 ALTER TABLE `entradas_salidas`
-  MODIFY `ent_sal_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ent_sal_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT de la tabla `estados_elementos`
@@ -727,7 +930,7 @@ ALTER TABLE `estados_elementos`
 -- AUTO_INCREMENT de la tabla `estados_prestamos`
 --
 ALTER TABLE `estados_prestamos`
-  MODIFY `es_pr_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `es_pr_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `estados_usuarios`
@@ -739,7 +942,7 @@ ALTER TABLE `estados_usuarios`
 -- AUTO_INCREMENT de la tabla `marcas`
 --
 ALTER TABLE `marcas`
-  MODIFY `ma_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `ma_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `permisos`
@@ -751,19 +954,19 @@ ALTER TABLE `permisos`
 -- AUTO_INCREMENT de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
-  MODIFY `pres_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `pres_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=221;
 
 --
 -- AUTO_INCREMENT de la tabla `prestamos_elementos`
 --
 ALTER TABLE `prestamos_elementos`
-  MODIFY `pres_el_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `pres_el_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=529;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `rl_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `rl_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `roles_permisos`
@@ -775,7 +978,7 @@ ALTER TABLE `roles_permisos`
 -- AUTO_INCREMENT de la tabla `tipo_documento`
 --
 ALTER TABLE `tipo_documento`
-  MODIFY `tp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `tp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_elemento`
@@ -793,13 +996,13 @@ ALTER TABLE `tipo_prestamo`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `usu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
+  MODIFY `usu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_roles`
 --
 ALTER TABLE `usuarios_roles`
-  MODIFY `usr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1157;
+  MODIFY `usr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1168;
 
 --
 -- Restricciones para tablas volcadas
@@ -817,7 +1020,9 @@ ALTER TABLE `elementos`
 -- Filtros para la tabla `entradas_salidas`
 --
 ALTER TABLE `entradas_salidas`
-  ADD CONSTRAINT `fk_ent_sal_cod_elemnt` FOREIGN KEY (`ent_sal_cod_elemtn`) REFERENCES `elementos` (`elm_cod`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_ent_sal_cod_elemnt` FOREIGN KEY (`ent_sal_cod_elemtn`) REFERENCES `elementos` (`elm_cod`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_tp_mvto` FOREIGN KEY (`entr_tp_movmnt`) REFERENCES `tipo_movimiento` (`cod_tp`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_tp_mvto_usuId` FOREIGN KEY (`ent_id_usu`) REFERENCES `usuarios` (`usu_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `prestamos`
