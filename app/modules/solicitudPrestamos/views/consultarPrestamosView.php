@@ -2,6 +2,7 @@
 <div class="contentSolicitud">
     <div class="solicitudTitle">
       <h2 class="">Préstamos Registrados</h2>
+      <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
     </div>
     <div class="tableDetalle">
       <table class="table-responsive">

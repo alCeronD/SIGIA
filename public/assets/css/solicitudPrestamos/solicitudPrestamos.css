@@ -234,11 +234,17 @@
 
 .solicitudTitle{
   grid-area: solicitudTitle;
-  /* background-color: red; */
+  background-color: yellow;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
 }
 
 /* Tabla de consultar solicitud */
   .tableDetalle {
+    margin-top: 1.3rem;
     grid-area: tableDetalle;
     /* background-color: yellowgreen; */
     overflow-x: auto;
