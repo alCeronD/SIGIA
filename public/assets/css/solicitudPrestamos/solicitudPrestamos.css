@@ -191,6 +191,8 @@
     max-width: 1100px;
     width: 75%;
     max-height: 90vh;
+    /* Se adapta al tamaño de los elementos hijos, no al padre. */
+    height: fit-content;
     /* overflow-y: auto; */
     /* box-shadow: 0 0 15px rgba(0, 0, 0, 0.25); */
   }
@@ -308,6 +310,26 @@
     margin-bottom: 15px;
     text-align: center;
   }
+
+  #contenidoDetalle{
+    background-color: aqua;
+    padding: 1.5rem;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+
+
+  }
+  
+  #contenidoDetalle .itemsContent .rowDetails{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    /* border: 10px solid black; */
+    padding: 0.3rem;
+    font-size: 12pt;
+  }
+
 
   /* 0------------------ */
 /* MODULO DE PRUEBA */

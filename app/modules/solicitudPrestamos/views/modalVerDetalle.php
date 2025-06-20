@@ -7,8 +7,10 @@
       </div>
   
       <div id="contenidoDetalle" class="modal-container">
-        <!-- Aquí se carga el contenido dinámico -->
-        <!-- La estructura que se cargará aquí tendrá .row-pair, .column, .label y .value-box como en el modal de seleccionar elementos -->
+        <div class="itemsContent">
+          <!-- <p>TITULO</p><span>TEXTO RENDERIZADO CON JAVASCRIPT</span> -->
+           <!-- <p class="titleDetail"></p>: <span class="valueDetail"></span> -->
+        </div>
       </div>
     </div>
   </div>

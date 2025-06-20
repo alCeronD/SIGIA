@@ -5,6 +5,9 @@ const modalDetalle = document.querySelector('#modalDetalle');
 const contenidoDetalle = document.getElementById('contenidoDetalle');
 const btnCerrarModal = document.querySelector('.closeModalBtn');
 const btnOpenModal = document.querySelector('#btnVerDetalle');
+
+// Este elemento va a servir para crear todos los span de información.
+const contentDetalle = document.querySelector('#itemsContent');
   document.addEventListener('DOMContentLoaded', function () {
     const filas = Array.from(document.querySelectorAll('.fila-prestamo'));
     const paginacion = document.getElementById('paginacion-prestamos');
@@ -51,17 +54,7 @@ const btnOpenModal = document.querySelector('#btnVerDetalle');
   });
 
 
-
-
-
-
-
-
-
-
-
-
-let data ={};
+let data = {};
 document.addEventListener('click', async (e)=>{
   e.stopPropagation();
   e.preventDefault();
@@ -84,9 +77,32 @@ document.addEventListener('click', async (e)=>{
       });
 
       data = await response.json();
+      let info = data.data;
+      console.log(info);
+      // let info = data.
+      // //ESTO SE RENDERIZA EN EL CONTENEDOR DEL MODAL, LO IDEAL ES SEPARAR RESPONSABILIDADES.
+      const itemsContent = document.querySelector('.itemsContent');
+      //Extraigo la cantidad de llaves del objeto.
+      let keys = Object.keys(info);
+      let values = Object.values(info);
 
-      console.log('Datos cargados:', data);
 
+      //Esto se debe de renderizar especifcaente en el modal, no en el evento click.
+      // limpia la tabla antes de renderizar la data.
+      itemsContent.innerHTML = '';
+      keys.forEach((k, index)=>{
+        const titleDetail = document.createElement('p');
+        titleDetail.setAttribute('class','titleDetail');
+        titleDetail.innerText = `${k}`;
+
+        const div = document.createElement('div');
+        div.setAttribute('class','rowDetails');
+        itemsContent.appendChild(div);
+        const valueDetail = document.createElement('span');
+        valueDetail.setAttribute('class',valueDetail);
+        valueDetail.innerText = values[index];
+        div.append(titleDetail,valueDetail);
+      });
       //Abrir el modal y el evento e.target significa que lo ejecuta el evento que se disparo.
     } catch (error) {
       console.error('Datos no encontrados', error);
