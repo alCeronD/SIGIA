@@ -1,11 +1,16 @@
 <style>
-  .form-wrapper {
-    display: flex;
-    justify-content: center;
-    padding: 40px 20px;
+
+.form-wrapper {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Opcional para fondo detrás del formulario */
     background-color: #f9fafb;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 10; /* Asegura que esté encima si hay overlays */
 }
+
+
 
 .editar-form {
     display: grid;
