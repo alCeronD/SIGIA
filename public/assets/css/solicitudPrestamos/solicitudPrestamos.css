@@ -227,7 +227,6 @@
   display: grid;
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr;
-  border: 1px solid black;
   grid-template-areas: "solicitudTitle"
   "tableDetalle";
   width: 100%;
@@ -236,7 +235,6 @@
 
 .solicitudTitle{
   grid-area: solicitudTitle;
-  background-color: yellow;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -265,7 +263,7 @@
   }
 
   td{
-    padding: 0.75rem; border-bottom: 1px solid #ddd; text-align: center;
+    padding: 0.33rem; border-bottom: 1px solid #ddd; text-align: center;
   }
   
   .modal-container {
@@ -312,7 +310,6 @@
   }
 
   #contenidoDetalle{
-    background-color: aqua;
     padding: 1.5rem;
     width: 100%;
     min-width: 0;
@@ -320,15 +317,39 @@
 
 
   }
-  
+
   #contenidoDetalle .itemsContent .rowDetails{
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     /* border: 10px solid black; */
     padding: 0.3rem;
-    font-size: 12pt;
+    width: 100%;
   }
+
+  .rowDetails .titleDetail{
+    width: 50%;
+    display: flex;
+    font-style: bold;
+    font-weight: 600;
+    font-family: 15pt;
+  }
+  .rowDetails .valueDetail{
+    width: 50%;
+    display: flex;
+    align-items: flex-start;
+
+  }
+
+  .itemsContent .rowDetails:nth-child(odd) {
+  background-color: #f0f0f0; /* Gris claro */
+}
+
+.itemsContent .rowDetails:nth-child(even) {
+  background-color: #dcdcdc; /* Gris más oscuro */
+}
+
+
 
 
   /* 0------------------ */

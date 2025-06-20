@@ -49,7 +49,6 @@ html, body {
   margin: 0 auto;
   position: relative;
   top: calc(100vh - 90vh);
-  border: 1px solid black;
 }
 
 .container * {

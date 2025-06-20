@@ -53,7 +53,7 @@ const contentDetalle = document.querySelector('#itemsContent');
 
   });
 
-
+const modalTitle = document.querySelector('#modalTitle');
 let data = {};
 document.addEventListener('click', async (e)=>{
   e.stopPropagation();
@@ -63,6 +63,7 @@ document.addEventListener('click', async (e)=>{
     let id = e.target.getAttribute('data-id');
     console.log(id);
     openModal(modalDetalle);
+    modalTitle.innerHTML = `Detalle del prestamo #${id}`;
     // modalDetalle.style.display = 'flex';
     const setParameter = new URLSearchParams();
     setParameter.append('pres_cod', id);
@@ -99,7 +100,7 @@ document.addEventListener('click', async (e)=>{
         div.setAttribute('class','rowDetails');
         itemsContent.appendChild(div);
         const valueDetail = document.createElement('span');
-        valueDetail.setAttribute('class',valueDetail);
+        valueDetail.setAttribute('class','valueDetail');
         valueDetail.innerText = values[index];
         div.append(titleDetail,valueDetail);
       });
