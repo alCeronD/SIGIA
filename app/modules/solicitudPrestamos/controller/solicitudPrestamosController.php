@@ -1,6 +1,5 @@
 <?php
 
-use Dba\Connection;
 include_once __DIR__ . '/../model/solicitudPrestamosModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
@@ -38,12 +37,12 @@ class solicitudPrestamosController{
       
         $prestamoModel = new solicitudPrestamos($this->conn);
         $prestamos = $prestamoModel->search();
-        // dd($prestamos);    
-        return include_once __DIR__ . '/../views/consultarPrestamosView.php';
+        // dd($prestamos);
+        $path =  include_once __DIR__ . '/../views/consultarPrestamosView.php';
+        return $path;
+
     }
-    public function verDetallePrestamoView(){
-        dd($_GET);
-    }
+
     public function registrarPrestamo(){
 
         $conn = $this->conn;

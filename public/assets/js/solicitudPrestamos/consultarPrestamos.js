@@ -56,10 +56,10 @@ const contentDetalle = document.querySelector('#itemsContent');
 const modalTitle = document.querySelector('#modalTitle');
 let data = {};
 document.addEventListener('click', async (e)=>{
+
+  if (e.target && e.target.classList.contains('btn-ver-detalle')) {
   e.stopPropagation();
   e.preventDefault();
-  if (e.target && e.target.classList.contains('btn-ver-detalle')) {
-
     let id = e.target.getAttribute('data-id');
     console.log(id);
     openModal(modalDetalle);
@@ -68,7 +68,6 @@ document.addEventListener('click', async (e)=>{
     const setParameter = new URLSearchParams();
     setParameter.append('pres_cod', id);
     setParameter.append('idCod', 1);
-
     try {
       const response = await fetch(`modules/solicitudPrestamos/controller/solicitudPrestamosController.php?${setParameter.toString()}`, {
         method: 'GET',

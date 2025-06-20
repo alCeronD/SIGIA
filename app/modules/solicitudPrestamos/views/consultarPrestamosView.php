@@ -32,7 +32,7 @@
                   <?= htmlspecialchars($prestamo['tipo_prestamo']) ?>
                 </td>
                 <td >
-                  <button class="btn-ver-detalle" id="btnVerDetalle" data-id="<?= $prestamo['pres_cod'] ?>">Ver detalle</button>
+                  <button type="button" class="btn-ver-detalle" id="btnVerDetalle" data-id="<?= $prestamo['pres_cod'] ?>">Ver detalle</button>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -55,5 +55,7 @@
 <!-- Modal Detalle del Préstamo -->
 <?php include_once 'modalVerDetalle.php'; ?>
 <!-- JavaScript de paginación y modal -->
+
+<!-- <script  src="../public/assets/js/solicitudPrestamos/consultarPrestamos.js"></script> -->
 
 <script type="module" src="../public/assets/js/solicitudPrestamos/consultarPrestamos.js"></script>
