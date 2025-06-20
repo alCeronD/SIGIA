@@ -32,7 +32,7 @@
                   <?= htmlspecialchars($prestamo['tipo_prestamo']) ?>
                 </td>
                 <td >
-                  <button class="btn-ver-detalle" data-id="<?= $prestamo['pres_cod'] ?>">Ver detalle</button>
+                  <button class="btn-ver-detalle" id="btnVerDetalle" data-id="<?= $prestamo['pres_cod'] ?>">Ver detalle</button>
                 </td>
               </tr>
             <?php endforeach; ?>

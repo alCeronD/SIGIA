@@ -1,9 +1,10 @@
-import { closeModal } from '../libraries/cases.js';
+import { closeModal,openModal } from '../libraries/cases.js';
 
     // Modal Detalle
 const modalDetalle = document.getElementById('modalDetalle');
 const contenidoDetalle = document.getElementById('contenidoDetalle');
 const btnCerrarModal = document.querySelector('.closeModalBtn');
+const btnOpenModal = document.querySelector('#btnVerDetalle');
   document.addEventListener('DOMContentLoaded', function () {
     const filas = Array.from(document.querySelectorAll('.fila-prestamo'));
     const paginacion = document.getElementById('paginacion-prestamos');
@@ -43,16 +44,15 @@ const btnCerrarModal = document.querySelector('.closeModalBtn');
     }
 
     generarPaginacion();
-
+    
     //Función generada desde libraries/case.js
     closeModal(modalDetalle,btnCerrarModal);
-
-
+    
     // Abrir el modal y cargar contenido por AJAX
     document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
       btn.addEventListener('click', function () {
         const id = this.dataset.id;
-        abrirModalDetalle(); // Usa función personalizada para abrir
+        openModal(modalDetalle,btnOpenModal);
         contenidoDetalle.innerHTML = "<p>Cargando información...</p>";
 
         // fetch(`<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'verDetallePrestamo', false) ?>&pres_cod=${id}`).then((response) => response.json()).then((data)=> console.log(data));
@@ -65,8 +65,3 @@ const btnCerrarModal = document.querySelector('.closeModalBtn');
       });
     });
   });
-
-  // Funciones reutilizables para abrir/cerrar modal (estilo consistente con otros modales)
-  function abrirModalDetalle() {
-    document.getElementById("modalDetalle").style.display = "block";
-  }

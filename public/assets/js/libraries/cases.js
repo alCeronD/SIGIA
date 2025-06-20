@@ -6,6 +6,13 @@ export const closeModal = (modal, btn) => {
     });
 };
 
+export const openModal = (modal,btn) =>{
+    btn.addEventListener('click', () => {
+        modal.style.display = 'flex';
+    });
+}
+
 export default {
-    closeModal
+    closeModal,
+    openModal
 }
