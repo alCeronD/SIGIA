@@ -3,6 +3,12 @@
     --secundary: #004034;
   }
 
+  
+/* ------------------------------------ */
+  /* MODULO SOLICITAR PRESTAMOS */
+
+/* ------------------------------------ */
+
   .content {
     display: grid;
     width: 100%;
@@ -114,6 +120,7 @@
     background-color: #0056b3;
   }
 
+/* Clase de modal de solicitud de prestamos */
   .tableElements {
     overflow: auto;
     width: 100%;
@@ -141,7 +148,7 @@
     font-weight: bold;
   }
 
-  #paginacion,
+    #paginacion,
   #paginacion-prestamos {
     list-style: none;
     padding-left: 0;
@@ -162,6 +169,8 @@
     width: 100%;
     padding: 6px 10px;
   }
+
+  /* MODAL PARA SELECCIONAR LOS ELEMENTOS EN LA SOLICITUD PRESTAMOS */
 
   .modal {
     display: none;
@@ -197,7 +206,7 @@
     font-size: 1.25rem;
   }
 
-  .closeModalBtn {
+    .closeModalBtn {
     background: none;
     border: none;
     font-size: 1.5rem;
@@ -205,14 +214,37 @@
     cursor: pointer;
   }
 
-  .table-responsive table {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    width: 100%;
-    border-collapse: collapse;
+
+
+/* ------------------------------------ */
+  /* MODULO CONSULTAR SOLICITUDES. */
+
+/* ------------------------------------ */
+
+.contentSolicitud{
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr;
+  border: 1px solid black;
+  grid-template-areas: "solicitudTitle"
+  "tableDetalle";
+  width: 100%;
+
+}
+
+.solicitudTitle{
+  grid-area: solicitudTitle;
+  /* background-color: red; */
+}
+
+/* Tabla de consultar solicitud */
+  .tableDetalle {
+    grid-area: tableDetalle;
+    /* background-color: yellowgreen; */
+    overflow-x: auto;
   }
 
-  .table-responsive thead,
+  /* .table-responsive thead,
   .table-responsive tbody,
   .table-responsive tr,
   .table-responsive th,
@@ -230,7 +262,29 @@
   .table-responsive th {
     font-weight: bold;
     background-color: #eaeaea;
+  } */
+/* 
+  .table-response thead tr{
+    display: contents;
+  } */
+
+  #consultPrestamoHead tr th{
+    padding: 0.75rem; 
+    border-bottom: 1px solid #ddd; 
+    font-weight: bold; 
+    /* background-color: #eaeaea; */
+
   }
+
+  .table-responsive{
+    width: 100%;
+  }
+
+  td{
+    padding: 0.75rem; border-bottom: 1px solid #ddd; text-align: center;
+  }
+
+
 
   .modal-container {
     background-color: white;
@@ -274,3 +328,7 @@
     margin-bottom: 15px;
     text-align: center;
   }
+
+  /* 0------------------ */
+/* MODULO DE PRUEBA */
+  /* ------------------- */
