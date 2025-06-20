@@ -47,7 +47,7 @@
         <button type="button" class="btnForm" onclick="abrirModalElementos()">Seleccionar Elementos</button>
       </div>
 
-      <div id="modalSeleccionElementos" class="modal">
+      <div id="modalSeleccionElementos" class="modal-secElementos">
         <div class="modal-content">
           <div class="modal-title">
             <span id="modalTitle">Seleccionar Elementos</span>
@@ -65,7 +65,7 @@
           </div>
 
           <div class="tableElements mt-3">
-            <h4 class="mb-2">Elementos Devolutivos</h4>
+            <h4>Elementos Devolutivos</h4>
             <table class="table table-bordered table-hover">
               <thead class="table-light">
                 <tr>

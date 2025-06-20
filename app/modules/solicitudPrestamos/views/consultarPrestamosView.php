@@ -1,6 +1,6 @@
 <!-- Vista: consultarPrestamos (actualizada con tabla grid restaurada correctamente) -->
-<h2 class="mb-4 text-center">Préstamos Registrados</h2>
 <div class="content">
+  <h2 class="mb-4 text-center">Préstamos Registrados</h2>
   <div class="w-100 mx-auto text-start">
     <div class="table-responsive" style="overflow-x: auto;">
       <table class="table" style="width: 100%; display: grid; grid-template-columns: repeat(5, 1fr); border-collapse: collapse;">
@@ -51,8 +51,9 @@
   </div>
 </div>
 
-<!-- Modal Detalle del Préstamo -->
-  
+<!-- //Modal// -->
+
+
 
 <!-- JavaScript de paginación y modal -->
 <script>
@@ -93,41 +94,22 @@
         mostrarPagina(1);
       }
     }
-
     generarPaginacion();
-
-    // Modal Detalle
-    const modalDetalle = document.getElementById('modalDetalle');
-    const contenidoDetalle = document.getElementById('contenidoDetalle');
-
-    // Abrir el modal y cargar contenido por AJAX
-    document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
-      btn.addEventListener('click', function () {
-        const id = this.dataset.id;
-        abrirModalDetalle(); // Usa función personalizada para abrir
-        contenidoDetalle.innerHTML = "<p>Cargando información...</p>";
-
-        fetch(`<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'verDetallePrestamo', false, 'ajax') ?>&pres_cod=${id}`)
-          .then(res => res.text())
-          .then(html => contenidoDetalle.innerHTML = html)
-          .catch(() => contenidoDetalle.innerHTML = "<p>Error al cargar el detalle</p>");
-      });
-    });
   });
 
   // Funciones reutilizables para abrir/cerrar modal (estilo consistente con otros modales)
-  function abrirModalDetalle() {
-    document.getElementById("modalDetalle").style.display = "block";
-  }
+  // function abrirModalDetalle() {
+  //   document.getElementById("modalDetalle").style.display = "block";
+  // }
 
-  function cerrarModalDetalle() {
-    document.getElementById("modalDetalle").style.display = "none";
-  }
+  // function cerrarModalDetalle() {
+  //   document.getElementById("modalDetalle").style.display = "none";
+  // }
 
-  window.onclick = function (event) {
-    const modal = document.getElementById("modalDetalle");
-    if (event.target === modal) {
-      cerrarModalDetalle();
-    }
-  };
+  // window.onclick = function (event) {
+  //   const modal = document.getElementById("modalDetalle");
+  //   if (event.target === modal) {
+  //     cerrarModalDetalle();
+  //   }
+  // };
 </script>
