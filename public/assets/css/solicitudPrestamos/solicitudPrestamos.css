@@ -250,30 +250,6 @@
     overflow-x: auto;
   }
 
-  /* .table-responsive thead,
-  .table-responsive tbody,
-  .table-responsive tr,
-  .table-responsive th,
-  .table-responsive td {
-    all: unset;
-  }
-
-  .table-responsive th,
-  .table-responsive td {
-    padding: 0.75rem;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-  }
-
-  .table-responsive th {
-    font-weight: bold;
-    background-color: #eaeaea;
-  } */
-/* 
-  .table-response thead tr{
-    display: contents;
-  } */
-
   #consultPrestamoHead tr th{
     padding: 0.75rem; 
     border-bottom: 1px solid #ddd; 
@@ -289,9 +265,7 @@
   td{
     padding: 0.75rem; border-bottom: 1px solid #ddd; text-align: center;
   }
-
-
-
+  
   .modal-container {
     background-color: white;
     border-radius: 12px;

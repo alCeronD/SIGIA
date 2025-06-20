@@ -64,6 +64,11 @@ html, body {
   font-size: 2rem;
 }
 
+/* POSIBLE ESTILO AL TD DE LAS TABLAS, NO DESCOMENTAR */
+  /* td{
+    padding: 0.75rem; border-bottom: 1px solid #ddd; text-align: center;
+  } */
+
 
 /* Estilos de menu */
 #mainMenu {
