@@ -53,10 +53,19 @@ const btnOpenModal = document.querySelector('#btnVerDetalle');
       btn.addEventListener('click', function () {
         const id = this.dataset.id;
         openModal(modalDetalle,btnOpenModal);
-        contenidoDetalle.innerHTML = "<p>Cargando información...</p>";
+        // contenidoDetalle.innerHTML = "<p>Cargando información...</p>";
+        const setParameter = new URLSearchParams();
+        setParameter.append('pres_cod',id);
+        setParameter.append('idCod', 1);
 
         // fetch(`<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'verDetallePrestamo', false) ?>&pres_cod=${id}`).then((response) => response.json()).then((data)=> console.log(data));
-        fetch(`modules/solicitudPrestamos/controller/solicitudPrestamosController.php`)
+        
+        fetch(`modules/solicitudPrestamos/controller/solicitudPrestamosController.php?${setParameter.toString()}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          }
+        })
         .then((response) => response.json())
         .then((data)=> console.log(data));
           // .then(res => res.text())

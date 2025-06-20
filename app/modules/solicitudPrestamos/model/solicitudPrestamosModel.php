@@ -124,6 +124,7 @@ class solicitudPrestamos {
 
         if ($resultado && $resultado->num_rows > 0) {
             return $resultado->fetch_assoc();
+            // var_dump($resultado->fetch_assoc());
         } else {
             return null;
         }

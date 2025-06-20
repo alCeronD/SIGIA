@@ -1,14 +1,14 @@
 <?php
+
+use Dba\Connection;
 include_once __DIR__ . '/../model/solicitudPrestamosModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
 include_once __DIR__ . '/../../elementos/model/elementosModel.php';
 include_once __DIR__ . '/../../../helpers/session.php';
 include_once __DIR__ . '/../../../helpers/response.php';
-
 class solicitudPrestamosController{
-    
-    
+
     private $conn;
     
     public function __construct($conexion) {
@@ -30,7 +30,6 @@ class solicitudPrestamosController{
           
         return include_once __DIR__ . '/../views/solicitudPrestamosView.php';
     }
-    
     public function consultarPrestamosView() {
     
         $nombre = $_SESSION['usuario']['nombre'];
@@ -42,12 +41,12 @@ class solicitudPrestamosController{
         // dd($prestamos);    
         return include_once __DIR__ . '/../views/consultarPrestamosView.php';
     }
-    
     public function verDetallePrestamoView(){
         dd($_GET);
     }
-    
     public function registrarPrestamo(){
+
+        $conn = $this->conn;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           
             $usuario_id = $_SESSION['usuario']['id_usuario'];
@@ -78,21 +77,21 @@ class solicitudPrestamosController{
             }
         }
     }
-    
-    public function verDetallePrestamo() {
-        $id = $_GET['pres_cod'] ?? null;
+    public function verDetallePrestamo(int $presCod) {
+        
 
-    
-        if (!$id || !is_numeric($id)) {
+        if (!$presCod || !is_numeric($presCod)) {
           //TODO, lo vas a cambia por json encode y su respuesta la manipulas con javascript.
             // echo "<div class='alert'>ID no válido</div>";
             fail('Id no valido');
             return;
         }
-    
+
+        $conectar = $this->conn;
+
         $modelo = new solicitudPrestamos($this->conn);
-        $detalle = $modelo->searchU((int) $id);
-        //var_dump($detalle);    
+        $detalle = $modelo->searchU($presCod);
+        var_dump($detalle);
         if (!$detalle) {
               fail('No se encontró información del préstamo');
           }
@@ -102,6 +101,17 @@ class solicitudPrestamosController{
         }
         success('Detalle del prestamo',$detalle);
     }
+}
+
+$conexion = new Conection();
+$getConect = $conexion->getConnect();
+$solicitudObj = new solicitudPrestamosController($getConect);
+if (isset($_GET['pres_cod']) && isset($_GET['idCod'])) {
+    $idCod = $_GET['idCod'];
+    $pres_cod = (int) $_GET['pres_cod'];
+    $solicitudObj->verDetallePrestamo($pres_cod);
+    //var_dump($pres_cod);
+
 }
 
 ?>
