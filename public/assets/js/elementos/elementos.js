@@ -42,8 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const filas = document.querySelectorAll('tbody tr');
 
         filas.forEach(fila => {
-            const tipoFila = fila.getAttribute('data-tipo').toLowerCase();
-
+            const tipoFila = fila.getAttribute('data-tipo');
             if (filtro === 'todos' || tipoFila === filtro) {
                 fila.style.display = '';
             } else {
@@ -51,11 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-
-
-    
-
-    
 
 
 const abrirModalBtn = document.getElementById('abrirModalRegistrar');
