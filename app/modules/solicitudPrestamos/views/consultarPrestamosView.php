@@ -52,6 +52,7 @@
 </div>
 
 <!-- Modal Detalle del Préstamo -->
+ <?php include_once 'modalVerDetalle.php'; ?>
   
 
 <!-- JavaScript de paginación y modal -->

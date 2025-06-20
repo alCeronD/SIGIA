@@ -92,6 +92,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    width: 30%;
   }
 
   .btnForm:hover {
