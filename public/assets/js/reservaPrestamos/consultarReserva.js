@@ -265,31 +265,31 @@ tbodyReservaConsult.addEventListener("click", (event) => {
           action: "finalizar",
         });
 
-        // objEndReserva.request.onload = ()=>{
-        //     let response = JSON.parse(objEndReserva.request.responseText);
+        objEndReserva.request.onload = ()=>{
+            let response = JSON.parse(objEndReserva.request.responseText);
 
-        //     try {
-        //       if (response.status) {
-        //       alert(`Prestamo # ${reservaConElementos.reserva.codigo} finalizada`);
+            try {
+              if (response.status) {
+              alert(`Prestamo # ${reservaConElementos.reserva.codigo} finalizada`);
 
-        //       let codigoAdd = reservaConElementos.reserva.codigo;
-        //       let tr = document.querySelectorAll('#tbodyReservaConsult tr');
-        //       tr.forEach((infoTr) =>{
-        //         if (infoTr.querySelector('td').textContent.includes(codigoAdd)) {
+              let codigoAdd = reservaConElementos.reserva.codigo;
+              let tr = document.querySelectorAll('#tbodyReservaConsult tr');
+              tr.forEach((infoTr) =>{
+                if (infoTr.querySelector('td').textContent.includes(codigoAdd)) {
 
-        //           let tdEstado = infoTr.children[2];
-        //           let tdBtnEnd = infoTr.children[5];
-        //             tdEstado.textContent = 'Finalizado';
-        //             tdBtnEnd.style.display = 'none';
-        //         }
-        //       });
-        //     }
-        //     } catch (error) {
-        //       throw new Error("Error al realizar el cambio");
+                  let tdEstado = infoTr.children[2];
+                  let tdBtnEnd = infoTr.children[5];
+                    tdEstado.textContent = 'Finalizado';
+                    tdBtnEnd.style.display = 'none';
+                }
+              });
+            }
+            } catch (error) {
+              throw new Error("Error al realizar el cambio");
 
-        //     }
+            }
 
-        // }
+        }
 
         objEndReserva.request.onload = () => {
           try {
