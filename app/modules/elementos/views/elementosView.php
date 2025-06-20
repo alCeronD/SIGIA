@@ -1,7 +1,5 @@
-<?php require_once __DIR__ . '/../../../helpers/session.php'; ?>
 <style>
-
-    /* ----------------- Contenedor General ----------------- */
+/* ----------------- Contenedor General ----------------- */
 .container-fluid.px-4 {
     display: grid;
     grid-template-rows: auto auto 1fr;
@@ -199,6 +197,89 @@
 }
 
 
+/* ---------- Ajuste de Ancho y Alineación del Formulario ---------- */
+
+#modalRegistrar form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 10px 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fafafa;
+  border-radius: 10px;
+  max-width: 500px;
+  margin: 0 auto; /* Centrado horizontal */
+}
+
+/* Grupos de campos */
+#modalRegistrar .mb-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+/* Etiquetas */
+#modalRegistrar label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Inputs y selects con ancho limitado */
+#modalRegistrar input[type="text"],
+#modalRegistrar input[type="number"],
+#modalRegistrar select {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+  max-width: 100%;
+}
+
+#modalRegistrar input[type="text"]:focus,
+#modalRegistrar input[type="number"]:focus,
+#modalRegistrar select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+  outline: none;
+}
+
+/* Selector tipo de elemento */
+#tipoElementoSelect {
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  width: 82%;
+  max-width: 500px;
+  margin: 0 auto 16px auto; /* <-- Esto centra horizontalmente */
+  display: block;
+}
+
+
+/* Botón guardar con ajuste de ancho */
+#modalRegistrar button[type="submit"] {
+  padding: 10px;
+  width: 100%;
+  max-width: 500px;
+  margin: 10px auto 0;
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#modalRegistrar button[type="submit"]:hover {
+  background: linear-gradient(135deg, #0056b3, #003e8c);
+}
+
 </style>
 
 <div class="container-fluid px-4">
@@ -311,7 +392,7 @@
 
             <div class="mb-3">
                 <label for="elm_nombre">Nombre</label>
-                <input type="text" placeholder="nombre_elemento" name="elm_nombre" id="elm_nombre" class="form-control" required>
+                <input type="text" placeholder="nombre Elemento" name="elm_nombre" id="elm_nombre" class="form-control" required>
             </div>
 
             <div class="mb-3">
@@ -407,55 +488,6 @@
         </table>
     </div>
 </div>
-
-
-
-
-<script>
-    const abrirModalBtn = document.getElementById('abrirModalRegistrar');
-    const modalRegistrar = document.getElementById('modalRegistrar');
-    const cerrarModalBtn = document.getElementById('cerrarModalRegistrar');
-    const tipoElementoSelect = document.getElementById('tipoElementoSelect');
-    const formDevolutivo = document.getElementById('formDevolutivo');
-    const formConsumible = document.getElementById('formConsumible');
-
-    abrirModalBtn.addEventListener('click', () => {
-        modalRegistrar.style.display = 'flex';
-        // Resetear selector y formularios al abrir
-        tipoElementoSelect.value = '';
-        formDevolutivo.style.display = 'none';
-        formConsumible.style.display = 'none';
-        formDevolutivo.reset();
-        formConsumible.reset();
-    });
-
-    cerrarModalBtn.addEventListener('click', () => {
-        modalRegistrar.style.display = 'none';
-    });
-
-    // Mostrar el formulario según el tipo seleccionado
-    tipoElementoSelect.addEventListener('change', () => {
-        if (tipoElementoSelect.value === 'devolutivo') {
-            formDevolutivo.style.display = 'block';
-            formConsumible.style.display = 'none';
-        } else if (tipoElementoSelect.value === 'consumible') {
-            formConsumible.style.display = 'block';
-            formDevolutivo.style.display = 'none';
-        } else {
-            formDevolutivo.style.display = 'none';
-            formConsumible.style.display = 'none';
-        }
-    });
-
-    // Cerrar modal si clic fuera del contenido
-    window.addEventListener('click', e => {
-        if (e.target === modalRegistrar) {
-            modalRegistrar.style.display = 'none';
-        }
-    });
-</script>
-
-
 
 
 
