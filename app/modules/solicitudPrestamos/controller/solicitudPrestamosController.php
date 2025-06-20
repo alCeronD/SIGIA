@@ -91,13 +91,9 @@ class solicitudPrestamosController{
 
         $modelo = new solicitudPrestamos($this->conn);
         $detalle = $modelo->searchU($presCod);
-        var_dump($detalle);
+        //var_dump($detalle);
         if (!$detalle) {
               fail('No se encontró información del préstamo');
-          }
-    
-        function formatField($value) {
-            return ($value === '0000-00-00' || $value === '00:00:00' || empty($value)) ? 'No registrado' : htmlspecialchars($value);
         }
         success('Detalle del prestamo',$detalle);
     }
@@ -106,11 +102,10 @@ class solicitudPrestamosController{
 $conexion = new Conection();
 $getConect = $conexion->getConnect();
 $solicitudObj = new solicitudPrestamosController($getConect);
+//IdCOd es un indicativo para validar lo que vamos a requerir para así apuntar a una función específica.
 if (isset($_GET['pres_cod']) && isset($_GET['idCod'])) {
-    $idCod = $_GET['idCod'];
     $pres_cod = (int) $_GET['pres_cod'];
     $solicitudObj->verDetallePrestamo($pres_cod);
-    //var_dump($pres_cod);
 
 }
 

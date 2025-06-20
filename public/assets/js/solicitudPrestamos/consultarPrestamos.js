@@ -1,7 +1,7 @@
 import { closeModal,openModal } from '../libraries/cases.js';
 
     // Modal Detalle
-const modalDetalle = document.getElementById('modalDetalle');
+const modalDetalle = document.querySelector('#modalDetalle');
 const contenidoDetalle = document.getElementById('contenidoDetalle');
 const btnCerrarModal = document.querySelector('.closeModalBtn');
 const btnOpenModal = document.querySelector('#btnVerDetalle');
@@ -46,31 +46,55 @@ const btnOpenModal = document.querySelector('#btnVerDetalle');
     generarPaginacion();
     
     //Función generada desde libraries/case.js
-    closeModal(modalDetalle,btnCerrarModal);
-    
-    // Abrir el modal y cargar contenido por AJAX
-    document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
-      btn.addEventListener('click', function () {
-        const id = this.dataset.id;
-        openModal(modalDetalle,btnOpenModal);
-        // contenidoDetalle.innerHTML = "<p>Cargando información...</p>";
-        const setParameter = new URLSearchParams();
-        setParameter.append('pres_cod',id);
-        setParameter.append('idCod', 1);
+    //closeModal(modalDetalle,btnCerrarModal);
 
-        // fetch(`<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'verDetallePrestamo', false) ?>&pres_cod=${id}`).then((response) => response.json()).then((data)=> console.log(data));
-        
-        fetch(`modules/solicitudPrestamos/controller/solicitudPrestamosController.php?${setParameter.toString()}`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json'
-          }
-        })
-        .then((response) => response.json())
-        .then((data)=> console.log(data));
-          // .then(res => res.text())
-          // .then(html => contenidoDetalle.innerHTML = html)
-          // .catch(() => contenidoDetalle.innerHTML = "<p>Error al cargar el detalle</p>");
-      });
-    });
   });
+
+
+
+
+
+
+
+
+
+
+
+
+let data ={};
+document.addEventListener('click', async (e)=>{
+  e.stopPropagation();
+  e.preventDefault();
+  if (e.target && e.target.classList.contains('btn-ver-detalle')) {
+
+    let id = e.target.getAttribute('data-id');
+    console.log(id);
+    openModal(modalDetalle);
+    // modalDetalle.style.display = 'flex';
+    const setParameter = new URLSearchParams();
+    setParameter.append('pres_cod', id);
+    setParameter.append('idCod', 1);
+
+    try {
+      const response = await fetch(`modules/solicitudPrestamos/controller/solicitudPrestamosController.php?${setParameter.toString()}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      data = await response.json();
+
+      console.log('Datos cargados:', data);
+
+      //Abrir el modal y el evento e.target significa que lo ejecuta el evento que se disparo.
+    } catch (error) {
+      console.error('Datos no encontrados', error);
+    }
+  }
+
+});
+
+
+//Cerrar el modal en el evento click.
+closeModal(modalDetalle,btnCerrarModal);
