@@ -100,7 +100,7 @@
       </div>
 
       <div class="inputBtn">
-        <button type="submit" class="btnForm">Registrar Préstamo</button>
+        <button type="submit" class="btnForm">Solicitar</button>
       </div>
 
     </form>

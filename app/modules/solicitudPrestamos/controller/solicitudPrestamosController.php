@@ -1,13 +1,13 @@
 <?php
+
 include_once __DIR__ . '/../model/solicitudPrestamosModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
 include_once __DIR__ . '/../../elementos/model/elementosModel.php';
 include_once __DIR__ . '/../../../helpers/session.php';
-
+include_once __DIR__ . '/../../../helpers/response.php';
 class solicitudPrestamosController{
-    
-    
+
     private $conn;
     
     public function __construct($conexion) {
@@ -29,7 +29,6 @@ class solicitudPrestamosController{
           
         return include_once __DIR__ . '/../views/solicitudPrestamosView.php';
     }
-    
     public function consultarPrestamosView() {
     
         $nombre = $_SESSION['usuario']['nombre'];
@@ -38,15 +37,15 @@ class solicitudPrestamosController{
       
         $prestamoModel = new solicitudPrestamos($this->conn);
         $prestamos = $prestamoModel->search();
-        // dd($prestamos);    
-        return include_once __DIR__ . '/../views/consultarPrestamosView.php';
+        // dd($prestamos);
+        $path =  include_once __DIR__ . '/../views/consultarPrestamosView.php';
+        return $path;
+
     }
-    
-    public function verDetallePrestamoView(){
-        dd($_GET);
-    }
-    
+
     public function registrarPrestamo(){
+
+        $conn = $this->conn;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           
             $usuario_id = $_SESSION['usuario']['id_usuario'];
@@ -66,7 +65,7 @@ class solicitudPrestamosController{
 
                 }
                 if ($prestamoElemento == true) {
-                    echo "<script>alert('Prestamo registrado exitosamente'); window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
+                    echo "<script>alert('Solicitud realizada correctamente, en espera por respuesta'); window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
                     
                 }else {
                     echo "<script>alert('Prestamo no se registro'); window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
@@ -77,28 +76,36 @@ class solicitudPrestamosController{
             }
         }
     }
-    
-    
-    public function verDetallePrestamo() {
-        $id = $_GET['pres_cod'] ?? null;
-    
-        if (!$id || !is_numeric($id)) {
-            echo "<div class='alert'>ID no válido</div>";
+    public function verDetallePrestamo(int $presCod) {
+        
+
+        if (!$presCod || !is_numeric($presCod)) {
+          //TODO, lo vas a cambia por json encode y su respuesta la manipulas con javascript.
+            // echo "<div class='alert'>ID no válido</div>";
+            fail('Id no valido');
             return;
         }
-    
+
+        $conectar = $this->conn;
+
         $modelo = new solicitudPrestamos($this->conn);
-        $detalle = $modelo->searchU((int) $id);
-    
+        $detalle = $modelo->searchU($presCod);
+        //var_dump($detalle);
         if (!$detalle) {
-            echo "<div class='alert'>No se encontró información del préstamo.</div>";
-            return;
+              fail('No se encontró información del préstamo');
         }
-    
-        function formatField($value) {
-            return ($value === '0000-00-00' || $value === '00:00:00' || empty($value)) ? 'No registrado' : htmlspecialchars($value);
-        }
+        success('Detalle del prestamo',$detalle);
     }
+}
+
+$conexion = new Conection();
+$getConect = $conexion->getConnect();
+$solicitudObj = new solicitudPrestamosController($getConect);
+//IdCOd es un indicativo para validar lo que vamos a requerir para así apuntar a una función específica.
+if (isset($_GET['pres_cod']) && isset($_GET['idCod'])) {
+    $pres_cod = (int) $_GET['pres_cod'];
+    $solicitudObj->verDetallePrestamo($pres_cod);
+
 }
 
 ?>

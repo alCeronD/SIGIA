@@ -117,13 +117,13 @@ class solicitudPrestamos {
             exit();
         }
 
-        // $query = "SELECT * FROM solicitud_prestamos WHERE pres_cod = $id";
         $query = "SELECT * FROM prestamos WHERE pres_cod = $id";
 
         $resultado = $this->conn->query($query);
 
         if ($resultado && $resultado->num_rows > 0) {
             return $resultado->fetch_assoc();
+            
         } else {
             return null;
         }

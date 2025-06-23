@@ -87,6 +87,7 @@
           <ul class="verticalMenu">
             <li>
               <a href="<?php echo getUrl("solicitudPrestamos", "solicitudPrestamos", "registrarPrestamosView", false, 'dashboard'); ?>">Solicitar Prestamo</a>
+              
             </li>
             <li>
               <a href="<?php echo getUrl("solicitudPrestamos", "solicitudPrestamos", "consultarPrestamosView", false, 'dashboard'); ?>">Ver prestamos</a>

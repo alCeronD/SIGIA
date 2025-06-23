@@ -11,7 +11,7 @@ const formDetail = document.querySelector("#formDetail");
 //TODO: mejorarlo.
 let data = {};
 //variable para guardar los elementos
-let elementos ={};
+let elementos = {};
 const BodydetailReserva = document.querySelector("#BodydetailReserva");
 //Codigo del prestamo para hacer el fech
 let cases = "reservas";
@@ -67,11 +67,10 @@ function getReservas() {
       tdEstado.textContent = dta.estadoPrestamo;
       tdTipo.textContent = dta.tipoPrestamo;
 
-      if (dta.estadoPrestamo != 'Finalizado') {
+      if (dta.estadoPrestamo != "Finalizado") {
         btnEnd.innerHTML = "Finalizar";
-        
-      }else{
-        btnEnd.style.display = 'none';
+      } else {
+        btnEnd.style.display = "none";
       }
 
       tbodyReservaConsult.appendChild(tr);
@@ -82,8 +81,8 @@ function getReservas() {
       tr.append(btnDetail, btnEnd);
 
       const reserva = data.find((item) => item.codigo === codigo);
-      
-      if (reserva) { 
+
+      if (reserva) {
         const detalleAjax = new Ajax();
         let action = "reservaDetailElements";
         detalleAjax.request.open(
@@ -93,18 +92,20 @@ function getReservas() {
           )}&action=${encodeURIComponent(action)}`,
           true
         );
-        detalleAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        detalleAjax.request.setRequestHeader(
+          "X-Requested-With",
+          "XMLHttpRequest"
+        );
 
         detalleAjax.request.onload = () => {
-        let response = JSON.parse(detalleAjax.request.responseText);
+          let response = JSON.parse(detalleAjax.request.responseText);
 
-            //Guardo el código de la reserva con los elementos que están asociados a ese prestamo.
-            //Response.data tiene los elementos.
-            elementos[dta.codigo] = {
+          //Guardo el código de la reserva con los elementos que están asociados a ese prestamo.
+          //Response.data tiene los elementos.
+          elementos[dta.codigo] = {
             reserva: dta,
             elementos: response.data,
-            };
-        
+          };
         };
 
         detalleAjax.request.setRequestHeader("Accept", "application/json");
@@ -115,7 +116,6 @@ function getReservas() {
 
   objAjax.request.setRequestHeader("Accept", "application/json");
   objAjax.request.send();
-
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -171,29 +171,29 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
     //TODO, Todo esto arreglarlo, no hay necesidad de hacer nuevamente la peticion porque en la función getReserva se encuentra toda esta información.
     objAjax.request.onload = () => {
-  let response = JSON.parse(objAjax.request.responseText);
-  elementosDetalle = response.data;
+      let response = JSON.parse(objAjax.request.responseText);
+      elementosDetalle = response.data;
 
-  BodydetailReserva.innerHTML = "";
-  elementosDetalle.forEach((elm) => {
-    const trTable = document.createElement("tr");
-    const tdCodigo = document.createElement("td");
-    const tdNombre = document.createElement("td");
-    const tdAccion = document.createElement("td");
+      BodydetailReserva.innerHTML = "";
+      elementosDetalle.forEach((elm) => {
+        const trTable = document.createElement("tr");
+        const tdCodigo = document.createElement("td");
+        const tdNombre = document.createElement("td");
+        const tdAccion = document.createElement("td");
 
-    let btnAdd = document.createElement("button");
-    btnAdd.innerText = "btnEjemplo";
+        let btnAdd = document.createElement("button");
+        btnAdd.innerText = "btnEjemplo";
 
-    tdCodigo.innerText = elm.codigo;
-    tdNombre.innerText = elm.nombre;
+        tdCodigo.innerText = elm.codigo;
+        tdNombre.innerText = elm.nombre;
 
-    tdAccion.append(btnAdd);
-    trTable.appendChild(tdCodigo);
-    trTable.appendChild(tdNombre);
-    trTable.appendChild(tdAccion);
-    BodydetailReserva.appendChild(trTable);
-  });
-};
+        tdAccion.append(btnAdd);
+        trTable.appendChild(tdCodigo);
+        trTable.appendChild(tdNombre);
+        trTable.appendChild(tdAccion);
+        BodydetailReserva.appendChild(trTable);
+      });
+    };
     objAjax.request.setRequestHeader("Accept", "application/json");
     objAjax.request.send();
 
@@ -208,7 +208,8 @@ tbodyReservaConsult.addEventListener("click", (event) => {
   }
 
   //Para visualizar el detalle de elementos en caso de que sea requerido.
-  if (event.target.tagName === "BUTTON" &&
+  if (
+    event.target.tagName === "BUTTON" &&
     event.target.getAttribute(["data-add"])
   ) {
     console.log(event.target);
@@ -219,71 +220,124 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     event.target.tagName === "BUTTON" &&
     event.target.getAttribute(["data-end"])
   ) {
+    //se compara con doble igual porque el json que recibe de data su codigo esta en string pero el getAttribute esta como entero.
+    const codigoReserva = Number(event.target.getAttribute(["data-end"]));
+    const dataResult = data.find((dta) => Number(dta.codigo) === codigoReserva);
 
-    
+    //Valida que sea true la respuesta de dataResult y que el codigo de la reserva este en el objeto elementos.
+    if (dataResult && codigoReserva && elementos[codigoReserva]) {
+      const reservaConElementos = elementos[codigoReserva];
+      const listaElementos = reservaConElementos.elementos;
 
+      console.log("Reserva:", reservaConElementos.reserva);
+      console.log("Elementos asociados:", listaElementos);
 
+      //Debo enviar la lista de los elementos, el código del prestamo y el número de identificación.
+      let endReserva = {
+        elementos: listaElementos,
+        codigoReserva: reservaConElementos.reserva.codigo,
+      };
 
-        //se compara con doble igual porque el json que recibe de data su codigo esta en string pero el getAttribute esta como entero.
-      const codigoReserva = Number(event.target.getAttribute(["data-end"]));
-      const dataResult = data.find(
-          (dta) => (Number(dta.codigo) === codigoReserva)
-      );
+      const objEndReserva = new Ajax();
 
-
-      //Valida que sea true la respuesta de dataResult y que el codigo de la reserva este en el objeto elementos.
-      if (dataResult && codigoReserva && elementos[codigoReserva]) {
-        const reservaConElementos = elementos[codigoReserva];
-        const listaElementos = reservaConElementos.elementos;
-
-        console.log("Reserva:", reservaConElementos.reserva);
-        console.log("Elementos asociados:", listaElementos);
-
-        //Debo enviar la lista de los elementos, el código del prestamo y el número de identificación.
-        let endReserva = {
-            "elementos":listaElementos,
-            "codigoReserva":reservaConElementos.reserva.codigo
-        }
-
-        const objEndReserva = new Ajax();
-
-        console.log(dataResult);
-
-        if (confirm(`¿Está seguro de finalizar el préstamo?\nEstos son los elementos que cambiarán a disponible:\n${
-          listaElementos.map(el => `- ${el.nombre}`).join('\n')
-        }`)) {
-
-          objEndReserva.request.open('POST','modules/reservaPrestamos/controller/reservaController.php');
-          objEndReserva.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-          objEndReserva.request.setRequestHeader("Content-Type", "application/json");
+      if (
+        confirm(
+          `¿Está seguro de finalizar el préstamo?\nEstos son los elementos que cambiarán a disponible:\n${listaElementos
+            .map((el) => `- ${el.nombre}`)
+            .join("\n")}`
+        )
+      ) {
+        objEndReserva.request.open(
+          "POST",
+          "modules/reservaPrestamos/controller/reservaController.php"
+        );
+        objEndReserva.request.setRequestHeader(
+          "X-Requested-With",
+          "XMLHttpRequest"
+        );
+        objEndReserva.request.setRequestHeader(
+          "Content-Type",
+          "application/json"
+        );
 
         let reservaJson = JSON.stringify({
-            data: endReserva,
-            action: 'finalizar'
+          data: endReserva,
+          action: "finalizar",
         });
 
         objEndReserva.request.onload = ()=>{
             let response = JSON.parse(objEndReserva.request.responseText);
-            console.log(response);
 
-            if (response.status) {
+            try {
+              if (response.status) {
               alert(`Prestamo # ${reservaConElementos.reserva.codigo} finalizada`);
 
-              //TODO: cambiar el texto de finalizado a validado.
               let codigoAdd = reservaConElementos.reserva.codigo;
-              console.log(dataResult);
-              console.log(codigoAdd);
-              
+              let tr = document.querySelectorAll('#tbodyReservaConsult tr');
+              tr.forEach((infoTr) =>{
+                if (infoTr.querySelector('td').textContent.includes(codigoAdd)) {
+
+                  let tdEstado = infoTr.children[2];
+                  let tdBtnEnd = infoTr.children[5];
+                    tdEstado.textContent = 'Finalizado';
+                    tdBtnEnd.style.display = 'none';
+                }
+              });
             }
+            } catch (error) {
+              throw new Error("Error al realizar el cambio");
+
+            }
+
+        }
+
+        objEndReserva.request.onload = () => {
+          try {
+            let response = JSON.parse(objEndReserva.request.responseText);
+
+            if (response.status) {
+              alert(
+                `Prestamo # ${reservaConElementos.reserva.codigo} finalizada`
+              );
+
+              let codigoAdd = reservaConElementos.reserva.codigo;
+              let tr = [
+                ...document.querySelectorAll("#tbodyReservaConsult tr"),
+              ];
+
+              tr.forEach((infoTr) => {
+                if (
+                  infoTr
+                    .querySelector("td")
+                    .textContent.includes(String(codigoAdd))
+                ) {
+                  let tdEstado = infoTr.children[2];
+                  let tdBtnEnd = infoTr.children[5];
+                  tdEstado.textContent = "Finalizado";
+                  tdBtnEnd.style.display = "none";
+                }
+              });
+            } else {
+              console.warn(
+                "Respuesta negativa del servidor:",
+                response.message
+              );
+            }
+          } catch (error) {
+            console.error(
+              "Error al procesar la respuesta o actualizar la vista:",
+              error
+            );
           }
+        };
         objEndReserva.request.setRequestHeader("accept", "application/json");
         objEndReserva.request.send(reservaJson);
-
-
-        } else {
-        console.warn("No se encontraron elementos asociados aún. Espera a que cargue la información.");
-        }
+      } else {
+        console.warn(
+          "No se encontraron elementos asociados aún. Espera a que cargue la información."
+        );
       }
+    }
   }
 });
 

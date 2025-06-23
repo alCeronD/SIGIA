@@ -49,7 +49,6 @@ html, body {
   margin: 0 auto;
   position: relative;
   top: calc(100vh - 90vh);
-  border: 1px solid black;
 }
 
 .container * {
@@ -63,6 +62,11 @@ html, body {
   text-decoration: none;
   font-size: 2rem;
 }
+
+/* POSIBLE ESTILO AL TD DE LAS TABLAS, NO DESCOMENTAR */
+  /* td{
+    padding: 0.75rem; border-bottom: 1px solid #ddd; text-align: center;
+  } */
 
 
 /* Estilos de menu */

@@ -70,7 +70,7 @@ class usuariosController{
             // Validaciones
             //Pendiente realizar la consulta del Num_doc y si no esta que continue si el proceso
             
-            if ($resultado === true) {
+            if ($resultado) {
                 echo "<script>alert('Usuario registrado exitosamente'); window.location.href = '" . getUrl('usuarios','usuarios','userView', false, 'dashboard') . "';</script>";
             } else {
                 echo $resultado;
@@ -103,6 +103,7 @@ class usuariosController{
     
         
         if ($dato) {
+            echo "<script>alert('Usuario actualizado exitosamente'); window.location.href = '" . getUrl('usuarios','usuarios','consultUser', false, 'dashboard') . "';</script>";
             return include_once __DIR__ . '/../views/consultView.php';
         }
         
