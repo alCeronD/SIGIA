@@ -46,7 +46,6 @@ class usuarios {
 
         if ($this->conn->query($query)) {
             $usu_id = $this->conn->insert_id;
-            // dd($usu_id);
             $queryRol = "
                 INSERT INTO usuarios_roles (usr_usu_id, usr_rl_id) 
                 VALUES ($usu_id, $rol_id)
