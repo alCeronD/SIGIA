@@ -22,10 +22,12 @@ class solicitudPrestamos {
         if (!is_array($data)) {
             exit();
         }
-        $pres_fch_slcitud  = $this->conn->real_escape_string($data['pres_fch_slcitud']);
+
+    //    var_dump($data);
+        //$pres_fch_slcitud  = $this->conn->real_escape_string($data['pres_fch_slcitud']) ?? '';
         $pres_fch_reserva  = $this->conn->real_escape_string($data['pres_fch_reserva']);
-        $pres_hor_inicio   = $this->conn->real_escape_string($data['pres_hor_inicio']);
-        $pres_hor_fin      = $this->conn->real_escape_string($data['pres_hor_fin']);
+        // $pres_hor_inicio   = $this->conn->real_escape_string($data['pres_hor_inicio']) ?? '';
+        // $pres_hor_fin      = $this->conn->real_escape_string($data['pres_hor_fin']) ?? '';
         $pres_fch_entrega  = $this->conn->real_escape_string($data['pres_fch_entrega']);
         $pres_observacion  = $this->conn->real_escape_string($data['pres_observacion']);
         $pres_destino      = $this->conn->real_escape_string($data['pres_destino']);
@@ -33,24 +35,20 @@ class solicitudPrestamos {
         $tp_pres           = 2;
         $pres_rol          = $rol_usuario;
         
-        
-        $query = "
-            INSERT INTO prestamos (
-                pres_fch_slcitud, pres_fch_reserva, pres_hor_inicio, pres_hor_fin,
+        $query = "INSERT INTO prestamos (
+                pres_fch_slcitud, pres_fch_reserva,
                 pres_fch_entrega, pres_observacion, pres_destino, pres_estado, tp_pres, pres_rol
-            ) VALUES (
-                '$pres_fch_slcitud', '$pres_fch_reserva', '$pres_hor_inicio', '$pres_hor_fin',
-                '$pres_fch_entrega', '$pres_observacion', '$pres_destino', $pres_estado, $tp_pres, $pres_rol
+            ) VALUES (NOW(), '$pres_fch_reserva', '$pres_fch_entrega', '$pres_observacion', '$pres_destino', $pres_estado, $tp_pres, $pres_rol
             )
         ";
-    
+        
         if ($this->conn->query($query)) {
             return $this->conn->insert_id; 
         } else {
             return "Error al registrar el préstamo: " . $this->conn->error;
         }
     }
-
+    
     public function update($datos, $id) {
         $cadena = "";
 
@@ -81,7 +79,6 @@ class solicitudPrestamos {
         }
     }
 
-    
     public function search() {
         $sql = "SELECT 
                     p.pres_cod,
@@ -120,13 +117,13 @@ class solicitudPrestamos {
             exit();
         }
 
-        // $query = "SELECT * FROM solicitud_prestamos WHERE pres_cod = $id";
         $query = "SELECT * FROM prestamos WHERE pres_cod = $id";
 
         $resultado = $this->conn->query($query);
 
         if ($resultado && $resultado->num_rows > 0) {
             return $resultado->fetch_assoc();
+            
         } else {
             return null;
         }

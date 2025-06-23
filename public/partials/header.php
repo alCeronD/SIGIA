@@ -11,6 +11,11 @@
   <!-- Estilo específico según el modulo. -->
 <link rel="stylesheet" href="<?php echo $_SESSION['css'];?>">
 
+<!-- Estilo de materialize -->
+<link rel="stylesheet" href="../public/assets/libraries/materialize/css/materialize.min.css">
+
+<!-- Iconos de materialize -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <div class="header">Sigia - Servicio Nacional de Aprendizaje</div>
 

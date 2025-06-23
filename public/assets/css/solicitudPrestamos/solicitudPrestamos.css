@@ -1,267 +1,357 @@
-/* ::::::::::::::::::: SOLICITUD DE PRÉSTAMO ::::::::::::::::::: */
-.content {
-  width: 100%;
-  min-height: 0;
-  max-height: 100%;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto 100%;
-  grid-template-areas:
-    "searchUser"
-    "formCategoria"
-    "solicPrestamos";
+
+  :root {
+    --secundary: #004034;
+  }
+
+  
+/* ------------------------------------ */
+  /* MODULO SOLICITAR PRESTAMOS */
+
+/* ------------------------------------ */
+
+  .content {
+    display: grid;
+    width: 100%;
     height: 100%;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-}
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "menuTitle"
+      "solicPrestamos";
+  }
 
+  .menuTitle {
+    grid-area: menuTitle;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+  }
 
-.menuTitle {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
+  #textTitle {
+    font-size: 20pt;
+  }
 
-#textTitle {
-  font-size: 24pt;
-  font-weight: bold;
-}
+  .solicPrestamos {
+    grid-area: solicPrestamos;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem;
+  }
 
-.close-btn {
-  font-size: 24pt;
-  color: red;
-  text-decoration: none;
-  font-weight: bold;
-}
+  #formSolicitudPrestamo {
+    display: grid;
+    grid-template-areas:
+      "nombre apellido rol"
+      "fechaReserva fechaEntrega destino"
+      "inputObservaciones inputObservaciones inputObservaciones"
+      "filtroArea filtroArea filtroArea"
+      "tableElements tableElements tableElements"
+      ". inputBtn .";
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    width: 100%;
+  }
 
-/* Estructura del formulario */
-#formSolicitudPrestamo {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); 
-  grid-template-rows: repeat(3, auto); /* 3 filas automáticas para los inputs */
-  gap: 1rem;
-  overflow: auto;
-  min-height: 0;
-}
+  .nombre { grid-area: nombre; }
+  .apellido { grid-area: apellido; }
+  .rol { grid-area: rol; }
+  .fechaReserva { grid-area: fechaReserva; }
+  .fechaEntrega { grid-area: fechaEntrega; }
+  .destino { grid-area: destino; }
+  .inputObservaciones { grid-area: inputObservaciones; }
+  filtroArea { grid-area: filtroArea; }
+  .tableElements { grid-area: tableElements; }
+  .inputBtn { grid-area: inputBtn; }
 
+  .inputContent {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
 
-/* Contenedores de campos */
-.inputContent {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100%;
-  /* height: 35px; */
-  gap: .5em;
-}
+  .labelForm {
+    font-size: 13pt;
+  }
 
-.inputContent.horaInicioFin {
-  flex-direction: row;
-  gap: 1rem;
-}
+  .inputForm {
+    height: 2.2rem;
+    padding: 0.3rem;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    font-size: 12pt;
+  }
 
-.horaInicio, .horaFin {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
+  .inputForm:focus {
+    outline: none;
+    border-bottom: 2px solid #007bff;
+  }
 
-/* Campos */
-.labelForm {
-  font-size: 1.3rem;
-  margin-top: 0.3rem;
-  border-radius: 10px;
-  height: 2rem;
-}
+  textarea.inputForm {
+    resize: none;
+    height: 80px;
+  }
 
-.inputForm,
-.textarea {
-  max-width: 100%;
-  min-width: 0;
-  height: 2rem;
-  border: none;
-  border-bottom: 2px solid #ccc;
-  border-right: none;
-}
+  .btnForm {
+    font-size: 10pt;
+    color: #000;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 30%;
+  }
 
-.inputForm:focus,
-textarea:focus {
-  border-color: #007bff;
-  outline: none;
-}
+  .btnForm:hover {
+    background-color: #bbc0be;
+  }
 
-.inputObservaciones {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-direction: column;
-}
+  #btnSubmit {
+    padding: 0.75rem 2.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
 
-textarea {
-  min-height: 100px;
-  resize: vertical;
-}
+  #btnSubmit:hover {
+    background-color: #0056b3;
+  }
 
-/* Tabla */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-  font-size: 0.95rem;
-}
+/* Clase de modal de solicitud de prestamos */
+  .tableElements {
+    overflow: auto;
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    box-sizing: border-box;
+  }
 
-.table thead {
-  background-color: #f2f2f2;
-}
+  .tableElements table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
 
-.table th, .table td {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  text-align: left;
-}
+  .tableElements th,
+  .tableElements td {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    text-align: left;
+    white-space: nowrap;
+  }
 
-.table tr:nth-child(even) {
-  background-color: #fafafa;
-}
+  .tableElements th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
 
-.table tr:hover {
-  background-color: #f1f1f1;
-}
+    #paginacion,
+  #paginacion-prestamos {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
 
-/* Botón */
-.inputBtn {
-  display: grid;
-  grid-area: inputBtn;
-  width: 100%;
-  justify-items: center;
-  min-height: 3rem;
-}
-
-#btnSubmit {
-  padding: 0.75rem 2.5rem;
-  font-size: 1rem;
-  font-weight: bold;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
-}
-
-#btnSubmit:hover {
-  background-color: #0056b3;
-}
-
-
-
-/* //////PAGINACION/////// */
-#paginacion {
-  list-style: none; 
-  padding-left: 0;  
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  flex-direction: row; 
-}
-
-
-  #paginacion .page-item {
-    width: 40px; 
+  #paginacion .page-item,
+  #paginacion-prestamos .page-item {
+    width: 40px;
     text-align: center;
   }
 
-  #paginacion .page-link {
+  #paginacion .page-link,
+  #paginacion-prestamos .page-link {
     width: 100%;
     padding: 6px 10px;
   }
-#paginacion-prestamos {
-  list-style: none; 
-  padding-left: 0;  
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  flex-direction: row; 
-}
 
-#paginacion-prestamos .page-item {
-  width: 40px; 
-  text-align: center;
-}
+  /* MODAL PARA SELECCIONAR LOS ELEMENTOS EN LA SOLICITUD PRESTAMOS */
 
-#paginacion-prestamos .page-link {
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: 4% auto;
+    /* padding: 1rem 2rem; */
+    border-radius: 10px;
+    max-width: 1100px;
+    width: 75%;
+    max-height: 90vh;
+    /* Se adapta al tamaño de los elementos hijos, no al padre. */
+    height: fit-content;
+    /* overflow-y: auto; */
+    /* box-shadow: 0 0 15px rgba(0, 0, 0, 0.25); */
+  }
+
+  .modal-title {
+    background-color: var(--secundary);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px 10px 0 0;
+    font-size: 1.25rem;
+  }
+
+    .closeModalBtn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+  }
+
+
+
+/* ------------------------------------ */
+  /* MODULO CONSULTAR SOLICITUDES. */
+
+/* ------------------------------------ */
+
+.contentSolicitud{
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr;
+  grid-template-areas: "solicitudTitle"
+  "tableDetalle";
   width: 100%;
-  padding: 6px 10px;
+
 }
 
-
-/* //////////////Modal ver detalle al momento de consultar */
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+.solicitudTitle{
+  grid-area: solicitudTitle;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 25%;
-  margin-top: 5%;
-  margin-bottom: 5%;
-  /* z-index: 9999; */
-}
-
-.modal-container {
-  background-color: white;
-  border-radius: 12px;
-  /* padding: 25px 30px; */
-  max-width: 600px;
-  width: 90%;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
-  border: 1px solid #ccc;
-}
-
-.detalle-container {
-  display: flex;
-  flex-direction: column;
-  font-size: 14px;
-  margin-left: 5%;
-  /* padding: 10px; */
-}
-
-.row-pair {
-  display: flex;
+  flex-direction: row;
   justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 12px;
+  align-items: center;
+
 }
 
-.label {
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 3px;
+/* Tabla de consultar solicitud */
+  .tableDetalle {
+    margin-top: 1.3rem;
+    grid-area: tableDetalle;
+    /* background-color: yellowgreen; */
+    overflow-x: auto;
+  }
+
+  #consultPrestamoHead tr th{
+    padding: 0.75rem; 
+    border-bottom: 1px solid #ddd; 
+    font-weight: bold; 
+    /* background-color: #eaeaea; */
+
+  }
+
+  .table-responsive{
+    width: 100%;
+  }
+
+  td{
+    padding: 0.33rem; border-bottom: 1px solid #ddd; text-align: center;
+  }
+  
+  .modal-container {
+    background-color: white;
+    border-radius: 12px;
+    /* max-width: 600px; */
+    /* width: 90%; */
+    border: 1px solid #ccc;
+    /* margin: 5% auto; */
+  }
+
+  .row-pair {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 12px;
+  }
+
+  .label {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 3px;
+  }
+
+  .value-box {
+    background-color: #f7f7f7;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    color: #444;
+  }
+
+  .column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  #contenidoDetalle{
+    padding: 1.5rem;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+
+
+  }
+
+  #contenidoDetalle .itemsContent .rowDetails{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    /* border: 10px solid black; */
+    padding: 0.3rem;
+    width: 100%;
+  }
+
+  .rowDetails .titleDetail{
+    width: 50%;
+    display: flex;
+    font-style: bold;
+    font-weight: 600;
+    font-family: 15pt;
+  }
+  .rowDetails .valueDetail{
+    width: 50%;
+    display: flex;
+    align-items: flex-start;
+
+  }
+
+  .itemsContent .rowDetails:nth-child(odd) {
+  background-color: #f0f0f0; /* Gris claro */
 }
 
-.value-box {
-  background-color: #f7f7f7;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  color: #444;
+.itemsContent .rowDetails:nth-child(even) {
+  background-color: #dcdcdc; /* Gris más oscuro */
 }
 
-.column {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
 
-.title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 15px;
-  text-align: center;
-}
+
+
+  /* 0------------------ */
+/* MODULO DE PRUEBA */
+  /* ------------------- */

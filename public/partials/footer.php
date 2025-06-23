@@ -1,4 +1,5 @@
 
+<script src="../public/assets/libraries/materialize/js/materialize.min.js"></script>
 
 <!-- admin -->
 <?php if ($rol == 2): ?>
@@ -87,6 +88,7 @@
           <ul class="verticalMenu">
             <li>
               <a href="<?php echo getUrl("solicitudPrestamos", "solicitudPrestamos", "registrarPrestamosView", false, 'dashboard'); ?>">Solicitar Prestamo</a>
+              
             </li>
             <li>
               <a href="<?php echo getUrl("solicitudPrestamos", "solicitudPrestamos", "consultarPrestamosView", false, 'dashboard'); ?>">Ver prestamos</a>

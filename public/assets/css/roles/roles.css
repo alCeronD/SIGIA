@@ -1,13 +1,10 @@
 :root {
   --primary: #1e90ff;
-  --secundary: #2c5e42;
-  --btnSubmit: #80ff005e;
-  --btnInfo: #008000;
-  --other: #808080;
-  --white: #ffffff;
+  --secundary: #004034;
+  --btnSubmit : rgba(128, 255, 0, 0.371);
+  --btnInfo : green;
+  --other: gray;
 }
-
-
 
 /* Botón para ir al dashboard. */
 .close {
@@ -67,4 +64,20 @@
 
 .tblRoles{
     grid-area: tblRoles;
+}
+
+.tblRoles table{
+    width: 100%;
+}
+
+.tblRoles table {
+    width: 100%;
+}
+
+/* Ajustar los botones de acciones */
+.tblRoles table td:last-child {
+    display: flex;
+    flex-direction: row;
+    gap: 0.3rem;
+    justify-content: center;
 }

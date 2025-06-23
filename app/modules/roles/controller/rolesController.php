@@ -81,7 +81,6 @@ class rolesController {
             $rl_id = $_GET['rl_id'];
             $status = ($_GET['rl_status'] == 0) ? 1 : 0;
             $exito = $this->modeloRol->eliminarRol($rl_id,$status);
-
             if ($exito) {
 
                 if ($status == 0) {
