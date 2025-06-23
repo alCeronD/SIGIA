@@ -1,5 +1,9 @@
 :root {
+  --primary: #1e90ff;
   --secundary: #004034;
+  --btnSubmit : rgba(128, 255, 0, 0.371);
+  --btnInfo : green;
+  --other: gray;
 }
 
   /* 

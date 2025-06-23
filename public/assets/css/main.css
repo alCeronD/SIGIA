@@ -21,6 +21,7 @@ html, body {
   --btnSubmit : rgba(128, 255, 0, 0.371);
   --btnInfo : green;
   --other: gray;
+  --white: #f0f0f0;
 }
 
 
@@ -29,7 +30,7 @@ html, body {
   position: fixed;
   top: 0;
   width: 100%;
-  color: #f0f0f0;
+  color: var(--white);
   font-weight: 700;
   font-size: 1.8rem;
   padding: 20px 0;
