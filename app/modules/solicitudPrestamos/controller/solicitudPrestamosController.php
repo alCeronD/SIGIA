@@ -1,13 +1,13 @@
 <?php
+
 include_once __DIR__ . '/../model/solicitudPrestamosModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
 include_once __DIR__ . '/../../elementos/model/elementosModel.php';
 include_once __DIR__ . '/../../../helpers/session.php';
-
+include_once __DIR__ . '/../../../helpers/response.php';
 class solicitudPrestamosController{
-    
-    
+
     private $conn;
     
     public function __construct($conexion) {
@@ -29,7 +29,6 @@ class solicitudPrestamosController{
           
         return include_once __DIR__ . '/../views/solicitudPrestamosView.php';
     }
-    
     public function consultarPrestamosView() {
     
         $nombre = $_SESSION['usuario']['nombre'];
@@ -38,15 +37,15 @@ class solicitudPrestamosController{
       
         $prestamoModel = new solicitudPrestamos($this->conn);
         $prestamos = $prestamoModel->search();
-        // dd($prestamos);    
-        return include_once __DIR__ . '/../views/consultarPrestamosView.php';
+        // dd($prestamos);
+        $path =  include_once __DIR__ . '/../views/consultarPrestamosView.php';
+        return $path;
+
     }
-    
-    public function verDetallePrestamoView(){
-        dd($_GET);
-    }
-    
+
     public function registrarPrestamo(){
+
+        $conn = $this->conn;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           
             $usuario_id = $_SESSION['usuario']['id_usuario'];
@@ -56,19 +55,17 @@ class solicitudPrestamosController{
             $data = $_POST;
             $datos = new solicitudPrestamos($this->conn);
             $lastId = $datos->create($data, $rol_id);
-        
             if (is_numeric($lastId)) {
                 include_once __DIR__ . '/../../configModules/prestamosElementos/model/prestamosElementosModel.php';
                 $prestamoElemento = new prestamoElementos($this->conn);
                 $elementoModel = new ElementoModelo($this->conn);
-                
                 foreach ($elementos_seleccionados as $elemento_id) {
                     $prestamoElemento->create($lastId, $usuario_id ,$elemento_id);
                     $elementoModel->actualizarEstadoElemento($elemento_id, 3);
 
                 }
                 if ($prestamoElemento == true) {
-                    echo "<script>alert('Prestamo registrado exitosamente'); window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
+                    echo "<script>alert('Solicitud realizada correctamente, en espera por respuesta'); window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
                     
                 }else {
                     echo "<script>alert('Prestamo no se registro'); window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
@@ -79,115 +76,36 @@ class solicitudPrestamosController{
             }
         }
     }
-    public function verDetallePrestamo() {
-        $id = $_GET['pres_cod'] ?? null;
-    
-        if (!$id || !is_numeric($id)) {
-            echo "<div class='alert'>ID no válido</div>";
+    public function verDetallePrestamo(int $presCod) {
+        
+
+        if (!$presCod || !is_numeric($presCod)) {
+          //TODO, lo vas a cambia por json encode y su respuesta la manipulas con javascript.
+            // echo "<div class='alert'>ID no válido</div>";
+            fail('Id no valido');
             return;
         }
-    
+
+        $conectar = $this->conn;
+
         $modelo = new solicitudPrestamos($this->conn);
-        $detalle = $modelo->searchU((int) $id);
-    
+        $detalle = $modelo->searchU($presCod);
+        //var_dump($detalle);
         if (!$detalle) {
-            echo "<div class='alert'>No se encontró información del préstamo.</div>";
-            return;
+              fail('No se encontró información del préstamo');
         }
-    
-        function formatField($value) {
-            return ($value === '0000-00-00' || $value === '00:00:00' || empty($value)) ? 'No registrado' : htmlspecialchars($value);
-        }
-    
-        echo "
-        <style>
-          .detalle-container {
-            display: flex;
-            flex-direction: column;
-            font-size: 14px;
-            padding: 10px;
-          }
-    
-          .row-pair {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            margin-bottom: 12px;
-          }
-    
-          .label {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 4px;
-          }
-    
-          .value-box {
-            background-color: #f7f7f7;
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            color: #444;
-          }
-    
-          .column {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-          }
-    
-          .title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-align: center;
-          }
-        </style>
-    
-        <div class='detalle-container'>
-          <div class='title'>Detalle del préstamo</div>
-    
-          <div class='row-pair'>
-            <div class='column'>
-              <span class='label'>Fecha de Solicitud:</span>
-              <div class='value-box'>" . formatField($detalle['pres_fch_slcitud']) . "</div>
-            </div>
-            <div class='column'>
-              <span class='label'>Fecha de Reserva:</span>
-              <div class='value-box'>" . formatField($detalle['pres_fch_reserva']) . "</div>
-            </div>
-          </div>
-    
-          <div class='row-pair'>
-            <div class='column'>
-              <span class='label'>Hora Inicio:</span>
-              <div class='value-box'>" . formatField($detalle['pres_hor_inicio']) . "</div>
-            </div>
-            <div class='column'>
-              <span class='label'>Hora Fin:</span>
-              <div class='value-box'>" . formatField($detalle['pres_hor_fin']) . "</div>
-            </div>
-          </div>
-    
-          <div class='row-pair'>
-            <div class='column'>
-              <span class='label'>Fecha Entrega:</span>
-              <div class='value-box'>" . formatField($detalle['pres_fch_entrega']) . "</div>
-            </div>
-            <div class='column'>
-              <span class='label'>Destino:</span>
-              <div class='value-box'>" . formatField($detalle['pres_destino']) . "</div>
-            </div>
-          </div>
-    
-          <div class='row-pair'>
-            <div class='column'>
-              <span class='label'>Observación:</span>
-              <div class='value-box'>" . formatField($detalle['pres_observacion']) . "</div>
-            </div>
-          </div>
-        </div>
-        ";
+        success('Detalle del prestamo',$detalle);
     }
+}
+
+$conexion = new Conection();
+$getConect = $conexion->getConnect();
+$solicitudObj = new solicitudPrestamosController($getConect);
+//IdCOd es un indicativo para validar lo que vamos a requerir para así apuntar a una función específica.
+if (isset($_GET['pres_cod']) && isset($_GET['idCod'])) {
+    $pres_cod = (int) $_GET['pres_cod'];
+    $solicitudObj->verDetallePrestamo($pres_cod);
+
 }
 
 ?>

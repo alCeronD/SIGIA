@@ -1,65 +1,76 @@
-<form id="formSolicitudPrestamo" method="POST" action="<?php echo getUrl('usuarios','usuarios','createUser'); ?>">
-  <div class="inputContent" style="grid-area: cedula;">
-    <label for="usu_docum" class="labelForm">Documento:</label>
-    <input type="text" class="inputForm" name="usu_docum" id="usu_docum" required placeholder="Número de documento...">
+<div class="content">
+  <div class="titleUsuarios">
+    <span id="textTitle" class="teal-text text-darken-4">Registrar usuario</span>
+    <a href="<?= getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close btn-flat red-text" title="Volver al dashboard">&times;</a>
   </div>
 
-  <div class="inputContent" style="grid-area: nombres;">
-    <label for="usu_nombres" class="labelForm">Nombres:</label>
-    <input type="text" class="inputForm" name="usu_nombres" id="usu_nombres" required placeholder="Nombres...">
-  </div>
+  <div class="registrarUsuario">
+    <form id="formSolicitudPrestamo" method="POST" action="<?= getUrl('usuarios','usuarios','createUser'); ?>">
+      <div class="inputContent tipoDocumento input-field">
+        <select name="usu_tp_id" id="usu_tp_id" class="" required>
+          <label for="usu_tp_id">Tipo documento:</label>
+          <option value="">Seleccione tipo de documento</option>
+          <?php foreach ($rowTp as $tp): ?>
+            <option class="input-field" value="<?= $tp['tp_id']; ?>"><?= htmlspecialchars($tp['tp_sigla'] . " - " . $tp['tp_nombre']); ?></option>
+            <?php endforeach; ?>
+          </select>
+      </div>
+      <div class="inputContent cedula input-field">
+        <input type="text" id="usu_docum" name="usu_docum" class="validate" required>
+        <label for="usu_docum">Documento:</label>
+      </div>
 
-  <div class="inputContent" style="grid-area: apellidos;">
-    <label for="usu_apellidos" class="labelForm">Apellidos:</label>
-    <input type="text" class="inputForm" name="usu_apellidos" id="usu_apellidos" required placeholder="Apellidos...">
-  </div>
+      <div class="inputContent rol ">
+        <label for="rol_id">Rol:</label>
+          <select name="rol_id" id="rol_id" class="" required>
+          <option value="">Seleccione un rol</option>
+          <?php foreach ($roles as $roli): ?>
+            <option class="input-field" value="<?= $roli['rl_id']; ?>"><?= htmlspecialchars($roli['rl_nombre']); ?></option>
+          <?php endforeach; ?>
+        </select>
+        </div>
+      <div class="inputContent nombres input-field">
+        <input type="text" id="usu_nombres" name="usu_nombres" class="validate" required >
+        <label for="usu_nombres">Nombres:</label>
+      </div>
 
-  <div class="inputContent" style="grid-area: telefono;">
-    <label for="usu_telefono" class="labelForm">Teléfono:</label>
-    <input type="tel" class="inputForm" name="usu_telefono" id="usu_telefono" required placeholder="Teléfono...">
-  </div>
+      <div class="inputContent apellidos input-field">
+        <input type="text" id="usu_apellidos" name="usu_apellidos" class="validate" required >
+        <label for="usu_apellidos">Apellidos:</label>
+      </div>
 
-  <div class="inputContent" style="grid-area: email;">
-    <label for="usu_email" class="labelForm">Correo electrónico:</label>
-    <input type="email" class="inputForm" name="usu_email" id="usu_email" required placeholder="Correo electrónico...">
-  </div>
+      <div class="inputContent telefono input-field">
+        <input type="tel" id="usu_telefono" name="usu_telefono" class="validate" required >
+        <label for="usu_telefono">Teléfono:</label>
+      </div>
 
-  <div class="inputContent" style="grid-area: rol;">
-    <label for="rol_id" class="labelForm">Rol:</label>
-    <select name="rol_id" id="rol_id" class="inputForm" required>
-      <option value="">Seleccione un rol</option>
-      <?php foreach ($roles as $roli): ?>
-        <option value="<?php echo $roli['rl_id']; ?>"><?php echo htmlspecialchars($roli['rl_nombre']); ?></option>
-      <?php endforeach; ?>
-    </select>
-  </div>
+      <div class="inputContent password input-field">
+        <input type="password" id="usu_password" name="usu_password" class="validate" required >
+        <label for="usu_password">Contraseña:</label>
+      </div>
 
-  <div class="inputContent" style="grid-area: password;">
-    <label for="usu_password" class="labelForm">Contraseña:</label>
-    <input type="password" class="inputForm" name="usu_password" id="usu_password" required placeholder="Contraseña...">
-  </div>
+      <div class="inputContent email input-field">
+        <input type="email" id="usu_email" name="usu_email" class="validate" required >
+        <label for="usu_email">Correo electrónico:</label>
+      </div>
 
-  <div class="inputContent" style="grid-area: direccion;">
-    <label for="usu_direccion" class="labelForm">Dirección:</label>
-    <input type="text" class="inputForm" name="usu_direccion" id="usu_direccion" required placeholder="Dirección...">
-  </div>
+      <div class="inputContent direccion input-field">
+        <input type="text" id="usu_direccion" name="usu_direccion" class="validate" required >
+        <label for="usu_direccion">Dirección:</label>
+      </div>
 
-  <div class="inputContent" style="grid-area: tipoDocumento;">
-    <label for="usu_tp_id" class="labelForm">Tipo documento:</label>
-    <select name="usu_tp_id" id="usu_tp_id" class="inputForm" required>
-      <option value="">Seleccione tipo de documento</option>
-      <?php foreach ($rowTp as $tp): ?>
-        <option value="<?php echo $tp['tp_id']; ?>"><?php echo htmlspecialchars($tp['tp_sigla'] . " - " . $tp['tp_nombre']); ?></option>
-      <?php endforeach; ?>
-    </select>
-  </div>
+      <div class="inputContent observaciones input-field">
+        <textarea name="observaciones" id="observaciones" class="materialize-textarea"></textarea>
+        <label for="observaciones">Notas adicionales al usuario:</label>
+      </div>
 
-  <div class="inputContent" style="grid-area: observaciones;">
-    <label class="labelForm">Observaciones:</label>
-    <textarea class="inputForm" name="observaciones" placeholder="Notas adicionales del usuario..."></textarea>
-  </div>
+      <div class="inputBtn">
+        <button type="submit" class="btn waves-effect waves-light teal darken-3"> <i class="Medium material-icons">save</i></button>
+      </div>
 
-  <div class="inputBtn" style="grid-area: boton;">
-    <button type="submit">Registrar</button>
+    </form>
   </div>
-</form>
+</div>
+
+<script type="module" src="../public/assets/js/main.js"></script>
+<script type="module" src="../public/assets/js/usuarios/usuarios.js"></script>

@@ -42,8 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const filas = document.querySelectorAll('tbody tr');
 
         filas.forEach(fila => {
-            const tipoFila = fila.getAttribute('data-tipo').toLowerCase();
-
+            const tipoFila = fila.getAttribute('data-tipo');
             if (filtro === 'todos' || tipoFila === filtro) {
                 fila.style.display = '';
             } else {
@@ -53,10 +52,45 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    
+const abrirModalBtn = document.getElementById('abrirModalRegistrar');
+    const modalRegistrar = document.getElementById('modalRegistrar');
+    const cerrarModalBtn = document.getElementById('cerrarModalRegistrar');
+    const tipoElementoSelect = document.getElementById('tipoElementoSelect');
+    const formDevolutivo = document.getElementById('formDevolutivo');
+    const formConsumible = document.getElementById('formConsumible');
 
-    
+    abrirModalBtn.addEventListener('click', () => {
+        modalRegistrar.style.display = 'flex';
+        // Resetear selector y formularios al abrir
+        tipoElementoSelect.value = '';
+        formDevolutivo.style.display = 'none';
+        formConsumible.style.display = 'none';
+        formDevolutivo.reset();
+        formConsumible.reset();
+    });
 
+    cerrarModalBtn.addEventListener('click', () => {
+        modalRegistrar.style.display = 'none';
+    });
 
+    // Mostrar el formulario según el tipo seleccionado
+    tipoElementoSelect.addEventListener('change', () => {
+        if (tipoElementoSelect.value === 'devolutivo') {
+            formDevolutivo.style.display = 'block';
+            formConsumible.style.display = 'none';
+        } else if (tipoElementoSelect.value === 'consumible') {
+            formConsumible.style.display = 'block';
+            formDevolutivo.style.display = 'none';
+        } else {
+            formDevolutivo.style.display = 'none';
+            formConsumible.style.display = 'none';
+        }
+    });
 
+    // Cerrar modal si clic fuera del contenido
+    window.addEventListener('click', e => {
+        if (e.target === modalRegistrar) {
+            modalRegistrar.style.display = 'none';
+        }
+    });
 });

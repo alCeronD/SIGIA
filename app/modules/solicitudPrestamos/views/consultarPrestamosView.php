@@ -1,119 +1,61 @@
-<div class="content">
-  <div class="w-100 mx-auto text-start">
-    <h2 class="mb-4 text-center">Préstamos Registrados</h2>
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover align-middle">
-        <thead class="table-dark text-center">
+<!-- Vista: consultarPrestamos (actualizada con tabla grid restaurada correctamente) -->
+<div class="contentSolicitud">
+    <div class="solicitudTitle">
+      <h2 class="">Préstamos Registrados</h2>
+      <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
+    </div>
+    <div class="tableDetalle">
+      <table class="table-responsive">
+        <thead class="table-dark text-center" id="consultPrestamoHead">
           <tr>
             <th>ID</th>
             <th>Nombre Usuario</th>
-            <th>Fecha de Solicitud</th>
-            <th>Estado</th>
-            <th>Acciones</th>
+            <th >Fecha de Solicitud</th>
+            <th >Estado</th>
+            <th >Acciones</th>
           </tr>
         </thead>
         <tbody id="tabla-prestamos">
           <?php if (!empty($prestamos)): ?>
             <?php foreach ($prestamos as $prestamo): ?>
-              <tr class="text-center fila-prestamo">
-                <td><?= htmlspecialchars($prestamo['pres_cod']) ?></td>
-                <td><?= htmlspecialchars($nombre) ?></td>
-                <td><?= htmlspecialchars($prestamo['pres_fch_reserva']) ?></td>
-                <td><?= htmlspecialchars($prestamo['tipo_prestamo']) ?></td>
+              <tr class="" >
                 <td>
-                  <button class="btn-ver-detalle" data-id="<?= $prestamo['pres_cod'] ?>">Ver detalle</button>
-                  <br>
-                  <a href="<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'eliminarPrestamo', ['pres_cod' => $prestamo['pres_cod']]) ?>" class="btn btn-sm btn-danger mt-1">
-                    Aprobar/No aprobar
-                  </a>
+                  <?= htmlspecialchars($prestamo['pres_cod']) ?>
+                </td>
+                <td >
+                  <?= htmlspecialchars($nombre) ?>
+                </td>
+                <td >
+                  <?= htmlspecialchars($prestamo['pres_fch_reserva']) ?>
+                </td>
+                <td >
+                  <?= htmlspecialchars($prestamo['tipo_prestamo']) ?>
+                </td>
+                <td >
+                  <button type="button" class="btn-ver-detalle" id="btnVerDetalle" data-id="<?= $prestamo['pres_cod'] ?>">Ver detalle</button>
                 </td>
               </tr>
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="5" class="text-center">No hay préstamos registrados.</td>
+              <td colspan="5" class="text-center" id="noDataResult">
+                No hay préstamos registrados.
+              </td>
             </tr>
           <?php endif; ?>
         </tbody>
       </table>
-  
+
       <div class="page container-fluid col-12">
         <ul id="paginacion-prestamos" class="pagination justify-content-center"></ul>
       </div>
     </div>
-  </div>
-  
-  <div id="modalDetalle" class="modal-overlay" style="display: none;">
-    <div class="modal-container">
-      <button class="close-btn" style="position:absolute; top:10px; right:15px;">&times;</button>
-      <div id="contenidoDetalle" class="detalle-container">
-        <!-- Aquí se carga el detalle del préstamo vía fetch -->
-      </div>
-    </div>
-  </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const filas = Array.from(document.querySelectorAll('.fila-prestamo'));
-  const paginacion = document.getElementById('paginacion-prestamos');
-  const itemsPorPagina = 5;
-  let totalPaginas = Math.ceil(filas.length / itemsPorPagina);
+<!-- Modal Detalle del Préstamo -->
+<?php include_once 'modalVerDetalle.php'; ?>
+<!-- JavaScript de paginación y modal -->
 
-  function mostrarPagina(pagina) {
-    const inicio = (pagina - 1) * itemsPorPagina;
-    const fin = inicio + itemsPorPagina;
+<!-- <script  src="../public/assets/js/solicitudPrestamos/consultarPrestamos.js"></script> -->
 
-    filas.forEach((fila, index) => {
-      fila.style.display = index >= inicio && index < fin ? '' : 'none';
-    });
-
-    document.querySelectorAll('#paginacion-prestamos li').forEach(el => el.classList.remove('active'));
-    const liActivo = document.querySelector(`#paginacion-prestamos li[data-pagina="${pagina}"]`);
-    if (liActivo) liActivo.classList.add('active');
-  }
-
-  function generarPaginacion() {
-    paginacion.innerHTML = '';
-    for (let i = 1; i <= totalPaginas; i++) {
-      const li = document.createElement('li');
-      li.classList.add('page-item');
-      li.setAttribute('data-pagina', i);
-      li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-      li.addEventListener('click', function (e) {
-        e.preventDefault();
-        mostrarPagina(i);
-      });
-      paginacion.appendChild(li);
-    }
-
-    if (totalPaginas > 0) {
-      mostrarPagina(1);
-    }
-  }
-
-  generarPaginacion();
-
-  // Modal
-  const modal = document.getElementById('modalDetalle');
-  const contenido = document.getElementById('contenidoDetalle');
-  const closeBtn = document.querySelector('.close-btn');
-
-  document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
-    btn.addEventListener('click', function () {
-      const id = this.dataset.id;
-      modal.style.display = 'block';
-      contenido.innerHTML = "<p>Cargando información...</p>";
-
-      fetch(`<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'verDetallePrestamo', false, 'ajax') ?>&pres_cod=${id}`)
-        .then(res => res.text())
-        .then(html => contenido.innerHTML = html)
-        .catch(() => contenido.innerHTML = "<p>Error al cargar el detalle</p>");
-    });
-  });
-
-  closeBtn.onclick = () => modal.style.display = "none";
-  window.onclick = e => { if (e.target == modal) modal.style.display = "none"; };
-});
-</script>
-
+<script type="module" src="../public/assets/js/solicitudPrestamos/consultarPrestamos.js"></script>

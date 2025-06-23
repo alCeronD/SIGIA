@@ -1,7 +1,7 @@
 <div class="contentUsuarios">
   <div class="titleUsuarios">
-    <span id="textTitle">Usuarios Registrados</span>
-    <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard'); ?>" class="close" title="Volver al dashboard">&times;</a>
+    <span id="textTitle">Consultar Usuarios</span>
+      <a href="<?= getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
   </div>
 
   <div class="table">
