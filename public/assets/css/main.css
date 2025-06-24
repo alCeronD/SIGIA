@@ -6,7 +6,6 @@ Este documento contiene todos los estilos que se repiten sus componentes, como b
   margin: 0px;
   padding: 0px;
 }
-
 html, body {
   height: 100%;
   margin: 0;
@@ -48,7 +47,7 @@ html, body {
   margin: 0 auto;
   position: relative;
   top: calc(100vh - 90vh);
-  border: 1px solid black;
+  overflow: visible;
 }
 
 .container * {
@@ -62,12 +61,6 @@ html, body {
   text-decoration: none;
   font-size: 2rem;
 }
-
-/* POSIBLE ESTILO AL TD DE LAS TABLAS, NO DESCOMENTAR */
-  /* td{
-    padding: 0.75rem; border-bottom: 1px solid #ddd; text-align: center;
-  } */
-
 
 /* Estilos de menu */
 #mainMenu {
@@ -185,15 +178,6 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-
-
-
-/* Clase general  de botones, contiene la forma del boton el tamaño.*/
-/* .btn{
-  margin: 1rem;
-} */
-
-
 /* Estilos generales del modulo de configuración = Es la estructura de los siguientes modulos: areas, tipoDocumento, marca,categoria,roles */
 .contentLayout {
   width: 100%;
@@ -218,13 +202,6 @@ input[type="number"] {
   width: 100%;
 }
 
-/* Clase específica */
-/* .btnClick{
-  background-color:var(--secundary);
-  color: white
-
-}
-
 .btnSubmit{
   background-color: #6c757d;
   color: white;
@@ -232,9 +209,6 @@ input[type="number"] {
   border-radius: 10px;
   width: auto;
   height: 20pt;
-} */
-/* Estilos de los contenedores */
-/* Estilo para pantallas con esa resolución en adelante. */
-/* @media (min-width: 1366px) and (min-height: 768px) {
+} 
 
-} */
+

@@ -1,15 +1,12 @@
 import { Ajax } from "../utils/ajax.js";
-import { closeModal } from "../utils/cases.js";
-
-
+//Cases no está dentro de las llaves xq estoy importando otras cosas por defecto.
+import { closeModal, openModal } from "../utils/cases.js";
 
 const tableBody = document.querySelector("#marcaTblBody");
 const formMarca = document.querySelector("#marcaForm");
 const myModal = document.querySelector("#modalMarca");
 const marcaUpdateForm = document.querySelector("#marcaUpdateForm");
 const closeModalBtn = document.querySelector(".closeModalBtn");
-const btnDelete = document.querySelector("#btnDelete");
-const btnUpdate = document.querySelector("#btnUpdate");
 let table = "marcas";
 let status = 1;
 const objAjax = new Ajax();
@@ -17,10 +14,9 @@ let nombreMarca;
 let descripcionMarca;
 let idPk;
 
-function fetchData() {
-  tableBody.innerHTML = "";
-  //let dataFetch = [table, status];
 
+function fetchData() {
+ tableBody.innerHTML = "<tr><td colspan='5'>Cargando datos...</td></tr>";
   objAjax.request.open(
     "GET",
     `modules/configModules/api/apiConfigModules.php?tableName=${encodeURIComponent(
@@ -52,7 +48,6 @@ function fetchData() {
       const tdDescript = document.createElement("td");
       const tdStatus = document.createElement("td");
       const tdAccion = document.createElement("td");
-      // Asigno el botón a ambos elementos.
 
       tableBody.appendChild(tr);
 
@@ -87,7 +82,7 @@ function fetchData() {
         let btndl = f.target;
         let row = btndl.closest("tr");
         const celda = row.querySelectorAll("td");
-
+        
         //Capturo la información y la separo.
         idPk = celda[0].textContent;
         nombreMarca = celda[1].textContent;
@@ -102,7 +97,8 @@ function fetchData() {
         descripcionAreaUpdate.value = descripcionMarca;
 
         //Abro el modal.
-        myModal.style.display = "flex";
+        openModal(myModal);
+
       });
 
       //Delete Event
@@ -158,10 +154,6 @@ function fetchData() {
   //Enviar datos a get para visualziar las areas
   objAjax.request.send();
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  fetchData();
-});
 
 //Formulario de registro.
 formMarca.addEventListener("submit", (f) => {

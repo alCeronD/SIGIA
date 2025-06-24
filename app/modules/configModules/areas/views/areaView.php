@@ -1,4 +1,3 @@
-<!-- TODO: Mover al archivo específico de la vista de area. -->
 <div class="contentArea contentLayout">
     <div class="titleArea menuTitle">
         <span id="textTitleAreas">Areas</span>
@@ -32,7 +31,7 @@
 <!-- Modal -->
 <div id="modalArea" class="modal">
     <!-- Modal content -->
-    <div class="modalContentArea">
+    <div class="modalContentArea modal-content">
         <div class="titleSection">
             <span id="modalTitle">Actualizar registro</span>
             <button type="button" class="closeModalBtn">
@@ -41,17 +40,16 @@
         </div>
         <div class="formUpdate">
             <form id="areaUpdateForm" class="formLayout">
-                <div class="arNombreUpdate">
+                <div class="input-field arNombreUpdate">
                     <label for="ar_nombre">Nombre:</label>
                     <input type="text" name="ar_nombre" id="nombreAreaUpdate" placeholder="Nombre area...">
                 </div>
-                <div class="arDescripUpdate">
+                <div class="input-field arDescripUpdate">
                     <label for="ar_descripcion">Descripción:</label>
-                    <textarea name="ar_descripcion" id="descripcionAreaUpdate" placeholder="Descripción..."></textarea>
+                    <textarea name="ar_descripcion" id="descripcionAreaUpdate" class="materialize-textarea"></textarea>
                 </div>
                 <div class="arBtnUpdate">
-
-                    <button type="click" id="btnAreaUpdate">Actualizar</button>
+                    <button type="submit" id="btnAreaUpdate" class="btnSubmit waves-effect waves-light btn">Actualizar</button>
                 </div>
             </form>
         </div>

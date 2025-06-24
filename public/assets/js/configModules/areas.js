@@ -1,5 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import { createI, closeModal, openModal } from "../utils/cases.js";
+import { createI, closeModal, openModal, createBtn } from "../utils/cases.js";
 //La idea es capturar la información aca desde javascript y enviarla al controlador.
 
 //Formulario de envio
@@ -27,7 +27,7 @@ let nombreArea;
 let descripcion;
 
 function fetchData() {
-  tableBodyArea.innerHTML = "";
+  tableBody.innerHTML = "";
   //let dataFetch = [table, status];
 
   objAjax.request.open(
@@ -51,19 +51,19 @@ function fetchData() {
       }
 
       data.forEach((dta) => {
+        //Crear los elementos en primera instancia.
         //boton de acción
-        const btnUpdate = document.createElement("button");
-        const btnDelete = document.createElement("button");
         const iSave = createI();
         const iDelete = createI();
+        iDelete.setAttribute("class",'material-icons');
         iSave.innerText = 'save';
+        const btnUpdate = createBtn();
+        const btnDelete = createBtn();
         btnUpdate.setAttribute("class", "btnUpdate");
         btnUpdate.setAttribute('class','waves-effect waves-light btn-small');
         btnUpdate.append(iSave);
         btnDelete.setAttribute("class", "btnDelete");
         btnDelete.setAttribute('class','btn waves-effect waves-light btn-small');
-        
-        iDelete.setAttribute("class",'material-icons');
         
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
