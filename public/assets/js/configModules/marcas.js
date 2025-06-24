@@ -1,12 +1,15 @@
 import { Ajax } from "../utils/ajax.js";
 //Cases no está dentro de las llaves xq estoy importando otras cosas por defecto.
-import { closeModal, openModal } from "../utils/cases.js";
+import { closeModal, createI, instanceModal, openModal, options } from "../utils/cases.js";
 
 const tableBody = document.querySelector("#marcaTblBody");
 const formMarca = document.querySelector("#marcaForm");
 const myModal = document.querySelector("#modalMarca");
 const marcaUpdateForm = document.querySelector("#marcaUpdateForm");
 const closeModalBtn = document.querySelector(".closeModalBtn");
+
+const instanModal = instanceModal('#modalMarca',{"inDuration":options.inDuration, "outDuration": options.outDuration, "opacity": options.opacity });
+
 let table = "marcas";
 let status = 1;
 const objAjax = new Ajax();
@@ -14,9 +17,8 @@ let nombreMarca;
 let descripcionMarca;
 let idPk;
 
-
 function fetchData() {
- tableBody.innerHTML = "<tr><td colspan='5'>Cargando datos...</td></tr>";
+ tableBody.innerHTML = "";
   objAjax.request.open(
     "GET",
     `modules/configModules/api/apiConfigModules.php?tableName=${encodeURIComponent(
@@ -37,11 +39,14 @@ function fetchData() {
     }
     data.forEach((dta) => {
       //boton de acción
+      const iSave = createI();
+      const iDelete = createI();
+
       const btnUpdate = document.createElement("button");
       const btnDelete = document.createElement("button");
       btnUpdate.setAttribute("class", "btnUpdate");
-      btnUpdate.innerText = "Actualizar";
       btnDelete.setAttribute("class", "btnDelete");
+      btnUpdate.append(iSave);
       const tr = document.createElement("tr");
       const tdId = document.createElement("td");
       const tdName = document.createElement("td");
@@ -49,6 +54,10 @@ function fetchData() {
       const tdStatus = document.createElement("td");
       const tdAccion = document.createElement("td");
 
+      btnUpdate.setAttribute('class','waves-effect waves-light btn-small');
+      btnDelete.setAttribute('class','btn waves-effect waves-light btn-small modal-trigger red');
+      iSave.innerText = 'save';
+      btnDelete.append(iDelete);
       tableBody.appendChild(tr);
 
       tdId.textContent = dta.ma_id;
@@ -62,11 +71,11 @@ function fetchData() {
       if (dta.ma_status === 1) {
         tdStatus.textContent = "Activo";
         tdStatus.style.color = "green";
-        btnDelete.innerText = "Inhabilitar";
+        iDelete.innerText = 'delete';
       } else {
         tdStatus.textContent = "Inactivo";
         tdStatus.style.color = "red";
-        btnDelete.innerText = "Habilitar";
+        iDelete.innerText = 'loop';
       }
 
       tdAccion.append(btnUpdate, btnDelete);
@@ -97,7 +106,8 @@ function fetchData() {
         descripcionAreaUpdate.value = descripcionMarca;
 
         //Abro el modal.
-        openModal(myModal);
+        // openModal(myModal);
+        instanModal.open();
 
       });
 
@@ -140,6 +150,7 @@ function fetchData() {
             } else {
               alert("Registro actualizado");
               fetchData(); // Refrescar tabla
+              myModal.style.display = 'none';
             }
           };
 
@@ -154,6 +165,11 @@ function fetchData() {
   //Enviar datos a get para visualziar las areas
   objAjax.request.send();
 }
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  fetchData();
+
+});
 
 //Formulario de registro.
 formMarca.addEventListener("submit", (f) => {
@@ -217,12 +233,13 @@ marcaUpdateForm.addEventListener("submit", (e) => {
     if (dataResponse.status) {
       alert("registro actualizado.");
       fetchData();
-      myModal.style.display = "none";
+      //Si requiero cerrar el modal de manera automatica, debo de usar el método close, propio de materialize. En caso de que requiera presionar el botón, uso la función que se creó.
+      instanModal.close();
     }
   };
 
   objAjax.request.send(data);
 });
 
-//Cerrar modal
-closeModal(myModal, closeModalBtn);
+//Cerrar modal solo con el boton de span.
+closeModal(instanModal,closeModalBtn);

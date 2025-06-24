@@ -7,20 +7,20 @@
     </div>
     <div class="formMarca">
         <form id="marcaForm" class="formLayout">
-            <div class="contentMarcaN">
+            <div class="input-field contentMarcaN">
+                <input type="text" name="ma_nombre" id="ma_nombre" >
                 <label for="ma_nombre">Nombre:</label>
-                <input type="text" name="ma_nombre" id="nombreMarca" placeholder="Nombre marca">
             </div>
-            <div class="contentMarcaD">
-                <label for="ma_descripcion">Descripción:</label>
-                <textarea name="ma_descripcion" id="descripcionMarca" placeholder="Descripción"></textarea>
+            <div class="input-field contentMarcaD">
+                <textarea name="ma_descripcion" id="descripcionMarca" class="materialize-textarea"></textarea>
+                <label for="descripcionMarca">Descripción:</label>
             </div>
             <div class="contentSubmitMa">
-                <button type="submit" id="btnMarca">Guardar</button>
+                <button type="submit" class="btnSubmit waves-effect waves-light btn" id="btnAreaUpdate"><i class="material-icons">send</i><button></button>
             </div>
         </form>
     </div>
-    <div class="tblMarca">
+    <div class="tblMarca highlight striped responsive-table">
         <?php require_once 'tableMarcaView.php'; ?>
     </div>
 
@@ -48,7 +48,7 @@
                     <textarea name="ma_descripcion" id="descripcionMarcaUpdate" placeholder="Descripción..."></textarea>
                 </div>
                 <div class="btnMaUpdate">
-                    <button type="click" id="btnMarcaUpdate">Agregar</button>
+                    <button type="submit" id="btnMarcaUpdate" class="btnSubmit waves-effect waves-light btn"><i class="material-icons">save</i></button>
                 </div>
             </form>
         </div>

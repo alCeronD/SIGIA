@@ -13,7 +13,7 @@ const tableBodyTp = document.querySelector("#tableBodyTp");
 const tpUpdateForm = document.querySelector("#tpUpdateForm");
 const closeModalBtn = document.querySelector('.closeModalBtn');
 const myModal = document.querySelector("#modalTp");
-const modal = instanceModal('#modalTp',{"inDuration":options.inDuration, "outDuration": options.outDuration});
+const modal = instanceModal('#modalTp',{"inDuration":options.inDuration, "outDuration": options.outDuration,"opacity": options.opacity});
 let idPk;
 let nombreTp;
 let descripcion;
@@ -57,7 +57,7 @@ function fetchData() {
         const tdAccion = document.createElement("td");
         // Asigno el botón a ambos elementos.
 
-        btnDelete.setAttribute('class','btn waves-effect waves-light btn-small');
+        btnDelete.setAttribute('class','btn waves-effect waves-light btn-small red');
         btnUpdate.setAttribute('class','waves-effect waves-light btn-small');
 
         const iSave = document.createElement('i');
@@ -214,10 +214,10 @@ tpUpdateForm.addEventListener("submit", (e) => {
     dataStatus = JSON.parse(dataStatus);
     if (dataStatus.status) {
       alert("registro actualizado");
-      //Cerrar el modal
-      myModal.style.display = 'none';
       //Renderizo nuevamente la data.
       fetchData();
+      //Cerrar el modal
+      modal.close();
     }
   };
   objAjax2.request.send(data);

@@ -22,7 +22,7 @@ const tableBody = document.querySelector("#tableBodyArea");
 //formulario Update del modal
 const areaUpdateForm = document.querySelector("#areaUpdateForm");
 //Creo la instancia del modal con las siguientes propiedades, Options es un objeto que está creado en el file cases.js
-const instanceMyModal = instanceModal('#modalArea',{"inDuration":options.inDuration, "outDuration": options.outDuration});
+const instanceMyModal = instanceModal('#modalArea',{"inDuration":options.inDuration, "outDuration": options.outDuration, "opacity":options.opacity});
 
 let idPk;
 let nombreArea;
@@ -62,10 +62,10 @@ function fetchData() {
         const btnUpdate = createBtn();
         const btnDelete = createBtn();
         btnUpdate.setAttribute("class", "btnUpdate");
-        btnUpdate.setAttribute('class','waves-effect waves-light btn-small');
+        btnUpdate.setAttribute('class','waves-effect waves-light btn-small light-blue');
         btnUpdate.append(iSave);
         btnDelete.setAttribute("class", "btnDelete");
-        btnDelete.setAttribute('class','btn waves-effect waves-light btn-small modal-trigger');
+        btnDelete.setAttribute('class','btn waves-effect waves-light btn-small modal-trigger red');
         
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
@@ -130,15 +130,7 @@ function fetchData() {
           instanceMyModal.open();
           const closeModalBtn = document.querySelector('.closeModalBtn');
 
-          //Cerrar el modal.
-          closeModalBtn.addEventListener('click',(event)=>{
-            event.preventDefault();
-            event.stopPropagation();
-
-            instanceMyModal.close();
-            //Cierro modal de manera tradicional
-            // closeModal(myModal);
-          })
+          closeModal(instanceMyModal,closeModalBtn);
 
         });
 
@@ -282,6 +274,7 @@ areaUpdateForm.addEventListener("submit", (e) => {
 
       //Renderizo nuevamente la data.
       fetchData();
+      instanceMyModal.close();
     }
   };
   objAjax.request.send(data);

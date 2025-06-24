@@ -7,11 +7,15 @@ export const closeModal = (modal,btn) => {
   if (!modal || !btn) {
     return;
   }
+
+  if (!btn) {
+    modal.close();
+  }
   
   btn.addEventListener('click', (e)=>{
     e.preventDefault();
     e.stopPropagation();
-    modal.close();
+    // modal.close();
 
     //Valido si el tipo de lo que voy a ejecutar es una función.
     if (typeof modal.close === 'function') {

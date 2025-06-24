@@ -461,6 +461,10 @@
   flex-direction: column;
 }
 
+#marcaUpdateForm > div:last-child{
+  text-align: center;
+}
+
 #descripcionMarcaUpdate{
   resize: none;
   height: 8vh;
