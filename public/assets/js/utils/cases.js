@@ -1,12 +1,28 @@
 /**
  * Archivo donde podemos importar y re utilizar cosas. como crear elementos html o re utilizar cosas como peticiones futuras.
  */
-export const closeModal = (modal) => {
-  modal.style.display = "none";
+export const closeModal = (modal,btn) => {
+
+  //Valido primero que lo que llegue exista.
+  if (!modal || !btn) {
+    return;
+  }
+  
+  btn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    modal.close();
+
+    //Valido si el tipo de lo que voy a ejecutar es una función.
+    if (typeof modal.close === 'function') {
+      modal.close();
+    }
+
+  });
 };
 
 export const openModal = (modal) => {
-  modal.style.display = "flex";
+  // modal.style.display = "flex";
 };
 
 export const createI = () => {
@@ -44,8 +60,6 @@ export const instanceModal = (selector,options = {}) => {
   //Devuelve un nodo de todos los modales que contenga la clase .modal
   return M.Modal.init(elements, options);
 };
-
-
 
 export default {
   closeModal,

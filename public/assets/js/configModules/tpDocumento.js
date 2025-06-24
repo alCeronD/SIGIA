@@ -1,5 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import {closeModal} from "../utils/cases.js";
+import {closeModal, options, instanceModal} from "../utils/cases.js";
 
 const formulario = document.querySelector("#formTp");
 const objAjax2 = new Ajax();
@@ -13,6 +13,7 @@ const tableBodyTp = document.querySelector("#tableBodyTp");
 const tpUpdateForm = document.querySelector("#tpUpdateForm");
 const closeModalBtn = document.querySelector('.closeModalBtn');
 const myModal = document.querySelector("#modalTp");
+const modal = instanceModal('#modalTp',{"inDuration":options.inDuration, "outDuration": options.outDuration});
 let idPk;
 let nombreTp;
 let descripcion;
@@ -117,7 +118,8 @@ function fetchData() {
           descripcionTp_documento.value = descripcion;
 
           //Abro el modal.
-          myModal.style.display = "flex";
+          modal.open();
+
         });
 
         //Delete Event
@@ -260,6 +262,4 @@ formulario.addEventListener("submit", (event) => {
   objAjax2.request.send(data); 
 });
 
-
-//Cerrar el modal.
-closeModal(myModal,closeModalBtn);
+closeModal(modal,closeModalBtn);

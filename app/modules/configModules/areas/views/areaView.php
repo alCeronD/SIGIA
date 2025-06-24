@@ -6,7 +6,7 @@
             title="Volver al dashboard">&times;</a>
     </div>
     <div class="formAr">
-        <p class="flow-text">Registrar usuario</p>
+        <p class="flow-text">Registrar Area</p>
         <form id="formArea" class="formLayout">
             <div class="input-field contentAreaNem">
                 <input type="text" name="ar_nombre" id="ar_nombre" class="validate">
@@ -42,14 +42,14 @@
             <form id="areaUpdateForm" class="formLayout">
                 <div class="input-field arNombreUpdate">
                     <label for="ar_nombre">Nombre:</label>
-                    <input type="text" name="ar_nombre" id="nombreAreaUpdate" placeholder="Nombre area...">
+                    <input type="text" name="ar_nombre" id="nombreAreaUpdate">
                 </div>
                 <div class="input-field arDescripUpdate">
-                    <label for="ar_descripcion">Descripción:</label>
                     <textarea name="ar_descripcion" id="descripcionAreaUpdate" class="materialize-textarea"></textarea>
+                    <label for="ar_descripcion">Descripción:</label>
                 </div>
                 <div class="arBtnUpdate">
-                    <button type="submit" id="btnAreaUpdate" class="btnSubmit waves-effect waves-light btn">Actualizar</button>
+                    <button type="submit" id="btnAreaUpdate" class="btnSubmit waves-effect waves-light btn"><i class="material-icons">save</i></button>
                 </div>
             </form>
         </div>

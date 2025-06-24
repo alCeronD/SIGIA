@@ -1,5 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import { createI, closeModal, openModal, createBtn } from "../utils/cases.js";
+import { createI, closeModal, openModal, createBtn, instanceModal, options } from "../utils/cases.js";
 //La idea es capturar la información aca desde javascript y enviarla al controlador.
 
 //Formulario de envio
@@ -21,6 +21,8 @@ const myModal = document.querySelector("#modalArea");
 const tableBody = document.querySelector("#tableBodyArea");
 //formulario Update del modal
 const areaUpdateForm = document.querySelector("#areaUpdateForm");
+//Creo la instancia del modal con las siguientes propiedades, Options es un objeto que está creado en el file cases.js
+const instanceMyModal = instanceModal('#modalArea',{"inDuration":options.inDuration, "outDuration": options.outDuration});
 
 let idPk;
 let nombreArea;
@@ -63,7 +65,7 @@ function fetchData() {
         btnUpdate.setAttribute('class','waves-effect waves-light btn-small');
         btnUpdate.append(iSave);
         btnDelete.setAttribute("class", "btnDelete");
-        btnDelete.setAttribute('class','btn waves-effect waves-light btn-small');
+        btnDelete.setAttribute('class','btn waves-effect waves-light btn-small modal-trigger');
         
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
@@ -123,17 +125,19 @@ function fetchData() {
           nombreAreaUpdate.value = nombreArea;
           descripcionAreaUpdate.value = descripcion;
 
-          //Abro el modal.
-          openModal(myModal);
-
+          //Abro el modal de manera tradicional.
+          //openModal(myModal);
+          instanceMyModal.open();
           const closeModalBtn = document.querySelector('.closeModalBtn');
 
+          //Cerrar el modal.
           closeModalBtn.addEventListener('click',(event)=>{
             event.preventDefault();
             event.stopPropagation();
 
-            myModal.style.display = "none";
-
+            instanceMyModal.close();
+            //Cierro modal de manera tradicional
+            // closeModal(myModal);
           })
 
         });
