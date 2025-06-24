@@ -8,21 +8,21 @@
     </div>
     <div class="formAr">
         <form id="formArea" class="formLayout">
-            <div class="contentAreaNem">
+            <div class="input-field contentAreaNem">
+                <input type="text" name="ar_nombre" id="ar_nombre" class="validate">
                 <label for="ar_nombre">Area</label>
-                <input type="text" name="ar_nombre" id="nombreArea" placeholder="Nombre area..." value="">
             </div>
-            <div class="contentDescript">
-                <label for="ar_descripcion">Descripción</label>
-                <textarea name="ar_descripcion" placeholder="Descripción general del area" id="descripcionArea" value=""></textarea>
+            <div class="input-field contentDescript">
+                <textarea name="ar_descripcion"  id="descripcionArea" value="" class="materialize-textarea"></textarea>
+                <label for="ar_descripcion">Descripción del area</label>
             </div>
             <div class="contentSubmit">
-                <button type="submit" id="btnAreaUpdate" class="btnSubmit">Registrar</button>
+                <button type="submit" id="btnAreaUpdate" class="btnSubmit waves-effect waves-light btn">Registrar<i class="material-icons right">save</i></button>
             </div>
         </form>
     </div>
 
-    <div class="tblAreas">
+    <div class="tblAreas highlight striped responsive-table">
         <!-- Tabla de vista. -->
         <?php require_once 'tableViewArea.php'; ?>
     </div>

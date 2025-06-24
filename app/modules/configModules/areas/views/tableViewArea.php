@@ -1,5 +1,5 @@
 <!-- Tabla para incluir en las diferentes vistas de area, tipo de documento, rol y marca -->
-    <table class="tableConfig" id="tableConfigArea">
+    <table class="tableConfig " id="tableConfigArea">
         <thead>
             <tr>
                 <th>Código</th>

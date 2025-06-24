@@ -1,9 +1,10 @@
 :root {
-  --primary: #1e90ff;
+  --primary: #3a6c52;
   --secundary: #004034;
   --btnSubmit : rgba(128, 255, 0, 0.371);
   --btnInfo : green;
   --other: gray;
+  --white: #f0f0f0;
 }
 
   /* 
@@ -138,11 +139,9 @@
 .inputContent {
   display: flex;
   justify-content: flex-start;
-  /* align-items: center; */
   width: 100%;
   height: fit-content;
-  /* gap: .5em; */
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .labelForm {

@@ -1,10 +1,15 @@
 :root {
-  --primary: #1e90ff;
-  --secundary: #2c5e42;
-  --btnSubmit: #80ff005e;
-  --btnInfo: #008000;
-  --other: #808080;
-  --white: #ffffff;
+  --primary: #3a6c52;
+  --secundary: #004034;
+  --btnSubmit : rgba(128, 255, 0, 0.371);
+  --btnInfo : green;
+  --other: gray;
+  --white: #f0f0f0;
+}
+
+*{
+  margin: 0;
+  padding: 0;
 }
 
 
@@ -40,6 +45,11 @@
     "contentAreaNem"
     "contentDescript"
     "contentSubmit";
+}
+
+#ar_nombre{
+  height: fit-content;
+  width: 100%;
 }
 
 /* Acceder a los hijos el formulario */

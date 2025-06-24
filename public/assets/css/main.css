@@ -16,9 +16,8 @@ html, body {
 
 /* Variables para los colores */
 :root {
-  --primary: #1e90ff;
+  --primary: #3a6c52;
   --secundary: #004034;
-  --btnSubmit : rgba(128, 255, 0, 0.371);
   --btnInfo : green;
   --other: gray;
   --white: #f0f0f0;
@@ -46,10 +45,10 @@ html, body {
   display: flex;
   width: 70%;
   height: 80vh;
-  padding: 2%;
   margin: 0 auto;
   position: relative;
   top: calc(100vh - 90vh);
+  border: 1px solid black;
 }
 
 .container * {
@@ -76,18 +75,14 @@ html, body {
     width: 100%;
     height: calc(10vh);
     margin: 0 auto;
-    padding: 1%;
+    /* padding: 1%; */
     position: fixed;
     z-index: 2;
     bottom: 0;
     left: 0;
   }
 
-  .mac-footer {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-  }
+
 
   .footer-icon {
     color: white;
@@ -107,7 +102,7 @@ html, body {
 
   .horizontalMenu {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -120,21 +115,28 @@ html, body {
   .horizontalMenu > li > a {
     color: white;
     text-decoration: none;
-    padding: 10px;
+    width: 100%;
+    padding: 0;
     display: block;
     font-size: 14px;
+    padding: 8px 12px;
+    font-weight: 500;
+    align-items: center;
+
   }
 
   .horizontalMenu > li:hover > a {
     color: #88e0b5;
+    width: 100%;
+
   }
 
   .verticalMenu {
     display: none;
     position: absolute;
     bottom: 100%;
-    background-color: #3a6c52;
-    padding: 5px 0;
+    background-color: var(--primary);
+    padding: 0.3rem;
     list-style: none;
     min-width: 160px;
     border-radius: 4px;
@@ -142,20 +144,28 @@ html, body {
 
   .verticalMenu li a {
     display: block;
-    padding: 8px 12px;
+    padding: 0px;
     color: white;
     text-decoration: none;
     font-size: 13px;
   }
 
   .verticalMenu li a:hover {
-    background-color: #4c8068;
+    background-color: var(--primary);
+
   }
 
   .horizontalMenu > li:hover .verticalMenu {
     display: block;
+    width: 100%;
   }
 
+  .horizontalMenu > li.menu-open .verticalMenu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
 /* Estilos de botones */
 
 /* Estilos de tablas */

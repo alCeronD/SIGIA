@@ -49,9 +49,18 @@ function fetchData() {
         //boton de acción
         const btnUpdate = document.createElement("button");
         const btnDelete = document.createElement("button");
+        const iSave = document.createElement('i');
+        const iDelete = document.createElement('i');
+        iSave.setAttribute('class','material-icons');
+        iSave.innerText = 'save';
         btnUpdate.setAttribute("class", "btnUpdate");
+        btnUpdate.setAttribute('class','waves-effect waves-light btn-small');
+        btnUpdate.append(iSave);
         btnDelete.setAttribute("class", "btnDelete");
-        btnUpdate.innerText = "Actualizar";
+        btnDelete.setAttribute('class','btn waves-effect waves-light btn-small');
+        
+        iDelete.setAttribute("class",'material-icons');
+        
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
         const tdName = document.createElement("td");
@@ -59,28 +68,28 @@ function fetchData() {
         const tdStatus = document.createElement("td");
         const tdAccion = document.createElement("td");
         // Asigno el botón a ambos elementos.
-
+        
         tableBody.appendChild(tr);
-
+        
         tdId.textContent = dta.ar_cod;
         tdName.textContent = dta.ar_nombre;
         tdDescript.textContent = dta.ar_descripcion;
-
+        
         //Dependiendo del estatus, en html se verá visible activo o inactivo pero sabemos que 1 es activo y 0 inactivo.
         tdStatus.textContent = dta.ar_status === 1 ? "Activo" : "Inactivo";
-
+        
         //Coloco el color rojo verde segun su estado.
         if (dta.ar_status === 1) {
           tdStatus.textContent = "Activo";
           tdStatus.style.color = "green";
-          btnDelete.innerText = "Inhabilitar";
+          iDelete.innerText = 'delete';
+          btnDelete.append(iDelete);
         } else {
           tdStatus.textContent = "Inactivo";
-          btnDelete.innerText = "Habilitar";
           tdStatus.style.color = "red";
+          iDelete.innerText = 'loop';
+          btnDelete.append(iDelete);
         }
-
-
 
         tdAccion.append(btnUpdate, btnDelete);
         tr.appendChild(tdId);

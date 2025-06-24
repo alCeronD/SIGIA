@@ -1,9 +1,10 @@
 :root {
-  --primary: #1e90ff;
+  --primary: #3a6c52;
   --secundary: #004034;
   --btnSubmit : rgba(128, 255, 0, 0.371);
   --btnInfo : green;
   --other: gray;
+  --white: #f0f0f0;
 }
 
 /* Botón para ir al dashboard. */
