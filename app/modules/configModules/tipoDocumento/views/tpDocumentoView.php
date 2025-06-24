@@ -7,21 +7,22 @@
             title="Volver al dashboard">&times;</a>
     </div>
     <div class="formTpDocumento">
+        <p class="flow-text">Registrar Documento</p>
         <form id="formTp" class="formLayout">
-            <div class="tpSiglaContent">
-                <label for="tp_sigla">Sigla:</label>
-                <input type="text" name="tp_sigla" id="tpSigla" placeholder="Sigla tipo documento" value="">
+            <div class="input-field tpSiglaContent">
+                <label for="tpSigla"></label>
+                <input type="text" name="tp_sigla" id="tpSigla" placeholder="Sigla:" value="">
             </div>
-            <div class="tpDescripcion">
+            <div class="input-field tpDescripcion">
                 <label for="tp_nombre">Nombre:</label>
-                <textarea name="tp_nombre" placeholder="Nombre tipodocumento" id="descripcionTp" value=""></textarea>
+                <textarea name="tp_nombre"  id="descripcionTp" class="materialize-textarea" value=""></textarea>
             </div>
             <div class="tpButton">
-                <button type="submit" id="btnAreaUpdate">Registrar<button>
+                <button type="submit" class="btnSubmit waves-effect waves-light btn" id="btnAreaUpdate"><i class="material-icons">send</i><button>
             </div>
         </form>
     </div>
-    <div class="tblTpDocumento">
+    <div class="tblTpDocumento highlight striped responsive-table">
         <?php require_once 'tableViewtpDocumento.php'; ?>
     </div>
 </div>

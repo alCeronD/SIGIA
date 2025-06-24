@@ -7,6 +7,7 @@
             title="Volver al dashboard">&times;</a>
     </div>
     <div class="formAr">
+        <p class="flow-text">Registrar usuario</p>
         <form id="formArea" class="formLayout">
             <div class="input-field contentAreaNem">
                 <input type="text" name="ar_nombre" id="ar_nombre" class="validate">
@@ -17,7 +18,7 @@
                 <label for="ar_descripcion">Descripción del area</label>
             </div>
             <div class="contentSubmit">
-                <button type="submit" id="btnAreaUpdate" class="btnSubmit waves-effect waves-light btn">Registrar<i class="material-icons right">save</i></button>
+                <button type="submit" id="btnAreaSend" class="btnSubmit waves-effect waves-light btn"></button>
             </div>
         </form>
     </div>
@@ -54,8 +55,6 @@
                 </div>
             </form>
         </div>
-
-
     </div>
 </div>
 

@@ -1,5 +1,5 @@
-import { Ajax } from "../libraries/ajax.js";
-import {closeModal} from "../libraries/cases.js";
+import { Ajax } from "../utils/ajax.js";
+import {closeModal} from "../utils/cases.js";
 
 const formulario = document.querySelector("#formTp");
 const objAjax2 = new Ajax();
@@ -47,7 +47,6 @@ function fetchData() {
         const btnUpdate = document.createElement("button");
         const btnDelete = document.createElement("button");
         btnUpdate.setAttribute("class", "btnUpdate");
-        btnUpdate.innerText = "Actualizar";
         btnDelete.setAttribute("class", "btnDelete");
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
@@ -56,7 +55,17 @@ function fetchData() {
         const tdStatus = document.createElement("td");
         const tdAccion = document.createElement("td");
         // Asigno el botón a ambos elementos.
-        
+
+        btnDelete.setAttribute('class','btn waves-effect waves-light btn-small');
+        btnUpdate.setAttribute('class','waves-effect waves-light btn-small');
+
+        const iSave = document.createElement('i');
+        const iDelete = document.createElement('i');
+        iSave.setAttribute('class','material-icons');
+        iDelete.setAttribute("class",'material-icons');
+        iSave.innerText = 'save';
+        btnUpdate.append(iSave);
+
         tableBodyTp.appendChild(tr);
         
         tdId.textContent = dta.tp_id;
@@ -70,11 +79,13 @@ function fetchData() {
         if (dta.tp_status === 1) {
           tdStatus.textContent = "Activo";
           tdStatus.style.color = "green";
-          btnDelete.innerText = "Inhabilitar";
+          iDelete.innerText = 'delete';
+          btnDelete.append(iDelete);
         } else {
           tdStatus.textContent = "Inactivo";
           tdStatus.style.color = "red";
-          btnDelete.innerText = "Habilitar";
+          iDelete.innerText = 'loop';
+          btnDelete.append(iDelete);
         }
 
         tdAccion.append(btnUpdate, btnDelete);

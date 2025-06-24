@@ -1,5 +1,7 @@
-import { Ajax } from "../libraries/ajax.js";
-import { closeModal } from "../libraries/cases.js";
+import { Ajax } from "../utils/ajax.js";
+import { closeModal } from "../utils/cases.js";
+
+
 
 const tableBody = document.querySelector("#marcaTblBody");
 const formMarca = document.querySelector("#marcaForm");

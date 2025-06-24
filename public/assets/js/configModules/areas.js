@@ -1,9 +1,14 @@
-import { Ajax } from "../libraries/ajax.js";
+import { Ajax } from "../utils/ajax.js";
+import { createI, closeModal, openModal } from "../utils/cases.js";
 //La idea es capturar la información aca desde javascript y enviarla al controlador.
 
-//Formulario
+//Formulario de envio
 const formulario = document.querySelector("#formArea");
 const objAjax = new Ajax();
+const btnAreaSend = document.querySelector('#btnAreaSend');
+let iPost = createI();
+iPost.innerText = 'send';
+btnAreaSend.append(iPost);
 //Nombre de la tabla.
 let table = "areas";
 
@@ -14,7 +19,7 @@ let status = 1;
 const myModal = document.querySelector("#modalArea");
 //Cuerpo de tabla.
 const tableBody = document.querySelector("#tableBodyArea");
-//Boton de update del modal
+//formulario Update del modal
 const areaUpdateForm = document.querySelector("#areaUpdateForm");
 
 let idPk;
@@ -49,9 +54,8 @@ function fetchData() {
         //boton de acción
         const btnUpdate = document.createElement("button");
         const btnDelete = document.createElement("button");
-        const iSave = document.createElement('i');
-        const iDelete = document.createElement('i');
-        iSave.setAttribute('class','material-icons');
+        const iSave = createI();
+        const iDelete = createI();
         iSave.innerText = 'save';
         btnUpdate.setAttribute("class", "btnUpdate");
         btnUpdate.setAttribute('class','waves-effect waves-light btn-small');
@@ -120,7 +124,7 @@ function fetchData() {
           descripcionAreaUpdate.value = descripcion;
 
           //Abro el modal.
-          myModal.style.display = "flex";
+          openModal(myModal);
 
           const closeModalBtn = document.querySelector('.closeModalBtn');
 
@@ -270,7 +274,7 @@ areaUpdateForm.addEventListener("submit", (e) => {
     if (dataStatus.status) {
       alert("registro actualizado");
       //Cerrar el modal
-      myModal.style.display = "none";
+      closeModal(myModal,e.target);
 
       //Renderizo nuevamente la data.
       fetchData();
