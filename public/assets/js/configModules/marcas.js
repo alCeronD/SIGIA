@@ -54,9 +54,9 @@ function fetchData() {
       const tdStatus = document.createElement("td");
       const tdAccion = document.createElement("td");
 
-      btnUpdate.setAttribute('class','waves-effect waves-light btn-small');
+      btnUpdate.setAttribute('class','waves-effect waves-light btn-small light-blue');
       btnDelete.setAttribute('class','btn waves-effect waves-light btn-small modal-trigger red');
-      iSave.innerText = 'save';
+      iSave.innerText = 'edit';
       btnDelete.append(iDelete);
       tableBody.appendChild(tr);
 
@@ -105,8 +105,9 @@ function fetchData() {
         nombreAreaUpdate.value = nombreMarca;
         descripcionAreaUpdate.value = descripcionMarca;
 
-        //Abro el modal.
-        // openModal(myModal);
+        //Re inicializo los inputs de materialize ya que han sido modificados.
+        M.updateTextFields();
+
         instanModal.open();
 
       });

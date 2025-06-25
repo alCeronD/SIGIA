@@ -10,12 +10,12 @@
         <p class="flow-text">Registrar Documento</p>
         <form id="formTp" class="formLayout">
             <div class="input-field tpSiglaContent">
-                <label for="tpSigla"></label>
-                <input type="text" name="tp_sigla" id="tpSigla" placeholder="Sigla:" value="">
+                <input type="text" name="tp_sigla" id="tpSigla" value="">
+                <label for="tpSigla">Sigla:</label>
             </div>
             <div class="input-field tpDescripcion">
-                <label for="tp_nombre">Nombre:</label>
                 <textarea name="tp_nombre"  id="descripcionTp" class="materialize-textarea" value=""></textarea>
+                <label for="tp_nombre">Nombre:</label>
             </div>
             <div class="tpButton">
                 <button type="submit" class="btnSubmit waves-effect waves-light btn" id="btnAreaUpdate"><i class="material-icons">send</i><button>
@@ -42,16 +42,16 @@
         <span id="modalTitle">Actualizar registro</span> -->
         <div class="formUpdateTp">
             <form id="tpUpdateForm">
-            <div class="contentTpSigla">
+            <div class="input-field contentTpSigla">
+                <input type="text" name="tp_sigla" id="siglaTp_documento">
                 <label for="tp_sigla">Sigla:</label>
-                <input type="text" name="tp_sigla" id="siglaTp_documento" placeholder="Sigla ...">
             </div>
-            <div class="contentTpNombre">
+            <div class="input-field contentTpNombre">
+                <textarea type="text" name="tp_nombre" class="materialize-textarea" id="descripcionTp_documento" ></textarea>
                 <label for="tp_nombre">Nombre:</label>
-                <input type="text" name="tp_nombre" id="descripcionTp_documento" placeholder="Nombre..."></input>
             </div>
             <div class="contentTpBtn">
-                <button type="click" id="btnTpUpdate">Guardar cambios</button>
+                <button type="click" id="btnTpUpdate" class="waves-effect waves-light btn"><i class="material-icons">save</i></button>
             </div>
         </form>
         </div>

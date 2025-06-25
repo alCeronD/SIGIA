@@ -10,12 +10,14 @@
         <form id="formArea" class="formLayout">
             <div class="input-field contentAreaNem">
                 <input type="text" name="ar_nombre" id="ar_nombre" class="validate">
-                <label for="ar_nombre">Area</label>
+                <label for="ar_nombre">Área</label>
             </div>
+
             <div class="input-field contentDescript">
-                <textarea name="ar_descripcion"  id="descripcionArea" value="" class="materialize-textarea"></textarea>
-                <label for="ar_descripcion">Descripción del area</label>
+                <textarea name="ar_descripcion" id="ar_descripcion" class="materialize-textarea"></textarea>
+                <label for="ar_descripcion">Descripción del área</label>
             </div>
+
             <div class="contentSubmit">
                 <button type="submit" id="btnAreaSend" class="btnSubmit waves-effect waves-light btn"></button>
             </div>

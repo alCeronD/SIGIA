@@ -17,8 +17,7 @@ require_once '../public/partials/header.php';
 ?>
 
 <div class="container">
-    <?php resolve();    
-    ?>
+    <?php resolve(); ?>
 </div>
 
 <?php require_once '../public/partials/footer.php'; ?>

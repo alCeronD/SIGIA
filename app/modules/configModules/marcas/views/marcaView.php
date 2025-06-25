@@ -39,13 +39,13 @@
         </div>
         <div class="marcaUpdate">
             <form id="marcaUpdateForm">
-                <div class="nombreMaUpdte">
+                <div class="input-field nombreMaUpdte">
+                    <input type="text" name="ma_nombre" id="nombreMarcaUpdate" >
                     <label for="ma_nombre">Nombre:</label>
-                    <input type="text" name="ma_nombre" id="nombreMarcaUpdate" placeholder="Nombre area...">
                 </div>
-                <div class="descripMaUpdte">
+                <div class="input-field descripMaUpdte">
+                    <textarea name="ma_descripcion" id="descripcionMarcaUpdate" ></textarea>
                     <label for="ma_descripcion">Descripción</label>
-                    <textarea name="ma_descripcion" id="descripcionMarcaUpdate" placeholder="Descripción..."></textarea>
                 </div>
                 <div class="btnMaUpdate">
                     <button type="submit" id="btnMarcaUpdate" class="btnSubmit waves-effect waves-light btn"><i class="material-icons">save</i></button>

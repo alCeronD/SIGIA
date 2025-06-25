@@ -58,13 +58,13 @@ function fetchData() {
         // Asigno el botón a ambos elementos.
 
         btnDelete.setAttribute('class','btn waves-effect waves-light btn-small red');
-        btnUpdate.setAttribute('class','waves-effect waves-light btn-small');
+        btnUpdate.setAttribute('class','waves-effect waves-light btn-small light-blue');
 
         const iSave = document.createElement('i');
         const iDelete = document.createElement('i');
         iSave.setAttribute('class','material-icons');
         iDelete.setAttribute("class",'material-icons');
-        iSave.innerText = 'save';
+        iSave.innerText = 'edit';
         btnUpdate.append(iSave);
 
         tableBodyTp.appendChild(tr);
@@ -116,6 +116,9 @@ function fetchData() {
           //Adjunto los valores al input del modal.
           siglaTp_documento.value = nombreTp;
           descripcionTp_documento.value = descripcion;
+
+          //Reinicio inputs de materialize.
+          M.updateTextFields();
 
           //Abro el modal.
           modal.open();

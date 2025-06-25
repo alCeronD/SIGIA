@@ -18,7 +18,7 @@ html, body {
   --primary: #3a6c52;
   --secundary: #004034;
   --btnInfo : green;
-  --other: gray;
+  --other: #ccc;
   --white: #f0f0f0;
 }
 
@@ -40,14 +40,29 @@ html, body {
   background-color: #2c5e42;
 }
 
+
 .container{
   display: flex;
-  width: 70%;
+  width: 90%;
   height: 80vh;
   margin: 0 auto;
   position: relative;
   top: calc(100vh - 90vh);
   overflow: visible;
+  border: 1px solid black;
+  padding: 0.5rem;
+
+
+    /* Borde estético */
+  border: 1px solid var(--other);
+  border-radius: 8px;
+
+  /* Sombra sutil */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  /* Fondo opcional */
+  background-color: #fff;
+
 }
 
 .container * {
@@ -74,8 +89,6 @@ html, body {
     bottom: 0;
     left: 0;
   }
-
-
 
   .footer-icon {
     color: white;
@@ -191,7 +204,7 @@ input[type="number"] {
 /* Estructura general del layout del formulario. */
 .formLayout {
   display: grid;
-  gap: 0.3rem;
+  gap: 2rem;
   grid-template-columns: 1fr;
   grid-template-rows: 5vh 1fr;
   width: 100%;

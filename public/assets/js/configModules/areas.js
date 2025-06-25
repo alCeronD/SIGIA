@@ -58,7 +58,7 @@ function fetchData() {
         const iSave = createI();
         const iDelete = createI();
         iDelete.setAttribute("class",'material-icons');
-        iSave.innerText = 'save';
+        iSave.innerText = 'edit';
         const btnUpdate = createBtn();
         const btnDelete = createBtn();
         btnUpdate.setAttribute("class", "btnUpdate");
@@ -125,10 +125,12 @@ function fetchData() {
           nombreAreaUpdate.value = nombreArea;
           descripcionAreaUpdate.value = descripcion;
 
+          //Re inicializo los inputs de materialize ya que han sido modificados.
+          M.updateTextFields();
+
           //Abro el modal de manera tradicional.
           instanceMyModal.open();
           const closeModalBtn = document.querySelector('.closeModalBtn');
-
           closeModal(instanceMyModal,closeModalBtn);
 
         });
@@ -147,9 +149,6 @@ function fetchData() {
           let status = celda[3].textContent;
           //Dependiendo del texto en html defino si es 0 para inactivo o 1 para activo para enviar a backend para actualizar.
           status = status === "Activo" ? 1 : 0;
-
-          //let nombreArea = celda[1].textContent;
-          //let descripcion = celda[2].textContent;
 
           if (confirm("¿Está seguro de inhabilitar este elemento?")) {
             const data = JSON.stringify({
