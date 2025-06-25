@@ -37,8 +37,7 @@
                                 ?>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-warning"
-                                    onclick="abrirModal('<?php echo $rol['rl_id']; ?>', '<?php echo htmlspecialchars($rol['rl_nombre']); ?>', '<?php echo htmlspecialchars($rol['rl_descripcion']); ?>')">
+                                <button type="button" id="btnEditar" data-desc="<?php echo $rol['rl_descripcion']; ?>" data-nombre = "<?php echo $rol['rl_nombre']; ?>" data-id="<?php echo $rol['rl_id']; ?>" class="btn btn-sm btn-warning btnEditar">
                                     Editar
                                 </button>
                                 <a href="<?= getUrl('roles', 'roles', 'eliminarRol', ['rl_id' => $rol['rl_id'], 'rl_status' => $rol['rl_status']], 'dashboard') ?>"
@@ -60,80 +59,36 @@
 </div>
 
 <!-- Modal de edición -->
-<div id="modalEditar" class="modal hidden">
+<div id="modalEditar" class="modal">
     <div class="modal-contenido">
-        <span class="cerrar" onclick="cerrarModal()">&times;</span>
-        <h2>Editar Rol</h2>
-        <form id="formEditarRol" method="POST" action="<?php echo getUrl('roles','roles','editarRol',false,'dashboard'); ?>">
-            <input type="hidden" name="rol_id" id="modal_rol_id">
+        <div class="titleSection">
+            <h2>Editar Rol</h2>
 
-            <label for="modal_rol_nombre">Nombre:</label>
-            <input type="text" name="rol_nombre" id="modal_rol_nombre" required>
+            <button type="button" class="closeModalBtn">
+                <span class="close-modal">&times;</span>
+            </button>
+        </div>
+        <div class="formRol">
+            <form id="formEditarRol" method="POST" action="<?php echo getUrl('roles','roles','editarRol',false,'dashboard'); ?>">
 
-            <label for="modal_rol_descripcion">Descripción:</label>
-            <textarea name="rol_descripcion" id="modal_rol_descripcion" rows="3" required></textarea>
+            <div>
+                <input type="hidden" name="rol_id" id="modal_rol_id">
+            </div>
+            <div class="input-field">
 
+                <input type="text" name="rol_nombre" id="modal_rol_nombre" required>
+                <label for="modal_rol_nombre">Nombre:</label>
+            </div>
+            <div class="input-field"> 
+                
+                <textarea name="rol_descripcion" id="modal_rol_descripcion" rows="3" class="materialize-textarea" required></textarea>
+                <label for="modal_rol_descripcion">Descripción:</label>
+            </div>
             <button type="submit">Actualizar</button>
         </form>
+        </div>
+        
     </div>
 </div>
-<!-- Script para manejar el modal -->
-<script>
-function abrirModal(id, nombre, descripcion) {
-    document.getElementById('modal_rol_id').value = id;
-    document.getElementById('modal_rol_nombre').value = nombre;
-    document.getElementById('modal_rol_descripcion').value = descripcion;
-    document.getElementById('modalEditar').classList.remove('hidden');
-}
 
-function cerrarModal() {
-    document.getElementById('modalEditar').classList.add('hidden');
-}
-
-// Opcional: cerrar modal si se hace clic fuera del contenido
-document.getElementById('modalEditar').addEventListener('click', function(e) {
-    if (e.target === this) {
-        cerrarModal();
-    }
-});
-</script>
-
-<style>
-.modal {
-    position: fixed;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    background-color: rgba(0,0,0,0.4);
-    z-index: 9999;
-}
-
-.modal.hidden {
-    display: none !important;
-}
-
-.modal-contenido {
-    background: white;
-    padding: 1.5rem;
-    display: grid;
-    gap: 0.8rem;
-    width: 100%;
-    max-width: 400px;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.cerrar {
-    justify-self: end;
-    cursor: pointer;
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #333;
-    user-select: none;
-    transition: color 0.3s ease;
-}
-
-.cerrar:hover {
-    color: #e74c3c;
-}
-</style>
+<script type="module" src="../public/assets/js/roles/roles.js"></script>

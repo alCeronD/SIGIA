@@ -5,6 +5,7 @@
   --btnInfo : green;
   --other: gray;
   --white: #f0f0f0;
+  /* --backGroundModal: #00000066; */
 }
 
 /* Botón para ir al dashboard. */
@@ -81,4 +82,78 @@
     flex-direction: row;
     gap: 0.3rem;
     justify-content: center;
+}
+
+#modalEditar{
+  background-color: rgba(0, 0, 0, 0.4);
+  display: none;
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  /* background-color: rgb(0, 0, 0); */
+  /* Fallback color */
+  /* Black w/ opacity */
+}
+
+.modal.hidden {
+    display: none !important;
+}
+
+/* .modal-contenido {
+    background: var(--white);
+    padding: 1.5rem;
+    display: grid;
+    gap: 0.8rem;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+} */
+.modal-contenido {
+    background-color: var(--white);
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30%;
+    height: fit-content;
+    display: grid;
+    grid-template-areas:
+        "titleSection"
+        "formRol";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+}
+
+.titleSection{
+    grid-area: titleSection;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.formRol{
+    grid-area: formRol;
+}
+
+.cerrar {
+    justify-self: end;
+    cursor: pointer;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #333;
+    user-select: none;
+    transition: color 0.3s ease;
+}
+
+.cerrar:hover {
+    color: #e74c3c;
 }

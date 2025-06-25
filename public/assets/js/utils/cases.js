@@ -20,13 +20,17 @@ export const closeModal = (modal,btn) => {
     //Valido si el tipo de lo que voy a ejecutar es una función.
     if (typeof modal.close === 'function') {
       modal.close();
+      
+    }else{
+      //En caso de que no sea una función, esta debe de ejecutar si o si cambiar el style del modal de flex a none, para que no sea visible.
+      modal.style.display = 'none';
     }
 
   });
 };
 
 export const openModal = (modal) => {
-  // modal.style.display = "flex";
+  modal.style.display = "flex";
 };
 
 export const createI = () => {

@@ -126,7 +126,6 @@ function fetchData() {
           descripcionAreaUpdate.value = descripcion;
 
           //Abro el modal de manera tradicional.
-          //openModal(myModal);
           instanceMyModal.open();
           const closeModalBtn = document.querySelector('.closeModalBtn');
 

@@ -1,14 +1,21 @@
 <!-- <h2 class="mb-4 text-center">Registrar Nuevo Rol</h2> -->
-<form action="<?php echo getUrl('roles','roles','registrarRol',false,'dashboard') ?>" method="POST" class="formLayout" id="formRol">
-    <div class="mb-3 contentRlNombre">
-        <label for="rol_nombre" class="form-label">Nombre del Rol:</label>
-        <input type="text" class="form-control" id="rol_nombre" name="rol_nombre" required>
+
+<form action="<?php echo getUrl('roles','roles','registrarRol',false,'dashboard') ?>" method="POST" id="formRol">
+    
+    <!-- Campo: Nombre del Rol -->
+    <div class="input-field contentRlNombre">
+        <input type="text" id="rol_nombre" name="rol_nombre" required>
+        <label for="rol_nombre">Nombre del Rol</label>
     </div>
-    <div class="mb-3 contentRlDescript">
-        <label for="rol_descripcion" class="form-label">Descripcion:</label>
-        <textarea class="form-control" id="rol_descripcionInput" name="rol_descripcion" rows="3" placeholder="Descripción rol..."></textarea>
+
+    <!-- Campo: Descripción del Rol -->
+    <div class="input-field contentRlDescript">
+        <textarea id="rol_descripcionInput" name="rol_descripcion" class="materialize-textarea" rows="3"></textarea>
+        <label for="rol_descripcionInput">Descripción</label>
     </div>
-    <div class="text-center contentRlBtn">
-        <button type="submit" class="btn btn-primary">Registrar</button>
+
+    <!-- Botón -->
+    <div class="center-align contentRlBtn">
+        <button type="submit" class="btn waves-effect waves-light">Registrar</button>
     </div>
 </form>
