@@ -94,7 +94,7 @@ btnAddConsumibles.innerText = "Consumibles";
 modalTitle.innerText = "Elementos disponibles";
 btnSubmit.innerText = "Reservar";
 btnSubmit.setAttribute('class', 'btnSubmit');
-btnSearchUser.innerText = "Consultar";
+
 // variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
 let pagesUsers;
 let pagesElements;
@@ -335,6 +335,7 @@ btnAddElements.addEventListener("click", (btnTarget) => {
       trTable.appendChild(tdElemento);
       trTable.appendChild(tdArea);
       trTable.append(tdAccion);
+
     });
   });
 
@@ -583,7 +584,7 @@ previewElement.addEventListener("click", () => {
       addElements = document.createElement("input");
       addElements.setAttribute("type", "checkbox");
       addElements.setAttribute("class", "checkboxInput");
-      addElements.setAttribute('class','filled-in');
+      addElements.classList.add("checkboxInput", "filled-in");
       addElements.setAttribute("data-id", codigo);
       addElements.setAttribute('id',codigo);
       let label = document.createElement('label');
@@ -606,6 +607,7 @@ previewElement.addEventListener("click", () => {
       trTable.appendChild(tdElemento);
       trTable.appendChild(tdArea);
       trTable.append(tdAccion);
+
     });
   });
 });
@@ -627,7 +629,7 @@ nextElement.addEventListener("click", () => {
       addElements = document.createElement("input");
       addElements.setAttribute("type", "checkbox");
       addElements.setAttribute("class", "checkboxInput");
-      addElements.setAttribute('class','filled-in');
+      addElements.classList.add("checkboxInput", "filled-in");
       addElements.setAttribute("data-id", codigo);
       addElements.setAttribute('id',codigo);
       let label = document.createElement('label');
@@ -650,6 +652,8 @@ nextElement.addEventListener("click", () => {
       trTable.appendChild(tdElemento);
       trTable.appendChild(tdArea);
       trTable.append(tdAccion);
+
+
     });
   });
 });

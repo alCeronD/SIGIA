@@ -9,7 +9,9 @@
     </div>
     <div class="searchUser">
         <label for="">Instructor: </label>
-        <button type="button" id="searchBtn" class="btnClick"></button>
+        <button type="button" id="searchBtn" class="btnClick btn waves-effect waves-light">
+            <i class="material-icons">person_add</i>
+        </button>
     </div>
     <div class="solicPrestamos">
         <form id="formSolicitudPrestamo">
@@ -30,7 +32,7 @@
             <div class=" inputContent email">
                 <label for="email" class="labelForm">Email: <span id="email" name="email"></span></label>
             </div>
-            <div class=" inputContent areaDestino">
+            <div class="input-field inputContent areaDestino">
                 <select id="areaDestino" name="areaDestino" required>
                     <option value="" disabled selected>Seleccione una opción</option>
                     <option value="centro">Centro</option>

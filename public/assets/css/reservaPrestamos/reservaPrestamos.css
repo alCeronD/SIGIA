@@ -7,7 +7,8 @@
   --white: #f0f0f0;
 }
 
-  /* 
+
+/* 
 
 -- MODULO RESERVA PRESTAMOS - reservar Prestamo.
 
@@ -62,7 +63,6 @@
 
 #textTitle {
   font-size: 20pt;
-
 }
 
 /* Formulario */
@@ -451,5 +451,4 @@ th {
 /* Resolusiones mayores a 1440 */
 @media screen and (min-width: 1440px) { 
     
-
- }
+}
