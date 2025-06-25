@@ -1,4 +1,6 @@
 <style>
+
+
 /* ----------------- Contenedor General ----------------- */
 .container-fluid.px-4 {
     display: grid;
@@ -280,6 +282,17 @@
   background: linear-gradient(135deg, #0056b3, #003e8c);
 }
 
+
+#filtroTipo {
+  display: block !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1000 !important;
+  width: 200px !important;
+  height: auto !important;
+  background-color: white !important;
+}
+
 </style>
 
 <div class="container-fluid px-4">
@@ -366,7 +379,7 @@
 
 
 <!-- Modal Registrar Elemento -->
-<div id="modalRegistrar" class="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:2000;">
+<div id="modalRegistrar" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:2000;">
     <div style="background:#fff; padding:20px; border-radius:8px; width:90%; max-width:600px; max-height:90vh; overflow-y:auto; position:relative;">
         <button id="cerrarModalRegistrar" style="position:absolute; top:10px; right:15px; font-size:24px; background:none; border:none; cursor:pointer;">&times;</button>
 
@@ -379,44 +392,38 @@
             <option value="consumible">Consumible</option>
         </select>
 
-        <!-- Formulario Devolutivo -->
-        <form id="formDevolutivo" action="<?= getUrl('elementos', 'elementos', 'registrarElemento', false, 'dashboard') ?>" method="POST" style="display:none;">
-            <input type="hidden" name="elm_cod_tp_elemento" value="1">
-            <input type="hidden" name="elm_existencia" value="1">
-            <input type="hidden" name="elm_cod_estado" value="1">
+     <!-- Formulario Devolutivo -->
+<form id="formDevolutivo" action="<?= getUrl('elementos', 'elementos', 'registrarElemento', false, 'dashboard') ?>" method="POST" style="display:none;">
+    <input type="hidden" name="elm_cod_tp_elemento" value="1">
+    <input type="hidden" name="elm_existencia" value="1">
+    <input type="hidden" name="elm_cod_estado" value="1">
 
-            <div class="mb-3">
-                <label for="elm_placa">Placa</label>
-                <input type="number" name="elm_placa" id="elm_placa" class="form-control" required>
-            </div>
+    <div class="mb-3">
+        <label for="elm_placa">Placa</label>
+        <input type="number" name="elm_placa" id="elm_placa" class="form-control" required>
+    </div>
 
-            <div class="mb-3">
-                <label for="elm_nombre">Nombre</label>
-                <input type="text" placeholder="nombre Elemento" name="elm_nombre" id="elm_nombre" class="form-control" required>
-            </div>
+    <div class="mb-3">
+        <label for="elm_nombre">Nombre</label>
+        <input type="text" placeholder="nombre Elemento" name="elm_nombre" id="elm_nombre" class="form-control" required>
+    </div>
 
-            <div class="mb-3">
-                <label for="elm_uni_medida">Unidad de Medida</label>
-                <select name="elm_uni_medida" id="elm_uni_medida" class="form-select" required>
-                    <option value="">Seleccione...</option>
-                    <option value="1">Unidad</option>
-                    <option value="2">Caja</option>
-                    <option value="3">Paquete</option>
-                </select>
-            </div>
+    <!-- Campo oculto para enviar Unidad de Medida = 1 siempre -->
+    <input type="hidden" name="elm_uni_medida" value="1">
 
-            <div class="mb-3">
-                <label for="elm_area_cod">Área</label>
-                <select name="elm_area_cod" id="elm_area_cod" class="form-select" required>
-                    <option value="">Seleccione...</option>
-                    <?php foreach ($areas as $area): ?>
-                        <option value="<?= $area['codigo'] ?>"><?= htmlspecialchars($area['nombre']) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+    <div class="mb-3">
+        <label for="elm_area_cod">Área</label>
+        <select name="elm_area_cod" id="elm_area_cod" class="form-select" required>
+            <option value="">Seleccione...</option>
+            <?php foreach ($areas as $area): ?>
+                <option value="<?= $area['codigo'] ?>"><?= htmlspecialchars($area['nombre']) ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
 
-            <button type="submit" class="btn btn-primary">Guardar Devolutivo</button>
-        </form>
+    <button type="submit" class="btn btn-primary">Guardar Devolutivo</button>
+</form>
+
 
         <!-- Formulario Consumible -->
         <form id="formConsumible" action="<?= getUrl('elementos', 'elementos', 'registrarElemento', false, 'dashboard') ?>" method="POST" style="display:none;">
@@ -474,7 +481,7 @@
     <div class="modal-content">
         <span class="close-btn" id="modalCerrar">&times;</span>
         <h4>Detalles del Elemento</h4>
-        <table class="table table-bordered">
+        <table>
             <tbody>
                 <tr><th>Código</th><td id="modalCod"></td></tr>
                 <tr><th>Placa</th><td id="modalPlaca"></td></tr>

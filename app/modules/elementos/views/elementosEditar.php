@@ -7,7 +7,7 @@
     transform: translate(-50%, -50%);
     /* Opcional para fondo detrás del formulario */
     background-color: #f9fafb;
-    z-index: 10; /* Asegura que esté encima si hay overlays */
+    z-index: 10;
 }
 
 

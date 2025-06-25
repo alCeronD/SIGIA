@@ -1,0 +1,282 @@
+
+/* ----------------- Contenedor General ----------------- */
+.container-fluid.px-4 {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: 20px;
+    height: 100vh;
+    box-sizing: border-box;
+    padding: 20px;
+    background-color: #f5f7fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ----------------- Título ----------------- */
+.container-fluid h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* ----------------- Fila de Filtros y Botón ----------------- */
+.row.mb-3 {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    align-items: center;
+    gap: 20px;
+}
+
+.row.mb-3 > .col-md-8 {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ----------------- Inputs y Select ----------------- */
+.form-select,
+.form-control {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* ----------------- Botón Estándar ----------------- */
+.btn {
+    padding: 8px 14px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* ----------------- Tabla ----------------- */
+.table-responsive-fixed {
+    overflow-x: auto;
+    max-height: 70vh;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #e9ecef;
+    color: #333;
+    padding: 10px;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.table td,
+.table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+/* ----------------- Botones de Acción ----------------- */
+.btn-group {
+    display: flex;
+    gap: 5px;
+    flex-wrap: nowrap;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 13px;
+}
+
+/* Colores personalizados para los botones por estado */
+.btn-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+.btn-warning:hover {
+    background-color: #e0a800;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+.btn-danger:hover {
+    background-color: #b52a37;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: #fff;
+}
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    color: #fff;
+}
+.btn-info:hover {
+    background-color: #117a8b;
+}
+
+/* ----------------- Modal "Ver Más" ----------------- */
+#modalVerMas {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#modalVerMas.show {
+    display: flex !important;
+}
+
+#modalVerMas .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+#modalVerMas .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+}
+
+/* Modal Table */
+#modalVerMas table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#modalVerMas th,
+#modalVerMas td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+#modalVerMas th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+    width: 40%;
+}
+
+
+/* ---------- Ajuste de Ancho y Alineación del Formulario ---------- */
+
+#modalRegistrar form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 10px 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fafafa;
+  border-radius: 10px;
+  max-width: 500px;
+  margin: 0 auto; /* Centrado horizontal */
+}
+
+/* Grupos de campos */
+#modalRegistrar .mb-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+/* Etiquetas */
+#modalRegistrar label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Inputs y selects con ancho limitado */
+#modalRegistrar input[type="text"],
+#modalRegistrar input[type="number"],
+#modalRegistrar select {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+  max-width: 100%;
+}
+
+#modalRegistrar input[type="text"]:focus,
+#modalRegistrar input[type="number"]:focus,
+#modalRegistrar select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+  outline: none;
+}
+
+/* Selector tipo de elemento */
+#tipoElementoSelect {
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  width: 82%;
+  max-width: 500px;
+  margin: 0 auto 16px auto; /* <-- Esto centra horizontalmente */
+  display: block;
+}
+
+
+/* Botón guardar con ajuste de ancho */
+#modalRegistrar button[type="submit"] {
+  padding: 10px;
+  width: 100%;
+  max-width: 500px;
+  margin: 10px auto 0;
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#modalRegistrar button[type="submit"]:hover {
+  background: linear-gradient(135deg, #0056b3, #003e8c);
+}
+
