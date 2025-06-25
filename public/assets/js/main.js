@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
   //Definir el resize del textarea del campo descripción del modulo de roles.
   M.textareaAutoResize(document.getElementById('rol_descripcionInput'));
 
-
   //buscar los modales
   const elemsModals = document.querySelectorAll('.modal');
   //Iniciializar los modales

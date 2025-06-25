@@ -63,9 +63,6 @@ private $conn;
         }
     }
 
-
-
-    
     public function updateCategoria(){
         
         $info = $_POST;
@@ -76,10 +73,8 @@ private $conn;
         $resultado = $modeloUsuarios->search();
         
         if ($resultado) {
-            // dd("estoy aqui");
             $this->consultCategoriasView();
-           
-            // return include_once __DIR__ . '/../views/categoriasConsultview.php';
+                echo "<script>alert('Registro actualizado'); window.location.href = '" . getUrl('categorias','categorias','categoriaView',false,'dashboard') . "';</script>";
         }
     }
 

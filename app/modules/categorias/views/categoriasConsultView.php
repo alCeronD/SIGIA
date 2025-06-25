@@ -78,7 +78,11 @@
 <!-- Modal Personalizado -->
 <div id="modalEditarCategoria" class="modal">
   <div class="modal-content">
-    <h4>Editar Categoría</h4>
+    <span id="modalTitle" class="textTitleSpan">Editar categoria</span>
+      <button type="button" class="closeModalBtn">
+        <span class="close-modal">&times;</span>
+      </button>
+    <!-- <h4>Editar Categoría</h4> -->
     <form id="formUpdateCategoria" method="POST" action="<?= getUrl('categorias', 'categorias', 'updateCategoria', false, 'dashboard') ?>">
       <input type="hidden" name="ca_id" id="modal_ca_id">
 
