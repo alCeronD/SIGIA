@@ -13,62 +13,52 @@
     </div>
     <div class="solicPrestamos">
         <form id="formSolicitudPrestamo">
-            <div class="inputContent cedula">
-                <label for="cedula" class="labelForm">Cédula: <span id="cedula" name="cedula"></span> </label>
+            <div class=" inputContent cedula">
+                <label class="" for="cedula">Cédula: <span id="cedula" name="cedula" class=""></span></label>
             </div>
-
-            <div class="inputContent nombre">
+            <div class=" inputContent nombre">
                 <label for="nombre" class="labelForm">Nombre: <span id="nombre" name="nombre"></span> </label>
-                <!-- <input type="text" class="inputForm" name="nombre" id="nombre" placeholder="Nombre..."> -->
             </div>
-            <div class="inputContent apellido">
+            <div class=" inputContent apellido">
                 <label for="apellido" class="labelForm">Apellido: <span id="apellido" name="apellido"></span></label>
-                <!-- <input type="text" class="inputForm" name="apellido" id="apellido" placeholder="Apellido..."> -->
             </div>
 
-            <div class="inputContent telefono">
+            <div class=" inputContent telefono">
                 <label for="telefono" class="labelForm">Teléfono: <span id="telefono" name="telefono"></span></label>
-                <!-- <input type="number" class="inputForm" name="telefono" id="telefono" placeholder="Teléfono..."> -->
             </div>
 
-            <div class="input-field inputContent email">
+            <div class=" inputContent email">
                 <label for="email" class="labelForm">Email: <span id="email" name="email"></span></label>
-                <!-- <input type="email" class="inputForm" name="email" id="email" placeholder="Correo electrónico..."> -->
             </div>
-
-            <div class="input-field inputContent areaDestino">
-                <select name="areaDestino" id="areaDestino">
-                    <option value="">---</option>
+            <div class=" inputContent areaDestino">
+                <select id="areaDestino" name="areaDestino" required>
+                    <option value="" disabled selected>Seleccione una opción</option>
                     <option value="centro">Centro</option>
                     <option value="externo">Externo</option>
                 </select>
-                <label for="areaDestino" class="labelForm">Área de destino: *</label>
+                <label for="areaDestino">Área de destino: *</label>
             </div>
-
-            <div class="input-field inputContent fechaReserva">
+            <div class=" inputContent fechaReserva">
                 <input type="date" class="inputForm" name="fechaReserva" id="fechaReserva">
                 <label for="fechaReserva" class="labelForm">Fecha Reserva: *</label>
             </div>
 
-            <div class="input-field inputContent horaInicioFin">
-                <div class="horaInicio">
+            <div class=" inputContent ">
+                <div class="horaInicioFin horaInicio horaFin">
                     <label for="inicio" class="labelForm">Hora inicio:</label>
                     <input type="time" class="inputForm" id="inicio" name="inicio">
-                </div>
-                <div class="horaFin">
                     <label for="fin" class="labelForm">Hora fin:</label>
                     <input type="time" class="inputForm" id="fin" name="fin">
                 </div>
             </div>
-
-            <div class="inputContent fechaDevolucion">
+            <div class=" inputContent fechaDevolucion">
                 <input type="date" class="inputForm" name="fechaDevolucion" id="fechaDevolucion">
                 <label for="fechaDevolucion" class="labelForm">Fecha Devolución: *</label>
             </div>
 
-            <div class="inputContent inputObservaciones">
+            <div class="input-field inputContent inputObservaciones">
+                <textarea name="observaciones" class="materialize-textarea inputForm" id="observaciones"></textarea>
                 <label for="observaciones" class="labelForm">Observaciones:</label>
-                <textarea name="observaciones" class="inputForm" id="observaciones" placeholder="Digite una observación en caso de que sea requerida."></textarea>
             </div>
 
             <div class="inputAddElements">

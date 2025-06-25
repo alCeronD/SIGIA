@@ -50,6 +50,14 @@ tableUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
 const btnPreview = document.querySelector("#preview");
 const btnNext = document.querySelector("#next");
 
+document.addEventListener('DOMContentLoaded', ()=>{
+  
+  const selects = document.querySelectorAll('select');
+  M.FormSelect.init(selects);
+
+});
+
+
 areaDestino.addEventListener("change", () => {
   let value = areaDestino.options[areaDestino.selectedIndex];
   //console.log(value);

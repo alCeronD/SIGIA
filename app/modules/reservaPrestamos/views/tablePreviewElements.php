@@ -19,9 +19,8 @@
     <div class="buttons">
         <input type="button" value="<" id="previewElements">
         <div class="page">
-            <select name="" id="valuePage">
-                <!-- renderizar por javascript -->
-            </select>
+            <!-- <select name="" id="valuePage">
+            </select> -->
         </div>
         <input type="button" value=">" id="nextElements">
     </div>

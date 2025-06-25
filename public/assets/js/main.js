@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
   //Iniciializar los modales
   M.Modal.init(elemsModals); 
   M.FormSelect.init(document.querySelectorAll('select'));
+
+
 });
 
 document.querySelectorAll('.horizontalMenu > li > a').forEach(link =>{
