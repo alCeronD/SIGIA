@@ -37,13 +37,13 @@
                                 ?>
                             </td>
                             <td>
-                                <button type="button" id="btnEditar" data-desc="<?php echo $rol['rl_descripcion']; ?>" data-nombre = "<?php echo $rol['rl_nombre']; ?>" data-id="<?php echo $rol['rl_id']; ?>" class="btn btn-sm btn-warning btnEditar">
-                                    Editar
+                                <button type="button" id="btnEditar" data-desc="<?php echo $rol['rl_descripcion']; ?>" data-nombre = "<?php echo $rol['rl_nombre']; ?>" data-id="<?php echo $rol['rl_id']; ?>" class="waves-effect waves-light btn btnEditar">
+                                    <i class="material-icons">edit</i>
                                 </button>
                                 <a href="<?= getUrl('roles', 'roles', 'eliminarRol', ['rl_id' => $rol['rl_id'], 'rl_status' => $rol['rl_status']], 'dashboard') ?>"
-                                    class="btn btn-sm btn-danger"
+                                    class="waves-effect waves-light btn red"
                                     onclick="return confirm('¿Está seguro de inactivar este registro?');">
-                                    Eliminar
+                                    <i class="material-icons">delete</i>
                                 </a>
                             </td>
                         </tr>
@@ -74,17 +74,19 @@
             <div>
                 <input type="hidden" name="rol_id" id="modal_rol_id">
             </div>
-            <div class="input-field">
-
-                <input type="text" name="rol_nombre" id="modal_rol_nombre" required>
-                <label for="modal_rol_nombre">Nombre:</label>
+            <div class="input-field contentRlNombre">
+                <input type="text" name="modal_rol_nombre" id="modal_rol_nombre" required>
+                <label for="modal_rol_nombre">Rol:</label>
             </div>
+
             <div class="input-field"> 
-                
                 <textarea name="rol_descripcion" id="modal_rol_descripcion" rows="3" class="materialize-textarea" required></textarea>
                 <label for="modal_rol_descripcion">Descripción:</label>
             </div>
-            <button type="submit">Actualizar</button>
+            <div class="">
+                <button type="submit" class="btnSubmit waves-effect waves-light btn"><i class="material-icons">save</i></button>
+
+            </div>
         </form>
         </div>
         

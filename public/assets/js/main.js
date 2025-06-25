@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
   M.FormSelect.init(elems);
   //Inicializar los inputs
   M.updateTextFields();
+  //Definir el resize del textarea del campo descripción del modulo de roles.
+  M.textareaAutoResize(document.getElementById('rol_descripcionInput'));
 });
 
 document.querySelectorAll('.horizontalMenu > li > a').forEach(link =>{

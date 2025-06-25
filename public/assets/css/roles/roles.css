@@ -144,6 +144,11 @@
     grid-area: formRol;
 }
 
+#formEditarRol > div:last-child{
+    display: flex;
+    justify-content: center;
+}
+
 .cerrar {
     justify-self: end;
     cursor: pointer;

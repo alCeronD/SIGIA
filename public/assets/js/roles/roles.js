@@ -48,6 +48,9 @@ btnEditar.forEach((btnEdit)=>{
         inputId.value = id;
         inputNombre.value = nombre;
         inputDescript.value = descripcion;
+
+        //Como cambiamos el valor del formulario, necesitamos volver a reiniciar los input del formulario
+        M.updateTextFields();
         
         instanModal.open();
     });
