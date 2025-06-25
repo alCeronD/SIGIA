@@ -1,5 +1,5 @@
-import { Ajax } from "../libraries/ajax.js";
-import { closeModal } from "../libraries/cases.js";
+import { Ajax } from "../utils/ajax.js";
+import { closeModal } from "../utils/cases.js";
 
 let alto = window.screen.width;
 let ancho = window.screen.height;
@@ -46,13 +46,6 @@ let inputNroDocumento = document.querySelector("#cedula");
 let inputApellido = document.querySelector("#apellido");
 let inputTelefono = document.querySelector("#telefono");
 let inputEmail = document.querySelector("#email");
-//Inhabilito los inputs para evitar que el usuario digite los campos.
-// inputNombre.readOnly = true;
-// inputNroDocumento.readOnly = true;
-// inputApellido.readOnly = true;
-// inputTelefono.readOnly = true;
-// inputEmail.readOnly = true;
-//En caso de que sean muchos registros.
 tableUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
 const btnPreview = document.querySelector("#preview");
 const btnNext = document.querySelector("#next");
@@ -272,7 +265,6 @@ function definirCantidad(cantidadInput, cantidad) {
     if (valor < 0) {
       alert("Cantidad no disponible");
       event.target.value = valor;
-      console.log(event.target);
     }
 
     if (event.target.value > cantidad) {
@@ -298,6 +290,8 @@ btnAddElements.addEventListener("click", (btnTarget) => {
   /**
    * Esto es la respuesta de una promesa, hace que el aplicativo continue su flujo mientras que ejecuta este proceso.
    */
+
+
   resetTableElements("elements", 1).then((respuesta)=>{
     tableDevolutivos.innerHTML = "";
 
@@ -310,7 +304,11 @@ btnAddElements.addEventListener("click", (btnTarget) => {
       addElements = document.createElement("input");
       addElements.setAttribute("type", "checkbox");
       addElements.setAttribute("class", "checkboxInput");
+      addElements.classList.add('filled-in');
       addElements.setAttribute("data-id", codigo);
+      addElements.setAttribute('id',codigo);
+      let label = document.createElement('label');
+      let span = document.createElement('span');
       let trTable = document.createElement("tr");
       let tdCodigo = document.createElement("td");
       let tdElemento = document.createElement("td");
@@ -321,7 +319,8 @@ btnAddElements.addEventListener("click", (btnTarget) => {
       tdCodigo.textContent = codigo;
       tdElemento.textContent = elemento;
       tdArea.textContent = area;
-      tdAccion.appendChild(addElements);
+      tdAccion.append(label);
+      label.append(addElements,span);
 
       tableDevolutivos.appendChild(trTable);
       trTable.appendChild(tdCodigo);
@@ -407,18 +406,12 @@ tableUsers.addEventListener("click", (e) => {
     let telefono = elements.children[3].textContent;
     let email = elements.children[4].textContent;
 
-    // inputNombre.value = "";
-    // inputNroDocumento.value = "";
-    // inputApellido.value = "";
-    // inputTelefono.value = "";
-    // inputEmail.value = "";
     inputNroDocumento.textContent = nroDocumento;
     inputNombre.textContent = nombre;
     inputApellido.textContent = apellido;
     inputTelefono.textContent = telefono;
     inputEmail.textContent = email;
 
-    console.log(inputEmail);
 
     //Cerrar el modal justo que el administrador elija al usuario.
     modalUsers.style.display = "none";
@@ -431,7 +424,6 @@ tableDevolutivos.addEventListener("click", (event) => {
 
   //Valido si el evento ejecutado corresponde a un input con la clase checkboxInput.
   if (event.target.matches(".checkboxInput")) {
-
     let isChecked = event.target.checked;
     if (isChecked) {
       let inputChecked = event.target;
@@ -447,6 +439,7 @@ tableDevolutivos.addEventListener("click", (event) => {
       let tdNombre = document.createElement("td");
       let tdCantidad = document.createElement('td');
       let tdArea = document.createElement("td");
+
 
       //Capturo el valor del checkbox
       let valueInput = event.target.getAttribute("data-id");
@@ -570,7 +563,7 @@ const nextElement = document.querySelector("#nextElement");
 previewElement.addEventListener("click", () => {
   pgElementsDevolutivos = pgElementsDevolutivos === 1 ? 1 : pgElementsDevolutivos - 1;
 
-      resetTableElements("elements", pgElementsDevolutivos).then((result)=>{
+    resetTableElements("elements", pgElementsDevolutivos).then((result)=>{
 
     tableDevolutivos.innerHTML = "";
     //Implementar los datos en en la tabla.
@@ -582,7 +575,11 @@ previewElement.addEventListener("click", () => {
       addElements = document.createElement("input");
       addElements.setAttribute("type", "checkbox");
       addElements.setAttribute("class", "checkboxInput");
+      addElements.setAttribute('class','filled-in');
       addElements.setAttribute("data-id", codigo);
+      addElements.setAttribute('id',codigo);
+      let label = document.createElement('label');
+      let span = document.createElement('span');
       let trTable = document.createElement("tr");
       let tdCodigo = document.createElement("td");
       let tdElemento = document.createElement("td");
@@ -593,7 +590,8 @@ previewElement.addEventListener("click", () => {
       tdCodigo.textContent = codigo;
       tdElemento.textContent = elemento;
       tdArea.textContent = area;
-      tdAccion.appendChild(addElements);
+      tdAccion.append(label);
+      label.append(addElements,span);
 
       tableDevolutivos.appendChild(trTable);
       trTable.appendChild(tdCodigo);
@@ -617,23 +615,28 @@ nextElement.addEventListener("click", () => {
       let codigo = dta.codigo;
       let elemento = dta.elemento;
       let area = dta.area;
-      
+
       addElements = document.createElement("input");
       addElements.setAttribute("type", "checkbox");
       addElements.setAttribute("class", "checkboxInput");
+      addElements.setAttribute('class','filled-in');
       addElements.setAttribute("data-id", codigo);
+      addElements.setAttribute('id',codigo);
+      let label = document.createElement('label');
+      let span = document.createElement('span');
       let trTable = document.createElement("tr");
       let tdCodigo = document.createElement("td");
       let tdElemento = document.createElement("td");
       let tdArea = document.createElement("td");
       let tdAccion = document.createElement("td");
-      
+
       //A los elementos td les implemento su contenido, su contenido es la información de la tabla
       tdCodigo.textContent = codigo;
       tdElemento.textContent = elemento;
       tdArea.textContent = area;
-      tdAccion.appendChild(addElements);
-      
+      tdAccion.append(label);
+      label.append(addElements,span);
+
       tableDevolutivos.appendChild(trTable);
       trTable.appendChild(tdCodigo);
       trTable.appendChild(tdElemento);

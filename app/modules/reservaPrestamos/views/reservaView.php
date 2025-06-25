@@ -31,26 +31,26 @@
                 <!-- <input type="number" class="inputForm" name="telefono" id="telefono" placeholder="Teléfono..."> -->
             </div>
 
-            <div class="inputContent email">
+            <div class="input-field inputContent email">
                 <label for="email" class="labelForm">Email: <span id="email" name="email"></span></label>
                 <!-- <input type="email" class="inputForm" name="email" id="email" placeholder="Correo electrónico..."> -->
             </div>
 
-            <div class="inputContent areaDestino">
-                <label for="areaDestino" class="labelForm">Área de destino: *</label>
+            <div class="input-field inputContent areaDestino">
                 <select name="areaDestino" id="areaDestino">
                     <option value="">---</option>
                     <option value="centro">Centro</option>
                     <option value="externo">Externo</option>
                 </select>
+                <label for="areaDestino" class="labelForm">Área de destino: *</label>
             </div>
 
-            <div class="inputContent fechaReserva">
-                <label for="fechaReserva" class="labelForm">Fecha Reserva: *</label>
+            <div class="input-field inputContent fechaReserva">
                 <input type="date" class="inputForm" name="fechaReserva" id="fechaReserva">
+                <label for="fechaReserva" class="labelForm">Fecha Reserva: *</label>
             </div>
 
-            <div class="inputContent horaInicioFin">
+            <div class="input-field inputContent horaInicioFin">
                 <div class="horaInicio">
                     <label for="inicio" class="labelForm">Hora inicio:</label>
                     <input type="time" class="inputForm" id="inicio" name="inicio">
@@ -62,8 +62,8 @@
             </div>
 
             <div class="inputContent fechaDevolucion">
-                <label for="fechaDevolucion" class="labelForm">Fecha Devolución: *</label>
                 <input type="date" class="inputForm" name="fechaDevolucion" id="fechaDevolucion">
+                <label for="fechaDevolucion" class="labelForm">Fecha Devolución: *</label>
             </div>
 
             <div class="inputContent inputObservaciones">
