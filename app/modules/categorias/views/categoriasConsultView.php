@@ -1,37 +1,42 @@
-<div class="content">
+<div class="contentCategoria contentLayout">
   <div class="menuTitle">
-    <span id="textTitle">Gestión de Categorías</span>
+    <span id="textTitle" class="textTitleSpan">Gestión de Categorías</span>
     <a href="<?= getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
   </div>
 
   <div class="categoriaGrid">
-    <!-- Formulario Crear -->
-    <div class="formCategoria">
+  <!-- Formulario Crear dentro de una card -->
+  <div class="card z-depth-3">
+    <div class="card-content">
+      <span class="card-title">Crear Categoría</span>
+
       <form id="formCreateCategoria" method="POST" action="<?= getUrl('categorias', 'categorias', 'createCategoria') ?>" novalidate>
-        <div class="inputContent nombreCategoria">
-          <label for="ca_nombre" class="labelForm">Nombre:</label>
-          <input type="text" name="ca_nombre" id="ca_nombre" class="inputForm" placeholder="Nombre de la categoría..." required>
+        <div class="input-field">
+          <input type="text" name="ca_nombre" id="ca_nombre" required>
+          <label for="ca_nombre">Nombre:</label>
         </div>
 
-        <div class="inputContent descripcionCategoria">
-          <label for="ca_descripcion" class="labelForm">Descripción:</label>
-          <input type="textarea" name="ca_descripcion" id="ca_descripcion" class="inputForm" placeholder="Descripción..." required>
+        <div class="input-field">
+          <textarea name="ca_descripcion" id="ca_descripcion" class="materialize-textarea" required></textarea>
+          <label for="ca_descripcion">Descripción:</label>
         </div>
 
-        <div class="inputBtn">
-          <button type="submit" id="btnSubmit">
-            <i class="bi bi-plus-circle"></i> Crear Categoría
+        <div class="input-field center-align">
+          <button type="submit" class="waves-effect waves-light btn" id="btnSubmit">
+            <i class="material-icons left">send</i> Crear
           </button>
         </div>
       </form>
-      <!-- Contenedor para mensajes -->
-      <div id="mensajeCategoria" style="margin: 10px 0; color: green;"></div>
 
+      <!-- Mensaje de éxito -->
+      <div id="mensajeCategoria" style="margin-top: 10px; color: green;"></div>
     </div>
+  </div>
+</div>
 
     <!-- Tabla -->
-    <div class="tablaCategoria">
-      <table class="tableCategoria">
+    <div class=" tablaCategoria highlight striped responsive-table">
+      <table class="tblConfigModules ">
         <thead>
           <tr>
             <th>Nombre</th>
@@ -42,20 +47,20 @@
         </thead>
         <tbody>
           <?php if (!empty($categorias)): ?>
-            <?php foreach ($categorias as $categoria): ?>
+            <?php foreach ($categorias as $categoria):?>
               <tr>
                 <td><?= htmlspecialchars($categoria['ca_nombre']) ?></td>
                 <td><?= htmlspecialchars($categoria['ca_descripcion']) ?></td>
-                <td><?= $categoria['ca_status'] ? 'Activo' : 'Inactivo' ?></td>
+                <td data-statusTd="<?php echo $categoria['ca_status']; ?>"><?= $categoria['ca_status'] == '1' ? 'Activo' : 'Inactivo' ?></td>
                 <td class="accionesUsuarios">
-                  <a href="#"
-                     class="btnEditarCategoria"
+                  <button type="button"
+                     class="btnEditarCategoria waves-effect waves-light btn"
                      data-id="<?= $categoria['ca_id'] ?>"
                      data-nombre="<?= htmlspecialchars($categoria['ca_nombre']) ?>"
                      data-descripcion="<?= htmlspecialchars($categoria['ca_descripcion']) ?>"
                      data-status="<?= $categoria['ca_status'] ?>">
-                     Editar
-                  </a>
+                     <i class="material-icons">edit</i>
+                  </button>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -67,34 +72,37 @@
         </tbody>
       </table>
     </div>
-  </div>
+  
 </div>
 
 <!-- Modal Personalizado -->
-<div id="modalEditarCategoria" class="modal-custom">
-  <div class="modal-content-custom">
-    <span class="close-modal">&times;</span>
-    <h3>Editar Categoría</h3>
-    <form method="POST" action="<?= getUrl('categorias', 'categorias', 'updateCategoria', false, 'dashboard') ?>" id="formUpdateCategoria">
+<div id="modalEditarCategoria" class="modal">
+  <div class="modal-content">
+    <h4>Editar Categoría</h4>
+    <form id="formUpdateCategoria" method="POST" action="<?= getUrl('categorias', 'categorias', 'updateCategoria', false, 'dashboard') ?>">
       <input type="hidden" name="ca_id" id="modal_ca_id">
-      <div class="inputContent">
-        <label for="modal_ca_nombre" class="labelForm">Nombre:</label>
-        <input type="text" name="ca_nombre" id="modal_ca_nombre" class="inputForm" required>
+
+      <div class="input-field">
+        <input type="text" id="modal_ca_nombre" name="ca_nombre" required>
+        <label for="modal_ca_nombre">Nombre</label>
       </div>
-      <div class="inputContent">
-        <label for="modal_ca_descripcion" class="labelForm">Descripción:</label>
-        <input type="text" name="ca_descripcion" id="modal_ca_descripcion" class="inputForm" required>
+
+      <div class="input-field">
+        <input type="text" id="modal_ca_descripcion" name="ca_descripcion" required>
+        <label for="modal_ca_descripcion">Descripción</label>
       </div>
-      <div class="inputContent">
-        <label for="modal_ca_status" class="labelForm">Estado:</label>
-        <select name="ca_status" id="modal_ca_status" class="inputForm" required>
+
+      <div class="input-field">
+        <select id="modal_ca_status" name="ca_status" required>
           <option value="1">Activo</option>
           <option value="0">Inactivo</option>
         </select>
+        <label for="modal_ca_status">Estado</label>
       </div>
-      <div class="inputBtn">
-        <button type="submit">
-          <i class="bi bi-pencil-square"></i> Actualizar
+
+      <div class="modal-footer">
+        <button type="submit" class="btn waves-effect waves-light">
+          <i class="material-icons left">save</i> Actualizar
         </button>
       </div>
     </form>

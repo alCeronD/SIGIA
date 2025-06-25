@@ -1,11 +1,14 @@
 <div class="contentMarca contentLayout">
     <div class="titleMarca menuTitle">
-        <span id="textTitleAreas">Marca</span>
+        <span id="textTitleAreas" class="textTitleSpan">Gestión de marcas</span>
         <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
     </div>
     <div class="formMarca">
+        <div class="card z-depth-2">
+            <div class="card-content">
+            <p class="flow-text card-title">Registrar marca</p>
         <form id="marcaForm" class="formLayout">
             <div class="input-field contentMarcaN">
                 <input type="text" name="ma_nombre" id="ma_nombre" >
@@ -19,6 +22,8 @@
                 <button type="submit" class="btnSubmit waves-effect waves-light btn" id="btnAreaUpdate"><i class="material-icons">send</i><button></button>
             </div>
         </form>
+        </div>
+        </div>
     </div>
     <div class="tblMarca highlight striped responsive-table">
         <?php require_once 'tableMarcaView.php'; ?>

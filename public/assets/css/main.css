@@ -204,7 +204,7 @@ input[type="number"] {
 /* Estructura general del layout del formulario. */
 .formLayout {
   display: grid;
-  gap: 2rem;
+  gap: 0.5rem;
   grid-template-columns: 1fr;
   grid-template-rows: 5vh 1fr;
   width: 100%;
@@ -224,4 +224,27 @@ input[type="number"] {
   height: 20pt;
 } 
 
+/* Estilo a las tablas del modulo de configuración */
+.tblConfigModules th,
+.tblConfigModules td {
+  padding: 0.20rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
 
+.tblConfigModules thead {
+  background-color: #f2f2f2;
+}
+
+.tblConfigModules tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.tblConfigModules tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* esta clase corresponde a los titulos del modulo de configuración, se puede usar para los demás modulos */
+.textTitleSpan{
+  font-size: 20pt;
+}

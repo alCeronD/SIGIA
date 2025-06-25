@@ -2,7 +2,7 @@
 
 <div class="contentRoles contentLayout">
     <div class="titleRoles menuTitle">
-        <span id="textTitleAreas">Roles</span>
+        <span id="textTitleAreas" class="textTitleSpan">Gestión de roles</span>
         <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
@@ -13,7 +13,7 @@
     </div>
 
     <div class="tblRoles">
-        <table class="table table-bordered table-striped table-responsive">
+        <table class="table table-bordered table-striped table-responsive tblConfigModules">
             <thead class="table-dark">
                 <tr>
                     <th>ID</th>

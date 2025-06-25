@@ -1,32 +1,32 @@
+const form = document.getElementById("formCreateCategoria");
+const mensajeDiv = document.getElementById("mensajeCategoria");
 
 
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("formCreateCategoria");
-  const mensajeDiv = document.getElementById("mensajeCategoria");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
 
-    const formData = new FormData(form);
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    try {
-      const response = await fetch(form.action, {
-        method: "POST",
-        body: formData
-      });
+  const formData = new FormData(form);
 
-      const data = await response.json();
+  try {
+    const response = await fetch(form.action, {
+      method: "POST",
+      body: formData,
+    });
 
-      if (data.success) {
-        mensajeDiv.textContent = "Categoría registrada correctamente.";
+    const data = await response.json();
 
-        // Limpiar formulario
-        form.reset();
+    if (data.success) {
+      mensajeDiv.textContent = "Categoría registrada correctamente.";
 
-        // Agregar nueva fila a la tabla
-        const nuevaFila = document.createElement("tr");
+      // Limpiar formulario
+      form.reset();
 
-        nuevaFila.innerHTML = `
+      // Agregar nueva fila a la tabla
+      const nuevaFila = document.createElement("tr");
+
+      nuevaFila.innerHTML = `
           <td>${data.categoria.ca_nombre}</td>
           <td>${data.categoria.ca_descripcion}</td>
           <td>${data.categoria.ca_status === 1 ? "Activo" : "Inactivo"}</td>
@@ -42,28 +42,33 @@ document.addEventListener("DOMContentLoaded", () => {
           </td>
         `;
 
-        // Insertar la fila en el <tbody>
-        const tbody = document.querySelector(".tableCategoria tbody");
-        tbody.appendChild(nuevaFila);
+      const tbody = document.querySelector(".tableCategoria tbody");
 
-        // ✅ Volver a asignar el evento click para el nuevo botón Editar
-        nuevaFila.querySelector(".btnEditarCategoria").addEventListener("click", function(e) {
+
+      // Insertar la fila en el <tbody>
+      tbody.appendChild(nuevaFila);
+
+      nuevaFila
+        .querySelector(".btnEditarCategoria")
+        .addEventListener("click", function (e) {
           e.preventDefault();
 
           document.getElementById("modal_ca_id").value = this.dataset.id;
-          document.getElementById("modal_ca_nombre").value = this.dataset.nombre;
-          document.getElementById("modal_ca_descripcion").value = this.dataset.descripcion;
-          document.getElementById("modal_ca_status").value = this.dataset.status;
-          document.getElementById("modalEditarCategoria").style.display = "flex";
+          document.getElementById("modal_ca_nombre").value =
+            this.dataset.nombre;
+          document.getElementById("modal_ca_descripcion").value =
+            this.dataset.descripcion;
+          document.getElementById("modal_ca_status").value =
+            this.dataset.status;
+          document.getElementById("modalEditarCategoria").style.display =
+            "flex";
         });
-
-      } else {
-        mensajeDiv.textContent = data.mensaje || "Ocurrió un error al registrar.";
-        mensajeDiv.style.color = "red";
-      }
-    } catch (error) {
-      mensajeDiv.textContent = "Error en la conexión.";
+    } else {
+      mensajeDiv.textContent = data.mensaje || "Ocurrió un error al registrar.";
       mensajeDiv.style.color = "red";
     }
-  });
+  } catch (error) {
+    mensajeDiv.textContent = "Error en la conexión.";
+    mensajeDiv.style.color = "red";
+  }
 });

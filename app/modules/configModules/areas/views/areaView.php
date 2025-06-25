@@ -1,27 +1,30 @@
 <div class="contentArea contentLayout">
     <div class="titleArea menuTitle">
-        <span id="textTitleAreas">Areas</span>
+        <span id="textTitleAreas" class="textTitleSpan">Areas</span>
         <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
     </div>
     <div class="formAr">
-        <p class="flow-text">Registrar Area</p>
-        <form id="formArea" class="formLayout">
-            <div class="input-field contentAreaNem">
-                <input type="text" name="ar_nombre" id="ar_nombre" class="validate">
-                <label for="ar_nombre">Área</label>
-            </div>
+        <div class="card z-depth-2">
+            <div class="card-content">
+                <p class="flow-text card-title">Registrar Area</p>
+                <form id="formArea" class="formLayout">
+                    <div class="input-field contentAreaNem">
+                        <input type="text" name="ar_nombre" id="ar_nombre" class="validate">
+                        <label for="ar_nombre">Área</label>
+                    </div>
+                    <div class="input-field contentDescript">
+                        <textarea name="ar_descripcion" id="ar_descripcion" class="materialize-textarea"></textarea>
+                        <label for="ar_descripcion">Descripción del área</label>
+                    </div>
 
-            <div class="input-field contentDescript">
-                <textarea name="ar_descripcion" id="ar_descripcion" class="materialize-textarea"></textarea>
-                <label for="ar_descripcion">Descripción del área</label>
+                    <div class="contentSubmit">
+                        <button type="submit" id="btnAreaSend" class="btnSubmit waves-effect waves-light btn"></button>
+                    </div>
+                </form>
             </div>
-
-            <div class="contentSubmit">
-                <button type="submit" id="btnAreaSend" class="btnSubmit waves-effect waves-light btn"></button>
-            </div>
-        </form>
+        </div>
     </div>
 
     <div class="tblAreas highlight striped responsive-table">

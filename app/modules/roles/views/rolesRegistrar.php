@@ -1,5 +1,7 @@
 <!-- <h2 class="mb-4 text-center">Registrar Nuevo Rol</h2> -->
-
+<div class="card z-depth-2">
+            <div class="card-content">
+            <p class="flow-text card-title">Registrar roles</p>
 <form action="<?php echo getUrl('roles','roles','registrarRol',false,'dashboard') ?>" method="POST" id="formRol">
     
     <!-- Campo: Nombre del Rol -->
@@ -18,4 +20,7 @@
     <div class="center-align contentRlBtn">
         <button type="submit" class="btn waves-effect waves-light"><i class="material-icons">send</i></button>
     </div>
+    
 </form>
+</div>
+    </div>

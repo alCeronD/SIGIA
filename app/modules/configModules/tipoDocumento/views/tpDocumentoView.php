@@ -1,13 +1,15 @@
 <!-- Vista del tipo de documento -->
 <div class="contentTpDocumento contentLayout">
     <div class="titleTp menuTitle">
-        <span id="textTitleAreas">Tipos de documento</span>
+        <span id="textTitleAreas" class="textTitleSpan">Tipos de documento</span>
         <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
     </div>
     <div class="formTpDocumento">
-        <p class="flow-text">Registrar Documento</p>
+        <div class="card z-depth-2">
+            <div class="card-content">
+        <p class="flow-text card-title">Registrar Documento</p>
         <form id="formTp" class="formLayout">
             <div class="input-field tpSiglaContent">
                 <input type="text" name="tp_sigla" id="tpSigla" value="">
@@ -21,6 +23,8 @@
                 <button type="submit" class="btnSubmit waves-effect waves-light btn" id="btnAreaUpdate"><i class="material-icons">send</i><button>
             </div>
         </form>
+        </div>
+        </div>
     </div>
     <div class="tblTpDocumento highlight striped responsive-table">
         <?php require_once 'tableViewtpDocumento.php'; ?>
