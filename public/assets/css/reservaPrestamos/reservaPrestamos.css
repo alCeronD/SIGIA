@@ -189,10 +189,10 @@ th {
 .inputBtn {
   display: grid;
   grid-area: inputBtn;
-  width: 100%;
   justify-items: center;
   min-height: 1.3rem;
 }
+
 
 /* Campo de busqueda */
 
@@ -234,16 +234,6 @@ th {
 
 #modalAddDevolutivos, #modalAddConsumible legend {
   font-size: 1rem;
-}
-
-.modal-title {
-  background-color: var(--secundary);
-  color: white;
-  display: flex;
-  height: auto;
-  justify-content: space-between;
-  padding: 1rem 1.5rem;
-  border-radius: 8px 8px 0 0;
 }
 
 .modal-title #modalTitle {
@@ -366,8 +356,7 @@ th {
   display: flex;
   height: auto;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
-  border-radius: 8px 8px 0 0;
+  align-items: center;
 }
 
 .modal-title.modalTitleDetail {

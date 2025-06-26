@@ -1,5 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import { closeModal } from "../utils/cases.js";
+import { closeModal, createI, instanceModal, options } from "../utils/cases.js";
 
 let alto = window.screen.width;
 let ancho = window.screen.height;
@@ -33,6 +33,10 @@ const btnCloseConsumible = document.querySelector('#modalAddConsumible .close-mo
 
 const btnCloseUsers = document.querySelector("#modalUsers .close-modal");
 const btnSearchUser = document.querySelector("#searchBtn");
+const previewElements = document.querySelector('#previewElements');
+previewElements.textContent = 'Previsualizar';
+//Creo una instancia del modal
+const instanPreview = instanceModal('#modalPreviewElements',{"opacity":options.opacity, "inDuration":options.inDuration, "outDuration":options.outDuration});
 const formSolicitudPrestamo = document.querySelector("#formSolicitudPrestamo");
 horaInicio.style.visibility = "hidden";
 horaInicio.style.opacity = "0";
@@ -56,7 +60,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   M.FormSelect.init(selects);
 
 });
-
 
 areaDestino.addEventListener("change", () => {
   let value = areaDestino.options[areaDestino.selectedIndex];
@@ -92,7 +95,11 @@ btnAddElements.innerText = "Devolutivos";
 btnAddElements.setAttribute('class','btnClick');
 btnAddConsumibles.innerText = "Consumibles";
 modalTitle.innerText = "Elementos disponibles";
-btnSubmit.innerText = "Reservar";
+// btnSubmit.innerText = "Reservar";
+let iClass = createI();
+iClass.setAttribute('class','material-icons');
+iClass.innerText = 'send';
+btnSubmit.append(iClass);
 btnSubmit.setAttribute('class', 'btnSubmit');
 
 // variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
@@ -155,7 +162,7 @@ function resetTableUsers(action = "", resetToFirstPage = false) {
   );
   objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
   objAjax.request.onload = () => {
-    valuePage.innerHTML = "";
+    // valuePage.innerHTML = "";
     if (action === "users") {
       let response = JSON.parse(objAjax.request.responseText);
       let data = response.data.data;
@@ -171,17 +178,21 @@ function resetTableUsers(action = "", resetToFirstPage = false) {
         let pagesOptions = document.createElement("option");
         pagesOptions.value = index;
         pagesOptions.innerHTML = index;
-        valuePage.append(pagesOptions);
+        // valuePage.append(pagesOptions);
       }
       //por defecto, lo coloco en 1.
-      valuePage.value = String(pgUsers);
+      // valuePage.value = String(pgUsers);
 
       tableUsers.innerHTML = "";
       data.forEach((us) => {
         let btnAdd = document.createElement("button");
+        let iCreate = createI();
+        iCreate.setAttribute('class','material-icons');
+        iCreate.innerText = 'add';
         button = btnAdd;
-        btnAdd.innerText = "Seleccionar";
         btnAdd.setAttribute("type", "button");
+        btnAdd.setAttribute('class','btn waves-effect waves-light');
+        btnAdd.append(iCreate);
         let trTableUsers = document.createElement("tr");
         let tdNroDocumento = document.createElement("td");
         let tdNombre = document.createElement("td");
@@ -405,8 +416,10 @@ tableUsers.addEventListener("click", (e) => {
   e.stopPropagation();
   e.preventDefault();
 
-  //Capturo la información y le doy utilidad a ella solamente cuando presiono el evento es de tipo BUTTON.
-  if (e.target.tagName === "BUTTON") {
+  //Capturo el tipo de boton y le doy utilidad a ella solamente cuando presiono el evento es de tipo BUTTON.
+  let button = e.target.closest("button");
+  if (button) {
+    console.log(e.target);
     //Me devuelve la fila en base al botón que se ha presionado.
     let elements = e.target.closest("tr");
     let nroDocumento = elements.children[0].textContent;
@@ -420,7 +433,6 @@ tableUsers.addEventListener("click", (e) => {
     inputApellido.textContent = apellido;
     inputTelefono.textContent = telefono;
     inputEmail.textContent = email;
-
 
     //Cerrar el modal justo que el administrador elija al usuario.
     modalUsers.style.display = "none";
@@ -754,6 +766,15 @@ resetTableElements("elements", pgElementsDevolutivos, true);
 //Cerrar el modal de elementos consumibles
 closeModal(modalAddConsumibles, btnCloseConsumible);
 resetTableElements("consumibles",1,true);
+
+
+//Preview de los elementos en forma de tabla.
+previewElements.addEventListener('click',(e)=>{
+  e.stopPropagation();
+  e.preventDefault();
+  instanPreview.open();
+});
+
 
 /**
  * Submit al formulario.

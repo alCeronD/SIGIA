@@ -67,11 +67,13 @@
                 <Span>Seleccione los elementos:</Span>
                 <button type="button" id="btnAddElements"></button>
                 <button type="button" id="btnAddConsumibles"></button>
+                <button type="button" id="previewElements"></button>
             </div>
 
             <!-- Contenedor que va a tener los elementos que seran prestados -->
             <div class="tableElements">
-                <?php require_once 'tablePreviewElements.php'; ?>
+                <?php require_once 'modalPreviewElements.php'; ?>
+                <?php //require_once 'tablePreviewElements.php'; ?>
             </div>
 
             <div class="inputBtn">

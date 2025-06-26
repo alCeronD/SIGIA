@@ -6,7 +6,7 @@
                     <span class="close-modal">&times;</span>
                 </button>
         </div>
-        <div class="tableContent">
+        <div class="tableContent highlight striped responsive-table">
             <table>
                 <thead>
                     <tr>
@@ -26,11 +26,6 @@
             <!-- Contenedor que contiene los botones previews y next de la Página -->
             <div class="buttons">
                 <input type="button" value="<" id="preview">
-                <div class="page">
-                    <select name="" id="valuePage">
-                        <!-- renderizar por javascript -->
-                    </select>
-                </div>
                 <input type="button" value=">" id="next">
             </div>
         </div>
