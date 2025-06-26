@@ -12,14 +12,4 @@ document.addEventListener('DOMContentLoaded', function () {
   //Iniciializar los modales
   M.Modal.init(elemsModals); 
   M.FormSelect.init(document.querySelectorAll('select'));
-
-
-});
-
-document.querySelectorAll('.horizontalMenu > li > a').forEach(link =>{
-  link.addEventListener('click', (e)=>{
-    e.preventDefault();
-    parent.classList.toggle('menu-open');
-  });
-
 });

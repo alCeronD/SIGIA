@@ -71,11 +71,10 @@
             <!-- Contenedor que va a tener los elementos que seran prestados -->
             <div class="tableElements">
                 <?php require_once 'modalPreviewElements.php'; ?>
-                <?php //require_once 'tablePreviewElements.php'; ?>
             </div>
 
             <div class="inputBtn">
-                <button type="submit" id="btnSubmit"></button>
+                <button type="submit" id="btnSubmit" ></button>
             </div>
         </form>
     </div>
@@ -87,7 +86,7 @@
 </div>
 
 <!-- Contenedor que tiene el modal de los elementos consumibles. -->
-<div id="addElementsConsumibles">
+<div id="addElementsConsumibles" class="">
     <?php require_once 'modalAddConsumibles.php' ?>
 </div>
 

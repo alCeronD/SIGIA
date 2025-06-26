@@ -1,5 +1,3 @@
-<!-- Tabla para elegir los elementos que requiero solicitar. -->
-
 <div id="">
     <legend>Elementos devolutivos</legend>
     <table id="">

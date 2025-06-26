@@ -1,4 +1,4 @@
-<!-- Este archivo va a contener una tabla en la que mi idea principal es visualizar los elementos que el usuario instructor puede solicitar. -->
+
 <div id="modalAddConsumible" class="modal" style="display: none;">
     <!-- Modal content -->
     <div class="modal-content">
@@ -9,7 +9,7 @@
             </button>
         </div>
         <!-- Tabla de elementos devolutivos -->
-        <div class="tableElemConsumible">
+        <div class="tableElemConsumible  highlight striped responsive-table">
             <?php include_once 'tablaElmConsumible.php'; ?>
         </div>
     </div>

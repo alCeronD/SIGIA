@@ -2,7 +2,7 @@ import { Ajax } from "../utils/ajax.js";
 import { closeModal, createI, instanceDate, instanceModal, options, opcionesDatepicker } from "../utils/cases.js";
 
 const objAjax = new Ajax();
-const btnSubmit = document.getElementById("btnSubmit");
+const btnSubmit = document.querySelector("#btnSubmit");
 const tableDevolutivos = document.querySelector("#bodyDevolutions");
 const tableUsers = document.querySelector("#tableBodyUsers");
 const tablePreviewElements = document.querySelector(
@@ -93,7 +93,6 @@ let objDataUsers = {};
 let button;
 const valuePage = document.querySelector("#valuePage");
 let iAddElement = createI();
-let iClass = createI();
 iAddElement.innerText = 'Linked_Camera';
 btnAddElements.classList.add('btnClick');
 btnAddElements.append(iAddElement);
@@ -102,11 +101,11 @@ let iConsumible = createI();
 iConsumible.innerText = 'Battery_3_Bar';
 btnAddConsumibles.append(iConsumible);
 
-// btnAddConsumibles.innerText = "Consumibles";
+let iClass = createI();
 modalTitle.innerText = "Elementos disponibles";
 iClass.innerText = 'send';
 btnSubmit.append(iClass);
-btnSubmit.setAttribute('class', 'btnSubmit');
+btnSubmit.setAttribute('class','btn waves-effect waves-light');
 
 // variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
 let pagesUsers;
@@ -272,7 +271,6 @@ function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
   });
 }
 
-//TODO: Función definir cantidad, Debo de validar que no se adicione el elemento si no hay cantidad digitada.
 /**
  * Se valida que la cantidad de los elementos consumibles no sea ni negativa ni mayor a la cantidad disponible.
  * @constructor
@@ -376,14 +374,28 @@ btnAddConsumibles.addEventListener("click", (event)=>{
       let tdNombre = document.createElement('td');
       let tdCantidad = document.createElement('td');
       let tdOpciones = document.createElement('td');
+      let divElements = document.createElement('div');
+      divElements.setAttribute('class','actionsElements');
       let cantidadInput = document.createElement('input');
+      
+      
+      let divCheckbox = document.createElement('div');
+      let labelCheck = document.createElement('label');
+      let checkBoxSelect = document.createElement('input');
+      let spanCheck = document.createElement('span');
+      checkBoxSelect.classList.add('checkboxInput');
+      checkBoxSelect.setAttribute('type','checkbox');
+      checkBoxSelect.classList.add('filled-in');
+      checkBoxSelect.setAttribute('data-id',data.codigo);
+      divCheckbox.append(labelCheck);
+      labelCheck.append(checkBoxSelect,spanCheck);      
+
+      cantidadInput.classList.add('browser-default');
+      // cantidadInput.classList.add('input-field');
       cantidadInput.setAttribute('type','number');
       cantidadInput.setAttribute('min',0);
       cantidadInput.setAttribute('data-cantidad',data.cantidad);
-      let checkBoxSelect = document.createElement('input');
-      checkBoxSelect.setAttribute('type','checkbox');
-      checkBoxSelect.setAttribute('data-id',data.codigo);
-
+      divElements.append(cantidadInput,divCheckbox);
       tdCodigo.innerText = data.codigo;
       tdNombre.innerText = data.elemento;
       tdCantidad.innerText = data.cantidad;
@@ -393,7 +405,7 @@ btnAddConsumibles.addEventListener("click", (event)=>{
       trConsumbile.appendChild(tdNombre);
       trConsumbile.appendChild(tdCantidad);
       trConsumbile.appendChild(tdOpciones);
-      tdOpciones.append(cantidadInput,checkBoxSelect);
+      tdOpciones.append(divElements);
 
       let cantidad = data.cantidad;
       definirCantidad(cantidadInput,cantidad);
@@ -694,28 +706,45 @@ document.querySelector('#previewElementConsumible').addEventListener('click', (e
       let tdNombre = document.createElement('td');
       let tdCantidad = document.createElement('td');
       let tdOpciones = document.createElement('td');
+      let divElements = document.createElement('div');
+      divElements.setAttribute('class','actionsElements');
       let cantidadInput = document.createElement('input');
+      
+      
+      let divCheckbox = document.createElement('div');
+      let labelCheck = document.createElement('label');
+      let checkBoxSelect = document.createElement('input');
+      let spanCheck = document.createElement('span');
+      checkBoxSelect.classList.add('checkboxInput');
+      checkBoxSelect.setAttribute('type','checkbox');
+      checkBoxSelect.classList.add('filled-in');
+      checkBoxSelect.setAttribute('data-id',data.codigo);
+      divCheckbox.append(labelCheck);
+      labelCheck.append(checkBoxSelect,spanCheck);      
+
+      cantidadInput.classList.add('browser-default');
+      // cantidadInput.classList.add('input-field');
       cantidadInput.setAttribute('type','number');
       cantidadInput.setAttribute('min',0);
       cantidadInput.setAttribute('data-cantidad',data.cantidad);
-      let checkBoxSelect = document.createElement('input');
-      checkBoxSelect.setAttribute('type','checkbox');
-      checkBoxSelect.setAttribute('data-id',data.codigo);
+
+
+      divElements.append(cantidadInput,divCheckbox);
+
 
       tdCodigo.innerText = data.codigo;
       tdNombre.innerText = data.elemento;
       tdCantidad.innerText = data.cantidad;
-      // cantidadInput.value = data.cantidad;
 
       tblBodyConsumibles.appendChild(trConsumbile);
       trConsumbile.appendChild(tdCodigo);
       trConsumbile.appendChild(tdNombre);
       trConsumbile.appendChild(tdCantidad);
       trConsumbile.appendChild(tdOpciones);
-      tdOpciones.append(cantidadInput,checkBoxSelect);
+      tdOpciones.append(divElements);
+
       let cantidad = data.cantidad;
       definirCantidad(cantidadInput,cantidad);
-      
     });
   });
   
@@ -731,32 +760,49 @@ document.querySelector('#nextElementConsumible').addEventListener('click',(event
     tblBodyConsumibles.innerHTML = "";
     result.forEach((data)=>{
       let trConsumbile = document.createElement('tr');
-      
+
       let tdCodigo = document.createElement('td');
-      // tdCodigo.setAttribute('class','codigoElemento');
+      tdCodigo.setAttribute('class','codigoElemento');
       let tdNombre = document.createElement('td');
       let tdCantidad = document.createElement('td');
       let tdOpciones = document.createElement('td');
+      let divElements = document.createElement('div');
+      divElements.setAttribute('class','actionsElements');
       let cantidadInput = document.createElement('input');
+      
+      
+      let divCheckbox = document.createElement('div');
+      let labelCheck = document.createElement('label');
+      let checkBoxSelect = document.createElement('input');
+      let spanCheck = document.createElement('span');
+      checkBoxSelect.classList.add('checkboxInput');
+      checkBoxSelect.setAttribute('type','checkbox');
+      checkBoxSelect.classList.add('filled-in');
+      checkBoxSelect.setAttribute('data-id',data.codigo);
+      divCheckbox.append(labelCheck);
+      labelCheck.append(checkBoxSelect,spanCheck);      
+
+      cantidadInput.classList.add('browser-default');
+      // cantidadInput.classList.add('input-field');
       cantidadInput.setAttribute('type','number');
       cantidadInput.setAttribute('min',0);
       cantidadInput.setAttribute('data-cantidad',data.cantidad);
-      let checkBoxSelect = document.createElement('input');
-      checkBoxSelect.setAttribute('type','checkbox');
-      checkBoxSelect.setAttribute('data-id',data.codigo);
-      
+
+
+      divElements.append(cantidadInput,divCheckbox);
+
+
       tdCodigo.innerText = data.codigo;
       tdNombre.innerText = data.elemento;
       tdCantidad.innerText = data.cantidad;
-      // cantidadInput.value = data.cantidad;
-      
+
       tblBodyConsumibles.appendChild(trConsumbile);
       trConsumbile.appendChild(tdCodigo);
       trConsumbile.appendChild(tdNombre);
       trConsumbile.appendChild(tdCantidad);
       trConsumbile.appendChild(tdOpciones);
-      tdOpciones.append(cantidadInput,checkBoxSelect);
-      
+      tdOpciones.append(divElements);
+
       let cantidad = data.cantidad;
       definirCantidad(cantidadInput,cantidad);
     });

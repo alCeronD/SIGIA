@@ -1,6 +1,6 @@
-<div class="">
+
     <legend>Elementos Consumibles</legend>
-    <table id="tableConsumible">
+    <table id="tableConsumible" class="striped highlight">
     <thead>
         <tr>
             <th>Código</th>
@@ -16,11 +16,5 @@
 </table>
 <div class="buttons">
         <input type="button" value="<" id="previewElementConsumible">
-        <div class="page">
-            <select name="" id="valuePageElement">
-                <!-- renderizar por javascript -->
-            </select>
-        </div>
         <input type="button" value=">" id="nextElementConsumible">
-    </div>
 </div>
