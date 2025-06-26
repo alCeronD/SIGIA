@@ -7,7 +7,8 @@
   <!-- Estilos generales. -->
   <!-- Iconos de materialize -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-   <link rel="stylesheet" href="../public/assets/css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link rel="stylesheet" href="../public/assets/css/main.css">
 
   <!-- Estilo específico según el modulo. -->
 <link rel="stylesheet" href="<?php echo $_SESSION['css'];?>">

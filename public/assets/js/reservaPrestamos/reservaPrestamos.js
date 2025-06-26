@@ -9,10 +9,13 @@ const tablePreviewElements = document.querySelector(
   "#tableBodyPreviewElements"
 );
 
-const modalAddDevolutivos = document.querySelector("#modalAddDevolutivos");
-const modalAddConsumibles = document.querySelector('#modalAddConsumible');
-const modalUsers = document.querySelector("#modalUsers");
+const modalAddDevolutivos = instanceModal('#modalAddDevolutivos',{options});
+const modalAddConsumibles = instanceModal('#modalAddConsumible',{options});
+const modalUsers = instanceModal('#modalUsers',{options});
 const btnAddElements = document.querySelector("#btnAddElements");
+const iAddElements = createI();
+iAddElements.innerText = 'add';
+
 const btnAddConsumibles = document.querySelector('#btnAddConsumibles');
 const modalTitle = document.querySelector("#modalTitle");
 const areaDestino = document.querySelector("#areaDestino");
@@ -27,8 +30,10 @@ const btnCloseConsumible = document.querySelector('#modalAddConsumible .close-mo
 
 const btnCloseUsers = document.querySelector("#modalUsers .close-modal");
 const btnSearchUser = document.querySelector("#searchBtn");
-const previewElements = document.querySelector('#previewElements');
-previewElements.textContent = 'Previsualizar';
+const previewElements2 = document.querySelector('#previewElements2');
+const iCreatePreview = createI();
+iCreatePreview.innerText = 'Table_eye';
+previewElements2.append(iCreatePreview);
 //Creo una instancia del modal
 const instanPreview = instanceModal('#modalPreviewElements',{"opacity":options.opacity, "inDuration":options.inDuration, "outDuration":options.outDuration});
 const formSolicitudPrestamo = document.querySelector("#formSolicitudPrestamo");
@@ -81,19 +86,24 @@ areaDestino.addEventListener("change", () => {
   }
 });
 
-// Selecciono el elemento específico.
+// Estas variables las uso para re utilizar la información
 let objDataConsumibles = {};
 let objDataDevolutivos = {};
 let objDataUsers = {};
 let button;
 const valuePage = document.querySelector("#valuePage");
-btnAddElements.innerText = "Devolutivos";
-btnAddElements.setAttribute('class','btnClick');
-btnAddConsumibles.innerText = "Consumibles";
-modalTitle.innerText = "Elementos disponibles";
-// btnSubmit.innerText = "Reservar";
+let iAddElement = createI();
 let iClass = createI();
-iClass.setAttribute('class','material-icons');
+iAddElement.innerText = 'Linked_Camera';
+btnAddElements.classList.add('btnClick');
+btnAddElements.append(iAddElement);
+
+let iConsumible = createI();
+iConsumible.innerText = 'Battery_3_Bar';
+btnAddConsumibles.append(iConsumible);
+
+// btnAddConsumibles.innerText = "Consumibles";
+modalTitle.innerText = "Elementos disponibles";
 iClass.innerText = 'send';
 btnSubmit.append(iClass);
 btnSubmit.setAttribute('class', 'btnSubmit');
@@ -103,7 +113,6 @@ let pagesUsers;
 let pagesElements;
 //Este arreglo lo voy a crear con el fin de guardar los ids de los elementos para saber cuales son los elementos seleccionados.
 let ids = [];
-//Aca se van a guardar los input de tipo Checkbox.
 let addElements;
 
 /**
@@ -143,7 +152,7 @@ function fetchData(action = "", page = 1) {
 }
 
 //Función para reestablecer los elementos a la página 1.
-  //TODO: Documentar la función usando JSDOC
+//TODO: Documentar la función usando JSDOC
 function resetTableUsers(action = "", resetToFirstPage = false) {
   if (resetToFirstPage) {
     pgUsers = 1;
@@ -183,7 +192,7 @@ function resetTableUsers(action = "", resetToFirstPage = false) {
       data.forEach((us) => {
         let btnAdd = document.createElement("button");
         let iCreate = createI();
-        iCreate.setAttribute('class','material-icons');
+        // iCreate.setAttribute('class','material-icons');
         iCreate.innerText = 'add';
         button = btnAdd;
         btnAdd.setAttribute("type", "button");
@@ -347,7 +356,7 @@ btnAddElements.addEventListener("click", (btnTarget) => {
   });
 
   //visualizar modal.
-  modalAddDevolutivos.style.display = "flex";
+  modalAddDevolutivos.open();
   //Uso esta función para renderizar por defecto los elementos de tipo devolutivo, en la página 1.
 });
 
@@ -392,7 +401,7 @@ btnAddConsumibles.addEventListener("click", (event)=>{
     });
   });
 
-  modalAddConsumibles.style.display = 'flex';
+  modalAddConsumibles.open();
 
 });
 
@@ -404,7 +413,7 @@ btnSearchUser.addEventListener("click", (event) => {
   //Vuelvo a reiniciar la tabla para que inicie en la Página #1.
   resetTableUsers("users", true);
 
-  modalUsers.style.display = "flex";
+  modalUsers.open();
 });
 
 //Delegar evento sobre la tabla usuarios
@@ -415,7 +424,6 @@ tableUsers.addEventListener("click", (e) => {
   //Capturo el tipo de boton y le doy utilidad a ella solamente cuando presiono el evento es de tipo BUTTON.
   let button = e.target.closest("button");
   if (button) {
-    console.log(e.target);
     //Me devuelve la fila en base al botón que se ha presionado.
     let elements = e.target.closest("tr");
     let nroDocumento = elements.children[0].textContent;
@@ -431,7 +439,7 @@ tableUsers.addEventListener("click", (e) => {
     inputEmail.textContent = email;
 
     //Cerrar el modal justo que el administrador elija al usuario.
-    modalUsers.style.display = "none";
+    closeModal(modalUsers);
   }
 });
 
@@ -765,7 +773,7 @@ resetTableElements("consumibles",1,true);
 
 
 //Preview de los elementos en forma de tabla.
-previewElements.addEventListener('click',(e)=>{
+previewElements2.addEventListener('click',(e)=>{
   e.stopPropagation();
   e.preventDefault();
   instanPreview.open();

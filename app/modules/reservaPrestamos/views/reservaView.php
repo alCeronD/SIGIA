@@ -1,5 +1,3 @@
-<!-- la función getUrl se puede acceder porque la tenemos incluida directamente en el dashboard. -->
-
 <div class="content">
     <div class="menuTitle">
         <span id="textTitle">Reserva</span>
@@ -61,12 +59,12 @@
                 <label for="observaciones" class="labelForm">Observaciones:</label>
             </div>
 
-            <div class=" inputAddElements">
+            <div class="inputAddElements">
                 <Span>Seleccione los elementos:</Span>
                 <div class="btnItems">
-                    <button type="button" id="btnAddElements"></button>
-                    <button type="button" id="previewElements"></button>
-                    <button type="button" id="btnAddConsumibles"></button>
+                    <button type="button" class="btn waves-effect waves-light" id="btnAddElements"></button>
+                    <button type="button" class="btn waves-effect waves-light" id="previewElements2"></button>
+                    <button type="button" class="btn waves-effect waves-light" id="btnAddConsumibles"></button>
                 </div>
             </div>
 

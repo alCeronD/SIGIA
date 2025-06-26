@@ -1,30 +1,31 @@
 /**
- * Archivo donde podemos importar y re utilizar cosas. como crear elementos html o re utilizar cosas como peticiones futuras.
+ * Archivo donde podemos importar y re utilizar cosas. como crear elementos html o re utilizar cosas como peticiones futuras
  */
 export const closeModal = (modal,btn) => {
 
-  //Valido primero que lo que llegue exista.
-  if (!modal || !btn) {
+  //Valido que el modal si haya sido enviado
+  if (!modal) {
     return;
   }
 
   if (!btn) {
     modal.close();
+    return;
   }
-  
-  btn.addEventListener('click', (e)=>{
-    e.preventDefault();
-    e.stopPropagation();
-    // modal.close();
 
-    //Valido si el tipo de lo que voy a ejecutar es una función.
-    if (typeof modal.close === 'function') {
-      modal.close();
-      
-    }else{
-      //En caso de que no sea una función, esta debe de ejecutar si o si cambiar el style del modal de flex a none, para que no sea visible.
-      modal.style.display = 'none';
-    }
+  btn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      // modal.close();
+
+      //Valido si el tipo de lo que voy a ejecutar es una función.
+      if (typeof modal.close === 'function') {
+        modal.close();
+        
+      }else{
+        //En caso de que no sea una función, esta debe de ejecutar si o si cambiar el style del modal de flex a none, para que no sea visible.
+        modal.style.display = 'none';
+      }
 
   });
 };
@@ -33,11 +34,16 @@ export const openModal = (modal) => {
   modal.style.display = "flex";
 };
 
+// export const createI = () => {
+//   const i = document.createElement("i");
+//   i.setAttribute("class", "material-icons");
+//   return i;
+// };
+
 export const createI = () => {
-  const i = document.createElement("i");
-  //Iconos para materialize, cambiar la clase si es para otro.
-  i.setAttribute("class", "material-icons");
-  return i;
+  const span = document.createElement("span");
+  span.setAttribute("class", "material-symbols-outlined");
+  return span;
 };
 
 export const createBtn = ()=>{

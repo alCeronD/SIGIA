@@ -142,6 +142,7 @@
 
 .inputAddElements span{
   text-align: center;
+  display: flex;
 }
 
 .btnItems{
