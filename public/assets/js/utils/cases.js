@@ -77,7 +77,6 @@ export const instanceDate = (selector = '.datepicker', options ={})=>{
   return M.Datepicker.init(datePicker,options);
 };
 
-
 //Configuración de las opciones del modal
 export const options = {
   opacity: 0.7,
@@ -86,10 +85,9 @@ export const options = {
   dismissible: true,
   startingTop: "4%",
   endingTop: "10%",
-  onOpenStart: () => console.log("Modal se está abriendo"),
-  onCloseEnd: () => console.log("Modal se cerró completamente"),
+  onOpenStart: () =>{} ,
+  onCloseEnd: () => {},
 };
-
 
 const today = new Date();
 //Valido que la fecha sea inicial como 00:00:00
@@ -116,7 +114,7 @@ export const opcionesDatepicker = {
   firstDay: 0,
 
   // Formato de la fecha para mostrar (ver más abajo)
-  format: 'mmm dd, yyyy', // Ej: Jan 01, 2025
+  format: 'yyyy dd mmm',
 
   // Habilitar/Deshabilitar selección de fechas
   disableWeekends: false,
@@ -145,7 +143,6 @@ export const opcionesDatepicker = {
 
   // Si el input debe tener selección de fechas (sin abrir modal)
   defaultDate: null, // new Date()
-  setDefaultDate: false,
 
   // Si se abre el calendario al hacer focus
   showClearBtn: false,
@@ -171,6 +168,26 @@ export const timePickerOptions = {
     done: 'Aceptar'
   }
 };
+
+export const dateISOFormat = (fecha)=>{
+  if (!fecha) {
+    return null;
+  }
+
+  const [year,day,month ] = fecha.split(" ");
+
+  const months = {
+    Jan: "01", Feb: "02", Mar: "03", Apr: "04",
+    May: "05", Jun: "06", Jul: "07", Aug: "08",
+    Sep: "09", Oct: "10", Nov: "11", Dec: "12"
+  };
+
+  const monthFormate = months[month];
+
+  //Con padStart se rellena el valor en caso de que no hayan dos digitos, si hay 1 solo el le coloca un 0, si hay un valor de 10 en adelante, no hace nada y devuelve el nro 10.
+  return `${year}-${monthFormate}-${day.padStart(2, '0')}`;
+
+}
 
 export default {
   closeModal,

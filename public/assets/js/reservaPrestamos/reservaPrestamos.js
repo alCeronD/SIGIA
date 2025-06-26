@@ -1,5 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import { closeModal, createSpan, createI,instanceDate, instanceModal, options, opcionesDatepicker, instanceDateTime, timePickerOptions } from "../utils/cases.js";
+import { closeModal, createSpan, createI,instanceDate, instanceModal, options, opcionesDatepicker, instanceDateTime, timePickerOptions, dateISOFormat } from "../utils/cases.js";
 
 const objAjax = new Ajax();
 const btnSubmit = document.querySelector("#btnSubmit");
@@ -848,15 +848,18 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
   let data = Object.fromEntries(info);
-  console.log(data);
+
+  //Transformo la fecha en formato iso 8601
+  let fechaReservaFormat = dateISOFormat(data.fechaReserva);
+  let fechaDevolucionFormat = dateISOFormat(data.fechaDevolucion);
+  data.fechaReserva = fechaReservaFormat;
+  data.fechaDevolucion = fechaDevolucionFormat;
 
   //Agrego la cedula al objeto data.
   data.cedula = document.getElementById("cedula").textContent.trim();
 
   //Data de elementos.
-  let filas = document.querySelectorAll(
-    ".tableElements .previewElements #tableBodyPreviewElements tr"
-  );
+  let filas = document.querySelectorAll(".tableElements .previewElements #tableBodyPreviewElements tr");
   //Capturo el codigo del elemento y lo guardo.
   //TODO: Validar que cuando el usuario presione el botón de enviar aplique un return cuando no se ha diligenciado ningún campo.
   filas.forEach((fl) => {
