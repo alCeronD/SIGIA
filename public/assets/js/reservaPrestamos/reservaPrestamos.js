@@ -1,10 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import { closeModal, createI, instanceModal, options } from "../utils/cases.js";
-
-let alto = window.screen.width;
-let ancho = window.screen.height;
-
-console.log({"alto":alto,"ancho":ancho});
+import { closeModal, createI, instanceDate, instanceModal, options, opcionesDatepicker } from "../utils/cases.js";
 
 const objAjax = new Ajax();
 const btnSubmit = document.getElementById("btnSubmit");
@@ -13,7 +8,6 @@ const tableUsers = document.querySelector("#tableBodyUsers");
 const tablePreviewElements = document.querySelector(
   "#tableBodyPreviewElements"
 );
-
 
 const modalAddDevolutivos = document.querySelector("#modalAddDevolutivos");
 const modalAddConsumibles = document.querySelector('#modalAddConsumible');
@@ -55,10 +49,12 @@ const btnPreview = document.querySelector("#preview");
 const btnNext = document.querySelector("#next");
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  
   const selects = document.querySelectorAll('select');
   M.FormSelect.init(selects);
 
+  //Hago la instancia de los input tipo date, los ejecuto.
+  instanceDate('#fechaReserva',opcionesDatepicker);
+  instanceDate('#fechaDevolucion',opcionesDatepicker);
 });
 
 areaDestino.addEventListener("change", () => {
@@ -775,7 +771,6 @@ previewElements.addEventListener('click',(e)=>{
   instanPreview.open();
 });
 
-
 /**
  * Submit al formulario.
  */
@@ -790,12 +785,12 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     },
   };
 
-  let tdCodigoElemento = [];
   let tdArea = [];
 
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
   let data = Object.fromEntries(info);
+  console.log(data);
 
   //Agrego la cedula al objeto data.
   data.cedula = document.getElementById("cedula").textContent.trim();
@@ -863,7 +858,7 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     data: data,
     action: 'registrar'
     });
-  
+  console.log(dataJson);
   //TODO: transformar en sweet alert.
   if (confirm("¿Deseas registrar los siguientes elementos?")) {
     objAjax.request.onload = () => {

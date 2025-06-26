@@ -40,9 +40,8 @@
                 </select>
                 <label for="areaDestino">Área de destino: *</label>
             </div>
-            <div class=" inputContent fechaReserva">
-                <input type="date" class="inputForm" name="fechaReserva" id="fechaReserva">
-                <label for="fechaReserva" class="labelForm">Fecha Reserva: *</label>
+            <div class="input-field inputContent fechaReserva">
+                <input type="text" class="datepicker" name="fechaReserva" id="fechaReserva" placeholder="fecha reserva">
             </div>
 
             <div class=" inputContent ">
@@ -53,9 +52,8 @@
                     <input type="time" class="inputForm" id="fin" name="fin">
                 </div>
             </div>
-            <div class=" inputContent fechaDevolucion">
-                <input type="date" class="inputForm" name="fechaDevolucion" id="fechaDevolucion">
-                <label for="fechaDevolucion" class="labelForm">Fecha Devolución: *</label>
+            <div class="input-field inputContent fechaDevolucion">
+                <input type="text" class="datepicker" name="fechaDevolucion" id="fechaDevolucion" placeholder="fecha Devolución">
             </div>
 
             <div class="input-field inputContent inputObservaciones">
@@ -63,11 +61,13 @@
                 <label for="observaciones" class="labelForm">Observaciones:</label>
             </div>
 
-            <div class="inputAddElements">
+            <div class=" inputAddElements">
                 <Span>Seleccione los elementos:</Span>
-                <button type="button" id="btnAddElements"></button>
-                <button type="button" id="btnAddConsumibles"></button>
-                <button type="button" id="previewElements"></button>
+                <div class="btnItems">
+                    <button type="button" id="btnAddElements"></button>
+                    <button type="button" id="previewElements"></button>
+                    <button type="button" id="btnAddConsumibles"></button>
+                </div>
             </div>
 
             <!-- Contenedor que va a tener los elementos que seran prestados -->
