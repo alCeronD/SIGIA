@@ -44,10 +44,10 @@
 
             <div class=" inputContent ">
                 <div class="horaInicioFin horaInicio horaFin">
+                    <input type="text" class="inputForm timepicker" id="inicio" name="inicio">
                     <label for="inicio" class="labelForm">Hora inicio:</label>
-                    <input type="time" class="inputForm" id="inicio" name="inicio">
+                    <input type="text" class="inputForm timepicker" id="fin" name="fin">
                     <label for="fin" class="labelForm">Hora fin:</label>
-                    <input type="time" class="inputForm" id="fin" name="fin">
                 </div>
             </div>
             <div class="input-field inputContent fechaDevolucion">
@@ -74,7 +74,7 @@
             </div>
 
             <div class="inputBtn">
-                <button type="submit" id="btnSubmit" ></button>
+                <button type="submit" id="btnSubmit" class="btn waves-effect waves-light"></button>
             </div>
         </form>
     </div>

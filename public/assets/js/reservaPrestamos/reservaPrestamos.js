@@ -1,5 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import { closeModal, createI, instanceDate, instanceModal, options, opcionesDatepicker } from "../utils/cases.js";
+import { closeModal, createSpan, createI,instanceDate, instanceModal, options, opcionesDatepicker, instanceDateTime, timePickerOptions } from "../utils/cases.js";
 
 const objAjax = new Ajax();
 const btnSubmit = document.querySelector("#btnSubmit");
@@ -13,8 +13,8 @@ const modalAddDevolutivos = instanceModal('#modalAddDevolutivos',{options});
 const modalAddConsumibles = instanceModal('#modalAddConsumible',{options});
 const modalUsers = instanceModal('#modalUsers',{options});
 const btnAddElements = document.querySelector("#btnAddElements");
-const iAddElements = createI();
-iAddElements.innerText = 'add';
+const spanAddElements = createSpan();
+spanAddElements.innerText = 'add';
 
 const btnAddConsumibles = document.querySelector('#btnAddConsumibles');
 const modalTitle = document.querySelector("#modalTitle");
@@ -31,7 +31,7 @@ const btnCloseConsumible = document.querySelector('#modalAddConsumible .close-mo
 const btnCloseUsers = document.querySelector("#modalUsers .close-modal");
 const btnSearchUser = document.querySelector("#searchBtn");
 const previewElements2 = document.querySelector('#previewElements2');
-const iCreatePreview = createI();
+const iCreatePreview = createSpan();
 iCreatePreview.innerText = 'Table_eye';
 previewElements2.append(iCreatePreview);
 //Creo una instancia del modal
@@ -54,13 +54,20 @@ const btnPreview = document.querySelector("#preview");
 const btnNext = document.querySelector("#next");
 
 document.addEventListener('DOMContentLoaded', ()=>{
+  fetchData("elements", 1);
+
   const selects = document.querySelectorAll('select');
   M.FormSelect.init(selects);
 
-  //Hago la instancia de los input tipo date, los ejecuto.
+  //Hago la instancia de los input tipo date
   instanceDate('#fechaReserva',opcionesDatepicker);
   instanceDate('#fechaDevolucion',opcionesDatepicker);
+
+  //Instancia de los input de tipo datetime.
+  instanceDateTime('#fin',timePickerOptions);
+  instanceDateTime('#inicio',timePickerOptions);
 });
+
 
 areaDestino.addEventListener("change", () => {
   let value = areaDestino.options[areaDestino.selectedIndex];
@@ -92,20 +99,19 @@ let objDataDevolutivos = {};
 let objDataUsers = {};
 let button;
 const valuePage = document.querySelector("#valuePage");
-let iAddElement = createI();
+let iAddElement = createSpan();
 iAddElement.innerText = 'Linked_Camera';
 btnAddElements.classList.add('btnClick');
 btnAddElements.append(iAddElement);
 
-let iConsumible = createI();
+let iConsumible = createSpan();
 iConsumible.innerText = 'Battery_3_Bar';
 btnAddConsumibles.append(iConsumible);
 
-let iClass = createI();
+let iClass = createSpan();
 modalTitle.innerText = "Elementos disponibles";
 iClass.innerText = 'send';
 btnSubmit.append(iClass);
-btnSubmit.setAttribute('class','btn waves-effect waves-light');
 
 // variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
 let pagesUsers;
@@ -190,7 +196,7 @@ function resetTableUsers(action = "", resetToFirstPage = false) {
       tableUsers.innerHTML = "";
       data.forEach((us) => {
         let btnAdd = document.createElement("button");
-        let iCreate = createI();
+        let iCreate = createSpan();
         // iCreate.setAttribute('class','material-icons');
         iCreate.innerText = 'add';
         button = btnAdd;
@@ -300,9 +306,7 @@ function definirCantidad(cantidadInput, cantidad) {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  fetchData("elements", 1);
-});
+
 // Abrir modal de elementos disponibles devolutivos
 btnAddElements.addEventListener("click", (btnTarget) => {
   btnTarget.preventDefault();

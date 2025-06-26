@@ -34,13 +34,13 @@ export const openModal = (modal) => {
   modal.style.display = "flex";
 };
 
-// export const createI = () => {
-//   const i = document.createElement("i");
-//   i.setAttribute("class", "material-icons");
-//   return i;
-// };
-
 export const createI = () => {
+  const i = document.createElement("i");
+  i.setAttribute("class", "material-icons");
+  return i;
+};
+
+export const createSpan = () => {
   const span = document.createElement("span");
   span.setAttribute("class", "material-symbols-outlined");
   return span;
@@ -50,6 +50,32 @@ export const createBtn = ()=>{
   const button = document.createElement('button');
   return button;
 }
+
+//Crear el horario de la reserva.
+export const instanceDateTime = (selector = '.timepicker', timePickerOptions = {})=>{
+  if (!selector) return null;
+  
+  let elems = document.querySelector(selector);
+  return M.Timepicker.init(elems,options);
+}
+
+//Iniciar modales
+export const instanceModal = (selector,options = {}) => {
+  let elements = document.querySelector(selector);
+  //Si el selector no existe, devolver un null.
+  if (!elements) {
+    return null;
+  }
+  //Devuelve un nodo de todos los modales que contenga la clase .modal
+  return M.Modal.init(elements, options);
+};
+
+//Crear una fecha.
+export const instanceDate = (selector = '.datepicker', options ={})=>{
+  let datePicker = document.querySelector(selector);
+  //TODO: crear un objeto con las opciones personalizadas, usar object.assing para este proceso.
+  return M.Datepicker.init(datePicker,options);
+};
 
 
 //Configuración de las opciones del modal
@@ -68,14 +94,13 @@ export const options = {
 const today = new Date();
 //Valido que la fecha sea inicial como 00:00:00
 today.setHours(0,0,0,0);
-//Configuración de las opciones de los inputTipoDate.
 export const opcionesDatepicker = {
   // Fecha mínima que se puede seleccionar
   minDate: today, // 
   //Hago que la fecha del día de hoy se seleccione por defecto.
   setDefaultDate: true,
   // Fecha máxima que se puede seleccionar
-  maxDate: null, // new Date(2030, 11, 31)
+  maxDate: null,
 
   // Si permite cambiar el mes desde un selector desplegable
   showMonthAfterYear: false,
@@ -133,26 +158,21 @@ export const opcionesDatepicker = {
   onDraw: function() {}
 };
 
-//Iniciar modales
-export const instanceModal = (selector,options = {}) => {
-  let elements = document.querySelector(selector);
-  //Si el selector no existe, devolver un null.
-  if (!elements) {
-    return null;
+export const timePickerOptions = {
+  //False para formato de 24 horas, true para formato de 12 horas.
+  twelveHour: false,  
+  // Cerrar automáticamente cuando selecciono la hora.      
+  autoClose: true,
+  // Hora por defecto al abrir el input         
+  defaultTime: 'now',              
+  i18n: {
+    cancel: 'Cancelar',
+    clear: 'Limpiar',
+    done: 'Aceptar'
   }
-  //Devuelve un nodo de todos los modales que contenga la clase .modal
-  return M.Modal.init(elements, options);
-};
-
-export const instanceDate = (selector = '.datepicker', options ={})=>{
-  let datePicker = document.querySelector(selector);
-  //TODO: crear un objeto con las opciones personalizadas, usar object.assing para este proceso.
-  return M.Datepicker.init(datePicker,options);
 };
 
 export default {
   closeModal,
   openModal,
-  createI,
-  options,
 };
