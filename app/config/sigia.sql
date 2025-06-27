@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-06-2025 a las 23:07:43
+-- Tiempo de generación: 27-06-2025 a las 05:47:35
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -39,11 +39,13 @@ CREATE TABLE `areas` (
 --
 
 INSERT INTO `areas` (`ar_cod`, `ar_nombre`, `ar_descripcion`, `ar_status`) VALUES
-(1, 'Multimedia', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrup', 1),
-(2, 'Fotografía', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrupti voluptates iste eum illo dignissimos, quia essorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrupti voluptates iste eum illo dignissimos, quia esse quasi quo', 1),
-(3, 'General', 'orem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrupti voluptates iste eum illo dignissimos, quia esse quasi quo ipsa officiis quod provident quis sint vitae in dicta! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Atque velit, cum, sed doloremor', 1),
-(4, 'Aulas De Computo', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrup', 1),
-(5, 'Area de diseño', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrup', 1);
+(1, 'Multimedia', 'Elementos del area de multimedia', 1),
+(2, 'Fotografía', '', 1),
+(3, 'General', 'Area en donde se clasifican aquellos elementos que su consumo es', 1),
+(4, 'Aulas De Computo', '', 1),
+(5, 'Area de diseño', 'Elementos en donde tenemos elementos de diseño.', 1),
+(72, 'Area de pruebas', 'Prueba nueva de areas', 1),
+(73, '', '', 1);
 
 -- --------------------------------------------------------
 
@@ -73,9 +75,12 @@ CREATE TABLE `categoria` (
 --
 
 INSERT INTO `categoria` (`ca_id`, `ca_nombre`, `ca_descripcion`, `ca_status`) VALUES
-(3, 'elemento utilidad', 'asd', 1),
-(4, 'sony', 'asd', 1),
-(6, 'prueba informacionss', 'asdss', 0);
+(3, 'Camaras', ' ', 0),
+(4, 'Computadoras', ' prueba', 0),
+(6, 'Computadoras AIO', ' ', 1),
+(7, 'Camaraas', 'informacion', 1),
+(8, 'Camaraas', 'prueba de camaras', 1),
+(9, 'Camaamaras', 'prueba de camaras', 1);
 
 -- --------------------------------------------------------
 
@@ -101,42 +106,42 @@ CREATE TABLE `elementos` (
 INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_nombre`, `elm_existencia`, `elm_uni_medida`, `elm_cod_tp_elemento`, `elm_cod_estado`, `elm_area_cod`) VALUES
 (125, 1001, 'Computadora portátil HP', 1, 1, 1, 1, 1),
 (126, 1002, 'Proyector Epson', 1, 1, 1, 1, 2),
-(127, 1003, 'Monitor Samsung 24\"', 1, 1, 1, 1, 4),
-(128, 1004, 'Teclado mecánico Logitech', 1, 1, 1, 1, 5),
+(127, 1003, 'Monitor Samsung 24\"', 1, 1, 1, 3, 4),
+(128, 1004, 'Teclado mecánico Logitech', 1, 1, 1, 3, 5),
 (129, 1005, 'Ratón inalámbrico', 1, 1, 1, 3, 1),
 (130, 1006, 'Impresora laser Brother', 1, 1, 1, 3, 2),
 (131, 1007, 'Tablet Samsung Galaxy', 1, 1, 1, 3, 4),
-(132, 1008, 'Cámara web Logitech', 1, 1, 1, 1, 5),
+(132, 1008, 'Cámara web Logitech', 1, 1, 1, 3, 5),
 (133, 1009, 'Parlantes Bose', 1, 1, 1, 1, 1),
-(134, 1010, 'Auriculares Sony', 1, 1, 1, 1, 2),
-(135, 1011, 'Switch Cisco 24 puertos', 1, 1, 1, 3, 4),
-(136, 1012, 'Cable HDMI 2 metros', 1, 1, 1, 1, 5),
-(137, 1013, 'Estabilizador APC 1000VA', 1, 1, 1, 1, 1),
+(134, 1010, 'Auriculares Sony', 1, 1, 1, 3, 2),
+(135, 1011, 'Switch Cisco 24 puertos', 1, 1, 1, 1, 4),
+(136, 1012, 'Cable HDMI 2 metros', 1, 1, 1, 3, 5),
+(137, 1013, 'Estabilizador APC 1000VA', 1, 1, 1, 3, 1),
 (138, 1014, 'Unidad USB 64GB', 1, 1, 1, 3, 2),
 (139, 1015, 'Router TP-Link', 1, 1, 1, 1, 4),
-(140, 1016, 'Base para laptop', 1, 1, 1, 1, 5),
+(140, 1016, 'Base para laptop', 1, 1, 1, 3, 5),
 (141, 1017, 'Disco duro externo 1TB', 1, 1, 1, 3, 1),
-(142, 1018, 'Proyector portátil LG', 1, 1, 1, 1, 2),
-(143, 1019, 'Cable VGA 3 metros', 1, 1, 1, 1, 4),
-(144, 1020, 'Micrófono condensador', 1, 1, 1, 1, 5),
+(142, 1018, 'Proyector portátil LG', 1, 1, 1, 3, 2),
+(143, 1019, 'Cable VGA 3 metros', 1, 1, 1, 3, 4),
+(144, 1020, 'Micrófono condensador', 1, 1, 1, 3, 5),
 (145, 1021, 'Soporte para monitor', 1, 1, 1, 3, 1),
 (146, 1022, 'Teclado inalámbrico Microsoft', 1, 1, 1, 1, 2),
 (147, 1023, 'Ratón óptico HP', 1, 1, 1, 1, 4),
-(148, 1024, 'Hub USB 4 puertos', 1, 1, 1, 1, 5),
-(149, 1025, 'Pantalla táctil Dell', 1, 1, 1, 1, 1),
+(148, 1024, 'Hub USB 4 puertos', 1, 1, 1, 3, 5),
+(149, 1025, 'Pantalla táctil Dell', 1, 1, 1, 3, 1),
 (150, 1026, 'Cámara de seguridad IP', 1, 1, 1, 1, 2),
-(151, 1027, 'Laptop Lenovo ThinkPad', 1, 1, 1, 1, 4),
-(152, 1028, 'Proyector 4K', 1, 1, 1, 1, 5),
+(151, 1027, 'Laptop Lenovo ThinkPad', 1, 1, 1, 3, 4),
+(152, 1028, 'Proyector 4K', 1, 1, 1, 3, 5),
 (153, 1029, 'Router inalámbrico Netgear', 1, 1, 1, 3, 1),
-(154, 1030, 'Micrófono inalámbrico Shure', 1, 1, 1, 1, 2),
-(155, 3001, 'Papel A4 paquete', 48, 2, 2, 1, 3),
+(154, 1030, 'Micrófono inalámbrico Shure', 1, 1, 1, 3, 2),
+(155, 3001, 'Papel A4 paquete', 45, 2, 2, 1, 3),
 (156, 3002, 'Tinta para impresora negra', 30, 2, 2, 1, 3),
 (157, 3003, 'Tinta para impresora color', 25, 2, 2, 1, 3),
 (158, 3004, 'Marcadores permanentes', 28, 1, 2, 1, 3),
-(159, 3005, 'Bolígrafos azules', 18, 1, 2, 1, 3),
+(159, 3005, 'Bolígrafos azules', 12, 1, 2, 3, 3),
 (160, 3006, 'Resaltadores fluorescentes', 60, 1, 2, 1, 3),
 (161, 3007, 'Cinta adhesiva', 2, 2, 2, 1, 3),
-(162, 3008, 'Grapas para engrampadora', 87, 2, 2, 1, 3),
+(162, 3008, 'Grapas para engrampadora', 84, 2, 2, 1, 3),
 (163, 3009, 'Hojas para notas adhesivas', 80, 2, 2, 1, 3),
 (164, 3010, 'Cartuchos de tinta HP', 0, 1, 2, 1, 3),
 (165, 3011, 'Papel bond blanco', 40, 2, 2, 1, 3),
@@ -145,24 +150,24 @@ INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_nombre`, `elm_existencia`,
 (168, 3014, 'Papel carbón', 27, 2, 2, 1, 3),
 (169, 3015, 'Papel fotográfico', 25, 2, 2, 1, 3),
 (170, 3016, 'Borradores para pizarras', 3, 1, 2, 1, 3),
-(171, 3017, 'Cintas correctoras', 2, 2, 2, 1, 3),
+(171, 3017, 'Cintas correctoras', 2, 2, 2, 3, 3),
 (172, 3018, 'Clips metálicos', 21, 1, 2, 1, 3),
 (173, 3019, 'Cintas para embalaje', 0, 2, 2, 1, 3),
 (174, 3020, 'Tijeras', 19, 1, 2, 1, 3),
-(175, 3021, 'Gomas de borrar', 37, 1, 2, 1, 3),
+(175, 3021, 'Gomas de borrar', 37, 1, 2, 3, 3),
 (176, 3022, 'Perforadoras de papel', 10, 1, 2, 1, 3),
 (177, 3023, 'Agendas para anotaciones', 6, 1, 2, 3, 3),
-(178, 3024, 'Sobres tamaño carta', 88, 2, 2, 1, 3),
+(178, 3024, 'Sobres tamaño carta', 85, 2, 2, 3, 3),
 (179, 3025, 'Carpetas plásticas', 1, 2, 2, 1, 3),
 (180, 3026, 'Papel reciclado', 67, 2, 2, 1, 3),
-(181, 3027, 'Marcadores de pizarra blanca', 45, 1, 2, 1, 3),
-(182, 3028, 'Clips plásticos', 64, 1, 2, 1, 3),
+(181, 3027, 'Marcadores de pizarra blanca', 43, 1, 2, 1, 3),
+(182, 3028, 'Clips plásticos', 60, 1, 2, 1, 3),
 (183, 3029, 'Cinta doble faz', 1, 2, 2, 1, 3),
 (184, 3030, 'Sellos de goma', 25, 1, 2, 1, 3),
-(187, 46575467, 'Cargador hp 107', 1, 1, 1, 1, 2),
+(187, 46575467, 'Cargador hp 107', 1, 1, 1, 3, 2),
 (188, 1, 'camara informacion', 1, 2, 1, 1, 1),
-(189, 333, 'cinca adeciva', 32, 1, 2, 1, 3),
-(190, 3534543, 'Información de elementos', 1, 1, 1, 1, 2);
+(189, 333, 'cinca adeciva', 9, 1, 2, 1, 3),
+(190, 3534543, 'Información de elementos', 1, 1, 1, 3, 2);
 
 -- --------------------------------------------------------
 
@@ -212,8 +217,8 @@ INSERT INTO `entradas_salidas` (`ent_sal_cod`, `ent_sal_cantidad`, `ent_fech_reg
 (76, 1, '2025-06-19 21:53:41', 2, 117, 174),
 (77, 3, '2025-06-19 23:13:47', 2, 108, 171),
 (78, 12, '2025-06-19 23:13:47', 2, 108, 182),
-(79, 3, '2025-06-19 23:15:10', 2, 145, 172),
-(80, 2, '2025-06-19 23:15:10', 2, 145, 175),
+(79, 3, '2025-06-19 23:15:10', 2, NULL, 172),
+(80, 2, '2025-06-19 23:15:10', 2, NULL, 175),
 (81, 22, '2025-06-19 23:18:20', 2, 108, 172),
 (82, 2, '2025-06-19 23:20:21', 2, 108, 172),
 (83, 3, '2025-06-19 23:20:21', 2, 108, 175),
@@ -225,11 +230,24 @@ INSERT INTO `entradas_salidas` (`ent_sal_cod`, `ent_sal_cantidad`, `ent_fech_reg
 (89, 2, '2025-06-19 23:46:13', 2, 108, 175),
 (90, 12, '2025-06-20 02:42:24', 2, 115, 168),
 (91, 3, '2025-06-20 02:42:24', 2, 115, 180),
-(92, 2, '2025-06-20 03:23:28', 2, 145, 175),
-(93, 3, '2025-06-20 03:23:28', 2, 145, 182),
+(92, 2, '2025-06-20 03:23:28', 2, NULL, 175),
+(93, 3, '2025-06-20 03:23:28', 2, NULL, 182),
 (94, 2, '2025-06-20 21:05:08', 2, 108, 155),
 (95, 3, '2025-06-20 21:05:08', 2, 108, 162),
-(96, 12, '2025-06-20 21:05:08', 2, 108, 182);
+(96, 12, '2025-06-20 21:05:08', 2, 108, 182),
+(97, 2, '2025-06-21 00:09:33', 2, 114, 182),
+(98, 2, '2025-06-21 00:09:33', 2, 114, 189),
+(99, 3, '2025-06-26 21:13:00', 2, 119, 155),
+(100, 3, '2025-06-26 21:13:00', 2, 119, 159),
+(101, 3, '2025-06-26 21:13:00', 2, 119, 178),
+(102, 2, '2025-06-26 21:13:00', 2, 119, 181),
+(103, 12, '2025-06-26 22:26:24', 2, 114, 189),
+(104, 3, '2025-06-26 23:25:27', 2, 108, 159),
+(105, 2, '2025-06-26 23:25:27', 2, 108, 182),
+(106, 3, '2025-06-27 00:16:42', 2, 118, 189),
+(107, 3, '2025-06-27 01:59:31', 2, 117, 189),
+(108, 3, '2025-06-27 02:52:34', 2, 108, 189),
+(109, 3, '2025-06-27 03:13:22', 2, 109, 162);
 
 -- --------------------------------------------------------
 
@@ -252,7 +270,7 @@ INSERT INTO `estados_elementos` (`est_el_cod`, `est_nombre`, `est_descripcion`) 
 (2, 'Mantenimiento', NULL),
 (3, 'Prestado', NULL),
 (4, 'Inhabilitado', NULL),
-(5, 'Solicitado', NULL);
+(5, 'Reservado', NULL);
 
 -- --------------------------------------------------------
 
@@ -274,7 +292,8 @@ INSERT INTO `estados_prestamos` (`es_pr_cod`, `es_pr_nombre`, `es_pr_descripcion
 (1, 'Validado', NULL),
 (2, 'Rechazado', NULL),
 (3, 'Por validar', NULL),
-(4, 'Finalizado', NULL);
+(4, 'Finalizado', NULL),
+(5, 'Cancelado', NULL);
 
 -- --------------------------------------------------------
 
@@ -313,8 +332,9 @@ CREATE TABLE `marcas` (
 --
 
 INSERT INTO `marcas` (`ma_id`, `ma_nombre`, `ma_descripcion`, `ma_status`) VALUES
-(13, 'canon', 'orem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium doloremque molestiae corrupti voluptates iste eum illo dignissimos, quia esse quasi quo ipsa officiis quod provident quis sint vitae', 1),
-(15, 'Sony', 'o ipsa officiis quod provident quis sint vitae', 1);
+(13, 'Canon', 'prueba de integridad\n', 1),
+(15, 'Sony', '', 1),
+(16, 'hp', 'hola\n', 1);
 
 -- --------------------------------------------------------
 
@@ -364,17 +384,12 @@ CREATE TABLE `prestamos` (
 --
 
 INSERT INTO `prestamos` (`pres_cod`, `pres_fch_slcitud`, `pres_fch_reserva`, `pres_hor_inicio`, `pres_hor_fin`, `pres_fch_entrega`, `pres_observacion`, `pres_destino`, `pres_estado`, `tp_pres`, `pres_rol`) VALUES
-(210, '2025-06-19 18:39:43', '2025-06-19', NULL, NULL, '2025-06-20', '', 'externo', 4, 2, 2),
-(211, '2025-06-19 18:40:02', '2025-06-19', NULL, NULL, '2025-06-20', '', 'externo', 4, 2, 2),
-(212, '2025-06-19 18:46:13', '2025-06-19', NULL, NULL, '0000-00-00', 'pruebas de informacion', 'externo', 4, 2, 2),
-(213, '2025-06-19 21:42:24', '2025-06-19', NULL, NULL, '2025-06-20', 'Solicitud de elementos para el señor en el area de fotografía.', 'externo', 4, 2, 2),
-(214, '2025-06-19 22:23:28', '2025-06-12', NULL, NULL, '2025-06-21', '', 'externo', 4, 2, 2),
-(215, '2025-06-19 23:12:58', '2025-06-21', NULL, NULL, '2025-06-26', 'pruebas de solicitud, nos e que hacer aca.', 'centro', 4, 2, 4),
-(216, '2025-06-19 23:14:13', '2025-06-21', NULL, NULL, '2025-06-21', 'asdasd', 'centro', 3, 2, 4),
-(217, '2025-06-20 00:05:02', '2025-06-20', NULL, NULL, '2025-06-21', 'pruebas de solicitud, nos e que hacer aca.', 'centro', 3, 2, 4),
-(218, '2025-06-20 15:00:52', '2025-06-21', NULL, NULL, '2025-06-20', 'Informaci[on del destino.', 'centro', 4, 2, 4),
-(219, '2025-06-20 15:18:13', '2025-06-21', NULL, NULL, '2025-06-23', 'prueba de información.', 'centro', 3, 2, 4),
-(220, '2025-06-20 16:05:08', '2025-06-20', NULL, NULL, '2025-06-21', '', 'externo', 1, 2, 2);
+(232, '2025-06-26 21:52:34', '2025-06-28', '09:52:00', '06:52:00', '2025-06-30', 'prueba de maria lopez', 'centro', 4, 2, 2),
+(233, '2025-06-26 22:06:33', '2025-06-26', NULL, NULL, '2025-06-27', 'prueba de información', 'centro', 3, 2, 4),
+(234, '2025-06-26 22:07:00', '2025-06-28', NULL, NULL, '2025-06-27', 'prueba', 'centro', 3, 2, 4),
+(235, '2025-06-26 22:13:22', '2025-06-28', '08:12:00', '09:24:00', '2025-06-29', 'PRUUEBA NUEVA', 'centro', 1, 2, 2),
+(236, '2025-06-26 22:30:58', '2025-06-27', NULL, NULL, '2025-06-28', 'prueba de observación. nueva porque es después del merge.', 'centro', 3, 2, 4),
+(237, '2025-06-26 22:35:03', '2025-06-26', NULL, NULL, '2025-06-27', 'prueba de entrega después del cambio de estado.', 'centro', 3, 1, 4);
 
 -- --------------------------------------------------------
 
@@ -394,113 +409,24 @@ CREATE TABLE `prestamos_elementos` (
 --
 
 INSERT INTO `prestamos_elementos` (`pres_el_cod`, `pres_cod`, `pres_el_usu_id`, `pres_el_elem_cod`) VALUES
-(422, NULL, 111, 127),
-(423, NULL, 111, 129),
-(424, NULL, 111, 125),
-(425, NULL, 111, 128),
-(426, NULL, 110, 126),
-(427, NULL, 110, 132),
-(428, NULL, 109, 130),
-(429, NULL, 109, 134),
-(430, NULL, 109, 125),
-(431, NULL, 109, 128),
-(432, NULL, 109, 125),
-(433, NULL, 109, 128),
-(434, NULL, 107, 128),
-(435, NULL, 107, 131),
-(436, NULL, 107, 134),
-(437, NULL, 107, 159),
-(438, NULL, 107, 164),
-(439, NULL, 107, 172),
-(440, NULL, 108, 130),
-(441, NULL, 108, 137),
-(442, NULL, 108, 143),
-(443, NULL, 108, 145),
-(444, NULL, 108, 165),
-(445, NULL, 108, 172),
-(446, NULL, 108, 175),
-(447, NULL, 107, 130),
-(448, NULL, 107, 134),
-(449, NULL, 107, 140),
-(450, NULL, 107, 144),
-(451, NULL, 107, 172),
-(452, NULL, 108, 129),
-(453, NULL, 108, 132),
-(454, NULL, 108, 134),
-(455, NULL, 108, 161),
-(456, NULL, 108, 177),
-(457, NULL, 106, 129),
-(458, NULL, 106, 132),
-(459, NULL, 106, 134),
-(460, NULL, 117, 131),
-(461, NULL, 117, 147),
-(462, NULL, 117, 150),
-(463, NULL, 117, 172),
-(464, NULL, 117, 174),
-(465, NULL, 108, 128),
-(466, NULL, 108, 130),
-(467, NULL, 108, 134),
-(468, NULL, 108, 171),
-(469, NULL, 108, 182),
-(470, NULL, 145, 127),
-(471, NULL, 145, 131),
-(472, NULL, 145, 134),
-(473, NULL, 145, 172),
-(474, NULL, 145, 175),
-(475, NULL, 108, 130),
-(476, NULL, 108, 133),
-(477, NULL, 108, 129),
-(478, NULL, 108, 133),
-(479, NULL, 108, 134),
-(480, NULL, 108, 172),
-(481, NULL, 108, 129),
-(482, NULL, 108, 133),
-(483, NULL, 108, 134),
-(484, NULL, 108, 172),
-(485, NULL, 108, 175),
-(486, NULL, 107, 127),
-(487, NULL, 107, 132),
-(488, NULL, 107, 182),
-(489, 210, 107, 128),
-(490, 210, 107, 130),
-(491, 210, 107, 134),
-(492, 210, 107, 159),
-(493, 210, 107, 175),
-(494, 211, 106, 132),
-(495, 211, 106, 133),
-(496, 211, 106, 137),
-(497, 211, 106, 172),
-(498, 212, 108, 141),
-(499, 212, 108, 144),
-(500, 212, 108, 150),
-(501, 212, 108, 153),
-(502, 212, 108, 161),
-(503, 212, 108, 175),
-(504, 213, 115, 125),
-(505, 213, 115, 130),
-(506, 213, 115, 168),
-(507, 213, 115, 180),
-(508, 214, 145, 128),
-(509, 214, 145, 130),
-(510, 214, 145, 134),
-(511, 214, 145, 175),
-(512, 214, 145, 182),
-(513, 215, 145, 133),
-(514, 215, 145, 170),
-(515, 216, 145, 129),
-(516, 216, 145, 141),
-(517, 217, 145, 145),
-(518, 217, 145, 153),
-(519, 217, 145, 177),
-(520, 218, 145, 149),
-(521, 218, 145, 126),
-(522, 219, 145, 130),
-(523, 220, 108, 131),
-(524, 220, 108, 135),
-(525, 220, 108, 138),
-(526, 220, 108, 155),
-(527, 220, 108, 162),
-(528, 220, 108, 182);
+(565, 232, 108, 135),
+(566, 232, 108, 139),
+(567, 232, 108, 189),
+(568, 233, 148, 140),
+(569, 233, 148, 148),
+(570, 234, 148, 132),
+(571, 234, 148, 131),
+(572, 234, 148, 171),
+(573, 234, 148, 175),
+(574, 234, 148, 178),
+(575, 235, 109, 137),
+(576, 235, 109, 138),
+(577, 235, 109, 144),
+(578, 235, 109, 162),
+(579, 236, 148, 143),
+(580, 236, 148, 142),
+(581, 236, 148, 159),
+(582, 237, 148, 152);
 
 -- --------------------------------------------------------
 
@@ -520,10 +446,10 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`rl_id`, `rl_nombre`, `rl_descripcion`, `rl_status`) VALUES
-(1, 'Almacenista', 'romque molestiae corrupti volupcing elit. Atque velit, cum, sed dolorem', 1),
-(2, 'Administrador', '111', 1),
-(3, 'SubDirector', '123123', 1),
-(4, 'Instructor', '1412312', 1);
+(1, 'Almacenista', ' ddd', 1),
+(2, 'Administrador', ' ', 1),
+(3, 'SubDirector', ' ', 1),
+(4, 'Instructor', ' ', 1);
 
 -- --------------------------------------------------------
 
@@ -627,8 +553,8 @@ CREATE TABLE `tipo_prestamo` (
 --
 
 INSERT INTO `tipo_prestamo` (`tp_pre`, `tp_nombre`) VALUES
-(1, 'Solicitud'),
-(2, 'Reserva');
+(1, 'Reserva Inmediata'),
+(2, 'Reserva Previa');
 
 -- --------------------------------------------------------
 
@@ -686,10 +612,12 @@ INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `
 (135, 100029, 'Ignacio', 'Mendoza', 'ignacio', 'ignacio.mendoza@example.com', 'Calle 29', '3000000029', 1, 3),
 (136, 100030, 'Jimena', 'Lopez', 'jimena123', 'jimena.lopez@example.com', 'Calle 30', '3000000030', 1, 1),
 (137, 555, 'alejandro', 'ceron', '$2y$10$zZDMorvOwpCJH5D6VvMb6ORv6IePjNCom6D3Prsq9pF57bR9eqr5i', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3),
-(138, 123, 'alejandro', 'Pérez', '$2y$10$Kbs/gKo1R2DqeI/HL8N5Du8qIrcJYfkTdPiHrJK8iA8ZMsCP0SaoS', 'juan.perez@example.com', 'calle 2 d oeste # 74 e 02', '3000000001', 1, 3),
-(145, 444, 'dato dummy', 'ceron', '$2y$10$.hmra.OAsqGED038f9bsOORL.cNnzCgGr.i/0xVEA.fuWukkUCSU6', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3),
-(146, 0, 'dasdasd', 'ceron', '$2y$10$U5wJ2COSZ3aABWj.rOegwOv3aOf.1u44iQTlelHao123ggZHHAftK', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3),
-(147, 500000, 'dasdasd', 'ceron', '$2y$10$xo.C3p25NfRxVyEf.HUbleet/pF.3R23vX0X9KVLBiiXgaAUUemoK', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3);
+(138, 100000, 'alejandro', 'Pérez', '$2y$10$Kbs/gKo1R2DqeI/HL8N5Du8qIrcJYfkTdPiHrJK8iA8ZMsCP0SaoS', 'juan.perez@example.com', 'calle 2 d oeste # 74 e 02', '3000000001', 1, 3),
+(147, 500000, 'dasdasd', 'ceron', '$2y$10$xo.C3p25NfRxVyEf.HUbleet/pF.3R23vX0X9KVLBiiXgaAUUemoK', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3),
+(148, 29114652, 'alejandro', 'ceron', '$2y$10$GO3TlYxTUJgVnIXNYDqTiu.Homl29S7YcuErpTKlIeU1z53W17RBG', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3),
+(149, 1107528994, 'Paul', 'Carlson', '$2y$10$bIQddMZHOJu4sNQ0RlArg.3KxrLkngGv5G57pg6Q8MdJreCuYsS9S', 'paul32@gmail.com', 'calle 2 d oeste # 74 e 02', '3226859715', 1, 3),
+(150, 1193439741, 'Edward', 'Fernandez', '$2y$10$bEz.KQOG6EW/0TtYrgEIsOmHLjULeaEivyZ8FMf2gkNf6y/Z3C6JO', 'edwardFer@gmail.com', 'Calle 93 B # 13-03', '5536735', 1, 3),
+(151, 55555555, 'Faker', 'Human', '$2y$10$HnjmFwEfXqtQZaC3vzBo3..vTN73qtuvLi.WFvj.DMRV9UKwYAPXS', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '44345345', 1, 3);
 
 -- --------------------------------------------------------
 
@@ -740,8 +668,10 @@ INSERT INTO `usuarios_roles` (`usr_id`, `usr_usu_id`, `usr_rl_id`) VALUES
 (1154, 135, 4),
 (1155, 136, 1),
 (1158, 138, 1),
-(1165, 145, 4),
-(1166, 146, 3);
+(1168, 148, 4),
+(1169, 149, 2),
+(1170, 150, 4),
+(1171, 151, 3);
 
 --
 -- Índices para tablas volcadas
@@ -751,7 +681,8 @@ INSERT INTO `usuarios_roles` (`usr_id`, `usr_usu_id`, `usr_rl_id`) VALUES
 -- Indices de la tabla `areas`
 --
 ALTER TABLE `areas`
-  ADD PRIMARY KEY (`ar_cod`);
+  ADD PRIMARY KEY (`ar_cod`),
+  ADD UNIQUE KEY `ar_nombre` (`ar_nombre`);
 
 --
 -- Indices de la tabla `bitacora`
@@ -894,7 +825,7 @@ ALTER TABLE `usuarios_roles`
 -- AUTO_INCREMENT de la tabla `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT de la tabla `bitacora`
@@ -906,7 +837,7 @@ ALTER TABLE `bitacora`
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `ca_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ca_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `elementos`
@@ -918,7 +849,7 @@ ALTER TABLE `elementos`
 -- AUTO_INCREMENT de la tabla `entradas_salidas`
 --
 ALTER TABLE `entradas_salidas`
-  MODIFY `ent_sal_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+  MODIFY `ent_sal_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
 -- AUTO_INCREMENT de la tabla `estados_elementos`
@@ -930,7 +861,7 @@ ALTER TABLE `estados_elementos`
 -- AUTO_INCREMENT de la tabla `estados_prestamos`
 --
 ALTER TABLE `estados_prestamos`
-  MODIFY `es_pr_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `es_pr_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `estados_usuarios`
@@ -942,7 +873,7 @@ ALTER TABLE `estados_usuarios`
 -- AUTO_INCREMENT de la tabla `marcas`
 --
 ALTER TABLE `marcas`
-  MODIFY `ma_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `ma_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `permisos`
@@ -954,13 +885,13 @@ ALTER TABLE `permisos`
 -- AUTO_INCREMENT de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
-  MODIFY `pres_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=221;
+  MODIFY `pres_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=238;
 
 --
 -- AUTO_INCREMENT de la tabla `prestamos_elementos`
 --
 ALTER TABLE `prestamos_elementos`
-  MODIFY `pres_el_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=529;
+  MODIFY `pres_el_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=583;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -996,13 +927,13 @@ ALTER TABLE `tipo_prestamo`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `usu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
+  MODIFY `usu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=152;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_roles`
 --
 ALTER TABLE `usuarios_roles`
-  MODIFY `usr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1168;
+  MODIFY `usr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1172;
 
 --
 -- Restricciones para tablas volcadas
