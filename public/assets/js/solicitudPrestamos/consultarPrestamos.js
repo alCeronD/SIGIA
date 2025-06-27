@@ -83,6 +83,7 @@ document.addEventListener('click', async (e) => {
       const info = data.data;
       const itemsContent = document.querySelector('.itemsContent');
       itemsContent.innerHTML = '';
+      console.log(data);
 
       Object.entries(info).forEach(([key, value]) => {
         // Omitir campos no deseados
@@ -128,7 +129,6 @@ document.addEventListener('click', async (e) => {
         table.appendChild(thead);
 
         const tbody = document.createElement('tbody');
-
         info.elementos.forEach(el => {
           const tr = document.createElement('tr');
           tr.innerHTML = `

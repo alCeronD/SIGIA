@@ -100,19 +100,21 @@ class solicitudPrestamosController {
     }
 
     public function obtenerElementosPorPrestamo($presCod) {
-        $query = "SELECT 
+
+        $query = " SELECT 
                 e.elm_nombre,
                 e.elm_placa,
-                c.ca_nombre AS categoria
+                tp.tp_el_nombre AS tipoElemento
             FROM 
-                prestamos_elementos pe
-            INNER JOIN 
-                elementos e ON pe.pres_el_elem_cod = e.elm_cod
-            INNER JOIN 
-                categoria c ON e.elm_cod_tp_elemento = c.ca_id
+                elementos e 
+                INNER JOIN prestamos_elementos pe ON pe.pres_el_elem_cod = e.elm_cod
+                INNER JOIN prestamos pr ON pr.pres_cod = pe.pres_cod
+                INNER JOIN tipo_elemento tp ON tp.tp_el_cod = e.elm_cod_tp_elemento
             WHERE 
                 pe.pres_cod = ?
-        ";
+            ORDER BY 
+                e.elm_nombre DESC";
+
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param('i', $presCod);
         $stmt->execute();
