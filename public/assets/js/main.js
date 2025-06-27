@@ -12,4 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
   //Iniciializar los modales
   M.Modal.init(elemsModals); 
   M.FormSelect.init(document.querySelectorAll('select'));
+
+  //Tooltips
+  let tooltip = document.querySelectorAll('.tooltipped');
+  M.Tooltip.init(tooltip, options);
 });

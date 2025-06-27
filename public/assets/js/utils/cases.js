@@ -77,6 +77,39 @@ export const instanceDate = (selector = '.datepicker', options ={})=>{
   return M.Datepicker.init(datePicker,options);
 };
 
+//Crear el tooltip al boton TODO: crear el tooltip
+export const initTooltip = (btn,options ={},message = '',position = 'left')=>{
+
+  if(!btn) return;
+
+  //Destruimos el tooltip que existe asignado al boton, esto para evitar que se vuelva a sobre escribir.
+  const instanceToltip = M.Tooltip.getInstance(btn);
+  //Destruyo la instancia
+  if (instanceToltip) {
+    instanceToltip.destroy();
+  }
+
+  let newMessage = message.replace(/\n/g, '<br>');
+  const mergedOptions = {
+    ...options,
+    html: newMessage,
+    position: position
+  };
+
+  if (!btn.classList.contains('tooltipped')) {
+    btn.classList.add('tooltipped');
+  }
+
+  //Si trabajamos html, debemos eliminar el data-tooltip.
+ btn.removeAttribute('data-tooltip');
+ //btn.setAttribute('data-tooltip', message);
+
+    btn.setAttribute('data-position',position);
+
+    //Lo re inicializo.
+    M.Tooltip.init(btn, mergedOptions);
+}
+
 //Configuración de las opciones del modal
 export const options = {
   opacity: 0.7,
@@ -87,6 +120,17 @@ export const options = {
   endingTop: "10%",
   onOpenStart: () =>{} ,
   onCloseEnd: () => {},
+};
+
+export const tooltipOptions = {
+  exitDelay: 0,           // Tiempo (ms) que tarda en desaparecer el tooltip al salir del elemento
+  enterDelay: 200,        // Tiempo (ms) antes de que aparezca el tooltip al pasar el cursor
+  // html: null,             // Contenido HTML opcional (string o nodo HTML)
+  margin: 5,              // Espacio entre el tooltip y el elemento objetivo
+  inDuration: 300,        // Duración de la animación de entrada (ms)
+  outDuration: 250,       // Duración de la animación de salida (ms)
+  position: 'bottom',     // Posición del tooltip: 'top', 'right', 'bottom', 'left'
+  transitionMovement: 10  // Movimiento vertical durante la transición (solo para 'top' y 'bottom')
 };
 
 const today = new Date();

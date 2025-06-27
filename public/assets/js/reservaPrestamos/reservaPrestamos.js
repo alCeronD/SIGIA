@@ -1,5 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import { closeModal, createSpan, createI,instanceDate, instanceModal, options, opcionesDatepicker, instanceDateTime, timePickerOptions, dateISOFormat } from "../utils/cases.js";
+import { closeModal,  createI,instanceDate, instanceModal, options, opcionesDatepicker, instanceDateTime, timePickerOptions, dateISOFormat, initTooltip, tooltipOptions } from "../utils/cases.js";
 
 const objAjax = new Ajax();
 const btnSubmit = document.querySelector("#btnSubmit");
@@ -13,8 +13,8 @@ const modalAddDevolutivos = instanceModal('#modalAddDevolutivos',{options});
 const modalAddConsumibles = instanceModal('#modalAddConsumible',{options});
 const modalUsers = instanceModal('#modalUsers',{options});
 const btnAddElements = document.querySelector("#btnAddElements");
-const spanAddElements = createSpan();
-spanAddElements.innerText = 'add';
+const ispanAddElements = createI();
+ispanAddElements.innerText = 'add';
 
 const btnAddConsumibles = document.querySelector('#btnAddConsumibles');
 const modalTitle = document.querySelector("#modalTitle");
@@ -27,12 +27,22 @@ const btnCloseDevolutivos = document.querySelector(
 );
 
 const btnCloseConsumible = document.querySelector('#modalAddConsumible .close-modal');
-
 const btnCloseUsers = document.querySelector("#modalUsers .close-modal");
 const btnSearchUser = document.querySelector("#searchBtn");
+
+//Aplico tooltip al boton de usuarios
+initTooltip(
+  btnSearchUser,
+  tooltipOptions,
+  'Seleccione el instructor\npara asignar al préstamo',
+  'left'
+);
+
 const previewElements2 = document.querySelector('#previewElements2');
-const iCreatePreview = createSpan();
-iCreatePreview.innerText = 'Table_eye';
+const iCreatePreview = createI();
+iCreatePreview.innerText = 'info';
+initTooltip(previewElements2,tooltipOptions,'Visualize los elementos\n que ha seleccionado \n para su respectivo prestamo','bottom');
+
 previewElements2.append(iCreatePreview);
 //Creo una instancia del modal
 const instanPreview = instanceModal('#modalPreviewElements',{"opacity":options.opacity, "inDuration":options.inDuration, "outDuration":options.outDuration});
@@ -66,8 +76,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
   //Instancia de los input de tipo datetime.
   instanceDateTime('#fin',timePickerOptions);
   instanceDateTime('#inicio',timePickerOptions);
-});
 
+
+  //Inicializar tooltips
+  // const elementsTooltips = document.querySelectorAll('.tooltipped');
+  
+});
 
 areaDestino.addEventListener("change", () => {
   let value = areaDestino.options[areaDestino.selectedIndex];
@@ -99,16 +113,18 @@ let objDataDevolutivos = {};
 let objDataUsers = {};
 let button;
 const valuePage = document.querySelector("#valuePage");
-let iAddElement = createSpan();
-iAddElement.innerText = 'Linked_Camera';
+let iAddElement = createI();
+iAddElement.innerText = 'add_a_photo';
 btnAddElements.classList.add('btnClick');
 btnAddElements.append(iAddElement);
 
-let iConsumible = createSpan();
-iConsumible.innerText = 'Battery_3_Bar';
+let iConsumible = createI();
+iConsumible.innerText = 'battery_std';
 btnAddConsumibles.append(iConsumible);
+initTooltip(btnAddElements,tooltipOptions,'Seleccione los elementos \n que requieren una \n devolución','bottom');
+initTooltip(btnAddConsumibles,tooltipOptions,'Seleccione elementos \n a consumir sin \ndevolución obligatoria','bottom');
 
-let iClass = createSpan();
+let iClass = createI();
 modalTitle.innerText = "Elementos disponibles";
 iClass.innerText = 'send';
 btnSubmit.append(iClass);
@@ -196,7 +212,7 @@ function resetTableUsers(action = "", resetToFirstPage = false) {
       tableUsers.innerHTML = "";
       data.forEach((us) => {
         let btnAdd = document.createElement("button");
-        let iCreate = createSpan();
+        let iCreate = createI();
         // iCreate.setAttribute('class','material-icons');
         iCreate.innerText = 'add';
         button = btnAdd;
@@ -848,6 +864,7 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
   let data = Object.fromEntries(info);
+
 
   //Transformo la fecha en formato iso 8601
   let fechaReservaFormat = dateISOFormat(data.fechaReserva);

@@ -31,7 +31,7 @@
                 <label for="email" class="labelForm">Email: <span id="email" name="email"></span></label>
             </div>
             <div class="input-field inputContent areaDestino">
-                <select id="areaDestino" name="areaDestino" required>
+                <select id="areaDestino" name="areaDestino">
                     <option value="" disabled selected>Seleccione una opción</option>
                     <option value="centro">Centro</option>
                     <option value="externo">Externo</option>
