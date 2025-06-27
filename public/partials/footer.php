@@ -1,4 +1,5 @@
 
+<script src="../public/assets/libraries/materialize/js/materialize.min.js"></script>
 
 <!-- admin -->
 <?php if ($rol == 2): ?>

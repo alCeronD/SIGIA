@@ -129,6 +129,37 @@ class solicitudPrestamos {
         }
     }
 
+    public function cancelarPrestamo(int $presCod): array {
+    // Validar ID
+        if (!$presCod || !is_numeric($presCod)) {
+            return ['success' => false, 'message' => 'Código inválido de préstamo'];
+        }
+    
+        // Cambiar estado del préstamo a cancelado (ej. tipo = 3)
+        $stmt = $this->conn->prepare("UPDATE prestamos SET tp_pres = 3 WHERE pres_cod = ?");
+        $stmt->bind_param("i", $presCod);
+        $stmt->execute();
+    
+        if ($stmt->affected_rows > 0) {
+            // Cambiar estado de los elementos a disponible
+            $query = "SELECT pres_el_elem_cod FROM prestamos_elementos WHERE pres_cod = ?";
+            $elementosStmt = $this->conn->prepare($query);
+            $elementosStmt->bind_param("i", $presCod);
+            $elementosStmt->execute();
+            $result = $elementosStmt->get_result();
+    
+            include_once __DIR__ . '/../../elementos/model/elementosModel.php';
+            $elementoModel = new ElementoModelo($this->conn);
+    
+            while ($row = $result->fetch_assoc()) {
+                $elementoModel->actualizarEstadoElemento($row['pres_el_elem_cod'], 1); // 1 = Disponible
+            }
+    
+            return ['success' => true, 'message' => 'Préstamo cancelado correctamente'];
+        } else {
+            return ['success' => false, 'message' => 'No se pudo cancelar el préstamo'];
+        }
+    }
 
     
 }

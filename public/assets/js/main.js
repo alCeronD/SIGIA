@@ -1,8 +1,7 @@
-/**
- * Archivo que se crea en caso de que haya componentes iguales, aca pueden estar funciones, variables constantes, entre otros.
- * 
- */
-// LOGIN = NUMERO DE DOCUMENTO
-// CONTRASEÑA = 
-// los elementos = 
-// cantidad de elemtnso = ENTEROS, NO DEBE SER STRING.
+// Inicializar materialize.
+document.addEventListener('DOMContentLoaded', function () {
+  let elems = document.querySelectorAll('select:not(.browser-default)');
+  M.FormSelect.init(elems);
+});
+
+// console.log('hello world main.js');
