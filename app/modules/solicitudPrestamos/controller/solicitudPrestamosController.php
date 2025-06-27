@@ -174,7 +174,7 @@ class solicitudPrestamosController {
     success('Estado cancelado'); 
     // echo json_encode([
     //         'success' => true,
-    //         'message' => 'Se cancelo el hpta'
+    //         'message' => 'Se cancelo el prestamo solicitado
     // ]);    
     // json_encode($resultado);
     // exit;
