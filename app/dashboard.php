@@ -1,10 +1,15 @@
 <?php
+require_once __DIR__ .'/helpers/getUrl.php';
 require_once __DIR__ .'/helpers/session.php';
 require_once __DIR__ .'/helpers/ScanFiles.php';
-require_once __DIR__ .'/helpers/getUrl.php';
 $modulo = $_GET['modulo'] ?? 'dashboard';
 $controllerFile = new ScanFiles($modulo);
 $css = $controllerFile->addUrl($modulo);
+
+if (ajaxGeneral()) {
+    resolve();
+    exit;
+}
 
 
 if ($css) {

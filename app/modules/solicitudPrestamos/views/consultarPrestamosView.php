@@ -1,4 +1,3 @@
-<!-- Vista: consultarPrestamos (actualizada con tabla grid restaurada correctamente) -->
 <div class="contentSolicitud">
     <div class="solicitudTitle">
       <h2 class="">Préstamos Registrados</h2>
@@ -33,7 +32,18 @@
                 </td>
                 <td >
                   <button type="button" class="btn-ver-detalle" id="btnVerDetalle" data-id="<?= $prestamo['pres_cod'] ?>">Ver detalle</button>
+                  
+                  <!-- <button type="button" class="btn-cancelar-prestamo" data-id=" $prestamo['pres_cod'] ">Cancelar</button> -->
+                  
+                  <button 
+                  type="button" 
+                  class="btn-cancelar-prestamo" 
+                  data-id="<?= $prestamo['pres_cod'] ?>" 
+                  data-url="<?php echo getUrl('solicitudPrestamos','solicitudPrestamos','cancelarPrestamo',false,'dashboard'); ?>">
+                  Cancelar
+                </button>
                 </td>
+                
               </tr>
             <?php endforeach; ?>
           <?php else: ?>
