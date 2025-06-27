@@ -188,7 +188,8 @@ textarea {
   padding: 2rem;
   border-radius: 10px;
   width: 450px;
-  position: relative;
+  /* position: relative; */
+  position: absolute;
   animation: fadeIn 0.3s ease-in-out;
 }
 
@@ -197,6 +198,13 @@ textarea {
   right: 15px; top: 10px;
   font-size: 1.5rem;
   cursor: pointer;
+}
+
+.input-field label {
+  transform: none !important;
+  font-size: 0.9rem;
+  top: -10px !important;
+  left: 0 !important;
 }
 
 @keyframes fadeIn {

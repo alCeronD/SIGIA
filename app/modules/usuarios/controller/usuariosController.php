@@ -133,7 +133,7 @@ class usuariosController{
     
             $query = "UPDATE usuarios 
                       SET usu_id_estado = CASE 
-                        WHEN usu_id_estado = 1 THEN 0 
+                        WHEN usu_id_estado = 1 THEN 2 
                         ELSE 1 END 
                       WHERE usu_id = ?";
             

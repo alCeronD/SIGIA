@@ -1,3 +1,4 @@
+<!-- VISTA CON AJUSTES PARA FUNCIONAR CON MATERIALIZE -->
 <div class="content">
   <div class="menuTitle">
     <span id="textTitle">Registrar solicitud</span>
@@ -5,113 +6,117 @@
   </div>
 
   <div class="solicPrestamos">
-    <form id="formSolicitudPrestamo" method="POST" action="<?= getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamo'); ?>">
+    <form id="formSolicitudPrestamo" method="POST" action="<?= getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamo'); ?>" class="row">
 
-      <!-- Campos solicitante -->
-      <div class="inputContent nombre">
-        <label class="labelForm">Nombre del Solicitante</label>
-        <input type="text" class="inputForm" value="<?= $nombre ?>" name="pres_nombre" readonly>
-      </div>
-      <div class="inputContent apellido">
-        <label class="labelForm">Apellido del Solicitante</label>
-        <input type="text" class="inputForm" value="<?= $apellido ?>" name="pres_apellido" readonly>
-      </div>
-      <div class="inputContent rol">
-        <label class="labelForm">Rol del Solicitante</label>
-        <input type="text" class="inputForm" value="<?= $rol_nombre ?>" name="pres_rol" readonly>
+      <!-- Nombre, Apellido, Rol -->
+      <div class="input-field col s12 m4">
+        <input type="text" id="pres_nombre" name="pres_nombre" value="<?= $nombre ?>" readonly>
+        <label for="pres_nombre" class="active">Nombre del Solicitante</label>
       </div>
 
-      <!-- Fechas, destino, observación -->
-      <div class="inputContent fechaReserva">
-        <label class="labelForm">Fecha de Reserva *</label>
-        <input type="date" class="inputForm" name="pres_fch_reserva" required>
+      <div class="input-field col s12 m4">
+        <input type="text" id="pres_apellido" name="pres_apellido" value="<?= $apellido ?>" readonly>
+        <label for="pres_apellido" class="active">Apellido del Solicitante</label>
       </div>
-      <div class="inputContent fechaEntrega">
-        <label class="labelForm">Fecha de devolución *</label>
-        <input type="date" class="inputForm" name="pres_fch_entrega" required>
+
+      <div class="input-field col s12 m4">
+        <input type="text" id="pres_rol" name="pres_rol" value="<?= $rol_nombre ?>" readonly>
+        <label for="pres_rol" class="active">Rol del Solicitante</label>
       </div>
-      <div class="inputContent destino">
-        <label class="labelForm">Destino *</label>
-        <input type="text" class="inputForm" name="pres_destino" maxlength="30" required>
+
+      <!-- Fechas y destino -->
+      <div class="input-field col s12 m4">
+        <input type="text" id="pres_fch_reserva" name="pres_fch_reserva" class="datepicker" required>
+        <label for="pres_fch_reserva" class="active">Fecha de Reserva *</label>
       </div>
-      <div class="inputContent inputObservaciones">
-        <label class="labelForm">Observaciones *</label>
-        <textarea class="inputForm" name="pres_observacion" required rows="3"></textarea>
+
+      <div class="input-field col s12 m4">
+        <input type="text" id="pres_fch_entrega" name="pres_fch_entrega" class="datepicker" required>
+        <label for="pres_fch_entrega" class="active">Fecha de Devolución *</label>
+      </div>
+
+      <div class="input-field col s12 m4">
+        <input type="text" id="pres_destino" name="pres_destino" maxlength="30" required>
+        <label for="pres_destino">Destino *</label>
+      </div>
+
+      <!-- Observaciones -->
+      <div class="input-field col s12">
+        <textarea id="pres_observacion" name="pres_observacion" class="materialize-textarea" required></textarea>
+        <label for="pres_observacion">Observaciones *</label>
       </div>
 
       <!-- Botón abrir modal -->
-      <div class="inputContent">
-        <label class="labelForm">Elementos a prestar</label>
-        <button type="button" class="btnForm" onclick="abrirModalElementos()">Seleccionar Elementos</button>
+      <div class="input-field col s12">
+        <a class="waves-effect waves-light btn modal-trigger" href="#modalSeleccionElementos">Seleccionar Elementos</a>
       </div>
 
-      <!-- MODAL -->
-      <div id="modalSeleccionElementos" class="modal-secElementos" style="display: none;">
+      <!-- MODAL MATERIALIZE -->
+      <div id="modalSeleccionElementos" class="modal">
         <div class="modal-content">
-          <div class="modal-title">
-            <span id="modalTitle">Seleccionar Elementos</span>
-            <button class="closeModalBtn" type="button" onclick="cerrarModalElementos()">&times;</button>
-          </div>
+          <h5>Seleccionar Elementos</h5>
 
           <!-- Filtro por área -->
-          <div class="inputContent filtroArea">
-            <label class="labelForm" for="filtro_area_modal">Filtrar por Área</label>
-            <select class="inputForm" id="filtro_area_modal" name="filtro_area_modal">
-              <option value="">Todas las áreas</option>
+          <div class="input-field">
+            <select id="filtro_area_modal" name="filtro_area_modal">
+              <option value="" selected>Todas las áreas</option>
               <?php foreach ($areas as $area): ?>
                 <option value="<?= $area['ar_cod']; ?>"><?= htmlspecialchars($area['ar_nombre']); ?></option>
               <?php endforeach; ?>
             </select>
+            <label for="filtro_area_modal">Filtrar por área</label>
           </div>
 
           <!-- Tabla de elementos -->
-          <div class="tableElements mt-3">
-            <h4>Elementos Devolutivos</h4>
-            <table class="table table-bordered table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th>Código</th>
-                  <th>Nombre Elemento</th>
-                  <th>Disponible</th>
-                  <th>Seleccionar</th>
+          <table class="highlight responsive-table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Disponible</th>
+                <th>Seleccionar</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-elementos-devolutivos-modal">
+              <?php foreach ($elementos as $elemento): ?>
+                <tr data-area="<?= $elemento['ar_cod']; ?>">
+                  <td><?= htmlspecialchars($elemento['elm_placa']); ?></td>
+                  <td><?= htmlspecialchars($elemento['elm_nombre']); ?></td>
+                  <td><?= htmlspecialchars($elemento['elm_existencia']); ?></td>
+                  <td>
+                    <label>
+                      <input type="checkbox" class="filled-in" name="elementos_seleccionados[]" value="<?= $elemento['elm_cod']; ?>">
+                      <span></span>
+                    </label>
+                  </td>
                 </tr>
-              </thead>
-              <tbody id="tabla-elementos-devolutivos-modal">
-                <?php foreach ($elementos as $elemento): ?>
-                  <tr data-area="<?= $elemento['ar_cod']; ?>">
-                    <td><?= htmlspecialchars($elemento['elm_placa']); ?></td>
-                    <td><?= htmlspecialchars($elemento['elm_nombre']); ?></td>
-                    <td><?= htmlspecialchars($elemento['elm_existencia']); ?></td>
-                    <td>
-                      <label class="check-container" >
-                        
-                        <input type="checkbox" class="checkbox" name="elementos_seleccionados[]" value="<?= $elemento['elm_cod']; ?>">
-                      </label>
-                    </td>
-                  </tr>
-                <?php endforeach; ?>
-              </tbody>
-            </table>
-            <div class="page container-fluid col-12">
-              <ul id="paginacion" class="pagination justify-content-center"></ul>
-            </div>
-          </div>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
 
-          <div class="inputBtn mt-3">
-            <button type="button" class="btnForm" onclick="cerrarModalElementos()">Confirmar Selección</button>
-          </div>
+          <ul id="paginacion" class="pagination center-align"></ul>
+        </div>
+
+        <div class="modal-footer">
+          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Confirmar Selección</a>
         </div>
       </div>
 
-      <div class="inputBtn">
-        <button type="submit" class="btnForm">Solicitar</button>
+      <!-- Botón enviar solicitud -->
+      <div class="input-field col s12 center-align">
+        <button type="submit" class="btn blue">Solicitar</button>
       </div>
-
     </form>
   </div>
 </div>
+
+<!-- JS -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+  M.Modal.init(document.querySelectorAll('.modal'));
+  M.FormSelect.init(document.querySelectorAll('select'));
+  M.Datepicker.init(document.querySelectorAll('.datepicker'), { format: 'yyyy-mm-dd' });
+
   const filtroArea = document.getElementById('filtro_area_modal');
   const paginacion = document.getElementById('paginacion');
   const itemsPorPagina = 5;
@@ -119,47 +124,36 @@ document.addEventListener('DOMContentLoaded', function () {
   let filasOriginales = [];
   let filasFiltradas = [];
 
-  // Función para cargar filas del modal (cuando ya está visible)
   function inicializarFilas() {
     filasOriginales = Array.from(document.querySelectorAll('#tabla-elementos-devolutivos-modal tr'));
     filasFiltradas = [...filasOriginales];
-    console.log("Total filas detectadas:", filasOriginales.length); // ✅ Debería mostrar > 0
     generarPaginacion();
   }
 
-
-  // Filtrar area
-    filtroArea.addEventListener('change', () => {
+  filtroArea.addEventListener('change', () => {
     const selectedArea = filtroArea.value;
     filasFiltradas = filasOriginales.filter(fila => {
       const area = fila.getAttribute('data-area');
       return selectedArea === "" || area === selectedArea;
     });
-    generarPaginacion(); // Esto sí funciona si filasOriginales está bien cargado
+    generarPaginacion();
   });
 
-  // Paginar filas
   function actualizarTabla(pagina) {
-    // Oculta todo
     filasOriginales.forEach(fila => fila.style.display = 'none');
-    console.log(filasOriginales);
-    // Muestra solo la página actual
     const inicio = (pagina - 1) * itemsPorPagina;
     const fin = inicio + itemsPorPagina;
-    const paginaActual = filasFiltradas.slice(inicio, fin);
-    paginaActual.forEach(fila => fila.style.display = 'table-row');
+    filasFiltradas.slice(inicio, fin).forEach(fila => fila.style.display = 'table-row');
   }
 
-
-
-  // Crear botones de paginación
   function generarPaginacion() {
     paginacion.innerHTML = '';
     const totalPaginas = Math.ceil(filasFiltradas.length / itemsPorPagina);
+
     for (let i = 1; i <= totalPaginas; i++) {
       const li = document.createElement('li');
-      li.classList.add('page-item');
-      li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+      li.classList.add('waves-effect');
+      li.innerHTML = `<a href="#!">${i}</a>`;
       li.addEventListener('click', (e) => {
         e.preventDefault();
         actualizarTabla(i);
@@ -175,37 +169,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Mostrar el modal y cargar los datos
-  window.abrirModalElementos = function () {
-    const modal = document.getElementById("modalSeleccionElementos");
-    modal.style.display = "block";
-    modal.style.visibility = "visible";
-    modal.style.position = "fixed";
-  
-    // Esperar al siguiente frame + 100ms
-    requestAnimationFrame(() => {
+  const modalTrigger = document.querySelector('.modal-trigger');
+  if (modalTrigger) {
+    modalTrigger.addEventListener('click', () => {
       setTimeout(() => {
-        inicializarFilas(); // Aquí sí detecta las filas del modal
+        inicializarFilas();
       }, 100);
     });
-  };
-
-
-  
-  window.cerrarModalElementos = function () {
-    const modal = document.getElementById("modalSeleccionElementos");
-    modal.style.display = "none";
-    modal.style.visibility = "hidden";
-    modal.style.position = "absolute";
-  };
-
-
-  // Cerrar modal si se hace clic fuera
-  window.onclick = function (event) {
-    const modal = document.getElementById("modalSeleccionElementos");
-    if (event.target == modal) {
-      cerrarModalElementos();
-    }
-  };
+  }
 });
 </script>

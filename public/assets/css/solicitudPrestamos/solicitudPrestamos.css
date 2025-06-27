@@ -34,15 +34,18 @@
   .solicPrestamos {
     grid-area: solicPrestamos;
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column;
     height: 100%;
-    padding: 1rem;
+    padding: 1rem; */
   }
 
+  /* .row{
+    width: none;
+  } */
 
 
   #formSolicitudPrestamo {
-    display: grid;
+    /* display: grid; */
     grid-template-areas:
       "nombre apellido rol"
       "fechaReserva fechaEntrega destino"
@@ -54,6 +57,8 @@
     gap: 0.5rem;
     width: 100%;
   }
+  
+  
 
   .nombre { grid-area: nombre; }
   .apellido { grid-area: apellido; }
@@ -121,6 +126,11 @@
   #btnSubmit:hover {
     background-color: #0056b3;
   }
+  .btn-ver-detalle,
+.btn-cancelar-prestamo {
+  position: static; /* o static */
+  z-index: 1; /* o ninguno */
+}
 
   
   
@@ -206,6 +216,7 @@
     border-radius: 2px;
     will-change: top, opacity;
   }
+  
 
   .modal-content {
     background-color: #ffffff;
@@ -290,14 +301,7 @@
     padding: 0.33rem; border-bottom: 1px solid #ddd; text-align: center;
   }
   
-  .modal-container {
-    background-color: white;
-    border-radius: 12px;
-    /* max-width: 600px; */
-    /* width: 90%; */
-    border: 1px solid #ccc;
-    /* margin: 5% auto; */
-  }
+
 
   .row-pair {
     display: flex;

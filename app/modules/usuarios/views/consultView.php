@@ -24,21 +24,25 @@
               <td><?= htmlspecialchars($usuario['rl_nombre']) ?></td>
               <td><?= htmlspecialchars($usuario['estado_usuario']) ?></td>
               <td>
+              <div class="center-align">
                 <a href="#"
-                   class="btnEditarUsuario"
+                   class="btnEditarUsuario btn-small teal darken-1 white-text waves-effect waves-light"
                    data-id="<?= $usuario['usu_id'] ?>"
                    data-nombres="<?= htmlspecialchars($usuario['usu_nombres']) ?>"
                    data-apellidos="<?= htmlspecialchars($usuario['usu_apellidos']) ?>"
                    data-email="<?= htmlspecialchars($usuario['usu_email']) ?>"
                    data-telefono="<?= htmlspecialchars($usuario['usu_telefono']) ?>"
                    data-documento="<?= htmlspecialchars($usuario['usu_docum']) ?>">
-                   Editar
+                   <i class="material-icons left">edit</i>Editar
                 </a>
-                |
-                <a href="<?= getUrl('usuarios', 'usuarios', 'cambiarEstadoUsuario', ['usu_id' => $usuario['usu_id']], 'dashboard') ?>" onclick="return confirm('¿Estás seguro de que deseas cambiar el estado del usuario?');">
-                  Activar/Desactivar
+            
+                <a href="<?= getUrl('usuarios', 'usuarios', 'cambiarEstadoUsuario', ['usu_id' => $usuario['usu_id']], 'dashboard') ?>"
+                   class="btn-small red lighten-1 white-text waves-effect waves-light"
+                   onclick="return confirm('¿Estás seguro de que deseas cambiar el estado del usuario?');">
+                   <i class="material-icons left">autorenew</i>Activar/Desactivar
                 </a>
-              </td>
+              </div>
+            </td>
             </tr>
           <?php endforeach; ?>
         <?php else: ?>
@@ -52,44 +56,48 @@
 </div>
 
 <!-- Modal -->
-<div id="modalEditarUsuario" class="modal-custom">
-  <div class="modal-content-custom">
-    <span class="close-modal" onclick="cerrarModalUsuario()">&times;</span>
-    <h3>Editar Usuario</h3>
+<div id="modalEditarUsuario" class="modal-custom card z-depth-3">
+  <div class="modal-content-custom card-content">
+    <span class="close-modal btn-flat red-text right" onclick="cerrarModalUsuario()" title="Cerrar" style="font-size: 1.5rem;">&times;</span>
+    <h5 class="teal-text text-darken-3">Editar Usuario</h5>
+
     <form method="POST" action="<?= getUrl('usuarios', 'usuarios', 'updateUser', false, 'dashboard') ?>" id="formUpdateUser">
       <input type="hidden" name="usu_id" id="usu_id">
 
-      <div class="inputContentUpdate cedula">
-        <label class="labelForm" for="usu_docum">Documento:</label>
-        <input type="text" name="usu_docum" id="usu_docum" class="inputForm" disabled>
+      <div class="input-field" style="margin-bottom: 20px;">
+        <label for="usu_docum" class="active">Documento</label>
+        <input type="text" name="usu_docum" id="usu_docum" disabled>
       </div>
 
-      <div class="inputContentUpdate nombres">
-        <label class="labelForm" for="usu_nombres">Nombres:</label>
-        <input type="text" name="usu_nombres" id="usu_nombres" class="inputForm" required>
+      <div class="input-field" style="margin-bottom: 20px;">
+        <label for="usu_nombres" class="active">Nombres</label>
+        <input type="text" name="usu_nombres" id="usu_nombres" required>
       </div>
 
-      <div class="inputContentUpdate apellidos">
-        <label class="labelForm" for="usu_apellidos">Apellidos:</label>
-        <input type="text" name="usu_apellidos" id="usu_apellidos" class="inputForm" required>
+      <div class="input-field" style="margin-bottom: 20px;">
+        <label for="usu_apellidos" class="active">Apellidos</label>
+        <input type="text" name="usu_apellidos" id="usu_apellidos" required>
       </div>
 
-      <div class="inputContentUpdate email">
-        <label class="labelForm" for="usu_email">Correo:</label>
-        <input type="email" name="usu_email" id="usu_email" class="inputForm" required>
+      <div class="input-field" style="margin-bottom: 20px;">
+        <label for="usu_email" class="active">Correo</label>
+        <input type="email" name="usu_email" id="usu_email" required>
       </div>
 
-      <div class="inputContentUpdate telefono">
-        <label class="labelForm" for="usu_telefono">Teléfono:</label>
-        <input type="text" name="usu_telefono" id="usu_telefono" class="inputForm" required>
+      <div class="input-field" style="margin-bottom: 20px;">
+        <label for="usu_telefono" class="active">Teléfono</label>
+        <input type="text" name="usu_telefono" id="usu_telefono" required>
       </div>
 
-      <div class="inputBtn">
-        <button type="submit">Actualizar Usuario</button>
+      <div class="inputBtn center-align" style="margin-top: 25px;">
+        <button type="submit" class="btn waves-effect teal darken-2">
+          <i class="material-icons left">save</i>Actualizar Usuario
+        </button>
       </div>
     </form>
   </div>
 </div>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
