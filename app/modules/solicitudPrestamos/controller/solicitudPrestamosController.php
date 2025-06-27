@@ -33,10 +33,11 @@ class solicitudPrestamosController {
         $nombre = $_SESSION['usuario']['nombre'];
         $apellido = $_SESSION['usuario']['apellido'];
         $rol_nombre = $_SESSION['usuario']['rol_nombre'];
+        $id = $_SESSION['usuario']['id'];
 
         $prestamoModel = new solicitudPrestamos($this->conn);
-        $prestamos = $prestamoModel->search();
 
+        $prestamos = $prestamoModel->search($id);
         return include_once __DIR__ . '/../views/consultarPrestamosView.php';
     }
 
@@ -99,8 +100,7 @@ class solicitudPrestamosController {
     }
 
     public function obtenerElementosPorPrestamo($presCod) {
-        $query = "
-            SELECT 
+        $query = "SELECT 
                 e.elm_nombre,
                 e.elm_placa,
                 c.ca_nombre AS categoria
@@ -138,12 +138,12 @@ class solicitudPrestamosController {
     }
 
     private function obtenerTipoPrestamoNombre($id) {
-        $stmt = $this->conn->prepare("SELECT tp_nombre FROM tipo_prestamo WHERE tp_pre = ?");
+        $stmt = $this->conn->prepare("SELECT es_pr_cod FROM estados_prestamos WHERE es_pr_cod = ?");
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
         $res = $result->fetch_assoc();
-        return $res ? $res['tp_nombre'] : 'Desconocido';
+        return $res ? $res['es_pr_cod'] : 'Desconocido';
     }
 
     private function obtenerRolNombre($id) {
@@ -169,13 +169,13 @@ class solicitudPrestamosController {
 
     $modelo = new solicitudPrestamos($this->conn);
     $modelo->cancelarPrestamo($presCod);
-        
-    echo json_encode([
-            'success' => true,
-            'message' => 'Se cancelo el hpta'
-    ]);    
+    success('Estado cancelado'); 
+    // echo json_encode([
+    //         'success' => true,
+    //         'message' => 'Se cancelo el hpta'
+    // ]);    
     // json_encode($resultado);
-    exit;
+    // exit;
 }
 
 
@@ -198,7 +198,6 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'cancelar' && isset($_GET['pre
     $pres_cod = (int) $_GET['pres_cod'];
     $solicitudObj->cancelarPrestamo();
 }
-
 
 
 

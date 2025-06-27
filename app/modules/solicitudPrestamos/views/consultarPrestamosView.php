@@ -19,26 +19,23 @@
             <?php foreach ($prestamos as $prestamo): ?>
               <tr class="" >
                 <td>
-                  <?= htmlspecialchars($prestamo['pres_cod']) ?>
+                  <?= htmlspecialchars($prestamo['codigoSolicitud']) ?>
                 </td>
                 <td >
                   <?= htmlspecialchars($nombre) ?>
                 </td>
                 <td >
-                  <?= htmlspecialchars($prestamo['pres_fch_reserva']) ?>
+                  <?= htmlspecialchars($prestamo['fechaReserva']) ?>
                 </td>
                 <td >
-                  <?= htmlspecialchars($prestamo['tipo_prestamo']) ?>
+                  <?= htmlspecialchars($prestamo['tipoPrestamo']) ?>
                 </td>
                 <td >
-                  <button type="button" class="btn-ver-detalle" id="btnVerDetalle" data-id="<?= $prestamo['pres_cod'] ?>">Ver detalle</button>
-                  
-                  <!-- <button type="button" class="btn-cancelar-prestamo" data-id=" $prestamo['pres_cod'] ">Cancelar</button> -->
-                  
+                  <button type="button" class="btn-ver-detalle" id="btnVerDetalle" data-id="<?= $prestamo['codigoSolicitud'] ?>">Ver detalle</button>
                   <button 
                   type="button" 
                   class="btn-cancelar-prestamo" 
-                  data-id="<?= $prestamo['pres_cod'] ?>" 
+                  data-id="<?= $prestamo['codigoSolicitud'] ?>" 
                   data-url="<?php echo getUrl('solicitudPrestamos','solicitudPrestamos','cancelarPrestamo',false,'dashboard'); ?>">
                   Cancelar
                 </button>

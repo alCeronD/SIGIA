@@ -23,11 +23,7 @@ class solicitudPrestamos {
             exit();
         }
 
-    //    var_dump($data);
-        //$pres_fch_slcitud  = $this->conn->real_escape_string($data['pres_fch_slcitud']) ?? '';
         $pres_fch_reserva  = $this->conn->real_escape_string($data['pres_fch_reserva']);
-        // $pres_hor_inicio   = $this->conn->real_escape_string($data['pres_hor_inicio']) ?? '';
-        // $pres_hor_fin      = $this->conn->real_escape_string($data['pres_hor_fin']) ?? '';
         $pres_fch_entrega  = $this->conn->real_escape_string($data['pres_fch_entrega']);
         $pres_observacion  = $this->conn->real_escape_string($data['pres_observacion']);
         $pres_destino      = $this->conn->real_escape_string($data['pres_destino']);
@@ -79,34 +75,38 @@ class solicitudPrestamos {
         }
     }
 
-    public function search() {
-        $sql = "SELECT 
-                    p.pres_cod,
-                    p.pres_fch_slcitud,
-                    p.pres_fch_reserva,
-                    p.pres_hor_inicio,
-                    p.pres_hor_fin,
-                    p.pres_fch_entrega,
-                    p.pres_observacion,
-                    p.pres_destino,
-                    p.pres_estado,
-                    tp.tp_nombre AS tipo_prestamo
-                FROM 
-                    prestamos p
-                LEFT JOIN 
-                    tipo_prestamo tp ON p.tp_pres = tp.tp_pre
-                ORDER BY 
-                    p.pres_fch_slcitud DESC";
+    public function search($id = 0) {
+        $sql = "SELECT DISTINCT
+            p.pres_cod AS 'codigoSolicitud',
+            p.pres_fch_slcitud AS 'fechaSolicitud',
+            p.pres_fch_reserva AS 'fechaReserva',
+            p.pres_hor_inicio AS 'horaInicio',
+            p.pres_hor_fin AS 'horaFin',
+            p.pres_fch_entrega AS 'fechaEntrega',
+            p.pres_observacion AS 'observacion',
+            p.pres_destino AS 'destino',
+            p.pres_estado AS 'estadoPrestamo',
+            tp.tp_nombre As 'tipoPrestamo'
+            FROM prestamos p
+            LEFT JOIN prestamos_elementos pe ON
+            p.pres_cod = pe.pres_cod 
+            LEFT JOIN usuarios us ON
+            us.usu_id = pe.pres_el_usu_id
+            LEFT JOIN tipo_prestamo tp ON tp.tp_pre = p.tp_pres
+            WHERE us.usu_id = ? ORDER BY p.pres_fch_slcitud DESC;";
+
+            $stmtSelect = $this->conn->prepare($sql);
+            $stmtSelect->bind_param('i',$id);
+
     
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
+            $stmtSelect->execute();
         
-        $result = $stmt->get_result();
-        $data = [];
-    
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
-        }
+            $result = $stmtSelect->get_result();
+            $data = [];
+        
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
     
         return $data;
     }
@@ -136,7 +136,7 @@ class solicitudPrestamos {
         }
     
         // Cambiar estado del préstamo a cancelado (ej. tipo = 3)
-        $stmt = $this->conn->prepare("UPDATE prestamos SET tp_pres = 3 WHERE pres_cod = ?");
+        $stmt = $this->conn->prepare("UPDATE prestamos SET pres_estado = 5 WHERE pres_cod = ?");
         $stmt->bind_param("i", $presCod);
         $stmt->execute();
     

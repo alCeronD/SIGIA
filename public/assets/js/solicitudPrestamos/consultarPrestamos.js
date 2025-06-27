@@ -1,4 +1,4 @@
-import { closeModal, openModal } from '../libraries/cases.js';
+import { closeModal, openModal } from '../utils/cases.js';
 
 const modalDetalle = document.querySelector('#modalDetalle');
 const contenidoDetalle = document.getElementById('contenidoDetalle');

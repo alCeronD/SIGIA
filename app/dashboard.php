@@ -12,6 +12,7 @@ if (ajaxGeneral()) {
 }
 
 
+
 if ($css) {
     $_SESSION['css'] = $css;
 } else {

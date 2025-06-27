@@ -1,6 +1,7 @@
 <?php 
 
 include_once __DIR__ . '/../model/loginModel.php';
+include_once __DIR__ . '/../../../helpers/response.php';
 
 class loginController {
     
@@ -26,8 +27,9 @@ class loginController {
             $password = $_POST['pass'] ?? '';
             // dd($password);
             if (empty($documento) || empty($password)) {
-                echo json_encode(['success' => false, 'message' => 'Todos los campos son obligatorios']);
-                exit();
+                fail('Todos los campos son obligatorios');
+                // echo json_encode(['success' => false, 'message' => 'Todos los campos son obligatorios']);
+                // exit();
             }
     
             if (!$this->conn) {
@@ -67,8 +69,18 @@ class loginController {
     }
     
     public function logout() {
-        session_unset();
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Limpiar variables de sesión
+        $_SESSION = [];
+        
+        // Destruir sesión
+        session_destroy();
         redirect(getUrl('login','login','index',false,false));
+    
     }
         
 }
