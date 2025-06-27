@@ -63,26 +63,6 @@ tableUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
 const btnPreview = document.querySelector("#preview");
 const btnNext = document.querySelector("#next");
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  fetchData("elements", 1);
-
-  const selects = document.querySelectorAll('select');
-  M.FormSelect.init(selects);
-
-  //Hago la instancia de los input tipo date
-  instanceDate('#fechaReserva',opcionesDatepicker);
-  instanceDate('#fechaDevolucion',opcionesDatepicker);
-
-  //Instancia de los input de tipo datetime.
-  instanceDateTime('#fin',timePickerOptions);
-  instanceDateTime('#inicio',timePickerOptions);
-
-
-  //Inicializar tooltips
-  // const elementsTooltips = document.querySelectorAll('.tooltipped');
-  
-});
-
 areaDestino.addEventListener("change", () => {
   let value = areaDestino.options[areaDestino.selectedIndex];
   //console.log(value);
@@ -171,6 +151,26 @@ function fetchData(action = "", page = 1) {
   objAjax.request.setRequestHeader("Accept", "application/json");
   objAjax.request.send();
 }
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  fetchData("elements", 1);
+
+  const selects = document.querySelectorAll('select');
+  M.FormSelect.init(selects);
+
+  //Hago la instancia de los input tipo date
+  instanceDate('#fechaReserva',opcionesDatepicker);
+  instanceDate('#fechaDevolucion',opcionesDatepicker);
+
+  //Instancia de los input de tipo datetime.
+  instanceDateTime('#fin',timePickerOptions);
+  instanceDateTime('#inicio',timePickerOptions);
+
+
+  //Inicializar tooltips
+  // const elementsTooltips = document.querySelectorAll('.tooltipped');
+  
+});
 
 //Función para reestablecer los elementos a la página 1.
 //TODO: Documentar la función usando JSDOC
@@ -628,7 +628,6 @@ previewElement.addEventListener("click", () => {
       let codigo = dta.codigo;
       let elemento = dta.elemento;
       let area = dta.area;
-
       addElements = document.createElement("input");
       addElements.setAttribute("type", "checkbox");
       addElements.setAttribute("class", "checkboxInput");
