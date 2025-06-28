@@ -348,6 +348,7 @@ th {
     "infoDetail"
     "tableContainer";
   gap: 2rem;
+  width: 100%;
 }
 
 .modalTitleDetail {

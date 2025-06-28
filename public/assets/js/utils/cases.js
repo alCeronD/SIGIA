@@ -46,8 +46,9 @@ export const createSpan = () => {
   return span;
 };
 
-export const createBtn = ()=>{
+export const createBtn = (valueClass = '')=>{
   const button = document.createElement('button');
+  button.setAttribute('class',valueClass);
   return button;
 }
 
@@ -275,6 +276,24 @@ export const initAlert = (message = '', type = 'info', options = {}) => {
   }, 1200);
 
 };
+
+/**
+ * Estados de los prestamos
+ * @property string - el nombre del estado
+ * @value int - el valor del prestamo
+ */
+export const statusLoans = {
+  validado: 1,
+  rechazado: 2,
+  porValidar: 3,
+  finalizad: 4,
+  cancelado: 5
+};
+
+export const typeLoans = {
+  inmediata: 1,
+  solicitud: 2
+}
 
 export default {
   closeModal,

@@ -28,7 +28,7 @@ class solicitudPrestamos {
         $pres_observacion  = $this->conn->real_escape_string($data['pres_observacion']);
         $pres_destino      = $this->conn->real_escape_string($data['pres_destino']);
         $pres_estado       = 3;
-        $tp_pres           = 1;
+        $tp_pres           = 2;
         $pres_rol          = $rol_usuario;
         
         $query = "INSERT INTO prestamos (

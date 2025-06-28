@@ -484,14 +484,16 @@ class ReservaModel
                 pre.pres_fch_entrega AS fechaDevolucion,
                 pre.pres_observacion AS observacion,
                 esp.es_pr_nombre AS estadoPrestamo,
-                r.rl_nombre AS rol,
-                tp_pre.tp_nombre AS tipoPrestamo
+                esp.es_pr_cod AS estadoCodigoPrestamo,
+                r.rl_nombre AS nombreRol,
+                tp_pr.tp_pre AS codigoTipoPrestamo,
+                tp_pr.tp_nombre AS tipoPrestamo
                 FROM prestamos pre
                 INNER JOIN prestamos_elementos pre_el ON pre_el.pres_cod = pre.pres_cod
                 INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
                 INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
                 INNER JOIN roles r ON r.rl_id = pre.pres_rol
-                INNER JOIN tipo_prestamo tp_pre ON tp_pre.tp_pre = pre.tp_pres";
+                INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres";
 
             $stmtResevas = $conn->prepare($sqlReservas);
 

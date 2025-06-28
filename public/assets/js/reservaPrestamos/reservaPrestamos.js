@@ -165,10 +165,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   //Instancia de los input de tipo datetime.
   instanceDateTime('#fin',timePickerOptions);
   instanceDateTime('#inicio',timePickerOptions);
-
-
-  //Inicializar tooltips
-  // const elementsTooltips = document.querySelectorAll('.tooltipped');
   
 });
 

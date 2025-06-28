@@ -67,8 +67,7 @@ class ReservaController
             //Estado
             $pres_estado = 3;
         }
-
-
+        
         $codConsumibles = $data["codigosElementos"]['consumibles'];
         $codDevolu = $data["codigosElementos"]['devolutivos'];
 
@@ -77,10 +76,8 @@ class ReservaController
         //Cordenar los elementos del arreglo basado en el código
         array_multisort($codDevolu,SORT_ASC,$ascDevolutivos);
         array_multisort($codConsumibles,SORT_ASC,$ascConsu);
-        //var_dump($codDevolu);
 
         unset($data["codigosElementos"]);
-
 
         //Cambiar nombre de la llave.
         $data['pres_fch_reserva'] = $data['fechaReserva'];
