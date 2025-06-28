@@ -859,7 +859,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   //Data de formulario
   let data = Object.fromEntries(info);
 
-
   //Transformo la fecha en formato iso 8601
   let fechaReservaFormat = dateISOFormat(data.fechaReserva);
   let fechaDevolucionFormat = dateISOFormat(data.fechaDevolucion);

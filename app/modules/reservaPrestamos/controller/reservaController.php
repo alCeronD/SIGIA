@@ -67,7 +67,7 @@ class ReservaController
             //Estado
             $pres_estado = 3;
         }
-        
+
         $codConsumibles = $data["codigosElementos"]['consumibles'];
         $codDevolu = $data["codigosElementos"]['devolutivos'];
 
@@ -104,6 +104,10 @@ class ReservaController
         $data['tp_pres'] = $tp_pres;
         $response = $this->model->insertReserva($data, $codDevolu, $codConsumibles);
         success('Prestamo exitoso', $response);
+    }
+
+    public function setSolicitud(array $data =[]){
+
     }
 
     public function setEndReserva(array $elementos = [], int $codigo = 0){

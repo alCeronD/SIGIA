@@ -1,5 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import { closeModal, createBtn, instanceDate, instanceDateTime, instanceModal, opcionesDatepicker, openModal, options, statusLoans, typeLoans } from "../utils/cases.js";
+import { closeModal, createBtn, instanceDate, instanceDateTime, instanceModal, opcionesDatepicker, openModal, options, setReserva, statusLoans, typeLoans } from "../utils/cases.js";
 import { sendData } from "../utils/fetch.js";
 
 const objAjax = new Ajax();
@@ -82,6 +82,11 @@ function getReservas() {
       tr.appendChild(tdTipo);
       tr.append(tdAcciones);
 
+      //Si el estado del prestamo es finalizado, no debe de visualizar el boton de finalizar.
+      if (tdEstado.textContent === 'Finalizado') {
+        btnEnd.style.display = 'none';
+      }
+
 
       if (dta.codigoTipoPrestamo === typeLoans.solicitud) {
         tdAcciones.append(btnDetail,btnValidateLoan);
@@ -131,7 +136,6 @@ function getReservas() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  //console.log(getReservas());
   getReservas();
 });
 
@@ -166,7 +170,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     codigo = parseInt(event.target.getAttribute("data-id"));
     const reserva = data.find((item) => item.codigo === codigo);
     let action = "reservaDetailElements";
-    console.log(reserva);
 
     //Petición para dibujar los elementos en la tabla del detail.
     //TODO: Mejorar, en la variable elementos encuentro toda la información, no necesito hacer otra petición.
@@ -228,26 +231,19 @@ tbodyReservaConsult.addEventListener("click", (event) => {
   //Finalizar el prestamo de los elementos.
   if (event.target.tagName === "BUTTON" && event.target.getAttribute(["data-end"])) {
     //se compara con doble igual porque el json que recibe de data su codigo esta en string pero el getAttribute esta como entero.
-    const codigoReserva = Number(event.target.getAttribute(["data-end"]));
-    const dataResult = data.find((dta) => Number(dta.codigo) === codigoReserva);
-    console.log({"finalizarPrestamo": event.target});
-    
-    //Valida que sea true la respuesta de dataResult y que el codigo de la reserva este en el objeto elementos.
-    if (dataResult && codigoReserva && elementos[codigoReserva]) {
-      const reservaConElementos = elementos[codigoReserva];
-      const listaElementos = reservaConElementos.elementos;
 
-      //Debo enviar la lista de los elementos, el código del prestamo y el número de identificación.
-      let endReserva = {
-        elementos: listaElementos,
-        codigoReserva: reservaConElementos.reserva.codigo,
-      };
+    //Crear función para finalizar los prestamos de los elementos, se debe de finalizar a ambos prestamos, los que se hace como reserva Previa y reserva inmediata.
+    function endLoan(atributeData){}
 
-      const objEndReserva = new Ajax();
-
+  
+    //Hago la captura de la data necesaria para validar el prestamo o para reservalo inmedaitamente.
+    let endReserva = setReserva('data-end',data,elementos,event.target,"finalizar");
+    console.log(endReserva);
+    const objEndReserva = new Ajax();
       if (
         confirm(
-          `¿Está seguro de finalizar el préstamo?\nEstos son los elementos que cambiarán a disponible:\n${listaElementos
+          `¿Está seguro de finalizar el préstamo?\nEstos son los elementos que cambiarán a disponible:\n${
+            endReserva.elementos
             .map((el) => `- ${el.nombre}`)
             .join("\n")}`
         )
@@ -270,56 +266,42 @@ tbodyReservaConsult.addEventListener("click", (event) => {
           action: "finalizar",
         });
 
-        objEndReserva.request.onload = ()=>{
-            let response = JSON.parse(objEndReserva.request.responseText);
-
-            try {
-              if (response.status) {
-              alert(`Prestamo # ${reservaConElementos.reserva.codigo} finalizada`);
-
-              let codigoAdd = reservaConElementos.reserva.codigo;
-              let tr = document.querySelectorAll('#tbodyReservaConsult tr');
-              tr.forEach((infoTr) =>{
-                if (infoTr.querySelector('td').textContent.includes(codigoAdd)) {
-
-                  let tdEstado = infoTr.children[2];
-                  let tdBtnEnd = infoTr.children[5];
-                    tdEstado.textContent = 'Finalizado';
-                    tdBtnEnd.style.display = 'none';
-                }
-              });
-            }
-            } catch (error) {
-              throw new Error("Error al realizar el cambio");
-
-            }
-
-        }
-
         objEndReserva.request.onload = () => {
           try {
             let response = JSON.parse(objEndReserva.request.responseText);
 
             if (response.status) {
               alert(
-                `Prestamo # ${reservaConElementos.reserva.codigo} finalizada`
+                `Prestamo # ${endReserva.codigoReserva} finalizada`
               );
 
-              let codigoAdd = reservaConElementos.reserva.codigo;
+              let codigoAdd = endReserva.codigoReserva;
+              console.log(codigoAdd);
               let tr = [
                 ...document.querySelectorAll("#tbodyReservaConsult tr"),
               ];
 
               tr.forEach((infoTr) => {
-                if (
-                  infoTr
-                    .querySelector("td")
-                    .textContent.includes(String(codigoAdd))
-                ) {
+
+                if (infoTr.querySelector("td").textContent.includes(String(codigoAdd))) {
+                  console.log(infoTr);
+                  
                   let tdEstado = infoTr.children[2];
-                  let tdBtnEnd = infoTr.children[5];
+                  let tdAcciones = infoTr.children[4];
+                  let btnEnd = tdAcciones.querySelector('button[data-end="' + codigoAdd + '"]');
+
+                  
+                  //Capturo el botón con el data y el codigo respectivamete, así si cambia su posición no perderíamos el rastro del botón.
+                  console.log({"tdBtnEnd":btnEnd});
+                  console.log({"tdEstado":tdEstado});
+                  console.log(tdEstado);
+
+                  btnEnd.style.display = "none";
                   tdEstado.textContent = "Finalizado";
-                  tdBtnEnd.style.display = "none";
+
+                  if (tdEstado.textContent === "Finalizado") {
+                    btnEnd.style.display = "none";
+                  }
                 }
               });
             } else {
@@ -342,18 +324,21 @@ tbodyReservaConsult.addEventListener("click", (event) => {
           "No se encontraron elementos asociados aún. Espera a que cargue la información."
         );
       }
-    }
+    // }
   }
 
   //Dar salida a los prestamos, cambiar el estado de la solicitudes a validada e implementar su salida.
   if (event.target.tagName === "BUTTON" && event.target.getAttribute(["data-validate"])) {
-    console.log(event.target.getAttribute(["data-validate"]));
-    console.log(elementos);
 
-    // let action = 'validateLoan';
+    //Capturo los datos para transformarlo en json.
+    let validateReserva = setReserva('data-validate',data,elementos,event.target);
 
     // sendData('modules/reservaPrestamos/controller/reservaController.php','POST',{"validateLoan":action});
-  
+    console.log(validateReserva);
+
+
+
+
   }
 
   //
