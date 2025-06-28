@@ -47,6 +47,8 @@ function getReservas() {
       let btnAdd = document.createElement("button");
       let btnEnd = document.createElement("button");
       let btnDetail = document.createElement("button");
+
+
       btnDetail.innerText = "Detalle";
       btnDetail.setAttribute("class", "btnDetail btnClick");
       btnDetail.setAttribute("data-id", `${dta.codigo}`);

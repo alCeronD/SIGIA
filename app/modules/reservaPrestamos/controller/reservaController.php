@@ -56,14 +56,14 @@ class ReservaController
         if (($_SESSION['usuario']['rol_id'] == 2) || ($_SESSION['usuario']['rol_id'] == 1)) {
             $pres_rol = $_SESSION['usuario']['rol_id'];
             //Reserva
-            $tp_pres = 2;
+            $tp_pres = 1;
             //Estado
             $pres_estado = 1;
         }
         if (($_SESSION['usuario']['rol_id'] == 4)) {
             $pres_rol = $_SESSION['usuario']['rol_id'];
             //Solicitud
-            $tp_pres = 1;
+            $tp_pres = 2;
             //Estado
             $pres_estado = 3;
         }
