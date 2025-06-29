@@ -172,12 +172,6 @@ class solicitudPrestamosController {
     $modelo = new solicitudPrestamos($this->conn);
     $modelo->cancelarPrestamo($presCod);
     success('Estado cancelado'); 
-    // echo json_encode([
-    //         'success' => true,
-    //         'message' => 'Se cancelo el hpta'
-    // ]);    
-    // json_encode($resultado);
-    // exit;
 }
 
 

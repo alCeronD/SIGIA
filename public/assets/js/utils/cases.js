@@ -350,6 +350,7 @@ export const setReserva = (attribute = "", data = {}, elementos = {},target,acti
     return {
       codigoReserva: reservaConElementos.reserva.codigo,
       elementos: elementosDeReserva,
+      dataUsuario: dataResult
     }
 
   }

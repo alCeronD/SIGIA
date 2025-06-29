@@ -328,7 +328,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     let validateReserva = setReserva('data-validate',data,elementos,event.target);
     let action = 'validateLoan';
     validateReserva['action'] = action;
-
     let consumibles = [];
     let devolutivos = [];
 
@@ -339,6 +338,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       } else if (element.codTipoElemento === 2) {
         consumibles.push(element);
       }
+
     });
 
     //Borro todos los elementos que esten en el objeto y los re asigno
@@ -350,7 +350,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     }
 
     let response = sendData('modules/reservaPrestamos/controller/reservaController.php','POST','validateLoan',validateReserva);
-
 
   }
 

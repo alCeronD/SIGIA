@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../helpers/session.php';
 include_once __DIR__ . '/../../../config/conn.php';
+include_once __DIR__ . '/../../usuarios/model/usuariosModel.php';
 
 
 //TODO: en los mensajes de retorno, definir una estructura de retorno específica, así evitar devolver o valores null, o un string, la idea es que devuelva un array con su status y mensaje, en todos los retornos.
@@ -10,9 +11,12 @@ class ReservaModel
 
     protected $id;
 
+    protected $usuario;
+
     public function __construct()
     {
         $this->conect = new Conection();
+        $this->usuario = new usuarios($this->conect);
     }
 
     public function insertReserva(array $data = [], array $codDevolu = [], array $codConsumibles = [])
@@ -45,6 +49,7 @@ class ReservaModel
             $presSql = "INSERT INTO prestamos (pres_fch_slcitud,pres_fch_reserva,pres_hor_inicio,pres_hor_fin,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?,?,?,?)";
 
             $stmtPres = $conn->prepare($presSql);
+
 
             if (!$stmtPres) {
                 $conn->rollback();
@@ -106,9 +111,7 @@ class ReservaModel
                 }
                 $cantidadResult = $stmtGetCantidad->get_result();
                 $cantidad = $cantidadResult->fetch_assoc()['elm_existencia'];
-                // var_dump("cantidad Extraida $cantidad");
                 $cantidadTotal = $cantidad - $cantidadConsumibles[$key];
-                // var_dump("cantidad existencia $cantidadTotal");
 
                 $stmtConsumibles->bind_param('ii',$cantidadTotal,$value);
 
@@ -119,7 +122,10 @@ class ReservaModel
             }
 
             //Query para reportar la salida de los elementos consumibles.
-            $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn) VALUES(?,NOW(),?,?,?)";
+            // $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn) VALUES(?,NOW?(),?,?,?)";
+            $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn,ent_sal_cod_prestamo) VALUES(?,NOW(),?,?,?,?)";
+
+            
 
             $stmtSalida = $conn->prepare($sqlInsertSalida);
             //Salida
@@ -129,7 +135,7 @@ class ReservaModel
                 //Extraigo la cantidad y el código del elemento.
                 $codConsumibles = $element['codigo'];
                 $cant= $element['cantidad'];
-                $stmtSalida->bind_param('iiii',$cant,$tipoMovimento,$id,$codConsumibles);
+                $stmtSalida->bind_param('iiiii',$cant,$tipoMovimento,$id,$codConsumibles,$lastId);
 
                 if (!$stmtSalida->execute()) {
                     $conn->rollback();
@@ -183,7 +189,6 @@ class ReservaModel
 
         return $result;
     }
-
     public function updateReserva() {}
 
     //Función para finalizar la reserva y todos los elementos cambiar sus respectivos estados.
@@ -469,7 +474,6 @@ class ReservaModel
      * Summary of selectReservas TODO: Cambiar a Páginado con javascript.
      * @return array{data: array, message: string, status: bool|string}
      */
-
     public function selectDetailReserva()
     {
         $conn = $this->conect->getConnect();
@@ -574,5 +578,67 @@ class ReservaModel
         } catch (\Throwable $th) {
             return $th->getMessage();
         }
+    }
+
+    /**
+     * Función para validar las solicitudes que hacen tanto el usuario instructor como aprendices.
+     * @return void
+     */
+    public function validateSolicitud(array $data = [], int $cedula = 0){
+        $conn = $this->conect->getConnect();
+
+        try {
+            $conn->begin_transaction();
+            $elmConsumibles = $data['elementos']['elmConsumibles'];
+            $elmDevolutivos = $data['elementos']['elmDevolutivos'];
+            
+            $idUsario = $this->usuario->searchU($cedula,true);
+            $id = $idUsario['usu_id'];
+
+            $codigoPrestamo = $data['codigoReserva'];
+            //el estado desde las solicitudes es 3, en este caso se cambia a 1 que es   validado, cuando ya se entrega los elementos.
+            $estado = 1;
+            //Primera transacción, cambiamos el estado del prestamo.
+            $query = "UPDATE prestamos SET pres_estado = ? WHERE pres_cod = ?";
+            $stmtValidate = $conn->prepare($query);
+
+            $stmtValidate->bind_param('ii',$estado,$codigoPrestamo);
+
+            if (!$stmtValidate->execute()) {
+                $conn->rollback();
+                return null;
+            }
+            //lo cambio a 2, que es una salida.
+            $tipoMovimiento = 2;
+            //Segunda transacción se valida el estado de la salida de los elementos.
+            $queryValidateSalida = "UPDATE entradas_salidas SET entr_tp_movmnt = ? WHERE ent_sal_cod_prestamo  = ?";
+            
+            $stmtValidateSalida = $conn->prepare($queryValidateSalida);
+            $stmtValidateSalida->bind_param('ii',$tipoMovimiento,$codigoPrestamo);
+
+            if (!$stmtValidateSalida->execute()) {
+                return null;
+            }
+
+            $conn->commit();
+
+
+        } catch (Exception $e) {
+            $conn->rollback();
+            return $e->getMessage();
+        }
+
+
+    }
+
+
+    /**
+     * Summary of getIdUser Función para traer el id del usuario en base a su cedula, 
+     * Nota: esta función puede ir en el modelo de usuarios.
+     * @return void
+     */
+    public function getIdUser(){
+
+
     }
 }

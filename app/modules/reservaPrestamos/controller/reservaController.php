@@ -105,8 +105,13 @@ class ReservaController
         success('Prestamo exitoso', $response);
     }
 
+    //Función para validar la solicitud del aprendiz/instructor y cambiar su estado a validado
     public function setSolicitud(array $data =[]){
-
+        $cedula = $data['dataUsuario']['nroIdentidad'];
+        if (!$this->model->validateSolicitud($data, $cedula)) {
+            success('prestamo validado');
+        }
+        fail('error al validar el prestamo');
     }
 
     public function setEndReserva(array $elementos = [], int $codigo = 0){
@@ -215,10 +220,10 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             case 'validateLoan':
                 unset($data['action']);
                 $dataNuevo = $data;
-                $codigoReserva = $data['codigoReserva'];
-                $elementos = $data['elementos'];
 
-                var_dump($dataNuevo);
+
+                $controller->setSolicitud($dataNuevo);
+
                 //la validación del data es practicamente el setReserva pero la hare en otra función por cuestión de tiempo.
 
 
