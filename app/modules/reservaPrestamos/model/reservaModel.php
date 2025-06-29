@@ -8,6 +8,8 @@ class ReservaModel
 {
     private $conect;
 
+    protected $id;
+
     public function __construct()
     {
         $this->conect = new Conection();
@@ -38,6 +40,7 @@ class ReservaModel
                 return "Usuario con cédula $cedula no encontrado.";
             }
             $id = (int) $userRow['id'];
+            $this->id = $id;
             //segunda transacción, insertar los registros en el prestamo.
             $presSql = "INSERT INTO prestamos (pres_fch_slcitud,pres_fch_reserva,pres_hor_inicio,pres_hor_fin,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?,?,?,?)";
 
@@ -536,12 +539,16 @@ class ReservaModel
             //TODO: Mejorar consulta, esta consulta debe de traerme la cantidad de los elementos consumibles.
             $sqlElementsReserva = "SELECT 
                 el.elm_cod AS 'codigo',
-                el.elm_nombre AS 'nombre'
+                el.elm_nombre AS 'nombre',
+                `tpE`.tp_el_cod AS 'codTipoElemento',
+                `tpE`.tp_el_nombre as 'nombreTipoElemento'
                 FROM elementos el
                 RIGHT JOIN prestamos_elementos prel ON
                 el.elm_cod = prel.pres_el_elem_cod 
                 LEFT JOIN prestamos pre ON
                 pre.pres_cod = prel.pres_cod
+                LEFT JOIN tipo_elemento tpE ON
+                el.elm_cod_tp_elemento = `tpE`.tp_el_cod
                 WHERE prel.pres_cod = ?";
 
 

@@ -51,7 +51,6 @@ class ReservaController
 
     //Función para establecer datos para realizar su reserva.
     public function setReserva(array $data = []){
-
         //Validar usuario. para guardar su rol. y su tipo de prestamo, reserva o solicitud.
         if (($_SESSION['usuario']['rol_id'] == 2) || ($_SESSION['usuario']['rol_id'] == 1)) {
             $pres_rol = $_SESSION['usuario']['rol_id'];
@@ -169,8 +168,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 $controller->getElementosConsumibles($pages,$type);
             }
 
+        
             break;
-
 
             case 'reservas':
 
@@ -199,15 +198,13 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
         $data = json_decode($input, true);
 
+
         switch ($data['action']) {
             case 'finalizar':
 
                 $elementos = $data['data']["elementos"];
                 $codigoReserva = $data['data']["codigoReserva"];
-                //var_dump($elementos);
-                //var_dump($codigoReserva);
 
-                //var_dump($data);
                 $controller->setEndReserva($elementos, $codigoReserva);
                 break;
 
@@ -215,7 +212,17 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 $elementosPres = $data['data'];
                 $controller->setReserva($elementosPres);
                 break;
-                
+            case 'validateLoan':
+                unset($data['action']);
+                $dataNuevo = $data;
+                $codigoReserva = $data['codigoReserva'];
+                $elementos = $data['elementos'];
+
+                var_dump($dataNuevo);
+                //la validación del data es practicamente el setReserva pero la hare en otra función por cuestión de tiempo.
+
+
+            break;    
             default:
                 break;
         }
@@ -223,5 +230,4 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     }
     exit();
 }
-//Por defecto me ejecuta la vista, en caso de que no sea una petición.
-//$controller->reservaView();
+

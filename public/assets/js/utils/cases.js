@@ -342,17 +342,11 @@ export const typeLoans = {
 export const setReserva = (attribute = "", data = {}, elementos = {},target,action = "finalizar") => {
   const codigoReserva = Number(target.getAttribute([`${attribute}`]));
   const dataResult = data.find((dta) => Number(dta.codigo) === codigoReserva);
-  console.log({ finalizarPrestamo: target });
 
   if (dataResult && codigoReserva && elementos[codigoReserva]) {
     const reservaConElementos = elementos[codigoReserva];
     const elementosDeReserva = reservaConElementos.elementos;
 
-    // let endReserva = {
-    //   codigoReserva: reservaConElementos.reserva.codigo,
-    //   elementos: elementosDeReserva,
-    // }
-    
     return {
       codigoReserva: reservaConElementos.reserva.codigo,
       elementos: elementosDeReserva,

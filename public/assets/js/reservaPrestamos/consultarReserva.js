@@ -290,12 +290,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
                   let tdAcciones = infoTr.children[4];
                   let btnEnd = tdAcciones.querySelector('button[data-end="' + codigoAdd + '"]');
 
-                  
-                  //Capturo el botón con el data y el codigo respectivamete, así si cambia su posición no perderíamos el rastro del botón.
-                  console.log({"tdBtnEnd":btnEnd});
-                  console.log({"tdEstado":tdEstado});
-                  console.log(tdEstado);
-
                   btnEnd.style.display = "none";
                   tdEstado.textContent = "Finalizado";
 
@@ -329,19 +323,37 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
   //Dar salida a los prestamos, cambiar el estado de la solicitudes a validada e implementar su salida.
   if (event.target.tagName === "BUTTON" && event.target.getAttribute(["data-validate"])) {
-
+    // console.log(data);
     //Capturo los datos para transformarlo en json.
     let validateReserva = setReserva('data-validate',data,elementos,event.target);
+    let action = 'validateLoan';
+    validateReserva['action'] = action;
 
-    // sendData('modules/reservaPrestamos/controller/reservaController.php','POST',{"validateLoan":action});
-    console.log(validateReserva);
+    let consumibles = [];
+    let devolutivos = [];
 
+    let previewElements = validateReserva.elementos;
+    previewElements.forEach(element => {
+          if (element.codTipoElemento === 1) {
+        devolutivos.push(element);
+      } else if (element.codTipoElemento === 2) {
+        consumibles.push(element);
+      }
+    });
 
+    //Borro todos los elementos que esten en el objeto y los re asigno
+    delete validateReserva.elementos;
+
+    validateReserva.elementos = {    
+      elmConsumibles: consumibles,
+      elmDevolutivos: devolutivos
+    }
+
+    let response = sendData('modules/reservaPrestamos/controller/reservaController.php','POST','validateLoan',validateReserva);
 
 
   }
 
-  //
 });
 
 closeModal(modalDetail, btnCloseElements);
