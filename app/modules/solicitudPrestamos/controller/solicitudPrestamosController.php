@@ -84,8 +84,6 @@ class solicitudPrestamosController {
             fail('No se encontró información del préstamo');
         }
 
-        // Consulto los nombres para Detalle modal
-        //estado del prestamo
         $detalle['pres_estado_nombre'] = $this->obtenerEstadoNombre($detalle['pres_estado']);
         //el tipo del prestamo
         $detalle['tp_pres_nombre'] = $this->obtenerTipoPrestamoNombre($detalle['tp_pres']);
