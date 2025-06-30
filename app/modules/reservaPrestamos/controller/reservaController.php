@@ -101,8 +101,13 @@ class ReservaController
 
         $data['pres_rol'] = $pres_rol;
         $data['tp_pres'] = $tp_pres;
-        $response = $this->model->insertReserva($data, $codDevolu, $codConsumibles);
-        success('Prestamo exitoso', $response);
+        $result = $this->model->insertReserva($data, $codDevolu, $codConsumibles);
+        if (!$result) {
+            fail($result['message']);
+        }else{
+            success($result['message']);
+        }
+
     }
 
     //Función para validar la solicitud del aprendiz/instructor y cambiar su estado a validado

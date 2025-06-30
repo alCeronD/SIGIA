@@ -35,13 +35,19 @@ class ReservaModel
             $stmtUser->bind_param('i', $cedula);
             if (!$stmtUser->execute()) {
                 $conn->rollback();
-                return $stmtUser->error;
+                return [
+                    'message'=>$stmtUser->error,
+                    'status'=>false
+                ];
             }
             $resultId = $stmtUser->get_result();
             $userRow = $resultId->fetch_assoc();
             if (!$userRow) {
                 $conn->rollback();
-                return "Usuario con cédula $cedula no encontrado.";
+                return [
+                    'message'=> "Usuario con cédula $cedula no encontrado.",
+                    'status'=>false
+                ];
             }
             $id = (int) $userRow['id'];
             $this->id = $id;
@@ -53,7 +59,10 @@ class ReservaModel
 
             if (!$stmtPres) {
                 $conn->rollback();
-                return $conn->error;
+                return [
+                    'message'=>"error al preparar la consulta",
+                    'status'=> false
+                ];
             }
             //Debo usar esta por el tema de la versión de php.
             extract($data, EXTR_PREFIX_ALL, 'p');
@@ -70,10 +79,23 @@ class ReservaModel
                 $p_pres_rol
             );
             if (!$stmtPres->execute()) {
-                return $conn->error;
+                $conn->rollback();
+                return [
+                    'message'=> "error al registrar el prestamo $stmtPres->error",
+                    'status'=> false
+                ];
             }
+
             //Capturo el id del prestamo, lo voy a usar para insertar en la tabla prestamos_elementos.
             $lastId = $conn->insert_id;
+
+            if (!$lastId) {
+                $conn->rollback();
+                return [
+                    'data' => 'Error: no se pudo obtener el ID del préstamo insertado.',
+                    'status' => false
+                ];
+            }
 
             //tercera para actualizar el estado de los elementos devolutivos
             $updateStatusElements = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
@@ -85,7 +107,10 @@ class ReservaModel
 
                 if (!$stmtUpdateStatus->execute()) {
                     $conn->rollback();
-                    return $stmtUpdateStatus->error;
+                    return [
+                        'message'=> "$stmtUpdateStatus->error",
+                        'status'=> false
+                    ];
                 }
             }
 
@@ -94,7 +119,6 @@ class ReservaModel
 
             //Cuarta transacción, traer la cantidad disponible del elemento.
             $sqlGetCantidad = "SELECT elm_existencia FROM elementos WHERE elm_cod = ?";
-            
             
             //Cuarta transacción, reducir la cantidad de elementos a los elementos consumibles.
             $sqlConsumibles = "UPDATE elementos SET elm_existencia = ? WHERE elm_cod = ?";
@@ -107,7 +131,11 @@ class ReservaModel
 
                 if (!$stmtGetCantidad->execute()) {
                     $conn->rollback();
-                    return $stmtGetCantidad->error;
+
+                    return [
+                        'message' => $stmtGetCantidad->error,
+                        'status' => false
+                    ];
                 }
                 $cantidadResult = $stmtGetCantidad->get_result();
                 $cantidad = $cantidadResult->fetch_assoc()['elm_existencia'];
@@ -117,15 +145,15 @@ class ReservaModel
 
                 if (!$stmtConsumibles->execute()) {
                     $conn->rollback();
-                    return $stmtConsumibles->error;
+
+                    return [
+                        'message'=> "$stmtConsumibles->error",
+                        'status'=> false
+                    ];
                 }
             }
 
-            //Query para reportar la salida de los elementos consumibles.
-            // $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn) VALUES(?,NOW?(),?,?,?)";
             $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn,ent_sal_cod_prestamo) VALUES(?,NOW(),?,?,?,?)";
-
-            
 
             $stmtSalida = $conn->prepare($sqlInsertSalida);
             //Salida
@@ -133,61 +161,72 @@ class ReservaModel
 
             foreach ($codConsumibles as $element) {
                 //Extraigo la cantidad y el código del elemento.
-                $codConsumibles = $element['codigo'];
+                $codigo = $element['codigo'];
                 $cant= $element['cantidad'];
-                $stmtSalida->bind_param('iiiii',$cant,$tipoMovimento,$id,$codConsumibles,$lastId);
 
+                $stmtSalida->bind_param('iiiii', $cant, $tipoMovimento, $id, $codigo, $lastId);
                 if (!$stmtSalida->execute()) {
                     $conn->rollback();
-                    return $stmtConsumibles->error;
+                    $result = [
+                        'message' => "$stmtConsumibles->error",
+                        'status' => false
+                    ];
+
+                    return $result;
+
                 }
             }
 
             $codsDevel = array_column($codDevolu, 'codigo');
-
+            $cantidadDevolutivo = 1;
             //quinta transacción insertar los elementos devolutivos en la tabla prestamos_elementos.
-            $sqlElementosDev = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod) VALUES(?,?,?)";
+            $sqlElementosDev = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES(?,?,?,?)";
             $stmtElementosDev = $conn->prepare($sqlElementosDev);
             foreach ($codsDevel as $value) {
                 $value = (int) $value;
-                $stmtElementosDev->bind_param('iii', $lastId, $id, $value);
+                $stmtElementosDev->bind_param('iiii', $lastId, $id, $value,$cantidadDevolutivo);
 
                 if (!$stmtElementosDev->execute()) {
                     $conn->rollback();
-                    return $stmtElementos->error;
+                    return [
+                        'data' => $stmtElementosDev->error,
+                        'status' => false
+                    ];
                 }
             }
 
             //Sexta transacción, insertar los elementos consumibles
-            $sqlElementosConsu = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod) VALUES(?,?,?)";
+            $sqlElementosConsu = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES(?,?,?,?)";
             $stmtElementosConsu = $conn->prepare($sqlElementosConsu);
-            foreach ($codidogConsumibles as $value) {
-                $value = (int) $value;
-                $stmtElementosConsu->bind_param('iii',$lastId,$id,$value);
+            foreach ($codConsumibles as $value) {
+                $cod = (int) $value['codigo'];
+                $cant= $value['cantidad'];
+                $stmtElementosConsu->bind_param('iiii',$lastId,$id,$cod,$cant);
 
                 if (!$stmtElementosConsu->execute()) {
                     $conn->rollback();
-                    return $stmtElementosConsu->error;
-
+                    return [
+                        'message' => $stmtElementosConsu->error,
+                        'status' => false
+                    ];
                 }
             }
 
-            //TODO: Registrar la salida del elemento, definir como la voy a implementar.
-            //TODO: definir cuando voy a hacer una reserva, si tiene elementos consumibles, devolutivos o ambos.
-            //TODO: los elementos consumibles no deben de cambiar su estado.
-            $result = [
-                'data' => [],
+            $conn->commit();
+            return [
+                'message' => 'proceso realizado exitosamente',
                 'status' => true
             ];
-
-            $conn->commit();
             
         } catch (\Throwable $th) {
+            $messageError = $th->getMessage();
             $conn->rollback();
-            return $th->getMessage();
+            return [
+                'message' => "Error en el proceso: $messageError",
+                'status' => false
+            ];
         }
 
-        return $result;
     }
     public function updateReserva() {}
 
@@ -630,8 +669,6 @@ class ReservaModel
 
 
     }
-
-
     /**
      * Summary of getIdUser Función para traer el id del usuario en base a su cedula, 
      * Nota: esta función puede ir en el modelo de usuarios.
