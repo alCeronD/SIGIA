@@ -120,7 +120,7 @@ class ReservaModel
             //Cuarta transacción, traer la cantidad disponible del elemento.
             $sqlGetCantidad = "SELECT elm_existencia FROM elementos WHERE elm_cod = ?";
             
-            //Cuarta transacción, reducir la cantidad de elementos a los elementos consumibles.
+            //quinta transacción, reducir la cantidad de elementos a los elementos consumibles.
             $sqlConsumibles = "UPDATE elementos SET elm_existencia = ? WHERE elm_cod = ?";
             $stmtGetCantidad = $conn->prepare($sqlGetCantidad);
             $stmtConsumibles = $conn->prepare($sqlConsumibles);
@@ -637,7 +637,7 @@ class ReservaModel
 
     /**
      * Función para validar las solicitudes que hacen tanto el usuario instructor como aprendices.
-     * @return void
+     * @return array
      */
     public function validateSolicitud(array $data = [], int $cedula = 0){
         $conn = $this->conect->getConnect();
@@ -645,6 +645,12 @@ class ReservaModel
         try {
             $conn->begin_transaction();
             $elmConsumibles = $data['elementos']['elmConsumibles'];
+            $codElmConsumibles = [];
+
+            //Extraigo los codigos de los elementos consumibles y lo guardo en el arreglo codElmConsumibles.
+            foreach ($elmConsumibles as $key => $value) {
+                array_push($codElmConsumibles,$value['codigo']);
+            }
             $elmDevolutivos = $data['elementos']['elmDevolutivos'];
             
             $idUsario = $this->usuario->searchU($cedula,true);
@@ -653,7 +659,7 @@ class ReservaModel
             $codigoPrestamo = $data['codigoReserva'];
             //el estado desde las solicitudes es 3, en este caso se cambia a 1 que es   validado, cuando ya se entrega los elementos.
             $estado = 1;
-            //Primera transacción, cambiamos el estado del prestamo.
+            // //Primera transacción, cambiamos el estado del prestamo.
             $query = "UPDATE prestamos SET pres_estado = ? WHERE pres_cod = ?";
             $stmtValidate = $conn->prepare($query);
 
@@ -661,27 +667,85 @@ class ReservaModel
 
             if (!$stmtValidate->execute()) {
                 $conn->rollback();
-                return null;
+                return [
+                    'message'=> $stmtValidate->error,
+                    'status'=> false
+                ];
             }
-            //lo cambio a 2, que es una salida.
+
+
+            // //lo cambio a 2, que es una salida.
             $tipoMovimiento = 2;
             //Segunda transacción se valida el estado de la salida de los elementos.
             $queryValidateSalida = "UPDATE entradas_salidas SET entr_tp_movmnt = ? WHERE ent_sal_cod_prestamo  = ?";
-            
-            $stmtValidateSalida = $conn->prepare($queryValidateSalida);
-            $stmtValidateSalida->bind_param('ii',$tipoMovimiento,$codigoPrestamo);
 
-            if (!$stmtValidateSalida->execute()) {
-                return null;
+            $stmtValidateSalida = $conn->prepare($queryValidateSalida);
+            //Aplico for each porque en la tabla entradas_salidas el codigo puede estar registrado 2 veces, eso basado en la cantidad de elementos que hacen parte del prestamo.
+            var_dump($codigoPrestamo);
+            foreach ($codigoPrestamo as $key => $value) {
+                $stmtValidateSalida->bind_param('ii',$tipoMovimiento,$value);
+
+                if (!$stmtValidateSalida->execute()) {
+                    $conn->rollback();
+                    return [
+                        'message'=> "$stmtValidateSalida->error",
+                        'status' => false
+                    ];
+                }
+            }
+
+
+            // //Cuarta transacción, traer la cantidad disponible del elemento.
+            $sqlGetCantidad = "SELECT elm_existencia FROM elementos WHERE elm_cod = ?";
+            
+            //quinta transacción, reducir la cantidad de elementos a los elementos consumibles.
+            $sqlConsumibles = "UPDATE elementos SET elm_existencia = ? WHERE elm_cod = ?";
+            $stmtGetCantidad = $conn->prepare($sqlGetCantidad);
+            $stmtConsumibles = $conn->prepare($sqlConsumibles);
+
+            foreach ($codElmConsumibles as $key => $value) {
+                //Parámetros para traer la cantidad de existencias.
+                $stmtGetCantidad->bind_param('i',$value);
+
+                if (!$stmtGetCantidad->execute()) {
+                    $conn->rollback();
+
+                    return [
+                        'message' => $stmtGetCantidad->error,
+                        'status' => false
+                    ];
+                }
+                $cantidadResult = $stmtGetCantidad->get_result();
+                $cantidad = $cantidadResult->fetch_assoc()['elm_existencia'];
+                $cantidadTotal = $cantidad - $codElmConsumibles[$key];
+
+                $stmtConsumibles->bind_param('ii',$cantidadTotal,$value);
+
+                if (!$stmtConsumibles->execute()) {
+                    $conn->rollback();
+
+                    return [
+                        'message'=> "$stmtConsumibles->error",
+                        'status'=> false
+                    ];
+                }
             }
 
             $conn->commit();
 
-
         } catch (Exception $e) {
             $conn->rollback();
-            return $e->getMessage();
+            return [
+                'message' => $e->getMessage(),
+                'status' => false
+            ];
         }
+
+        return [
+            'message' => 'Solicitud validada con exito',
+            'stauts'=> false
+        ];
+
 
 
     }

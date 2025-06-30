@@ -353,6 +353,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     let elementosPreviewConsu = validateReserva.elementos.elmConsumibles;
     let elementosPreviewDev = validateReserva.elementos.elmDevolutivos;
 
+    console.log(validateReserva);
     //Todo: implementar esto en sweetAlert
     if (confirm(`¿Deseas dar salida a estos elementos? \n
       Consumibles:\n${
@@ -365,7 +366,9 @@ tbodyReservaConsult.addEventListener("click", (event) => {
           `Código: ${elDev.codigo} Nombre: ${elDev.nombre}`
         ).join("\n")
       }`)) {
+
         console.log('funciona mi papayo');
+        let response = sendData('modules/reservaPrestamos/controller/reservaController.php','POST','validateLoan',validateReserva);
       }
       
   }

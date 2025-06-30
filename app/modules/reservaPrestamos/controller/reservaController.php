@@ -113,9 +113,9 @@ class ReservaController
     //Función para validar la solicitud del aprendiz/instructor y cambiar su estado a validado
     public function setSolicitud(array $data =[]){
         $cedula = $data['dataUsuario']['nroIdentidad'];
-        if (!$this->model->validateSolicitud($data, $cedula)) {
+        $result = $this->model->validateSolicitud($data, $cedula);
             success('prestamo validado');
-        }
+        
         fail('error al validar el prestamo');
     }
 
