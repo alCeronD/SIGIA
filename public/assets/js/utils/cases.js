@@ -1,5 +1,5 @@
 /**
- * Archivo donde podemos importar y re utilizar cosas. como crear elementos html o re utilizar cosas como peticiones futuras
+ * Archivo donde podemos importar y re utilizar cosas. como crear elementos html
  */
 export const closeModal = (modal,btn) => {
 
@@ -16,7 +16,6 @@ export const closeModal = (modal,btn) => {
   btn.addEventListener('click', (e)=>{
       e.preventDefault();
       e.stopPropagation();
-      // modal.close();
 
       //Valido si el tipo de lo que voy a ejecutar es una función.
       if (typeof modal.close === 'function') {
