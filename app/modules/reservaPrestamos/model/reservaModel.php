@@ -580,16 +580,32 @@ class ReservaModel
         try {
             //Consulta para traer los elementos basado en el código del prestamo.
             //TODO: Mejorar consulta, esta consulta debe de traerme la cantidad de los elementos consumibles.
+            // $sqlElementsReserva = "SELECT 
+            //     el.elm_cod AS 'codigo',
+            //     el.elm_nombre AS 'nombre',
+            //     `tpE`.tp_el_cod AS 'codTipoElemento',
+            //     `tpE`.tp_el_nombre as 'nombreTipoElemento'
+            //     FROM elementos el
+            //     RIGHT JOIN prestamos_elementos prel ON
+            //     el.elm_cod = prel.pres_el_elem_cod 
+            //     LEFT JOIN prestamos pre ON
+            //     pre.pres_cod = prel.pres_cod
+            //     LEFT JOIN tipo_elemento tpE ON
+            //     el.elm_cod_tp_elemento = `tpE`.tp_el_cod
+            //     WHERE prel.pres_cod = ?";
             $sqlElementsReserva = "SELECT 
                 el.elm_cod AS 'codigo',
                 el.elm_nombre AS 'nombre',
                 `tpE`.tp_el_cod AS 'codTipoElemento',
-                `tpE`.tp_el_nombre as 'nombreTipoElemento'
+                `tpE`.tp_el_nombre as 'nombreTipoElemento',
+                en.ent_sal_cantidad AS 'cantidadSolicitada'
                 FROM elementos el
                 RIGHT JOIN prestamos_elementos prel ON
                 el.elm_cod = prel.pres_el_elem_cod 
                 LEFT JOIN prestamos pre ON
                 pre.pres_cod = prel.pres_cod
+                LEFT JOIN entradas_salidas en ON
+                prel.pres_el_elem_cod = en.ent_sal_cod_elemtn
                 LEFT JOIN tipo_elemento tpE ON
                 el.elm_cod_tp_elemento = `tpE`.tp_el_cod
                 WHERE prel.pres_cod = ?";

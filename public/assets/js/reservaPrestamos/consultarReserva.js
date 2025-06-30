@@ -349,8 +349,25 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       elmDevolutivos: devolutivos
     }
 
-    let response = sendData('modules/reservaPrestamos/controller/reservaController.php','POST','validateLoan',validateReserva);
+    //Variable para visualizar los elementos antes de validar el prestamo
+    let elementosPreviewConsu = validateReserva.elementos.elmConsumibles;
+    let elementosPreviewDev = validateReserva.elementos.elmDevolutivos;
 
+    //Todo: implementar esto en sweetAlert
+    if (confirm(`¿Deseas dar salida a estos elementos? \n
+      Consumibles:\n${
+        elementosPreviewConsu.map((el) => 
+          `Código: ${el.codigo} Nombre: ${el.nombre} Cantidad: ${el.cantidadSolicitada}`
+        ).join("\n")
+      }
+      \nDevolutivos:\n${
+        elementosPreviewDev.map((elDev) => 
+          `Código: ${elDev.codigo} Nombre: ${elDev.nombre}`
+        ).join("\n")
+      }`)) {
+        console.log('funciona mi papayo');
+      }
+      
   }
 
 });
