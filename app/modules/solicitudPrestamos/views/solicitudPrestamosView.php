@@ -9,45 +9,44 @@
     <form id="formSolicitudPrestamo" method="POST" action="<?= getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamo'); ?>" class="row">
 
       <!-- Nombre, Apellido, Rol -->
-      <div class="input-field col s12 m4">
-        <input type="text" id="pres_nombre" name="pres_nombre" value="<?= $nombre ?>" readonly>
-        <label for="pres_nombre" class="active">Nombre del Solicitante</label>
+      <div class="input-field nombre">
+        
+        <label for="pres_nombre" class="active  fontInfo">
+          
+          Nombre del Solicitante: <span class="black-text "><?php echo $nombre." ".$apellido;?></span>
+      </label>
       </div>
 
-      <div class="input-field col s12 m4">
-        <input type="text" id="pres_apellido" name="pres_apellido" value="<?= $apellido ?>" readonly>
-        <label for="pres_apellido" class="active">Apellido del Solicitante</label>
-      </div>
-
-      <div class="input-field col s12 m4">
-        <input type="text" id="pres_rol" name="pres_rol" value="<?= $rol_nombre ?>" readonly>
-        <label for="pres_rol" class="active">Rol del Solicitante</label>
+      <div class="input-field rol">
+        <label for="pres_rol" class="active fontInfo">
+          Rol del Solicitante <span class="black-text"><?php echo $rol_nombre; ?></span>
+        </label>
       </div>
 
       <!-- Fechas y destino -->
-      <div class="input-field col s12 m4">
+      <div class="input-field fechaReserva">
         <input type="text" id="pres_fch_reserva" name="pres_fch_reserva" class="datepicker" required>
         <label for="pres_fch_reserva" class="active">Fecha de Reserva *</label>
       </div>
 
-      <div class="input-field col s12 m4">
+      <div class="input-field fechaEntrega">
         <input type="text" id="pres_fch_entrega" name="pres_fch_entrega" class="datepicker" required>
         <label for="pres_fch_entrega" class="active">Fecha de Devolución *</label>
       </div>
 
-      <div class="input-field col s12 m4">
+      <div class="input-field destino">
         <input type="text" id="pres_destino" name="pres_destino" maxlength="30" required>
         <label for="pres_destino">Destino *</label>
       </div>
 
       <!-- Observaciones -->
-      <div class="input-field col s12">
+      <div class="input-field inputObservaciones">
         <textarea id="pres_observacion" name="pres_observacion" class="materialize-textarea" required></textarea>
         <label for="pres_observacion">Observaciones *</label>
       </div>
 
       <!-- Botón abrir modal -->
-      <div class="input-field col s12">
+      <div class="input-field inputAddElements">
         <a class="waves-effect waves-light btn modal-trigger" href="#modalSeleccionElementos">Seleccionar Elementos</a>
       </div>
 
@@ -103,7 +102,7 @@
       </div>
 
       <!-- Botón enviar solicitud -->
-      <div class="input-field col s12 center-align">
+      <div class="input-field center-align inputBtn">
         <button type="submit" class="btn blue">Solicitar</button>
       </div>
     </form>
