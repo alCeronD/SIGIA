@@ -1,7 +1,8 @@
 <?php
 
 
-class usuarios {    
+class usuarios
+{
     public $usu_id;
     public $usu_docum;
     public $usu_nombres;
@@ -11,18 +12,20 @@ class usuarios {
     public $usu_telefono;
     public $usu_id_estado;
     public $usu_tp_id;
-    private $campos =['usu_docum','usu_nombres','usu_apellidos','usu_email','usu_telefono'];
+    private $campos = ['usu_docum', 'usu_nombres', 'usu_apellidos', 'usu_email', 'usu_telefono'];
     private $conn;
 
-    public function __construct($conexion) {
+    public function __construct($conexion)
+    {
         $this->conn = $conexion;
     }
 
-    public function create(array $data = []) {
+    public function create(array $data = [])
+    {
 
         // Valida si el tipo de dato recibido es de tipo array.
         if (!is_array($data)) {
-           exit();
+            exit();
         }
 
         $usu_docum     = $this->conn->real_escape_string($data['usu_docum']);
@@ -50,7 +53,7 @@ class usuarios {
                 INSERT INTO usuarios_roles (usr_usu_id, usr_rl_id) 
                 VALUES ($usu_id, $rol_id)
             ";
-    
+
             if ($this->conn->query($queryRol)) {
                 return true;
             } else {
@@ -61,38 +64,40 @@ class usuarios {
         }
     }
 
-    public function update($datos,$id) {
-        
+    public function update($datos, $id)
+    {
+
         $datos;
         $cadena = "";
-        
+
         foreach ($datos as $campo => $value) {
             $cadena .= "$campo = '$value' ,";
         }
 
-        $cadena = trim($cadena,",");
-        $query ="UPDATE usuarios SET $cadena WHERE usu_id = '$id'";
+        $cadena = trim($cadena, ",");
+        $query = "UPDATE usuarios SET $cadena WHERE usu_id = '$id'";
         // dd($query);
         $resultado = $this->conn->query($query);
-        
+
         if ($resultado) {
             return true;
-        }else {
+        } else {
             return "Error al actualizar: " . $this->conn->error;
         }
-        
     }
-    
-    public function organization($datos){
+
+    public function organization($datos)
+    {
         $cadena = '';
         foreach ($datos as $key => $value) {
             # code...
         }
     }
-    
-    public function search() {
+
+    public function search()
+    {
         $usuarios = [];
-        
+
         $query = "
             SELECT
             u.usu_id,
@@ -112,53 +117,46 @@ class usuarios {
         JOIN estados_usuarios eu ON
             u.usu_id_estado = eu.est_id;
         ";
-    
+
         $resultado = $this->conn->query($query);
         if ($resultado && $resultado->num_rows > 0) {
             while ($fila = $resultado->fetch_assoc()) {
                 $usuarios[] = $fila;
             }
         }
-        
+
         // dd($usuarios);
         return $usuarios;
-        }
-        
-    
-    
-    //Busca un registro específico.
-    public function searchU(int $id=0){
+    }
+
+
+
+    //Busca un registro específico. basado en su id.
+    public function searchU(int $id = 0, $isCedula = false)
+    {
 
         if (!is_int($id)) {
             exit();
         }
 
-        if ($id) {
-       $query = "SELECT 
-                    usu_id,
-                    usu_docum,
-                    usu_nombres,
-                    usu_apellidos,
-                    usu_email,
-                    usu_telefono
-                FROM usuarios WHERE usu_id = '$id'";
-        $resultado = $this->conn->query($query);
-        // var_dump($resultado);
-        
-            if ($resultado && $resultado->num_rows > 0) {
-                return $resultado->fetch_assoc();
-            } else {
-                return null; 
-            }
-        }else {
-            return null; 
+        $query = $isCedula ? "SELECT usu_id FROM usuarios WHERE usu_docum = ?" : "SELECT usu_id, usu_docum, usu_nombres, usu_apellidos, usu_email, usu_telefono FROM usuarios WHERE usu_id = ?";
+
+        $conn = $this->conn->getConnect();
+
+        $stmtUser = $conn->prepare($query);
+
+    
+        $stmtUser->bind_param("i", $id);
+
+        if (!$stmtUser->execute()) {
+            return null;
         }
+
+        $result = $stmtUser->get_result();
+
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc();
+        }
+        
     }
-    
-    
-
 }
-
-    
-
-?>

@@ -1,5 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import { createI, closeModal, openModal, createBtn, instanceModal, options } from "../utils/cases.js";
+import { createI, closeModal, openModal, createBtn, instanceModal, options, initAlert, toastOptions } from "../utils/cases.js";
 //La idea es capturar la información aca desde javascript y enviarla al controlador.
 
 //Formulario de envio
@@ -96,6 +96,8 @@ function fetchData() {
           iDelete.innerText = 'loop';
           btnDelete.append(iDelete);
         }
+        //Al texto activo o inactivo le aplico negrilla
+        tdStatus.style.fontWeight = "bold";
 
         tdAccion.append(btnUpdate, btnDelete);
         tr.appendChild(tdId);
@@ -177,7 +179,7 @@ function fetchData() {
               if (dta.status === false) {
                 alert("Error al actualizar el registro.");
               } else {
-                alert("Registro actualizado");
+                initAlert('Registro actualizado','warning',toastOptions);
                 fetchData(); // Refrescar tabla
               }
             };
@@ -224,12 +226,11 @@ formulario.addEventListener("submit", (event) => {
       const response = JSON.parse(objAjax.request.responseText);
       if (response.status) {
         const lastRow = response.data;
-
+        initAlert('Registro adicionado con exito','success',toastOptions);
         // Reiniciar el formulario
         formulario.reset();
         //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
         fetchData();
-        alert(response.message);
       } else {
         alert(response.message);
       }
@@ -266,13 +267,13 @@ areaUpdateForm.addEventListener("submit", (e) => {
     //Transformo en un json la respuesta.
     dataStatus = JSON.parse(dataStatus);
     if (dataStatus.status) {
-      alert("registro actualizado");
       //Cerrar el modal
-      closeModal(myModal,e.target);
+      closeModal(instanceMyModal);
+      initAlert('Registro actualizado','warning', toastOptions);
 
       //Renderizo nuevamente la data.
       fetchData();
-      instanceMyModal.close();
+      // instanceMyModal.close();
     }
   };
   objAjax.request.send(data);

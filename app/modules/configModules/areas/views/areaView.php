@@ -27,7 +27,7 @@
         </div>
     </div>
 
-    <div class="tblAreas highlight striped responsive-table">
+    <div class="tblAreas highlight striped responsive-table ">
         <!-- Tabla de vista. -->
         <?php require_once 'tableViewArea.php'; ?>
     </div>

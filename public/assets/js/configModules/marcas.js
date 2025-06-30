@@ -77,6 +77,8 @@ function fetchData() {
         tdStatus.style.color = "red";
         iDelete.innerText = 'loop';
       }
+      //Al texto activo o inactivo le aplico negrilla
+      tdStatus.style.fontWeight = "bold";
 
       tdAccion.append(btnUpdate, btnDelete);
       tr.appendChild(tdId);

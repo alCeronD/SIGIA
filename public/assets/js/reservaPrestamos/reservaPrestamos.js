@@ -1,5 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import { closeModal,  createI,instanceDate, instanceModal, options, opcionesDatepicker, instanceDateTime, timePickerOptions, dateISOFormat, initTooltip, tooltipOptions } from "../utils/cases.js";
+import { closeModal,  createI,instanceDate, instanceModal, options, opcionesDatepicker, instanceDateTime, timePickerOptions, dateISOFormat, initTooltip, tooltipOptions, initAlert, toastOptions } from "../utils/cases.js";
 
 const objAjax = new Ajax();
 const btnSubmit = document.querySelector("#btnSubmit");
@@ -62,26 +62,6 @@ let inputEmail = document.querySelector("#email");
 tableUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
 const btnPreview = document.querySelector("#preview");
 const btnNext = document.querySelector("#next");
-
-document.addEventListener('DOMContentLoaded', ()=>{
-  fetchData("elements", 1);
-
-  const selects = document.querySelectorAll('select');
-  M.FormSelect.init(selects);
-
-  //Hago la instancia de los input tipo date
-  instanceDate('#fechaReserva',opcionesDatepicker);
-  instanceDate('#fechaDevolucion',opcionesDatepicker);
-
-  //Instancia de los input de tipo datetime.
-  instanceDateTime('#fin',timePickerOptions);
-  instanceDateTime('#inicio',timePickerOptions);
-
-
-  //Inicializar tooltips
-  // const elementsTooltips = document.querySelectorAll('.tooltipped');
-  
-});
 
 areaDestino.addEventListener("change", () => {
   let value = areaDestino.options[areaDestino.selectedIndex];
@@ -171,6 +151,22 @@ function fetchData(action = "", page = 1) {
   objAjax.request.setRequestHeader("Accept", "application/json");
   objAjax.request.send();
 }
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  fetchData("elements", 1);
+
+  const selects = document.querySelectorAll('select');
+  M.FormSelect.init(selects);
+
+  //Hago la instancia de los input tipo date
+  instanceDate('#fechaReserva',opcionesDatepicker);
+  instanceDate('#fechaDevolucion',opcionesDatepicker);
+
+  //Instancia de los input de tipo datetime.
+  instanceDateTime('#fin',timePickerOptions);
+  instanceDateTime('#inicio',timePickerOptions);
+  
+});
 
 //Función para reestablecer los elementos a la página 1.
 //TODO: Documentar la función usando JSDOC
@@ -322,7 +318,6 @@ function definirCantidad(cantidadInput, cantidad) {
   });
 }
 
-
 // Abrir modal de elementos disponibles devolutivos
 btnAddElements.addEventListener("click", (btnTarget) => {
   btnTarget.preventDefault();
@@ -470,7 +465,7 @@ tableUsers.addEventListener("click", (e) => {
     inputTelefono.textContent = telefono;
     inputEmail.textContent = email;
 
-    //Cerrar el modal justo que el administrador elija al usuario.
+    initAlert(`Instructor ${nombre} ${apellido} asociado al prestamo`, 'info',toastOptions);
     closeModal(modalUsers);
   }
 });
@@ -513,6 +508,8 @@ tableDevolutivos.addEventListener("click", (event) => {
           trTablePreview.appendChild(tdNombre);
           trTablePreview.appendChild(tdArea);
           trTablePreview.appendChild(tdCantidad);
+
+          initAlert(`${nombre} agregado a reserva`,'info',{"inDuration": toastOptions.inDuration});
 
       }else{
         alert('el elemento seleccionado ya está seleccionado.');
@@ -564,6 +561,8 @@ tableConsumible.addEventListener(('click'),(event)=>{
       //Valido que el elemento no este en la tabla, en caso de que este, evitar duplicidad.
       if (!ids.includes(codigoConsu)) {
         ids.push(codigoConsu);
+
+        initAlert(`${cantidadConsu} unidades agregadas de ${nombreConsu}`, 'info',toastOptions);
 
         tablePreviewElements.appendChild(trConsu);
         trConsu.appendChild(tdCodigoConsu);
@@ -628,7 +627,6 @@ previewElement.addEventListener("click", () => {
       let codigo = dta.codigo;
       let elemento = dta.elemento;
       let area = dta.area;
-
       addElements = document.createElement("input");
       addElements.setAttribute("type", "checkbox");
       addElements.setAttribute("class", "checkboxInput");
@@ -649,7 +647,6 @@ previewElement.addEventListener("click", () => {
       tdArea.textContent = area;
       tdAccion.append(label);
       label.append(addElements,span);
-
       tableDevolutivos.appendChild(trTable);
       trTable.appendChild(tdCodigo);
       trTable.appendChild(tdElemento);
@@ -751,7 +748,6 @@ document.querySelector('#previewElementConsumible').addEventListener('click', (e
 
       divElements.append(cantidadInput,divCheckbox);
 
-
       tdCodigo.innerText = data.codigo;
       tdNombre.innerText = data.elemento;
       tdCantidad.innerText = data.cantidad;
@@ -808,9 +804,7 @@ document.querySelector('#nextElementConsumible').addEventListener('click',(event
       cantidadInput.setAttribute('min',0);
       cantidadInput.setAttribute('data-cantidad',data.cantidad);
 
-
       divElements.append(cantidadInput,divCheckbox);
-
 
       tdCodigo.innerText = data.codigo;
       tdNombre.innerText = data.elemento;
@@ -865,7 +859,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   //Data de formulario
   let data = Object.fromEntries(info);
 
-
   //Transformo la fecha en formato iso 8601
   let fechaReservaFormat = dateISOFormat(data.fechaReserva);
   let fechaDevolucionFormat = dateISOFormat(data.fechaDevolucion);
@@ -908,7 +901,8 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   data.codigosElementos = codigosElementos;
 
   if (!data["areaDestino"]) {
-    alert("El área de destino es obligatoria.");
+    // alert("El área de destino es obligatoria.");
+    initAlert('El área de destino es obligatoria.','error',toastOptions);
     return;
   }
 
@@ -936,14 +930,13 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     data: data,
     action: 'registrar'
     });
-  console.log(dataJson);
   //TODO: transformar en sweet alert.
-  if (confirm("¿Deseas registrar los siguientes elementos?")) {
+  if (confirm("¿Deseas realizar el siguiente prestamo?")) {
     objAjax.request.onload = () => {
       let response = JSON.parse(objAjax.request.responseText);
 
       if (response.status) {
-        alert("Reserva realizada con exito");
+        initAlert('Reserva realizada con exito','success',toastOptions);
         //Limpio el formulario, tabla y campos de span.
         formSolicitudPrestamo.reset();
         inputNroDocumento.textContent = "";
