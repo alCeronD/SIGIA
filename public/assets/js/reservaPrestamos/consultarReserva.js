@@ -80,6 +80,7 @@ function getReservas() {
       tr.appendChild(tdNombreCompleto);
       tr.appendChild(tdEstado);
       tr.appendChild(tdTipo);
+      tdAcciones.innerHTML = "";
       tr.append(tdAcciones);
 
       //Si el estado del prestamo es finalizado, no debe de visualizar el boton de finalizar.
@@ -87,14 +88,41 @@ function getReservas() {
         btnEnd.style.display = 'none';
       }
 
+      //Siempre mostrar el ver detalle.
+      tdAcciones.appendChild(btnDetail);
+
+      if (dta.estadoPrestamo === 'Finalizado') {
+        // Solo mostrar botón Detalle
+        return;
+      }
 
       if (dta.codigoTipoPrestamo === typeLoans.solicitud) {
-        tdAcciones.append(btnDetail,btnValidateLoan);
+        if (dta.estadoPrestamo === 'Por validar') {
+          tdAcciones.appendChild(btnValidateLoan);
+        } else if (dta.estadoPrestamo === 'Validado') {
+          tdAcciones.appendChild(btnEnd);
+        }
       }
 
-      if (dta.codigoTipoPrestamo == typeLoans.inmediata) {
-        tdAcciones.append(btnDetail,btnEnd);
+      
+      if (dta.codigoTipoPrestamo === typeLoans.inmediata) {
+        // En préstamos inmediatos, ya están validados desde el backend
+        if (dta.estadoPrestamo === 'Validado') {
+          tdAcciones.appendChild(btnEnd);
+        }
       }
+
+
+
+
+
+      // if (dta.codigoTipoPrestamo === typeLoans.solicitud) {
+      //   tdAcciones.append(btnDetail,btnValidateLoan);
+      // }
+
+      // if (dta.codigoTipoPrestamo == typeLoans.inmediata) {
+      //   tdAcciones.append(btnDetail,btnEnd);
+      // }
 
 
       const reserva = data.find((item) => item.codigo === codigo);
@@ -323,7 +351,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
   //Dar salida a los prestamos, cambiar el estado de la solicitudes a validada e implementar su salida.
   if (event.target.tagName === "BUTTON" && event.target.getAttribute(["data-validate"])) {
-    // console.log(data);
     //Capturo los datos para transformarlo en json.
     let validateReserva = setReserva('data-validate',data,elementos,event.target);
     let action = 'validateLoan';
@@ -353,7 +380,15 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     let elementosPreviewConsu = validateReserva.elementos.elmConsumibles;
     let elementosPreviewDev = validateReserva.elementos.elmDevolutivos;
 
+    
+
     console.log(validateReserva);
+    let dataTr = event.target.closest("tr");
+    console.log(dataTr);
+    //Estado por validar
+    let estadoNew = dataTr.children[2];
+    let tdAcciones = dataTr.children[4];
+
     //Todo: implementar esto en sweetAlert
     if (confirm(`¿Deseas dar salida a estos elementos? \n
       Consumibles:\n${
@@ -367,8 +402,25 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         ).join("\n")
       }`)) {
 
-        console.log('funciona mi papayo');
-        let response = sendData('modules/reservaPrestamos/controller/reservaController.php','POST','validateLoan',validateReserva);
+        try {
+
+          sendData('modules/reservaPrestamos/controller/reservaController.php','POST','validateLoan',validateReserva).then((response)=>{
+            console.log(response);
+            // tdAcciones.innerHTML = "";
+            estadoNew.textContent = 'Validado';
+            let btnValidate = tdAcciones.querySelector(`button[data-validate='${validateReserva.codigoReserva}']`);
+            if (btnValidate) {
+              btnValidate.style.display = "none";
+            }
+
+            let btnEnd = document.createElement("button");
+            btnEnd.setAttribute("data-end", `${validateReserva.codigoReserva}`);
+            btnEnd.innerText = 'finalizar';
+            tdAcciones.appendChild(btnEnd);
+          }); 
+        } catch (error) {
+          console.warn('error al realizar el proceso'+error);
+        }
       }
       
   }
