@@ -640,115 +640,100 @@ class ReservaModel
      * @return array
      */
     public function validateSolicitud(array $data = [], int $cedula = 0){
-        $conn = $this->conect->getConnect();
+    $conn = $this->conect->getConnect();
 
-        try {
-            $conn->begin_transaction();
-            $elmConsumibles = $data['elementos']['elmConsumibles'];
-            $codElmConsumibles = [];
+    try {
+        $conn->begin_transaction();
 
-            //Extraigo los codigos de los elementos consumibles y lo guardo en el arreglo codElmConsumibles.
-            foreach ($elmConsumibles as $key => $value) {
-                array_push($codElmConsumibles,$value['codigo']);
-            }
-            $elmDevolutivos = $data['elementos']['elmDevolutivos'];
-            
-            $idUsario = $this->usuario->searchU($cedula,true);
-            $id = $idUsario['usu_id'];
+        $elmConsumibles = $data['elementos']['elmConsumibles'];
+        $elmDevolutivos = $data['elementos']['elmDevolutivos'];
 
-            $codigoPrestamo = $data['codigoReserva'];
-            //el estado desde las solicitudes es 3, en este caso se cambia a 1 que es   validado, cuando ya se entrega los elementos.
-            $estado = 1;
-            // //Primera transacción, cambiamos el estado del prestamo.
-            $query = "UPDATE prestamos SET pres_estado = ? WHERE pres_cod = ?";
-            $stmtValidate = $conn->prepare($query);
+        $idUsario = $this->usuario->searchU($cedula, true);
+        $id = $idUsario['usu_id'];
 
-            $stmtValidate->bind_param('ii',$estado,$codigoPrestamo);
+        $codigoPrestamo = $data['codigoReserva']; // Es un solo ID, no array
 
-            if (!$stmtValidate->execute()) {
-                $conn->rollback();
-                return [
-                    'message'=> $stmtValidate->error,
-                    'status'=> false
-                ];
-            }
+        $estado = 1; // Validado
+        $query = "UPDATE prestamos SET pres_estado = ? WHERE pres_cod = ?";
+        $stmtValidate = $conn->prepare($query);
+        $stmtValidate->bind_param('ii', $estado, $codigoPrestamo);
 
-
-            // //lo cambio a 2, que es una salida.
-            $tipoMovimiento = 2;
-            //Segunda transacción se valida el estado de la salida de los elementos.
-            $queryValidateSalida = "UPDATE entradas_salidas SET entr_tp_movmnt = ? WHERE ent_sal_cod_prestamo  = ?";
-
-            $stmtValidateSalida = $conn->prepare($queryValidateSalida);
-            //Aplico for each porque en la tabla entradas_salidas el codigo puede estar registrado 2 veces, eso basado en la cantidad de elementos que hacen parte del prestamo.
-            var_dump($codigoPrestamo);
-            foreach ($codigoPrestamo as $key => $value) {
-                $stmtValidateSalida->bind_param('ii',$tipoMovimiento,$value);
-
-                if (!$stmtValidateSalida->execute()) {
-                    $conn->rollback();
-                    return [
-                        'message'=> "$stmtValidateSalida->error",
-                        'status' => false
-                    ];
-                }
-            }
-
-
-            // //Cuarta transacción, traer la cantidad disponible del elemento.
-            $sqlGetCantidad = "SELECT elm_existencia FROM elementos WHERE elm_cod = ?";
-            
-            //quinta transacción, reducir la cantidad de elementos a los elementos consumibles.
-            $sqlConsumibles = "UPDATE elementos SET elm_existencia = ? WHERE elm_cod = ?";
-            $stmtGetCantidad = $conn->prepare($sqlGetCantidad);
-            $stmtConsumibles = $conn->prepare($sqlConsumibles);
-
-            foreach ($codElmConsumibles as $key => $value) {
-                //Parámetros para traer la cantidad de existencias.
-                $stmtGetCantidad->bind_param('i',$value);
-
-                if (!$stmtGetCantidad->execute()) {
-                    $conn->rollback();
-
-                    return [
-                        'message' => $stmtGetCantidad->error,
-                        'status' => false
-                    ];
-                }
-                $cantidadResult = $stmtGetCantidad->get_result();
-                $cantidad = $cantidadResult->fetch_assoc()['elm_existencia'];
-                $cantidadTotal = $cantidad - $codElmConsumibles[$key];
-
-                $stmtConsumibles->bind_param('ii',$cantidadTotal,$value);
-
-                if (!$stmtConsumibles->execute()) {
-                    $conn->rollback();
-
-                    return [
-                        'message'=> "$stmtConsumibles->error",
-                        'status'=> false
-                    ];
-                }
-            }
-
-            $conn->commit();
-
-        } catch (Exception $e) {
+        if (!$stmtValidate->execute()) {
             $conn->rollback();
             return [
-                'message' => $e->getMessage(),
+                'message' => $stmtValidate->error,
                 'status' => false
             ];
         }
 
+        $tipoMovimiento = 2; // Salida
+        $queryValidateSalida = "UPDATE entradas_salidas SET entr_tp_movmnt = ? WHERE ent_sal_cod_prestamo = ?";
+        $stmtValidateSalida = $conn->prepare($queryValidateSalida);
+        $stmtValidateSalida->bind_param('ii', $tipoMovimiento, $codigoPrestamo);
+
+        if (!$stmtValidateSalida->execute()) {
+            $conn->rollback();
+            return [
+                'message' => $stmtValidateSalida->error,
+                'status' => false
+            ];
+        }
+
+        $sqlGetCantidad = "SELECT elm_existencia FROM elementos WHERE elm_cod = ?";
+        $sqlConsumibles = "UPDATE elementos SET elm_existencia = ? WHERE elm_cod = ?";
+        $stmtGetCantidad = $conn->prepare($sqlGetCantidad);
+        $stmtConsumibles = $conn->prepare($sqlConsumibles);
+
+        foreach ($elmConsumibles as $item) {
+            $codigo = $item['codigo'];
+            $cantidadSolicitada = $item['cantidadSolicitada'];
+
+            $stmtGetCantidad->bind_param('i', $codigo);
+            if (!$stmtGetCantidad->execute()) {
+                $conn->rollback();
+                return [
+                    'message' => $stmtGetCantidad->error,
+                    'status' => false
+                ];
+            }
+
+            $cantidadResult = $stmtGetCantidad->get_result();
+            $existente = $cantidadResult->fetch_assoc()['elm_existencia'];
+            $nuevaCantidad = $existente - $cantidadSolicitada;
+
+            if ($nuevaCantidad < 0) {
+                $conn->rollback();
+                return [
+                    'message' => "Cantidad insuficiente para el elemento con código $codigo.",
+                    'status' => false
+                ];
+            }
+
+            $stmtConsumibles->bind_param('ii', $nuevaCantidad, $codigo);
+            if (!$stmtConsumibles->execute()) {
+                $conn->rollback();
+                return [
+                    'message' => $stmtConsumibles->error,
+                    'status' => false
+                ];
+            }
+        }
+
+        $conn->commit();
+
         return [
-            'message' => 'Solicitud validada con exito',
-            'stauts'=> false
+            'message' => 'Solicitud validada con éxito',
+            'status' => true
         ];
 
-
-
+    } catch (Exception $e) {
+        $conn->rollback();
+        return [
+            'message' => $e->getMessage(),
+            'status' => false
+        ];
     }
+}
     /**
      * Summary of getIdUser Función para traer el id del usuario en base a su cedula, 
      * Nota: esta función puede ir en el modelo de usuarios.
