@@ -1,6 +1,6 @@
 <div id="">
     <legend>Elementos devolutivos</legend>
-    <table id="">
+    <table id="tblDevolutivos">
         <thead>
             <tr>
                 <th>Código</th>

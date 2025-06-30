@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../helpers/session.php';
 include_once __DIR__ . '/../../../config/conn.php';
+include_once __DIR__ . '/../../usuarios/model/usuariosModel.php';
 
 
 //TODO: en los mensajes de retorno, definir una estructura de retorno específica, así evitar devolver o valores null, o un string, la idea es que devuelva un array con su status y mensaje, en todos los retornos.
@@ -8,9 +9,14 @@ class ReservaModel
 {
     private $conect;
 
+    protected $id;
+
+    protected $usuario;
+
     public function __construct()
     {
         $this->conect = new Conection();
+        $this->usuario = new usuarios($this->conect);
     }
 
     public function insertReserva(array $data = [], array $codDevolu = [], array $codConsumibles = [])
@@ -29,23 +35,34 @@ class ReservaModel
             $stmtUser->bind_param('i', $cedula);
             if (!$stmtUser->execute()) {
                 $conn->rollback();
-                return $stmtUser->error;
+                return [
+                    'message'=>$stmtUser->error,
+                    'status'=>false
+                ];
             }
             $resultId = $stmtUser->get_result();
             $userRow = $resultId->fetch_assoc();
             if (!$userRow) {
                 $conn->rollback();
-                return "Usuario con cédula $cedula no encontrado.";
+                return [
+                    'message'=> "Usuario con cédula $cedula no encontrado.",
+                    'status'=>false
+                ];
             }
             $id = (int) $userRow['id'];
+            $this->id = $id;
             //segunda transacción, insertar los registros en el prestamo.
             $presSql = "INSERT INTO prestamos (pres_fch_slcitud,pres_fch_reserva,pres_hor_inicio,pres_hor_fin,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?,?,?,?)";
 
             $stmtPres = $conn->prepare($presSql);
 
+
             if (!$stmtPres) {
                 $conn->rollback();
-                return $conn->error;
+                return [
+                    'message'=>"error al preparar la consulta",
+                    'status'=> false
+                ];
             }
             //Debo usar esta por el tema de la versión de php.
             extract($data, EXTR_PREFIX_ALL, 'p');
@@ -62,10 +79,23 @@ class ReservaModel
                 $p_pres_rol
             );
             if (!$stmtPres->execute()) {
-                return $conn->error;
+                $conn->rollback();
+                return [
+                    'message'=> "error al registrar el prestamo $stmtPres->error",
+                    'status'=> false
+                ];
             }
+
             //Capturo el id del prestamo, lo voy a usar para insertar en la tabla prestamos_elementos.
             $lastId = $conn->insert_id;
+
+            if (!$lastId) {
+                $conn->rollback();
+                return [
+                    'data' => 'Error: no se pudo obtener el ID del préstamo insertado.',
+                    'status' => false
+                ];
+            }
 
             //tercera para actualizar el estado de los elementos devolutivos
             $updateStatusElements = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
@@ -77,7 +107,10 @@ class ReservaModel
 
                 if (!$stmtUpdateStatus->execute()) {
                     $conn->rollback();
-                    return $stmtUpdateStatus->error;
+                    return [
+                        'message'=> "$stmtUpdateStatus->error",
+                        'status'=> false
+                    ];
                 }
             }
 
@@ -87,8 +120,7 @@ class ReservaModel
             //Cuarta transacción, traer la cantidad disponible del elemento.
             $sqlGetCantidad = "SELECT elm_existencia FROM elementos WHERE elm_cod = ?";
             
-            
-            //Cuarta transacción, reducir la cantidad de elementos a los elementos consumibles.
+            //quinta transacción, reducir la cantidad de elementos a los elementos consumibles.
             $sqlConsumibles = "UPDATE elementos SET elm_existencia = ? WHERE elm_cod = ?";
             $stmtGetCantidad = $conn->prepare($sqlGetCantidad);
             $stmtConsumibles = $conn->prepare($sqlConsumibles);
@@ -99,24 +131,29 @@ class ReservaModel
 
                 if (!$stmtGetCantidad->execute()) {
                     $conn->rollback();
-                    return $stmtGetCantidad->error;
+
+                    return [
+                        'message' => $stmtGetCantidad->error,
+                        'status' => false
+                    ];
                 }
                 $cantidadResult = $stmtGetCantidad->get_result();
                 $cantidad = $cantidadResult->fetch_assoc()['elm_existencia'];
-                // var_dump("cantidad Extraida $cantidad");
                 $cantidadTotal = $cantidad - $cantidadConsumibles[$key];
-                // var_dump("cantidad existencia $cantidadTotal");
 
                 $stmtConsumibles->bind_param('ii',$cantidadTotal,$value);
 
                 if (!$stmtConsumibles->execute()) {
                     $conn->rollback();
-                    return $stmtConsumibles->error;
+
+                    return [
+                        'message'=> "$stmtConsumibles->error",
+                        'status'=> false
+                    ];
                 }
             }
 
-            //Query para reportar la salida de los elementos consumibles.
-            $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn) VALUES(?,NOW(),?,?,?)";
+            $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn,ent_sal_cod_prestamo) VALUES(?,NOW(),?,?,?,?)";
 
             $stmtSalida = $conn->prepare($sqlInsertSalida);
             //Salida
@@ -124,63 +161,73 @@ class ReservaModel
 
             foreach ($codConsumibles as $element) {
                 //Extraigo la cantidad y el código del elemento.
-                $codConsumibles = $element['codigo'];
+                $codigo = $element['codigo'];
                 $cant= $element['cantidad'];
-                $stmtSalida->bind_param('iiii',$cant,$tipoMovimento,$id,$codConsumibles);
 
+                $stmtSalida->bind_param('iiiii', $cant, $tipoMovimento, $id, $codigo, $lastId);
                 if (!$stmtSalida->execute()) {
                     $conn->rollback();
-                    return $stmtConsumibles->error;
+                    $result = [
+                        'message' => "$stmtConsumibles->error",
+                        'status' => false
+                    ];
+
+                    return $result;
+
                 }
             }
 
             $codsDevel = array_column($codDevolu, 'codigo');
-
+            $cantidadDevolutivo = 1;
             //quinta transacción insertar los elementos devolutivos en la tabla prestamos_elementos.
-            $sqlElementosDev = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod) VALUES(?,?,?)";
+            $sqlElementosDev = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES(?,?,?,?)";
             $stmtElementosDev = $conn->prepare($sqlElementosDev);
             foreach ($codsDevel as $value) {
                 $value = (int) $value;
-                $stmtElementosDev->bind_param('iii', $lastId, $id, $value);
+                $stmtElementosDev->bind_param('iiii', $lastId, $id, $value,$cantidadDevolutivo);
 
                 if (!$stmtElementosDev->execute()) {
                     $conn->rollback();
-                    return $stmtElementos->error;
+                    return [
+                        'data' => $stmtElementosDev->error,
+                        'status' => false
+                    ];
                 }
             }
 
             //Sexta transacción, insertar los elementos consumibles
-            $sqlElementosConsu = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod) VALUES(?,?,?)";
+            $sqlElementosConsu = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES(?,?,?,?)";
             $stmtElementosConsu = $conn->prepare($sqlElementosConsu);
-            foreach ($codidogConsumibles as $value) {
-                $value = (int) $value;
-                $stmtElementosConsu->bind_param('iii',$lastId,$id,$value);
+            foreach ($codConsumibles as $value) {
+                $cod = (int) $value['codigo'];
+                $cant= $value['cantidad'];
+                $stmtElementosConsu->bind_param('iiii',$lastId,$id,$cod,$cant);
 
                 if (!$stmtElementosConsu->execute()) {
                     $conn->rollback();
-                    return $stmtElementosConsu->error;
-
+                    return [
+                        'message' => $stmtElementosConsu->error,
+                        'status' => false
+                    ];
                 }
             }
 
-            //TODO: Registrar la salida del elemento, definir como la voy a implementar.
-            //TODO: definir cuando voy a hacer una reserva, si tiene elementos consumibles, devolutivos o ambos.
-            //TODO: los elementos consumibles no deben de cambiar su estado.
-            $result = [
-                'data' => [],
+            $conn->commit();
+            return [
+                'message' => 'proceso realizado exitosamente',
                 'status' => true
             ];
-
-            $conn->commit();
             
         } catch (\Throwable $th) {
+            $messageError = $th->getMessage();
             $conn->rollback();
-            return $th->getMessage();
+            return [
+                'message' => "Error en el proceso: $messageError",
+                'status' => false
+            ];
         }
 
-        return $result;
     }
-
     public function updateReserva() {}
 
     //Función para finalizar la reserva y todos los elementos cambiar sus respectivos estados.
@@ -466,7 +513,6 @@ class ReservaModel
      * Summary of selectReservas TODO: Cambiar a Páginado con javascript.
      * @return array{data: array, message: string, status: bool|string}
      */
-
     public function selectDetailReserva()
     {
         $conn = $this->conect->getConnect();
@@ -484,14 +530,16 @@ class ReservaModel
                 pre.pres_fch_entrega AS fechaDevolucion,
                 pre.pres_observacion AS observacion,
                 esp.es_pr_nombre AS estadoPrestamo,
-                r.rl_nombre AS rol,
-                tp_pre.tp_nombre AS tipoPrestamo
+                esp.es_pr_cod AS estadoCodigoPrestamo,
+                r.rl_nombre AS nombreRol,
+                tp_pr.tp_pre AS codigoTipoPrestamo,
+                tp_pr.tp_nombre AS tipoPrestamo
                 FROM prestamos pre
                 INNER JOIN prestamos_elementos pre_el ON pre_el.pres_cod = pre.pres_cod
                 INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
                 INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
                 INNER JOIN roles r ON r.rl_id = pre.pres_rol
-                INNER JOIN tipo_prestamo tp_pre ON tp_pre.tp_pre = pre.tp_pres";
+                INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres";
 
             $stmtResevas = $conn->prepare($sqlReservas);
 
@@ -532,14 +580,34 @@ class ReservaModel
         try {
             //Consulta para traer los elementos basado en el código del prestamo.
             //TODO: Mejorar consulta, esta consulta debe de traerme la cantidad de los elementos consumibles.
+            // $sqlElementsReserva = "SELECT 
+            //     el.elm_cod AS 'codigo',
+            //     el.elm_nombre AS 'nombre',
+            //     `tpE`.tp_el_cod AS 'codTipoElemento',
+            //     `tpE`.tp_el_nombre as 'nombreTipoElemento'
+            //     FROM elementos el
+            //     RIGHT JOIN prestamos_elementos prel ON
+            //     el.elm_cod = prel.pres_el_elem_cod 
+            //     LEFT JOIN prestamos pre ON
+            //     pre.pres_cod = prel.pres_cod
+            //     LEFT JOIN tipo_elemento tpE ON
+            //     el.elm_cod_tp_elemento = `tpE`.tp_el_cod
+            //     WHERE prel.pres_cod = ?";
             $sqlElementsReserva = "SELECT 
                 el.elm_cod AS 'codigo',
-                el.elm_nombre AS 'nombre'
+                el.elm_nombre AS 'nombre',
+                `tpE`.tp_el_cod AS 'codTipoElemento',
+                `tpE`.tp_el_nombre as 'nombreTipoElemento',
+                en.ent_sal_cantidad AS 'cantidadSolicitada'
                 FROM elementos el
                 RIGHT JOIN prestamos_elementos prel ON
                 el.elm_cod = prel.pres_el_elem_cod 
                 LEFT JOIN prestamos pre ON
                 pre.pres_cod = prel.pres_cod
+                LEFT JOIN entradas_salidas en ON
+                prel.pres_el_elem_cod = en.ent_sal_cod_elemtn
+                LEFT JOIN tipo_elemento tpE ON
+                el.elm_cod_tp_elemento = `tpE`.tp_el_cod
                 WHERE prel.pres_cod = ?";
 
 
@@ -565,5 +633,114 @@ class ReservaModel
         } catch (\Throwable $th) {
             return $th->getMessage();
         }
+    }
+
+    /**
+     * Función para validar las solicitudes que hacen tanto el usuario instructor como aprendices.
+     * @return array
+     */
+    public function validateSolicitud(array $data = [], int $cedula = 0){
+    $conn = $this->conect->getConnect();
+
+    try {
+        $conn->begin_transaction();
+
+        $elmConsumibles = $data['elementos']['elmConsumibles'];
+        $elmDevolutivos = $data['elementos']['elmDevolutivos'];
+
+        $idUsario = $this->usuario->searchU($cedula, true);
+        $id = $idUsario['usu_id'];
+
+        $codigoPrestamo = $data['codigoReserva']; // Es un solo ID, no array
+
+        $estado = 1; // Validado
+        $query = "UPDATE prestamos SET pres_estado = ? WHERE pres_cod = ?";
+        $stmtValidate = $conn->prepare($query);
+        $stmtValidate->bind_param('ii', $estado, $codigoPrestamo);
+
+        if (!$stmtValidate->execute()) {
+            $conn->rollback();
+            return [
+                'message' => $stmtValidate->error,
+                'status' => false
+            ];
+        }
+
+        $tipoMovimiento = 2; // Salida
+        $queryValidateSalida = "UPDATE entradas_salidas SET entr_tp_movmnt = ? WHERE ent_sal_cod_prestamo = ?";
+        $stmtValidateSalida = $conn->prepare($queryValidateSalida);
+        $stmtValidateSalida->bind_param('ii', $tipoMovimiento, $codigoPrestamo);
+
+        if (!$stmtValidateSalida->execute()) {
+            $conn->rollback();
+            return [
+                'message' => $stmtValidateSalida->error,
+                'status' => false
+            ];
+        }
+
+        $sqlGetCantidad = "SELECT elm_existencia FROM elementos WHERE elm_cod = ?";
+        $sqlConsumibles = "UPDATE elementos SET elm_existencia = ? WHERE elm_cod = ?";
+        $stmtGetCantidad = $conn->prepare($sqlGetCantidad);
+        $stmtConsumibles = $conn->prepare($sqlConsumibles);
+
+        foreach ($elmConsumibles as $item) {
+            $codigo = $item['codigo'];
+            $cantidadSolicitada = $item['cantidadSolicitada'];
+
+            $stmtGetCantidad->bind_param('i', $codigo);
+            if (!$stmtGetCantidad->execute()) {
+                $conn->rollback();
+                return [
+                    'message' => $stmtGetCantidad->error,
+                    'status' => false
+                ];
+            }
+
+            $cantidadResult = $stmtGetCantidad->get_result();
+            $existente = $cantidadResult->fetch_assoc()['elm_existencia'];
+            $nuevaCantidad = $existente - $cantidadSolicitada;
+
+            if ($nuevaCantidad < 0) {
+                $conn->rollback();
+                return [
+                    'message' => "Cantidad insuficiente para el elemento con código $codigo.",
+                    'status' => false
+                ];
+            }
+
+            $stmtConsumibles->bind_param('ii', $nuevaCantidad, $codigo);
+            if (!$stmtConsumibles->execute()) {
+                $conn->rollback();
+                return [
+                    'message' => $stmtConsumibles->error,
+                    'status' => false
+                ];
+            }
+        }
+
+        $conn->commit();
+
+        return [
+            'message' => 'Solicitud validada con éxito',
+            'status' => true
+        ];
+
+    } catch (Exception $e) {
+        $conn->rollback();
+        return [
+            'message' => $e->getMessage(),
+            'status' => false
+        ];
+    }
+}
+    /**
+     * Summary of getIdUser Función para traer el id del usuario en base a su cedula, 
+     * Nota: esta función puede ir en el modelo de usuarios.
+     * @return void
+     */
+    public function getIdUser(){
+
+
     }
 }

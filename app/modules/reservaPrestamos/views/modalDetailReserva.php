@@ -9,33 +9,22 @@
     <div class="infoDetail">
       <form action="" id="formDetail">
         <div class="inputContent inputContentDetail nroIdentidad">
-          <label for="nroIdentidad" class="labelForm labelFormDetail">Nro Identificación:</label>
-          <input type="number" class="inputForm inputFormDetail" name="nroIdentidad" id="nroIdentidad" placeholder="Identificación...">
+          <label for="nroIdentidad" class="labelForm labelFormDetail">Nro Identificación: <span class=" inputFormDetail" name="nroIdentidad" id="nroIdentidad"></span></label>
         </div>
-
         <div class="inputContent inputContentDetail nombreCompleto">
-          <label for="nombreCompleto" class="labelForm labelFormDetail">Nombre:</label>
-          <input type="text" class="inputForm inputFormDetail" name="nombreCompleto" id="nombreCompleto">
+          <label for="nombreCompleto" class="labelForm labelFormDetail">Nombre: <span class="inputFormDetail" name="nombreCompleto" id="nombreCompleto"></span></label>
         </div>
-
         <div class="inputContent inputContentDetail fechaReserva">
-          <label for="fechaReserva" class="labelForm labelFormDetail">Fecha reserva:</label>
-          <input type="date" class="inputForm inputFormDetail" name="fechaReserva" id="fechaReserva">
+          <label for="fechaReserva" class="labelForm labelFormDetail">Fecha reserva: <span class="inputFormDetail" name="fechaReserva" id="fechaReserva"></span></label>
         </div>
-
         <div class="inputContent inputContentDetail fechaSolicitud">
-          <label for="fechaSolicitud" class="labelForm labelFormDetail">Fecha solicitud:</label>
-          <input type="date" class="inputForm inputFormDetail" name="fechaSolicitud" id="fechaSolicitud">
+          <label for="fechaSolicitud" class="labelForm labelFormDetail">Fecha solicitud: <span class="inputFormDetail" name="fechaSolicitud" id="fechaSolicitud"></span></label>
         </div>
-
         <div class="inputContent inputContentDetail fechaDevolucion">
-          <label for="fechaDevolucion" class="labelForm labelFormDetail">Fecha devolución:</label>
-          <input type="date" class="inputForm inputFormDetail" name="fechaDevolucion" id="fechaDevolucion">
+          <label for="fechaDevolucion" class="labelForm labelFormDetail">Fecha devolución: <span class="inputFormDetail" name="fechaDevolucion" id="fechaDevolucion"></span></label>
         </div>
-
         <div class="inputContent inputContentDetail observaciones">
-          <label for="observaciones" class="labelForm labelFormDetail">Observaciones:</label>
-          <textarea name="observaciones" class="inputForm inputFormDetail" id="observaciones"></textarea>
+          <label for="observaciones" class="labelForm labelFormDetail">Observaciones: <p class="inputFormDetail" id="observaciones" name="observaciones"></p></label>
         </div>
       </form>
     </div>

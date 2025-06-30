@@ -234,11 +234,10 @@ th {
 .modal-content {
   background-color: #fefefe;
   margin: 0 auto;
-  /* 15% from the top and centered */
-  padding: 20px;
-  width: 100%;
+  width: fit-content;
   height: fit-content;
 }
+
 
 .close {
   cursor: pointer;
@@ -349,6 +348,7 @@ th {
     "infoDetail"
     "tableContainer";
   gap: 2rem;
+  width: 100%;
 }
 
 .modalTitleDetail {
@@ -474,6 +474,24 @@ table td .actionsElements {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+
+#tblDevolutivos {
+  width: auto;
+  table-layout: auto; /* importante para permitir que el contenido determine el ancho */
+  border-collapse: collapse;
+}
+
+/* le aplico una separación y borde a la tabla devolutivos para una mejor apariencia. */
+#tblDevolutivos th,
+#tblDevolutivos td {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+}
+
+#tblBodyConsumibles th,td{
+    padding: 4px 8px;
+  border: 1px solid #ccc;
 }
 
 /* Resolusiones mayores a 1440 */

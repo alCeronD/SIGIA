@@ -45,30 +45,27 @@
 
 
   #formSolicitudPrestamo {
-    /* display: grid; */
+    display: grid;
     grid-template-areas:
-      "nombre apellido rol"
+      "nombre inputAddElements rol"
       "fechaReserva fechaEntrega destino"
       "inputObservaciones inputObservaciones inputObservaciones"
-      "filtroArea filtroArea filtroArea"
-      "tableElements tableElements tableElements"
       ". inputBtn .";
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
+    gap: 0.2rem;
     width: 100%;
   }
-  
-  
+
+  /* .input-field {
+    border: 1px dashed red;
+  } */
 
   .nombre { grid-area: nombre; }
-  .apellido { grid-area: apellido; }
-  .rol { grid-area: rol; }
+  .inputAddElements {grid-area: inputAddElements;}
   .fechaReserva { grid-area: fechaReserva; }
   .fechaEntrega { grid-area: fechaEntrega; }
   .destino { grid-area: destino; }
   .inputObservaciones { grid-area: inputObservaciones; }
-  .filtroArea { grid-area: filtroArea; }
-  .tableElements { grid-area: tableElements; }
   .inputBtn { grid-area: inputBtn; }
 
   .inputContent {
@@ -87,6 +84,8 @@
     border: none;
     border-bottom: 2px solid #ccc;
     font-size: 12pt;
+    margin-top: 0rem !important;
+    margin-bottom: 0rem !important;
   }
 
   .inputForm:focus {
@@ -98,6 +97,10 @@
     resize: none;
     height: 80px;
   }
+  .input-field >  .fontInfo{
+    font-size: 20pt !important;
+  }
+
 
   .btnForm {
     font-size: 10pt;
@@ -132,9 +135,6 @@
   z-index: 1; /* o ninguno */
 }
 
-  
-  
-  
   /* Clase de modal de solicitud de prestamos */
   .tableElements {
     overflow: auto;

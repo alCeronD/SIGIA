@@ -1,8 +1,9 @@
-import { closeModal, openModal } from '../utils/cases.js';
+import { closeModal, instanceModal, openModal, options } from '../utils/cases.js';
 
-const modalDetalle = document.querySelector('#modalDetalle');
 const contenidoDetalle = document.getElementById('contenidoDetalle');
 const btnCerrarModal = document.querySelector('.closeModalBtn');
+
+let modalDetalle = instanceModal('#modalDetalle',options);
 
 document.addEventListener('DOMContentLoaded', function () {
   const filas = Array.from(document.querySelectorAll('.fila-prestamo'));
@@ -65,7 +66,8 @@ document.addEventListener('click', async (e) => {
     e.preventDefault();
     const id = e.target.getAttribute('data-id');
 
-    openModal(modalDetalle);
+    // openModal(modalDetalle);
+    modalDetalle.open();
     const modalTitle = document.querySelector('#modalTitle');
     modalTitle.innerHTML = `Detalle del préstamo #${id}`;
 

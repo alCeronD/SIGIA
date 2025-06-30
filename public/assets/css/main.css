@@ -49,12 +49,10 @@ html, body {
   position: relative;
   top: calc(100vh - 90vh);
   overflow: visible;
-  border: 1px solid black;
   padding: 0.5rem;
 
 
-    /* Borde estético */
-  border: 1px solid var(--other);
+  /* border: 1px solid var(--other); */
   border-radius: 8px;
 
   /* Sombra sutil */
@@ -247,4 +245,25 @@ input[type="number"] {
 /* esta clase corresponde a los titulos del modulo de configuración, se puede usar para los demás modulos */
 .textTitleSpan{
   font-size: 20pt;
+}
+
+
+/* Estilos de alertas toast de materialize */
+#toast-container{
+    position: absolute !important;
+    right: .5em;
+    bottom: 0;
+}
+.toast{
+  background-color: var(--white);
+  color: black;
+  border: 1px solid black;
+  text-align: left;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14pt;
+  min-width: 150px;
+  max-width: 250px;
+  width: auto;
+  z-index: 1000;
 }

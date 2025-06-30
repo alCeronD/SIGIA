@@ -51,23 +51,21 @@ class ReservaController
 
     //Función para establecer datos para realizar su reserva.
     public function setReserva(array $data = []){
-
         //Validar usuario. para guardar su rol. y su tipo de prestamo, reserva o solicitud.
         if (($_SESSION['usuario']['rol_id'] == 2) || ($_SESSION['usuario']['rol_id'] == 1)) {
             $pres_rol = $_SESSION['usuario']['rol_id'];
             //Reserva
-            $tp_pres = 2;
+            $tp_pres = 1;
             //Estado
             $pres_estado = 1;
         }
         if (($_SESSION['usuario']['rol_id'] == 4)) {
             $pres_rol = $_SESSION['usuario']['rol_id'];
             //Solicitud
-            $tp_pres = 1;
+            $tp_pres = 2;
             //Estado
             $pres_estado = 3;
         }
-
 
         $codConsumibles = $data["codigosElementos"]['consumibles'];
         $codDevolu = $data["codigosElementos"]['devolutivos'];
@@ -77,10 +75,8 @@ class ReservaController
         //Cordenar los elementos del arreglo basado en el código
         array_multisort($codDevolu,SORT_ASC,$ascDevolutivos);
         array_multisort($codConsumibles,SORT_ASC,$ascConsu);
-        //var_dump($codDevolu);
 
         unset($data["codigosElementos"]);
-
 
         //Cambiar nombre de la llave.
         $data['pres_fch_reserva'] = $data['fechaReserva'];
@@ -105,8 +101,22 @@ class ReservaController
 
         $data['pres_rol'] = $pres_rol;
         $data['tp_pres'] = $tp_pres;
-        $response = $this->model->insertReserva($data, $codDevolu, $codConsumibles);
-        success('Prestamo exitoso', $response);
+        $result = $this->model->insertReserva($data, $codDevolu, $codConsumibles);
+        if (!$result) {
+            fail($result['message']);
+        }else{
+            success($result['message']);
+        }
+
+    }
+
+    //Función para validar la solicitud del aprendiz/instructor y cambiar su estado a validado
+    public function setSolicitud(array $data =[]){
+        $cedula = $data['dataUsuario']['nroIdentidad'];
+        $result = $this->model->validateSolicitud($data, $cedula);
+            success('prestamo validado');
+        
+        fail('error al validar el prestamo');
     }
 
     public function setEndReserva(array $elementos = [], int $codigo = 0){
@@ -168,8 +178,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 $controller->getElementosConsumibles($pages,$type);
             }
 
+        
             break;
-
 
             case 'reservas':
 
@@ -198,15 +208,13 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
         $data = json_decode($input, true);
 
+
         switch ($data['action']) {
             case 'finalizar':
 
                 $elementos = $data['data']["elementos"];
                 $codigoReserva = $data['data']["codigoReserva"];
-                //var_dump($elementos);
-                //var_dump($codigoReserva);
 
-                //var_dump($data);
                 $controller->setEndReserva($elementos, $codigoReserva);
                 break;
 
@@ -214,7 +222,17 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 $elementosPres = $data['data'];
                 $controller->setReserva($elementosPres);
                 break;
-                
+            case 'validateLoan':
+                unset($data['action']);
+                $dataNuevo = $data;
+
+
+                $controller->setSolicitud($dataNuevo);
+
+                //la validación del data es practicamente el setReserva pero la hare en otra función por cuestión de tiempo.
+
+
+            break;    
             default:
                 break;
         }
@@ -222,5 +240,4 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     }
     exit();
 }
-//Por defecto me ejecuta la vista, en caso de que no sea una petición.
-//$controller->reservaView();
+
