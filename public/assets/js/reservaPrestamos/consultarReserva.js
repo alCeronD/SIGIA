@@ -16,24 +16,39 @@ const BodydetailReserva = document.querySelector("#BodydetailReserva");
 //Codigo del prestamo para hacer el fech
 let cases = "reservas";
 let codigo;
+let pages;
+//Página actual.
+let pagesReserva = 1;
+
 
 //Variable para mostrar la información en el modal.
 let elementosDetalle = [];
 
 const renderReservas = async (page = 1) => {
+  pagesReserva = page;
+  
+  console.log({"pageReserva":pagesReserva});
+  console.log({"page":page});
+  
+  
+  //Traigo la data por medio de fetch.
+    const result = await getData('modules/reservaPrestamos/controller/reservaController.php','GET',{"action":'reservas','pages':page});
+    // let registros = result;
+    let status = result.status;
+    let data = result.data.data;
+    pages = result.data.pages;
+    console.log({"pagesRender":pages});
 
-    //Traigo la data por medio de fetch.
-    const result = getData('modules/reservaPrestamos/controller/reservaController.php','GET',{"action":'reservas','pages':page});
-
-    let registros = await result;
-    let status = registros.status;
-    let data = registros.data.data;
+    if (pagesReserva >= pages) {
+    console.log("es mayor");
+    return;
+    }
 
     if (!status) {
       //Implementar mensaje de que no hay registros.
       tbodyReservaConsult.innerHTML = "";
       console.log('no hay registros');
-      
+      return;
     }
     
     tbodyReservaConsult.innerHTML = "";
@@ -474,28 +489,26 @@ const previewReserva = document.querySelector('#previewReservas');
 const nextReserva = document.querySelector('#nextReservas');
 //TODO: necesito 2 funciones, 1 para mandar la solicitud y la otra para renderizar, usar fetch con async y await.
 
-let pagesReserva = 1;
 previewReserva.addEventListener('click', (e)=>{
   e.stopPropagation();
   e.preventDefault();
   //Si es 1, el sale del evento y no ejecuta Más.
-  if (pagesReserva === 1) {
-    return;
-  }else{
-      pagesReserva--;
-  console.log(e.target);
-  console.log({"preview":pagesReserva});
-  renderReservas(pagesReserva);
-  }
+  if (pagesReserva <= 1) return;
+
+  const prevPage = pagesReserva - 1;
+  renderReservas(prevPage);
 });
 
 nextReserva.addEventListener('click',(e)=>{
   e.stopPropagation();
   e.preventDefault();
   
-  pagesReserva++;
-  console.log({'next': pagesReserva});
-  renderReservas(pagesReserva);
+  //Si el numero de Páginas enviado es mayor o igual al numero de paginas que tiene los registros, no haga petición.
+  if (pagesReserva >= pages) return;
+  const nextPage = pagesReserva +1;
+  console.log(pages);
+
+  renderReservas(nextPage);
 
 
 });
