@@ -10,10 +10,10 @@
         <?php require_once 'tablaConsultarSolicitudView.php'; ?>
         <div class="pages">
             <div class="previewReservas">
-                <button type="button" id="previewReservas"><</button>
+                <button type="button" id="previewReservas" class="btn-small btn waves-effect waves-light"><i class="material-icons">chevron_left</i></button>
             </div>
             <div class="nextReservas">
-                <button type="button" id="nextReservas">></button>
+                <button type="button" id="nextReservas" class="btn-small btn waves-effect waves-light"><i class="material-icons">chevron_right</i></button>
             </div>
         </div>
     </div>

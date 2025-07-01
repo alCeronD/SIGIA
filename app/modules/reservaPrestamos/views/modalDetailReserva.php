@@ -35,7 +35,7 @@
           <tr>
             <th>Codigo </th>
             <th>Nombre</th>
-            <th>Acciones</th>
+            <th>Cantidad solicitada</th>
           </tr>
         </thead>
         <tbody id="BodydetailReserva">

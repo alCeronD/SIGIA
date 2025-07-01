@@ -146,7 +146,10 @@ class ReservaController
 
 
     public function getElementsReserva($codigo ){
-        $dataDetail = $this->model->selectElementsReserva($codigo);
+        // var_dump($codigo);
+        $codigoInt = (int) $codigo;
+        // var_dump($codigoInt);
+        $dataDetail = $this->model->selectElementsReserva($codigoInt);
         success('Elementos relacionados al codigo',$dataDetail);
     }
 
@@ -163,7 +166,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         $pages = $_GET['pages'] ?? 1;
 
         $codigo = $_GET['codigo'] ?? 0;
-
+        $codigo = (int) $codigo;
         switch ($case) {
             case 'users':
                 if (method_exists($controller, 'getUsers')) {

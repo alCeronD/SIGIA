@@ -522,6 +522,13 @@ paginación reservas
 
 }
 
+/* bloque de codigo para evitar que el icono sea clickqueado por el usuario */
+.btn-small i {
+  pointer-events: none; /* hace que los clics pasen al botón, no al <i> */
+}
+
+
+
 /* Resolusiones mayores a 1440 */
 @media screen and (min-width: 1440px) { 
     
