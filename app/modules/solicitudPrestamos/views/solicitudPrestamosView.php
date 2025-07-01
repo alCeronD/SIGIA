@@ -1,4 +1,3 @@
-<!-- VISTA CON AJUSTES PARA FUNCIONAR CON MATERIALIZE -->
 <div class="content">
   <div class="menuTitle">
     <span id="textTitle">Registrar solicitud</span>
@@ -8,13 +7,10 @@
   <div class="solicPrestamos">
     <form id="formSolicitudPrestamo" method="POST" action="<?= getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamo'); ?>" class="row">
 
-      <!-- Nombre, Apellido, Rol -->
       <div class="input-field nombre">
-        
         <label for="pres_nombre" class="active  fontInfo">
-          
           Nombre del Solicitante: <span class="black-text "><?php echo $nombre." ".$apellido;?></span>
-      </label>
+        </label>
       </div>
 
       <div class="input-field rol">
@@ -23,7 +19,6 @@
         </label>
       </div>
 
-      <!-- Fechas y destino -->
       <div class="input-field fechaReserva">
         <input type="text" id="pres_fch_reserva" name="pres_fch_reserva" class="datepicker" required>
         <label for="pres_fch_reserva" class="active">Fecha de Reserva *</label>
@@ -39,18 +34,23 @@
         <label for="pres_destino">Destino *</label>
       </div>
 
-      <!-- Observaciones -->
       <div class="input-field inputObservaciones">
         <textarea id="pres_observacion" name="pres_observacion" class="materialize-textarea" required></textarea>
         <label for="pres_observacion">Observaciones *</label>
       </div>
-
-      <!-- Botón abrir modal -->
+      
+      
+      
+      <!-- SELECCIONAR EL MODAL QUE SE QUEIERE ABRIR -->
       <div class="input-field inputAddElements">
-        <a class="waves-effect waves-light btn modal-trigger" href="#modalSeleccionElementos">Seleccionar Elementos</a>
+        <a class="waves-effect waves-light btn modal-trigger" href="#modalSeleccionElementos">Selec. Elementos devolutivos</a>
+        <a class="waves-effect waves-light btn modal-trigger" href="#modalSeleccionConsumibles">Selec. Elementos consumibles</a>
       </div>
+      
+      <!-- ///////////////////////////// -->
+       <!-- MODAL ELEMENTOS DEVOLUTIVOSS -->
+     <!-- ///////////////////////////// -->
 
-      <!-- MODAL MATERIALIZE -->
       <div id="modalSeleccionElementos" class="modal">
         <div class="modal-content">
           <h5>Seleccionar Elementos</h5>
@@ -100,8 +100,69 @@
           <a href="#!" class="modal-close waves-effect waves-green btn-flat">Confirmar Selección</a>
         </div>
       </div>
+      
+      
+      <!-- ///////////////////////////// -->
+        <!-- MODAL ELEMENTOS CONSUMIBLES -->
+      <!-- ///////////////////////////// -->
+    <div id="modalSeleccionConsumibles" class="modal">
+      <div class="modal-content">
+        <h5>Seleccionar Elementos Consumibles</h5>
+    
+        <!-- Filtro para el área -->
+        <div class="input-field">
+          <select id="filtro_area_modal_consumibles" name="filtro_area_modal_consumibles">
+            <option value="" selected>Todas las áreas</option>
+            <?php foreach ($areas as $area): ?>
+              <option value="<?= $area['ar_cod']; ?>"><?= htmlspecialchars($area['ar_nombre']); ?></option>
+            <?php endforeach; ?>
+          </select>
+          <label for="filtro_area_modal_consumibles">Filtrar por área</label>
+        </div>
+    
+        <!-- Tabla de elementos con campo de cantidad -->
+        <table class="highlight responsive-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Disponible</th>
+              <th>Seleccionar</th>
+              <th>Cantidad</th> <!-- Nueva columna -->
+            </tr>
+          </thead>
+          <tbody id="tabla-elementos-consumibles-modal">
+            <?php foreach ($elementos_consumibles as $elemento): ?>
+              <tr data-area="<?= $elemento['ar_cod']; ?>">
+                <td><?= htmlspecialchars($elemento['elm_placa']); ?></td>
+                <td><?= htmlspecialchars($elemento['elm_nombre']); ?></td>
+                <td><?= htmlspecialchars($elemento['elm_existencia']); ?></td>
+                <td>
+                  <label>
+                    <input type="checkbox" class="filled-in" name="elementos_consumibles_seleccionados[]" value="<?= $elemento['elm_cod']; ?>">
+                    <span></span>
+                  </label>
+                </td>
+                <td>
+                  <input type="number" min="1" max="<?= $elemento['elm_existencia']; ?>" class="cantConsu" name="cantidades_consumibles[<?= $elemento['elm_cod']; ?>]">
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+    
+        <ul id="paginacion_consumibles" class="pagination center-align"></ul>
+      </div>
+    
+      <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Confirmar Selección</a>
+      </div>
+    </div>
 
-      <!-- Botón enviar solicitud -->
+    
+      <!-- ///////////////////////////// -->
+          <!-- enviar solicitud -->
+      <!-- ///////////////////////////// -->
       <div class="input-field center-align inputBtn">
         <button type="submit" class="btn blue">Solicitar</button>
       </div>
@@ -109,72 +170,4 @@
   </div>
 </div>
 
-<!-- JS -->
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  M.Modal.init(document.querySelectorAll('.modal'));
-  M.FormSelect.init(document.querySelectorAll('select'));
-  M.Datepicker.init(document.querySelectorAll('.datepicker'), { format: 'yyyy-mm-dd' });
-
-  const filtroArea = document.getElementById('filtro_area_modal');
-  const paginacion = document.getElementById('paginacion');
-  const itemsPorPagina = 5;
-
-  let filasOriginales = [];
-  let filasFiltradas = [];
-
-  function inicializarFilas() {
-    filasOriginales = Array.from(document.querySelectorAll('#tabla-elementos-devolutivos-modal tr'));
-    filasFiltradas = [...filasOriginales];
-    generarPaginacion();
-  }
-
-  filtroArea.addEventListener('change', () => {
-    const selectedArea = filtroArea.value;
-    filasFiltradas = filasOriginales.filter(fila => {
-      const area = fila.getAttribute('data-area');
-      return selectedArea === "" || area === selectedArea;
-    });
-    generarPaginacion();
-  });
-
-  function actualizarTabla(pagina) {
-    filasOriginales.forEach(fila => fila.style.display = 'none');
-    const inicio = (pagina - 1) * itemsPorPagina;
-    const fin = inicio + itemsPorPagina;
-    filasFiltradas.slice(inicio, fin).forEach(fila => fila.style.display = 'table-row');
-  }
-
-  function generarPaginacion() {
-    paginacion.innerHTML = '';
-    const totalPaginas = Math.ceil(filasFiltradas.length / itemsPorPagina);
-
-    for (let i = 1; i <= totalPaginas; i++) {
-      const li = document.createElement('li');
-      li.classList.add('waves-effect');
-      li.innerHTML = `<a href="#!">${i}</a>`;
-      li.addEventListener('click', (e) => {
-        e.preventDefault();
-        actualizarTabla(i);
-        document.querySelectorAll('#paginacion li').forEach(el => el.classList.remove('active'));
-        li.classList.add('active');
-      });
-      paginacion.appendChild(li);
-    }
-
-    if (totalPaginas > 0) {
-      paginacion.firstChild.classList.add('active');
-      actualizarTabla(1);
-    }
-  }
-
-  const modalTrigger = document.querySelector('.modal-trigger');
-  if (modalTrigger) {
-    modalTrigger.addEventListener('click', () => {
-      setTimeout(() => {
-        inicializarFilas();
-      }, 100);
-    });
-  }
-});
-</script>
+<script type="module" src="../public/assets/js/solicitudPrestamos/solicitudPrestamos.js"></script>

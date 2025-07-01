@@ -143,8 +143,8 @@ class ElementoModelo {
         return false;
     }
 
-    // Buscar elementos activos
-    public function searchElements() {
+    // Buscar elementos activos pero recibiendo el tipo de elemento(devolutivo o consumible)//
+    public function searchElements($tipoElemento = 1) {
         $query = "SELECT
             e.*,
             a.ar_cod,
@@ -154,18 +154,21 @@ class ElementoModelo {
             elementos e
         JOIN areas a ON e.elm_area_cod = a.ar_cod
         JOIN estados_elementos ee ON e.elm_cod_estado = ee.est_el_cod
-        WHERE ee.est_el_cod = 1";
-
-        $result = $this->conn->query($query);
-        $prestamos = [];
-
-        if ($result && $result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $prestamos[] = $row;
-            }
+        WHERE ee.est_el_cod = 1 AND elm_cod_tp_elemento = ?";
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $tipoElemento); // 1 = devolutivo, 2 = consumible
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $elementos = [];
+        while ($row = $result->fetch_assoc()) {
+            $elementos[] = $row;
         }
-        return $prestamos;
+    
+        return $elementos;
     }
+
     
     public function actualizarEstadoElemento($id, $nuevo_estado) {
         $sql = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";

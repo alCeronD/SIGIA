@@ -21,10 +21,11 @@ class solicitudPrestamosController {
         $rol_nombre = $_SESSION['usuario']['rol_nombre'];
 
         $objetoArea = new ConfigModulesModel();
-        $areas = $objetoArea->select("SELECT * FROM areas");
+        $areas = $objetoArea->select("SELECT * FROM areas WHERE ar_status = 1");
 
         $objetoElemento = new ElementoModelo($this->conn);
-        $elementos = $objetoElemento->searchElements();
+        $elementos = $objetoElemento->searchElements(1);
+        $elementos_consumibles = $objetoElemento->searchElements(2);
 
         return include_once __DIR__ . '/../views/solicitudPrestamosView.php';
     }
@@ -34,7 +35,6 @@ class solicitudPrestamosController {
         $apellido = $_SESSION['usuario']['apellido'];
         $rol_nombre = $_SESSION['usuario']['rol_nombre'];
         $id = $_SESSION['usuario']['id'];
-
         $prestamoModel = new solicitudPrestamos($this->conn);
 
         $prestamos = $prestamoModel->search($id);
@@ -47,18 +47,27 @@ class solicitudPrestamosController {
             $usuario_id = $_SESSION['usuario']['id'];
             $rol_id = $_SESSION['usuario']['rol_id'];
             $elementos_seleccionados = $_POST['elementos_seleccionados'];
+            $cantidades_consumibles = $_POST['cantidades_consumibles'];
             unset($_POST['elementos_seleccionados']);
             $data = $_POST;
-
+            // dd($cantidades_consumibles);
             $datos = new solicitudPrestamos($this->conn);
             $lastId = $datos->create($data, $rol_id);
             if (is_numeric($lastId)) {
-                // include_once __DIR__ . '/../../configModules/prestamosElementos/model/prestamosElementosModel.php';
+
                 $prestamoElemento = new solicitudPrestamos($this->conn);
                 $elementoModel = new ElementoModelo($this->conn);
                 foreach ($elementos_seleccionados as $elemento_id) {
                     $prestamoElemento->registrarElem($lastId, $usuario_id, $elemento_id);
                     $elementoModel->actualizarEstadoElemento($elemento_id, 3);
+                }
+                
+                // registramo la cantidad de elementos consumibles de un elemento
+                foreach ($cantidades_consumibles as $elm_cod => $cantidad) {
+                    if (is_numeric($elm_cod) && is_numeric($cantidad) && $cantidad > 0) {
+                        $prestamoElemento->registrarElemConsumible($lastId, $usuario_id, $elm_cod, $cantidad);
+                        $elementoModel->actualizarEstadoElemento($elm_cod, 3);
+                    }
                 }
                 if ($prestamoElemento == true) {
                     echo "<script>alert('Solicitud realizada correctamente, en espera por respuesta'); window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
@@ -71,6 +80,8 @@ class solicitudPrestamosController {
             }
         }
     }
+    
+    
 
     public function verDetallePrestamo(int $presCod) {
         if (!$presCod || !is_numeric($presCod)) {

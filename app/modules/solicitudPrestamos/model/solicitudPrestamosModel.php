@@ -172,6 +172,18 @@ class solicitudPrestamos {
         return $this->conn->query($query);
     }
     
+    public function registrarElemConsumible($pres_cod, $usuario_id, $elm_cod, $cantidad) {
+        $pres_cod = (int) $pres_cod;
+        $elm_cod = (int) $elm_cod;
+        $usua_id = (int) $usuario_id;
+        $cantidad = (int) $cantidad;
+    
+        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad) 
+                  VALUES ($pres_cod, $usua_id, $elm_cod, $cantidad)";
+    
+        return $this->conn->query($query);
+    }
+
 }
 
 ?>
