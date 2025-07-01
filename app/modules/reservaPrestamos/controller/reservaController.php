@@ -172,7 +172,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 break;
 
             case 'elements':
-                //var_dump($pages);
                 if (method_exists($controller, 'getElementosDevolutivos')) {
                     $controller->getElementosDevolutivos($pages);
                 }
@@ -190,12 +189,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             case 'reservas':
 
                 $pages = (int) $_GET['pages'];
-                
-                // var_dump($data);
-
-                // if (method_exists($controller,'getReservas')) {
-                //     $controller->getReservas();
-                // }
                 if (method_exists($controller,'getReservas')) {
                     $controller->getReservas($pages);
                 }

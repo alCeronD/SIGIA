@@ -27,26 +27,18 @@ let elementosDetalle = [];
 const renderReservas = async (page = 1) => {
   pagesReserva = page;
   
-  console.log({"pageReserva":pagesReserva});
-  console.log({"page":page});
-  
   //Traigo la data por medio de fetch.
     const result = await getData('modules/reservaPrestamos/controller/reservaController.php','GET',{"action":'reservas','pages':page});
     // let registros = result;
     let status = result.status;
     data = result.data.data;
     pages = result.data.pages;
-    console.log({"pagesRender":pages});
 
-    if (pagesReserva >= pages) {
-    console.log("es mayor");
-    return;
-    }
-
+    if (pagesReserva > pages) return;
+    
     if (!status) {
       //Implementar mensaje de que no hay registros.
       tbodyReservaConsult.innerHTML = "";
-      console.log('no hay registros');
       return;
     }
     
@@ -127,8 +119,6 @@ const renderReservas = async (page = 1) => {
 
               let getReservaElementos = getData('modules/reservaPrestamos/controller/reservaController.php','GET',{"action":'reservaDetailElements'});
 
-              console.log(getReservaElementos);
-
         const detalleAjax = new Ajax();
         let action = "reservaDetailElements";
         detalleAjax.request.open(
@@ -162,9 +152,6 @@ const renderReservas = async (page = 1) => {
 
     });
 }
-
-let casesss = 'reservaDetailElements';
-
 
 document.addEventListener("DOMContentLoaded", () => {
 renderReservas();
@@ -254,12 +241,12 @@ tbodyReservaConsult.addEventListener("click", (event) => {
   }
 
   //Para visualizar el detalle de elementos en caso de que sea requerido.
-  if (
-    event.target.tagName === "BUTTON" &&
-    event.target.getAttribute(["data-add"])
-  ) {
-    console.log(event.target);
-  }
+  // if (
+  //   event.target.tagName === "BUTTON" &&
+  //   event.target.getAttribute(["data-add"])
+  // ) {
+  //   console.log(event.target);
+  // }
 
   //Finalizar el prestamo de los elementos.
   if (event.target.tagName === "BUTTON" && event.target.getAttribute(["data-end"])) {
@@ -306,7 +293,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
               );
 
               let codigoAdd = endReserva.codigoReserva;
-              console.log(codigoAdd);
               let tr = [
                 ...document.querySelectorAll("#tbodyReservaConsult tr"),
               ];
@@ -314,7 +300,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
               tr.forEach((infoTr) => {
 
                 if (infoTr.querySelector("td").textContent.includes(String(codigoAdd))) {
-                  console.log(infoTr);
                   
                   let tdEstado = infoTr.children[2];
                   let tdAcciones = infoTr.children[4];
@@ -382,9 +367,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     let elementosPreviewConsu = validateReserva.elementos.elmConsumibles;
     let elementosPreviewDev = validateReserva.elementos.elmDevolutivos;
 
-    console.log(validateReserva);
     let dataTr = event.target.closest("tr");
-    console.log(dataTr);
     //Estado por validar
     let estadoNew = dataTr.children[2];
     let tdAcciones = dataTr.children[4];
@@ -440,6 +423,7 @@ previewReserva.addEventListener('click', (e)=>{
   if (pagesReserva <= 1) return;
 
   const prevPage = pagesReserva - 1;
+  console.log(prevPage);
   renderReservas(prevPage);
 });
 
