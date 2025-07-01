@@ -1,13 +1,21 @@
 <div id="contentConsultar">
     <div id="search">
         <div class="searchInput menuTitle">
-            <span id="menuTitleConsult">Reservas y solicitudes</span>
+            <span id="menuTitleConsult" class="">Gestion de Reservas y solicitudes</span>
             <!-- <input type="text" name="" id="inputSearch"> -->
         </div>
         <a class="close close-btn"  title="volver a dashboard" href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>">&times;</a>
     </div>
     <div class="reservas">
         <?php require_once 'tablaConsultarSolicitudView.php'; ?>
+        <div class="pages">
+            <div class="previewReservas">
+                <button type="button" id="previewReservas"><</button>
+            </div>
+            <div class="nextReservas">
+                <button type="button" id="nextReservas">></button>
+            </div>
+        </div>
     </div>
 </div>
 

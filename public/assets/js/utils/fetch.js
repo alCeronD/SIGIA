@@ -5,7 +5,7 @@ const headers = {
 };
 
 //Función para enviar el fetch
-export const sendData = async (url, method = 'GET', parameters = {}, data = {})=>{
+export const sendData = async (url, method = 'POST', parameters = {}, data = {})=>{
     try {
 
         const setParameter = new URLSearchParams();
@@ -49,8 +49,37 @@ const setFetch = (method = 'GET', parameters = {}, data = {})=>{
 
 }
 
+//Función para solicitar data.
+export const getData = async(url, method = 'GET', parameters = {}, data ={})=>{
+    try {
+        let newUrl = '';
+        //Aca creo los parámetros si necesito enviarlos.
+        if (parameters) {
+            const setParameters = new URLSearchParams();
+            setParameters.append('action',parameters.action);
+            setParameters.append('pages',parameters.pages);
+
+            newUrl = parameters ? `${url}?${setParameters}` : url;
+        }
+        // console.log(newUrl);
+        const bodyData = setFetch(method,parameters,data);
+        const execute = await fetch(newUrl,bodyData);
+          
+        const getResponse = await execute.json(); 
+
+        return getResponse;
+
+} catch (error) {
+        throw new Error(`Errro de procedimiento ${error}`);
+        
+    }
+    
+}
+
+
 
 
 export default{
-    sendData
+    sendData,
+    getData
 }

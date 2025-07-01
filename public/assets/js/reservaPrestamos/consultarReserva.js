@@ -1,18 +1,15 @@
 import { Ajax } from "../utils/ajax.js";
-import { closeModal, createBtn, instanceDate, instanceDateTime, instanceModal, opcionesDatepicker, openModal, options, setReserva, statusLoans, typeLoans } from "../utils/cases.js";
-import { sendData } from "../utils/fetch.js";
+import { closeModal, createBtn,  instanceModal, options, setReserva, statusLoans, typeLoans } from "../utils/cases.js";
+import { getData,sendData } from "../utils/fetch.js";
 
 const objAjax = new Ajax();
-
-
 //Cuerpo de la tabla para renderizar los datos.
 const tbodyReservaConsult = document.querySelector("#tbodyReservaConsult");
-// const modalDetail = document.querySelector("#modalDetail");
 const modalDetail = instanceModal('#modalDetail',options);
 const btnCloseElements = document.querySelector("#modalDetail .close-modal");
 const formDetail = document.querySelector("#formDetail");
 //TODO: mejorarlo.
-let data = {};
+// let data = {};
 //variable para guardar los elementos
 let elementos = {};
 const BodydetailReserva = document.querySelector("#BodydetailReserva");
@@ -22,30 +19,26 @@ let codigo;
 
 //Variable para mostrar la información en el modal.
 let elementosDetalle = [];
-function getReservas() {
-  //console.log(cases);
-  //Fetch para traer la información del prestamo
-  objAjax.request.open(
-    "GET",
-    `modules/reservaPrestamos/controller/reservaController.php?action=${encodeURIComponent(
-      cases
-    )}`,
-    true
-  );
-  objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-  objAjax.request.onload = () => {
-    let response = JSON.parse(objAjax.request.responseText);
 
-    if (!response.status) {
-      //TODO: Agregar un span a la tabla para visualizar que no hay elementos.
-      throw new Error("No hay elementos");
+const renderReservas = async (page = 1) => {
+
+    //Traigo la data por medio de fetch.
+    const result = getData('modules/reservaPrestamos/controller/reservaController.php','GET',{"action":'reservas','pages':page});
+
+    let registros = await result;
+    let status = registros.status;
+    let data = registros.data.data;
+
+    if (!status) {
+      //Implementar mensaje de que no hay registros.
+      tbodyReservaConsult.innerHTML = "";
+      console.log('no hay registros');
+      
     }
+    
     tbodyReservaConsult.innerHTML = "";
-    data = response.data.data;
-    //Codigo que servira para renderizar las elementos a corde a su código
-    data.forEach((dta) => {
+    data.forEach(dta => {
       codigo = dta.codigo;
-
       let tr = document.createElement("tr");
       let btnAdd = document.createElement("button");
       let btnEnd = document.createElement("button");
@@ -82,89 +75,142 @@ function getReservas() {
       tr.appendChild(tdTipo);
       tdAcciones.innerHTML = "";
       tr.append(tdAcciones);
-
-      //Si el estado del prestamo es finalizado, no debe de visualizar el boton de finalizar.
-      if (tdEstado.textContent === 'Finalizado') {
-        btnEnd.style.display = 'none';
-      }
-
-      //Siempre mostrar el ver detalle.
-      tdAcciones.appendChild(btnDetail);
-
-      if (dta.estadoPrestamo === 'Finalizado') {
-        // Solo mostrar botón Detalle
-        return;
-      }
-
-      if (dta.codigoTipoPrestamo === typeLoans.solicitud) {
-        if (dta.estadoPrestamo === 'Por validar') {
-          tdAcciones.appendChild(btnValidateLoan);
-        } else if (dta.estadoPrestamo === 'Validado') {
-          tdAcciones.appendChild(btnEnd);
-        }
-      }
-
-      
-      if (dta.codigoTipoPrestamo === typeLoans.inmediata) {
-        // En préstamos inmediatos, ya están validados desde el backend
-        if (dta.estadoPrestamo === 'Validado') {
-          tdAcciones.appendChild(btnEnd);
-        }
-      }
-
-
-
-
-
-      // if (dta.codigoTipoPrestamo === typeLoans.solicitud) {
-      //   tdAcciones.append(btnDetail,btnValidateLoan);
-      // }
-
-      // if (dta.codigoTipoPrestamo == typeLoans.inmediata) {
-      //   tdAcciones.append(btnDetail,btnEnd);
-      // }
-
-
-      const reserva = data.find((item) => item.codigo === codigo);
-
-      if (reserva) {
-        const detalleAjax = new Ajax();
-        let action = "reservaDetailElements";
-        detalleAjax.request.open(
-          "GET",
-          `modules/reservaPrestamos/controller/reservaController.php?codigo=${encodeURIComponent(
-            codigo
-          )}&action=${encodeURIComponent(action)}`,
-          true
-        );
-        detalleAjax.request.setRequestHeader(
-          "X-Requested-With",
-          "XMLHttpRequest"
-        );
-
-        detalleAjax.request.onload = () => {
-          let response = JSON.parse(detalleAjax.request.responseText);
-
-          //Guardo el código de la reserva con los elementos que están asociados a ese prestamo.
-          //Response.data tiene los elementos.
-          elementos[dta.codigo] = {
-            reserva: dta,
-            elementos: response.data,
-          };
-        };
-
-        detalleAjax.request.setRequestHeader("Accept", "application/json");
-        detalleAjax.request.send();
-      }
     });
-  };
+    
 
-  objAjax.request.setRequestHeader("Accept", "application/json");
-  objAjax.request.send();
+  
+
 }
 
+  // //Fetch para traer la información del prestamo
+  // objAjax.request.open(
+  //   "GET",
+  //   `modules/reservaPrestamos/controller/reservaController.php?action=${encodeURIComponent(
+  //     cases
+  //   )}`,
+  //   true
+  // );
+  // objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+  // objAjax.request.onload = () => {
+  //   let response = JSON.parse(objAjax.request.responseText);
+
+  //   if (!response.status) {
+  //     //TODO: Agregar un span a la tabla para visualizar que no hay elementos.
+  //     throw new Error("No hay elementos");
+  //   }
+  //   tbodyReservaConsult.innerHTML = "";
+  //   data = response.data.data;
+  //   //Codigo que servira para renderizar las elementos a corde a su código
+  //   data.forEach((dta) => {
+  //     codigo = dta.codigo;
+
+  //     let tr = document.createElement("tr");
+  //     let btnAdd = document.createElement("button");
+  //     let btnEnd = document.createElement("button");
+  //     let btnDetail = document.createElement("button");
+  //     let btnValidateLoan = createBtn('btnClick');
+
+  //     btnDetail.innerText = "Detalle";
+  //     btnValidateLoan.innerText = 'validar';
+  //     btnDetail.setAttribute("class", "btnDetail btnClick");
+  //     btnDetail.setAttribute("data-id", `${dta.codigo}`);
+  //     btnAdd.setAttribute("class", "addElements");
+  //     btnAdd.setAttribute("data-add", `${dta.codigo}`);
+  //     btnEnd.setAttribute("data-end", `${dta.codigo}`);
+  //     btnValidateLoan.setAttribute("data-validate", `${dta.codigo}`);
+  //     btnEnd.innerText = 'finalizar';
+  //     btnAdd.setAttribute("class", "btnEnd");
+  //     let tdCodigo = document.createElement("td");
+  //     let tdNombreCompleto = document.createElement("td");
+
+  //     //TODO: la cantidad la saco haciendo una consulta basada en el count del prestamo al cual pertenecen los prestamos, por ahora, estalbecer por 1.
+  //     let tdCantidad = document.createElement("td");
+  //     let tdEstado = document.createElement("td");
+  //     let tdAcciones = document.createElement("td");
+  //     let tdTipo = document.createElement("td");
+  //     tdCodigo.textContent = dta.codigo;
+  //     tdNombreCompleto.textContent = dta.nombre + " " + dta.apellido;
+  //     tdEstado.textContent = dta.estadoPrestamo;
+  //     tdTipo.textContent = dta.tipoPrestamo;
+
+  //     tbodyReservaConsult.appendChild(tr);
+  //     tr.appendChild(tdCodigo);
+  //     tr.appendChild(tdNombreCompleto);
+  //     tr.appendChild(tdEstado);
+  //     tr.appendChild(tdTipo);
+  //     tdAcciones.innerHTML = "";
+  //     tr.append(tdAcciones);
+
+  //     //Si el estado del prestamo es finalizado, no debe de visualizar el boton de finalizar.
+  //     if (tdEstado.textContent === 'Finalizado') {
+  //       btnEnd.style.display = 'none';
+  //     }
+
+  //     //Siempre mostrar el ver detalle.
+  //     tdAcciones.appendChild(btnDetail);
+
+  //     if (dta.estadoPrestamo === 'Finalizado') {
+  //       // Solo mostrar botón Detalle
+  //       return;
+  //     }
+
+  //     if (dta.codigoTipoPrestamo === typeLoans.solicitud) {
+  //       if (dta.estadoPrestamo === 'Por validar') {
+  //         tdAcciones.appendChild(btnValidateLoan);
+  //       } else if (dta.estadoPrestamo === 'Validado') {
+  //         tdAcciones.appendChild(btnEnd);
+  //       }
+  //     }
+
+      
+  //     if (dta.codigoTipoPrestamo === typeLoans.inmediata) {
+  //       // En préstamos inmediatos, ya están validados desde el backend
+  //       if (dta.estadoPrestamo === 'Validado') {
+  //         tdAcciones.appendChild(btnEnd);
+  //       }
+  //     }
+
+  //     const reserva = data.find((item) => item.codigo === codigo);
+
+  //     if (reserva) {
+  //       const detalleAjax = new Ajax();
+  //       let action = "reservaDetailElements";
+  //       detalleAjax.request.open(
+  //         "GET",
+  //         `modules/reservaPrestamos/controller/reservaController.php?codigo=${encodeURIComponent(
+  //           codigo
+  //         )}&action=${encodeURIComponent(action)}`,
+  //         true
+  //       );
+  //       detalleAjax.request.setRequestHeader(
+  //         "X-Requested-With",
+  //         "XMLHttpRequest"
+  //       );
+
+  //       detalleAjax.request.onload = () => {
+  //         let response = JSON.parse(detalleAjax.request.responseText);
+
+  //         //Guardo el código de la reserva con los elementos que están asociados a ese prestamo.
+  //         //Response.data tiene los elementos.
+  //         elementos[dta.codigo] = {
+  //           reserva: dta,
+  //           elementos: response.data,
+  //         };
+  //       };
+
+  //       detalleAjax.request.setRequestHeader("Accept", "application/json");
+  //       detalleAjax.request.send();
+  //     }
+  //   });
+  // };
+
+  // objAjax.request.setRequestHeader("Accept", "application/json");
+  // objAjax.request.send();
+
+
 document.addEventListener("DOMContentLoaded", () => {
-  getReservas();
+renderReservas();
+
 });
 
 tbodyReservaConsult.addEventListener("click", (event) => {
@@ -258,15 +304,12 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
   //Finalizar el prestamo de los elementos.
   if (event.target.tagName === "BUTTON" && event.target.getAttribute(["data-end"])) {
-    //se compara con doble igual porque el json que recibe de data su codigo esta en string pero el getAttribute esta como entero.
-
     //Crear función para finalizar los prestamos de los elementos, se debe de finalizar a ambos prestamos, los que se hace como reserva Previa y reserva inmediata.
     function endLoan(atributeData){}
 
   
     //Hago la captura de la data necesaria para validar el prestamo o para reservalo inmedaitamente.
     let endReserva = setReserva('data-end',data,elementos,event.target,"finalizar");
-    console.log(endReserva);
     const objEndReserva = new Ajax();
       if (
         confirm(
@@ -380,8 +423,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     let elementosPreviewConsu = validateReserva.elementos.elmConsumibles;
     let elementosPreviewDev = validateReserva.elementos.elmDevolutivos;
 
-    
-
     console.log(validateReserva);
     let dataTr = event.target.closest("tr");
     console.log(dataTr);
@@ -405,7 +446,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         try {
 
           sendData('modules/reservaPrestamos/controller/reservaController.php','POST','validateLoan',validateReserva).then((response)=>{
-            console.log(response);
             // tdAcciones.innerHTML = "";
             estadoNew.textContent = 'Validado';
             let btnValidate = tdAcciones.querySelector(`button[data-validate='${validateReserva.codigoReserva}']`);
@@ -421,11 +461,45 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         } catch (error) {
           console.warn('error al realizar el proceso'+error);
         }
-      }
-      
+      } 
   }
 
 });
+
+/**
+ * Paginación de los prestamos.
+ * 
+ */
+const previewReserva = document.querySelector('#previewReservas');
+const nextReserva = document.querySelector('#nextReservas');
+//TODO: necesito 2 funciones, 1 para mandar la solicitud y la otra para renderizar, usar fetch con async y await.
+
+let pagesReserva = 1;
+previewReserva.addEventListener('click', (e)=>{
+  e.stopPropagation();
+  e.preventDefault();
+  //Si es 1, el sale del evento y no ejecuta Más.
+  if (pagesReserva === 1) {
+    return;
+  }else{
+      pagesReserva--;
+  console.log(e.target);
+  console.log({"preview":pagesReserva});
+  renderReservas(pagesReserva);
+  }
+});
+
+nextReserva.addEventListener('click',(e)=>{
+  e.stopPropagation();
+  e.preventDefault();
+  
+  pagesReserva++;
+  console.log({'next': pagesReserva});
+  renderReservas(pagesReserva);
+
+
+});
+
 
 closeModal(modalDetail, btnCloseElements);
 //Limpiar la tabla apenas se cierre el modal.

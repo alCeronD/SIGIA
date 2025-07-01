@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../helpers/session.php';
+require_once __DIR__ . '/../../../helpers/const.php';
 include_once __DIR__ . '/../../../config/conn.php';
 include_once __DIR__ . '/../../usuarios/model/usuariosModel.php';
 
@@ -513,10 +514,29 @@ class ReservaModel
      * Summary of selectReservas TODO: Cambiar a Páginado con javascript.
      * @return array{data: array, message: string, status: bool|string}
      */
-    public function selectDetailReserva()
+    public function selectDetailReserva(int $page = 1)
     {
+        //valido que el page que mande sea como minimo 1 y Máximo la cantidad requerida.
+        $page = max(1,(int)$page);
+        
         $conn = $this->conect->getConnect();
         try {
+            $queryCountReservas = "SELECT COUNT(DISTINCT pre.pres_cod) AS Total
+                FROM prestamos pre
+                INNER JOIN prestamos_elementos pre_el ON pre_el.pres_cod = pre.pres_cod
+                INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
+                INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
+                INNER JOIN roles r ON r.rl_id = pre.pres_rol
+                INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres";
+            //Obtengo la cantidad de registros de la tabla prestamos
+            $getCountReservas = (int) $this->getCount($queryCountReservas,'prestamos');
+
+            $offset = ($page - 1) * LIMIT;
+            //Numero de páginas
+            $aprox = (int) ceil($offset / LIMIT);
+
+            //Cantidad de páginas.
+            $pages = (int) ceil($getCountReservas / LIMIT);
 
             $sqlReservas = "SELECT DISTINCT
                 pre.pres_cod AS codigo,
@@ -539,9 +559,11 @@ class ReservaModel
                 INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
                 INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
                 INNER JOIN roles r ON r.rl_id = pre.pres_rol
-                INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres";
-
+                INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres ORDER BY pre.pres_cod ASC LIMIT ? OFFSET ?";
             $stmtResevas = $conn->prepare($sqlReservas);
+            $limitConst = LIMIT;
+
+            $stmtResevas->bind_param('ii',$limitConst,$offset);
 
             if (!$stmtResevas->execute()) {
 
@@ -561,9 +583,11 @@ class ReservaModel
             }
 
             $result = [
-                'status' => true,
+                'status' => count($dataReservas) == 0 ? false : true,
                 'data' => $dataReservas,
-                'message' => 'reservas'
+                'message' => count($dataReservas) > 0 ? 'reservas encontradas': 'no hay reservas registradas',
+                'pages'=>$pages,
+                'totalRows'=>$getCountReservas
             ];
             return $result;
         } catch (\Throwable $e) {
@@ -733,14 +757,28 @@ class ReservaModel
             'status' => false
         ];
     }
-}
-    /**
-     * Summary of getIdUser Función para traer el id del usuario en base a su cedula, 
-     * Nota: esta función puede ir en el modelo de usuarios.
-     * @return void
-     */
-    public function getIdUser(){
-
-
     }
+
+    /**
+     * Summary of getCount Con esta función puedo saber el total de cantidad de registros que hay disponibles.
+     * @param string $tableName
+     * @return array|int
+     */
+    public function getCount(String $query ='',String $tableName = ''){
+        $conn = $this->conect->getConnect();    
+        $stmtCount = $conn->prepare($query);
+
+            // $stmtCount->bind_param("i",$type);
+
+            if (!$stmtCount->execute()) {
+                return [
+                    'message'=>'error',
+                    'status'=>false
+                ];
+            }
+
+            $resultCount = $stmtCount->get_result();
+            return $resultCount->fetch_assoc()['Total'];
+    }
+
 }

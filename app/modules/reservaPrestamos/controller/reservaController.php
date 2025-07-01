@@ -129,15 +129,21 @@ class ReservaController
     }
 
     //Función para traer las reservas
-    public function getReservas( ) {
+    public function getReservas(int $pages = 0) {
+        if (!$pages) {
+            fail('pagina no definida');
+        }
+
         // Me trae solo la información de la reserva.
-        $data = $this->model->selectDetailReserva();
+        $data = $this->model->selectDetailReserva($pages);
         if (!$data['status']) {
             fail('error', $data);
         }
         //Trae los elementos de la reserva.
-        success('Registros', $data);
+        success('Registros', $data);    
     }
+
+
 
     public function getElementsReserva($codigo ){
         $dataDetail = $this->model->selectElementsReserva($codigo);
@@ -183,8 +189,15 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
             case 'reservas':
 
+                $pages = (int) $_GET['pages'];
+                
+                // var_dump($data);
+
+                // if (method_exists($controller,'getReservas')) {
+                //     $controller->getReservas();
+                // }
                 if (method_exists($controller,'getReservas')) {
-                    $controller->getReservas();
+                    $controller->getReservas($pages);
                 }
                 break;
 
