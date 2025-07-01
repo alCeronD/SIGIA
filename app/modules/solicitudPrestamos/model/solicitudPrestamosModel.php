@@ -38,6 +38,7 @@ class solicitudPrestamos {
             )
         ";
         
+        
         if ($this->conn->query($query)) {
             return $this->conn->insert_id; 
         } else {
@@ -183,6 +184,78 @@ class solicitudPrestamos {
     
         return $this->conn->query($query);
     }
+    
+    // public function registrarSalida($cantidad,$fecha_registro,$usuario_id,$elemento_id,$lastId,$elemento_devolutivo){
+        
+    //     $tipo_movimiento =2;
+    //     $unidades = $cantidad;
+    //     $usuario = $usuario_id;
+    //     $id_elemento_consumible = $elemento_id;
+    //     $id_prestamo = $lastId;
+    //     $element_devolutivo = $elemento_devolutivo;
+        
+    //     foreach ($unidades as $unid_value) {
+            
+    //         if (is_numeric($unid_value) && $unid_value > 0 ){
+                
+    //             $sqlSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn,ent_sal_cod_prestamo) VALUES($unid_value,'$fecha_registro',$tipo_movimiento,$usuario,$id_elemento_consumible,$id_prestamo)";
+                
+    //             // dd($sqlSalida);
+                
+    //             $stmtSalida = $this->conn->prepare($sqlSalida);
+    //             $stmtSalida->execute();
+                
+    //             // if ($stmtSalida) {
+    //             //     return true;
+    //             // } else {
+    //             //     return "Error al actualizar el préstamo: " . $this->conn->error;
+    //             // }
+    //         }
+    //         dd($elemento_devolutivo);
+    //         foreach ($variable as $key => $value) {
+    //             # code...
+    //         }
+    //     }
+    // }
+    
+    public function registrarSalida($cantidades_consumibles, $fecha_registro, $usuario_id, $lastId, $elementos_devolutivos) {
+        $tipo_movimiento = 2; // salida
+        $id_prestamo = $lastId;
+        $usuario = $usuario_id;
+        // 1. Procesar los elementos consumibles
+        foreach ($cantidades_consumibles as $codElemento => $cantidad) {
+            if (is_numeric($cantidad) && $cantidad > 0) {
+                $sqlSalida = "INSERT INTO entradas_salidas (
+                    ent_sal_cantidad, ent_fech_registro, entr_tp_movmnt,
+                    ent_id_usu, ent_sal_cod_elemtn, ent_sal_cod_prestamo
+                ) VALUES (?, ?, ?, ?, ?, ?)";
+        
+        $stmt = $this->conn->prepare($sqlSalida);
+        $stmt->execute([$cantidad, $fecha_registro, $tipo_movimiento, $usuario, $codElemento, $id_prestamo]);
+        }
+    }
+            
+        if (!is_array($elementos_devolutivos)) {
+        $elementos_devolutivos = explode(',', $elementos_devolutivos);
+    }
+
+    $elementos_devolutivos = array_filter(array_unique($elementos_devolutivos));
+
+    // 2. Procesar los elementos devolutivos (una unidad por defecto)
+    foreach ($elementos_devolutivos as $elementoCod) {
+            // dd($elementos_devolutivos);
+        $sqlSalida = "INSERT INTO entradas_salidas (
+                ent_sal_cantidad, ent_fech_registro, entr_tp_movmnt,
+                ent_id_usu, ent_sal_cod_elemtn, ent_sal_cod_prestamo
+            ) VALUES (?, ?, ?, ?, ?, ?)";
+    
+            $stmt = $this->conn->prepare($sqlSalida);
+            $stmt->execute([1, $fecha_registro, $tipo_movimiento, $usuario, $elementoCod, $id_prestamo]);
+        }
+        
+        return true;
+    }
+
 
 }
 

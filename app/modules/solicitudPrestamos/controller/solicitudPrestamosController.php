@@ -42,44 +42,53 @@ class solicitudPrestamosController {
     }
 
     public function registrarPrestamo() {
-        $conn = $this->conn;
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $usuario_id = $_SESSION['usuario']['id'];
-            $rol_id = $_SESSION['usuario']['rol_id'];
-            $elementos_seleccionados = $_POST['elementos_seleccionados'];
-            $cantidades_consumibles = $_POST['cantidades_consumibles'];
-            unset($_POST['elementos_seleccionados']);
-            $data = $_POST;
-            // dd($cantidades_consumibles);
-            $datos = new solicitudPrestamos($this->conn);
-            $lastId = $datos->create($data, $rol_id);
-            if (is_numeric($lastId)) {
+    $conn = $this->conn;
 
-                $prestamoElemento = new solicitudPrestamos($this->conn);
-                $elementoModel = new ElementoModelo($this->conn);
-                foreach ($elementos_seleccionados as $elemento_id) {
-                    $prestamoElemento->registrarElem($lastId, $usuario_id, $elemento_id);
-                    $elementoModel->actualizarEstadoElemento($elemento_id, 3);
-                }
-                
-                // registramo la cantidad de elementos consumibles de un elemento
-                foreach ($cantidades_consumibles as $elm_cod => $cantidad) {
-                    if (is_numeric($elm_cod) && is_numeric($cantidad) && $cantidad > 0) {
-                        $prestamoElemento->registrarElemConsumible($lastId, $usuario_id, $elm_cod, $cantidad);
-                        $elementoModel->actualizarEstadoElemento($elm_cod, 3);
-                    }
-                }
-                if ($prestamoElemento == true) {
-                    echo "<script>alert('Solicitud realizada correctamente, en espera por respuesta'); window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
-                } else {
-                    echo "<script>alert('Prestamo no se registro'); window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
-                }
-                exit;
-            } else {
-                echo "Error al registrar el préstamo: " . $lastId;
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $usuario_id = $_SESSION['usuario']['id'];
+        $rol_id = $_SESSION['usuario']['rol_id'];
+        $elementos_seleccionados = $_POST['elementos_seleccionados'];
+        $cantidades_consumibles = $_POST['cantidades_consumibles'];
+        $elementos_devolutivos = $_POST['elementos_devolutivos_seleccionados'];
+        
+        unset($_POST['elementos_seleccionados'], $_POST['elementos_devolutivos_seleccionados']);
+
+        $data = $_POST;
+
+        $datos = new solicitudPrestamos($this->conn);
+        $lastId = $datos->create($data, $rol_id);
+
+        if (is_numeric($lastId)) {
+            $prestamoElemento = new solicitudPrestamos($this->conn);
+            $salida = new solicitudPrestamos($this->conn);
+            $elementoModel = new ElementoModelo($this->conn);
+
+            // Registrar devolutivos seleccionados
+            foreach ($elementos_seleccionados as $elemento_id) {
+                $prestamoElemento->registrarElem($lastId, $usuario_id, $elemento_id);
+                $elementoModel->actualizarEstadoElemento($elemento_id, 3);
             }
+
+            // Registrar consumibles seleccionados
+            foreach ($cantidades_consumibles as $elm_cod => $cantidad) {
+                if (is_numeric($elm_cod) && is_numeric($cantidad) && $cantidad > 0) {
+                    $prestamoElemento->registrarElemConsumible($lastId, $usuario_id, $elm_cod, $cantidad);
+                    $elementoModel->actualizarEstadoElemento($elm_cod, 3);
+                }
+            }
+
+            // Registrar salidas (una sola vez)
+            $salida->registrarSalida($cantidades_consumibles, $data['pres_fch_reserva'], $usuario_id, $lastId, $elementos_seleccionados);
+
+            echo "<script>alert('Solicitud realizada correctamente, en espera por respuesta'); 
+                  window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
+            exit;
+        } else {
+            echo "Error al registrar el préstamo: " . $lastId;
         }
     }
+}
+
     
     
 

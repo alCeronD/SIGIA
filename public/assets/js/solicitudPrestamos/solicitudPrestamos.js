@@ -66,6 +66,17 @@ document.addEventListener('DOMContentLoaded', function () {
       }, 100);
     });
   }
+  
+    // Capturar elementos devolutivos seleccionados antes de enviar el formulario
+  document.getElementById('formSolicitudPrestamo').addEventListener('submit', function (e) {
+    const seleccionados = Array.from(
+      document.querySelectorAll('input[name="elementos_seleccionados[]"]:checked')
+    ).map(input => input.value);
+  
+    // Insertar los valores en el campo oculto como una lista separada por comas
+    document.getElementById('elementos_devolutivos_seleccionados').value = seleccionados.join(',');
+  });
+
 });
 
 

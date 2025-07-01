@@ -128,7 +128,7 @@
               <th>Nombre</th>
               <th>Disponible</th>
               <th>Seleccionar</th>
-              <th>Cantidad</th> <!-- Nueva columna -->
+              <th>Cantidad</th> 
             </tr>
           </thead>
           <tbody id="tabla-elementos-consumibles-modal">
@@ -158,6 +158,7 @@
         <a href="#!" class="modal-close waves-effect waves-green btn-flat">Confirmar Selección</a>
       </div>
     </div>
+      <input type="hidden" name="elementos_devolutivos_seleccionados[]" id="elementos_devolutivos_seleccionados">
 
     
       <!-- ///////////////////////////// -->
