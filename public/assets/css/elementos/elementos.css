@@ -4,12 +4,13 @@
     display: grid;
     grid-template-rows: auto auto 1fr;
     gap: 20px;
-    height: 100vh;
+    min-height: calc(100vh - 60px); /* 👈 asegura que el contenido deje ver el footer */
     box-sizing: border-box;
     padding: 20px;
     background-color: #f5f7fa;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+
 
 /* ----------------- Título ----------------- */
 .container-fluid h2 {
@@ -40,23 +41,6 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
-}
-
-/* ----------------- Botón Estándar ----------------- */
-.btn {
-    padding: 8px 14px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.btn:hover {
-    background-color: #0056b3;
 }
 
 /* ----------------- Tabla ----------------- */
@@ -102,38 +86,7 @@
     font-size: 13px;
 }
 
-/* Colores personalizados para los botones por estado */
-.btn-warning {
-    background-color: #ffc107;
-    color: #000;
-}
-.btn-warning:hover {
-    background-color: #e0a800;
-}
 
-.btn-danger {
-    background-color: #dc3545;
-    color: #fff;
-}
-.btn-danger:hover {
-    background-color: #b52a37;
-}
-
-.btn-success {
-    background-color: #28a745;
-    color: #fff;
-}
-.btn-success:hover {
-    background-color: #218838;
-}
-
-.btn-info {
-    background-color: #17a2b8;
-    color: #fff;
-}
-.btn-info:hover {
-    background-color: #117a8b;
-}
 
 /* ----------------- Modal "Ver Más" ----------------- */
 #modalVerMas {
@@ -229,22 +182,9 @@
 #modalRegistrar input[type="text"],
 #modalRegistrar input[type="number"],
 #modalRegistrar select {
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fff;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
-  max-width: 100%;
+  padding: 6px;
 }
 
-#modalRegistrar input[type="text"]:focus,
-#modalRegistrar input[type="number"]:focus,
-#modalRegistrar select:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
-  outline: none;
-}
 
 /* Selector tipo de elemento */
 #tipoElementoSelect {
@@ -253,30 +193,131 @@
   border: 1px solid #ccc;
   border-radius: 6px;
   background-color: #fff;
-  width: 82%;
+  width: 40%;
   max-width: 500px;
   margin: 0 auto 16px auto; /* <-- Esto centra horizontalmente */
   display: block;
 }
 
 
-/* Botón guardar con ajuste de ancho */
-#modalRegistrar button[type="submit"] {
-  padding: 10px;
-  width: 100%;
-  max-width: 500px;
-  margin: 10px auto 0;
-  background: linear-gradient(135deg, #007bff, #0056b3);
-  color: white;
-  font-weight: bold;
-  font-size: 15px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+
+#filtroTipo {
+  display: block !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1000 !important;
+  width: 200px !important;
+  height: auto !important;
+  background-color: white !important;
 }
 
-#modalRegistrar button[type="submit"]:hover {
-  background: linear-gradient(135deg, #0056b3, #003e8c);
+
+/*EDITAR ELEMENTOS*/
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f7fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .form-wrapper {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }
 
+
+    .editar-form {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        background-color: #ffffff;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        width: 700px;
+        max-width: 90%;
+    }
+
+    .editar-form h2 {
+        grid-column: span 2;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #333;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #555;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+        background-color: #fdfdfd;
+        transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: #3b82f6;
+        outline: none;
+    }
+
+    .form-group label + label {
+        padding: 10px 12px;
+        background-color: #f0f0f0;
+        border-radius: 6px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .form-actions {
+        grid-column: span 2;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .form-actions button,
+    .form-actions a {
+        padding: 10px 20px;
+        font-size: 14px;
+        border-radius: 6px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .form-actions a {
+        background-color: #e5e7eb;
+        color: #333;
+        border: 1px solid #d1d5db;
+    }
+
+    .form-actions a:hover {
+        background-color: #d1d5db;
+    }
+
+    

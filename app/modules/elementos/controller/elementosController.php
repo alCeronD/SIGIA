@@ -12,8 +12,17 @@ class elementosController {
     }
 
  public function mostrarElementos() {
-    // Obtener los elementos
-    $elementos = $this->modeloElemento->obtenerElemento();
+    // Parámetros de paginación
+    $pagina = isset($_GET['pagina']) ? max(1, intval($_GET['pagina'])) : 1;
+    $limite = 10;
+    $offset = ($pagina - 1) * $limite;
+
+    // Obtener elementos paginados
+    $elementos = $this->modeloElemento->obtenerElementoPaginado($limite, $offset);
+
+    // Contar total de elementos para el paginador
+    $totalElementos = $this->modeloElemento->contarElementos();
+    $totalPaginas = ceil($totalElementos / $limite);
 
     // Obtener las áreas
     $modeloGenerico = new ConfigModulesModel();
@@ -28,9 +37,10 @@ class elementosController {
         }
     }
 
-    // Incluir la vista pasando las variables
+    // Incluir la vista pasando las variables necesarias
     include __DIR__ . '/../views/elementosView.php';
 }
+
 
 
 

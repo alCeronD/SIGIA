@@ -67,6 +67,59 @@ class ElementoModelo {
         return $resultado->fetch_assoc();
     }
 
+
+    
+    // Obtener elementos paginados con JOIN para nombres relacionados
+public function obtenerElementoPaginado($limite, $offset) {
+    $elementos = [];
+    $sql = "SELECT 
+        e.elm_cod AS codigoElemento,
+        e.elm_placa AS placa,
+        e.elm_nombre AS nombreElemento,
+        e.elm_existencia AS cantidad,
+        e.elm_uni_medida AS unidadMedida,
+        ar.ar_nombre AS nombreArea,
+        tpE.tp_el_nombre AS tipoElemento,
+        es_e.est_nombre AS estadoElemento
+    FROM elementos e
+    INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
+    INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
+    INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado
+    ORDER BY e.elm_placa ASC
+    LIMIT ? OFFSET ?";
+
+    $stmt = $this->conn->prepare($sql);
+    if (!$stmt) {
+        echo "Error en prepare: " . $this->conn->error;
+        return [];
+    }
+    $stmt->bind_param("ii", $limite, $offset);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+
+    while ($fila = $resultado->fetch_array(MYSQLI_ASSOC)) {
+        $elementos[] = $fila;
+    }
+
+    $stmt->close();
+    return $elementos;
+}
+
+// Contar total de elementos
+public function contarElementos() {
+    $sql = "SELECT COUNT(*) AS total FROM elementos";
+    $resultado = $this->conn->query($sql);
+    if ($resultado) {
+        $fila = $resultado->fetch_array(MYSQLI_ASSOC);
+        return intval($fila['total']);
+    } else {
+        echo "Error al contar elementos: " . $this->conn->error;
+        return 0;
+    }
+}
+
+
+
     // Insertar nuevo elemento
     public function insertarElemento($datos) {
         $sql = "INSERT INTO elementos (elm_placa, elm_nombre, elm_existencia, elm_uni_medida, elm_cod_tp_elemento, elm_cod_estado, elm_area_cod) VALUES (?, ?, ?, ?, ?, ?, ?)";

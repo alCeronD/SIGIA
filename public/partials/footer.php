@@ -12,7 +12,7 @@
         </li>
         <!-- Modulo usuarios -->
         <li>
-          <a href="#">Usuarios</a>
+          <a href="#" class="footer-icon text-center">Usuarios</a>
           <ul class="verticalMenu">
             <!-- Consultar usuario -->
             <li>
@@ -26,7 +26,7 @@
         </li>
         <!-- Modulo prestamos -->
         <li>
-          <a href="#">Prestamos</a>
+          <a href="#" class="footer-icon text-center">Prestamos</a>
           <ul class="verticalMenu">
             <li>
               <a href="<?php echo getUrl("reservaPrestamos", "reserva", "reservaView", false, 'dashboard'); ?>">Reserva</a>
@@ -38,14 +38,14 @@
         </li>
         <!-- Modulo elementos -->
         <li>
-          <a href="#">Elementos</a>
+          <a href="#" class="footer-icon text-center">Elementos</a>
           <ul class="verticalMenu">
             <li><a href="<?php echo getUrl("elementos", "elementos", "mostrarElementos", false, 'dashboard'); ?>">ver Elementos</a></li>
           </ul>
         </li>
         <!-- Configuración -->
         <li>
-          <a href="#">Configuración</a>
+          <a href="#" class="footer-icon text-center">Configuración</a>
           <ul class="verticalMenu">
             <li>
               <a href="<?php echo getUrl("configModules", "configModules", "renderViewArea", false, 'dashboard'); ?>">Areas</a>

@@ -179,3 +179,116 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
+
+//MODAL EDITAR
+document.querySelectorAll('.editar-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+
+    const codigo = btn.getAttribute('data-cod');
+    const elemento = window.elementosData.find(el => String(el.codigoElemento) === codigo);
+
+    if (!elemento) {
+      alert('Elemento no encontrado');
+      return;
+    }
+
+    // Inputs ocultos
+    document.getElementById('elm_cod').value = elemento.codigoElemento;
+    document.getElementById('elm_cod_tp_elemento').value = elemento.codTipoElemento || '';
+
+    // Mostrar etiquetas (solo lectura)
+    document.getElementById('label_placa').textContent = elemento.placa || '';
+    document.getElementById('label_existencia').textContent = elemento.cantidad || '';
+    document.getElementById('label_tipoElemento').textContent = elemento.tipoElemento || '';
+
+    // Inputs editables
+    document.getElementById('elm_nombre').value = elemento.nombreElemento || '';
+    document.getElementById('elm_uni_medida').value = elemento.unidadMedida || '';
+
+    // Actualizar labels para inputs con valor
+    M.updateTextFields();
+
+    // Área: seleccionar opción correcta
+    const selectArea = document.getElementById('elm_area_cod');
+    const areaCodigo = elemento.elm_area_cod || elemento.codigoArea || '';
+
+    // Destruir instancia anterior si existe
+    const instance = M.FormSelect.getInstance(selectArea);
+    if (instance) instance.destroy();
+
+    // Asignar seleccionado
+    for (let option of selectArea.options) {
+      option.selected = option.value == areaCodigo;
+    }
+
+    // Inicializar select para refrescar UI
+    M.FormSelect.init(selectArea);
+
+    // Mostrar modal
+    document.getElementById('modalEditarElemento').style.display = 'flex';
+  });
+});
+
+// Cerrar modal
+document.getElementById('cerrarModalEditar').addEventListener('click', () => {
+  document.getElementById('modalEditarElemento').style.display = 'none';
+});
+document.getElementById('cancelarEditar').addEventListener('click', () => {
+  document.getElementById('modalEditarElemento').style.display = 'none';
+});
+
+//FILTRO DE BUSQUEDA
+
+document.addEventListener('DOMContentLoaded', function () {
+    const inputBusqueda = document.getElementById('inputBusqueda');
+    const btnBuscar = document.getElementById('btnBuscar');
+    const filas = document.querySelectorAll('tbody tr');
+
+    btnBuscar.addEventListener('click', function (e) {
+        e.preventDefault(); // Evita que el botón recargue la página
+        const filtro = inputBusqueda.value.toLowerCase().trim();
+
+        filas.forEach(fila => {
+            const placa = fila.cells[1].textContent.toLowerCase();
+            const nombre = fila.cells[2].textContent.toLowerCase();
+
+            if (placa.includes(filtro) || nombre.includes(filtro)) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+        });
+    });
+
+    // También puedes buscar al escribir directamente
+    inputBusqueda.addEventListener('keyup', function () {
+        const filtro = inputBusqueda.value.toLowerCase().trim();
+
+        filas.forEach(fila => {
+            const placa = fila.cells[1].textContent.toLowerCase();
+            const nombre = fila.cells[2].textContent.toLowerCase();
+
+            if (placa.includes(filtro) || nombre.includes(filtro)) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+        });
+    });
+});
+
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.tooltipped');
+    var instances = M.Tooltip.init(elems, options);
+  });
+
+  // Or with jQuery
+
+  $(document).ready(function(){
+    $('.tooltipped').tooltip();
+  });
