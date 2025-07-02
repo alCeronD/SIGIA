@@ -76,41 +76,7 @@ class solicitudPrestamos {
         }
     }
 
-    // public function search($id = 0) {
-    //     $sql = "SELECT DISTINCT
-    //         p.pres_cod AS 'codigoSolicitud',
-    //         p.pres_fch_slcitud AS 'fechaSolicitud',
-    //         p.pres_fch_reserva AS 'fechaReserva',
-    //         p.pres_hor_inicio AS 'horaInicio',
-    //         p.pres_hor_fin AS 'horaFin',
-    //         p.pres_fch_entrega AS 'fechaEntrega',
-    //         p.pres_observacion AS 'observacion',
-    //         p.pres_destino AS 'destino',
-    //         p.pres_estado AS 'estadoPrestamo',
-    //         tp.tp_nombre As 'tipoPrestamo'
-    //         FROM prestamos p
-    //         LEFT JOIN prestamos_elementos pe ON
-    //         p.pres_cod = pe.pres_cod 
-    //         LEFT JOIN usuarios us ON
-    //         us.usu_id = pe.pres_el_usu_id
-    //         LEFT JOIN tipo_prestamo tp ON tp.tp_pre = p.tp_pres
-    //         WHERE us.usu_id = ? ORDER BY p.pres_fch_slcitud DESC;";
-
-    //         $stmtSelect = $this->conn->prepare($sql);
-    //         $stmtSelect->bind_param('i',$id);
-
-    
-    //         $stmtSelect->execute();
-        
-    //         $result = $stmtSelect->get_result();
-    //         $data = [];
-        
-    //         while ($row = $result->fetch_assoc()) {
-    //             $data[] = $row;
-    //         }
-    
-    //     return $data;
-    // }
+   
     public function search($id = 0) {
         $sql = "SELECT DISTINCT
             p.pres_cod AS codigoSolicitud,
@@ -121,13 +87,13 @@ class solicitudPrestamos {
             p.pres_fch_entrega AS fechaEntrega,
             p.pres_observacion AS observacion,
             p.pres_destino AS destino,
-            ep.es_pr_nombre AS estadoNombre,         -- ← aquí se agrega el nombre del estado
+            ep.es_pr_nombre AS estadoNombre,        
             tp.tp_nombre AS tipoPrestamo
         FROM prestamos p
         LEFT JOIN prestamos_elementos pe ON p.pres_cod = pe.pres_cod 
         LEFT JOIN usuarios us ON us.usu_id = pe.pres_el_usu_id
         LEFT JOIN tipo_prestamo tp ON tp.tp_pre = p.tp_pres
-        LEFT JOIN estados_prestamos ep ON ep.es_pr_cod = p.pres_estado  -- ← unión con tabla de estados
+        LEFT JOIN estados_prestamos ep ON ep.es_pr_cod = p.pres_estado  
         WHERE us.usu_id = ?
         ORDER BY p.pres_fch_slcitud DESC";
     
@@ -165,7 +131,6 @@ class solicitudPrestamos {
     }
 
     public function cancelarPrestamo(int $presCod): array {
-    // Validar ID
         if (!$presCod || !is_numeric($presCod)) {
             return ['success' => false, 'message' => 'Código inválido de préstamo'];
         }
@@ -236,7 +201,7 @@ class solicitudPrestamos {
         $tipo_movimiento = 2; // salida
         $id_prestamo = $lastId;
         $usuario = $usuario_id;
-        // 1. Procesar los elementos consumibles
+        //procesar los elementos consumibles
         foreach ($cantidades_consumibles as $codElemento => $cantidad) {
             if (is_numeric($cantidad) && $cantidad > 0) {
                 $sqlSalida = "INSERT INTO entradas_salidas (
@@ -255,7 +220,7 @@ class solicitudPrestamos {
 
     $elementos_devolutivos = array_filter(array_unique($elementos_devolutivos));
 
-    // 2. Procesar los elementos devolutivos (una unidad por defecto)
+    // 2. Procesar los elementos devolutivos (una unidad defecto)
     foreach ($elementos_devolutivos as $elementoCod) {
             // dd($elementos_devolutivos);
         $sqlSalida = "INSERT INTO entradas_salidas (

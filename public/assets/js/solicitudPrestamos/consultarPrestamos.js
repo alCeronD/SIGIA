@@ -123,10 +123,10 @@ document.addEventListener('click', (e) => {
             if (data.success) {
               alert(data.message);
             
-              // Buscar la fila correspondiente
+              // Buscar la fila 
               const fila = e.target.closest('tr');
             
-              // Actualizar la celda de estado (4ta columna)
+              // Actualizar la celda de estado
               const celdaEstado = fila.querySelector('td:nth-child(4)');
               if (celdaEstado) {
                 celdaEstado.textContent = 'Cancelado';

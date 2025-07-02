@@ -74,7 +74,7 @@ class solicitudPrestamosController {
                 $elementoModel->disminuirExistenciaElemento($elemento_id, 1);
             
                 // Cambiar estado
-                $elementoModel->actualizarEstadoElemento($elemento_id, 3); // 3 = Prestado
+                $elementoModel->actualizarEstadoElemento($elemento_id, 3); 
             }
 
 
@@ -86,7 +86,7 @@ class solicitudPrestamosController {
                     // Disminuye existencia sin tocar estado
                     $elementoModel->disminuirExistenciaElemento($elm_cod, $cantidad);
             
-                    // Opcionalmente cambiar estado si lo necesitas también
+                    // Opcionalmente cambiar estado
                     $elementoModel->actualizarEstadoElemento($elm_cod, 3);
                 }
             }
@@ -215,7 +215,6 @@ class solicitudPrestamosController {
 }
 
 
-//pendiente solucion para enviar a fetchSolicitudPrestamo.
 $conexion = new Conection();
 $getConect = $conexion->getConnect();
 $solicitudObj = new solicitudPrestamosController($getConect);
