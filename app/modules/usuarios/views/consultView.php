@@ -52,6 +52,10 @@
         <?php endif; ?>
       </tbody>
     </table>
+    <div class="pagination-container center-align">
+   <ul id="paginacion-usuarios" class="pagination"></ul>
+</div>
+
   </div>
 </div>
 
@@ -99,25 +103,5 @@
 </div>
 
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".btnEditarUsuario").forEach(btn => {
-    btn.addEventListener("click", e => {
-      e.preventDefault();
-      // Cargar los datos
-      document.getElementById("usu_id").value = btn.dataset.id;
-      document.getElementById("usu_docum").value = btn.dataset.documento;
-      document.getElementById("usu_nombres").value = btn.dataset.nombres;
-      document.getElementById("usu_apellidos").value = btn.dataset.apellidos;
-      document.getElementById("usu_email").value = btn.dataset.email;
-      document.getElementById("usu_telefono").value = btn.dataset.telefono;
-      // Mostrar modal
-      document.getElementById("modalEditarUsuario").style.display = "flex";
-    });
-  });
-});
+<script type="module" src="../public/assets/js/usuarios/usuarios.js"></script>
 
-function cerrarModalUsuario() {
-  document.getElementById("modalEditarUsuario").style.display = "none";
-}
-</script>
