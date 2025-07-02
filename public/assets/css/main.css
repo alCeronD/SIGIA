@@ -272,3 +272,8 @@ input[type="number"] {
   width: auto;
   z-index: 1000;
 }
+
+/* evitamos que los elementos i dentro de botones capturen el evento principal */
+.material-icons {
+  pointer-events: none;
+}
