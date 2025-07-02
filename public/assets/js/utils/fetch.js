@@ -70,9 +70,6 @@ export const getData = async(url, method = 'GET', parameters = {}, data ={})=>{
     
 }
 
-
-
-
 export default{
     sendData,
     getData

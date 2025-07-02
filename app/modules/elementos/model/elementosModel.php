@@ -154,17 +154,50 @@ public function obtenerElementoPaginado(int $limite,int $offset, String $type) {
     ];
 }
 
-// Contar total de elementos
-public function contarElementos() {
-    $sql = "SELECT COUNT(*) AS total FROM elementos";
-    $resultado = $this->conn->query($sql);
-    if ($resultado) {
-        $fila = $resultado->fetch_array(MYSQLI_ASSOC);
-        return intval($fila['total']);
-    } else {
-        echo "Error al contar elementos: " . $this->conn->error;
-        return 0;
+// Contar total de elementos, puedo mejorar esta función, que me permita ejecutar el count segun su parámetro, si es consumibles, devolutivos o todos.
+public function contarElementos(string $type = 'all') {
+    $type = strtolower($type);
+
+    if (!in_array($type, ['consumible', 'devolutivo', 'all'])) {
+        return [
+            'message' => 'Tipo de elemento no válido',
+            'status' => false
+        ];
     }
+
+    $sqlBase = "SELECT COUNT(*) AS total FROM elementos";
+
+    if ($type === 'all') {
+        $sql = $sqlBase;
+        $stmtsql = $this->conn->prepare($sql);
+    } else {
+        $codType = $type === 'consumible' ? 2 : 1;
+        $sql = "$sqlBase WHERE elm_cod_tp_elemento = ?";
+        $stmtsql = $this->conn->prepare($sql);
+        if (!$stmtsql) {
+            return [
+                'message' => "Error en prepare: " . $this->conn->error,
+                'status' => false
+            ];
+        }
+        $stmtsql->bind_param('i', $codType);
+    }
+
+    if (!$stmtsql->execute()) {
+        return [
+            'message' => "Error al ejecutar la consulta: " . $stmtsql->error,
+            'status' => false
+        ];
+    }
+
+    $resultado = $stmtsql->get_result();
+    $fila = $resultado->fetch_assoc();
+    $stmtsql->close();
+
+    return [
+        'total' => (int)$fila['total'],
+        'status' => true
+    ];
 }
 
 

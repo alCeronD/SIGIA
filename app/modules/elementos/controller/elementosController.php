@@ -27,15 +27,19 @@ class ElementosController {
     // Obtener elementos paginados
     $elementos = $this->modeloElemento->obtenerElementoPaginado($limite, $offset, $type);
 
+    // Contar total de elementos para el paginador
+    $resultElements = $this->modeloElemento->contarElementos($type);
+    $totalElementos = $resultElements['total'];
+    $totalPaginas = ceil($totalElementos / $limite);
+
     if (!$elementos) {
         fail('error al traer los elementos');
     }
 
-    success('elementos', $elementos);
+    //Unifico ambos arreglos para obtener la cantidad de paginas con los elementos.
+    $elementos = array_merge(['cantidadPaginas'=> $totalPaginas],$elementos);
 
-    // Contar total de elementos para el paginador
-    $totalElementos = $this->modeloElemento->contarElementos();
-    $totalPaginas = ceil($totalElementos / $limite);
+    success('elementos', $elementos);
 
 
     // // Obtener las áreas

@@ -47,60 +47,7 @@
                 </tr>
             </thead>
             <tbody id="tbodyElementos">
-                <?php if (!empty($elementos)) : ?>
-                    <?php foreach ($elementos as $elemento) : ?>
-                        <tr data-tipo="<?= strtolower($elemento['tipoElemento']) ?>">
-
-                            <td><?= htmlspecialchars($elemento['placa']); ?></td>
-                            <td><?= htmlspecialchars($elemento['nombreElemento']); ?></td>
-                            <td><?= htmlspecialchars($elemento['cantidad']); ?></td>
-                            <td><?= htmlspecialchars($elemento['unidadMedida']); ?></td>
-                            <td><?= htmlspecialchars($elemento['tipoElemento']); ?></td>
-                            <td><?= htmlspecialchars($elemento['estadoElemento']); ?></td>
-                            <td><?= htmlspecialchars($elemento['nombreArea']); ?></td>
-                            <td>
-                                <div class="btn-group">
-                                    <button
-                                        type="button"
-                                        class="btn btn-warning btn-sm editar-btn"
-                                        data-cod="<?= htmlspecialchars($elemento['codigoElemento']) ?>">
-                                        <i class="material-icons">edit</i>
-                                    </button>
-
-                                    <?php 
-                                    $tipoElemento = strtolower($elemento['tipoElemento']);
-
-                                    if ($tipoElemento === 'consumible') : ?>
-                                    <button type="button" id="btnAddCantidad" class="btn btn-danger btn-sm"><i class="material-icons">add</i></button>
-                                    <?php endif; ?>
-
-                                    <?php
-                                    $estado = strtolower(trim($elemento['estadoElemento'] ?? ''));
-
-                                    if ($estado == 'disponible') : ?>
-                                        <a href="<?= getUrl('elementos', 'elementos', 'cambiarEstadoElemento', ['elm_cod' => $elemento['codigoElemento']], 'dashboard') ?>"
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('¿Está seguro de inhabilitar este elemento?');"><i class="material-icons">backspace</i></a>
-
-                                    <?php elseif ($estado == 'inhabilitado') : ?>
-                                        <a href="<?= getUrl('elementos', 'elementos', 'cambiarEstadoElemento', ['elm_cod' => $elemento['codigoElemento']], 'dashboard') ?>"
-                                            class="btn btn-success btn-sm"
-                                            onclick="return confirm('¿Está seguro de activar este elemento?');"><i class="material-icons">done_all</i></a>
-
-                                    <?php else : ?>
-                                        <span class="btn tooltipped" data-position="bottom" data-tooltip="I am a tooltip"><?= htmlspecialchars($estado) ?></span>
-                                    <?php endif; ?>
-
-                                    <button type="button" class="btn btn-info btn-sm btnVerMas" data-cod="<?= htmlspecialchars($elemento['codigoElemento']) ?>"><i class="material-icons">info_outline</i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
-                    <tr>
-                        <td colspan="9">No hay elementos registrados</td>
-                    </tr>
-                <?php endif; ?>
+                
             </tbody>
 
             <!-- FILA DE PAGINACION DENTRO DE LA TABLA -->
@@ -119,12 +66,6 @@
                         </a>
                     </li>
 
-                    <!-- Números de página -->
-                    <?php for ($i = 1; $i <= $totalPaginas; $i++) : ?>
-                        <li class="<?= ($pagina == $i) ? 'active teal lighten-1' : 'waves-effect' ?>">
-                            <a href="dashboard.php?modulo=elementos&controlador=elementos&funcion=mostrarElementos&pagina=<?= $i ?>"><?= $i ?></a>
-                        </li>
-                    <?php endfor; ?>
 
                     <!-- Botón Siguiente -->
                     <li class="<?= ($pagina >= $totalPaginas) ? 'disabled' : 'waves-effect' ?>">

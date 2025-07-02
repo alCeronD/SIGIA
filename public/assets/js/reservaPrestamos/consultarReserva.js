@@ -112,10 +112,6 @@ const renderReservas = async (page = 1) => {
         // tdEstado.style.fontWeight = "bold";
       }
 
-      // if (tdEstado.textContent === 'Finalizado') {
-      //   btnEnd.style.display = 'none';
-      // }
-
       tdAcciones.appendChild(btnDetail);
 
         if (dta.estadoPrestamo === 'Finalizado') {
@@ -140,9 +136,6 @@ const renderReservas = async (page = 1) => {
         }
       
       }
-
-
-
 
       //Re factorizarlo y transformarlo en fetch, en una sola función.
       const reserva = data.find((item) => item.codigo === codigo);
