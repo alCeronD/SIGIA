@@ -133,10 +133,13 @@ document.addEventListener('click', (e) => {
               }
             
               // Opcional: Deshabilitar botón cancelar y cambiar texto
-              e.target.disabled = true;
-              e.target.textContent = 'Cancelado';
-              e.target.classList.remove('red', 'lighten-1');
-              e.target.classList.add('grey', 'darken-1');
+              // e.target.disabled = true;
+              // e.target.textContent = 'Cancelado';
+              // e.target.classList.remove('red', 'lighten-1');
+              // e.target.classList.add('grey', 'darken-1');
+              // Eliminar el botón de cancelar
+              e.target.remove();
+
             }
              else {
               alert('Error al cancelar: ' + data.message);
