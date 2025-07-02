@@ -494,6 +494,41 @@ table td .actionsElements {
   border: 1px solid #ccc;
 }
 
+/**
+paginación reservas
+*/
+
+.reservas .pages {
+  /* una separación entre la tabla y los botones. */
+  margin-top: 2vh;
+}
+
+.pages{
+  display: flex;
+  flex-direction: row;
+}
+.pages > .previewReservas{
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 0.3rem;
+}
+
+.pages > .nextReservas{
+  width: 50%;
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 0.3rem;
+
+}
+
+/* bloque de codigo para evitar que el icono sea clickqueado por el usuario */
+.btn-small i {
+  pointer-events: none; /* hace que los clics pasen al botón, no al <i> */
+}
+
+
+
 /* Resolusiones mayores a 1440 */
 @media screen and (min-width: 1440px) { 
     

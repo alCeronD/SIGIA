@@ -129,18 +129,27 @@ class ReservaController
     }
 
     //Función para traer las reservas
-    public function getReservas( ) {
+    public function getReservas(int $pages = 0) {
+        if (!$pages) {
+            fail('pagina no definida');
+        }
+
         // Me trae solo la información de la reserva.
-        $data = $this->model->selectDetailReserva();
+        $data = $this->model->selectDetailReserva($pages);
         if (!$data['status']) {
             fail('error', $data);
         }
         //Trae los elementos de la reserva.
-        success('Registros', $data);
+        success('Registros', $data);    
     }
 
+
+
     public function getElementsReserva($codigo ){
-        $dataDetail = $this->model->selectElementsReserva($codigo);
+        // var_dump($codigo);
+        $codigoInt = (int) $codigo;
+        // var_dump($codigoInt);
+        $dataDetail = $this->model->selectElementsReserva($codigoInt);
         success('Elementos relacionados al codigo',$dataDetail);
     }
 
@@ -157,7 +166,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         $pages = $_GET['pages'] ?? 1;
 
         $codigo = $_GET['codigo'] ?? 0;
-
+        $codigo = (int) $codigo;
         switch ($case) {
             case 'users':
                 if (method_exists($controller, 'getUsers')) {
@@ -166,7 +175,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 break;
 
             case 'elements':
-                //var_dump($pages);
                 if (method_exists($controller, 'getElementosDevolutivos')) {
                     $controller->getElementosDevolutivos($pages);
                 }
@@ -183,8 +191,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
             case 'reservas':
 
+                $pages = (int) $_GET['pages'];
                 if (method_exists($controller,'getReservas')) {
-                    $controller->getReservas();
+                    $controller->getReservas($pages);
                 }
                 break;
 

@@ -42,6 +42,7 @@ export const openModal = (modal) => {
 export const createI = () => {
   const i = document.createElement("i");
   i.setAttribute("class", "material-icons");
+  i.style.pointerEvents = "none";
   return i;
 };
 
@@ -56,6 +57,19 @@ export const createBtn = (valueClass = "") => {
   button.setAttribute("class", valueClass);
   return button;
 };
+
+export const addClassItem = (item, valuesClass = {})=>{
+
+  if (!valuesClass) {
+    return;
+  }
+
+  //Como objeto, puedo buscar una forma de hacerlo con arreglo.
+  Object.values(valuesClass).forEach((val)=>{
+    // item.classList.add(val);
+    val.split(" ").forEach(cl => item.classList.add(cl));
+  });
+}
 
 //Crear el horario de la reserva.
 export const instanceDateTime = (
