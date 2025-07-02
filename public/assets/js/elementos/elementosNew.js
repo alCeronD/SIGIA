@@ -12,7 +12,8 @@ let pageGlobal;
 const filtroTipo = document.querySelector('#filtroTipo');
 const previewElements = document.querySelector('#previewElements');
 const nextElements = document.querySelector('#nextElements');
-
+const tbodyElements = document.querySelector('#tbodyElementos');
+let currentType = typeElements.all;
 
 /**
  * Obtiene elementos desde el backend mediante una petición GET con filtros de tipo y paginación.
@@ -34,9 +35,6 @@ const nextElements = document.querySelector('#nextElements');
  */
 const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}) => {
     try {
-
-    const tbodyElements = document.querySelector('#tbodyElementos');
-
         const dataElements = await getData(
         'modules/elementos/controller/elementosController.php',
         'GET',
@@ -99,36 +97,37 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
 
 document.addEventListener('DOMContentLoaded', ()=>{
 
-    renderElements();
+    renderElements({type : typeElements.all, type: currentType});
 });
 
 //La forma en como filtro los elementos se puede cambiar.
 filtroTipo.addEventListener('change', (e)=>{
     e.stopPropagation();
     e.preventDefault();
-
+    // reinicio a la primera Página para que siempre dependiendo del filtro, visualice la primera página como inicio.
+    pageElement = 1;
     //Hacer una validación de que el valor de optión exista.
     /**
      * por ejemplo, si el optin es devolutivo o cnsumible o todo, debe ejecutar, pero si hay OTRO, debe de mostrar x defecto el todo.
      */
     const selectedOption = e.target.options[e.target.selectedIndex];
+    tbodyElements.innerHTML = "";
     if (selectedOption.value === typeElements.dev) {
-        renderElements(typeElements.dev);
+        currentType = typeElements.dev;
     }else if (selectedOption.value === typeElements.consu){
-        renderElements(typeElements.consu);
+        currentType = typeElements.consu;
     }else{
-        renderElements();
-    }
-    
+        currentType = typeElements.all;
+    }    
+    renderElements({type : currentType, page: pageElement});
 });
 
 previewElements.addEventListener('click', (e)=>{
     e.stopPropagation();
     e.preventDefault();
-    console.log(pageElement);
     if (pageElement <= 1 )return;
     pageElement--;
-    renderElements({page: pageElement});
+    renderElements({type: currentType ,page: pageElement});
 });
 
 nextElements.addEventListener('click', (e) => {
@@ -136,5 +135,5 @@ nextElements.addEventListener('click', (e) => {
     e.preventDefault();
     if (pageElement >= pageGlobal) return;
     pageElement++
-    renderElements({page: pageElement});
+    renderElements({type: currentType ,page: pageElement});
 });
