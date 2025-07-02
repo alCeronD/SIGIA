@@ -5,9 +5,7 @@ const typeElements = {
     consu: 'consumible',
     all: 'all'
 }
-
 const filtroTipo = document.querySelector('#filtroTipo');
-
 document.addEventListener('DOMContentLoaded', ()=>{
 
     renderElements();
@@ -18,6 +16,10 @@ filtroTipo.addEventListener('change', (e)=>{
     e.stopPropagation();
     e.preventDefault();
 
+    //Hacer una validación de que el valor de optión exista.
+    /**
+     * por ejemplo, si el optin es devolutivo o cnsumible o todo, debe ejecutar, pero si hay OTRO, debe de mostrar x defecto el todo.
+     */
     const selectedOption = e.target.options[e.target.selectedIndex];
     if (selectedOption.value === typeElements.dev) {
         renderElements(typeElements.dev);

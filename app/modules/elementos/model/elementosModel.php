@@ -94,18 +94,22 @@ public function obtenerElementoPaginado(int $limite,int $offset, String $type) {
 
 
     $baseSql = "SELECT 
-        e.elm_cod AS codigoElemento,
-        e.elm_placa AS placa,
-        e.elm_nombre AS nombreElemento,
-        e.elm_existencia AS cantidad,
-        e.elm_uni_medida AS unidadMedida,
-        ar.ar_nombre AS nombreArea,
-        tpE.tp_el_nombre AS tipoElemento,
-        es_e.est_nombre AS estadoElemento
+        e.elm_cod AS 'codigoElemento',
+        e.elm_placa AS 'placa',
+        e.elm_nombre AS 'nombreElemento',
+        e.elm_existencia AS 'cantidad',
+        ar.ar_nombre AS 'nombreArea',
+        tpE.tp_el_cod  AS 'codTipoElemento',
+		tpE.tp_el_nombre AS 'tipoElemento',
+        es_e.est_nombre AS 'codEstadoElemento',
+        es_e.est_nombre AS 'estadoElemento',
+        tpU.nombre_tp_uni AS 'nombreUnidad',
+        tpU.cod_tp_uni AS 'codUnidadMedida'
     FROM elementos e
     INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
     INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
-    INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado ";
+    INNER JOIN tipo_unidad tpU ON e.elm_uni_medida = tpU.cod_tp_uni
+    INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado";
 
     //Si el tipo de elemento es all
     if ($type == 'all') {
