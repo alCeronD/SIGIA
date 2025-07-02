@@ -8,6 +8,7 @@
     <table id="tableConfig">
       <thead>
         <tr>
+          <th>No documento</th>
           <th>Nombres</th>
           <th>Apellidos</th>
           <th>Rol</th>
@@ -19,31 +20,33 @@
         <?php if (!empty($usuarios)): ?>
           <?php foreach ($usuarios as $usuario): ?>
             <tr>
+              <td><?= htmlspecialchars($usuario['usu_docum']) ?></td>
               <td><?= htmlspecialchars($usuario['usu_nombres']) ?></td>
               <td><?= htmlspecialchars($usuario['usu_apellidos']) ?></td>
               <td><?= htmlspecialchars($usuario['rl_nombre']) ?></td>
               <td><?= htmlspecialchars($usuario['estado_usuario']) ?></td>
               <td>
-              <div class="center-align">
-                <a href="#"
-                   class="btnEditarUsuario btn-small teal darken-1 white-text waves-effect waves-light"
-                   data-id="<?= $usuario['usu_id'] ?>"
-                   data-nombres="<?= htmlspecialchars($usuario['usu_nombres']) ?>"
-                   data-apellidos="<?= htmlspecialchars($usuario['usu_apellidos']) ?>"
-                   data-email="<?= htmlspecialchars($usuario['usu_email']) ?>"
-                   data-telefono="<?= htmlspecialchars($usuario['usu_telefono']) ?>"
-                   data-documento="<?= htmlspecialchars($usuario['usu_docum']) ?>">
-                   <i class="material-icons left">edit</i>Editar
-                </a>
+                <div class="center-align">
+                  <a href="#"
+                     class="btnEditarUsuario btn-small teal darken-1 white-text waves-effect waves-light"
+                     data-id="<?= $usuario['usu_id'] ?>"
+                     data-nombres="<?= htmlspecialchars($usuario['usu_nombres']) ?>"
+                     data-apellidos="<?= htmlspecialchars($usuario['usu_apellidos']) ?>"
+                     data-email="<?= htmlspecialchars($usuario['usu_email']) ?>"
+                     data-telefono="<?= htmlspecialchars($usuario['usu_telefono']) ?>"
+                     data-documento="<?= htmlspecialchars($usuario['usu_docum']) ?>">
+                     <i class="material-icons left">edit</i>Editar
+                  </a>
             
-                <a href="<?= getUrl('usuarios', 'usuarios', 'cambiarEstadoUsuario', ['usu_id' => $usuario['usu_id']], 'dashboard') ?>"
-                   class="btn-small red lighten-1 white-text waves-effect waves-light"
-                   onclick="return confirm('¿Estás seguro de que deseas cambiar el estado del usuario?');">
-                   <i class="material-icons left">autorenew</i>Activar/Desactivar
-                </a>
-              </div>
-            </td>
+                  <a href="<?= getUrl('usuarios', 'usuarios', 'cambiarEstadoUsuario', ['usu_id' => $usuario['usu_id']], 'dashboard') ?>"
+                     class="btn-small red lighten-1 white-text waves-effect waves-light"
+                     onclick="return confirm('¿Estás seguro de que deseas cambiar el estado del usuario?');">
+                     <i class="material-icons left">autorenew</i>Activar/Desactivar
+                  </a>
+                </div>
+              </td>
             </tr>
+
           <?php endforeach; ?>
         <?php else: ?>
           <tr>

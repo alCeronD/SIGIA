@@ -58,3 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
 function cerrarModalUsuario() {
   document.getElementById("modalEditarUsuario").style.display = "none";
 }
+
+// ✅ Exponer la función globalmente
+window.cerrarModalUsuario = cerrarModalUsuario;
