@@ -143,7 +143,7 @@ class ElementoModelo {
         return false;
     }
 
-    // Buscar elementos activos pero recibiendo el tipo de elemento(devolutivo o consumible)//
+    // Buscar elementos activos (devolutivo o consumible)//
     public function searchElements($tipoElemento = 1) {
         $query = "SELECT
             e.*,
@@ -154,10 +154,12 @@ class ElementoModelo {
             elementos e
         JOIN areas a ON e.elm_area_cod = a.ar_cod
         JOIN estados_elementos ee ON e.elm_cod_estado = ee.est_el_cod
-        WHERE ee.est_el_cod = 1 AND elm_cod_tp_elemento = ?";
+        WHERE ee.est_el_cod = 1 
+          AND elm_cod_tp_elemento = ? 
+          AND (e.elm_existencia IS NULL OR e.elm_existencia > 0)";
     
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $tipoElemento); // 1 = devolutivo, 2 = consumible
+        $stmt->bind_param("i", $tipoElemento); 
         $stmt->execute();
         $result = $stmt->get_result();
     
@@ -169,13 +171,29 @@ class ElementoModelo {
         return $elementos;
     }
 
+
     
     public function actualizarEstadoElemento($id, $nuevo_estado) {
-        $sql = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
+        $sql = "UPDATE elementos 
+                SET elm_cod_estado = ? 
+                WHERE elm_cod = ?";
+        
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("ii", $nuevo_estado, $id);
         return $stmt->execute();
     }
+
+
+    public function disminuirExistenciaElemento($id, $cantidad) {
+        $sql = "UPDATE elementos 
+                SET elm_existencia = elm_existencia - ? 
+                WHERE elm_cod = ? AND elm_existencia >= ?";
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("iii", $cantidad, $id, $cantidad);
+        return $stmt->execute();
+    }
+
 
 }
 ?>

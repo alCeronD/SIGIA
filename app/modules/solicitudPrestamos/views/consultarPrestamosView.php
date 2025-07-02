@@ -22,7 +22,9 @@
               <td><?= htmlspecialchars($prestamo['codigoSolicitud']) ?></td>
               <td><?= htmlspecialchars($nombre) ?></td>
               <td><?= htmlspecialchars($prestamo['fechaReserva']) ?></td>
-              <td><?= htmlspecialchars($prestamo['tipoPrestamo']) ?></td>
+        
+              <td><?= htmlspecialchars($prestamo['estadoNombre']) ?></td>
+
               <td>
                 <button 
                   type="button" 

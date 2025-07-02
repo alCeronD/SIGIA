@@ -76,41 +76,75 @@ class solicitudPrestamos {
         }
     }
 
-    public function search($id = 0) {
-        $sql = "SELECT DISTINCT
-            p.pres_cod AS 'codigoSolicitud',
-            p.pres_fch_slcitud AS 'fechaSolicitud',
-            p.pres_fch_reserva AS 'fechaReserva',
-            p.pres_hor_inicio AS 'horaInicio',
-            p.pres_hor_fin AS 'horaFin',
-            p.pres_fch_entrega AS 'fechaEntrega',
-            p.pres_observacion AS 'observacion',
-            p.pres_destino AS 'destino',
-            p.pres_estado AS 'estadoPrestamo',
-            tp.tp_nombre As 'tipoPrestamo'
-            FROM prestamos p
-            LEFT JOIN prestamos_elementos pe ON
-            p.pres_cod = pe.pres_cod 
-            LEFT JOIN usuarios us ON
-            us.usu_id = pe.pres_el_usu_id
-            LEFT JOIN tipo_prestamo tp ON tp.tp_pre = p.tp_pres
-            WHERE us.usu_id = ? ORDER BY p.pres_fch_slcitud DESC;";
+    // public function search($id = 0) {
+    //     $sql = "SELECT DISTINCT
+    //         p.pres_cod AS 'codigoSolicitud',
+    //         p.pres_fch_slcitud AS 'fechaSolicitud',
+    //         p.pres_fch_reserva AS 'fechaReserva',
+    //         p.pres_hor_inicio AS 'horaInicio',
+    //         p.pres_hor_fin AS 'horaFin',
+    //         p.pres_fch_entrega AS 'fechaEntrega',
+    //         p.pres_observacion AS 'observacion',
+    //         p.pres_destino AS 'destino',
+    //         p.pres_estado AS 'estadoPrestamo',
+    //         tp.tp_nombre As 'tipoPrestamo'
+    //         FROM prestamos p
+    //         LEFT JOIN prestamos_elementos pe ON
+    //         p.pres_cod = pe.pres_cod 
+    //         LEFT JOIN usuarios us ON
+    //         us.usu_id = pe.pres_el_usu_id
+    //         LEFT JOIN tipo_prestamo tp ON tp.tp_pre = p.tp_pres
+    //         WHERE us.usu_id = ? ORDER BY p.pres_fch_slcitud DESC;";
 
-            $stmtSelect = $this->conn->prepare($sql);
-            $stmtSelect->bind_param('i',$id);
+    //         $stmtSelect = $this->conn->prepare($sql);
+    //         $stmtSelect->bind_param('i',$id);
 
     
-            $stmtSelect->execute();
+    //         $stmtSelect->execute();
         
-            $result = $stmtSelect->get_result();
-            $data = [];
+    //         $result = $stmtSelect->get_result();
+    //         $data = [];
         
-            while ($row = $result->fetch_assoc()) {
-                $data[] = $row;
-            }
+    //         while ($row = $result->fetch_assoc()) {
+    //             $data[] = $row;
+    //         }
+    
+    //     return $data;
+    // }
+    public function search($id = 0) {
+        $sql = "SELECT DISTINCT
+            p.pres_cod AS codigoSolicitud,
+            p.pres_fch_slcitud AS fechaSolicitud,
+            p.pres_fch_reserva AS fechaReserva,
+            p.pres_hor_inicio AS horaInicio,
+            p.pres_hor_fin AS horaFin,
+            p.pres_fch_entrega AS fechaEntrega,
+            p.pres_observacion AS observacion,
+            p.pres_destino AS destino,
+            ep.es_pr_nombre AS estadoNombre,         -- ← aquí se agrega el nombre del estado
+            tp.tp_nombre AS tipoPrestamo
+        FROM prestamos p
+        LEFT JOIN prestamos_elementos pe ON p.pres_cod = pe.pres_cod 
+        LEFT JOIN usuarios us ON us.usu_id = pe.pres_el_usu_id
+        LEFT JOIN tipo_prestamo tp ON tp.tp_pre = p.tp_pres
+        LEFT JOIN estados_prestamos ep ON ep.es_pr_cod = p.pres_estado  -- ← unión con tabla de estados
+        WHERE us.usu_id = ?
+        ORDER BY p.pres_fch_slcitud DESC";
+    
+        $stmtSelect = $this->conn->prepare($sql);
+        $stmtSelect->bind_param('i', $id);
+        $stmtSelect->execute();
+    
+        $result = $stmtSelect->get_result();
+        $data = [];
+    
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
     
         return $data;
     }
+
 
 
     public function searchU(int $id) {
@@ -136,14 +170,14 @@ class solicitudPrestamos {
             return ['success' => false, 'message' => 'Código inválido de préstamo'];
         }
     
-        // Cambiar estado del préstamo a cancelado (ej. tipo = 3)
+        // Cambiar estado del préstamo a cancelado
         $stmt = $this->conn->prepare("UPDATE prestamos SET pres_estado = 5 WHERE pres_cod = ?");
         $stmt->bind_param("i", $presCod);
         $stmt->execute();
     
         if ($stmt->affected_rows > 0) {
-            // Cambiar estado de los elementos a disponible
-            $query = "SELECT pres_el_elem_cod FROM prestamos_elementos WHERE pres_cod = ?";
+            // Obtener los elementos asociados al préstamo y sus cantidades
+            $query = "SELECT pres_el_elem_cod, pres_el_cantidad FROM prestamos_elementos WHERE pres_cod = ?";
             $elementosStmt = $this->conn->prepare($query);
             $elementosStmt->bind_param("i", $presCod);
             $elementosStmt->execute();
@@ -153,22 +187,34 @@ class solicitudPrestamos {
             $elementoModel = new ElementoModelo($this->conn);
     
             while ($row = $result->fetch_assoc()) {
-                $elementoModel->actualizarEstadoElemento($row['pres_el_elem_cod'], 1); // 1 = Disponible
+                $elemento_id = $row['pres_el_elem_cod'];
+                $cantidad = $row['pres_el_cantidad'];
+    
+                // Cambiar estado del elemento a disponible
+                $elementoModel->actualizarEstadoElemento($elemento_id, 1); // 1 = Disponible
+    
+                // Sumar cantidad de vuelta a elm_existencia
+                $sumarQuery = "UPDATE elementos SET elm_existencia = elm_existencia + ? WHERE elm_cod = ?";
+                $sumarStmt = $this->conn->prepare($sumarQuery);
+                $sumarStmt->bind_param("ii", $cantidad, $elemento_id);
+                $sumarStmt->execute();
             }
     
-            return ['success' => true, 'message' => 'Préstamo cancelado correctamente'];
+            return ['success' => true, 'message' => 'Préstamo cancelado y cantidades restauradas'];
         } else {
             return ['success' => false, 'message' => 'No se pudo cancelar el préstamo'];
         }
     }
 
-        public function registrarElem($pres_cod, $usuario_id ,$elm_cod) {
+
+    public function registrarElem($pres_cod, $usuario_id ,$elm_cod) {
         // dd("llego modelo");
         $pres_cod = (int) $pres_cod;
         $elm_cod = (int) $elm_cod;
         $usua_id = (int) $usuario_id;
-
-        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod ) VALUES ($pres_cod, $usua_id, $elm_cod)";
+        $cantidad = 1;
+    
+        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad ) VALUES ($pres_cod, $usua_id, $elm_cod,$cantidad)";
         
         return $this->conn->query($query);
     }
@@ -185,39 +231,7 @@ class solicitudPrestamos {
         return $this->conn->query($query);
     }
     
-    // public function registrarSalida($cantidad,$fecha_registro,$usuario_id,$elemento_id,$lastId,$elemento_devolutivo){
-        
-    //     $tipo_movimiento =2;
-    //     $unidades = $cantidad;
-    //     $usuario = $usuario_id;
-    //     $id_elemento_consumible = $elemento_id;
-    //     $id_prestamo = $lastId;
-    //     $element_devolutivo = $elemento_devolutivo;
-        
-    //     foreach ($unidades as $unid_value) {
-            
-    //         if (is_numeric($unid_value) && $unid_value > 0 ){
-                
-    //             $sqlSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn,ent_sal_cod_prestamo) VALUES($unid_value,'$fecha_registro',$tipo_movimiento,$usuario,$id_elemento_consumible,$id_prestamo)";
-                
-    //             // dd($sqlSalida);
-                
-    //             $stmtSalida = $this->conn->prepare($sqlSalida);
-    //             $stmtSalida->execute();
-                
-    //             // if ($stmtSalida) {
-    //             //     return true;
-    //             // } else {
-    //             //     return "Error al actualizar el préstamo: " . $this->conn->error;
-    //             // }
-    //         }
-    //         dd($elemento_devolutivo);
-    //         foreach ($variable as $key => $value) {
-    //             # code...
-    //         }
-    //     }
-    // }
-    
+ 
     public function registrarSalida($cantidades_consumibles, $fecha_registro, $usuario_id, $lastId, $elementos_devolutivos) {
         $tipo_movimiento = 2; // salida
         $id_prestamo = $lastId;

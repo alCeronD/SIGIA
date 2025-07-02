@@ -55,7 +55,6 @@
         <div class="modal-content">
           <h5>Seleccionar Elementos</h5>
 
-          <!-- Filtro por área -->
           <div class="input-field">
             <select id="filtro_area_modal" name="filtro_area_modal">
               <option value="" selected>Todas las áreas</option>
@@ -66,7 +65,6 @@
             <label for="filtro_area_modal">Filtrar por área</label>
           </div>
 
-          <!-- Tabla de elementos -->
           <table class="highlight responsive-table">
             <thead>
               <tr>
@@ -109,7 +107,6 @@
       <div class="modal-content">
         <h5>Seleccionar Elementos Consumibles</h5>
     
-        <!-- Filtro para el área -->
         <div class="input-field">
           <select id="filtro_area_modal_consumibles" name="filtro_area_modal_consumibles">
             <option value="" selected>Todas las áreas</option>
@@ -120,7 +117,6 @@
           <label for="filtro_area_modal_consumibles">Filtrar por área</label>
         </div>
     
-        <!-- Tabla de elementos con campo de cantidad -->
         <table class="highlight responsive-table">
           <thead>
             <tr>

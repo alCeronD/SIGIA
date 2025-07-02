@@ -49,11 +49,14 @@ class solicitudPrestamosController {
         $rol_id = $_SESSION['usuario']['rol_id'];
         $elementos_seleccionados = $_POST['elementos_seleccionados'];
         $cantidades_consumibles = $_POST['cantidades_consumibles'];
-        $elementos_devolutivos = $_POST['elementos_devolutivos_seleccionados'];
+        // $elementos_devolutivos = $_POST['elementos_devolutivos_seleccionados'];
         
-        unset($_POST['elementos_seleccionados'], $_POST['elementos_devolutivos_seleccionados']);
+        unset($_POST['elementos_seleccionados'],
+        $_POST['elementos_devolutivos_seleccionados']);
 
         $data = $_POST;
+        
+        // dd($elementos_devolutivos);
 
         $datos = new solicitudPrestamos($this->conn);
         $lastId = $datos->create($data, $rol_id);
@@ -66,28 +69,40 @@ class solicitudPrestamosController {
             // Registrar devolutivos seleccionados
             foreach ($elementos_seleccionados as $elemento_id) {
                 $prestamoElemento->registrarElem($lastId, $usuario_id, $elemento_id);
-                $elementoModel->actualizarEstadoElemento($elemento_id, 3);
+            
+                // Disminuye una unidad
+                $elementoModel->disminuirExistenciaElemento($elemento_id, 1);
+            
+                // Cambiar estado
+                $elementoModel->actualizarEstadoElemento($elemento_id, 3); // 3 = Prestado
             }
+
 
             // Registrar consumibles seleccionados
             foreach ($cantidades_consumibles as $elm_cod => $cantidad) {
                 if (is_numeric($elm_cod) && is_numeric($cantidad) && $cantidad > 0) {
                     $prestamoElemento->registrarElemConsumible($lastId, $usuario_id, $elm_cod, $cantidad);
+                    
+                    // Disminuye existencia sin tocar estado
+                    $elementoModel->disminuirExistenciaElemento($elm_cod, $cantidad);
+            
+                    // Opcionalmente cambiar estado si lo necesitas también
                     $elementoModel->actualizarEstadoElemento($elm_cod, 3);
                 }
             }
 
-            // Registrar salidas (una sola vez)
-            $salida->registrarSalida($cantidades_consumibles, $data['pres_fch_reserva'], $usuario_id, $lastId, $elementos_seleccionados);
 
-            echo "<script>alert('Solicitud realizada correctamente, en espera por respuesta'); 
-                  window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
-            exit;
-        } else {
-            echo "Error al registrar el préstamo: " . $lastId;
+            // Registramos salidas
+            $salida->registrarSalida($cantidades_consumibles, $data['pres_fch_reserva'], $usuario_id, $lastId, $elementos_seleccionados);
+  
+                echo "<script>alert('Solicitud realizada correctamente, en espera por respuesta'); 
+                      window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
+                exit;
+            } else {
+                echo "Error al registrar el préstamo: " . $lastId;
+            }
         }
     }
-}
 
     
     
@@ -120,18 +135,18 @@ class solicitudPrestamosController {
     public function obtenerElementosPorPrestamo($presCod) {
 
         $query = " SELECT 
-                e.elm_nombre,
-                e.elm_placa,
-                tp.tp_el_nombre AS tipoElemento
-            FROM 
-                elementos e 
-                INNER JOIN prestamos_elementos pe ON pe.pres_el_elem_cod = e.elm_cod
-                INNER JOIN prestamos pr ON pr.pres_cod = pe.pres_cod
-                INNER JOIN tipo_elemento tp ON tp.tp_el_cod = e.elm_cod_tp_elemento
-            WHERE 
-                pe.pres_cod = ?
-            ORDER BY 
-                e.elm_nombre DESC";
+            e.elm_nombre,
+            e.elm_placa,
+            pe.pres_el_cantidad AS cantidad
+        FROM 
+            elementos e 
+            INNER JOIN prestamos_elementos pe ON pe.pres_el_elem_cod = e.elm_cod
+            INNER JOIN prestamos pr ON pr.pres_cod = pe.pres_cod
+        WHERE 
+            pe.pres_cod = ?
+        ORDER BY 
+        e.elm_nombre DESC";
+
 
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param('i', $presCod);
@@ -176,21 +191,21 @@ class solicitudPrestamosController {
     }
     
     public function cancelarPrestamo() {
-    header('Content-Type: application/json');
-
-    $presCod = isset($_POST['pres_cod']) ? (int) $_POST['pres_cod'] : null;
-
-    if (!$presCod) {
-        die(json_encode([
-            'success' => false,
-            'message' => 'Código inválido del préstamo'
-        ]));
+        header('Content-Type: application/json');
+    
+        $presCod = isset($_POST['pres_cod']) ? (int) $_POST['pres_cod'] : null;
+    
+        if (!$presCod) {
+            die(json_encode([
+                'success' => false,
+                'message' => 'Código inválido del préstamo'
+            ]));
+        }
+    
+        $modelo = new solicitudPrestamos($this->conn);
+        $modelo->cancelarPrestamo($presCod);
+        success('Estado cancelado'); 
     }
-
-    $modelo = new solicitudPrestamos($this->conn);
-    $modelo->cancelarPrestamo($presCod);
-    success('Estado cancelado'); 
-}
 
 
 
