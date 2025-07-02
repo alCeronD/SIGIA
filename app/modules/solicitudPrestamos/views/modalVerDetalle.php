@@ -1,82 +1,44 @@
 <div id="modalDetalle" class="modal">
   <div class="modal-content">
-    <div class="modal-title">
-      <span id="modalTitle"></span>
-      <button class="closeModalBtn btn-flat right" type="button">&times;</button>
+    <div class="row">
+      <div class="col s12">
+        <h5 id="modalTitle" class="teal-text text-darken-3"></h5>
+        <a class="btn-flat right closeModalBtn" type="button" title="Cerrar">&times;</a>
+      </div>
     </div>
 
-    <div id="contenidoDetalle" class="modal-container">
-      <div class="itemsContent">
-        <div class="rowDetails">
-          <p class="titleDetail">Código del préstamo</p>
-          <span id="detalle-pres_cod" class="valueDetail"></span>
-        </div>
+    <div id="contenidoDetalle" class="row">
+      <div class="col s12 m6">
+        <p><strong>Código del préstamo:</strong> <span id="detalle-pres_cod"></span></p>
+        <p><strong>Fecha de solicitud:</strong> <span id="detalle-pres_fch_slcitud"></span></p>
+        <p><strong>Fecha de reserva:</strong> <span id="detalle-pres_fch_reserva"></span></p>
+        <p><strong>Hora de inicio:</strong> <span id="detalle-pres_hor_inicio"></span></p>
+        <p><strong>Hora de fin:</strong> <span id="detalle-pres_hor_fin"></span></p>
+        <p><strong>Fecha de entrega:</strong> <span id="detalle-pres_fch_entrega"></span></p>
+      </div>
 
-        <div class="rowDetails">
-          <p class="titleDetail">Fecha de solicitud</p>
-          <span id="detalle-pres_fch_slcitud" class="valueDetail"></span>
-        </div>
+      <div class="col s12 m6">
+        <p><strong>Observación:</strong> <span id="detalle-pres_observacion"></span></p>
+        <p><strong>Destino del préstamo:</strong> <span id="detalle-pres_destino"></span></p>
+        <p><strong>Estado:</strong> <span id="detalle-pres_estado_nombre"></span></p>
+        <p><strong>Tipo de préstamo:</strong> <span id="detalle-tp_pres_nombre"></span></p>
+        <p><strong>Rol que solicitó:</strong> <span id="detalle-pres_rol_nombre"></span></p>
+      </div>
+    </div>
 
-        <div class="rowDetails">
-          <p class="titleDetail">Fecha de reserva</p>
-          <span id="detalle-pres_fch_reserva" class="valueDetail"></span>
-        </div>
-
-        <div class="rowDetails">
-          <p class="titleDetail">Hora de inicio</p>
-          <span id="detalle-pres_hor_inicio" class="valueDetail"></span>
-        </div>
-
-        <div class="rowDetails">
-          <p class="titleDetail">Hora de fin</p>
-          <span id="detalle-pres_hor_fin" class="valueDetail"></span>
-        </div>
-
-        <div class="rowDetails">
-          <p class="titleDetail">Fecha de entrega</p>
-          <span id="detalle-pres_fch_entrega" class="valueDetail"></span>
-        </div>
-
-        <div class="rowDetails">
-          <p class="titleDetail">Observación</p>
-          <span id="detalle-pres_observacion" class="valueDetail"></span>
-        </div>
-
-        <div class="rowDetails">
-          <p class="titleDetail">Destino del préstamo</p>
-          <span id="detalle-pres_destino" class="valueDetail"></span>
-        </div>
-
-        <div class="rowDetails">
-          <p class="titleDetail">Estado</p>
-          <span id="detalle-pres_estado_nombre" class="valueDetail"></span>
-        </div>
-
-        <div class="rowDetails">
-          <p class="titleDetail">Tipo de préstamo</p>
-          <span id="detalle-tp_pres_nombre" class="valueDetail"></span>
-        </div>
-
-        <div class="rowDetails">
-          <p class="titleDetail">Rol que solicitó</p>
-          <span id="detalle-pres_rol_nombre" class="valueDetail"></span>
-        </div>
-
-        <!-- Tabla de elementos -->
-        <div class="rowDetails">
-          <!-- <h1 class="titleDetail">Préstamo</h1> -->
-          <table id="tabla-elementos-prestamo" class="highlight centered">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Placa</th>
-                <th>Cantidad</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-
+    <div class="row">
+      <div class="col s12">
+        <h6 class="teal-text text-darken-2">Elementos del préstamo</h6>
+        <table id="tabla-elementos-prestamo" class="highlight responsive-table centered">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Placa</th>
+              <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
     </div>
   </div>

@@ -173,13 +173,14 @@ class solicitudPrestamosController {
     }
 
     private function obtenerTipoPrestamoNombre($id) {
-        $stmt = $this->conn->prepare("SELECT es_pr_cod FROM estados_prestamos WHERE es_pr_cod = ?");
+        $stmt = $this->conn->prepare("SELECT tp_nombre FROM tipo_prestamo WHERE tp_pre = ?");
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
         $res = $result->fetch_assoc();
-        return $res ? $res['es_pr_cod'] : 'Desconocido';
+        return $res ? $res['tp_nombre'] : 'Desconocido';
     }
+
 
     private function obtenerRolNombre($id) {
         $stmt = $this->conn->prepare("SELECT rl_nombre FROM roles WHERE rl_id = ?");
