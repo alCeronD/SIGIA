@@ -204,8 +204,10 @@ class solicitudPrestamosController {
         }
     
         $modelo = new solicitudPrestamos($this->conn);
-        $modelo->cancelarPrestamo($presCod);
-        success('Estado cancelado'); 
+        $resultado = $modelo->cancelarPrestamo($presCod);
+        echo json_encode($resultado);
+        exit;
+ 
     }
 
 
@@ -224,10 +226,11 @@ if (isset($_GET['pres_cod']) && isset($_GET['idCod'])) {
 }
 
 // llamaa para cancelar el préstamo
-if (isset($_GET['accion']) && $_GET['accion'] === 'cancelar' && isset($_GET['pres_cod'])) {
-    $pres_cod = (int) $_GET['pres_cod'];
-    $solicitudObj->cancelarPrestamo();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'cancelar') {
+    $solicitudObj->cancelarPrestamo(); // ← esto ya imprime un JSON válido
+    exit;
 }
+
 
 
 
