@@ -335,7 +335,6 @@
 </div>
 
 
-<script>
-    window.elementosData = <?= json_encode($elementos) ?>;
-</script>
-<script type="module" src="../public/assets/js/elementos/elementos.js"></script>
+
+<!-- <script type="module" src="../public/assets/js/elementos/elementos.js"></script> -->
+<script type="module" src="../public/assets/js/elementos/elementosNew.js"></script>

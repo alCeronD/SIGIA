@@ -1,10 +1,13 @@
 <?php
-
+require_once __DIR__ . '/../../../helpers/session.php';
+require_once __DIR__ . '/../../../helpers/const.php';
+include_once __DIR__ . '/../../../config/conn.php';
 class ElementoModelo {
     private $conn;
 
-    public function __construct($conexion) {
-        $this->conn = $conexion;
+    public function __construct() {
+        $conexion = new Conection();
+        $this->conn = $conexion->getConnect();
     }
 
     // Obtener todos los elementos con nombres relacionados
@@ -70,9 +73,27 @@ class ElementoModelo {
 
     
     // Obtener elementos paginados con JOIN para nombres relacionados
-public function obtenerElementoPaginado($limite, $offset) {
+public function obtenerElementoPaginado(int $limite,int $offset, String $type) {
     $elementos = [];
-    $sql = "SELECT 
+
+    if (!isset($type)) {
+        return [
+            'message'=> 'tipo de elemento no valido',
+            'status'=> false
+        ];
+    }
+
+    $type = strtolower($type);
+
+    if (!in_array($type,['consumible','devolutivo','all'])) {
+        return [
+            'message'=>'tipo de elemento no definido',
+            'status'=> false
+        ];
+    }
+
+
+    $baseSql = "SELECT 
         e.elm_cod AS codigoElemento,
         e.elm_placa AS placa,
         e.elm_nombre AS nombreElemento,
@@ -84,17 +105,41 @@ public function obtenerElementoPaginado($limite, $offset) {
     FROM elementos e
     INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
     INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
-    INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado
-    ORDER BY e.elm_placa ASC
-    LIMIT ? OFFSET ?";
+    INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado ";
 
-    $stmt = $this->conn->prepare($sql);
-    if (!$stmt) {
-        echo "Error en prepare: " . $this->conn->error;
-        return [];
+    //Si el tipo de elemento es all
+    if ($type == 'all') {
+        $sql = "$baseSql ORDER BY e.elm_placa ASC LIMIT ? OFFSET ?";
+        $stmt = $this->conn->prepare($sql);
+            if (!$stmt) {
+        return [
+            'message'=>"Error en prepare: " . $this->conn->error,
+            'status'=>false
+        ];
     }
-    $stmt->bind_param("ii", $limite, $offset);
-    $stmt->execute();
+        $stmt->bind_param("ii", $limite, $offset);
+    }else{
+        $codType = ($type == 'consumible') ? 2 : 1;
+
+        //Si es consumible o devolutivo
+        $sql = "$baseSql WHERE `tpE`.tp_el_cod = ? ORDER BY e.elm_placa ASC LIMIT ? OFFSET ?";
+        $stmt = $this->conn->prepare($sql);
+            if (!$stmt) {
+        return [
+            'message'=>"Error en prepare: " . $this->conn->error,
+            'status'=>false
+        ];
+        }
+        $stmt->bind_param("iii", $codType,$limite, $offset);
+    }
+
+    if (!$stmt->execute()) {
+        return [
+            'message'=>"error al ejecutar la consulta $stmt->error",
+            'status'=> false
+        ];
+    }
+
     $resultado = $stmt->get_result();
 
     while ($fila = $resultado->fetch_array(MYSQLI_ASSOC)) {
@@ -102,7 +147,11 @@ public function obtenerElementoPaginado($limite, $offset) {
     }
 
     $stmt->close();
-    return $elementos;
+    return [
+        'message' => ($type == 'all') ? "Todos los registros" : "Elementos de tipo $type",
+        'data'=> $elementos,
+        'status'=> true
+    ];
 }
 
 // Contar total de elementos

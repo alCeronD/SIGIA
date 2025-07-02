@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Agregar existencia al elemento consumible.
     const btnAddCantidad = document.querySelector('#btnAddCantidad');
-    console.log(btnAddCantidad);
+    // console.log(btnAddCantidad);
 
     btnAddCantidad.addEventListener('click', (e)=>{
 

@@ -1,86 +1,94 @@
 <?php
 include_once __DIR__ . '/../model/elementosModel.php';
 require_once __DIR__ . '/../../configModules/model/configModulesModel.php';
+require_once __DIR__ . '/../../../helpers/response.php';
+require_once __DIR__ . '/../../../helpers/const.php';
 
-class elementosController {
+
+class ElementosController {
     private $modeloElemento;
     private $conn;
 
-    public function __construct($conexion) {
-        $this->conn = $conexion;
-        $this->modeloElemento = new ElementoModelo($conexion);
+    public function __construct() {
+        $this->modeloElemento = new ElementoModelo();
     }
 
- public function mostrarElementos() {
+    public function renderViewElements(){
+
+        return require_once __DIR__ . '/../views/elementosView.php';
+    }
+
+ public function getElements(int $pages = 1, String $type = 'all') {
     // Parámetros de paginación
-    $pagina = isset($_GET['pagina']) ? max(1, intval($_GET['pagina'])) : 1;
-    $limite = 10;
-    $offset = ($pagina - 1) * $limite;
+    $pagina = isset($pages) ? max(1, intval($pages)) : 1;
+    $limite = LIMIT;
+    $offset = ($pagina - 1) * LIMIT;
 
     // Obtener elementos paginados
-    $elementos = $this->modeloElemento->obtenerElementoPaginado($limite, $offset);
+    $elementos = $this->modeloElemento->obtenerElementoPaginado($limite, $offset, $type);
+
+    if (!$elementos) {
+        fail('error al traer los elementos');
+    }
+
+    success('elementos', $elementos);
 
     // Contar total de elementos para el paginador
     $totalElementos = $this->modeloElemento->contarElementos();
     $totalPaginas = ceil($totalElementos / $limite);
 
-    // Obtener las áreas
-    $modeloGenerico = new ConfigModulesModel();
-    $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
 
-    // Buscar el código del área "general"
-    $area_general_codigo = null;
-    foreach ($areas as $area) {
-        if (strtolower(trim($area['nombre'])) === 'general') {
-            $area_general_codigo = $area['codigo'];
-            break;
-        }
-    }
+    // // Obtener las áreas
+    // $modeloGenerico = new ConfigModulesModel();
+    // $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
 
-    // Incluir la vista pasando las variables necesarias
-    include __DIR__ . '/../views/elementosView.php';
+    // // Buscar el código del área "general"
+    // $area_general_codigo = null;
+    // foreach ($areas as $area) {
+    //     if (strtolower(trim($area['nombre'])) === 'general') {
+    //         $area_general_codigo = $area['codigo'];
+    //         break;
+    //     }
+    // }
+
+    // // Incluir la vista pasando las variables necesarias
+    // include __DIR__ . '/../views/elementosView.php';
 }
-
-
-
-
     public function registrarElemento() {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        // Validar que existan todos los campos obligatorios
-        if (
-            isset($_POST['elm_placa'], $_POST['elm_nombre'], $_POST['elm_existencia'],
-                   $_POST['elm_uni_medida'], $_POST['elm_cod_tp_elemento'],
-                   $_POST['elm_cod_estado'], $_POST['elm_area_cod'])
-        ) {
-            $datos = [
-                'elm_placa' => $_POST['elm_placa'],
-                'elm_nombre' => $_POST['elm_nombre'],
-                'elm_existencia' => $_POST['elm_existencia'],
-                'elm_uni_medida' => $_POST['elm_uni_medida'],
-                'elm_cod_tp_elemento' => $_POST['elm_cod_tp_elemento'],
-                'elm_cod_estado' => $_POST['elm_cod_estado'],
-                'elm_area_cod' => $_POST['elm_area_cod']
-            ];
+    // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    //     // Validar que existan todos los campos obligatorios
+    //     if (
+    //         isset($_POST['elm_placa'], $_POST['elm_nombre'], $_POST['elm_existencia'],
+    //                $_POST['elm_uni_medida'], $_POST['elm_cod_tp_elemento'],
+    //                $_POST['elm_cod_estado'], $_POST['elm_area_cod'])
+    //     ) {
+    //         $datos = [
+    //             'elm_placa' => $_POST['elm_placa'],
+    //             'elm_nombre' => $_POST['elm_nombre'],
+    //             'elm_existencia' => $_POST['elm_existencia'],
+    //             'elm_uni_medida' => $_POST['elm_uni_medida'],
+    //             'elm_cod_tp_elemento' => $_POST['elm_cod_tp_elemento'],
+    //             'elm_cod_estado' => $_POST['elm_cod_estado'],
+    //             'elm_area_cod' => $_POST['elm_area_cod']
+    //         ];
 
-            $exito = $this->modeloElemento->insertarElemento($datos);
+    //         $exito = $this->modeloElemento->insertarElemento($datos);
 
-            if ($exito) {
-                echo "<script>alert('Elemento registrado exitosamente'); window.location.href = '" . getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') . "';</script>";
-            } else {
-                echo "<div class='alert alert-danger text-center'>Error al registrar el elemento.</div>";
-            }
-        } else {
-            echo "<div class='alert alert-danger text-center'>Faltan datos obligatorios para registrar.</div>";
-        }
-    } else {
-        $modeloGenerico = new ConfigModulesModel();
-        $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
-        include __DIR__ . '/../views/elementosRegistrar.php';
-    }
+    //         if ($exito) {
+    //             echo "<script>alert('Elemento registrado exitosamente'); window.location.href = '" . getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') . "';</script>";
+    //         } else {
+    //             echo "<div class='alert alert-danger text-center'>Error al registrar el elemento.</div>";
+    //         }
+    //     } else {
+    //         echo "<div class='alert alert-danger text-center'>Faltan datos obligatorios para registrar.</div>";
+    //     }
+    // } else {
+    //     $modeloGenerico = new ConfigModulesModel();
+    //     $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
+    //     include __DIR__ . '/../views/elementosRegistrar.php';
+    // }
 }
 
-
-    
 
 public function editarElemento() {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -141,4 +149,88 @@ public function editarElemento() {
         }
     }
 }
+
+$elementosController = new ElementosController();
+if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+
+    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+
+        $case = $_GET['action'] ?? '';
+        //valor de la página, por defecto, es la página #1.
+        $pages = (int) $_GET['pages'] ?? 1;
+
+
+        $codigo = $_GET['codigo'] ?? 0;
+        $codigo = (int) $codigo;
+        switch ($case) {
+
+            case 'elements':
+                $type = $_GET['type'];
+                if (method_exists($elementosController, 'getElements')) {
+                    $elementosController->getElements($pages, $type);
+                }
+                break;
+            case 'consumibles';
+            // //Elemento de tipo consumible;
+            // $type = 2;
+            // if (method_exists($elementosController,'obtenerElemento')) {
+            //     $elementos->getElementosConsumibles($pages,$type);
+            // }
+
+        
+            break;
+
+            case 'devolutivos':
+                if (method_exists($elementosController, '')) {
+                    # code...
+                }
+                break;
+
+            
+
+            default:
+            fail('error de acción.');
+            break;
+        }
+    }
+
+    // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    //     $input = file_get_contents("php://input");
+
+    //     //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
+    //     $data = json_decode($input, true);
+
+
+    //     switch ($data['action']) {
+    //         case 'finalizar':
+
+    //             $elementos = $data['data']["elementos"];
+    //             $codigoReserva = $data['data']["codigoReserva"];
+
+    //             $controller->setEndReserva($elementos, $codigoReserva);
+    //             break;
+
+    //         case 'registrar':
+    //             $elementosPres = $data['data'];
+    //             $controller->setReserva($elementosPres);
+    //             break;
+    //         case 'validateLoan':
+    //             unset($data['action']);
+    //             $dataNuevo = $data;
+
+
+    //             $controller->setSolicitud($dataNuevo);
+
+    //             //la validación del data es practicamente el setReserva pero la hare en otra función por cuestión de tiempo.
+
+
+    //         break;    
+    //         default:
+    //             break;
+    //     }
+
+    // }
+    exit();
+}
+
 ?>

@@ -402,14 +402,7 @@ class ReservaModel
             return  $th->getMessage();
         }
     }
-    public function selectElementsConsumibles(int $page = 1)
-    {
-        $conn = $this->conect->getConnect();
-        try {
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
-    }
+
     //Función apra traer los elementos, posiblemente da implementarla en el modelo de usuarios.
     public function selectUsers($pages)
     {

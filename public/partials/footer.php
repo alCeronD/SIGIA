@@ -26,7 +26,7 @@
         <li>
           <a href="#">Elementos <span class="arrow-down">▼</span></a>
           <ul class="verticalMenu">
-            <li><a href="<?php echo getUrl("elementos", "elementos", "mostrarElementos", false, 'dashboard'); ?>">Ver elementos</a></li>
+            <li><a href="<?php echo getUrl("elementos", "elementos", "renderViewElements", false, 'dashboard'); ?>">Ver elementos</a></li>
           </ul>
         </li>
         <li>

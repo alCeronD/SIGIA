@@ -168,12 +168,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         $codigo = $_GET['codigo'] ?? 0;
         $codigo = (int) $codigo;
         switch ($case) {
-            case 'users':
-                if (method_exists($controller, 'getUsers')) {
-                    $controller->getUsers($pages);
-                }
-                break;
-
             case 'elements':
                 if (method_exists($controller, 'getElementosDevolutivos')) {
                     $controller->getElementosDevolutivos($pages);
