@@ -10,7 +10,7 @@
           <a href="../app/dashboard.php">Inicio</a>
         </li>
         <li>
-          <a href="#">Usuarios <span class="arrow-down">▼</span></a>
+          <a href="#" class="footer-icon text-center">Usuarios</a>
           <ul class="verticalMenu">
             <li><a href="<?php echo getUrl("usuarios", "usuarios", "consultUser", false, 'dashboard'); ?>">Consultar usuario</a></li>
             <li><a href="<?php echo getUrl("usuarios", "usuarios", "userView", false, 'dashboard'); ?>">Crear usuario</a></li>
