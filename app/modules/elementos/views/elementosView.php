@@ -60,18 +60,18 @@
             <td colspan="9">
                 <ul class="pagination center-align" style="margin-top: 20px;">
                     <!-- Botón Anterior -->
-                    <li class="<?= ($pagina <= 1) ? 'disabled' : 'waves-effect' ?>">
-                        <a href="dashboard.php?modulo=elementos&controlador=elementos&funcion=mostrarElementos&pagina=<?= max(1, $pagina - 1) ?>">
+                    <li class="waves-effect">
+                        
+                        <button type="button"  class="waves-effect btn" id="previewElements">
                             <i class="material-icons">chevron_left</i>
-                        </a>
+
+                        </button>
                     </li>
-
-
                     <!-- Botón Siguiente -->
-                    <li class="<?= ($pagina >= $totalPaginas) ? 'disabled' : 'waves-effect' ?>">
-                        <a href="dashboard.php?modulo=elementos&controlador=elementos&funcion=mostrarElementos&pagina=<?= min($totalPaginas, $pagina + 1) ?>">
+                    <li class="waves-effect">
+                        <button type="button" class="waves-effect btn" id="nextElements">
                             <i class="material-icons">chevron_right</i>
-                        </a>
+                        </button>
                     </li>
                 </ul>
             </td>

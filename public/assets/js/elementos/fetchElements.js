@@ -21,6 +21,13 @@ import { getData } from "../utils/fetch.js";
  */
 export const renderElements = async (type = 'all', action = 'elements', page = 1) => {
     try {
+        let pagesElements = page;
+
+        //Evito que re haga un nuevo páginado.
+        if (pagesElements > page) {
+            return;
+        }
+
     const tbodyElements = document.querySelector('#tbodyElementos');
 
         const dataElements = await getData(
@@ -72,9 +79,6 @@ export const renderElements = async (type = 'all', action = 'elements', page = 1
 
     });
 
-
-
-    
     } catch (error) {
         throw new Error(`Error al consultar los elementos ${error}`);
                 

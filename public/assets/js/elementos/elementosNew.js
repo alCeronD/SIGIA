@@ -6,6 +6,8 @@ const typeElements = {
     all: 'all'
 }
 const filtroTipo = document.querySelector('#filtroTipo');
+const previewElements = document.querySelector('#previewElements');
+const nextElements = document.querySelector('#nextElements');
 document.addEventListener('DOMContentLoaded', ()=>{
 
     renderElements();
@@ -29,5 +31,18 @@ filtroTipo.addEventListener('change', (e)=>{
         renderElements();
     }
     
+});
+
+previewElements.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    e.preventDefault();
+    console.log(e.target);
+
+});
+
+nextElements.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    e.preventDefault();
+    console.log(e.target);
 });
 

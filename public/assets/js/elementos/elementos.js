@@ -86,13 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     });
 
-    //cuerpo de la tabla.
-    const tbodyElementos = document.querySelectorAll('#tbodyElementos tr');
-    tbodyElementos.forEach((el)=>{
-      console.log(el);
-
-    });
-
     // Manejo del modal Registrar
     const abrirModalBtn = document.getElementById('abrirModalRegistrar');
     const modalRegistrar = document.getElementById('modalRegistrar');
@@ -142,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// Me es util
 document.addEventListener('DOMContentLoaded', () => {
   const cantidadInput = document.getElementById('elm_existencia');
 
@@ -164,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// Me es util
 document.addEventListener('DOMContentLoaded', () => {
   // Validar placa no negativa en devolutivo
   const placaDevolutivo = document.getElementById('elm_placa');
