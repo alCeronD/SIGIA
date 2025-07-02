@@ -23,7 +23,7 @@ class ElementoModelo {
         INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
         INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
         INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado
-        ORDER BY e.elm_placa ASC;";
+        ORDER BY e.elm_placa ASC";
 
         $resultado = $this->conn->query($sql);
 

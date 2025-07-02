@@ -1,11 +1,5 @@
 
 <style>
-  .container {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 10px;
-  }
-
   .selector-container {
     margin-bottom: 15px;
     display: flex;

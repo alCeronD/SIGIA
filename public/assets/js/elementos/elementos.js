@@ -1,3 +1,5 @@
+import { tooltipOptions } from "../utils/cases.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     // Modal Ver Más
     const modal = document.getElementById('modalVerMas');
@@ -67,6 +69,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 tds[tipoElementoColIndex].style.display = mostrarColumna ? '' : 'none';
             }
         });
+    });
+
+    //Agregar existencia al elemento consumible.
+    const btnAddCantidad = document.querySelector('#btnAddCantidad');
+    console.log(btnAddCantidad);
+
+    btnAddCantidad.addEventListener('click', (e)=>{
+
+      e.stopPropagation();
+      e.preventDefault();
+
+      if (e.target.tagName === 'BUTTON') {
+        console.log(e.target);
+      }
+
+    });
+
+    //cuerpo de la tabla.
+    const tbodyElementos = document.querySelectorAll('#tbodyElementos tr');
+    tbodyElementos.forEach((el)=>{
+      console.log(el);
+
     });
 
     // Manejo del modal Registrar
@@ -284,11 +308,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.tooltipped');
-    var instances = M.Tooltip.init(elems, options);
-  });
-
-  // Or with jQuery
-
-  $(document).ready(function(){
-    $('.tooltipped').tooltip();
+    var instances = M.Tooltip.init(elems, tooltipOptions);
   });
