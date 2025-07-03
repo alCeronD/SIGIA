@@ -3,8 +3,8 @@
   <div class="solicitudTitle">
     <h2 class="center-align">Préstamos Registrados</h2>
     <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
-       class="close-btn btn red lighten-1 white-text waves-effect waves-light"
-       title="Volver al dashboard">
+      class="close-btn btn red lighten-1 white-text waves-effect waves-light"
+      title="Volver al dashboard">
       &times;
     </a>
   </div>
@@ -46,17 +46,17 @@
               <td>
                 <!-- accion para ver los detalles -->
                 <button type="button"
-                        class="btn-small teal darken-1 white-text waves-effect waves-light btn-ver-detalle"
-                        data-id="<?= $prestamo['codigoSolicitud'] ?>">
+                  class="btn-small teal darken-1 white-text waves-effect waves-light btn-ver-detalle"
+                  data-id="<?= $prestamo['codigoSolicitud'] ?>">
                   Ver detalle
                 </button>
 
                 <!-- Botón cancelar, solo si no esta cancelado -->
                 <?php if (strtolower($prestamo['estadoNombre']) !== 'cancelado'): ?>
                   <button type="button"
-                          class="btn-small red lighten-1 white-text waves-effect waves-light btn-cancelar-prestamo"
-                          data-id="<?= $prestamo['codigoSolicitud'] ?>"
-                          data-url="<?php echo getUrl('solicitudPrestamos','solicitudPrestamos','cancelarPrestamo',false,'dashboard'); ?>">
+                    class="btn-small red lighten-1 white-text waves-effect waves-light btn-cancelar-prestamo"
+                    data-id="<?= $prestamo['codigoSolicitud'] ?>"
+                    data-url="<?php echo getUrl('solicitudPrestamos', 'solicitudPrestamos', 'cancelarPrestamo', false, 'dashboard'); ?>">
                     Cancelar
                   </button>
                 <?php endif; ?>
@@ -78,9 +78,9 @@
       <ul id="paginacion-prestamos" class="pagination center-align"></ul>
     </div>
 
-  </div> 
+  </div>
 
-</div> 
+</div>
 
 
 <?php include_once 'modalVerDetalle.php'; ?>

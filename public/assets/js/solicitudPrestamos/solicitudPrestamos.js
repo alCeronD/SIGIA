@@ -1,10 +1,19 @@
-        ///////////////////////////////// 
-         //MODAL ELEMENTOS DEVOLUTIVOS 
-       ///////////////////////////////// 
+///////////////////////////////// 
+//MODAL ELEMENTOS DEVOLUTIVOS 
+///////////////////////////////// 
 document.addEventListener('DOMContentLoaded', function () {
   M.Modal.init(document.querySelectorAll('.modal'));
   M.FormSelect.init(document.querySelectorAll('select'));
-  M.Datepicker.init(document.querySelectorAll('.datepicker'), { format: 'yyyy-mm-dd' });
+  M.Datepicker.init(document.querySelectorAll('.datepicker'), {
+    format: 'yyyy-mm-dd',
+    minDate: new Date(),
+    autoClose: true,
+    i18n: {
+      cancel: 'Cancelar',
+      clear: 'Limpiar',
+      done: 'Aceptar'
+    }
+  });
 
   const filtroArea = document.getElementById('filtro_area_modal');
   const paginacion = document.getElementById('paginacion');
@@ -66,13 +75,13 @@ document.addEventListener('DOMContentLoaded', function () {
       }, 100);
     });
   }
-  
-    // Capturar elementos devolutivos seleccionados antes de enviar el formulario
+
+  // Capturar elementos devolutivos seleccionados antes de enviar el formulario
   document.getElementById('formSolicitudPrestamo').addEventListener('submit', function (e) {
     const seleccionados = Array.from(
       document.querySelectorAll('input[name="elementos_seleccionados[]"]:checked')
     ).map(input => input.value);
-  
+
     // Insertar los valores en el campo oculto como una lista separada por comas
     document.getElementById('elementos_devolutivos_seleccionados').value = seleccionados.join(',');
   });
@@ -80,65 +89,125 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-       ///////////////////////////////// 
-         //MODAL ELEMENTOS CONSUMIBLES 
-       ///////////////////////////////// 
+///////////////////////////////// 
+//MODAL ELEMENTOS CONSUMIBLES 
+///////////////////////////////// 
 //Informacion para modal de elementos consumibles
-  const filtroAreaConsumibles = document.getElementById('filtro_area_modal_consumibles');
-  const paginacionConsumibles = document.getElementById('paginacion_consumibles');
-  const filasConsumiblesOriginales = Array.from(document.querySelectorAll('#tabla-elementos-consumibles-modal tr'));
-  let filasConsumiblesFiltradas = [...filasConsumiblesOriginales];
-  const itemsPorPagina = 5;
+const filtroAreaConsumibles = document.getElementById('filtro_area_modal_consumibles');
+const paginacionConsumibles = document.getElementById('paginacion_consumibles');
+const filasConsumiblesOriginales = Array.from(document.querySelectorAll('#tabla-elementos-consumibles-modal tr'));
+let filasConsumiblesFiltradas = [...filasConsumiblesOriginales];
+const itemsPorPagina = 5;
 
-  filtroAreaConsumibles.addEventListener('change', () => {
-    const selectedArea = filtroAreaConsumibles.value;
-    filasConsumiblesFiltradas = filasConsumiblesOriginales.filter(fila => {
-      const area = fila.getAttribute('data-area');
-      return selectedArea === "" || area === selectedArea;
+filtroAreaConsumibles.addEventListener('change', () => {
+  const selectedArea = filtroAreaConsumibles.value;
+  filasConsumiblesFiltradas = filasConsumiblesOriginales.filter(fila => {
+    const area = fila.getAttribute('data-area');
+    return selectedArea === "" || area === selectedArea;
+  });
+  generarPaginacionConsumibles();
+});
+
+function actualizarTablaConsumibles(pagina) {
+  filasConsumiblesOriginales.forEach(fila => fila.style.display = 'none');
+  const inicio = (pagina - 1) * itemsPorPagina;
+  const fin = inicio + itemsPorPagina;
+  filasConsumiblesFiltradas.slice(inicio, fin).forEach(fila => fila.style.display = 'table-row');
+}
+
+function generarPaginacionConsumibles() {
+  paginacionConsumibles.innerHTML = '';
+  const totalPaginas = Math.ceil(filasConsumiblesFiltradas.length / itemsPorPagina);
+
+  for (let i = 1; i <= totalPaginas; i++) {
+    const li = document.createElement('li');
+    li.classList.add('waves-effect');
+    li.innerHTML = `<a href="#!">${i}</a>`;
+    li.addEventListener('click', (e) => {
+      e.preventDefault();
+      actualizarTablaConsumibles(i);
+      document.querySelectorAll('#paginacion_consumibles li').forEach(el => el.classList.remove('active'));
+      li.classList.add('active');
     });
-    generarPaginacionConsumibles();
+    paginacionConsumibles.appendChild(li);
+  }
+
+  if (totalPaginas > 0) {
+    paginacionConsumibles.firstChild.classList.add('active');
+    actualizarTablaConsumibles(1);
+  }
+}
+
+// Inicializar cuando se abre el modal de consumibles
+const modalTriggerConsumibles = document.querySelector('a[href="#modalSeleccionConsumibles"]');
+if (modalTriggerConsumibles) {
+  modalTriggerConsumibles.addEventListener('click', () => {
+    setTimeout(() => {
+      filasConsumiblesFiltradas = [...filasConsumiblesOriginales];
+      generarPaginacionConsumibles();
+    }, 100);
+  });
+}
+
+
+//Validador paara no permitir letras o caracteres especiales en el input
+document.querySelectorAll('.cantConsu').forEach(input => {
+  input.addEventListener('input', function () {
+    const max = parseInt(this.getAttribute('max'), 10);
+    let valor = this.value;
+
+    // vacia el campo si contiene letras
+    if (!/^\d*$/.test(valor)) {
+      this.value = '';
+      return;
+    }
+
+    valor = parseInt(valor, 10);
+
+    // Si el valor es menor que 1 o mayor al máximo, ajustar
+    if (valor < 1) {
+      this.value = 1;
+    } else if (valor > max) {
+      this.value = max;
+    }
   });
 
-  function actualizarTablaConsumibles(pagina) {
-    filasConsumiblesOriginales.forEach(fila => fila.style.display = 'none');
-    const inicio = (pagina - 1) * itemsPorPagina;
-    const fin = inicio + itemsPorPagina;
-    filasConsumiblesFiltradas.slice(inicio, fin).forEach(fila => fila.style.display = 'table-row');
-  }
+  // Previene el ingreso de caracteres no numéricos
+  input.addEventListener('keydown', function (e) {
+    const teclasPermitidas = [
+      'Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'
+    ];
 
-  function generarPaginacionConsumibles() {
-    paginacionConsumibles.innerHTML = '';
-    const totalPaginas = Math.ceil(filasConsumiblesFiltradas.length / itemsPorPagina);
-
-    for (let i = 1; i <= totalPaginas; i++) {
-      const li = document.createElement('li');
-      li.classList.add('waves-effect');
-      li.innerHTML = `<a href="#!">${i}</a>`;
-      li.addEventListener('click', (e) => {
-        e.preventDefault();
-        actualizarTablaConsumibles(i);
-        document.querySelectorAll('#paginacion_consumibles li').forEach(el => el.classList.remove('active'));
-        li.classList.add('active');
-      });
-      paginacionConsumibles.appendChild(li);
+    // Permitir solo números y teclas útiles
+    if (
+      !teclasPermitidas.includes(e.key) &&
+      (e.key < '0' || e.key > '9')
+    ) {
+      e.preventDefault();
     }
+  });
+});
 
-    if (totalPaginas > 0) {
-      paginacionConsumibles.firstChild.classList.add('active');
-      actualizarTablaConsumibles(1);
+
+
+//Accion para seleccionar y posteriormente indicar las cantidades
+document.querySelectorAll('#tabla-elementos-consumibles-modal tr').forEach(fila => {
+  const checkbox = fila.querySelector('input[type="checkbox"]');
+  const inputCantidad = fila.querySelector('.cantConsu');
+
+  // Desactivar la input cantidad
+  inputCantidad.disabled = true;
+
+  // Listener al momendo de darle check al box
+  checkbox.addEventListener('change', () => {
+    inputCantidad.disabled = !checkbox.checked;
+
+    // Si se desactiva, limpia el campo
+    if (!checkbox.checked) {
+      inputCantidad.value = '';
     }
-  }
-
-  // Inicializar cuando se abre el modal de consumibles
-  const modalTriggerConsumibles = document.querySelector('a[href="#modalSeleccionConsumibles"]');
-  if (modalTriggerConsumibles) {
-    modalTriggerConsumibles.addEventListener('click', () => {
-      setTimeout(() => {
-        filasConsumiblesFiltradas = [...filasConsumiblesOriginales];
-        generarPaginacionConsumibles();
-      }, 100);
-    });
-  }
+  });
+});
 
 
 

@@ -5,11 +5,11 @@
   </div>
 
   <div class="solicPrestamos">
-    <form id="formSolicitudPrestamo" method="POST" action="<?= getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamo'); ?>" class="row">
+    <form id="formSolicitudPrestamo" method="POST" action="<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'registrarPrestamo'); ?>" class="row">
 
       <div class="input-field nombre">
         <label for="pres_nombre" class="active  fontInfo">
-          Nombre del Solicitante: <span class="black-text "><?php echo $nombre." ".$apellido;?></span>
+          Nombre del Solicitante: <span class="black-text "><?php echo $nombre . " " . $apellido; ?></span>
         </label>
       </div>
 
@@ -38,22 +38,22 @@
         <textarea id="pres_observacion" name="pres_observacion" class="materialize-textarea" required></textarea>
         <label for="pres_observacion">Observaciones *</label>
       </div>
-      
-      
-      
+
+
+
       <!-- SELECCIONAR EL MODAL QUE SE QUEIERE ABRIR -->
       <div class="input-field inputAddElements">
         <a class="waves-effect waves-light btn modal-trigger" href="#modalSeleccionElementos">Selec. Elementos devolutivos</a>
         <a class="waves-effect waves-light btn modal-trigger" href="#modalSeleccionConsumibles">Selec. Elementos consumibles</a>
       </div>
-      
+
       <!-- ///////////////////////////// -->
-       <!-- MODAL ELEMENTOS DEVOLUTIVOSS -->
-     <!-- ///////////////////////////// -->
+      <!-- MODAL ELEMENTOS DEVOLUTIVOSS -->
+      <!-- ///////////////////////////// -->
 
       <div id="modalSeleccionElementos" class="modal">
         <div class="modal-content">
-          <h5>Seleccionar Elementos</h5>
+          <h5>Seleccionar Elementos Devolutivos</h5>
 
           <div class="input-field">
             <select id="filtro_area_modal" name="filtro_area_modal">
@@ -65,31 +65,33 @@
             <label for="filtro_area_modal">Filtrar por área</label>
           </div>
 
-          <table class="highlight responsive-table">
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Disponible</th>
-                <th>Seleccionar</th>
-              </tr>
-            </thead>
-            <tbody id="tabla-elementos-devolutivos-modal">
-              <?php foreach ($elementos as $elemento): ?>
-                <tr data-area="<?= $elemento['ar_cod']; ?>">
-                  <td><?= htmlspecialchars($elemento['elm_placa']); ?></td>
-                  <td><?= htmlspecialchars($elemento['elm_nombre']); ?></td>
-                  <td><?= htmlspecialchars($elemento['elm_existencia']); ?></td>
-                  <td>
-                    <label>
-                      <input type="checkbox" class="filled-in" name="elementos_seleccionados[]" value="<?= $elemento['elm_cod']; ?>">
-                      <span></span>
-                    </label>
-                  </td>
+          <div class="table-responsive">
+            <table class="highlight">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Disponible</th>
+                  <th>Seleccionar</th>
                 </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
+              </thead>
+              <tbody id="tabla-elementos-devolutivos-modal">
+                <?php foreach ($elementos as $elemento): ?>
+                  <tr data-area="<?= $elemento['ar_cod']; ?>">
+                    <td><?= htmlspecialchars($elemento['elm_placa']); ?></td>
+                    <td><?= htmlspecialchars($elemento['elm_nombre']); ?></td>
+                    <td><?= htmlspecialchars($elemento['elm_existencia']); ?></td>
+                    <td>
+                      <label>
+                        <input type="checkbox" class="filled-in" name="elementos_seleccionados[]" value="<?= $elemento['elm_cod']; ?>">
+                        <span></span>
+                      </label>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
 
           <ul id="paginacion" class="pagination center-align"></ul>
         </div>
@@ -98,67 +100,71 @@
           <a href="#!" class="modal-close waves-effect waves-green btn-flat">Confirmar Selección</a>
         </div>
       </div>
-      
-      
+
+
+
       <!-- ///////////////////////////// -->
-        <!-- MODAL ELEMENTOS CONSUMIBLES -->
+      <!-- MODAL ELEMENTOS CONSUMIBLES -->
       <!-- ///////////////////////////// -->
-    <div id="modalSeleccionConsumibles" class="modal">
-      <div class="modal-content">
-        <h5>Seleccionar Elementos Consumibles</h5>
-    
-        <div class="input-field">
-          <select id="filtro_area_modal_consumibles" name="filtro_area_modal_consumibles">
-            <option value="" selected>Todas las áreas</option>
-            <?php foreach ($areas as $area): ?>
-              <option value="<?= $area['ar_cod']; ?>"><?= htmlspecialchars($area['ar_nombre']); ?></option>
-            <?php endforeach; ?>
-          </select>
-          <label for="filtro_area_modal_consumibles">Filtrar por área</label>
+      <div id="modalSeleccionConsumibles" class="modal">
+        <div class="modal-content">
+          <h5>Seleccionar Elementos Consumibles</h5>
+      
+          <div class="input-field">
+            <select id="filtro_area_modal_consumibles" name="filtro_area_modal_consumibles">
+              <option value="" selected>Todas las áreas</option>
+              <?php foreach ($areas as $area): ?>
+                <option value="<?= $area['ar_cod']; ?>"><?= htmlspecialchars($area['ar_nombre']); ?></option>
+              <?php endforeach; ?>
+            </select>
+            <label for="filtro_area_modal_consumibles">Filtrar por área</label>
+          </div>
+      
+          <div class="table-responsive">
+            <table class="highlight">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Disponible</th>
+                  <th>Seleccionar</th>
+                  <th>Cantidad</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-elementos-consumibles-modal">
+                <?php foreach ($elementos_consumibles as $elemento): ?>
+                  <tr data-area="<?= $elemento['ar_cod']; ?>">
+                    <td><?= htmlspecialchars($elemento['elm_placa']); ?></td>
+                    <td><?= htmlspecialchars($elemento['elm_nombre']); ?></td>
+                    <td><?= htmlspecialchars($elemento['elm_existencia']); ?></td>
+                    <td>
+                      <label>
+                        <input type="checkbox" class="filled-in" name="elementos_consumibles_seleccionados[]" value="<?= $elemento['elm_cod']; ?>">
+                        <span></span>
+                      </label>
+                    </td>
+                    <td>
+                      <input type="number" min="1" max="<?= $elemento['elm_existencia']; ?>" class="cantConsu" name="cantidades_consumibles[<?= $elemento['elm_cod']; ?>]">
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+      
+          <ul id="paginacion_consumibles" class="pagination center-align"></ul>
         </div>
-    
-        <table class="highlight responsive-table">
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Disponible</th>
-              <th>Seleccionar</th>
-              <th>Cantidad</th> 
-            </tr>
-          </thead>
-          <tbody id="tabla-elementos-consumibles-modal">
-            <?php foreach ($elementos_consumibles as $elemento): ?>
-              <tr data-area="<?= $elemento['ar_cod']; ?>">
-                <td><?= htmlspecialchars($elemento['elm_placa']); ?></td>
-                <td><?= htmlspecialchars($elemento['elm_nombre']); ?></td>
-                <td><?= htmlspecialchars($elemento['elm_existencia']); ?></td>
-                <td>
-                  <label>
-                    <input type="checkbox" class="filled-in" name="elementos_consumibles_seleccionados[]" value="<?= $elemento['elm_cod']; ?>">
-                    <span></span>
-                  </label>
-                </td>
-                <td>
-                  <input type="number" min="1" max="<?= $elemento['elm_existencia']; ?>" class="cantConsu" name="cantidades_consumibles[<?= $elemento['elm_cod']; ?>]">
-                </td>
-              </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
-    
-        <ul id="paginacion_consumibles" class="pagination center-align"></ul>
+      
+        <div class="modal-footer">
+          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Confirmar Selección</a>
+        </div>
       </div>
-    
-      <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Confirmar Selección</a>
-      </div>
-    </div>
+
       <input type="hidden" name="elementos_devolutivos_seleccionados[]" id="elementos_devolutivos_seleccionados">
 
-    
+
       <!-- ///////////////////////////// -->
-          <!-- enviar solicitud -->
+      <!-- enviar solicitud -->
       <!-- ///////////////////////////// -->
       <div class="input-field center-align inputBtn">
         <button type="submit" class="btn blue">Solicitar</button>
