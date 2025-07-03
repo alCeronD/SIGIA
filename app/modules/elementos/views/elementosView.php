@@ -119,8 +119,7 @@
             </div>
 
             <div class="input-field">
-                <select id="select_area" name="elm_area_cod" required>
-                    
+                <select id="select_area_dev" class="select_area" name="elm_area_cod" required>
                 </select>
                 <label for="elm_area_cod">Área</label>
             </div>
@@ -158,15 +157,9 @@
             </div>
 
             <div class="input-field">
-                <select id="elm_area_cod_c" disabled>
-                    <?php foreach ($areas as $area): ?>
-                        <option value="<?= $area['codigo'] ?>" <?= ($area['codigo'] == $area_general_codigo) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($area['nombre']) ?>
-                        </option>
-                    <?php endforeach; ?>
+                <select id="select_area_consu" class="select_area" readonly>
                 </select>
 
-                <input type="hidden" name="elm_area_cod" value="<?= $area_general_codigo ?>">
                 <label for="elm_area_cod_c">Área</label>
             </div>
 

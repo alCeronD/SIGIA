@@ -19,7 +19,8 @@ const addElementModal = instanceModal('#addElementModal', options);
 const btnAddModalElements = document.querySelector('#btnAddModalElements');
 const cerrarModalBtn = document.querySelector('#cerrarModalRegistrar');
 // Select de las areas, es para registrar el elemento.
-const selectArea = document.querySelector('#select_area');
+const selectAreaDev = document.querySelector('#select_area_dev');
+const selectAreaConsu = document.querySelector('#select_area_consu');
 let iBtnAddElements = createI();
 iBtnAddElements.innerText = 'add'
 btnAddModalElements.append(iBtnAddElements);
@@ -115,27 +116,47 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
     
 };
 
-const getAreas = async ()=>{
+const getAreas = async (type = 'devolutivo')=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: 'areas'});
     let data = response.data;
-    selectArea.innerHTML = '';
+    selectAreaDev.innerHTML = '';
+    selectAreaConsu.innerHTML = '';
     const defaultOption = document.createElement('option');
     defaultOption.setAttribute('selected', 'selected');
-    defaultOption.setAttribute('disabled', 'disabled');
     defaultOption.innerText = 'Seleccione un área';
-    selectArea.appendChild(defaultOption);
-    data.forEach((dta)=>{
-        
-        if (dta.nombre != 'General') {
-             const option = document.createElement('option');
-            option.innerText = dta.nombre;
-            option.value = dta.codigo;
-            selectArea.appendChild(option);
-            //Re inicializó el materialize
-            M.FormSelect.init(selectArea);
+
+
+    selectAreaDev.appendChild(defaultOption);
+    selectAreaConsu.appendChild(defaultOption);
+
+        if (type === 'devolutivo') {
+            data.forEach((dta)=>{
+            
+                if (dta.nombre != 'General') {
+                    const option = document.createElement('option');
+                    option.innerText = dta.nombre;
+                    option.value = dta.codigo;
+                    selectAreaDev.appendChild(option);
+                } 
+            });           
+        }else if (type === 'consumible'){
+            const areaGeneral = data.find((dta) => dta.nombre === 'General');
+            if (areaGeneral) {
+                const option = document.createElement('option');
+                option.innerText = areaGeneral.nombre;
+                option.value = areaGeneral.codigo;
+                console.log(option);
+                selectAreaConsu.appendChild(option);
+            }
+            
         }
 
-    });
+    //Reinicializo los select, accedo a ellos mediante el objeto window.  
+    if (window.M) {
+        M.FormSelect.init(selectAreaDev);
+        M.FormSelect.init(selectAreaConsu);
+    }
+
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -224,34 +245,27 @@ btnAddModalElements.addEventListener('click', (e)=>{
     e.preventDefault();
 
     addElementModal.open();
-    //Limpio los valores del tipo select.
-    tipoElementoSelect.value = '';
-    //Renderizado de las areas
-    getAreas();
-
-    // Cambiar tipo de elemento.
-        tipoElementoSelect.addEventListener('change', () => {
-        if (tipoElementoSelect.value === 'devolutivo') {
-            formDevolutivo.style.display = 'block';
-            formConsumible.style.display = 'none';
-            if (window.M) {
-                M.FormSelect.init(formDevolutivo.querySelectorAll('select'));
-            }
-        } else if (tipoElementoSelect.value === 'consumible') {
-            formConsumible.style.display = 'block';
-            formDevolutivo.style.display = 'none';
-            if (window.M) {
-                M.FormSelect.init(formConsumible.querySelectorAll('select'));
-            }
-        } else {
-            formDevolutivo.style.display = 'none';
-            formConsumible.style.display = 'none';
-        }
-    });
+    
 
 });
 
+//Elegir tipo de elemento
+tipoElementoSelect.addEventListener('change', (e) => {
+    const tipo = e.target.value;
 
+    if (tipo === 'devolutivo') {
+        getAreas('devolutivo');
+        formDevolutivo.style.display = 'block';
+        formConsumible.style.display = 'none';
+    } else if (tipo === 'consumible') {
+        getAreas('consumible');
+        formConsumible.style.display = 'block';
+        formDevolutivo.style.display = 'none';
+    } else {
+        formDevolutivo.style.display = 'none';
+        formConsumible.style.display = 'none';
+    }
+});
 
 
 
