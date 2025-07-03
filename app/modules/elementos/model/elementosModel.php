@@ -368,5 +368,22 @@ class ElementoModelo
         return $stmt->execute();
     }
 
+    public function getElementByType(int $id = 1){
+        $sqlType = "SELECT elm_cod_tp_elemento  FROM elementos e WHERE elm_cod = ?";
+
+        $stmtType = $this->conn->prepare($sqlType);
+        $stmtType->bind_param('i',$id);
+
+        if (!$stmtType->execute()) {
+            return null;
+        }
+
+        $result = $stmtType->get_result();
+
+        return (int) $result->fetch_assoc()['elm_cod_tp_elemento'];
+
+
+    }
+
 
 }

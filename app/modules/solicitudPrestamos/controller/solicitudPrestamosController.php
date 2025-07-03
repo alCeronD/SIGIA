@@ -54,30 +54,34 @@ class solicitudPrestamosController {
         $rol_id = $_SESSION['usuario']['rol_id'];
         $elementos_seleccionados = $_POST['elementos_seleccionados'];
         $cantidades_consumibles = $_POST['cantidades_consumibles'];
-        // $elementos_devolutivos = $_POST['elementos_devolutivos_seleccionados'];
         
         unset($_POST['elementos_seleccionados'],
         $_POST['elementos_devolutivos_seleccionados']);
 
         $data = $_POST;
+
+        var_dump($data);
         
-        // dd($elementos_devolutivos);
+        // dd($data);
 
         $datos = new solicitudPrestamos($this->conn);
         $lastId = $datos->create($data, $rol_id);
 
         if (is_numeric($lastId)) {
             $prestamoElemento = new solicitudPrestamos($this->conn);
-            $salida = new solicitudPrestamos($this->conn);
-            // $elementoModel = new ElementoModelo($this->conn);
             $elementoModel = new ElementoModelo();
 
             // Registrar devolutivos seleccionados
             foreach ($elementos_seleccionados as $elemento_id) {
+                $typeElement = $elementoModel->getElementByType($elemento_id);
+
+
                 $prestamoElemento->registrarElem($lastId, $usuario_id, $elemento_id);
-            
-                // Disminuye una unidad
-                $elementoModel->disminuirExistenciaElemento($elemento_id, 1);
+
+                if ($typeElement == 2) {        
+                    // Disminuye una unidad
+                    $elementoModel->disminuirExistenciaElemento($elemento_id, 1);
+                }
             
                 // Cambiar estado
                 $elementoModel->actualizarEstadoElemento($elemento_id, 5); 
@@ -97,9 +101,8 @@ class solicitudPrestamosController {
                 }
             }
 
-
             // Registramos salidas
-            $salida->registrarSalida($cantidades_consumibles, $data['pres_fch_reserva'], $usuario_id, $lastId, $elementos_seleccionados);
+            $prestamoElemento->registrarSalida($cantidades_consumibles, $data['pres_fch_reserva'], $usuario_id, $lastId, $elementos_seleccionados);
   
                 echo "<script>alert('Solicitud realizada correctamente, en espera por respuesta'); 
                       window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";

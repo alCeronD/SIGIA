@@ -2,7 +2,7 @@
   <div class="modal-content " id="modalContentValidate">
     <div class="modal-title modalTitleValidate">
       <span id="modalTitle">Reserva #</span>
-      <button type="button" id="closeModalBtn">
+      <button type="button" id="closeModalBtnValidate">
         <span class="close-modal">&times;</span>
       </button>
     </div>
@@ -20,7 +20,6 @@
             <th>
                 Accion
                 <div class="actions">
-                    
                     <label>
                     <input id="allValidateItems" type="checkbox" value=""/>
                     <span></span>
@@ -35,6 +34,10 @@
           <!-- Datos se insertarán aquí -->
         </tbody>
       </table>
+
+      <div class="nextBtnValidate">
+        <button class="btn waves-effect waves-light" id="btnNextValidate"><i class="material-icons">navigate_next</i></button>
+      </div>
     </div>
   </div>
 </div>

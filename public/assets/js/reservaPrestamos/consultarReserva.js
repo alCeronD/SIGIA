@@ -8,6 +8,7 @@ const tbodyReservaConsult = document.querySelector("#tbodyReservaConsult");
 const modalDetail = instanceModal('#modalDetail',options);
 const modalValidate = instanceModal('#modalValidate', options);
 const bodyDetailValidate = document.querySelector('#bodyDetailValidate');
+const btnCloseValidte = document.querySelector('#modalValidate .close-modal');
 const btnCloseElements = document.querySelector("#modalDetail .close-modal");
 const formDetail = document.querySelector("#formDetail");
 //TODO: mejorarlo.
@@ -423,16 +424,37 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     const checkBoxValidate = document.querySelector('#allValidateItems');
     // capturo el input de la tabla para seleccionarlos todos.
     const inputValidate = document.querySelectorAll('.inputValidate');
+    const nextBtnValidate = document.querySelector('.nextBtnValidate #btnNextValidate');
+
+    function validateCheckboxChecked (){
+    /**
+     * Con la propiedad array from me extrae el elemento en concreo que se ha chequeado, luego de ello, me valida quue alguno de esos elementos este chequeados para así determinar que el btnNextValidate se visualice.
+     */
+    const elementChecked = Array.from(inputValidate).some(
+      (input) => input.checked
+    );
+    checkBoxValidate.checked = elementChecked;
+    nextBtnValidate.style.display = checkBoxValidate.checked ? "flex" : "none";
+  }
     checkBoxValidate.addEventListener('change',(e)=>{
       e.stopPropagation();
       
         inputValidate.forEach((inV)=>{
           inV.checked = e.target.checked;
-        });
+
+        });    
+        validateCheckboxChecked();
+
     });
 
+    inputValidate.forEach((input)=>{
+      input.addEventListener('change',(e)=>{
+        e.stopPropagation();
+        e.preventDefault();
 
-
+        validateCheckboxChecked();
+      })
+    });
 
     //Borro todos los elementos que esten en el objeto y los re asigno
     delete validateReserva.elementos;
@@ -454,54 +476,57 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
     modalValidate.open();
 
-    console.log(validateReserva);
-
-    //Todo: implementar esto en sweetAlert
-    if (confirm(`¿Deseas dar salida a estos elementos? \n
-      Consumibles:\n${
-        elementosPreviewConsu.map((el) => 
-          `Código: ${el.codigo} Nombre: ${el.nombre} Cantidad: ${el.cantidadSolicitada}`
-        ).join("\n")
-      }
-      \nDevolutivos:\n${
-        elementosPreviewDev.map((elDev) => 
-          `Código: ${elDev.codigo} Nombre: ${elDev.nombre}`
-        ).join("\n")
-      }`)) {
+    // confirm(`¿Deseas dar salida a estos elementos? \n
+    //   Consumibles:\n${
+    //     elementosPreviewConsu.map((el) => 
+    //       `Código: ${el.codigo} Nombre: ${el.nombre} Cantidad: ${el.cantidadSolicitada}`
+    //     ).join("\n")
+    //   }
+    //   \nDevolutivos:\n${
+    //     elementosPreviewDev.map((elDev) => 
+    //       `Código: ${elDev.codigo} Nombre: ${elDev.nombre}`
+    //     ).join("\n")
+    //   }`)
 
 
-        try {
+    //Todo: implementar el if con el envio de data.
+    // if () {
 
 
-          sendData('modules/reservaPrestamos/controller/reservaController.php','POST','validateLoan',validateReserva).then((response)=>{
+        // try {
 
-            // tdAcciones.innerHTML = "";
-            estadoNew.textContent = 'Validado';
-            estadoNew.style.color = "green";
+
+        //   sendData('modules/reservaPrestamos/controller/reservaController.php','POST','validateLoan',validateReserva).then((response)=>{
+
+        //     // tdAcciones.innerHTML = "";
+        //     estadoNew.textContent = 'Validado';
+        //     estadoNew.style.color = "green";
             
-            let btnValidate = tdAcciones.querySelector(`button[data-validate='${validateReserva.codigoReserva}']`);
-            if (btnValidate) {
-              initAlert(`Prestamo validado ${validateReserva.codigoReserva}`,'success',toastOptions);
-              btnValidate.style.display = "none";
-            }
+        //     let btnValidate = tdAcciones.querySelector(`button[data-validate='${validateReserva.codigoReserva}']`);
+        //     if (btnValidate) {
+        //       initAlert(`Prestamo validado ${validateReserva.codigoReserva}`,'success',toastOptions);
+        //       btnValidate.style.display = "none";
+        //     }
             
-            let btnEnd = document.createElement("button");
-            let iFinalizar = createI();
-            iFinalizar.innerText = 'swap_horiz';
-            //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
-            addClassItem(btnEnd,{btn: "btn",color: "red lighten-1",wavesEffect: "waves-effect",wavesLight: "waves-light",btnSmall: "btn-small"});
-            btnEnd.append(iFinalizar);
-            btnEnd.setAttribute("data-end", `${validateReserva.codigoReserva}`);
-            tdAcciones.appendChild(btnEnd);
+        //     let btnEnd = document.createElement("button");
+        //     let iFinalizar = createI();
+        //     iFinalizar.innerText = 'swap_horiz';
+        //     //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
+        //     addClassItem(btnEnd,{btn: "btn",color: "red lighten-1",wavesEffect: "waves-effect",wavesLight: "waves-light",btnSmall: "btn-small"});
+        //     btnEnd.append(iFinalizar);
+        //     btnEnd.setAttribute("data-end", `${validateReserva.codigoReserva}`);
+        //     tdAcciones.appendChild(btnEnd);
           
-          }); 
-        } catch (error) {
-          console.warn('error al realizar el proceso'+error);
-        }
-      } 
+        //   }); 
+        // } catch (error) {
+        //   console.warn('error al realizar el proceso'+error);
+        // }
+      // } 
   }
 
 });
+
+closeModal(modalValidate,btnCloseValidte);
 
 /**
  * Paginación de los prestamos.
