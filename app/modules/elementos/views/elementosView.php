@@ -6,7 +6,7 @@
         </div>
 
         <!-- Botón de registro -->
-        <div class="col s12 m6">
+        <div class="col s12 m6 center">
             <button type="button" class="waves-effect waves-light btn" id="btnAddModalElements"></button>
         </div>
 
