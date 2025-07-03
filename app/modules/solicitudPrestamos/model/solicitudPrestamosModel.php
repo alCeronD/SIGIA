@@ -198,7 +198,7 @@ class solicitudPrestamos {
     
  
     public function registrarSalida($cantidades_consumibles, $fecha_registro, $usuario_id, $lastId, $elementos_devolutivos) {
-        $tipo_movimiento = 2; // salida
+        $tipo_movimiento = 3; // salida
         $id_prestamo = $lastId;
         $usuario = $usuario_id;
         //procesar los elementos consumibles
