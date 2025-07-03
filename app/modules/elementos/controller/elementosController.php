@@ -169,7 +169,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
         $case = $_GET['action'] ?? '';
         //valor de la página, por defecto, es la página #1.
-        $pages = (int) $_GET['pages'] ?? 1;
+        $pages = (int) (!isset($_GET['ages'])) ?? 1;
     
         // $codigo = (int) $_GET['codigo'] ?? 0;
         switch ($case) {
@@ -181,7 +181,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 break;
             case 'onlyElement':
                 $valueInput = strtolower($_GET['valueInput']);
-                var_dump($valueInput);
                 if (method_exists($elementosController,'getElement')) {
                     $elementosController->getElement($valueInput);
                 }

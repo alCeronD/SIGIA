@@ -113,6 +113,7 @@ export const renderElement = (async ({action = 'getElement', value = ''} = {})=>
         'modules/elementos/controller/elementosController.php',
         'GET',
         { action,valueInput: value});
+        console.log(value);
 
         console.log(dataResult);
     } catch (error) {
@@ -188,7 +189,7 @@ let timer;
         // }
 
         timer = setTimeout(()=>{
-            renderElement({action: 'onlyElement', valueInput:filtro});
+            renderElement({action: 'onlyElement', value:filtro});
 
         }, 400);
         
