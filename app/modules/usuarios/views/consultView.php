@@ -4,6 +4,21 @@
       <a href="<?= getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
   </div>
 
+  <div class="filtroUsuarios">
+    <div class="input-field col s4">
+      <select id="tipoFiltro" class="browser-default">
+        <option value="">-- Filtro usuarios --</option>
+        <option value="documento">Filtrar por Documento</option>
+        <option value="nombre">Filtrar por Nombre</option>
+        <option value="estado">Filtrar por Estado</option>
+      </select>
+    </div>
+
+    <div class="input-field col s4" id="contenedorInputFiltro" >
+      <!-- Aquí se agregará dinámicamente el input/select -->
+    </div>
+  </div>
+
   <div class="table">
     <table id="tableConfig">
       <thead>
@@ -57,7 +72,7 @@
     </table>
     <div class="pagination-container center-align">
    <ul id="paginacion-usuarios" class="pagination"></ul>
-</div>
+  </div>
 
   </div>
 </div>
