@@ -71,21 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    //Agregar existencia al elemento consumible.
-    const btnAddCantidad = document.querySelector('#btnAddCantidad');
-    // console.log(btnAddCantidad);
-
-    btnAddCantidad.addEventListener('click', (e)=>{
-
-      e.stopPropagation();
-      e.preventDefault();
-
-      if (e.target.tagName === 'BUTTON') {
-        console.log(e.target);
-      }
-
-    });
-
     // Manejo del modal Registrar
     const abrirModalBtn = document.getElementById('abrirModalRegistrar');
     const modalRegistrar = document.getElementById('modalRegistrar');
@@ -198,8 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-
-
 
 //MODAL EDITAR
 document.querySelectorAll('.editar-btn').forEach(btn => {

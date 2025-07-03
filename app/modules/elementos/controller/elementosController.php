@@ -58,6 +58,14 @@ class ElementosController {
     // // Incluir la vista pasando las variables necesarias
     // include __DIR__ . '/../views/elementosView.php';
 }
+
+public function getElement(String $value = ''){
+    var_dump($value);
+    if (!$resultRow = $this->modeloElemento->getElementLike($value)) {
+        fail('sin registros');
+    }
+    success('', $resultRow);
+}
     public function registrarElemento() {
     // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //     // Validar que existan todos los campos obligatorios
@@ -162,32 +170,22 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         $case = $_GET['action'] ?? '';
         //valor de la página, por defecto, es la página #1.
         $pages = (int) $_GET['pages'] ?? 1;
-
-
-        $codigo = $_GET['codigo'] ?? 0;
-        $codigo = (int) $codigo;
+    
+        // $codigo = (int) $_GET['codigo'] ?? 0;
         switch ($case) {
-
             case 'elements':
                 $type = $_GET['type'];
                 if (method_exists($elementosController, 'getElements')) {
                     $elementosController->getElements($pages, $type);
                 }
                 break;
-            case 'consumibles';
-            // //Elemento de tipo consumible;
-            // $type = 2;
-            // if (method_exists($elementosController,'obtenerElemento')) {
-            //     $elementos->getElementosConsumibles($pages,$type);
-            // }
-
-        
-            break;
-
-            case 'devolutivos':
-                if (method_exists($elementosController, '')) {
-                    # code...
+            case 'onlyElement':
+                $valueInput = strtolower($_GET['valueInput']);
+                var_dump($valueInput);
+                if (method_exists($elementosController,'getElement')) {
+                    $elementosController->getElement($valueInput);
                 }
+
                 break;
 
             

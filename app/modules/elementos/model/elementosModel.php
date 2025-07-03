@@ -41,7 +41,7 @@ class ElementoModelo {
         return $elementos;
     }
 
-    // Obtener un solo elemento con nombres relacionados para edición
+    // Obtener un solo elemento con nombres relacionados para edición, función que no me es de utilidad, desgraciadamente.
     public function obtenerElementoPorId($id) {
         $sql = "SELECT 
             e.elm_cod,
@@ -68,6 +68,54 @@ class ElementoModelo {
         $stmt->execute();
         $resultado = $stmt->get_result();
         return $resultado->fetch_assoc();
+    }
+
+    public function getElementLike(String $inputValue = ''){
+           $sql = "SELECT 
+        e.elm_cod AS codigoElemento,
+        e.elm_placa AS placa,
+        e.elm_nombre AS nombreElemento,
+        e.elm_existencia AS cantidad,
+        e.elm_uni_medida AS unidadMedida,
+        ar.ar_nombre AS nombreArea,
+        tpE.tp_el_nombre AS tipoElemento,
+        es_e.est_nombre AS estadoElemento
+    FROM elementos e
+    INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
+    INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
+    INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado
+    WHERE e.elm_nombre LIKE CONCAT('%', ?, '%')
+      AND LENGTH(e.elm_nombre) <= 20
+      OR e.elm_placa LIKE CONCAT('%',?,'%')";
+
+$stmtSearch = $this->conn->prepare($sql);
+
+if (!$stmtSearch) {
+    return [
+        'message'=>"error al realizar consulta",
+        'status'=>false
+    ];
+}
+
+$stmtSearch->bind_param('ss',$inputValue,$inputValue);
+
+if (!$stmtSearch->execute()) {
+    return [
+        'message' => "error al realizar consulta $stmtSearch->error",
+        'status'=>false
+    ];
+}   $result = $stmtSearch->get_result();
+
+$row = [];
+while ($resultRow = $result->fetch_assoc()) {
+    $row[] = $resultRow;
+}
+
+        return [
+            'message'=>"coincidencias encontradas",
+            'status'=>true,
+            'data'=>$row
+        ];
     }
 
 
@@ -203,8 +251,6 @@ public function contarElementos(string $type = 'all') {
         'status' => true
     ];
 }
-
-
 
     // Insertar nuevo elemento
     public function insertarElemento($datos) {
