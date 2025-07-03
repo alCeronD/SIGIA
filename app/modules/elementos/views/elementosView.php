@@ -1,13 +1,13 @@
 <div class="container-fluid px-4">
     <div class="row valign-wrapper" style="margin-bottom: 20px;">
         <!-- Título -->
-        <div class="col s12 m3">
+        <div class="col s12 m6">
             <h5 style="margin: 0;">Listado de Elementos</h5>
         </div>
 
         <!-- Botón de registro -->
-        <div class="col s12 m3">
-            <a id="abrirModalRegistrar" class="waves-effect waves-light btn">Registrar Nuevo Elemento</a>
+        <div class="col s12 m6">
+            <button type="button" class="waves-effect waves-light btn" id="btnAddModalElements"></button>
         </div>
 
         <!-- El filtro -->
@@ -84,11 +84,11 @@
 
 
 <!-- Modal Registrar Elemento -->
-<div id="modalRegistrar" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:2000;">
-    <div style="background:#fff; padding:20px; border-radius:8px; width:90%; max-width:600px; max-height:90vh; overflow-y:auto; position:relative;">
+<div id="addElementModal">
+    <div id="modalContentElements">
         <button id="cerrarModalRegistrar" style="position:absolute; top:10px; right:15px; font-size:24px; background:none; border:none; cursor:pointer;">&times;</button>
 
-        <h3 class="mb-3">Registrar Nuevo Elemento</h3>
+        <span class="mb-3">Registrar Nuevo Elemento</span>
 
         <label for="tipoElementoSelect">Tipo de Elemento:</label>
         <select id="tipoElementoSelect" class="form-select mb-3" required>
@@ -119,11 +119,8 @@
             </div>
 
             <div class="input-field">
-                <select id="elm_area_cod" name="elm_area_cod" required>
-                    <option value="" disabled selected>Seleccione...</option>
-                    <?php foreach ($areas as $area): ?>
-                        <option value="<?= $area['codigo'] ?>"><?= htmlspecialchars($area['nombre']) ?></option>
-                    <?php endforeach; ?>
+                <select id="select_area" name="elm_area_cod" required>
+                    
                 </select>
                 <label for="elm_area_cod">Área</label>
             </div>
@@ -276,6 +273,4 @@
 </div>
 
 
-
-<!-- <script type="module" src="../public/assets/js/elementos/elementos.js"></script> -->
 <script type="module" src="../public/assets/js/elementos/elementosNew.js"></script>

@@ -1,6 +1,6 @@
 // import {renderElement, renderElements } from "./fetchElements.js";
 import { getData } from "../utils/fetch.js";
-import { createBtn } from "../utils/cases.js";
+import { closeModal, createBtn, createI, initTooltip, instanceModal, options, tooltipOptions } from "../utils/cases.js";
 
 const typeElements = {
     dev: 'devolutivo',
@@ -14,9 +14,17 @@ const previewElements = document.querySelector('#previewElements');
 const nextElements = document.querySelector('#nextElements');
 const inputBusqueda = document.querySelector('#inputBusqueda');
 const tbodyElements = document.querySelector('#tbodyElements');
+const tipoElementoSelect = document.querySelector('#tipoElementoSelect');
+const addElementModal = instanceModal('#addElementModal', options);
+const btnAddModalElements = document.querySelector('#btnAddModalElements');
+const cerrarModalBtn = document.querySelector('#cerrarModalRegistrar');
+// Select de las areas, es para registrar el elemento.
+const selectArea = document.querySelector('#select_area');
+let iBtnAddElements = createI();
+iBtnAddElements.innerText = 'add'
+btnAddModalElements.append(iBtnAddElements);
 //El tipo de elementos, creamos esta variable para reemplazarla ya que le daremos utilidad en los filtros.
 let currentType = typeElements.all;
-
 /**
  * Renderiza elementos desde el backend utilizando filtros de tipo, acción y paginación.
  * Realiza una petición GET al servidor y construye dinámicamente el contenido de una tabla HTML.
@@ -43,7 +51,7 @@ let currentType = typeElements.all;
  * // Renderizar elementos devolutivos con acción personalizada
  * renderElements({ type: 'devolutivo', action: 'buscarElementos', page: 1 });
  */
-export const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}) => {
+const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}) => {
 
     try {
         const dataElements = await getData(
@@ -107,9 +115,36 @@ export const renderElements = async ({type = 'all', action = 'elements', page = 
     
 };
 
-document.addEventListener('DOMContentLoaded', ()=>{
+const getAreas = async ()=>{
+    let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: 'areas'});
+    let data = response.data;
+    selectArea.innerHTML = '';
+    const defaultOption = document.createElement('option');
+    defaultOption.setAttribute('selected', 'selected');
+    defaultOption.setAttribute('disabled', 'disabled');
+    defaultOption.innerText = 'Seleccione un área';
+    selectArea.appendChild(defaultOption);
+    data.forEach((dta)=>{
+        
+        if (dta.nombre != 'General') {
+             const option = document.createElement('option');
+            option.innerText = dta.nombre;
+            option.value = dta.codigo;
+            selectArea.appendChild(option);
+            //Re inicializó el materialize
+            M.FormSelect.init(selectArea);
+        }
 
+    });
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+    //Inicializo los select.
+    M.FormSelect.init(formDevolutivo.querySelectorAll('select'));
+    initTooltip(btnAddModalElements,tooltipOptions,'Agregar elemento','top');
+    //Renderizado de los elementos
     renderElements({type: currentType});
+
 });
 
 /**
@@ -135,8 +170,6 @@ filtroTipo.addEventListener('change', (e)=>{
     renderElements({type : currentType, page: pageElement});
 });
 
-
-
 /**
  * Paginación de elementos
  */
@@ -145,7 +178,6 @@ previewElements.addEventListener('click', (e)=>{
     e.preventDefault();
     if (pageElement <= 1 )return;
     pageElement--;
-    console.log(pageElement);
     renderElements({type: currentType ,page: pageElement});
 });
 
@@ -154,12 +186,11 @@ nextElements.addEventListener('click', (e) => {
     e.preventDefault();
     if (pageElement >= pageGlobal) return;
     pageElement++;
-    console.log(pageElement);
     renderElements({type: currentType, page:pageElement});
 });
 
 /**
- * Búsqueda de elementos
+ * Búsqueda de elementos TODO: por implementar, la consulta ya esta hecha.
  */
 let timer;
 // También puedes buscar al escribir directamente
@@ -181,3 +212,48 @@ let timer;
         // }, 400);
         
     });
+
+
+/**
+ * Registrar elemento.
+ */
+
+//Abrir modal
+btnAddModalElements.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    e.preventDefault();
+
+    addElementModal.open();
+    //Limpio los valores del tipo select.
+    tipoElementoSelect.value = '';
+    //Renderizado de las areas
+    getAreas();
+
+    // Cambiar tipo de elemento.
+        tipoElementoSelect.addEventListener('change', () => {
+        if (tipoElementoSelect.value === 'devolutivo') {
+            formDevolutivo.style.display = 'block';
+            formConsumible.style.display = 'none';
+            if (window.M) {
+                M.FormSelect.init(formDevolutivo.querySelectorAll('select'));
+            }
+        } else if (tipoElementoSelect.value === 'consumible') {
+            formConsumible.style.display = 'block';
+            formDevolutivo.style.display = 'none';
+            if (window.M) {
+                M.FormSelect.init(formConsumible.querySelectorAll('select'));
+            }
+        } else {
+            formDevolutivo.style.display = 'none';
+            formConsumible.style.display = 'none';
+        }
+    });
+
+});
+
+
+
+
+
+
+closeModal(addElementModal,cerrarModalBtn);

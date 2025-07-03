@@ -55,7 +55,6 @@ export const getData = async(url, method = 'GET', parameters = {}, data ={})=>{
             });
             
             newUrl = parameters ? `${url}?${setParameters.toString()}` : url;
-            console.log(newUrl);
         }
         const bodyData = setFetch(method,parameters,data);
         const execute = await fetch(newUrl,bodyData);

@@ -5,150 +5,164 @@ require_once __DIR__ . '/../../../helpers/response.php';
 require_once __DIR__ . '/../../../helpers/const.php';
 
 
-class ElementosController {
+class ElementosController
+{
     private $modeloElemento;
     private $conn;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->modeloElemento = new ElementoModelo();
     }
 
-    public function renderViewElements(){
+    public function renderViewElements()
+    {
 
         return require_once __DIR__ . '/../views/elementosView.php';
     }
 
- public function getElements(int $pages = 1, String $type = 'all') {
-    // Parámetros de paginación
-    $pagina = isset($pages) ? max(1, intval($pages)) : 1;
-    $limite = LIMIT;
-    $offset = ($pagina - 1) * LIMIT;
+    public function getElements(int $pages = 1, String $type = 'all')
+    {
+        // Parámetros de paginación
+        $pagina = isset($pages) ? max(1, intval($pages)) : 1;
+        $limite = LIMIT;
+        $offset = ($pagina - 1) * LIMIT;
 
-    // Contar total de elementos para el paginador
-    $resultElements = $this->modeloElemento->contarElementos($type);
-    $totalElementos = $resultElements['total'];
-    $totalPaginas = ceil($totalElementos / $limite);
-
-
-
-    // Obtener elementos paginados
-    $elementos = $this->modeloElemento->obtenerElementoPaginado($limite, $offset, $type);
+        // Contar total de elementos para el paginador
+        $resultElements = $this->modeloElemento->contarElementos($type);
+        $totalElementos = $resultElements['total'];
+        $totalPaginas = ceil($totalElementos / $limite);
 
 
-    if (!$elementos) {
-        fail('error al traer los elementos');
+
+        // Obtener elementos paginados
+        $elementos = $this->modeloElemento->obtenerElementoPaginado($limite, $offset, $type);
+
+
+        if (!$elementos) {
+            fail('error al traer los elementos');
+        }
+
+        //Unifico ambos arreglos para obtener la cantidad de paginas con los elementos.
+        $elementos = array_merge(['cantidadPaginas' => $totalPaginas], $elementos);
+
+        success('elementos', $elementos);
+
+
+
+
+        // // Incluir la vista pasando las variables necesarias
+        // include __DIR__ . '/../views/elementosView.php';
     }
 
-    //Unifico ambos arreglos para obtener la cantidad de paginas con los elementos.
-    $elementos = array_merge(['cantidadPaginas'=> $totalPaginas],$elementos);
-
-    success('elementos', $elementos);
-
-
-    // // Obtener las áreas
-    // $modeloGenerico = new ConfigModulesModel();
-    // $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
-
-    // // Buscar el código del área "general"
-    // $area_general_codigo = null;
-    // foreach ($areas as $area) {
-    //     if (strtolower(trim($area['nombre'])) === 'general') {
-    //         $area_general_codigo = $area['codigo'];
-    //         break;
-    //     }
-    // }
-
-    // // Incluir la vista pasando las variables necesarias
-    // include __DIR__ . '/../views/elementosView.php';
-}
-
-public function getElement(String $value = ''){
-    var_dump($value);
-    if (!$resultRow = $this->modeloElemento->getElementLike($value)) {
-        fail('sin registros');
+    public function getElement(String $value = '')
+    {
+        var_dump($value);
+        if (!$resultRow = $this->modeloElemento->getElementLike($value)) {
+            fail('sin registros');
+        }
+        success('', $resultRow);
     }
-    success('', $resultRow);
-}
-    public function registrarElemento() {
-    // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //     // Validar que existan todos los campos obligatorios
-    //     if (
-    //         isset($_POST['elm_placa'], $_POST['elm_nombre'], $_POST['elm_existencia'],
-    //                $_POST['elm_uni_medida'], $_POST['elm_cod_tp_elemento'],
-    //                $_POST['elm_cod_estado'], $_POST['elm_area_cod'])
-    //     ) {
-    //         $datos = [
-    //             'elm_placa' => $_POST['elm_placa'],
-    //             'elm_nombre' => $_POST['elm_nombre'],
-    //             'elm_existencia' => $_POST['elm_existencia'],
-    //             'elm_uni_medida' => $_POST['elm_uni_medida'],
-    //             'elm_cod_tp_elemento' => $_POST['elm_cod_tp_elemento'],
-    //             'elm_cod_estado' => $_POST['elm_cod_estado'],
-    //             'elm_area_cod' => $_POST['elm_area_cod']
-    //         ];
+    public function registrarElemento()
+    {
+        // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        //     // Validar que existan todos los campos obligatorios
+        //     if (
+        //         isset($_POST['elm_placa'], $_POST['elm_nombre'], $_POST['elm_existencia'],
+        //                $_POST['elm_uni_medida'], $_POST['elm_cod_tp_elemento'],
+        //                $_POST['elm_cod_estado'], $_POST['elm_area_cod'])
+        //     ) {
+        //         $datos = [
+        //             'elm_placa' => $_POST['elm_placa'],
+        //             'elm_nombre' => $_POST['elm_nombre'],
+        //             'elm_existencia' => $_POST['elm_existencia'],
+        //             'elm_uni_medida' => $_POST['elm_uni_medida'],
+        //             'elm_cod_tp_elemento' => $_POST['elm_cod_tp_elemento'],
+        //             'elm_cod_estado' => $_POST['elm_cod_estado'],
+        //             'elm_area_cod' => $_POST['elm_area_cod']
+        //         ];
 
-    //         $exito = $this->modeloElemento->insertarElemento($datos);
+        //         $exito = $this->modeloElemento->insertarElemento($datos);
 
-    //         if ($exito) {
-    //             echo "<script>alert('Elemento registrado exitosamente'); window.location.href = '" . getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') . "';</script>";
-    //         } else {
-    //             echo "<div class='alert alert-danger text-center'>Error al registrar el elemento.</div>";
-    //         }
-    //     } else {
-    //         echo "<div class='alert alert-danger text-center'>Faltan datos obligatorios para registrar.</div>";
-    //     }
-    // } else {
-    //     $modeloGenerico = new ConfigModulesModel();
-    //     $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
-    //     include __DIR__ . '/../views/elementosRegistrar.php';
-    // }
-}
+        //         if ($exito) {
+        //             echo "<script>alert('Elemento registrado exitosamente'); window.location.href = '" . getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') . "';</script>";
+        //         } else {
+        //             echo "<div class='alert alert-danger text-center'>Error al registrar el elemento.</div>";
+        //         }
+        //     } else {
+        //         echo "<div class='alert alert-danger text-center'>Faltan datos obligatorios para registrar.</div>";
+        //     }
+        // } else {
+        //     $modeloGenerico = new ConfigModulesModel();
+        //     $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
+        //     include __DIR__ . '/../views/elementosRegistrar.php';
+        // }
+    }
 
-public function editarElemento() {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        if (isset($_POST['elm_cod'], $_POST['elm_nombre'], $_POST['elm_uni_medida'], $_POST['elm_area_cod'])) {
-            $id = $_POST['elm_cod'];
+    public function getItems(){
+        // Obtener las áreas
+        $modeloGenerico = new ConfigModulesModel();
+        //Areas que esten activas.
+        $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas WHERE ar_status = 1");
 
-            // Llenar arreglo con los datos que sí se actualizan
-            $datos = [
-                'elm_nombre' => $_POST['elm_nombre'],
-                'elm_uni_medida' => $_POST['elm_uni_medida'],
-                'elm_area_cod' => $_POST['elm_area_cod'],
-                'elm_cod_estado' => 1 // Siempre activo (o puedes recibirlo por POST si quieres que sea editable)
-            ];
+        // Buscar el código del área "general"
+        $area_general_codigo = null;
+        foreach ($areas as $area) {
+            if (strtolower(trim($area['nombre'])) === 'general') {
+                $area_general_codigo = $area['codigo'];
+                break;
+            }
+        }
+        success('areas', $areas);
+        
+    }
 
-            // Llamar al modelo para actualizar
-            $exito = $this->modeloElemento->actualizarElemento($id, $datos);
+    public function editarElemento()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (isset($_POST['elm_cod'], $_POST['elm_nombre'], $_POST['elm_uni_medida'], $_POST['elm_area_cod'])) {
+                $id = $_POST['elm_cod'];
 
-            if ($exito) {
-                echo "<script>alert('Elemento actualizado correctamente'); window.location.href = '" . getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') . "';</script>";
+                // Llenar arreglo con los datos que sí se actualizan
+                $datos = [
+                    'elm_nombre' => $_POST['elm_nombre'],
+                    'elm_uni_medida' => $_POST['elm_uni_medida'],
+                    'elm_area_cod' => $_POST['elm_area_cod'],
+                    'elm_cod_estado' => 1 // Siempre activo (o puedes recibirlo por POST si quieres que sea editable)
+                ];
+
+                // Llamar al modelo para actualizar
+                $exito = $this->modeloElemento->actualizarElemento($id, $datos);
+
+                if ($exito) {
+                    echo "<script>alert('Elemento actualizado correctamente'); window.location.href = '" . getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') . "';</script>";
+                } else {
+                    echo "<div class='alert alert-danger text-center'>Error al actualizar el elemento.</div>";
+                }
             } else {
-                echo "<div class='alert alert-danger text-center'>Error al actualizar el elemento.</div>";
+                echo "<div class='alert alert-danger text-center'>Faltan datos obligatorios.</div>";
             }
         } else {
-            echo "<div class='alert alert-danger text-center'>Faltan datos obligatorios.</div>";
-        }
+            // Mostrar formulario de edición
+            if (isset($_GET['elm_cod'])) {
+                $id = $_GET['elm_cod'];
+                $elemento = $this->modeloElemento->obtenerElementoPorId($id);
 
-    } else {
-        // Mostrar formulario de edición
-        if (isset($_GET['elm_cod'])) {
-            $id = $_GET['elm_cod'];
-            $elemento = $this->modeloElemento->obtenerElementoPorId($id);
+                // Usamos el modelo genérico para obtener áreas
+                $modeloGenerico = new ConfigModulesModel();
+                $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
 
-            // Usamos el modelo genérico para obtener áreas
-            $modeloGenerico = new ConfigModulesModel();
-            $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
-
-            if ($elemento) {
-                include __DIR__ . '/../views/elementosEditar.php';
-            } else {
-                echo "<div class='alert alert-danger text-center'>Elemento no encontrado.</div>";
+                if ($elemento) {
+                    include __DIR__ . '/../views/elementosEditar.php';
+                } else {
+                    echo "<div class='alert alert-danger text-center'>Elemento no encontrado.</div>";
+                }
             }
         }
     }
-}
 
-    public function cambiarEstadoElemento() {
+    public function cambiarEstadoElemento()
+    {
         if (isset($_GET['elm_cod'])) {
             $id = $_GET['elm_cod'];
             $exito = $this->modeloElemento->toggleEstadoElemento($id);
@@ -172,8 +186,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         $case = $_GET['action'] ?? '';
         //valor de la página, por defecto, es la página #1.
         $pages = (int) ($_GET['pages'] ?? 1);
-    
-        // $codigo = (int) $_GET['codigo'] ?? 0;
+
         switch ($case) {
             case 'elements':
                 $type = $_GET['type'];
@@ -183,17 +196,25 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 break;
             case 'onlyElement':
                 $valueInput = strtolower($_GET['valueInput']);
-                if (method_exists($elementosController,'getElement')) {
+                if (method_exists($elementosController, 'getElement')) {
                     $elementosController->getElement($valueInput);
                 }
 
                 break;
 
-            
+            case 'areas':
+
+                if (method_exists($elementosController,'getItems')) {
+                    $elementosController->getItems();
+                }
+
+                break;
+
+
 
             default:
-            fail('error de acción.');
-            break;
+                fail('error de acción.');
+                break;
         }
     }
 
@@ -235,5 +256,3 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     // }
     exit();
 }
-
-?>

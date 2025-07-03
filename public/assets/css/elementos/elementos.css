@@ -10,8 +10,6 @@
 
 }
 
-
-
 /* ----------------- Título ----------------- */
 .container-fluid h2 {
     font-size: 24px;
@@ -153,8 +151,30 @@
 
 
 /* ---------- Ajuste de Ancho y Alineación del Formulario ---------- */
+/* #addElementModal{
+    display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:2000;
+} */
 
-#modalRegistrar form {
+
+#addElementModal{
+    display: none;
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+#addElementModal form {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
@@ -166,24 +186,29 @@
   margin: 0 auto; /* Centrado horizontal */
 }
 
+#addElementModal > #modalContentElements {
+    margin: 0 auto;
+    background:#fff; padding:20px; border-radius:8px; width:90%; max-width:600px; max-height:90vh; overflow-y:auto; position:relative;
+}
+
 /* Grupos de campos */
-#modalRegistrar .mb-3 {
+#addElementModal .mb-3 {
   display: grid;
   grid-template-columns: 1fr;
   gap: 6px;
 }
 
 /* Etiquetas */
-#modalRegistrar label {
+#addElementModal label {
   font-weight: 600;
   font-size: 14px;
   color: #333;
 }
 
 /* Inputs y selects con ancho limitado */
-#modalRegistrar input[type="text"],
-#modalRegistrar input[type="number"],
-#modalRegistrar select {
+#addElementModal input[type="text"],
+#addElementModal input[type="number"],
+#addElementModal select {
   padding: 6px;
 }
 
