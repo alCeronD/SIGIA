@@ -24,13 +24,16 @@ class ElementosController {
     $limite = LIMIT;
     $offset = ($pagina - 1) * LIMIT;
 
-    // Obtener elementos paginados
-    $elementos = $this->modeloElemento->obtenerElementoPaginado($limite, $offset, $type);
-
     // Contar total de elementos para el paginador
     $resultElements = $this->modeloElemento->contarElementos($type);
     $totalElementos = $resultElements['total'];
     $totalPaginas = ceil($totalElementos / $limite);
+
+
+
+    // Obtener elementos paginados
+    $elementos = $this->modeloElemento->obtenerElementoPaginado($limite, $offset, $type);
+
 
     if (!$elementos) {
         fail('error al traer los elementos');
@@ -101,7 +104,6 @@ public function getElement(String $value = ''){
     // }
 }
 
-
 public function editarElemento() {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (isset($_POST['elm_cod'], $_POST['elm_nombre'], $_POST['elm_uni_medida'], $_POST['elm_area_cod'])) {
@@ -169,7 +171,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
         $case = $_GET['action'] ?? '';
         //valor de la página, por defecto, es la página #1.
-        $pages = (int) (!isset($_GET['ages'])) ?? 1;
+        $pages = (int) ($_GET['pages'] ?? 1);
     
         // $codigo = (int) $_GET['codigo'] ?? 0;
         switch ($case) {

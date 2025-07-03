@@ -118,94 +118,76 @@ while ($resultRow = $result->fetch_assoc()) {
         ];
     }
 
-
-    
     // Obtener elementos paginados con JOIN para nombres relacionados
-public function obtenerElementoPaginado(int $limite,int $offset, String $type) {
+    public function obtenerElementoPaginado(int $limite, int $offset, string $type) {
     $elementos = [];
 
-    if (!isset($type)) {
+    if (!in_array($type, ['consumible', 'devolutivo', 'all'])) {
         return [
-            'message'=> 'tipo de elemento no valido',
-            'status'=> false
+            'message' => 'Tipo de elemento no definido',
+            'status' => false,
+            'data' => []
         ];
     }
-
-    $type = strtolower($type);
-
-    if (!in_array($type,['consumible','devolutivo','all'])) {
-        return [
-            'message'=>'tipo de elemento no definido',
-            'status'=> false
-        ];
-    }
-
 
     $baseSql = "SELECT 
-        e.elm_cod AS 'codigoElemento',
-        e.elm_placa AS 'placa',
-        e.elm_nombre AS 'nombreElemento',
-        e.elm_existencia AS 'cantidad',
-        ar.ar_nombre AS 'nombreArea',
-        tpE.tp_el_cod  AS 'codTipoElemento',
-		tpE.tp_el_nombre AS 'tipoElemento',
-        es_e.est_nombre AS 'codEstadoElemento',
-        es_e.est_nombre AS 'estadoElemento',
-        tpU.nombre_tp_uni AS 'nombreUnidad',
-        tpU.cod_tp_uni AS 'codUnidadMedida'
+        e.elm_cod AS codigoElemento,
+        e.elm_placa AS placa,
+        e.elm_nombre AS nombreElemento,
+        e.elm_existencia AS cantidad,
+        ar.ar_nombre AS nombreArea,
+        tpE.tp_el_cod AS codTipoElemento,
+        tpE.tp_el_nombre AS tipoElemento,
+        es_e.est_nombre AS codEstadoElemento,
+        es_e.est_nombre AS estadoElemento,
+        tpU.nombre_tp_uni AS nombreUnidad,
+        tpU.cod_tp_uni AS codUnidadMedida
     FROM elementos e
     INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
     INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
     INNER JOIN tipo_unidad tpU ON e.elm_uni_medida = tpU.cod_tp_uni
     INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado";
 
-    //Si el tipo de elemento es all
-    if ($type == 'all') {
+    if ($type === 'all') {
         $sql = "$baseSql ORDER BY e.elm_placa ASC LIMIT ? OFFSET ?";
         $stmt = $this->conn->prepare($sql);
-            if (!$stmt) {
-        return [
-            'message'=>"Error en prepare: " . $this->conn->error,
-            'status'=>false
-        ];
-    }
         $stmt->bind_param("ii", $limite, $offset);
-    }else{
-        $codType = ($type == 'consumible') ? 2 : 1;
-
-        //Si es consumible o devolutivo
-        $sql = "$baseSql WHERE `tpE`.tp_el_cod = ? ORDER BY e.elm_placa ASC LIMIT ? OFFSET ?";
+    } else {
+        $codType = ($type === 'consumible') ? 2 : 1;
+        $sql = "$baseSql WHERE tpE.tp_el_cod = ? ORDER BY e.elm_placa ASC LIMIT ? OFFSET ?";
         $stmt = $this->conn->prepare($sql);
-            if (!$stmt) {
+        $stmt->bind_param("iii", $codType, $limite, $offset);
+    }
+
+    if (!$stmt) {
         return [
-            'message'=>"Error en prepare: " . $this->conn->error,
-            'status'=>false
+            'message' => "Error en prepare: " . $this->conn->error,
+            'status' => false,
+            'data' => []
         ];
-        }
-        $stmt->bind_param("iii", $codType,$limite, $offset);
     }
 
     if (!$stmt->execute()) {
         return [
-            'message'=>"error al ejecutar la consulta $stmt->error",
-            'status'=> false
+            'message' => "Error al ejecutar la consulta: " . $stmt->error,
+            'status' => false,
+            'data' => []
         ];
     }
 
     $resultado = $stmt->get_result();
-
-    while ($fila = $resultado->fetch_array(MYSQLI_ASSOC)) {
+    while ($fila = $resultado->fetch_assoc()) {
         $elementos[] = $fila;
     }
 
     $stmt->close();
+
     return [
-        'message' => ($type == 'all') ? "Todos los registros" : "Elementos de tipo $type",
-        'data'=> $elementos,
-        'status'=> true
+        'message' => "Consulta exitosa",
+        'status' => true,
+        'data' => $elementos
     ];
 }
-
 // Contar total de elementos, puedo mejorar esta función, que me permita ejecutar el count segun su parámetro, si es consumibles, devolutivos o todos.
 public function contarElementos(string $type = 'all') {
     $type = strtolower($type);

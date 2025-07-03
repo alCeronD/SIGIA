@@ -12,7 +12,7 @@ let pageGlobal;
 const filtroTipo = document.querySelector('#filtroTipo');
 const previewElements = document.querySelector('#previewElements');
 const nextElements = document.querySelector('#nextElements');
-    const inputBusqueda = document.querySelector('#inputBusqueda');
+const inputBusqueda = document.querySelector('#inputBusqueda');
 const tbodyElements = document.querySelector('#tbodyElements');
 //El tipo de elementos, creamos esta variable para reemplazarla ya que le daremos utilidad en los filtros.
 let currentType = typeElements.all;
@@ -53,6 +53,7 @@ export const renderElements = async ({type = 'all', action = 'elements', page = 
     );
 
     let data = dataElements.data.data;
+    console.log(data);
     pageGlobal = dataElements.data.cantidadPaginas;
     if (page > pageGlobal) {
         return;
@@ -106,26 +107,9 @@ export const renderElements = async ({type = 'all', action = 'elements', page = 
     
 };
 
-
-export const renderElement = (async ({action = 'getElement', value = ''} = {})=>{
-    try {
-        let dataResult = await getData(
-        'modules/elementos/controller/elementosController.php',
-        'GET',
-        { action,valueInput: value});
-        console.log(value);
-
-        console.log(dataResult);
-    } catch (error) {
-        throw new Error(`Error de ejecución ${error}`);
-    }
-
-});
-
-
 document.addEventListener('DOMContentLoaded', ()=>{
 
-    renderElements({type : typeElements.all, type: currentType});
+    renderElements({type: currentType});
 });
 
 /**
@@ -152,6 +136,7 @@ filtroTipo.addEventListener('change', (e)=>{
 });
 
 
+
 /**
  * Paginación de elementos
  */
@@ -160,6 +145,7 @@ previewElements.addEventListener('click', (e)=>{
     e.preventDefault();
     if (pageElement <= 1 )return;
     pageElement--;
+    console.log(pageElement);
     renderElements({type: currentType ,page: pageElement});
 });
 
@@ -167,8 +153,9 @@ nextElements.addEventListener('click', (e) => {
     e.stopPropagation();
     e.preventDefault();
     if (pageElement >= pageGlobal) return;
-    pageElement++
-    renderElements({type: currentType ,page: pageElement});
+    pageElement++;
+    console.log(pageElement);
+    renderElements({type: currentType, page:pageElement});
 });
 
 /**
@@ -188,9 +175,9 @@ let timer;
         //     return 
         // }
 
-        timer = setTimeout(()=>{
-            renderElement({action: 'onlyElement', value:filtro});
+        // timer = setTimeout(()=>{
+        //     renderElement({action: 'onlyElement', value:filtro});
 
-        }, 400);
+        // }, 400);
         
     });
