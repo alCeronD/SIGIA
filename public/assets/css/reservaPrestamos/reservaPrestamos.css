@@ -527,6 +527,60 @@ paginación reservas
   pointer-events: none; /* hace que los clics pasen al botón, no al <i> */
 }
 
+/* --------------------------------- */
+/* modal validacion de prestamo */
+/* ---------------------------------- */
+#modalValidate{
+    display: none;
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+/* Detalle de validación de elementos */
+#modalContentValidate{
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "modalTitleValidate"
+  "tableContainerDetail";
+}
+
+.modalTitleValidate{
+  grid-area: modalTitleValidate;
+}
+
+.tableContainerDetail{
+  grid-area: tableContainerDetail;
+}
+
+/* Coloco en flex el último elemento de las acciones */
+.tableContainerDetail > table > thead > tr > th:last-child{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.tableContainerDetail > table > thead > tr > th:last-child .actions > label{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 
 
 /* Resolusiones mayores a 1440 */

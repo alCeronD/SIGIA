@@ -23,4 +23,9 @@
 <?php require_once 'modalDetailReserva.php'; ?>
 </div>
 
+ <!-- Contenedor modal que contiene el modal para validar la data -->
+ <div id="validateElements">
+     <?php require_once 'modalValidate.php'; ?>
+ </div> 
+
 <script type="module" src="../public/assets/js/reservaPrestamos/consultarReserva.js"></script>

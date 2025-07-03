@@ -6,6 +6,8 @@ const objAjax = new Ajax();
 //Cuerpo de la tabla para renderizar los datos.
 const tbodyReservaConsult = document.querySelector("#tbodyReservaConsult");
 const modalDetail = instanceModal('#modalDetail',options);
+const modalValidate = instanceModal('#modalValidate', options);
+const bodyDetailValidate = document.querySelector('#bodyDetailValidate');
 const btnCloseElements = document.querySelector("#modalDetail .close-modal");
 const formDetail = document.querySelector("#formDetail");
 //TODO: mejorarlo.
@@ -359,7 +361,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
   const btnSalida = event.target.closest('button[data-validate]');
   //Dar salida a los prestamos, cambiar el estado de la solicitudes a validada e implementar su salida.
-  // if (event.target.tagName === "BUTTON" && event.target.getAttribute(["data-validate"])) {
   if (btnSalida) {
     //Capturo los datos para transformarlo en json.
     let validateReserva = setReserva('data-validate',data,elementos,btnSalida);
@@ -378,6 +379,61 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
     });
 
+    console.log(previewElements);
+    bodyDetailValidate.innerHTML = '';
+    //Los elementos pertenecientes al prestamo, los agrego en la tabla para validar su salida.
+    previewElements.forEach((el)=>{
+      let tr = document.createElement('tr');
+      let tdCodigo = document.createElement('td');
+      let tdNombre = document.createElement('td');
+      let tdCantidad = document.createElement('td');
+      let tdTipoElemento = document.createElement('td');
+      let tdAcciones = document.createElement('td');
+
+      
+      // Input checkbox
+      let label = document.createElement('label');
+      let span = document.createElement('span');
+      let input = document.createElement('input');
+
+      input.type = 'checkbox';
+      input.classList.add('filled-in'); 
+      input.classList.add('inputValidate');
+      input.name = 'validar_elemento[]';
+      input.value = el.codigo; 
+
+      label.appendChild(input);
+      label.appendChild(span);
+      tdAcciones.appendChild(label);
+
+      tdCodigo.innerText = el.codigo;
+      tdNombre.innerText = el.nombre;
+      tdTipoElemento.innerText = el.nombreTipoElemento;
+      tdCantidad.innerText = el.cantidadSolicitada;
+      bodyDetailValidate.appendChild(tr);
+      tr.appendChild(tdCodigo);
+      tr.appendChild(tdNombre);
+      tr.appendChild(tdCantidad);
+      tr.appendChild(tdTipoElemento);
+      tr.appendChild(tdAcciones);
+
+          
+    });
+
+    const checkBoxValidate = document.querySelector('#allValidateItems');
+    // capturo el input de la tabla para seleccionarlos todos.
+    const inputValidate = document.querySelectorAll('.inputValidate');
+    checkBoxValidate.addEventListener('change',(e)=>{
+      e.stopPropagation();
+      
+        inputValidate.forEach((inV)=>{
+          inV.checked = e.target.checked;
+        });
+    });
+
+
+
+
     //Borro todos los elementos que esten en el objeto y los re asigno
     delete validateReserva.elementos;
 
@@ -394,6 +450,12 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     //Estado por validar
     let estadoNew = dataTr.children[2];
     let tdAcciones = dataTr.children[4];
+
+
+    modalValidate.open();
+
+    console.log(validateReserva);
+
     //Todo: implementar esto en sweetAlert
     if (confirm(`¿Deseas dar salida a estos elementos? \n
       Consumibles:\n${
