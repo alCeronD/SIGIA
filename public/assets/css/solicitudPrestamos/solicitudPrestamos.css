@@ -55,7 +55,14 @@
     gap: 0.2rem;
     width: 100%;
   }
-
+  
+  .cantConsu{
+    max-width: 50px !important;
+  }
+  
+  td, th{
+    text-align:center;
+  }
   /* .input-field {
     border: 1px dashed red;
   } */
@@ -155,7 +162,7 @@
   
   
   
-  /* Mostrar explícitamente los checkboxes dentro de la tabla */
+  /* Mostrar explícitamente los checkboxes dentro de la tabla modal */
   .check-container{
     width: 100%;
     display: flex;
@@ -173,6 +180,12 @@
     opacity: 1 !important;
   }
   
+  
+  /* //Corresponde al boton seleccionar los elementos// */
+   .inputAddElements .btn {
+    width: 80%;
+    margin-bottom: 10px;
+  }
 /* /////////////////////////////////////// */
 /* /////////paginacion//////// */
 /* /////////////////////////////////////// */

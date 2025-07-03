@@ -271,6 +271,12 @@ class ReservaModel
                 return $stmtEndReserva->error;
             }
 
+            //TODO: registrar en entradas_salidas la parte de finalizar el prestamo.
+            /** 
+             * 
+             * 
+            */
+
             $conn->commit();
             $conn->close();
         } catch (\Throwable $th) {
@@ -521,30 +527,6 @@ class ReservaModel
             //Cantidad de páginas.
             $pages = (int) ceil($getCountReservas / LIMIT);
 
-            // $sqlReservas = "SELECT DISTINCT
-            //     pre.pres_cod AS codigo,
-            //     us.usu_docum AS nroIdentidad,
-            //     us.usu_nombres AS nombre,
-            //     us.usu_apellidos AS apellido,
-            //     pre.pres_fch_slcitud AS fechaSolicitud,
-            //     pre.pres_fch_reserva AS fechaReserva,
-            //     pre.pres_hor_inicio AS horaInicio,
-            //     pre.pres_hor_fin AS horaFin,
-            //     pre.pres_fch_entrega AS fechaDevolucion,
-            //     pre.pres_observacion AS observacion,
-            //     esp.es_pr_nombre AS estadoPrestamo,
-            //     esp.es_pr_cod AS estadoCodigoPrestamo,
-            //     r.rl_nombre AS nombreRol,
-            //     tp_pr.tp_pre AS codigoTipoPrestamo,
-            //     tp_pr.tp_nombre AS tipoPrestamo
-            //     FROM prestamos pre
-            //     INNER JOIN prestamos_elementos pre_el ON pre_el.pres_cod = pre.pres_cod
-            //     INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
-            //     INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
-            //     INNER JOIN roles r ON r.rl_id = pre.pres_rol
-            //     INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres ORDER BY pre.pres_cod ASC LIMIT ? OFFSET ?";
-
-
             $sqlReservas = "SELECT DISTINCT
                 pre.pres_cod AS codigo,
                 us.usu_docum AS nroIdentidad,
@@ -680,58 +662,111 @@ class ReservaModel
                 ];
             }
 
-            $tipoMovimiento = 2; // Salida
-            $queryValidateSalida = "UPDATE entradas_salidas SET entr_tp_movmnt = ? WHERE ent_sal_cod_prestamo = ?";
+            //TODO: Cambiar a insert.
+            // $queryValidateSalida = "UPDATE entradas_salidas SET entr_tp_movmnt = ? WHERE ent_sal_cod_prestamo = ?";
+
+
+            $queryValidateSalida = "INSERT INTO entradas_salidas (
+                ent_sal_cantidad,
+                ent_fech_registro,
+                entr_tp_movmnt, 
+                ent_id_usu,
+                ent_sal_cod_elemtn,
+                ent_sal_cod_prestamo
+            ) VALUES (?, NOW(), ?, ?, ?, ?)";
+
+            $fechaSolicitud  = $data['dataUsuario']['fechaSolicitud'];
+            $tipoMovimiento = 2;
+            //ya esta, está más arriba.
+
             $stmtValidateSalida = $conn->prepare($queryValidateSalida);
-            $stmtValidateSalida->bind_param('ii', $tipoMovimiento, $codigoPrestamo);
+            $elmConsumibles = $data['elementos']['elmConsumibles'];
+            $elmDevolutivos = $data['elementos']['elmDevolutivos'];
 
-            if (!$stmtValidateSalida->execute()) {
-                $conn->rollback();
-                return [
-                    'message' => $stmtValidateSalida->error,
-                    'status' => false
-                ];
+            // var_dump($data);
+
+            //devolutivos.
+            foreach ($elmDevolutivos as $value) {
+                $cantidad =(int) $value['cantidadSolicitada'];
+                $codigoElemento = (int) $value['codigo'];
+                $stmtValidateSalida->bind_param('iiiii', 
+                    $cantidad,         // ent_sal_cantidad
+                    $tipoMovimiento,   // entr_tp_movmnt
+                    $id,               // ent_id_usu
+                    $codigoElemento,   // ent_sal_cod_elemtn
+                    $codigoPrestamo    // ent_sal_cod_prestamo
+                );
+
+                if (!$stmtValidateSalida->execute()) {
+                    $conn->rollback();
+                    return [
+                        'message' => $stmtValidateSalida->error,
+                        'status' => false
+                    ];
+                }
             }
 
-            $sqlGetCantidad = "SELECT elm_existencia FROM elementos WHERE elm_cod = ?";
-            $sqlConsumibles = "UPDATE elementos SET elm_existencia = ? WHERE elm_cod = ?";
-            $stmtGetCantidad = $conn->prepare($sqlGetCantidad);
-            $stmtConsumibles = $conn->prepare($sqlConsumibles);
-
+            //consumibles
             foreach ($elmConsumibles as $item) {
-                $codigo = $item['codigo'];
-                $cantidadSolicitada = $item['cantidadSolicitada'];
+                $cantidad = (int) $item['cantidadSolicitada'];
+                $codigoElemento = (int) $item['codigo'];
 
-                $stmtGetCantidad->bind_param('i', $codigo);
-                if (!$stmtGetCantidad->execute()) {
+                $stmtValidateSalida->bind_param('iiiii',
+                    $cantidad,         // ent_sal_cantidad
+                    $tipoMovimiento,   // entr_tp_movmnt
+                    $id,               // ent_id_usu
+                    $codigoElemento,   // ent_sal_cod_elemtn
+                    $codigoPrestamo    // ent_sal_cod_prestamo
+                );
+
+                if (!$stmtValidateSalida->execute()) {
                     $conn->rollback();
                     return [
-                        'message' => $stmtGetCantidad->error,
-                        'status' => false
-                    ];
-                }
-
-                $cantidadResult = $stmtGetCantidad->get_result();
-                $existente = $cantidadResult->fetch_assoc()['elm_existencia'];
-                $nuevaCantidad = $existente - $cantidadSolicitada;
-
-                if ($nuevaCantidad < 0) {
-                    $conn->rollback();
-                    return [
-                        'message' => "Cantidad insuficiente para el elemento con código $codigo.",
-                        'status' => false
-                    ];
-                }
-
-                $stmtConsumibles->bind_param('ii', $nuevaCantidad, $codigo);
-                if (!$stmtConsumibles->execute()) {
-                    $conn->rollback();
-                    return [
-                        'message' => $stmtConsumibles->error,
+                        'message' => $stmtValidateSalida->error,
                         'status' => false
                     ];
                 }
             }
+
+            // $sqlGetCantidad = "SELECT elm_existencia FROM elementos WHERE elm_cod = ?";
+            // $sqlConsumibles = "UPDATE elementos SET elm_existencia = ? WHERE elm_cod = ?";
+            // $stmtGetCantidad = $conn->prepare($sqlGetCantidad);
+            // $stmtConsumibles = $conn->prepare($sqlConsumibles);
+
+            // foreach ($elmConsumibles as $item) {
+            //     $codigo = $item['codigo'];
+            //     $cantidadSolicitada = $item['cantidadSolicitada'];
+
+            //     $stmtGetCantidad->bind_param('i', $codigo);
+            //     if (!$stmtGetCantidad->execute()) {
+            //         $conn->rollback();
+            //         return [
+            //             'message' => $stmtGetCantidad->error,
+            //             'status' => false
+            //         ];
+            //     }
+
+            //     $cantidadResult = $stmtGetCantidad->get_result();
+            //     $existente = $cantidadResult->fetch_assoc()['elm_existencia'];
+            //     $nuevaCantidad = $existente - $cantidadSolicitada;
+
+            //     if ($nuevaCantidad < 0) {
+            //         $conn->rollback();
+            //         return [
+            //             'message' => "Cantidad insuficiente para el elemento con código $codigo.",
+            //             'status' => false
+            //         ];
+            //     }
+
+            //     $stmtConsumibles->bind_param('ii', $nuevaCantidad, $codigo);
+            //     if (!$stmtConsumibles->execute()) {
+            //         $conn->rollback();
+            //         return [
+            //             'message' => $stmtConsumibles->error,
+            //             'status' => false
+            //         ];
+            //     }
+            // }
 
             $conn->commit();
 

@@ -21,10 +21,12 @@ class solicitudPrestamosController {
         $rol_nombre = $_SESSION['usuario']['rol_nombre'];
 
         $objetoArea = new ConfigModulesModel();
-        $areas = $objetoArea->select("SELECT * FROM areas");
+        $areas = $objetoArea->select("SELECT * FROM areas WHERE ar_status = 1");
 
-        $objetoElemento = new ElementoModelo($this->conn);
-        $elementos = $objetoElemento->searchElements();
+        // $objetoElemento = new ElementoModelo($this->conn);
+        $objetoElemento = new ElementoModelo();
+        $elementos = $objetoElemento->searchElements(1);
+        $elementos_consumibles = $objetoElemento->searchElements(2);
 
         return include_once __DIR__ . '/../views/solicitudPrestamosView.php';
     }
@@ -34,43 +36,82 @@ class solicitudPrestamosController {
         $apellido = $_SESSION['usuario']['apellido'];
         $rol_nombre = $_SESSION['usuario']['rol_nombre'];
         $id = $_SESSION['usuario']['id'];
-
         $prestamoModel = new solicitudPrestamos($this->conn);
-
         $prestamos = $prestamoModel->search($id);
+
+        
+        $objetoEstados = new ConfigModulesModel();
+        $estados = $objetoEstados->select("SELECT * FROM estados_prestamos");
+
         return include_once __DIR__ . '/../views/consultarPrestamosView.php';
     }
 
     public function registrarPrestamo() {
-        $conn = $this->conn;
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $usuario_id = $_SESSION['usuario']['id'];
-            $rol_id = $_SESSION['usuario']['rol_id'];
-            $elementos_seleccionados = $_POST['elementos_seleccionados'];
-            unset($_POST['elementos_seleccionados']);
-            $data = $_POST;
+    $conn = $this->conn;
 
-            $datos = new solicitudPrestamos($this->conn);
-            $lastId = $datos->create($data, $rol_id);
-            if (is_numeric($lastId)) {
-                // include_once __DIR__ . '/../../configModules/prestamosElementos/model/prestamosElementosModel.php';
-                $prestamoElemento = new solicitudPrestamos($this->conn);
-                $elementoModel = new ElementoModelo($this->conn);
-                foreach ($elementos_seleccionados as $elemento_id) {
-                    $prestamoElemento->registrarElem($lastId, $usuario_id, $elemento_id);
-                    $elementoModel->actualizarEstadoElemento($elemento_id, 3);
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $usuario_id = $_SESSION['usuario']['id'];
+        $rol_id = $_SESSION['usuario']['rol_id'];
+        $elementos_seleccionados = $_POST['elementos_seleccionados'];
+        $cantidades_consumibles = $_POST['cantidades_consumibles'];
+        // $elementos_devolutivos = $_POST['elementos_devolutivos_seleccionados'];
+        
+        unset($_POST['elementos_seleccionados'],
+        $_POST['elementos_devolutivos_seleccionados']);
+
+        $data = $_POST;
+        
+        // dd($elementos_devolutivos);
+
+        $datos = new solicitudPrestamos($this->conn);
+        $lastId = $datos->create($data, $rol_id);
+
+        if (is_numeric($lastId)) {
+            $prestamoElemento = new solicitudPrestamos($this->conn);
+            $salida = new solicitudPrestamos($this->conn);
+            // $elementoModel = new ElementoModelo($this->conn);
+            $elementoModel = new ElementoModelo();
+
+            // Registrar devolutivos seleccionados
+            foreach ($elementos_seleccionados as $elemento_id) {
+                $prestamoElemento->registrarElem($lastId, $usuario_id, $elemento_id);
+            
+                // Disminuye una unidad
+                $elementoModel->disminuirExistenciaElemento($elemento_id, 1);
+            
+                // Cambiar estado
+                $elementoModel->actualizarEstadoElemento($elemento_id, 5); 
+            }
+
+
+            // Registrar consumibles seleccionados
+            foreach ($cantidades_consumibles as $elm_cod => $cantidad) {
+                if (is_numeric($elm_cod) && is_numeric($cantidad) && $cantidad > 0) {
+                    $prestamoElemento->registrarElemConsumible($lastId, $usuario_id, $elm_cod, $cantidad);
+                    
+                    // Disminuye existencia sin tocar estado
+                    $elementoModel->disminuirExistenciaElemento($elm_cod, $cantidad);
+            
+                    // Opcionalmente cambiar estado
+                    $elementoModel->actualizarEstadoElemento($elm_cod, 3);
                 }
-                if ($prestamoElemento == true) {
-                    echo "<script>alert('Solicitud realizada correctamente, en espera por respuesta'); window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
-                } else {
-                    echo "<script>alert('Prestamo no se registro'); window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
-                }
+            }
+
+
+            // Registramos salidas
+            $salida->registrarSalida($cantidades_consumibles, $data['pres_fch_reserva'], $usuario_id, $lastId, $elementos_seleccionados);
+  
+                echo "<script>alert('Solicitud realizada correctamente, en espera por respuesta'); 
+                      window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";
                 exit;
             } else {
                 echo "Error al registrar el préstamo: " . $lastId;
             }
         }
     }
+
+    
+    
 
     public function verDetallePrestamo(int $presCod) {
         if (!$presCod || !is_numeric($presCod)) {
@@ -84,8 +125,6 @@ class solicitudPrestamosController {
             fail('No se encontró información del préstamo');
         }
 
-        // Consulto los nombres para Detalle modal
-        //estado del prestamo
         $detalle['pres_estado_nombre'] = $this->obtenerEstadoNombre($detalle['pres_estado']);
         //el tipo del prestamo
         $detalle['tp_pres_nombre'] = $this->obtenerTipoPrestamoNombre($detalle['tp_pres']);
@@ -102,18 +141,18 @@ class solicitudPrestamosController {
     public function obtenerElementosPorPrestamo($presCod) {
 
         $query = " SELECT 
-                e.elm_nombre,
-                e.elm_placa,
-                tp.tp_el_nombre AS tipoElemento
-            FROM 
-                elementos e 
-                INNER JOIN prestamos_elementos pe ON pe.pres_el_elem_cod = e.elm_cod
-                INNER JOIN prestamos pr ON pr.pres_cod = pe.pres_cod
-                INNER JOIN tipo_elemento tp ON tp.tp_el_cod = e.elm_cod_tp_elemento
-            WHERE 
-                pe.pres_cod = ?
-            ORDER BY 
-                e.elm_nombre DESC";
+            e.elm_nombre,
+            e.elm_placa,
+            pe.pres_el_cantidad AS cantidad
+        FROM 
+            elementos e 
+            INNER JOIN prestamos_elementos pe ON pe.pres_el_elem_cod = e.elm_cod
+            INNER JOIN prestamos pr ON pr.pres_cod = pe.pres_cod
+        WHERE 
+            pe.pres_cod = ?
+        ORDER BY 
+        e.elm_nombre DESC";
+
 
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param('i', $presCod);
@@ -140,13 +179,14 @@ class solicitudPrestamosController {
     }
 
     private function obtenerTipoPrestamoNombre($id) {
-        $stmt = $this->conn->prepare("SELECT es_pr_cod FROM estados_prestamos WHERE es_pr_cod = ?");
+        $stmt = $this->conn->prepare("SELECT tp_nombre FROM tipo_prestamo WHERE tp_pre = ?");
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
         $res = $result->fetch_assoc();
-        return $res ? $res['es_pr_cod'] : 'Desconocido';
+        return $res ? $res['tp_nombre'] : 'Desconocido';
     }
+
 
     private function obtenerRolNombre($id) {
         $stmt = $this->conn->prepare("SELECT rl_nombre FROM roles WHERE rl_id = ?");
@@ -158,28 +198,29 @@ class solicitudPrestamosController {
     }
     
     public function cancelarPrestamo() {
-    header('Content-Type: application/json');
-
-    $presCod = isset($_POST['pres_cod']) ? (int) $_POST['pres_cod'] : null;
-
-    if (!$presCod) {
-        die(json_encode([
-            'success' => false,
-            'message' => 'Código inválido del préstamo'
-        ]));
+        header('Content-Type: application/json');
+    
+        $presCod = isset($_POST['pres_cod']) ? (int) $_POST['pres_cod'] : null;
+    
+        if (!$presCod) {
+            die(json_encode([
+                'success' => false,
+                'message' => 'Código inválido del préstamo'
+            ]));
+        }
+    
+        $modelo = new solicitudPrestamos($this->conn);
+        $resultado = $modelo->cancelarPrestamo($presCod);
+        echo json_encode($resultado);
+        exit;
+ 
     }
 
-    $modelo = new solicitudPrestamos($this->conn);
-    $modelo->cancelarPrestamo($presCod);
-    success('Estado cancelado'); 
-}
-
 
 
 }
 
 
-//pendiente solucion para enviar a fetchSolicitudPrestamo.
 $conexion = new Conection();
 $getConect = $conexion->getConnect();
 $solicitudObj = new solicitudPrestamosController($getConect);
@@ -190,10 +231,11 @@ if (isset($_GET['pres_cod']) && isset($_GET['idCod'])) {
 }
 
 // llamaa para cancelar el préstamo
-if (isset($_GET['accion']) && $_GET['accion'] === 'cancelar' && isset($_GET['pres_cod'])) {
-    $pres_cod = (int) $_GET['pres_cod'];
-    $solicitudObj->cancelarPrestamo();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'cancelar') {
+    $solicitudObj->cancelarPrestamo(); // ← esto ya imprime un JSON válido
+    exit;
 }
+
 
 
 

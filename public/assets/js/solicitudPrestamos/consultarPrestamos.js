@@ -1,37 +1,35 @@
-import { closeModal, instanceModal, openModal, options } from '../utils/cases.js';
+import { closeModal, instanceModal, options } from '../utils/cases.js';
 
-const contenidoDetalle = document.getElementById('contenidoDetalle');
 const btnCerrarModal = document.querySelector('.closeModalBtn');
+let modalDetalle = instanceModal('#modalDetalle', options);
 
-let modalDetalle = instanceModal('#modalDetalle',options);
-
-document.addEventListener('DOMContentLoaded', function () {
-  const filas = Array.from(document.querySelectorAll('.fila-prestamo'));
+document.addEventListener('DOMContentLoaded', () => {
+  const filas = Array.from(document.querySelectorAll('#tabla-prestamos tr'));
   const paginacion = document.getElementById('paginacion-prestamos');
+  const selectEstado = document.getElementById('filtro-estado');
   const itemsPorPagina = 5;
-  let totalPaginas = Math.ceil(filas.length / itemsPorPagina);
+  let visibles = [];
 
   function mostrarPagina(pagina) {
     const inicio = (pagina - 1) * itemsPorPagina;
     const fin = inicio + itemsPorPagina;
 
-    filas.forEach((fila, index) => {
-      fila.style.display = index >= inicio && index < fin ? 'contents' : 'none';
-    });
+    filas.forEach(f => f.style.display = 'none');
+    visibles.slice(inicio, fin).forEach(f => f.style.display = 'table-row');
 
     document.querySelectorAll('#paginacion-prestamos li').forEach(el => el.classList.remove('active'));
     const liActivo = document.querySelector(`#paginacion-prestamos li[data-pagina="${pagina}"]`);
     if (liActivo) liActivo.classList.add('active');
   }
 
-  function generarPaginacion() {
+  function generarPaginacion(totalPaginas) {
     paginacion.innerHTML = '';
     for (let i = 1; i <= totalPaginas; i++) {
       const li = document.createElement('li');
-      li.classList.add('page-item');
+      li.classList.add('waves-effect');
       li.setAttribute('data-pagina', i);
-      li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-      li.addEventListener('click', function (e) {
+      li.innerHTML = `<a href="#!">${i}</a>`;
+      li.addEventListener('click', (e) => {
         e.preventDefault();
         mostrarPagina(i);
       });
@@ -43,33 +41,35 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  generarPaginacion();
+  function aplicarFiltroYPaginar() {
+    const filtro = selectEstado.value.toLowerCase();
+    visibles = [];
+
+    filas.forEach(fila => {
+      const estado = fila.children[3].textContent.toLowerCase();
+      const visible = !filtro || estado.includes(filtro);
+      fila.style.display = visible ? 'table-row' : 'none';
+      if (visible) visibles.push(fila);
+    });
+
+    const totalPaginas = Math.ceil(visibles.length / itemsPorPagina);
+    generarPaginacion(totalPaginas);
+  }
+
+  selectEstado.addEventListener('change', aplicarFiltroYPaginar);
+
+  aplicarFiltroYPaginar(); // inicializar
 });
 
-
-const nombreCampos = {
-  pres_cod: 'Código del préstamo',
-  pres_fch_slcitud: 'Fecha de solicitud',
-  pres_fch_reserva: 'Fecha de reserva',
-  pres_hor_inicio: 'Hora de inicio',
-  pres_hor_fin: 'Hora de fin',
-  pres_fch_entrega: 'Fecha de entrega',
-  pres_observacion: 'Observación',
-  pres_destino: 'Destino del préstamo',
-  pres_estado_nombre: 'Estado',
-  tp_pres_nombre: 'Tipo de préstamo',
-  pres_rol_nombre: 'Rol que solicitó'
-};
-
+// Mostrar detalle del préstamo
 document.addEventListener('click', async (e) => {
   if (e.target && e.target.classList.contains('btn-ver-detalle')) {
     e.preventDefault();
-    const id = e.target.getAttribute('data-id');
 
-    // openModal(modalDetalle);
+    const id = e.target.getAttribute('data-id');
     modalDetalle.open();
-    const modalTitle = document.querySelector('#modalTitle');
-    modalTitle.innerHTML = `Detalle del préstamo #${id}`;
+
+    document.getElementById('modalTitle').textContent = `Detalle del préstamo #${id}`;
 
     const setParameter = new URLSearchParams();
     setParameter.append('pres_cod', id);
@@ -81,67 +81,30 @@ document.addEventListener('click', async (e) => {
         headers: { 'Accept': 'application/json' }
       });
 
-      const data = await response.json();
-      const info = data.data;
-      const itemsContent = document.querySelector('.itemsContent');
-      itemsContent.innerHTML = '';
-      console.log(data);
+      const { data } = await response.json();
+      const info = data;
 
+      // Campos texto
       Object.entries(info).forEach(([key, value]) => {
-        // Omitir campos no deseados
-        if (
-          key === 'elementos' ||
-          key === 'pres_estado' ||
-          key === 'tp_pres' ||
-          key === 'pres_rol'
-        ) return;
-
-        const titleDetail = document.createElement('p');
-        titleDetail.setAttribute('class', 'titleDetail');
-        titleDetail.innerText = nombreCampos[key] || key;
-
-        const div = document.createElement('div');
-        div.setAttribute('class', 'rowDetails');
-        itemsContent.appendChild(div);
-
-        const valueDetail = document.createElement('span');
-        valueDetail.setAttribute('class', 'valueDetail');
-        valueDetail.innerText = value;
-
-        div.append(titleDetail, valueDetail);
+        if (['elementos', 'pres_estado', 'tp_pres', 'pres_rol'].includes(key)) return;
+        const span = document.getElementById(`detalle-${key}`);
+        if (span) span.textContent = value ?? '';
       });
 
       // Tabla de elementos
       if (info.elementos && Array.isArray(info.elementos)) {
-        const title = document.createElement('h4');
-        title.classList.add('mt-3');
-        title.textContent = 'Elementos del préstamo';
-        itemsContent.appendChild(title);
+        const tbody = document.querySelector('#tabla-elementos-prestamo tbody');
+        tbody.innerHTML = '';
 
-        const table = document.createElement('table');
-        table.classList.add('table', 'table-bordered', 'mt-2');
-
-        const thead = document.createElement('thead');
-        thead.innerHTML = `
-          <tr>
-            <th>Nombre</th>
-            <th>Placa</th>
-            <th>Categoría</th>
-          </tr>`;
-        table.appendChild(thead);
-
-        const tbody = document.createElement('tbody');
         info.elementos.forEach(el => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td>${el.elm_nombre}</td>
-            <td>${el.elm_placa ?? 'Sin placa'}</td>
-            <td>${el.categoria}</td>`;
+          <td>${el.elm_nombre}</td>
+          <td>${el.elm_placa ?? 'Sin placa'}</td>
+          <td>${el.cantidad ?? '1'}</td>
+        `;
           tbody.appendChild(tr);
         });
-
-        table.appendChild(tbody);
-        itemsContent.appendChild(table);
       }
 
     } catch (error) {
@@ -150,11 +113,11 @@ document.addEventListener('click', async (e) => {
   }
 });
 
-// Proce para cancelar préstamo
-document.addEventListener('click', function (e) {
+// Cancelar préstamo
+document.addEventListener('click', (e) => {
   if (e.target && e.target.classList.contains('btn-cancelar-prestamo')) {
     e.preventDefault();
-    
+
     const id = e.target.getAttribute('data-id');
     const url = e.target.getAttribute('data-url');
     const confirmar = confirm(`¿Está seguro de que desea cancelar el préstamo #${id}?`);
@@ -164,33 +127,41 @@ document.addEventListener('click', function (e) {
       formData.append('pres_cod', id);
       formData.append('accion', 'cancelar');
 
-
-        fetch(url, {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-          }
-        })
+      fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
         .then(async response => {
           const data = await response.json();
           try {
             if (data.success) {
               alert(data.message);
-              location.reload();
+            
+              // Buscar la fila 
+              const fila = e.target.closest('tr');
+            
+              // Update la celda de estado
+              const celdaEstado = fila.querySelector('td:nth-child(4)');
+              if (celdaEstado) {
+                celdaEstado.textContent = 'Cancelado';
+              }
+
+              // Quitarbotón de cancelar
+              e.target.remove();
+
             } else {
               alert('Error al cancelar: ' + data.message);
             }
           } catch (e) {
             console.error('No es JSON válido:', e.message);
           }
-        })
-
+        });
     }
   }
 });
 
-
-
-// Cerrar el modal
+// Cerrar modal
 closeModal(modalDetalle, btnCerrarModal);

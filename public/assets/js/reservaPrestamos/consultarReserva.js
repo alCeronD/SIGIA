@@ -394,7 +394,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     //Estado por validar
     let estadoNew = dataTr.children[2];
     let tdAcciones = dataTr.children[4];
-    console.log(validateReserva.codigoReserva);
     //Todo: implementar esto en sweetAlert
     if (confirm(`¿Deseas dar salida a estos elementos? \n
       Consumibles:\n${
@@ -411,9 +410,13 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
         try {
 
+
           sendData('modules/reservaPrestamos/controller/reservaController.php','POST','validateLoan',validateReserva).then((response)=>{
+
             // tdAcciones.innerHTML = "";
             estadoNew.textContent = 'Validado';
+            estadoNew.style.color = "green";
+            
             let btnValidate = tdAcciones.querySelector(`button[data-validate='${validateReserva.codigoReserva}']`);
             if (btnValidate) {
               initAlert(`Prestamo validado ${validateReserva.codigoReserva}`,'success',toastOptions);
@@ -422,11 +425,13 @@ tbodyReservaConsult.addEventListener("click", (event) => {
             
             let btnEnd = document.createElement("button");
             let iFinalizar = createI();
+            iFinalizar.innerText = 'swap_horiz';
             //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
             addClassItem(btnEnd,{btn: "btn",color: "red lighten-1",wavesEffect: "waves-effect",wavesLight: "waves-light",btnSmall: "btn-small"});
             btnEnd.append(iFinalizar);
             btnEnd.setAttribute("data-end", `${validateReserva.codigoReserva}`);
             tdAcciones.appendChild(btnEnd);
+          
           }); 
         } catch (error) {
           console.warn('error al realizar el proceso'+error);

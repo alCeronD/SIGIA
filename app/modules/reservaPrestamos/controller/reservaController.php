@@ -45,6 +45,7 @@ class ReservaController
         $data = $this->model->selectUsers($page);
 
         if ($data != null) {
+            // var_dump($data);
             success('Usuarios activos', $data);
         }
     }
@@ -113,12 +114,15 @@ class ReservaController
     //Función para validar la solicitud del aprendiz/instructor y cambiar su estado a validado
     public function setSolicitud(array $data =[]){
         $cedula = $data['dataUsuario']['nroIdentidad'];
+
+        // var_dump($cedula);
         $result = $this->model->validateSolicitud($data, $cedula);
             success('prestamo validado');
         
         fail('error al validar el prestamo');
     }
 
+    //Finalizar la reserva, es decir, cuando el usuario devuelve los elementos.
     public function setEndReserva(array $elementos = [], int $codigo = 0){
         // $data = $this->model->endReserva($elementos,$codigo);
         $data = $this->model->endReserva($elementos,$codigo);
@@ -198,6 +202,13 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             }
 
             break;
+
+            case 'users':
+                if (method_exists($controller,'getUsers')) {
+                    $controller->getUsers($pages);
+                }
+                break;
+
             default:
                 //TODO: Retornar un valor no valido.
                 # code...
@@ -210,7 +221,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
         //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
         $data = json_decode($input, true);
-
 
         switch ($data['action']) {
             case 'finalizar':
@@ -228,8 +238,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             case 'validateLoan':
                 unset($data['action']);
                 $dataNuevo = $data;
-
-
                 $controller->setSolicitud($dataNuevo);
 
                 //la validación del data es practicamente el setReserva pero la hare en otra función por cuestión de tiempo.

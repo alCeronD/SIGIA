@@ -4,10 +4,26 @@
       <a href="<?= getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
   </div>
 
+  <div class="filtroUsuarios">
+    <div class="input-field col s4">
+      <select id="tipoFiltro" class="browser-default">
+        <option value="">-- Filtro usuarios --</option>
+        <option value="documento">Filtrar por Documento</option>
+        <option value="nombre">Filtrar por Nombre</option>
+        <option value="estado">Filtrar por Estado</option>
+      </select>
+    </div>
+
+    <div class="input-field col s4" id="contenedorInputFiltro" >
+      <!-- Aquí se agregará dinámicamente el input/select -->
+    </div>
+  </div>
+
   <div class="table">
     <table id="tableConfig">
       <thead>
         <tr>
+          <th>No documento</th>
           <th>Nombres</th>
           <th>Apellidos</th>
           <th>Rol</th>
@@ -19,31 +35,33 @@
         <?php if (!empty($usuarios)): ?>
           <?php foreach ($usuarios as $usuario): ?>
             <tr>
+              <td><?= htmlspecialchars($usuario['usu_docum']) ?></td>
               <td><?= htmlspecialchars($usuario['usu_nombres']) ?></td>
               <td><?= htmlspecialchars($usuario['usu_apellidos']) ?></td>
               <td><?= htmlspecialchars($usuario['rl_nombre']) ?></td>
               <td><?= htmlspecialchars($usuario['estado_usuario']) ?></td>
               <td>
-              <div class="center-align">
-                <a href="#"
-                   class="btnEditarUsuario btn-small teal darken-1 white-text waves-effect waves-light"
-                   data-id="<?= $usuario['usu_id'] ?>"
-                   data-nombres="<?= htmlspecialchars($usuario['usu_nombres']) ?>"
-                   data-apellidos="<?= htmlspecialchars($usuario['usu_apellidos']) ?>"
-                   data-email="<?= htmlspecialchars($usuario['usu_email']) ?>"
-                   data-telefono="<?= htmlspecialchars($usuario['usu_telefono']) ?>"
-                   data-documento="<?= htmlspecialchars($usuario['usu_docum']) ?>">
-                   <i class="material-icons left">edit</i>Editar
-                </a>
+                <div class="center-align">
+                  <a href="#"
+                     class="btnEditarUsuario btn-small teal darken-1 white-text waves-effect waves-light"
+                     data-id="<?= $usuario['usu_id'] ?>"
+                     data-nombres="<?= htmlspecialchars($usuario['usu_nombres']) ?>"
+                     data-apellidos="<?= htmlspecialchars($usuario['usu_apellidos']) ?>"
+                     data-email="<?= htmlspecialchars($usuario['usu_email']) ?>"
+                     data-telefono="<?= htmlspecialchars($usuario['usu_telefono']) ?>"
+                     data-documento="<?= htmlspecialchars($usuario['usu_docum']) ?>">
+                     <i class="material-icons left">edit</i>Editar
+                  </a>
             
-                <a href="<?= getUrl('usuarios', 'usuarios', 'cambiarEstadoUsuario', ['usu_id' => $usuario['usu_id']], 'dashboard') ?>"
-                   class="btn-small red lighten-1 white-text waves-effect waves-light"
-                   onclick="return confirm('¿Estás seguro de que deseas cambiar el estado del usuario?');">
-                   <i class="material-icons left">autorenew</i>Activar/Desactivar
-                </a>
-              </div>
-            </td>
+                  <a href="<?= getUrl('usuarios', 'usuarios', 'cambiarEstadoUsuario', ['usu_id' => $usuario['usu_id']], 'dashboard') ?>"
+                     class="btn-small red lighten-1 white-text waves-effect waves-light"
+                     onclick="return confirm('¿Estás seguro de que deseas cambiar el estado del usuario?');">
+                     <i class="material-icons left">autorenew</i>Activar/Desactivar
+                  </a>
+                </div>
+              </td>
             </tr>
+
           <?php endforeach; ?>
         <?php else: ?>
           <tr>
@@ -52,6 +70,10 @@
         <?php endif; ?>
       </tbody>
     </table>
+    <div class="pagination-container center-align">
+   <ul id="paginacion-usuarios" class="pagination"></ul>
+  </div>
+
   </div>
 </div>
 
@@ -99,25 +121,5 @@
 </div>
 
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".btnEditarUsuario").forEach(btn => {
-    btn.addEventListener("click", e => {
-      e.preventDefault();
-      // Cargar los datos
-      document.getElementById("usu_id").value = btn.dataset.id;
-      document.getElementById("usu_docum").value = btn.dataset.documento;
-      document.getElementById("usu_nombres").value = btn.dataset.nombres;
-      document.getElementById("usu_apellidos").value = btn.dataset.apellidos;
-      document.getElementById("usu_email").value = btn.dataset.email;
-      document.getElementById("usu_telefono").value = btn.dataset.telefono;
-      // Mostrar modal
-      document.getElementById("modalEditarUsuario").style.display = "flex";
-    });
-  });
-});
+<script type="module" src="../public/assets/js/usuarios/usuarios.js"></script>
 
-function cerrarModalUsuario() {
-  document.getElementById("modalEditarUsuario").style.display = "none";
-}
-</script>

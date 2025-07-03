@@ -13,9 +13,10 @@ export const sendData = async (url, method = 'POST', parameters = {}, data = {})
 
         let newUrl = parameters ? `${url}?${setParameter}` : url;
         const optionsFetch = setFetch(method,parameters,data);
+        console.log(optionsFetch);
         const response = await fetch(newUrl,optionsFetch);
+        console.log(response);
         const json = await response.json();
-
         console.log(json);
 
         if (!response.ok) {
@@ -33,13 +34,15 @@ export const sendData = async (url, method = 'POST', parameters = {}, data = {})
 };
 
 //Función para establecer el fetch.
-const setFetch = (method = 'GET',data = {})=>{
-    
-    return {
+const setFetch = (method = 'GET',action = '', data = {})=>{
+    data['action'] =action;
+    console.log(data);
+    let returnPrueba = {
         method,
         body: method != 'GET' ? JSON.stringify(data) : undefined,
         headers
     };
+    return returnPrueba; 
 
 }
 
