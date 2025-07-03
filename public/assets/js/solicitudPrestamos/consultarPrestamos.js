@@ -6,23 +6,23 @@ let modalDetalle = instanceModal('#modalDetalle', options);
 document.addEventListener('DOMContentLoaded', () => {
   const filas = Array.from(document.querySelectorAll('#tabla-prestamos tr'));
   const paginacion = document.getElementById('paginacion-prestamos');
+  const selectEstado = document.getElementById('filtro-estado');
   const itemsPorPagina = 5;
-  let totalPaginas = Math.ceil(filas.length / itemsPorPagina);
+  let visibles = [];
 
   function mostrarPagina(pagina) {
     const inicio = (pagina - 1) * itemsPorPagina;
     const fin = inicio + itemsPorPagina;
 
-    filas.forEach((fila, index) => {
-      fila.style.display = index >= inicio && index < fin ? 'table-row' : 'none';
-    });
+    filas.forEach(f => f.style.display = 'none');
+    visibles.slice(inicio, fin).forEach(f => f.style.display = 'table-row');
 
     document.querySelectorAll('#paginacion-prestamos li').forEach(el => el.classList.remove('active'));
     const liActivo = document.querySelector(`#paginacion-prestamos li[data-pagina="${pagina}"]`);
     if (liActivo) liActivo.classList.add('active');
   }
 
-  function generarPaginacion() {
+  function generarPaginacion(totalPaginas) {
     paginacion.innerHTML = '';
     for (let i = 1; i <= totalPaginas; i++) {
       const li = document.createElement('li');
@@ -41,7 +41,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  generarPaginacion();
+  function aplicarFiltroYPaginar() {
+    const filtro = selectEstado.value.toLowerCase();
+    visibles = [];
+
+    filas.forEach(fila => {
+      const estado = fila.children[3].textContent.toLowerCase();
+      const visible = !filtro || estado.includes(filtro);
+      fila.style.display = visible ? 'table-row' : 'none';
+      if (visible) visibles.push(fila);
+    });
+
+    const totalPaginas = Math.ceil(visibles.length / itemsPorPagina);
+    generarPaginacion(totalPaginas);
+  }
+
+  selectEstado.addEventListener('change', aplicarFiltroYPaginar);
+
+  aplicarFiltroYPaginar(); // inicializar
 });
 
 // Mostrar detalle del préstamo
@@ -126,22 +143,16 @@ document.addEventListener('click', (e) => {
               // Buscar la fila 
               const fila = e.target.closest('tr');
             
-              // Actualizar la celda de estado
+              // Update la celda de estado
               const celdaEstado = fila.querySelector('td:nth-child(4)');
               if (celdaEstado) {
                 celdaEstado.textContent = 'Cancelado';
               }
-            
-              // Opcional: Deshabilitar botón cancelar y cambiar texto
-              // e.target.disabled = true;
-              // e.target.textContent = 'Cancelado';
-              // e.target.classList.remove('red', 'lighten-1');
-              // e.target.classList.add('grey', 'darken-1');
-              // Eliminar el botón de cancelar
+
+              // Quitarbotón de cancelar
               e.target.remove();
 
-            }
-             else {
+            } else {
               alert('Error al cancelar: ' + data.message);
             }
           } catch (e) {

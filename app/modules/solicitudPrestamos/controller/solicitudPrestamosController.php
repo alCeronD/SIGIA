@@ -36,8 +36,12 @@ class solicitudPrestamosController {
         $rol_nombre = $_SESSION['usuario']['rol_nombre'];
         $id = $_SESSION['usuario']['id'];
         $prestamoModel = new solicitudPrestamos($this->conn);
-
         $prestamos = $prestamoModel->search($id);
+
+        
+        $objetoEstados = new ConfigModulesModel();
+        $estados = $objetoEstados->select("SELECT * FROM estados_prestamos");
+
         return include_once __DIR__ . '/../views/consultarPrestamosView.php';
     }
 
