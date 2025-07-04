@@ -583,17 +583,20 @@ paginación reservas
 /* Contenedor del validador de las salidas del elemento. */
 .nextBtnValidate{
   display: flex;
-  border: 1px solid black;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  /* align-items: flex-end; */
+  justify-content: flex-end;
+  margin-top: 1.3rem;
 }
 
-/* Boton para dar next a la Página del validador. */
-#btnNextValidate{
+#btnNextValidate, #previewBtnValidate {
   display: none;
 }
 
+
+.formValidateContainer{
+  display: none;
+}
 
 
 /* Resolusiones mayores a 1440 */

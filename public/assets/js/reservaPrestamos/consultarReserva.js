@@ -23,6 +23,10 @@ const bodyDetailValidate = document.querySelector("#bodyDetailValidate");
 const btnCloseValidte = document.querySelector("#modalValidate .close-modal");
 const btnCloseElements = document.querySelector("#modalDetail .close-modal");
 const formDetail = document.querySelector("#formDetail");
+// El contenido de la tabla.
+const tableContainerDetail = document.querySelector('.tableContainerDetail table');
+// Contenedor del formulario
+const formValidateContainer = document.querySelector('.formValidateContainer');
 //TODO: mejorarlo.
 let data;
 //variable para guardar los elementos
@@ -214,6 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderReservas();
 });
 
+// Responsabilidades de las consultas
 tbodyReservaConsult.addEventListener("click", (event) => {
   event.preventDefault();
   event.stopPropagation();
@@ -409,7 +414,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       btnSalida
     );
 
-    console.log({'validatereserva antes':validateReserva});
 
     let action = "validateLoan";
     validateReserva["action"] = action;
@@ -489,7 +493,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       }
     }
 
-
     function addElementsToArray(input) {
       const tipo = input.dataset.tipoElemento;
       const cod = input.dataset.codigo;
@@ -554,15 +557,43 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     let estadoNew = dataTr.children[2];
     let tdAcciones = dataTr.children[4];
 
+    const previewBtnValidate = document.querySelector('#previewBtnValidate');
     //Cuando el usuario pase al siguiente paso, este valida todo
     nextBtnValidate.addEventListener('click', (e)=>{
 
+      
       validateReserva.elementos = {
-        elmConsumibles: consumibles,
-        elmDevolutivos: devolutivos,
+          elmConsumibles: consumibles,
+          elmDevolutivos: devolutivos,
       };
 
+      tableContainerDetail.style.display = "none";
+      formValidateContainer.style.display = "flex";
+
+      previewBtnValidate.style.display = 'inline-flex';
+      nextBtnValidate.style.display = 'none';
+
+      console.log({'validatereserva nextBtnValidate':validateReserva});
+      
+      
     });
+    
+    previewBtnValidate.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      e.preventDefault();
+      console.log({'validatereserva preview':validateReserva});
+      
+      tableContainerDetail.style.display = "flex";
+      tableContainerDetail.style.flexDirection  = "column";
+      formValidateContainer.style.display = "none";
+      
+      previewBtnValidate.style.display = 'none';
+      nextBtnValidate.style.display = 'inline-flex';
+      
+    });
+
+
+
 
     // confirm(`¿Deseas dar salida a estos elementos? \n
     //   Consumibles:\n${
