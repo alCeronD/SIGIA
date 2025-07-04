@@ -588,8 +588,8 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
 
     // //Variable para visualizar los elementos antes de validar el prestamo
-    // let elementosPreviewConsu = validateReserva.elementos.elmConsumibles;
-    // let elementosPreviewDev = validateReserva.elementos.elmDevolutivos;
+    let elementosPreviewConsu={};
+    let elementosPreviewDev={};
     // let dataTr = event.target.closest("tr");
     // //Estado por validar
     // let estadoNew = dataTr.children[2];
@@ -611,6 +611,12 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       previewBtnValidate.style.display = "inline-flex";
       nextBtnValidate.style.display = "none";
 
+      elementosPreviewConsu = validateReserva.elementos.elmConsumibles;
+      elementosPreviewDev = validateReserva.elementos.elmDevolutivos;
+
+      console.log(elementosPreviewConsu);
+      console.log(elementosPreviewDev);
+
       console.log({ "validatereserva nextBtnValidate": validateReserva });
     });
 
@@ -631,7 +637,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     const textAreaObsInput = document.querySelector(
       'textarea[name="textarea1"]'
     );
-    const inputObservacion = document.querySelector('#inputObservacion');
 
     radioYes.addEventListener("change", (e) => {
       let radioCheck = e.target.checked;
@@ -665,58 +670,61 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         return;
       }
 
-      validateReserva ={
-        ...validateReserva,
-        observacion: valuesForm.textarea1
-      };
-
+      // validateReserva ={
+      //   ...validateReserva,
+      //   observacion: valuesForm.textarea1
+      // };
       console.log(validateReserva);
+      console.log(elementosPreviewConsu);
+      console.log(elementosPreviewDev);
+      confirm(`¿Deseas dar salida a estos elementos? \n
+      Consumibles:\n${
+        consumibles.forEach((el) =>
+          `Código: ${el.codigo} Nombre: ${el.nombre} Cantidad: ${el.cantidadSolicitada}\n`
+        )
+      }
+      \nDevolutivos:\n${
+        devolutivos.forEach((elDev) =>
+          `Código: ${elDev.codigo} Nombre: ${elDev.nombre}\n`
+        )
+      }`)
+
+    //Todo: implementar el if con el envio de data.
+    if (confirm) {
+
+    try {
+
+      sendData('modules/reservaPrestamos/controller/reservaController.php','POST','validateLoan',validateReserva).then((response)=>{
+
+        // tdAcciones.innerHTML = "";
+        estadoNew.textContent = 'Validado';
+        estadoNew.style.color = "green";
+
+        let btnValidate = tdAcciones.querySelector(`button[data-validate='${validateReserva.codigoReserva}']`);
+        if (btnValidate) {
+          initAlert(`Prestamo validado ${validateReserva.codigoReserva}`,'success',toastOptions);
+          btnValidate.style.display = "none";
+          modalValidate.close();
+
+        }
+
+        let btnEnd = document.createElement("button");
+        let iFinalizar = createI();
+        iFinalizar.innerText = 'swap_horiz';
+        //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
+        addClassItem(btnEnd,{btn: "btn",color: "red lighten-1",wavesEffect: "waves-effect",wavesLight: "waves-light",btnSmall: "btn-small"});
+        btnEnd.append(iFinalizar);
+        btnEnd.setAttribute("data-end", `${validateReserva.codigoReserva}`);
+        tdAcciones.appendChild(btnEnd);
+
+      });
+    } catch (error) {
+      console.warn('error al realizar el proceso'+error);
+    }
+    }
 
     });
 
-    // confirm(`¿Deseas dar salida a estos elementos? \n
-    //   Consumibles:\n${
-    //     elementosPreviewConsu.map((el) =>
-    //       `Código: ${el.codigo} Nombre: ${el.nombre} Cantidad: ${el.cantidadSolicitada}`
-    //     ).join("\n")
-    //   }
-    //   \nDevolutivos:\n${
-    //     elementosPreviewDev.map((elDev) =>
-    //       `Código: ${elDev.codigo} Nombre: ${elDev.nombre}`
-    //     ).join("\n")
-    //   }`)
-
-    // Todo: implementar el if con el envio de data.
-    // if () {
-
-    // try {
-
-    //   sendData('modules/reservaPrestamos/controller/reservaController.php','POST','validateLoan',validateReserva).then((response)=>{
-
-    //     // tdAcciones.innerHTML = "";
-    //     estadoNew.textContent = 'Validado';
-    //     estadoNew.style.color = "green";
-
-    //     let btnValidate = tdAcciones.querySelector(`button[data-validate='${validateReserva.codigoReserva}']`);
-    //     if (btnValidate) {
-    //       initAlert(`Prestamo validado ${validateReserva.codigoReserva}`,'success',toastOptions);
-    //       btnValidate.style.display = "none";
-    //     }
-
-    //     let btnEnd = document.createElement("button");
-    //     let iFinalizar = createI();
-    //     iFinalizar.innerText = 'swap_horiz';
-    //     //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
-    //     addClassItem(btnEnd,{btn: "btn",color: "red lighten-1",wavesEffect: "waves-effect",wavesLight: "waves-light",btnSmall: "btn-small"});
-    //     btnEnd.append(iFinalizar);
-    //     btnEnd.setAttribute("data-end", `${validateReserva.codigoReserva}`);
-    //     tdAcciones.appendChild(btnEnd);
-
-    //   });
-    // } catch (error) {
-    //   console.warn('error al realizar el proceso'+error);
-    // }
-    // }
   }
 });
 
