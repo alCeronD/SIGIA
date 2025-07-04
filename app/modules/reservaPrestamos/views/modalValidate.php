@@ -19,15 +19,15 @@
             <th>Cantidad solicitada</th>
             <th>Tipo elemento</th>
             <th>
-                Accion
-                <div class="actions">
-                    <label>
-                    <input id="allValidateItems" type="checkbox" value=""/>
-                    <span></span>
+              Accion
+              <div class="actions">
+                <label>
+                  <input id="allValidateItems" type="checkbox" value="" />
+                  <span></span>
                 </label>
 
-                </div> 
-                
+              </div>
+
             </th>
           </tr>
         </thead>
@@ -38,11 +38,30 @@
 
       <div class="formValidateContainer">
         <form id="formValidate">
-          <div class="input-field col s12">
-            <textarea id="textarea1" class="materialize-textarea"></textarea>
-            <label for="textarea1">Textarea</label>
+          <div class="col s12">
+            <label for="radioValidate">¿Deseas realizar una observación?</label>
+            <div class="inputsRadio">
+              <p>
+                <label>
+                  <input id="radioYes" class="with-gap" name="radioValidate" type="radio" />
+                  <span>Si</span>
+                </label>
+              </p>
+              <!-- validateNo -->
+              <p>
+                <label>
+                  <input id="radioNo" class="with-gap" name="radioValidate" type="radio" />
+                  <span>No</span>
+                </label>
+              </p>
+            </div>
+
           </div>
-          <button>enviar</button>
+          <div class="input-field col s12" id="textAreaObservacion">
+            <textarea id="inputObservacion" name="textarea1" class="materialize-textarea" disabled></textarea>
+            <label for="textarea1" >Textarea</label>
+            <button type="submit" id="submitValidate">enviar</button>
+          </div>
         </form>
       </div>
 

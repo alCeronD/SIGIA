@@ -24,9 +24,13 @@ const btnCloseValidte = document.querySelector("#modalValidate .close-modal");
 const btnCloseElements = document.querySelector("#modalDetail .close-modal");
 const formDetail = document.querySelector("#formDetail");
 // El contenido de la tabla.
-const tableContainerDetail = document.querySelector('.tableContainerDetail table');
+const tableContainerDetail = document.querySelector(
+  ".tableContainerDetail table"
+);
+let consumibles = [];
+let devolutivos = [];
 // Contenedor del formulario
-const formValidateContainer = document.querySelector('.formValidateContainer');
+const formValidateContainer = document.querySelector(".formValidateContainer");
 //TODO: mejorarlo.
 let data;
 //variable para guardar los elementos
@@ -38,6 +42,12 @@ let codigo;
 let pages;
 //Página actual.
 let pagesReserva = 1;
+    const checkBoxValidate = document.querySelector("#allValidateItems");
+    // capturo el input de la tabla para seleccionarlos todos.
+    const inputValidate = document.querySelectorAll(".inputValidate");
+    const nextBtnValidate = document.querySelector(
+      ".nextBtnValidate #btnNextValidate"
+    );
 
 //Variable para mostrar la información en el modal.
 let elementosDetalle = [];
@@ -217,6 +227,50 @@ const renderReservas = async (page = 1) => {
 document.addEventListener("DOMContentLoaded", () => {
   renderReservas();
 });
+
+//Me valida que el checkbox este checked para así poder mostrar el botón.
+/**
+ * 
+ */
+function validateCheckboxChecked(inputValidate,checkBoxValidate) {
+  /**
+   * Con la propiedad array from me extrae el elemento en concreo que se ha chequeado, luego de ello, me valida quue alguno de esos elementos este chequeados para así determinar que el btnNextValidate se visualice.
+   */
+  console.log(inputValidate);
+  const elementChecked = Array.from(inputValidate).some(
+    (input) => input.checked
+  );
+  checkBoxValidate.checked = elementChecked;
+  // nextBtnValidate.style.display = checkBoxValidate.checked ? "flex" : "none";
+  if (elementChecked) {
+    nextBtnValidate.style.display = "flex";
+  } else {
+    nextBtnValidate.style.display = "none";
+  }
+}
+
+function addElementsToArray(input) {
+  const tipo = input.dataset.tipoElemento;
+  const cod = input.dataset.codigo;
+
+  if (input.checked) {
+    if (tipo === "Devolutivo" && !devolutivos.includes(cod)) {
+      devolutivos.push(cod);
+    }
+
+    if (tipo === "Consumible" && !consumibles.includes(cod)) {
+      consumibles.push(cod);
+    }
+  } else {
+    if (tipo === "Consumible") {
+      consumibles = consumibles.filter((consu) => consu !== cod);
+    }
+
+    if (tipo === "Devolutivo") {
+      devolutivos = devolutivos.filter((dev) => dev !== cod);
+    }
+  }
+}
 
 // Responsabilidades de las consultas
 tbodyReservaConsult.addEventListener("click", (event) => {
@@ -414,11 +468,9 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       btnSalida
     );
 
-
     let action = "validateLoan";
     validateReserva["action"] = action;
-    let consumibles = [];
-    let devolutivos = [];
+
 
     let previewElements = validateReserva.elementos;
     // previewElements.forEach(element => {
@@ -468,54 +520,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       tr.appendChild(tdAcciones);
     });
 
-    const checkBoxValidate = document.querySelector("#allValidateItems");
-    // capturo el input de la tabla para seleccionarlos todos.
     const inputValidate = document.querySelectorAll(".inputValidate");
-    const nextBtnValidate = document.querySelector(
-      ".nextBtnValidate #btnNextValidate"
-    );
-
-    //Me valida que el checkbox este checked para así poder mostrar el botón.
-    function validateCheckboxChecked() {
-      /**
-       * Con la propiedad array from me extrae el elemento en concreo que se ha chequeado, luego de ello, me valida quue alguno de esos elementos este chequeados para así determinar que el btnNextValidate se visualice.
-       */
-      const elementChecked = Array.from(inputValidate).some(
-        (input) => input.checked
-      );
-      checkBoxValidate.checked = elementChecked;
-      // nextBtnValidate.style.display = checkBoxValidate.checked ? "flex" : "none";
-      if (elementChecked) {
-        nextBtnValidate.style.display = "flex";
-      }else{
-        nextBtnValidate.style.display = "none";
-
-      }
-    }
-
-    function addElementsToArray(input) {
-      const tipo = input.dataset.tipoElemento;
-      const cod = input.dataset.codigo;
-
-      if (input.checked) {
-        if (tipo === "Devolutivo" && !devolutivos.includes(cod)) {
-          devolutivos.push(cod);
-        }
-
-        if (tipo === "Consumible" && !consumibles.includes(cod)) {
-          consumibles.push(cod);
-        }
-      } else {
-        if (tipo === "Consumible") {
-          consumibles = consumibles.filter((consu) => consu !== cod);
-        }
-
-        if (tipo === "Devolutivo") {
-          devolutivos = devolutivos.filter((dev) => dev !== cod);
-        }
-      }
-    }
-
     checkBoxValidate.addEventListener("change", (e) => {
       e.stopPropagation();
       e.preventDefault();
@@ -532,7 +537,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         }
       });
 
-      validateCheckboxChecked();
+      validateCheckboxChecked(inputValidate,checkBoxValidate);
     });
 
     inputValidate.forEach((input) => {
@@ -541,10 +546,10 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         e.preventDefault();
         if (e.target.checked) {
           addElementsToArray(input);
-          validateCheckboxChecked();
+          validateCheckboxChecked(inputValidate,checkBoxValidate);
         } else {
           addElementsToArray(input);
-          validateCheckboxChecked();
+          validateCheckboxChecked(inputValidate,checkBoxValidate);
         }
       });
     });
@@ -557,43 +562,64 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     let estadoNew = dataTr.children[2];
     let tdAcciones = dataTr.children[4];
 
-    const previewBtnValidate = document.querySelector('#previewBtnValidate');
+    const previewBtnValidate = document.querySelector("#previewBtnValidate");
+    const radioYes = document.querySelector("#radioYes");
+    const radioNo = document.querySelector("#radioNo");
     //Cuando el usuario pase al siguiente paso, este valida todo
-    nextBtnValidate.addEventListener('click', (e)=>{
-
-      
+    nextBtnValidate.addEventListener("click", (e) => {
       validateReserva.elementos = {
-          elmConsumibles: consumibles,
-          elmDevolutivos: devolutivos,
+        elmConsumibles: consumibles,
+        elmDevolutivos: devolutivos,
       };
 
       tableContainerDetail.style.display = "none";
       formValidateContainer.style.display = "flex";
 
-      previewBtnValidate.style.display = 'inline-flex';
-      nextBtnValidate.style.display = 'none';
+      previewBtnValidate.style.display = "inline-flex";
+      nextBtnValidate.style.display = "none";
 
-      console.log({'validatereserva nextBtnValidate':validateReserva});
-      
-      
+      console.log({ "validatereserva nextBtnValidate": validateReserva });
     });
-    
-    previewBtnValidate.addEventListener('click', (e)=>{
+
+    previewBtnValidate.addEventListener("click", (e) => {
       e.stopPropagation();
       e.preventDefault();
-      console.log({'validatereserva preview':validateReserva});
-      
+      console.log({ "validatereserva preview": validateReserva });
+
       tableContainerDetail.style.display = "flex";
-      tableContainerDetail.style.flexDirection  = "column";
+      tableContainerDetail.style.flexDirection = "column";
       formValidateContainer.style.display = "none";
-      
-      previewBtnValidate.style.display = 'none';
-      nextBtnValidate.style.display = 'inline-flex';
-      
+
+      previewBtnValidate.style.display = "none";
+      nextBtnValidate.style.display = "inline-flex";
     });
 
+    const textAreaObservacion = document.querySelector("#textAreaObservacion");
+    // No tiene ni punto ni asterisco porque lo llamo x el nombre
+    const textAreaObsInput = document.querySelector(
+      'textarea[name="textarea1"]'
+    );
 
+    radioYes.addEventListener("change", (e) => {
+      let radioCheck = e.target.checked;
+      let radioNoChecked = radioCheck ? false : true;
+      radioNo.checked = radioNoChecked;
 
+      if (radioCheck) {
+        textAreaObsInput.disabled = false;
+        // border: 1px solid #b2dfdb;
+        //Todo: por mejorar, implementar el efecto on blur u on focus
+        // textAreaObsInput.style.border = "1px solid #b2dfdb";
+        // textAreaObservacion.style.display = "flex";
+      }
+    });
+    radioNo.addEventListener("change", (e) => {
+      if (e.target.checked) {
+        textAreaObsInput.disabled = true;
+
+        // textAreaObservacion.style.display = "none";
+      }
+    });
 
     // confirm(`¿Deseas dar salida a estos elementos? \n
     //   Consumibles:\n${

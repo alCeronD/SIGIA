@@ -598,6 +598,29 @@ paginación reservas
   display: none;
 }
 
+/* Estilos de los input radio para validar salida */
+.inputsRadio{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+#textAreaObservacion{
+  display: flex;
+  resize: none;
+  width: 100%;
+  height: fit-content;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+#submitValidate{
+  gap: 0.3rem;
+}
+
+/* #inputObservacion:focus{
+  border: 1px solid #b2dfdb;
+} */
 
 /* Resolusiones mayores a 1440 */
 @media screen and (min-width: 1440px) { 
