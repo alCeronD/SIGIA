@@ -60,9 +60,10 @@
       </div>
 
       <div class="inputContent observaciones input-field">
-        <textarea name="observaciones" id="observaciones" class="materialize-textarea"></textarea>
+        <textarea name="observaciones" id="observaciones" class="materialize-textarea"> </textarea>
         <label for="observaciones">Notas adicionales al usuario:</label>
       </div>
+
 
       <div class="inputBtn">
         <button type="submit" class="btn waves-effect waves-light teal darken-3"> <i class="Medium material-icons">save</i></button>
@@ -73,4 +74,5 @@
 </div>
 
 <script type="module" src="../public/assets/js/main.js"></script>
+<script type="module" src="../public/assets/js/usuarios/usuarios.js"></script>
 <!-- <script type="module" src="../public/assets/js/usuarios/usuarios.js"></script> -->
