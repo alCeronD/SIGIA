@@ -232,11 +232,16 @@ document.addEventListener("DOMContentLoaded", () => {
 /**
  * 
  */
+
+
+//Estas variables las uso para guardar los elementos que no han sido validados.
+  let noselectedDevolutivos = [];
+  let noselectedConsumibles = [];
+
 function validateCheckboxChecked(inputValidate,checkBoxValidate) {
   /**
    * Con la propiedad array from me extrae el elemento en concreo que se ha chequeado, luego de ello, me valida quue alguno de esos elementos este chequeados para así determinar que el btnNextValidate se visualice.
    */
-  console.log(inputValidate);
   const elementChecked = Array.from(inputValidate).some(
     (input) => input.checked
   );
@@ -253,6 +258,7 @@ function addElementsToArray(input) {
   const tipo = input.dataset.tipoElemento;
   const cod = input.dataset.codigo;
 
+
   if (input.checked) {
     if (tipo === "Devolutivo" && !devolutivos.includes(cod)) {
       devolutivos.push(cod);
@@ -261,11 +267,14 @@ function addElementsToArray(input) {
     if (tipo === "Consumible" && !consumibles.includes(cod)) {
       consumibles.push(cod);
     }
+
+
+
   } else {
     if (tipo === "Consumible") {
       consumibles = consumibles.filter((consu) => consu !== cod);
     }
-
+    
     if (tipo === "Devolutivo") {
       devolutivos = devolutivos.filter((dev) => dev !== cod);
     }
@@ -351,14 +360,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     fechaDevolucion.innerText = reserva.fechaDevolucion;
     observaciones.innerText = reserva.observacion;
   }
-
-  //Para visualizar el detalle de elementos en caso de que sea requerido.
-  // if (
-  //   event.target.tagName === "BUTTON" &&
-  //   event.target.getAttribute(["data-add"])
-  // ) {
-  //   console.log(event.target);
-  // }
 
   //Finalizar el prestamo de los elementos.
   if (
@@ -471,7 +472,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     let action = "validateLoan";
     validateReserva["action"] = action;
 
-
     let previewElements = validateReserva.elementos;
     // previewElements.forEach(element => {
     //       if (element.codTipoElemento === 1) {
@@ -535,10 +535,40 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         if (inV.checked) {
           addElementsToArray(inV);
         }
+
+
       });
 
       validateCheckboxChecked(inputValidate,checkBoxValidate);
     });
+
+    //TODO: puede que necesite los elementos que no hayan sido seleccionados.
+    // function addElementsNoSelected(input){
+    //   // Limpio los arreglos antes de agregar los elementos no seleccionados.
+    //   noselectedConsumibles.length = 0;
+    //   noselectedDevolutivos.length = 0;
+
+    //   input.forEach((intp)=>{
+        
+    //     if (!input.checked) {
+    //       const tipo = intp.dataset.tipoElemento;
+    //       const cod = intp.dataset.codigo;
+    //       console.log({"tipo":tipo, "cod":cod});
+    //       console.log("entra en if de add consu");
+    //       if (tipo === 'Consumible' && !noselectedConsumibles.includes(cod) && !consumibles.includes(cod)) {
+    //           noselectedConsumibles.push(cod);
+    //         }
+    //         if (tipo === 'Devolutivo' && !noselectedDevolutivos.includes(cod) && !consumibles.includes(cod)) {
+    //           console.log("entra en if de add dev");
+    //           noselectedDevolutivos.push(cod);
+    //         }
+    //       }
+    //   });
+      
+      
+          
+    // }
+
 
     inputValidate.forEach((input) => {
       input.addEventListener("change", (e) => {
@@ -546,21 +576,24 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         e.preventDefault();
         if (e.target.checked) {
           addElementsToArray(input);
+          // addElementsNoSelected(inputValidate);
           validateCheckboxChecked(inputValidate,checkBoxValidate);
         } else {
           addElementsToArray(input);
           validateCheckboxChecked(inputValidate,checkBoxValidate);
         }
+
       });
     });
 
-    //Variable para visualizar los elementos antes de validar el prestamo
-    let elementosPreviewConsu = validateReserva.elementos.elmConsumibles;
-    let elementosPreviewDev = validateReserva.elementos.elmDevolutivos;
-    let dataTr = event.target.closest("tr");
-    //Estado por validar
-    let estadoNew = dataTr.children[2];
-    let tdAcciones = dataTr.children[4];
+
+    // //Variable para visualizar los elementos antes de validar el prestamo
+    // let elementosPreviewConsu = validateReserva.elementos.elmConsumibles;
+    // let elementosPreviewDev = validateReserva.elementos.elmDevolutivos;
+    // let dataTr = event.target.closest("tr");
+    // //Estado por validar
+    // let estadoNew = dataTr.children[2];
+    // let tdAcciones = dataTr.children[4];
 
     const previewBtnValidate = document.querySelector("#previewBtnValidate");
     const radioYes = document.querySelector("#radioYes");
@@ -594,11 +627,11 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       nextBtnValidate.style.display = "inline-flex";
     });
 
-    const textAreaObservacion = document.querySelector("#textAreaObservacion");
     // No tiene ni punto ni asterisco porque lo llamo x el nombre
     const textAreaObsInput = document.querySelector(
       'textarea[name="textarea1"]'
     );
+    const inputObservacion = document.querySelector('#inputObservacion');
 
     radioYes.addEventListener("change", (e) => {
       let radioCheck = e.target.checked;
@@ -607,18 +640,38 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
       if (radioCheck) {
         textAreaObsInput.disabled = false;
-        // border: 1px solid #b2dfdb;
-        //Todo: por mejorar, implementar el efecto on blur u on focus
-        // textAreaObsInput.style.border = "1px solid #b2dfdb";
-        // textAreaObservacion.style.display = "flex";
       }
     });
     radioNo.addEventListener("change", (e) => {
       if (e.target.checked) {
+        textAreaObsInput.value = '';
         textAreaObsInput.disabled = true;
 
-        // textAreaObservacion.style.display = "none";
       }
+    });
+
+    const formValidate = document.querySelector('#formValidate');
+    formValidate.addEventListener('submit', (e)=>{
+      e.stopPropagation();
+      e.preventDefault();
+
+      let form = new FormData(e.target);
+
+      let valuesForm = Object.fromEntries(form.entries());
+      let validate = Object.values(valuesForm);
+      
+      if (!validate[0]) {
+        alert('Selección de observación requerida');
+        return;
+      }
+
+      validateReserva ={
+        ...validateReserva,
+        observacion: valuesForm.textarea1
+      };
+
+      console.log(validateReserva);
+
     });
 
     // confirm(`¿Deseas dar salida a estos elementos? \n
@@ -633,7 +686,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     //     ).join("\n")
     //   }`)
 
-    //Todo: implementar el if con el envio de data.
+    // Todo: implementar el if con el envio de data.
     // if () {
 
     // try {
