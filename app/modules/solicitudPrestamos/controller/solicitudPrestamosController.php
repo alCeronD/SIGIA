@@ -53,8 +53,6 @@ class solicitudPrestamosController {
         $rol_id = $_SESSION['usuario']['rol_id'];
         $elementos_seleccionados = $_POST['elementos_seleccionados'];
         $cantidades_consumibles = $_POST['cantidades_consumibles'];
-        // $elementos_devolutivos = $_POST['elementos_devolutivos_seleccionados'];
-        
         unset($_POST['elementos_seleccionados'],
         $_POST['elementos_devolutivos_seleccionados']);
 
@@ -74,10 +72,8 @@ class solicitudPrestamosController {
             foreach ($elementos_seleccionados as $elemento_id) {
                 $prestamoElemento->registrarElem($lastId, $usuario_id, $elemento_id);
             
-                // Disminuye una unidad
                 $elementoModel->disminuirExistenciaElemento($elemento_id, 1);
             
-                // Cambiar estado
                 $elementoModel->actualizarEstadoElemento($elemento_id, 3); 
             }
 
@@ -87,10 +83,9 @@ class solicitudPrestamosController {
                 if (is_numeric($elm_cod) && is_numeric($cantidad) && $cantidad > 0) {
                     $prestamoElemento->registrarElemConsumible($lastId, $usuario_id, $elm_cod, $cantidad);
                     
-                    // Disminuye existencia sin tocar estado
                     $elementoModel->disminuirExistenciaElemento($elm_cod, $cantidad);
             
-                    // Opcionalmente cambiar estado
+                 
                     $elementoModel->actualizarEstadoElemento($elm_cod, 3);
                 }
             }

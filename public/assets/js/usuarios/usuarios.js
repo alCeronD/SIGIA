@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ==== Acciones para registro de usuario en folmulario ===
+  // ==== Acciones para registro de usuario ===
 
   const docInput = document.getElementById("usu_docum");
   const telefonoInput = document.getElementById("usu_telefono");
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const correoInput = document.getElementById("usu_email");
   const textarea = document.getElementById("observaciones");
 
-  // Validar que solo se puedan escribir No.
+  // Validar que solo se puedan escribir No#.
   const soloNumeros = (input) => {
     input.addEventListener("input", () => {
       input.value = input.value.replace(/\D/g, "");
@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // formato de correo
+  // formato para el correo
   const validarCorreo = (input) => {
     input.addEventListener("blur", () => {
       const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // Aplicar validaciones si existen los elementos
+  // Aplicar validaciones si los elementos estan
   if (docInput) soloNumeros(docInput);
   if (telefonoInput) soloNumeros(telefonoInput);
   if (nombresInput) soloLetras(nombresInput);

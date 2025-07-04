@@ -75,4 +75,3 @@
 
 <script type="module" src="../public/assets/js/main.js"></script>
 <script type="module" src="../public/assets/js/usuarios/usuarios.js"></script>
-<!-- <script type="module" src="../public/assets/js/usuarios/usuarios.js"></script> -->

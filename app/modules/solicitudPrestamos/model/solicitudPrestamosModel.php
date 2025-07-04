@@ -162,7 +162,6 @@ class solicitudPrestamos
                 $elemento_id = $row['pres_el_elem_cod'];
                 $cantidad = $row['pres_el_cantidad'];
 
-                // Cambiar estado del elemento a disponible
                 $elementoModel->actualizarEstadoElemento($elemento_id, 1);
 
                 // Sumar cantidad de vuelta a elm_existencia
@@ -208,7 +207,7 @@ class solicitudPrestamos
 
     public function registrarSalida($cantidades_consumibles, $fecha_registro, $usuario_id, $lastId, $elementos_devolutivos)
     {
-        $tipo_movimiento = 3; // salida
+        $tipo_movimiento = 3; //quemo el estado de salida
         $id_prestamo = $lastId;
         $usuario = $usuario_id;
         //procesar los elementos consumibles
@@ -230,7 +229,7 @@ class solicitudPrestamos
 
         $elementos_devolutivos = array_filter(array_unique($elementos_devolutivos));
 
-        // 2. Procesar los elementos devolutivos (una unidad defecto)
+        //procesar elementos devolutivos
         foreach ($elementos_devolutivos as $elementoCod) {
             // dd($elementos_devolutivos);
             $sqlSalida = "INSERT INTO entradas_salidas (
