@@ -10,6 +10,7 @@ import {
   setReserva,
   statusLoans,
   toastOptions,
+  tooltipOptions,
   typeLoans,
 } from "../utils/cases.js";
 import { getData, sendData } from "../utils/fetch.js";
@@ -257,26 +258,31 @@ function validateCheckboxChecked(inputValidate,checkBoxValidate) {
 function addElementsToArray(input) {
   const tipo = input.dataset.tipoElemento;
   const cod = input.dataset.codigo;
+  const nombre = input.dataset.nombreElemento;
+
 
 
   if (input.checked) {
     if (tipo === "Devolutivo" && !devolutivos.includes(cod)) {
-      devolutivos.push(cod);
+      // devolutivos.push(cod);
+      devolutivos.push({"tipo":tipo,"cod":cod,"nombre":nombre});
+
     }
 
     if (tipo === "Consumible" && !consumibles.includes(cod)) {
-      consumibles.push(cod);
+      // consumibles.push(cod);
+      consumibles.push({"tipo":tipo,"cod":cod,"nombre":nombre});
     }
 
 
 
   } else {
     if (tipo === "Consumible") {
-      consumibles = consumibles.filter((consu) => consu !== cod);
+      consumibles = consumibles.filter((consu) => consu.cod !== cod);
     }
     
     if (tipo === "Devolutivo") {
-      devolutivos = devolutivos.filter((dev) => dev !== cod);
+      devolutivos = devolutivos.filter((dev) => dev.cod !== cod);
     }
   }
 }
@@ -473,14 +479,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     validateReserva["action"] = action;
 
     let previewElements = validateReserva.elementos;
-    // previewElements.forEach(element => {
-    //       if (element.codTipoElemento === 1) {
-    //     devolutivos.push(element);
-    //   } else if (element.codTipoElemento === 2) {
-    //     consumibles.push(element);
-    //   }
-
-    // });
 
     bodyDetailValidate.innerHTML = "";
     //Los elementos pertenecientes al prestamo, los agrego en la tabla para validar su salida.
@@ -503,6 +501,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       // input.value = el.codigo;
       input.dataset.codigo = el.codigo;
       input.dataset.tipoElemento = el.nombreTipoElemento;
+      input.dataset.nombreElemento = el.nombre;
 
       label.appendChild(input);
       label.appendChild(span);
@@ -520,6 +519,50 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       tr.appendChild(tdAcciones);
     });
 
+    /**
+     * Reinicia la visualización del modal de validación según el estado proporcionado.
+     *
+     * @function resetModalValidate
+     * @param {boolean} [status=false] - Define el modo del modal:
+     *   - `true`: Muestra la vista previa de los elementos seleccionados (tabla).
+     *   - `false`: Muestra el formulario para validar elementos.
+     *
+     * Esta función ajusta la visibilidad de los contenedores del formulario y la tabla,
+     * así como los botones de navegación (`previewBtnValidate` y `nextBtnValidate`),
+     * con el fin de cambiar entre los pasos del proceso de validación.
+     */
+    function resetModalValidate(status = false) {
+      if (status) {
+        tableContainerDetail.style.display = "flex";
+        tableContainerDetail.style.flexDirection = "column";
+        formValidateContainer.style.display = "none";
+
+        previewBtnValidate.style.display = "none";
+        nextBtnValidate.style.display = "inline-flex";
+      } else {
+        tableContainerDetail.style.display = "none";
+        formValidateContainer.style.display = "flex";
+
+        previewBtnValidate.style.display = "inline-flex";
+        nextBtnValidate.style.display = "none";
+      }
+    }
+
+    /**
+     * Reinicia los datos utilizados en el proceso de validación del modal.
+     *
+     * @function resetDataModal
+     *
+     * Esta función limpia los arreglos `consumibles` y `devolutivos`, así como el objeto
+     * `validateReserva`, dejándolos en su estado inicial. Se utiliza normalmente cuando
+     * se cancela una operación o se desea reiniciar el estado del formulario/modal.
+     */
+    function resetDataModal() {
+      consumibles = [];
+      devolutivos = [];
+      validateReserva = {};
+    }
+
     const inputValidate = document.querySelectorAll(".inputValidate");
     checkBoxValidate.addEventListener("change", (e) => {
       e.stopPropagation();
@@ -535,11 +578,9 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         if (inV.checked) {
           addElementsToArray(inV);
         }
-
-
       });
 
-      validateCheckboxChecked(inputValidate,checkBoxValidate);
+      validateCheckboxChecked(inputValidate, checkBoxValidate);
     });
 
     //TODO: puede que necesite los elementos que no hayan sido seleccionados.
@@ -549,7 +590,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     //   noselectedDevolutivos.length = 0;
 
     //   input.forEach((intp)=>{
-        
+
     //     if (!input.checked) {
     //       const tipo = intp.dataset.tipoElemento;
     //       const cod = intp.dataset.codigo;
@@ -564,11 +605,8 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     //         }
     //       }
     //   });
-      
-      
-          
-    // }
 
+    // }
 
     inputValidate.forEach((input) => {
       input.addEventListener("change", (e) => {
@@ -577,19 +615,17 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         if (e.target.checked) {
           addElementsToArray(input);
           // addElementsNoSelected(inputValidate);
-          validateCheckboxChecked(inputValidate,checkBoxValidate);
+          validateCheckboxChecked(inputValidate, checkBoxValidate);
         } else {
           addElementsToArray(input);
-          validateCheckboxChecked(inputValidate,checkBoxValidate);
+          validateCheckboxChecked(inputValidate, checkBoxValidate);
         }
-
       });
     });
 
-
     // //Variable para visualizar los elementos antes de validar el prestamo
-    let elementosPreviewConsu={};
-    let elementosPreviewDev={};
+    let elementosPreviewConsu = [];
+    let elementosPreviewDev = [];
     // let dataTr = event.target.closest("tr");
     // //Estado por validar
     // let estadoNew = dataTr.children[2];
@@ -605,11 +641,13 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         elmDevolutivos: devolutivos,
       };
 
-      tableContainerDetail.style.display = "none";
-      formValidateContainer.style.display = "flex";
+      // tableContainerDetail.style.display = "none";
+      // formValidateContainer.style.display = "flex";
 
-      previewBtnValidate.style.display = "inline-flex";
-      nextBtnValidate.style.display = "none";
+      // previewBtnValidate.style.display = "inline-flex";
+      // nextBtnValidate.style.display = "none";
+
+      resetModalValidate(false);
 
       elementosPreviewConsu = validateReserva.elementos.elmConsumibles;
       elementosPreviewDev = validateReserva.elementos.elmDevolutivos;
@@ -625,12 +663,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       e.preventDefault();
       console.log({ "validatereserva preview": validateReserva });
 
-      tableContainerDetail.style.display = "flex";
-      tableContainerDetail.style.flexDirection = "column";
-      formValidateContainer.style.display = "none";
-
-      previewBtnValidate.style.display = "none";
-      nextBtnValidate.style.display = "inline-flex";
+      resetModalValidate(true);
     });
 
     // No tiene ni punto ni asterisco porque lo llamo x el nombre
@@ -649,14 +682,13 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     });
     radioNo.addEventListener("change", (e) => {
       if (e.target.checked) {
-        textAreaObsInput.value = '';
+        textAreaObsInput.value = "";
         textAreaObsInput.disabled = true;
-
       }
     });
 
-    const formValidate = document.querySelector('#formValidate');
-    formValidate.addEventListener('submit', (e)=>{
+    const formValidate = document.querySelector("#formValidate");
+    formValidate.addEventListener("submit", (e) => {
       e.stopPropagation();
       e.preventDefault();
 
@@ -664,71 +696,82 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
       let valuesForm = Object.fromEntries(form.entries());
       let validate = Object.values(valuesForm);
-      
+
       if (!validate[0]) {
-        alert('Selección de observación requerida');
+        alert("Selección de observación requerida");
         return;
       }
 
-      // validateReserva ={
-      //   ...validateReserva,
-      //   observacion: valuesForm.textarea1
-      // };
-      console.log(validateReserva);
-      console.log(elementosPreviewConsu);
-      console.log(elementosPreviewDev);
-      confirm(`¿Deseas dar salida a estos elementos? \n
-      Consumibles:\n${
-        consumibles.forEach((el) =>
-          `Código: ${el.codigo} Nombre: ${el.nombre} Cantidad: ${el.cantidadSolicitada}\n`
-        )
-      }
-      \nDevolutivos:\n${
-        devolutivos.forEach((elDev) =>
-          `Código: ${elDev.codigo} Nombre: ${elDev.nombre}\n`
-        )
-      }`)
+      validateReserva = {
+        ...validateReserva,
+        observacion: valuesForm.textarea1,
+      };
 
-    //Todo: implementar el if con el envio de data.
-    if (confirm) {
+      console.log(elementosPreviewConsu.length);
+      const statusConfirm = confirm(`¿Deseas dar salida a estos elementos? \n
+      Consumibles:\n${elementosPreviewConsu.map(
+        (el) =>
+          `Código: ${el.cod} Nombre: ${el.nombre} Cantidad: ${el.cantidadSolicitada}\n`
+      )}
+      \nDevolutivos:\n${elementosPreviewDev.map(
+        (elDev) => `Código: ${elDev.cod} Nombre: ${elDev.nombre}\n`
+      )}`);
 
-    try {
+      if (statusConfirm) {
+        try {
+          sendData(
+            "modules/reservaPrestamos/controller/reservaController.php",
+            "POST",
+            "validateLoan",
+            validateReserva
+          ).then((response) => {
+            // tdAcciones.innerHTML = "";
+            estadoNew.textContent = "Validado";
+            estadoNew.style.color = "green";
 
-      sendData('modules/reservaPrestamos/controller/reservaController.php','POST','validateLoan',validateReserva).then((response)=>{
+            let btnValidate = tdAcciones.querySelector(
+              `button[data-validate='${validateReserva.codigoReserva}']`
+            );
+            if (btnValidate) {
+              initAlert(
+                `Prestamo validado ${validateReserva.codigoReserva}`,
+                "success",
+                toastOptions
+              );
+              btnValidate.style.display = "none";
+              modalValidate.close();
+            }
 
-        // tdAcciones.innerHTML = "";
-        estadoNew.textContent = 'Validado';
-        estadoNew.style.color = "green";
-
-        let btnValidate = tdAcciones.querySelector(`button[data-validate='${validateReserva.codigoReserva}']`);
-        if (btnValidate) {
-          initAlert(`Prestamo validado ${validateReserva.codigoReserva}`,'success',toastOptions);
-          btnValidate.style.display = "none";
-          modalValidate.close();
-
+            let btnEnd = document.createElement("button");
+            let iFinalizar = createI();
+            iFinalizar.innerText = "swap_horiz";
+            //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
+            addClassItem(btnEnd, {
+              btn: "btn",
+              color: "red lighten-1",
+              wavesEffect: "waves-effect",
+              wavesLight: "waves-light",
+              btnSmall: "btn-small",
+            });
+            btnEnd.append(iFinalizar);
+            btnEnd.setAttribute("data-end", `${validateReserva.codigoReserva}`);
+            tdAcciones.appendChild(btnEnd);
+          });
+        } catch (error) {
+          console.warn("error al realizar el proceso" + error);
         }
-
-        let btnEnd = document.createElement("button");
-        let iFinalizar = createI();
-        iFinalizar.innerText = 'swap_horiz';
-        //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
-        addClassItem(btnEnd,{btn: "btn",color: "red lighten-1",wavesEffect: "waves-effect",wavesLight: "waves-light",btnSmall: "btn-small"});
-        btnEnd.append(iFinalizar);
-        btnEnd.setAttribute("data-end", `${validateReserva.codigoReserva}`);
-        tdAcciones.appendChild(btnEnd);
-
-      });
-    } catch (error) {
-      console.warn('error al realizar el proceso'+error);
-    }
-    }
-
+      } else {
+        initAlert("Proceso cancelado", "warning", tooltipOptions);
+        modalValidate.close();
+        resetModalValidate(true);
+        resetDataModal();
+      }
     });
-
   }
 });
 
 closeModal(modalValidate, btnCloseValidte);
+
 
 /**
  * Paginación de los prestamos.

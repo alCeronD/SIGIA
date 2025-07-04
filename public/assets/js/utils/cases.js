@@ -378,8 +378,6 @@ export const setReserva = (attribute = "", data = {}, elementos = {},target,acti
   }
 };
 
-
-
 export default {
   closeModal,
   openModal,
