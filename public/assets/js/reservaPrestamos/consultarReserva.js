@@ -400,6 +400,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
   const btnSalida = event.target.closest("button[data-validate]");
   //Dar salida a los prestamos, cambiar el estado de la solicitudes a validada e implementar su salida.
   if (btnSalida) {
+    modalValidate.open();
     //Capturo los datos para transformarlo en json.
     let validateReserva = setReserva(
       "data-validate",
@@ -407,6 +408,8 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       elementos,
       btnSalida
     );
+
+    console.log({'validatereserva antes':validateReserva});
 
     let action = "validateLoan";
     validateReserva["action"] = action;
@@ -477,18 +480,19 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         (input) => input.checked
       );
       checkBoxValidate.checked = elementChecked;
-      nextBtnValidate.style.display = checkBoxValidate.checked
-        ? "flex"
-        : "none";
+      // nextBtnValidate.style.display = checkBoxValidate.checked ? "flex" : "none";
+      if (elementChecked) {
+        nextBtnValidate.style.display = "flex";
+      }else{
+        nextBtnValidate.style.display = "none";
+
+      }
     }
 
-    //Borro todos los elementos que esten en el objeto y los re asigno
-    delete validateReserva.elementos;
 
     function addElementsToArray(input) {
       const tipo = input.dataset.tipoElemento;
       const cod = input.dataset.codigo;
-      console.log("INPUT CHECKED:", input.checked, "TIPO:", tipo, "COD:", cod);
 
       if (input.checked) {
         if (tipo === "Devolutivo" && !devolutivos.includes(cod)) {
@@ -509,21 +513,23 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       }
     }
 
-    //Limpio ambos arreglos para seleccionar o eliminar la selección de los otros elementos.
-    devolutivos = [];
-    consumibles = [];
     checkBoxValidate.addEventListener("change", (e) => {
       e.stopPropagation();
       e.preventDefault();
 
+      //Limpio los arreglos cuando el usuario deselecciona los items.
+      devolutivos = [];
+      consumibles = [];
+
       inputValidate.forEach((inV) => {
         inV.checked = e.target.checked;
 
-        //No se agrega el else porque ya los arreglos ya están limpios.
         if (inV.checked) {
           addElementsToArray(inV);
         }
       });
+
+      validateCheckboxChecked();
     });
 
     inputValidate.forEach((input) => {
@@ -540,34 +546,23 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       });
     });
 
-    validateReserva.elementos = {
-      elmConsumibles: consumibles,
-      elmDevolutivos: devolutivos,
-    };
-
-    // console.log({"devolutivos":devolutivos});
-    // console.log({"consumibles":consumibles});
-
-    // console.log({"validateReserva":validateReserva});
-
-    // //Borro todos los elementos que esten en el objeto y los re asigno
-    // delete validateReserva.elementos;
-    // validateReserva.elementos = {
-    //   elmConsumibles: consumibles,
-    //   elmDevolutivos: devolutivos
-    // }
-    console.log({ validateReserva: validateReserva });
-
     //Variable para visualizar los elementos antes de validar el prestamo
     let elementosPreviewConsu = validateReserva.elementos.elmConsumibles;
     let elementosPreviewDev = validateReserva.elementos.elmDevolutivos;
-
     let dataTr = event.target.closest("tr");
     //Estado por validar
     let estadoNew = dataTr.children[2];
     let tdAcciones = dataTr.children[4];
 
-    modalValidate.open();
+    //Cuando el usuario pase al siguiente paso, este valida todo
+    nextBtnValidate.addEventListener('click', (e)=>{
+
+      validateReserva.elementos = {
+        elmConsumibles: consumibles,
+        elmDevolutivos: devolutivos,
+      };
+
+    });
 
     // confirm(`¿Deseas dar salida a estos elementos? \n
     //   Consumibles:\n${
