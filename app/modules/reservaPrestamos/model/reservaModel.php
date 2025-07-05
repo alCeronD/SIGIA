@@ -649,8 +649,10 @@ class ReservaModel
 
             $codigoPrestamo = $data['codigoReserva']; // Es un solo ID, no array
 
-            var_dump($data);
+            // dd($data);
+            // var_dump($data);
 
+            // Primera transacción : actualizo el estado del prestamo
             // $estado = 1; // Validado
             // $query = "UPDATE prestamos SET pres_estado = ? WHERE pres_cod = ?";
             // $stmtValidate = $conn->prepare($query);
@@ -663,10 +665,6 @@ class ReservaModel
             //         'status' => false
             //     ];
             // }
-
-            // //TODO: Cambiar a insert.
-            // // $queryValidateSalida = "UPDATE entradas_salidas SET entr_tp_movmnt = ? WHERE ent_sal_cod_prestamo = ?";
-
 
             // $queryValidateSalida = "INSERT INTO entradas_salidas (
             //     ent_sal_cantidad,
@@ -682,15 +680,14 @@ class ReservaModel
             // //ya esta, está más arriba.
 
             // $stmtValidateSalida = $conn->prepare($queryValidateSalida);
-            // // $elmConsumibles = $data['elementos']['elmConsumibles'];
-            // // $elmDevolutivos = $data['elementos']['elmDevolutivos'];
+            // // $elmConsumibles = $data['elementosSalida']['elmConsumibles'];
+            // // $elmDevolutivos = $data['elementosSalida']['elmDevolutivos'];
 
-            // // var_dump($data);
 
             // //devolutivos.
             // foreach ($elmDevolutivos as $value) {
-            //     $cantidad =(int) $value['cantidadSolicitada'];
-            //     $codigoElemento = (int) $value['codigo'];
+            //     $cantidad =(int) $value['cantidadSalida'];
+            //     $codigoElemento = (int) $value['cod'];
             //     $stmtValidateSalida->bind_param('iiiii', 
             //         $cantidad,         // ent_sal_cantidad
             //         $tipoMovimiento,   // entr_tp_movmnt
@@ -710,8 +707,8 @@ class ReservaModel
 
             // //consumibles
             // foreach ($elmConsumibles as $item) {
-            //     $cantidad = (int) $item['cantidadSolicitada'];
-            //     $codigoElemento = (int) $item['codigo'];
+            //     $cantidad = (int) $item['cantidadSalida'];
+            //     $codigoElemento = (int) $item['cod'];
 
             //     $stmtValidateSalida->bind_param('iiiii',
             //         $cantidad,         // ent_sal_cantidad

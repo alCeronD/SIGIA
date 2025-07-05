@@ -273,7 +273,7 @@ function addElementsToArray(input) {
 
     if (tipo === "Consumible" && !consumibles.includes(cod)) {
       // consumibles.push(cod);
-      consumibles.push({"tipo":tipo,"cod":cod,"nombre":nombre,"cantidad":cantidad});
+      consumibles.push({"tipo":tipo,"cod":cod,"nombre":nombre,"cantidadSalida":cantidad});
     }
   } else {
     if (tipo === "Consumible") {
