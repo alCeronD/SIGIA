@@ -3,6 +3,7 @@ require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../../../helpers/const.php';
 include_once __DIR__ . '/../../../config/conn.php';
 include_once __DIR__ . '/../../usuarios/model/usuariosModel.php';
+require_once __DIR__ . '/../../elementos/model/elementosModel.php';
 
 
 //TODO: en los mensajes de retorno, definir una estructura de retorno específica, así evitar devolver o valores null, o un string, la idea es que devuelva un array con su status y mensaje, en todos los retornos.
@@ -14,16 +15,20 @@ class ReservaModel
 
     protected $usuario;
 
+    private $modelElemento;
+
     public function __construct()
     {
         $this->conect = new Conection();
         $this->usuario = new usuarios($this->conect);
+        $this->modelElemento = new ElementoModelo();
     }
 
     public function insertReserva(array $data = [], array $codDevolu = [], array $codConsumibles = [])
     {
 
         $conn = $this->conect->getConnect();
+
         try {
             $conn->begin_transaction();
 
@@ -648,124 +653,154 @@ class ReservaModel
             $id = $idUsario['usu_id'];
 
             $codigoPrestamo = $data['codigoReserva']; // Es un solo ID, no array
-
-            // dd($data);
+            $observacionSalida = $data['observacionSalida'];
             // var_dump($data);
 
             // Primera transacción : actualizo el estado del prestamo
-            // $estado = 1; // Validado
-            // $query = "UPDATE prestamos SET pres_estado = ? WHERE pres_cod = ?";
-            // $stmtValidate = $conn->prepare($query);
-            // $stmtValidate->bind_param('ii', $estado, $codigoPrestamo);
+            $estado = 1; // Validado
+            $query = "UPDATE prestamos SET pres_estado = ? WHERE pres_cod = ?";
+            $stmtValidate = $conn->prepare($query);
+            $stmtValidate->bind_param('ii', $estado, $codigoPrestamo);
 
-            // if (!$stmtValidate->execute()) {
-            //     $conn->rollback();
-            //     return [
-            //         'message' => $stmtValidate->error,
-            //         'status' => false
-            //     ];
-            // }
+            if (!$stmtValidate->execute()) {
+                $conn->rollback();
+                return [
+                    'message' => $stmtValidate->error,
+                    'status' => false
+                ];
+            }
 
-            // $queryValidateSalida = "INSERT INTO entradas_salidas (
-            //     ent_sal_cantidad,
-            //     ent_fech_registro,
-            //     entr_tp_movmnt, 
-            //     ent_id_usu,
-            //     ent_sal_cod_elemtn,
-            //     ent_sal_cod_prestamo
-            // ) VALUES (?, NOW(), ?, ?, ?, ?)";
+            // //Segunda transacción: inserto los elementos VALIDADOS POR EL USUARIO para su entrega
 
-            // $fechaSolicitud  = $data['dataUsuario']['fechaSolicitud'];
-            // $tipoMovimiento = 2;
-            // //ya esta, está más arriba.
+            // //Teniendo ya el codigo del prestamo, accedemos a el y actualizamos los elementos
+            $queryPrestamosElementos = "UPDATE prestamos_elementos SET pres_el_cantidad = ? WHERE pres_cod = ? AND pres_el_elm_cod = ?";
 
-            // $stmtValidateSalida = $conn->prepare($queryValidateSalida);
-            // // $elmConsumibles = $data['elementosSalida']['elmConsumibles'];
-            // // $elmDevolutivos = $data['elementosSalida']['elmDevolutivos'];
+            // Consumibles
+            $stmtPrestamosElementos = $conn->prepare($queryPrestamosElementos);
+            foreach ($elmConsumibles as $key => $value) {
+                $codigoElemento = (int) $value['cod'];
+                $cantidad = (int) $value['cantidadSalida'];
+                $stmtPrestamosElementos->reset();
+                $stmtPrestamosElementos->bind_param('iii', $cantidad,$codigoPrestamo,$codigoElemento);
+
+                if (!$stmtPrestamosElementos->execute()) {
+                    $conn->rollback();
+                    return [
+                        'message' => "error al preparar la consulta $stmtPrestamosElementos->error",
+                        'status' => false
+                    ];
+                }
+            }
+
+            // devolutivos
+            foreach ($elmDevolutivos as $key => $value) {
+                $codDevolutivo = (int) $value['cod'];
+                $cantidad = (int) $value['cantidadSalida'];
+                $stmtPrestamosElementos->reset();
+                    $stmtPrestamosElementos->bind_param('iii', $cantidad, $codigoPrestamo, $codDevolutivo);
+                if (!$stmtPrestamosElementos->execute()) {
+                    $conn->rollback();
+                    return [
+                        'message' => "error al preparar la consulta $stmtPrestamosElementos->error",
+                        'status' => false
+                    ];
+                }
+            }
 
 
-            // //devolutivos.
-            // foreach ($elmDevolutivos as $value) {
-            //     $cantidad =(int) $value['cantidadSalida'];
-            //     $codigoElemento = (int) $value['cod'];
-            //     $stmtValidateSalida->bind_param('iiiii', 
-            //         $cantidad,         // ent_sal_cantidad
-            //         $tipoMovimiento,   // entr_tp_movmnt
-            //         $id,               // ent_id_usu
-            //         $codigoElemento,   // ent_sal_cod_elemtn
-            //         $codigoPrestamo    // ent_sal_cod_prestamo
-            //     );
+            /**
+             * De aca, se debe restar las cantidades de los elementos y registrarlas en las entradas_salidas
+             *
+             */
 
-            //     if (!$stmtValidateSalida->execute()) {
-            //         $conn->rollback();
-            //         return [
-            //             'message' => $stmtValidateSalida->error,
-            //             'status' => false
-            //         ];
-            //     }
-            // }
+            //Disminumos la cantidad al consumible
+            foreach ($elmConsumibles as $key => $value) {
+                $codConsumible = (int) $value['cod'];
+                $cantidad = (int) $value['cantidadSalida'];
+                
+                // Disminuye existencia de elemento consumible sin tocar estado
+                $this->modelElemento->disminuirExistenciaElemento($codConsumible, $cantidad);
+            }
 
-            // //consumibles
-            // foreach ($elmConsumibles as $item) {
-            //     $cantidad = (int) $item['cantidadSalida'];
-            //     $codigoElemento = (int) $item['cod'];
+            $statusPrestamo = 3;
+            // // Tercera transacción: actualizo el estado del elemento devolutivo de reservado a PRESTADO.
+            $queryUpdateStatus = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
+            $stmtQueryStatus = $conn->prepare($queryUpdateStatus);
+            foreach ($elmDevolutivos as $key => $value) {
+                $codDevolutivo = (int) $value['cod'];
+                $stmtQueryStatus->reset();
+                $stmtQueryStatus->bind_param('ii', $statusPrestamo,$codDevolutivo);
 
-            //     $stmtValidateSalida->bind_param('iiiii',
-            //         $cantidad,         // ent_sal_cantidad
-            //         $tipoMovimiento,   // entr_tp_movmnt
-            //         $id,               // ent_id_usu
-            //         $codigoElemento,   // ent_sal_cod_elemtn
-            //         $codigoPrestamo    // ent_sal_cod_prestamo
-            //     );
+                if (!$stmtQueryStatus->execute()) {
+                    return [
+                        'message'=> "proceso cancelado $stmtQueryStatus->error",
+                        'status'=> false
+                    ];
+                }
+            }
 
-            //     if (!$stmtValidateSalida->execute()) {
-            //         $conn->rollback();
-            //         return [
-            //             'message' => $stmtValidateSalida->error,
-            //             'status' => false
-            //         ];
-            //     }
-            // }
+            // // cuarta transacción : inserto los elementos que se han validado.
+            $queryValidateSalida = "INSERT INTO entradas_salidas (
+                ent_sal_cantidad,
+                ent_fech_registro,
+                ent_sal_observacion,
+                entr_tp_movmnt, 
+                ent_id_usu,
+                ent_sal_cod_elemtn,
+                ent_sal_cod_prestamo
+            ) VALUES (?, NOW(), ?, ?, ?, ?, ?)";
 
-            // $sqlGetCantidad = "SELECT elm_existencia FROM elementos WHERE elm_cod = ?";
-            // $sqlConsumibles = "UPDATE elementos SET elm_existencia = ? WHERE elm_cod = ?";
-            // $stmtGetCantidad = $conn->prepare($sqlGetCantidad);
-            // $stmtConsumibles = $conn->prepare($sqlConsumibles);
+            $fechaSolicitud  = $data['dataUsuario']['fechaSolicitud'];
+            $tipoMovimiento = 2;
+            //ya esta, está más arriba.
 
-            // foreach ($elmConsumibles as $item) {
-            //     $codigo = $item['codigo'];
-            //     $cantidadSolicitada = $item['cantidadSolicitada'];
+            $stmtValidateSalida = $conn->prepare($queryValidateSalida);
 
-            //     $stmtGetCantidad->bind_param('i', $codigo);
-            //     if (!$stmtGetCantidad->execute()) {
-            //         $conn->rollback();
-            //         return [
-            //             'message' => $stmtGetCantidad->error,
-            //             'status' => false
-            //         ];
-            //     }
+            //devolutivos.
+            foreach ($elmDevolutivos as $value) {
+                $cantidad =(int) $value['cantidadSalida'];
+                $codigoElemento = (int) $value['cod'];
+                $stmtValidateSalida->reset();
+                $stmtValidateSalida->bind_param('isiiii',
+                    $cantidad,          // i
+                    $observacionSalida, // s
+                    $tipoMovimiento,    // i
+                    $id,                // i
+                    $codigoElemento,    // i
+                    $codigoPrestamo     // i
+                );
 
-            //     $cantidadResult = $stmtGetCantidad->get_result();
-            //     $existente = $cantidadResult->fetch_assoc()['elm_existencia'];
-            //     $nuevaCantidad = $existente - $cantidadSolicitada;
+                if (!$stmtValidateSalida->execute()) {
+                    $conn->rollback();
+                    return [
+                        'message' => $stmtValidateSalida->error,
+                        'status' => false
+                    ];
+                }
+            }
 
-            //     if ($nuevaCantidad < 0) {
-            //         $conn->rollback();
-            //         return [
-            //             'message' => "Cantidad insuficiente para el elemento con código $codigo.",
-            //             'status' => false
-            //         ];
-            //     }
+            //consumibles
+            foreach ($elmConsumibles as $item) {
+                $cantidad = (int) $item['cantidadSalida'];
+                $codigoElemento = (int) $item['cod'];
+                $stmtValidateSalida->reset();
+                $stmtValidateSalida->bind_param('isiiii',
+                    $cantidad,          // i
+                    $observacionSalida, // s
+                    $tipoMovimiento,    // i
+                    $id,                // i
+                    $codigoElemento,    // i
+                    $codigoPrestamo     // i
+                );
 
-            //     $stmtConsumibles->bind_param('ii', $nuevaCantidad, $codigo);
-            //     if (!$stmtConsumibles->execute()) {
-            //         $conn->rollback();
-            //         return [
-            //             'message' => $stmtConsumibles->error,
-            //             'status' => false
-            //         ];
-            //     }
-            // }
+                if (!$stmtValidateSalida->execute()) {
+                    $conn->rollback();
+                    return [
+                        'message' => $stmtValidateSalida->error,
+                        'status' => false
+                    ];
+                }
+            }
 
             $conn->commit();
 

@@ -364,6 +364,7 @@ class ElementoModelo
                 WHERE elm_cod = ? AND elm_existencia >= ?";
         
         $stmt = $this->conn->prepare($sql);
+        $stmt->reset();
         $stmt->bind_param("iii", $cantidad, $id, $cantidad);
         return $stmt->execute();
     }

@@ -115,7 +115,6 @@ class ReservaController
     public function setSolicitud(array $data =[]){
         $cedula = $data['dataUsuario']['nroIdentidad'];
 
-        // var_dump($cedula);
         $result = $this->model->validateSolicitud($data, $cedula);
             success('prestamo validado');
         

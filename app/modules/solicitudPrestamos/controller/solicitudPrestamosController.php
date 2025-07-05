@@ -60,7 +60,6 @@ class solicitudPrestamosController {
 
         $data = $_POST;
 
-        var_dump($data);
         
         // dd($data);
 
@@ -93,8 +92,8 @@ class solicitudPrestamosController {
                 if (is_numeric($elm_cod) && is_numeric($cantidad) && $cantidad > 0) {
                     $prestamoElemento->registrarElemConsumible($lastId, $usuario_id, $elm_cod, $cantidad);
                     
-                    // Disminuye existencia sin tocar estado
-                    $elementoModel->disminuirExistenciaElemento($elm_cod, $cantidad);
+                    // // Disminuye existencia sin tocar estado
+                    // $elementoModel->disminuirExistenciaElemento($elm_cod, $cantidad);
             
                     // Opcionalmente cambiar estado
                     $elementoModel->actualizarEstadoElemento($elm_cod, 3);

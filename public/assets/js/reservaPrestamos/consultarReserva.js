@@ -665,7 +665,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       elementosPreviewConsu = validateReserva.elementosSalida.elmConsumibles;
       elementosPreviewDev = validateReserva.elementosSalida.elmDevolutivos;
 
-        // console.log(validateReserva);
+        console.log(validateReserva);
     });
 
     previewBtnValidate.addEventListener("click", (e) => {
