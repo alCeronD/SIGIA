@@ -631,13 +631,13 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       });
     });
 
-    // //Variable para visualizar los elementos antes de validar el prestamo
+    // //Variable para visualizar los elementos cuando se ha validado el prestamo
     let elementosPreviewConsu = [];
     let elementosPreviewDev = [];
-    // let dataTr = event.target.closest("tr");
+    let dataTr = event.target.closest("tr");
     // //Estado por validar
-    // let estadoNew = dataTr.children[2];
-    // let tdAcciones = dataTr.children[4];
+    let estadoNew = dataTr.children[2];
+    let tdAcciones = dataTr.children[4];
 
     const previewBtnValidate = document.querySelector("#previewBtnValidate");
     const radioYes = document.querySelector("#radioYes");

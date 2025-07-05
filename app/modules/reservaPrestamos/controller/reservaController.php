@@ -115,12 +115,11 @@ class ReservaController
     public function setSolicitud(array $data =[]){
         $cedula = $data['dataUsuario']['nroIdentidad'];
 
-        // $result = $this->model->validateSolicitud($data, $cedula);
-        $this->model->validateSolicitud($data, $cedula);
-        // var_dump($result);
-            // success('prestamo validado');
-        
-        // fail('error al validar el prestamo');
+        $result = $this->model->validateSolicitud($data, $cedula);
+        if (!$result) {
+            fail('error al validar el prestamo');
+        }        
+        success('prestamo validado');
     }
 
     //Finalizar la reserva, es decir, cuando el usuario devuelve los elementos.

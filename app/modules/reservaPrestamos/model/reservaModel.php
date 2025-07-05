@@ -652,8 +652,8 @@ class ReservaModel
 
     /**
      * Función para validar las solicitudes que hacen tanto el usuario instructor como aprendices.
-    //  * //  @return array
-     * @void
+     * @return array
+     * 
      */
     public function validateSolicitud(array $data = [], int $cedula = 0)
     {
@@ -667,7 +667,7 @@ class ReservaModel
 
 
             if (!isset($data['elementosSalida']) && !in_array($data['elementosSalida'], $data['elmentosSalida']['elmConsumibles'])) {
-                return ['message'=> 'valores no enviados correctamente', 'status'=> false];
+                return ['message' => 'valores no enviados correctamente', 'status' => false];
             }
 
             $idUsario = $this->usuario->searchU($cedula, true);
@@ -697,22 +697,20 @@ class ReservaModel
 
             // Consumibles
             $stmtPrestamosElementos = $conn->prepare($queryPrestamosElementos);
-            if(!$stmtPrestamosElementos){
+            if (!$stmtPrestamosElementos) {
                 $conn->rollback();
                 return [
-                    'message'=> "error al preparar la consulta",
-                    'status'=> false
+                    'message' => "error al preparar la consulta",
+                    'status' => false
                 ];
-
             }
 
             //Consumibles.
             foreach ($elmConsumiblesCon as $value) {
-                var_dump($value);
                 $codigoElemento = (int) $value['cod'];
                 $cantidad = (int) $value['cantidadSalida'];
                 $stmtPrestamosElementos->reset();
-                $stmtPrestamosElementos->bind_param('iii', $cantidad,$codigoPrestamo,$codigoElemento);
+                $stmtPrestamosElementos->bind_param('iii', $cantidad, $codigoPrestamo, $codigoElemento);
 
                 if (!$stmtPrestamosElementos->execute()) {
                     $conn->rollback();
@@ -720,7 +718,6 @@ class ReservaModel
                         'message' => "error al preparar la consulta $stmtPrestamosElementos->error",
                         'status' => false
                     ];
-
                 }
             }
 
@@ -729,7 +726,7 @@ class ReservaModel
                 $codDevolutivo = (int) $value['cod'];
                 $cantidad = (int) $value['cantidadSalida'];
                 $stmtPrestamosElementos->reset();
-                    $stmtPrestamosElementos->bind_param('iii', $cantidad, $codigoPrestamo, $codDevolutivo);
+                $stmtPrestamosElementos->bind_param('iii', $cantidad, $codigoPrestamo, $codDevolutivo);
                 if (!$stmtPrestamosElementos->execute()) {
                     $conn->rollback();
                     return [
@@ -749,7 +746,7 @@ class ReservaModel
             foreach ($elmConsumiblesCon as $key => $value) {
                 $codConsumible = (int) $value['cod'];
                 $cantidad = (int) $value['cantidadSalida'];
-                
+
                 // Disminuye existencia de elemento consumible sin tocar estado
                 $this->modelElemento->disminuirExistenciaElemento($codConsumible, $cantidad);
             }
@@ -761,12 +758,12 @@ class ReservaModel
             foreach ($elmDevolutivosDev as $key => $value) {
                 $codDevolutivo = (int) $value['cod'];
                 $stmtQueryStatus->reset();
-                $stmtQueryStatus->bind_param('ii', $statusPrestamo,$codDevolutivo);
+                $stmtQueryStatus->bind_param('ii', $statusPrestamo, $codDevolutivo);
 
                 if (!$stmtQueryStatus->execute()) {
                     return [
-                        'message'=> "proceso cancelado $stmtQueryStatus->error",
-                        'status'=> false
+                        'message' => "proceso cancelado $stmtQueryStatus->error",
+                        'status' => false
                     ];
                 }
             }
@@ -790,10 +787,11 @@ class ReservaModel
 
             //devolutivos.
             foreach ($elmDevolutivosDev as $value) {
-                $cantidad =(int) $value['cantidadSalida'];
+                $cantidad = (int) $value['cantidadSalida'];
                 $codigoElemento = (int) $value['cod'];
                 $stmtValidateSalida->reset();
-                $stmtValidateSalida->bind_param('isiiii',
+                $stmtValidateSalida->bind_param(
+                    'isiiii',
                     $cantidad,          // i
                     $observacionSalida, // s
                     $tipoMovimiento,    // i
@@ -816,7 +814,8 @@ class ReservaModel
                 $cantidad = (int) $item['cantidadSalida'];
                 $codigoElemento = (int) $item['cod'];
                 $stmtValidateSalida->reset();
-                $stmtValidateSalida->bind_param('isiiii',
+                $stmtValidateSalida->bind_param(
+                    'isiiii',
                     $cantidad,          // i
                     $observacionSalida, // s
                     $tipoMovimiento,    // i
@@ -836,16 +835,16 @@ class ReservaModel
 
             $conn->commit();
 
-            // return [
-            //     'message' => 'Solicitud validada con éxito',
-            //     'status' => true
-            // ];
+            return [
+                'message' => 'Solicitud validada con éxito',
+                'status' => true
+            ];
         } catch (Exception $e) {
             $conn->rollback();
-            // return [
-            //     'message' => $e->getMessage(),
-            //     'status' => false
-            // ];
+            return [
+                'message' => $e->getMessage(),
+                'status' => false
+            ];
         }
     }
 
