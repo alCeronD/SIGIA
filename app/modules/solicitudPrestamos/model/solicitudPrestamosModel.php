@@ -212,17 +212,35 @@ class solicitudPrestamos
         $tipo_movimiento = 3; // salida
         $id_prestamo = $lastId;
         $usuario = $usuario_id;
+        $observacion = 'solicitud de salida';
         //procesar los elementos consumibles
         foreach ($cantidades_consumibles as $codElemento => $cantidad) {
             if (is_numeric($cantidad) && $cantidad > 0) {
                 $sqlSalida = "INSERT INTO entradas_salidas (
-                    ent_sal_cantidad, ent_fech_registro, entr_tp_movmnt,
-                    ent_id_usu, ent_sal_cod_elemtn, ent_sal_cod_prestamo
-                ) VALUES (?, ?, ?, ?, ?, ?)";
+                    ent_sal_cantidad,
+                    ent_fech_registro,
+                    ent_sal_observacion,
+                    entr_tp_movmnt,
+                    ent_id_usu,
+                    ent_sal_cod_elemtn,
+                    ent_sal_cod_prestamo
+                ) VALUES (?, NOW(), ?, ?, ?, ?, ?)";
 
                 $stmt = $this->conn->prepare($sqlSalida);
 
-                $stmt->bind_param("isiiii", $cantidad, $fecha_registro, $tipo_movimiento, $usuario, $codElemento, $id_prestamo);
+                if (!$stmt) {
+                    return false;
+                }
+
+                $stmt->bind_param("isiiii", 
+                    $cantidad,          
+                    $observacion,       
+                    $tipo_movimiento,   
+                    $usuario,           
+                    $codElemento,       
+                    $id_prestamo        
+                );
+
                 if (!$stmt->execute()) {
                     return false;
                 }
