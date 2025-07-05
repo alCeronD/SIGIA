@@ -95,7 +95,7 @@ class solicitudPrestamosController {
                     // // Disminuye existencia sin tocar estado
                     // $elementoModel->disminuirExistenciaElemento($elm_cod, $cantidad);
             
-                    // Opcionalmente cambiar estado
+                 
                     $elementoModel->actualizarEstadoElemento($elm_cod, 3);
                 }
             }

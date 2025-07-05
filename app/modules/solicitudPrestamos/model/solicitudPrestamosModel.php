@@ -156,7 +156,6 @@ class solicitudPrestamos
             $result = $elementosStmt->get_result();
 
             include_once __DIR__ . '/../../elementos/model/elementosModel.php';
-            // $elementoModel = new ElementoModelo($this->conn);
             $elementoModel = new ElementoModelo();
 
             while ($row = $result->fetch_assoc()) {
@@ -187,7 +186,6 @@ class solicitudPrestamos
         $usua_id = (int) $usuario_id;
         $cantidad = 1;
 
-        // $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad ) VALUES ($pres_cod, $usua_id, $elm_cod,$cantidad)";
         $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod) VALUES ($pres_cod, $usua_id, $elm_cod)";
 
         return $this->conn->query($query);
@@ -198,9 +196,7 @@ class solicitudPrestamos
         $pres_cod = (int) $pres_cod;
         $elm_cod = (int) $elm_cod;
         $usua_id = (int) $usuario_id;
-        $cantidad = (int) $cantidad;
 
-        // $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad) VALUES ($pres_cod, $usua_id, $elm_cod, $cantidad)";
         $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod) VALUES ($pres_cod, $usua_id, $elm_cod)";
 
         return $this->conn->query($query);
@@ -215,7 +211,7 @@ class solicitudPrestamos
         $observacion = 'solicitud de salida';
         //procesar los elementos consumibles
         foreach ($cantidades_consumibles as $codElemento => $cantidad) {
-            if (is_numeric($cantidad) && $cantidad > 0) {
+            if (is_numeric($cantidad) && ($cantidad > 0)) {
                 $sqlSalida = "INSERT INTO entradas_salidas (
                     ent_sal_cantidad,
                     ent_fech_registro,
@@ -232,13 +228,14 @@ class solicitudPrestamos
                     return false;
                 }
 
-                $stmt->bind_param("isiiii", 
-                    $cantidad,          
-                    $observacion,       
-                    $tipo_movimiento,   
-                    $usuario,           
-                    $codElemento,       
-                    $id_prestamo        
+                $stmt->bind_param(
+                    "isiiii",
+                    $cantidad,
+                    $observacion,
+                    $tipo_movimiento,
+                    $usuario,
+                    $codElemento,
+                    $id_prestamo
                 );
 
                 if (!$stmt->execute()) {
@@ -256,19 +253,36 @@ class solicitudPrestamos
         // 2. Procesar los elementos devolutivos (una unidad defecto)
         foreach ($elementos_devolutivos as $elementoCod) {
             $sqlSalida = "INSERT INTO entradas_salidas (
-        ent_sal_cantidad, ent_fech_registro, entr_tp_movmnt,
-        ent_id_usu, ent_sal_cod_elemtn, ent_sal_cod_prestamo
-    ) VALUES (?, ?, ?, ?, ?, ?)";
+        ent_sal_cantidad,
+        ent_fech_registro,
+        ent_sal_observacion,
+        entr_tp_movmnt,
+        ent_id_usu,
+        ent_sal_cod_elemtn,
+        ent_sal_cod_prestamo
+    ) VALUES (?, NOW(), ?, ?, ?, ?, ?)";
 
             $stmt = $this->conn->prepare($sqlSalida);
 
-            // Declaramos los valores a insertar
-            $cantidad = 1; // siempre 1 para devolutivos
-            // $fecha_registro es string (fecha)
-            // $tipo_movimiento, $usuario, $elementoCod, $id_prestamo son enteros
+            if (!$stmt) {
+                return false;
+            }
 
-            $stmt->bind_param("isiiii", $cantidad, $fecha_registro, $tipo_movimiento, $usuario, $elementoCod, $id_prestamo);
-            $stmt->execute();
+            $cantidad = 1; 
+
+            $stmt->bind_param(
+                "isiiii",
+                $cantidad,          
+                $observacion,       
+                $tipo_movimiento,   
+                $usuario,           
+                $elementoCod,       
+                $id_prestamo        
+            );
+
+            if (!$stmt->execute()) {
+                return false;
+            }
         }
     }
 }
