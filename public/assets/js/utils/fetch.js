@@ -5,7 +5,7 @@ const headers = {
 };
 
 //Función para enviar el fetch
-export const sendData = async (url, method = 'GET', parameters = {}, data = {})=>{
+export const sendData = async (url, method = 'POST', parameters = {}, data = {})=>{
     try {
 
         const setParameter = new URLSearchParams();
@@ -13,9 +13,10 @@ export const sendData = async (url, method = 'GET', parameters = {}, data = {})=
 
         let newUrl = parameters ? `${url}?${setParameter}` : url;
         const optionsFetch = setFetch(method,parameters,data);
+        console.log(optionsFetch);
         const response = await fetch(newUrl,optionsFetch);
+        console.log(response);
         const json = await response.json();
-
         console.log(json);
 
         if (!response.ok) {
@@ -33,24 +34,44 @@ export const sendData = async (url, method = 'GET', parameters = {}, data = {})=
 };
 
 //Función para establecer el fetch.
-const setFetch = (method = 'GET', parameters = {}, data = {})=>{
-    
-    //Aca creo los parámetros si necesito enviarlos.
-    if (parameters) {
-        const setParameters = new URLSearchParams();
-        setParameters.append('action',parameters);
-    }
-
-    return {
+const setFetch = (method = 'GET',action = '', data = {})=>{
+    data['action'] =action;
+    let returnPrueba = {
         method,
         body: method != 'GET' ? JSON.stringify(data) : undefined,
         headers
     };
+    return returnPrueba; 
 
 }
 
+//Función para solicitar data.
+export const getData = async(url, method = 'GET', parameters = {}, data ={})=>{
+    try {
+        let newUrl = '';
+        //Aca creo los parámetros si necesito enviarlos.
+        if (parameters) {
+            const setParameters = new URLSearchParams();
+            Object.entries(parameters).forEach(([key,value])=>{
+                setParameters.append(key,value);
+            });
+            
+            newUrl = parameters ? `${url}?${setParameters.toString()}` : url;
+        }
+        const bodyData = setFetch(method,parameters,data);
+        const execute = await fetch(newUrl,bodyData);
+          
+        const getResponse = await execute.json(); 
+        return getResponse;
 
+} catch (error) {
+        throw new Error(`Error de procedimiento ${error}`);
+        
+    }
+    
+}
 
 export default{
-    sendData
+    sendData,
+    getData
 }

@@ -2,6 +2,8 @@
 
 class solicitudPrestamos
 {
+
+
     public $pres_cod;
     public $pres_fch_slcitud;
     public $pres_fch_reserva;
@@ -117,8 +119,6 @@ class solicitudPrestamos
         return $data;
     }
 
-
-
     public function searchU(int $id)
     {
         if (!is_int($id)) {
@@ -156,13 +156,14 @@ class solicitudPrestamos
             $result = $elementosStmt->get_result();
 
             include_once __DIR__ . '/../../elementos/model/elementosModel.php';
-            $elementoModel = new ElementoModelo($this->conn);
+            $elementoModel = new ElementoModelo();
 
             while ($row = $result->fetch_assoc()) {
                 $elemento_id = $row['pres_el_elem_cod'];
                 $cantidad = $row['pres_el_cantidad'];
 
-                $elementoModel->actualizarEstadoElemento($elemento_id, 1);
+                // Cambiar estado del elemento a disponible
+                $elementoModel->actualizarEstadoElemento($elemento_id, 1); // 1 = Disponible
 
                 // Sumar cantidad de vuelta a elm_existencia
                 $sumarQuery = "UPDATE elementos SET elm_existencia = elm_existencia + ? WHERE elm_cod = ?";
@@ -180,13 +181,12 @@ class solicitudPrestamos
 
     public function registrarElem($pres_cod, $usuario_id, $elm_cod)
     {
-        // dd("llego modelo");
         $pres_cod = (int) $pres_cod;
         $elm_cod = (int) $elm_cod;
         $usua_id = (int) $usuario_id;
         $cantidad = 1;
 
-        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad ) VALUES ($pres_cod, $usua_id, $elm_cod,$cantidad)";
+        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod) VALUES ($pres_cod, $usua_id, $elm_cod)";
 
         return $this->conn->query($query);
     }
@@ -196,10 +196,8 @@ class solicitudPrestamos
         $pres_cod = (int) $pres_cod;
         $elm_cod = (int) $elm_cod;
         $usua_id = (int) $usuario_id;
-        $cantidad = (int) $cantidad;
 
-        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad) 
-                  VALUES ($pres_cod, $usua_id, $elm_cod, $cantidad)";
+        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod) VALUES ($pres_cod, $usua_id, $elm_cod)";
 
         return $this->conn->query($query);
     }
@@ -207,19 +205,42 @@ class solicitudPrestamos
 
     public function registrarSalida($cantidades_consumibles, $fecha_registro, $usuario_id, $lastId, $elementos_devolutivos)
     {
-        $tipo_movimiento = 3; //quemo el estado de salida
+        $tipo_movimiento = 3; // salida
         $id_prestamo = $lastId;
         $usuario = $usuario_id;
+        $observacion = 'solicitud de salida';
         //procesar los elementos consumibles
         foreach ($cantidades_consumibles as $codElemento => $cantidad) {
-            if (is_numeric($cantidad) && $cantidad > 0) {
+            if (is_numeric($cantidad) && ($cantidad > 0)) {
                 $sqlSalida = "INSERT INTO entradas_salidas (
-                    ent_sal_cantidad, ent_fech_registro, entr_tp_movmnt,
-                    ent_id_usu, ent_sal_cod_elemtn, ent_sal_cod_prestamo
-                ) VALUES (?, ?, ?, ?, ?, ?)";
+                    ent_sal_cantidad,
+                    ent_fech_registro,
+                    ent_sal_observacion,
+                    entr_tp_movmnt,
+                    ent_id_usu,
+                    ent_sal_cod_elemtn,
+                    ent_sal_cod_prestamo
+                ) VALUES (?, NOW(), ?, ?, ?, ?, ?)";
 
                 $stmt = $this->conn->prepare($sqlSalida);
-                $stmt->execute([$cantidad, $fecha_registro, $tipo_movimiento, $usuario, $codElemento, $id_prestamo]);
+
+                if (!$stmt) {
+                    return false;
+                }
+
+                $stmt->bind_param(
+                    "isiiii",
+                    $cantidad,
+                    $observacion,
+                    $tipo_movimiento,
+                    $usuario,
+                    $codElemento,
+                    $id_prestamo
+                );
+
+                if (!$stmt->execute()) {
+                    return false;
+                }
             }
         }
 
@@ -229,18 +250,39 @@ class solicitudPrestamos
 
         $elementos_devolutivos = array_filter(array_unique($elementos_devolutivos));
 
-        //procesar elementos devolutivos
+        // 2. Procesar los elementos devolutivos (una unidad defecto)
         foreach ($elementos_devolutivos as $elementoCod) {
-            // dd($elementos_devolutivos);
             $sqlSalida = "INSERT INTO entradas_salidas (
-                ent_sal_cantidad, ent_fech_registro, entr_tp_movmnt,
-                ent_id_usu, ent_sal_cod_elemtn, ent_sal_cod_prestamo
-            ) VALUES (?, ?, ?, ?, ?, ?)";
+        ent_sal_cantidad,
+        ent_fech_registro,
+        ent_sal_observacion,
+        entr_tp_movmnt,
+        ent_id_usu,
+        ent_sal_cod_elemtn,
+        ent_sal_cod_prestamo
+    ) VALUES (?, NOW(), ?, ?, ?, ?, ?)";
 
             $stmt = $this->conn->prepare($sqlSalida);
-            $stmt->execute([1, $fecha_registro, $tipo_movimiento, $usuario, $elementoCod, $id_prestamo]);
-        }
 
-        return true;
+            if (!$stmt) {
+                return false;
+            }
+
+            $cantidad = 1; 
+
+            $stmt->bind_param(
+                "isiiii",
+                $cantidad,          
+                $observacion,       
+                $tipo_movimiento,   
+                $usuario,           
+                $elementoCod,       
+                $id_prestamo        
+            );
+
+            if (!$stmt->execute()) {
+                return false;
+            }
+        }
     }
 }

@@ -23,7 +23,8 @@ class solicitudPrestamosController {
         $objetoArea = new ConfigModulesModel();
         $areas = $objetoArea->select("SELECT * FROM areas WHERE ar_status = 1");
 
-        $objetoElemento = new ElementoModelo($this->conn);
+        // $objetoElemento = new ElementoModelo($this->conn);
+        $objetoElemento = new ElementoModelo();
         $elementos = $objetoElemento->searchElements(1);
         $elementos_consumibles = $objetoElemento->searchElements(2);
 
@@ -53,28 +54,36 @@ class solicitudPrestamosController {
         $rol_id = $_SESSION['usuario']['rol_id'];
         $elementos_seleccionados = $_POST['elementos_seleccionados'];
         $cantidades_consumibles = $_POST['cantidades_consumibles'];
+        
         unset($_POST['elementos_seleccionados'],
         $_POST['elementos_devolutivos_seleccionados']);
 
         $data = $_POST;
+
         
-        // dd($elementos_devolutivos);
+        // dd($data);
 
         $datos = new solicitudPrestamos($this->conn);
         $lastId = $datos->create($data, $rol_id);
 
         if (is_numeric($lastId)) {
             $prestamoElemento = new solicitudPrestamos($this->conn);
-            $salida = new solicitudPrestamos($this->conn);
-            $elementoModel = new ElementoModelo($this->conn);
+            $elementoModel = new ElementoModelo();
 
             // Registrar devolutivos seleccionados
             foreach ($elementos_seleccionados as $elemento_id) {
+                $typeElement = $elementoModel->getElementByType($elemento_id);
+
+
                 $prestamoElemento->registrarElem($lastId, $usuario_id, $elemento_id);
+
+                if ($typeElement == 2) {        
+                    // Disminuye una unidad
+                    $elementoModel->disminuirExistenciaElemento($elemento_id, 1);
+                }
             
-                $elementoModel->disminuirExistenciaElemento($elemento_id, 1);
-            
-                $elementoModel->actualizarEstadoElemento($elemento_id, 3); 
+                // Cambiar estado
+                $elementoModel->actualizarEstadoElemento($elemento_id, 5); 
             }
 
 
@@ -83,16 +92,16 @@ class solicitudPrestamosController {
                 if (is_numeric($elm_cod) && is_numeric($cantidad) && $cantidad > 0) {
                     $prestamoElemento->registrarElemConsumible($lastId, $usuario_id, $elm_cod, $cantidad);
                     
-                    $elementoModel->disminuirExistenciaElemento($elm_cod, $cantidad);
+                    // // Disminuye existencia sin tocar estado
+                    // $elementoModel->disminuirExistenciaElemento($elm_cod, $cantidad);
             
                  
                     $elementoModel->actualizarEstadoElemento($elm_cod, 3);
                 }
             }
 
-
             // Registramos salidas
-            $salida->registrarSalida($cantidades_consumibles, $data['pres_fch_reserva'], $usuario_id, $lastId, $elementos_seleccionados);
+            $prestamoElemento->registrarSalida($cantidades_consumibles, $data['pres_fch_reserva'], $usuario_id, $lastId, $elementos_seleccionados);
   
                 echo "<script>alert('Solicitud realizada correctamente, en espera por respuesta'); 
                       window.location.href = '" . getUrl('solicitudPrestamos','solicitudPrestamos','registrarPrestamosView', false, 'dashboard') . "';</script>";

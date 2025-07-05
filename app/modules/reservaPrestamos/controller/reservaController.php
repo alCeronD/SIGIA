@@ -45,6 +45,7 @@ class ReservaController
         $data = $this->model->selectUsers($page);
 
         if ($data != null) {
+            // var_dump($data);
             success('Usuarios activos', $data);
         }
     }
@@ -113,12 +114,15 @@ class ReservaController
     //Función para validar la solicitud del aprendiz/instructor y cambiar su estado a validado
     public function setSolicitud(array $data =[]){
         $cedula = $data['dataUsuario']['nroIdentidad'];
+
         $result = $this->model->validateSolicitud($data, $cedula);
-            success('prestamo validado');
-        
-        fail('error al validar el prestamo');
+        if (!$result) {
+            fail('error al validar el prestamo');
+        }        
+        success('prestamo validado');
     }
 
+    //Finalizar la reserva, es decir, cuando el usuario devuelve los elementos.
     public function setEndReserva(array $elementos = [], int $codigo = 0){
         // $data = $this->model->endReserva($elementos,$codigo);
         $data = $this->model->endReserva($elementos,$codigo);
@@ -129,18 +133,28 @@ class ReservaController
     }
 
     //Función para traer las reservas
-    public function getReservas( ) {
+    public function getReservas(int $pages = 0) {
+        if (!$pages) {
+            fail('pagina no definida');
+        }
+
         // Me trae solo la información de la reserva.
-        $data = $this->model->selectDetailReserva();
+        $data = $this->model->selectDetailReserva($pages);
         if (!$data['status']) {
             fail('error', $data);
         }
         //Trae los elementos de la reserva.
-        success('Registros', $data);
+        success('Registros', $data);    
     }
 
+
+
     public function getElementsReserva($codigo ){
-        $dataDetail = $this->model->selectElementsReserva($codigo);
+        // var_dump($codigo);
+        $codigoInt = (int) $codigo;
+        // var_dump($codigoInt);
+        $dataDetail = $this->model->selectElementsReserva($codigoInt);
+        // $this->model->selectElementsReserva($codigoInt);
         success('Elementos relacionados al codigo',$dataDetail);
     }
 
@@ -157,16 +171,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         $pages = $_GET['pages'] ?? 1;
 
         $codigo = $_GET['codigo'] ?? 0;
-
+        $codigo = (int) $codigo;
         switch ($case) {
-            case 'users':
-                if (method_exists($controller, 'getUsers')) {
-                    $controller->getUsers($pages);
-                }
-                break;
-
             case 'elements':
-                //var_dump($pages);
                 if (method_exists($controller, 'getElementosDevolutivos')) {
                     $controller->getElementosDevolutivos($pages);
                 }
@@ -183,8 +190,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
             case 'reservas':
 
+                $pages = (int) $_GET['pages'];
                 if (method_exists($controller,'getReservas')) {
-                    $controller->getReservas();
+                    $controller->getReservas($pages);
                 }
                 break;
 
@@ -195,6 +203,13 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             }
 
             break;
+
+            case 'users':
+                if (method_exists($controller,'getUsers')) {
+                    $controller->getUsers($pages);
+                }
+                break;
+
             default:
                 //TODO: Retornar un valor no valido.
                 # code...
@@ -207,7 +222,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
         //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
         $data = json_decode($input, true);
-
 
         switch ($data['action']) {
             case 'finalizar':
@@ -225,8 +239,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             case 'validateLoan':
                 unset($data['action']);
                 $dataNuevo = $data;
-
-
                 $controller->setSolicitud($dataNuevo);
 
                 //la validación del data es practicamente el setReserva pero la hare en otra función por cuestión de tiempo.

@@ -60,8 +60,6 @@
                 $objeto = new $nombreClase($conexion);
 
                 if (method_exists($objeto, $funcion)) {
-                    
-
 
                     $objeto->$funcion();
                 } else {
