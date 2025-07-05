@@ -649,84 +649,86 @@ class ReservaModel
 
             $codigoPrestamo = $data['codigoReserva']; // Es un solo ID, no array
 
-            $estado = 1; // Validado
-            $query = "UPDATE prestamos SET pres_estado = ? WHERE pres_cod = ?";
-            $stmtValidate = $conn->prepare($query);
-            $stmtValidate->bind_param('ii', $estado, $codigoPrestamo);
+            var_dump($data);
 
-            if (!$stmtValidate->execute()) {
-                $conn->rollback();
-                return [
-                    'message' => $stmtValidate->error,
-                    'status' => false
-                ];
-            }
+            // $estado = 1; // Validado
+            // $query = "UPDATE prestamos SET pres_estado = ? WHERE pres_cod = ?";
+            // $stmtValidate = $conn->prepare($query);
+            // $stmtValidate->bind_param('ii', $estado, $codigoPrestamo);
 
-            //TODO: Cambiar a insert.
-            // $queryValidateSalida = "UPDATE entradas_salidas SET entr_tp_movmnt = ? WHERE ent_sal_cod_prestamo = ?";
+            // if (!$stmtValidate->execute()) {
+            //     $conn->rollback();
+            //     return [
+            //         'message' => $stmtValidate->error,
+            //         'status' => false
+            //     ];
+            // }
+
+            // //TODO: Cambiar a insert.
+            // // $queryValidateSalida = "UPDATE entradas_salidas SET entr_tp_movmnt = ? WHERE ent_sal_cod_prestamo = ?";
 
 
-            $queryValidateSalida = "INSERT INTO entradas_salidas (
-                ent_sal_cantidad,
-                ent_fech_registro,
-                entr_tp_movmnt, 
-                ent_id_usu,
-                ent_sal_cod_elemtn,
-                ent_sal_cod_prestamo
-            ) VALUES (?, NOW(), ?, ?, ?, ?)";
+            // $queryValidateSalida = "INSERT INTO entradas_salidas (
+            //     ent_sal_cantidad,
+            //     ent_fech_registro,
+            //     entr_tp_movmnt, 
+            //     ent_id_usu,
+            //     ent_sal_cod_elemtn,
+            //     ent_sal_cod_prestamo
+            // ) VALUES (?, NOW(), ?, ?, ?, ?)";
 
-            $fechaSolicitud  = $data['dataUsuario']['fechaSolicitud'];
-            $tipoMovimiento = 2;
-            //ya esta, está más arriba.
+            // $fechaSolicitud  = $data['dataUsuario']['fechaSolicitud'];
+            // $tipoMovimiento = 2;
+            // //ya esta, está más arriba.
 
-            $stmtValidateSalida = $conn->prepare($queryValidateSalida);
-            $elmConsumibles = $data['elementos']['elmConsumibles'];
-            $elmDevolutivos = $data['elementos']['elmDevolutivos'];
+            // $stmtValidateSalida = $conn->prepare($queryValidateSalida);
+            // // $elmConsumibles = $data['elementos']['elmConsumibles'];
+            // // $elmDevolutivos = $data['elementos']['elmDevolutivos'];
 
-            // var_dump($data);
+            // // var_dump($data);
 
-            //devolutivos.
-            foreach ($elmDevolutivos as $value) {
-                $cantidad =(int) $value['cantidadSolicitada'];
-                $codigoElemento = (int) $value['codigo'];
-                $stmtValidateSalida->bind_param('iiiii', 
-                    $cantidad,         // ent_sal_cantidad
-                    $tipoMovimiento,   // entr_tp_movmnt
-                    $id,               // ent_id_usu
-                    $codigoElemento,   // ent_sal_cod_elemtn
-                    $codigoPrestamo    // ent_sal_cod_prestamo
-                );
+            // //devolutivos.
+            // foreach ($elmDevolutivos as $value) {
+            //     $cantidad =(int) $value['cantidadSolicitada'];
+            //     $codigoElemento = (int) $value['codigo'];
+            //     $stmtValidateSalida->bind_param('iiiii', 
+            //         $cantidad,         // ent_sal_cantidad
+            //         $tipoMovimiento,   // entr_tp_movmnt
+            //         $id,               // ent_id_usu
+            //         $codigoElemento,   // ent_sal_cod_elemtn
+            //         $codigoPrestamo    // ent_sal_cod_prestamo
+            //     );
 
-                if (!$stmtValidateSalida->execute()) {
-                    $conn->rollback();
-                    return [
-                        'message' => $stmtValidateSalida->error,
-                        'status' => false
-                    ];
-                }
-            }
+            //     if (!$stmtValidateSalida->execute()) {
+            //         $conn->rollback();
+            //         return [
+            //             'message' => $stmtValidateSalida->error,
+            //             'status' => false
+            //         ];
+            //     }
+            // }
 
-            //consumibles
-            foreach ($elmConsumibles as $item) {
-                $cantidad = (int) $item['cantidadSolicitada'];
-                $codigoElemento = (int) $item['codigo'];
+            // //consumibles
+            // foreach ($elmConsumibles as $item) {
+            //     $cantidad = (int) $item['cantidadSolicitada'];
+            //     $codigoElemento = (int) $item['codigo'];
 
-                $stmtValidateSalida->bind_param('iiiii',
-                    $cantidad,         // ent_sal_cantidad
-                    $tipoMovimiento,   // entr_tp_movmnt
-                    $id,               // ent_id_usu
-                    $codigoElemento,   // ent_sal_cod_elemtn
-                    $codigoPrestamo    // ent_sal_cod_prestamo
-                );
+            //     $stmtValidateSalida->bind_param('iiiii',
+            //         $cantidad,         // ent_sal_cantidad
+            //         $tipoMovimiento,   // entr_tp_movmnt
+            //         $id,               // ent_id_usu
+            //         $codigoElemento,   // ent_sal_cod_elemtn
+            //         $codigoPrestamo    // ent_sal_cod_prestamo
+            //     );
 
-                if (!$stmtValidateSalida->execute()) {
-                    $conn->rollback();
-                    return [
-                        'message' => $stmtValidateSalida->error,
-                        'status' => false
-                    ];
-                }
-            }
+            //     if (!$stmtValidateSalida->execute()) {
+            //         $conn->rollback();
+            //         return [
+            //             'message' => $stmtValidateSalida->error,
+            //             'status' => false
+            //         ];
+            //     }
+            // }
 
             // $sqlGetCantidad = "SELECT elm_existencia FROM elementos WHERE elm_cod = ?";
             // $sqlConsumibles = "UPDATE elementos SET elm_existencia = ? WHERE elm_cod = ?";
