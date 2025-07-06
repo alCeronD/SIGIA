@@ -33,6 +33,7 @@ class ReservaModel
         $conn = $this->conect->getConnect();
 
         try {
+            // var_dump($data);
             $conn->begin_transaction();
 
             $cedula = (int) $data["cedula"];
@@ -65,7 +66,6 @@ class ReservaModel
 
             $stmtPres = $conn->prepare($presSql);
 
-
             if (!$stmtPres) {
                 $conn->rollback();
                 return [
@@ -73,7 +73,7 @@ class ReservaModel
                     'status' => false
                 ];
             }
-            //Debo usar esta por el tema de la versión de php.
+            // //Debo usar esta por el tema de la versión de php.
             extract($data, EXTR_PREFIX_ALL, 'p');
             $stmtPres->bind_param(
                 'ssssssiii',
@@ -123,6 +123,41 @@ class ReservaModel
                 }
             }
 
+            $codsDevel = array_column($codDevolu, 'codigo');
+            $cantidadDevolutivo = 1;
+            //quinta transacción insertar los elementos devolutivos en la tabla prestamos_elementos.
+            $sqlElementosDev = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES(?,?,?,?)";
+            $stmtElementosDev = $conn->prepare($sqlElementosDev);
+            foreach ($codsDevel as $value) {
+                $value = (int) $value;
+                $stmtElementosDev->bind_param('iiii', $lastId, $id, $value, $cantidadDevolutivo);
+
+                if (!$stmtElementosDev->execute()) {
+                    $conn->rollback();
+                    return [
+                        'data' => $stmtElementosDev->error,
+                        'status' => false
+                    ];
+                }
+            }
+
+            //Sexta transacción, insertar los elementos consumibles
+            $sqlElementosConsu = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES(?,?,?,?)";
+            $stmtElementosConsu = $conn->prepare($sqlElementosConsu);
+            foreach ($codConsumibles as $value) {
+                $cod = (int) $value['codigo'];
+                $cant = $value['cantidad'];
+                $stmtElementosConsu->bind_param('iiii', $lastId, $id, $cod, $cant);
+
+                if (!$stmtElementosConsu->execute()) {
+                    $conn->rollback();
+                    return [
+                        'message' => $stmtElementosConsu->error,
+                        'status' => false
+                    ];
+                }
+            }
+
             $cantidadConsumibles = array_column($codConsumibles, 'cantidad');
             $codidogConsumibles = array_column($codConsumibles, 'codigo');
 
@@ -162,7 +197,8 @@ class ReservaModel
                 }
             }
 
-            $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn,ent_sal_cod_prestamo) VALUES(?,NOW(),?,?,?,?)";
+            //Transacción para validar la salida de los elementos.
+            $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,ent_sal_observacion,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn,ent_sal_cod_prestamo) VALUES(?,NOW(),?,?,?,?,?)";
 
             $stmtSalida = $conn->prepare($sqlInsertSalida);
             //Salida
@@ -173,11 +209,11 @@ class ReservaModel
                 $codigo = $element['codigo'];
                 $cant = $element['cantidad'];
 
-                $stmtSalida->bind_param('iiiii', $cant, $tipoMovimento, $id, $codigo, $lastId);
+                $stmtSalida->bind_param('isiiii', $cant,$p_pres_observacion ,$tipoMovimento, $id, $codigo, $lastId);
                 if (!$stmtSalida->execute()) {
                     $conn->rollback();
                     $result = [
-                        'message' => "$stmtConsumibles->error",
+                        'message' => "$stmtSalida->error",
                         'status' => false
                     ];
 
@@ -185,40 +221,24 @@ class ReservaModel
                 }
             }
 
-            $codsDevel = array_column($codDevolu, 'codigo');
-            $cantidadDevolutivo = 1;
-            //quinta transacción insertar los elementos devolutivos en la tabla prestamos_elementos.
-            $sqlElementosDev = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES(?,?,?,?)";
-            $stmtElementosDev = $conn->prepare($sqlElementosDev);
-            foreach ($codsDevel as $value) {
-                $value = (int) $value;
-                $stmtElementosDev->bind_param('iiii', $lastId, $id, $value, $cantidadDevolutivo);
-
-                if (!$stmtElementosDev->execute()) {
-                    $conn->rollback();
-                    return [
-                        'data' => $stmtElementosDev->error,
-                        'status' => false
-                    ];
-                }
-            }
-
-            //Sexta transacción, insertar los elementos consumibles
-            $sqlElementosConsu = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES(?,?,?,?)";
-            $stmtElementosConsu = $conn->prepare($sqlElementosConsu);
-            foreach ($codConsumibles as $value) {
-                $cod = (int) $value['codigo'];
+            foreach ($codDevolu as $key => $value) {
+                //Extraigo la cantidad y el código del elemento.
+                $codigo = $value['codigo'];
                 $cant = $value['cantidad'];
-                $stmtElementosConsu->bind_param('iiii', $lastId, $id, $cod, $cant);
 
-                if (!$stmtElementosConsu->execute()) {
+                $stmtSalida->bind_param('isiiii', $cant,$p_pres_observacion ,$tipoMovimento, $id, $codigo, $lastId);
+                if (!$stmtSalida->execute()) {
                     $conn->rollback();
-                    return [
-                        'message' => $stmtElementosConsu->error,
+                    $result = [
+                        'message' => "$stmtSalida->error",
                         'status' => false
                     ];
+
+                    return $result;
                 }
             }
+
+            
 
             $conn->commit();
             return [
@@ -511,7 +531,7 @@ class ReservaModel
 
     //Funcion para visualizar las reservas.
     /**
-     * Summary of selectReservas TODO: Cambiar a Páginado con javascript.
+     * Summary of selectReservas 
      * @return array{data: array, message: string, status: bool|string}
      */
     public function selectDetailReserva(int $page = 1)
@@ -601,7 +621,7 @@ class ReservaModel
         $conn = $this->conect->getConnect();
         try {
 
-            $sqlElementsReserva = "SELECT 
+                $sqlElementsReserva = "SELECT DISTINCT
                     el.elm_cod AS 'codigo',
                     el.elm_nombre AS 'nombre',
                     en_s.ent_sal_cantidad AS 'cantidadSolicitada',
@@ -612,7 +632,7 @@ class ReservaModel
                     LEFT JOIN prestamos pre ON pre.pres_cod = prel.pres_cod
                     INNER JOIN entradas_salidas en_s ON
                     el.elm_cod = en_s.ent_sal_cod_elemtn
-                    RIGHT JOIN tipo_elemento tpE ON el.elm_cod_tp_elemento = tpE.tp_el_cod WHERE prel.pres_cod = ? AND en_s.entr_tp_movmnt = 3";
+                    RIGHT JOIN tipo_elemento tpE ON el.elm_cod_tp_elemento = tpE.tp_el_cod WHERE prel.pres_cod = ? AND en_s.entr_tp_movmnt = 2";
 
             $stmtResevasElm = $conn->prepare($sqlElementsReserva);
             $stmtResevasElm->bind_param('i', $codigo);
