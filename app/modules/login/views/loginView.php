@@ -17,7 +17,7 @@
             <h2>Iniciar sesión</h2>
             <form id="loginForm" action="<?php echo getUrl("login","login","login"); ?>" method="POST">
                 <div class="mb-3">
-                    <input type="text" class="form-control" id="docum" name="docum" placeholder="No. Documento" >
+                    <input type="number" class="form-control" id="docum" name="docum" placeholder="No. Documento" min="0">
                 </div>
                 <div class="mb-3">
                     <input type="password" class="form-control" name="pass" id="pass" placeholder="Contraseña" >
