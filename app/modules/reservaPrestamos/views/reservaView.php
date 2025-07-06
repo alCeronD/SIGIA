@@ -39,7 +39,7 @@
                 <label for="areaDestino">Área de destino: *</label>
             </div>
             <div class="input-field inputContent fechaReserva">
-                <input type="text" class="datepicker" name="fechaReserva" id="fechaReserva" placeholder="fecha reserva">
+                <input type="text" class="datepicker" name="fechaReserva" id="fechaReserva" placeholder="Fecha reserva *">
             </div>
 
             <div class=" inputContent ">
@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div class="input-field inputContent fechaDevolucion">
-                <input type="text" class="datepicker" name="fechaDevolucion" id="fechaDevolucion" placeholder="fecha Devolución">
+                <input type="text" class="datepicker" name="fechaDevolucion" id="fechaDevolucion" placeholder="Fecha Devolución *">
             </div>
 
             <div class="input-field inputContent inputObservaciones">

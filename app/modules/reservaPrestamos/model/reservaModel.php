@@ -601,22 +601,7 @@ class ReservaModel
         $conn = $this->conect->getConnect();
         try {
 
-            // $sqlElementsReserva = "SELECT 
-            //     el.elm_cod AS 'codigo',
-            //     el.elm_nombre AS 'nombre',
-            //     `tpE`.tp_el_cod AS 'codTipoElemento',
-            //     `tpE`.tp_el_nombre as 'nombreTipoElemento',
-            //     prel.pres_el_cantidad AS 'cantidadSolicitada'
-            //     FROM elementos el
-            //     RIGHT JOIN prestamos_elementos prel ON
-            //     el.elm_cod = prel.pres_el_elem_cod 
-            //     LEFT JOIN prestamos pre ON
-            //     pre.pres_cod = prel.pres_cod
-            //     LEFT JOIN tipo_elemento tpE ON
-            //     el.elm_cod_tp_elemento = `tpE`.tp_el_cod
-            //     WHERE prel.pres_cod = ?";
-
-                $sqlElementsReserva = "SELECT 
+            $sqlElementsReserva = "SELECT 
                     el.elm_cod AS 'codigo',
                     el.elm_nombre AS 'nombre',
                     en_s.ent_sal_cantidad AS 'cantidadSolicitada',

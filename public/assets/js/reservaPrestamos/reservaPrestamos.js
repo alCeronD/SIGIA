@@ -842,6 +842,22 @@ previewElements2.addEventListener('click',(e)=>{
 /**
  * Submit al formulario.
  */
+
+  //Con esta función valido que los campos del formulario sean diligenciados.
+  function validateFormData(formData) {
+  for (const [key, value] of formData.entries()) {
+    const isEmpty = !value || value.toString().trim() === '';
+
+    // Evitamos validar campos opcionales como 'observaciones'
+    const camposOpcionales = ['observaciones'];
+    if (isEmpty && !camposOpcionales.includes(key)) {
+      initAlert(`El campo "${key}" debe ser diligenciado`, 'info', toastOptions);
+      return false;
+    }
+  }
+  return true;
+}
+
 formSolicitudPrestamo.addEventListener("submit", (event) => {
   event.preventDefault();
   event.stopPropagation();
@@ -858,6 +874,11 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
   let data = Object.fromEntries(info);
+
+  if (!validateFormData(info)) {
+    return; // Detener si hay campos vacíos
+  }
+  
 
   //Transformo la fecha en formato iso 8601
   let fechaReservaFormat = dateISOFormat(data.fechaReserva);
@@ -882,7 +903,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
       let cantidadElemento = tds[3] ? tds[3].textContent.trim() : '';
       cantidadElemento = cantidadElemento ? parseInt(cantidadElemento, 10) : 1;
       
-      console.log('Área encontrada:', area);
       if (!tdArea.includes(area)) {
         tdArea.push(area);
       }
@@ -930,11 +950,20 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     data: data,
     action: 'registrar'
     });
+
+      if (
+    rows.codigoElementos.devolutivos.length === 0 &&
+    rows.codigoElementos.consumibles.length === 0
+  ) {
+    initAlert('Debes agregar al menos un elemento para la solicitud.', 'error', toastOptions);
+    return;
+  }
+
   //TODO: transformar en sweet alert.
   if (confirm("¿Deseas realizar el siguiente prestamo?")) {
     objAjax.request.onload = () => {
       let response = JSON.parse(objAjax.request.responseText);
-
+      // Si el registro se realizó correctamente.
       if (response.status) {
         initAlert('Reserva realizada con exito','success',toastOptions);
         //Limpio el formulario, tabla y campos de span.

@@ -211,7 +211,7 @@ th {
 
 /* Estilos del modal */
 #modalAddDevolutivos,
-#modalUsers,#modalAddConsumible {
+#modalUsers,#modalAddConsumible, #modalPreviewElements {
   display: none;
   position: fixed;
   /* Stay in place */
@@ -273,6 +273,11 @@ th {
   display: flex;
   justify-content: space-between;
 }
+
+/* Este modal es el de los elementos preview de la reserva */
+/* #modalPreviewElements{
+  width: fit-content;
+} */
 
 
 /* 
@@ -348,7 +353,7 @@ th {
     "infoDetail"
     "tableContainer";
   gap: 2rem;
-  width: 100%;
+  width: fit-content;
 }
 
 .modalTitleDetail {

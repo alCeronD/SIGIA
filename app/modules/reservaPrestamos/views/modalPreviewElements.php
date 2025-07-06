@@ -1,7 +1,7 @@
 <div class="modal" id="modalPreviewElements" style="display: none;">
     <div class="modal-content">
         <div class="previewElements">
-            <legend>Elementos</legend>
+            <legend>Previsualización de elementos</legend>
             <table id="">
                 <thead>
                     <tr>

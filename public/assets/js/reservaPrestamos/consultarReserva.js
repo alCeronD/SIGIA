@@ -90,8 +90,6 @@ const renderReservas = async (page = 1) => {
     let iValidate = createI();
     iValidate.innerText = "done";
 
-    // btnDetail.innerText = "Detalle";
-    // btnValidateLoan.innerText = 'validar';
     btnDetail.setAttribute("class", "btnDetail btnClick");
     btnDetail.setAttribute("data-id", `${dta.codigo}`);
     //TODO: Esto lo debo si o si cambiar, puedo crear una funcion para implementar las clases.
