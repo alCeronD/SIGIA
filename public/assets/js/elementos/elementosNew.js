@@ -102,8 +102,10 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         tdEstadoElemento.innerText = dta.estadoElemento;
         tdAreaElemento.innerText = dta.nombreArea;
         if (dta.cantidad <= 10 && dta.tipoElemento === 'Consumible') {
-            tr.style.backgroundColor = '#e57373';
-            tr.style.color = 'white';
+            tdPlaca.style.color = 'white';
+            tr.style.color = '#d50000';
+            tdPlaca.style.backgroundColor = '#e57373';
+            initTooltip(tdPlaca,{...tooltipOptions,margin:-25},'Elemento por agotar existencia','buttom');     
         }
 
 

@@ -789,7 +789,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
   }
 });
 
-
 /**
  * aplico la función callback porque requiero de ocultar ambos botones dependiendo del contexto de cerrar el modal desde la ventana.
  */
@@ -805,6 +804,7 @@ closeModal(modalValidate, btnCloseValidte, () => {
 
   resetDataModal();
 });
+
 
 
 /**

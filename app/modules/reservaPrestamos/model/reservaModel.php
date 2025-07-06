@@ -620,7 +620,8 @@ class ReservaModel
     {
         $conn = $this->conect->getConnect();
         try {
-            
+
+
             $sqlElementsReserva = "SELECT DISTINCT
     el.elm_cod AS 'codigo',
     el.elm_nombre AS 'nombre',
@@ -642,8 +643,6 @@ WHERE
         ORDER BY ent_fech_registro DESC
         LIMIT 1
     )";
-
-
 
             $stmtResevasElm = $conn->prepare($sqlElementsReserva);
             // $stmtResevasElm->bind_param('i', $codigo);
