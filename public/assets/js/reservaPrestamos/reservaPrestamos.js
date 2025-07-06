@@ -945,17 +945,28 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     data["fin"] = null;
   }
 
-
   let dataJson = JSON.stringify({
     data: data,
     action: 'registrar'
     });
 
-      if (
+  if (
     rows.codigoElementos.devolutivos.length === 0 &&
     rows.codigoElementos.consumibles.length === 0
   ) {
-    initAlert('Debes agregar al menos un elemento para la solicitud.', 'error', toastOptions);
+    console.log(rows.codigoElementos.devolutivos.length);
+    console.log(rows.codigoElementos.consumibles.length);
+
+    initAlert(
+      "Debes agregar al menos un elemento para la solicitud.",
+      "error",
+      toastOptions
+    );
+    // ESTO NO LO PUEDO HACER PORQUE SI LO HAGO LOS ELEMENTOS NO VAN A ESTAR VISIBLES, la unica forma que sirva es que la petición se haga cuando se aplique el DOOMCONTENTLOADER.
+    // modalAddDevolutivos.open();
+    btnAddElements.classList.remove("shake");
+    void btnAddElements.offsetWidth;
+    btnAddElements.classList.add("shake");
     return;
   }
 

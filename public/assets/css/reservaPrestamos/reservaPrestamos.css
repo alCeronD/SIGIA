@@ -279,6 +279,22 @@ th {
   width: fit-content;
 } */
 
+/* Efecto al boton en caso de no haber seleccionado items */
+
+.shake{
+  /* No va a ser infinita */
+  animation: tilt-shaking 0.8s;
+}
+
+@keyframes tilt-shaking {
+  0% { transform: rotate(0deg); 
+  }
+  25% { transform: rotate(20deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(-20deg); }
+  100% { transform: rotate(0deg); }
+}
+
 
 /* 
 
