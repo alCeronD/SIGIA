@@ -31,36 +31,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const loginForm = document.getElementById('loginForm');
-    
-    loginForm.addEventListener('submit', function (e) {
-        
-        e.preventDefault(); 
-        const url = loginForm.getAttribute('action'); 
-        const formData = new FormData(loginForm);
-        // alert(url);
-        fetch(url, {
-            method: 'POST',
-            body: formData,
-            headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json()) 
-        .then(data => {
-            if (data.success) {
-                // window.location.href = data.url;
-                window.location.href = "http://localhost/proyecto_sigia/app/dashboard.php";
-                // window.location.href = "http://localhost/proyecto_sigia/app/dashboard.php?modulo=dashboard&controlador=dashboard&funcion=dashboard";
-            } else {
-                alert("La contraseña no esta correcta");
-            }
-        })
-        .catch(error => {
-            console.error('Error cuando se realiza la petición', error);
-        });
-    });
-});
-</script>
+
+<script type="module" src="/proyecto_sigia/public/assets/js/login/login.js"></script>
+

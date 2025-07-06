@@ -22,6 +22,14 @@
   justify-content: space-between;
 }
 
+.registrarUsuario {
+    display: flex;
+    width: 80%;
+    align-items: center;
+    margin-left: 10%;
+    margin-bottom: 10%;
+}
+
 .tblUsuarios{
   grid-area: titleUsuarios;
 }

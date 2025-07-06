@@ -153,4 +153,11 @@ class usuariosController
             echo "Método no permitido";
         }
     }
+    
+    
+    public function userPermView(){
+        
+        
+        
+    }
 }

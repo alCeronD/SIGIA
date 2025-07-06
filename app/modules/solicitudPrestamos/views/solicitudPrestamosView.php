@@ -56,7 +56,7 @@
           <h5>Seleccionar Elementos Devolutivos</h5>
 
           <div class="input-field">
-            <select id="filtro_area_modal" name="filtro_area_modal">
+            <select id="filtro_area_modal" name="filtro_area_modal" class="textSolicitud">
               <option value="" selected>Todas las áreas</option>
               <?php foreach ($areas as $area): ?>
                 <option value="<?= $area['ar_cod']; ?>"><?= htmlspecialchars($area['ar_nombre']); ?></option>

@@ -7,7 +7,7 @@ class login {
         $this->conn = $conexion;    
     }
 
-    public function loginValidation($password, $documento) {
+    public function buscarUsuarioPorDocumento($documento, $estado_user = 1) {
         $query = "SELECT 
                     u.usu_id,
                     u.usu_docum,
@@ -28,7 +28,6 @@ class login {
                 WHERE 
                     u.usu_docum = ? AND u.usu_id_estado = ?";
 
-        $estado_user = 1;
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param('ii', $documento, $estado_user);
 
@@ -38,19 +37,13 @@ class login {
 
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
-            $usuario = $result->fetch_assoc();
-        
-            if (password_verify($password, $usuario['usu_password'])) {
-                return [
-                    'success' => true,
-                    'usuario' => $usuario
-                    
-                ];
-            } else {
-                return ['success' => false, 'message' => 'Contraseña incorrecta'];
-            }
-        } else {
-            return ['success' => false, 'message' => 'Usuario no encontrado'];
+            return ['success' => true, 'usuario' => $result->fetch_assoc()];
         }
+
+        return ['success' => false, 'message' => 'Usuario no encontrado'];
+    }
+
+    public function verificarPassword($passwordPlano, $passwordEncriptado) {
+        return password_verify($passwordPlano, $passwordEncriptado);
     }
 }
