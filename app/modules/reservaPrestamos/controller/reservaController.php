@@ -48,7 +48,6 @@ class ReservaController
         $data = $this->model->selectUsers($page);
 
         if ($data != null) {
-            // var_dump($data);
             success('Usuarios activos', $data);
         }
     }
@@ -179,9 +178,7 @@ class ReservaController
 
     public function getElementsReserva($codigo)
     {
-        // var_dump($codigo);
         $codigoInt = (int) $codigo;
-        // var_dump($codigoInt);
         $dataDetail = $this->model->selectElementsReserva($codigoInt);
         // $this->model->selectElementsReserva($codigoInt);
         success('Elementos relacionados al codigo', $dataDetail);

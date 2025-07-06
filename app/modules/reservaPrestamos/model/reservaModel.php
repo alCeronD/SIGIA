@@ -621,28 +621,26 @@ class ReservaModel
         $conn = $this->conect->getConnect();
         try {
 
+            //Esta consulta debe ser cambiada, dependiendo de si el tipo de movimiento es uno u otro, si el movimiento ya se ha validado y la cantidad de elementos ha cambiado, debe de mostrarme la cantidad de elementos que se validaron.
+    $sqlElementsReserva = "SELECT DISTINCT
+            el.elm_cod AS 'codigo',
+            el.elm_nombre AS 'nombre',
+            en_s.ent_sal_cantidad AS 'cantidadSolicitada',
+            tpE.tp_el_cod AS 'codTipoElemento',
+            tpE.tp_el_nombre AS 'nombreTipoElemento'
+        FROM
+            elementos el
+            LEFT JOIN prestamos_elementos prel ON prel.pres_el_elem_cod = el.elm_cod
+            LEFT JOIN prestamos pre ON pre.pres_cod = prel.pres_cod
+            INNER JOIN entradas_salidas en_s ON el.elm_cod = en_s.ent_sal_cod_elemtn
+                AND en_s.ent_sal_cod_prestamo = prel.pres_cod
+            RIGHT JOIN tipo_elemento tpE ON el.elm_cod_tp_elemento = tpE.tp_el_cod
+        WHERE
+            prel.pres_cod = ?
+            AND en_s.ent_sal_cod_prestamo = ?";
 
-            $sqlElementsReserva = "SELECT DISTINCT
-    el.elm_cod AS 'codigo',
-    el.elm_nombre AS 'nombre',
-    en_s.ent_sal_cantidad AS 'cantidadSolicitada',
-    tpE.tp_el_cod AS 'codTipoElemento',
-    tpE.tp_el_nombre AS 'nombreTipoElemento'
-FROM
-    elementos el
-    LEFT JOIN prestamos_elementos prel ON prel.pres_el_elem_cod = el.elm_cod
-    LEFT JOIN prestamos pre ON pre.pres_cod = prel.pres_cod
-    INNER JOIN entradas_salidas en_s ON el.elm_cod = en_s.ent_sal_cod_elemtn
-    RIGHT JOIN tipo_elemento tpE ON el.elm_cod_tp_elemento = tpE.tp_el_cod
-WHERE
-    prel.pres_cod = ?
-    AND en_s.entr_tp_movmnt = (
-        SELECT entr_tp_movmnt
-        FROM entradas_salidas
-        WHERE ent_sal_cod_prestamo = ?
-        ORDER BY ent_fech_registro DESC
-        LIMIT 1
-    )";
+
+
 
             $stmtResevasElm = $conn->prepare($sqlElementsReserva);
             // $stmtResevasElm->bind_param('i', $codigo);
