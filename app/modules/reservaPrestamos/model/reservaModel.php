@@ -534,7 +534,7 @@ class ReservaModel
      * Summary of selectReservas 
      * @return array{data: array, message: string, status: bool|string}
      */
-    public function selectDetailReserva(int $page = 1)
+    public function selectDetailReserva(int $page = 1, int $type = 0)
     {
         //valido que el page que mande sea como minimo 1 y Máximo la cantidad requerida.
         $page = max(1, (int)$page);
@@ -555,7 +555,7 @@ class ReservaModel
             //Cantidad de páginas.
             $pages = (int) ceil($getCountReservas / LIMIT);
 
-            $sqlReservas = "SELECT DISTINCT
+            $sqlBase = "SELECT DISTINCT
                 pre.pres_cod AS codigo,
                 us.usu_docum AS nroIdentidad,
                 us.usu_nombres AS nombre,
@@ -576,11 +576,46 @@ class ReservaModel
                 INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
                 INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
                 INNER JOIN roles r ON r.rl_id = pre.pres_rol
-                INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ?";
+                INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres ";
+
+
+        if ($type === 0) {
+            $sqlReservas = "$sqlBase ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ?";
             $stmtResevas = $conn->prepare($sqlReservas);
+            $stmtResevas->bind_param('ii', $limitConst, $offset);
+        } else {
+            $sqlReservas = "$sqlBase WHERE pre.pres_estado = ? ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ?";
+            $stmtResevas = $conn->prepare($sqlReservas);
+            $stmtResevas->bind_param('iii', $type, $limitConst, $offset);
+        }
+
+
+            // $sqlReservas = "SELECT DISTINCT
+            //     pre.pres_cod AS codigo,
+            //     us.usu_docum AS nroIdentidad,
+            //     us.usu_nombres AS nombre,
+            //     us.usu_apellidos AS apellido,
+            //     pre.pres_fch_slcitud AS fechaSolicitud,
+            //     pre.pres_fch_reserva AS fechaReserva,
+            //     pre.pres_hor_inicio AS horaInicio,
+            //     pre.pres_hor_fin AS horaFin,
+            //     pre.pres_fch_entrega AS fechaDevolucion,
+            //     pre.pres_observacion AS observacion,
+            //     esp.es_pr_nombre AS estadoPrestamo,
+            //     esp.es_pr_cod AS estadoCodigoPrestamo,
+            //     r.rl_nombre AS nombreRol,
+            //     tp_pr.tp_pre AS codigoTipoPrestamo,
+            //     tp_pr.tp_nombre AS tipoPrestamo
+            //     FROM prestamos pre
+            //     INNER JOIN prestamos_elementos pre_el ON pre_el.pres_cod = pre.pres_cod
+            //     INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
+            //     INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
+            //     INNER JOIN roles r ON r.rl_id = pre.pres_rol
+            //     INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ? ";
+            // $stmtResevas = $conn->prepare($sqlReservas);
             $limitConst = LIMIT;
 
-            $stmtResevas->bind_param('ii', $limitConst, $offset);
+            // $stmtResevas->bind_param('ii', $limitConst, $offset);
 
             if (!$stmtResevas->execute()) {
 

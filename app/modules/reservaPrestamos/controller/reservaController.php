@@ -159,18 +159,26 @@ class ReservaController
     }
 
     //Función para traer las reservas
-    public function getReservas(int $pages = 0)
+    public function getReservas(int $pages = 0, String $type = '')
     {
         if (!$pages) {
             fail('pagina no definida');
         }
 
-        // Me trae solo la información de la reserva.
-        $data = $this->model->selectDetailReserva($pages);
+        // Puedo guardar los estados en un arreglo y validarlo con la clave del arreglo que me recibe.
+        $estadoPrestamo =
+            $type === 'all'       ? 0 :
+            ($type === 'validate'   ? 1 :
+            ($type === 'Rechazado'  ? 2 :
+            ($type === 'toValidate' ? 3 :
+            ($type === 'done' ? 4 :
+            ($type === 'cancelado'  ? 5 : null)))));
+
+
+        $data = $this->model->selectDetailReserva($pages, $estadoPrestamo);
         if (!$data['status']) {
             fail('error', $data);
         }
-        //Trae los elementos de la reserva.
         success('Registros', $data);
     }
 
@@ -216,8 +224,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             case 'reservas':
 
                 $pages = (int) $_GET['pages'];
+                $type = (String) $_GET['type'];
                 if (method_exists($controller, 'getReservas')) {
-                    $controller->getReservas($pages);
+                    $controller->getReservas($pages, $type);
                 }
                 break;
 

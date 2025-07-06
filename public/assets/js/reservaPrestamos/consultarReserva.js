@@ -16,11 +16,11 @@ import {
 import { getData, sendData } from "../utils/fetch.js";
 
 // tipos de prestamos
-const typesLoan  ={
-  All: 'todos',
-  validate: 'validado',
+const typesPrestamosLoan  ={
+  all: 'all',
+  validate: 'validate',
   done: 'finalizado',
-  toValidate: 'porValidar'
+  toValidate: 'toValidate'
 };
 
 // Selector del filtro.
@@ -64,20 +64,21 @@ const nextBtnValidate = document.querySelector(
 //Variable para mostrar la información en el modal.
 let elementosDetalle = [];
 
-const renderReservas = async (page = 1) => {
+const renderReservas = async ({page = 1, type = 'all'} = {}) => {
   pagesReserva = page;
 
   //Traigo la data por medio de fetch.
   const result = await getData(
     "modules/reservaPrestamos/controller/reservaController.php",
     "GET",
-    { action: "reservas", pages: page }
+    { action: "reservas", pages: page, type }
   );
   // let registros = result;
   let status = result.status;
   data = result.data.data;
   pages = result.data.pages;
 
+  console.log({"resultado de la consulta": data});
   if (pagesReserva > pages) return;
 
   if (!status) {
@@ -851,8 +852,16 @@ filtroTipoReserva.addEventListener('change', (e)=>{
 
   console.log(e.target);
   let valueSelect = e.target.value;
+
+  //Si por algun motivo hay un error en el objeto, este me va a devolver siempre TODOS LOS ELEMENTOS.
+  let mapTypeLoan = typesPrestamosLoan[valueSelect] ?? 'all';
+  if (mapTypeLoan) {
+    renderReservas({page: 1, type:valueSelect});
+  }else{
+    renderReservas();
+  }
+
   console.log(valueSelect);
-  
 
 });
 

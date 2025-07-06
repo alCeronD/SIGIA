@@ -7,10 +7,10 @@
         <div class=" filterTipoReserva">
             <span>Filtrar reservas:</span>
             <select id="filtroTipoReserva">
-                <option value="todos" selected>Todos</option>
-                <option value="porValidar">Por Validar</option>
-                <option value="validado">Validado</option>
-                <option value="finalizado">Finalizados</option>
+                <option value="all" selected>Todos</option>
+                <option value="toValidate">Por Validar</option>
+                <option value="validate">Validado</option>
+                <option value="done">Finalizados</option>
             </select>
         </div>
         <div class="closeItem">
