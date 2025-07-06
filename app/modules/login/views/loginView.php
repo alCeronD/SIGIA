@@ -32,4 +32,5 @@
 </body>
 </html>
 
-<script type="module" src="../public/assets/js/login/login.js"></script>
+<script type="module" src="/proyecto_sigia/public/assets/js/login/login.js"></script>
+

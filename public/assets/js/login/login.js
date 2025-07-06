@@ -9,21 +9,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const docum = documInput.value.trim();
         const pass = passInput.value;
 
-        // validamos que la cantidad de numeros sea la correcta
         if (!/^\d{5,15}$/.test(docum)) {
             alert("El documento debe contener solo números (5 a 15 caracteres).");
             documInput.focus();
             return;
         }
 
-        // Validar contraseña -mínimo 6 caracteres. Una letra y un numero
-        // if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(pass)) {
-        //     alert("La contraseña debe tener al menos 6 caracteres, incluyendo una letra y un número.");
-        //     passInput.focus();
-        //     return;
-        // }
-
-        
         const url = loginForm.getAttribute('action');
         const formData = new FormData(loginForm);
 
@@ -36,10 +27,10 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                window.location.href = "http://localhost/proyecto_sigia/app/dashboard.php";
+            if (data.success && data.url) {
+                window.location.href = data.url;
             } else {
-                alert("La contraseña no está correcta");
+                alert(data.message || "La contraseña no está correcta");
             }
         })
         .catch(error => {
