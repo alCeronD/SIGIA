@@ -215,6 +215,8 @@ class solicitudPrestamosController {
         $resultado = $modelo->cancelarPrestamo($presCod);
         echo json_encode($resultado);
         exit;
+        
+        //Realizar accion de entrada_Salidas al momento de cancelar Prestamo
  
     }
 
