@@ -10,6 +10,8 @@ html, body {
   height: 100%;
   margin: 0;
     font-family:  "Open Sans", "Helvetica Neue", sans-serif;
+  /* background-color: #f3d3d3; */
+
 }
 
 /* Variables para los colores */
@@ -58,7 +60,7 @@ html, body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
   /* Fondo opcional */
-  background-color: #fff;
+  /* background-color: #f3d3d3; */
 
 }
 

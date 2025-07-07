@@ -1,9 +1,10 @@
 body {
-    background: url('/proyecto_sigia/public/assets/image/login/fondo_login.jpg') no-repeat center center fixed;
+    /* background: url('/proyecto_sigia/public/assets/image/login/fondo_login.jpg') no-repeat center center fixed; */
     background-size: cover; 
     background-position: center center; 
     background-attachment: fixed; 
-    color: white;
+    color: rgb(0, 0, 0);
+    background-color: #f3d3d3;
     }
     
     .login-container {

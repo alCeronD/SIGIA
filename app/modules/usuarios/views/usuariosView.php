@@ -17,7 +17,7 @@
       </div>
       <div class="inputContent cedula input-field">
         <input type="text" id="usu_docum" name="usu_docum" class="validate" required>
-        <label for="usu_docum">Documento:</label>
+        <label for="usu_docum">Número de identificación:</label>
       </div>
 
       <div class="inputContent rol ">

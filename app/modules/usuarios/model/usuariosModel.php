@@ -1,5 +1,9 @@
 <?php
 
+require_once __DIR__ . '/../../../helpers/session.php';
+require_once __DIR__ . '/../../../helpers/const.php';
+include_once __DIR__ . '/../../../config/conn.php';
+
 
 class usuarios
 {
@@ -15,9 +19,14 @@ class usuarios
     private $campos = ['usu_docum', 'usu_nombres', 'usu_apellidos', 'usu_email', 'usu_telefono'];
     private $conn;
 
-    public function __construct($conexion)
+    // public function __construct($conexion)
+    // {
+    //     $this->conn = $conexion;
+    // }
+    public function __construct()
     {
-        $this->conn = $conexion;
+        $objConn= new Conection();
+        $this->conn = $objConn->getConnect();
     }
 
     public function create(array $data = [])
@@ -129,8 +138,6 @@ class usuarios
         return $usuarios;
     }
 
-
-
     //Busca un registro específico. basado en su id.
     public function searchU(int $id = 0, $isCedula = false)
     {
@@ -141,9 +148,8 @@ class usuarios
 
         $query = $isCedula ? "SELECT usu_id FROM usuarios WHERE usu_docum = ?" : "SELECT usu_id, usu_docum, usu_nombres, usu_apellidos, usu_email, usu_telefono FROM usuarios WHERE usu_id = ?";
 
-        $conn = $this->conn->getConnect();
 
-        $stmtUser = $conn->prepare($query);
+        $stmtUser = $this->conn->prepare($query);
 
     
         $stmtUser->bind_param("i", $id);

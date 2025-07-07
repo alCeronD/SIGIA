@@ -1,6 +1,5 @@
 <?php
 
-use function PHPSTORM_META\map;
 
 require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../../../helpers/const.php';
@@ -23,7 +22,7 @@ class ReservaModel
     public function __construct()
     {
         $this->conect = new Conection();
-        $this->usuario = new usuarios($this->conect);
+        $this->usuario = new usuarios();
         $this->modelElemento = new ElementoModelo();
     }
 
