@@ -1,11 +1,37 @@
-body {
-    /* background: url('/proyecto_sigia/public/assets/image/login/fondo_login.jpg') no-repeat center center fixed; */
-    background-size: cover; 
-    background-position: center center; 
-    background-attachment: fixed; 
-    color: rgb(0, 0, 0);
-    background-color: #f3d3d3;
-    }
+.backGround {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.backGround::before {
+    content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 350px;
+  height: 350px;
+  /* background: url('/proyecto_sigia/public/assets/image/login/sigia.svg') no-repeat center center; */
+  background-size: contain;
+  opacity: 0.8; 
+  transform: translate(-50%, -50%);
+
+  z-index: -3;
+} 
+
+.brand-logo{
+    display: flex;
+    flex-direction: column-reverse;
+    max-width: 500px;
+    gap: 0.3rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container, .login-card {
+  position: relative;
+  z-index: 3331;
+}
     
     .login-container {
         display: flex;
@@ -16,10 +42,10 @@ body {
     }
     
     .login-card {
-        background: rgba(244, 253, 248, 0.6 );
-        border-radius: 16px;
+        /* background: rgba(244, 253, 248, 0.6 ); */
+        /* border-radius: 16px; */
         padding: 40px 40px;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        /* box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); */
         width: 100%;
         max-width: 400px;
         text-align: center;
