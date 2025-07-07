@@ -15,6 +15,17 @@ import {
 } from "../utils/cases.js";
 import { getData, sendData } from "../utils/fetch.js";
 
+// tipos de prestamos
+const typesPrestamosLoan  ={
+  all: 'all',
+  validate: 'validate',
+  done: 'finalizado',
+  toValidate: 'toValidate'
+};
+
+// Selector del filtro.
+const filtroTipoReserva = document.querySelector('#filtroTipoReserva');
+
 const objAjax = new Ajax();
 //Cuerpo de la tabla para renderizar los datos.
 const tbodyReservaConsult = document.querySelector("#tbodyReservaConsult");
@@ -43,30 +54,31 @@ let codigo;
 let pages;
 //Página actual.
 let pagesReserva = 1;
-    const checkBoxValidate = document.querySelector("#allValidateItems");
-    // capturo el input de la tabla para seleccionarlos todos.
-    const inputValidate = document.querySelectorAll(".inputValidate");
-    const nextBtnValidate = document.querySelector(
-      ".nextBtnValidate #btnNextValidate"
-    );
+const checkBoxValidate = document.querySelector("#allValidateItems");
+// capturo el input de la tabla para seleccionarlos todos.
+const inputValidate = document.querySelectorAll(".inputValidate");
+const nextBtnValidate = document.querySelector(
+  ".nextBtnValidate #btnNextValidate"
+);
 
 //Variable para mostrar la información en el modal.
 let elementosDetalle = [];
 
-const renderReservas = async (page = 1) => {
+const renderReservas = async ({page = 1, type = 'all'} = {}) => {
   pagesReserva = page;
 
   //Traigo la data por medio de fetch.
   const result = await getData(
     "modules/reservaPrestamos/controller/reservaController.php",
     "GET",
-    { action: "reservas", pages: page }
+    { action: "reservas", pages: page, type }
   );
   // let registros = result;
   let status = result.status;
   data = result.data.data;
   pages = result.data.pages;
 
+  console.log({"resultado de la consulta": data});
   if (pagesReserva > pages) return;
 
   if (!status) {
@@ -90,8 +102,6 @@ const renderReservas = async (page = 1) => {
     let iValidate = createI();
     iValidate.innerText = "done";
 
-    // btnDetail.innerText = "Detalle";
-    // btnValidateLoan.innerText = 'validar';
     btnDetail.setAttribute("class", "btnDetail btnClick");
     btnDetail.setAttribute("data-id", `${dta.codigo}`);
     //TODO: Esto lo debo si o si cambiar, puedo crear una funcion para implementar las clases.
@@ -227,21 +237,19 @@ const renderReservas = async (page = 1) => {
 
 document.addEventListener("DOMContentLoaded", () => {
   renderReservas();
+
+  // Inicializar select 
+  const elemsSelect = document.querySelector('#filtroTipoReserva');
+  M.FormSelect.init(elemsSelect);
 });
 
-//Me valida que el checkbox este checked para así poder mostrar el botón.
-/**
- * 
- */
-
-
 //Estas variables las uso para guardar los elementos que no han sido validados.
-  let noselectedDevolutivos = [];
-  let noselectedConsumibles = [];
-  // En esta variable guardo toda la información que voy a enviar cuando doy salida a los elementos.
-  let validateReserva;
+let noselectedDevolutivos = [];
+let noselectedConsumibles = [];
+// En esta variable guardo toda la información que voy a enviar cuando doy salida a los elementos.
+let validateReserva;
 
-function validateCheckboxChecked(inputValidate,checkBoxValidate) {
+function validateCheckboxChecked(inputValidate, checkBoxValidate) {
   /**
    * Con la propiedad array from me extrae el elemento en concreo que se ha chequeado, luego de ello, me valida quue alguno de esos elementos este chequeados para así determinar que el btnNextValidate se visualice.
    */
@@ -257,7 +265,6 @@ function validateCheckboxChecked(inputValidate,checkBoxValidate) {
   }
 }
 
-
 function addElementsToArray(input) {
   const tipo = input.dataset.tipoElemento;
   const cod = input.dataset.codigo;
@@ -267,69 +274,77 @@ function addElementsToArray(input) {
   if (input.checked) {
     if (tipo === "Devolutivo" && !devolutivos.includes(cod)) {
       // devolutivos.push(cod);
-      devolutivos.push({"tipo":tipo,"cod":cod,"nombre":nombre,"cantidadSalida":cantidad});
-
+      devolutivos.push({
+        tipo: tipo,
+        cod: cod,
+        nombre: nombre,
+        cantidadSalida: cantidad,
+      });
     }
 
     if (tipo === "Consumible" && !consumibles.includes(cod)) {
       // consumibles.push(cod);
-      consumibles.push({"tipo":tipo,"cod":cod,"nombre":nombre,"cantidadSalida":cantidad});
+      consumibles.push({
+        tipo: tipo,
+        cod: cod,
+        nombre: nombre,
+        cantidadSalida: cantidad,
+      });
     }
   } else {
     if (tipo === "Consumible") {
       consumibles = consumibles.filter((consu) => consu.cod !== cod);
     }
-    
+
     if (tipo === "Devolutivo") {
       devolutivos = devolutivos.filter((dev) => dev.cod !== cod);
     }
   }
 }
 
-    /**
-     * Reinicia la visualización del modal de validación según el estado proporcionado.
-     *
-     * @function resetModalValidate
-     * @param {boolean} [status=false] - Define el modo del modal:
-     *   - `true`: Muestra la vista previa de los elementos seleccionados (tabla).
-     *   - `false`: Muestra el formulario para validar elementos.
-     *
-     * Esta función ajusta la visibilidad de los contenedores del formulario y la tabla,
-     * así como los botones de navegación (`previewBtnValidate` y `nextBtnValidate`),
-     * con el fin de cambiar entre los pasos del proceso de validación.
-     */
-    function resetModalValidate(status = false) {
-      if (status) {
-        tableContainerDetail.style.display = "flex";
-        tableContainerDetail.style.flexDirection = "column";
-        formValidateContainer.style.display = "none";
+/**
+ * Reinicia la visualización del modal de validación según el estado proporcionado.
+ *
+ * @function resetModalValidate
+ * @param {boolean} [status=false] - Define el modo del modal:
+ *   - `true`: Muestra la vista previa de los elementos seleccionados (tabla).
+ *   - `false`: Muestra el formulario para validar elementos.
+ *
+ * Esta función ajusta la visibilidad de los contenedores del formulario y la tabla,
+ * así como los botones de navegación (`previewBtnValidate` y `nextBtnValidate`),
+ * con el fin de cambiar entre los pasos del proceso de validación.
+ */
+function resetModalValidate(status = false) {
+  if (status) {
+    tableContainerDetail.style.display = "flex";
+    tableContainerDetail.style.flexDirection = "column";
+    formValidateContainer.style.display = "none";
 
-        previewBtnValidate.style.display = "none";
-        nextBtnValidate.style.display = "inline-flex";
-      } else {
-        tableContainerDetail.style.display = "none";
-        formValidateContainer.style.display = "flex";
+    previewBtnValidate.style.display = "none";
+    nextBtnValidate.style.display = "inline-flex";
+  } else {
+    tableContainerDetail.style.display = "none";
+    formValidateContainer.style.display = "flex";
 
-        previewBtnValidate.style.display = "inline-flex";
-        nextBtnValidate.style.display = "none";
-      }
+    previewBtnValidate.style.display = "inline-flex";
+    nextBtnValidate.style.display = "none";
+  }
+}
 
-    }
-
-        /**
-     * Reinicia los datos utilizados en el proceso de validación del modal.
-     *
-     * @function resetDataModal
-     *
-     * Esta función limpia los arreglos `consumibles` y `devolutivos`, así como el objeto
-     * `validateReserva`, dejándolos en su estado inicial. Se utiliza normalmente cuando
-     * se cancela una operación o se desea reiniciar el estado del formulario/modal.
-     */
-    function resetDataModal() {
-      consumibles = [];
-      devolutivos = [];
-      validateReserva = {};
-    }
+/**
+ * Reinicia los datos utilizados en el proceso de validación del modal.
+ *
+ * @function resetDataModal
+ *
+ * Esta función limpia los arreglos `consumibles` y `devolutivos`, así como el objeto
+ * `validateReserva`, dejándolos en su estado inicial. Se utiliza normalmente cuando
+ * se cancela una operación o se desea reiniciar el estado del formulario/modal.
+ */
+function resetDataModal() {
+  consumibles = [];
+  devolutivos = [];
+  validateReserva = {};
+}
 
 // Responsabilidades de las consultas
 tbodyReservaConsult.addEventListener("click", (event) => {
@@ -512,12 +527,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
   if (btnSalida) {
     modalValidate.open();
     //Capturo los datos para transformarlo en json.
-    validateReserva = setReserva(
-      "data-validate",
-      data,
-      elementos,
-      btnSalida
-    );
+    validateReserva = setReserva("data-validate", data, elementos, btnSalida);
 
     let action = "validateLoan";
     validateReserva["action"] = action;
@@ -564,7 +574,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       tr.appendChild(tdAcciones);
     });
 
-
     const inputValidate = document.querySelectorAll(".inputValidate");
     checkBoxValidate.addEventListener("change", (e) => {
       e.stopPropagation();
@@ -591,26 +600,26 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       noselectedDevolutivos.length = 0;
 
       input.forEach((intp) => {
-
         if (!intp.checked) {
           const tipo = intp.dataset.tipoElemento;
           const cod = intp.dataset.codigo;
           const cantidad = intp.dataset.cantidadSalida;
           const nombreElemento = intp.dataset.nombreElemento;
-          if (
-            tipo === "Consumible" &&
-            !noselectedConsumibles.includes(cod)
-          ) {
+          if (tipo === "Consumible" && !noselectedConsumibles.includes(cod)) {
             // noselectedConsumibles.push(cod);
-            noselectedConsumibles.push({"cod":cod, "nombreElemento":nombreElemento,"cantidad":cantidad});
-          
+            noselectedConsumibles.push({
+              cod: cod,
+              nombreElemento: nombreElemento,
+              cantidad: cantidad,
+            });
           }
-          if (
-            tipo === "Devolutivo" &&
-            !noselectedDevolutivos.includes(cod)
-          ) {
+          if (tipo === "Devolutivo" && !noselectedDevolutivos.includes(cod)) {
             // la cantidad en devolutivos no creo que lo necesitemos
-            noselectedDevolutivos.push({"cod":cod, "nombreElemento":nombreElemento,"cantidad":cantidad});
+            noselectedDevolutivos.push({
+              cod: cod,
+              nombreElemento: nombreElemento,
+              cantidad: cantidad,
+            });
           }
         }
       });
@@ -644,7 +653,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     const radioNo = document.querySelector("#radioNo");
     //Cuando el usuario pase al siguiente paso, este valida todo
     nextBtnValidate.addEventListener("click", (e) => {
-    
       resetModalValidate(false);
       addElementsNoSelected(inputValidate);
 
@@ -652,20 +660,20 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       // console.log({'elementosDevNoSelected': noselectedDevolutivos})
       // console.log({"elementosConsuNoSelected":noselectedConsumibles});
 
-        validateReserva.elementosSalida = {
-          elmConsumibles: consumibles,
-          elmDevolutivos: devolutivos,
-        };
+      validateReserva.elementosSalida = {
+        elmConsumibles: consumibles,
+        elmDevolutivos: devolutivos,
+      };
 
-        validateReserva.elementosRechazados = {
-          elmConsumibles: noselectedConsumibles,
-          elmDevolutivos: noselectedDevolutivos
-        }
+      validateReserva.elementosRechazados = {
+        elmConsumibles: noselectedConsumibles,
+        elmDevolutivos: noselectedDevolutivos,
+      };
 
       elementosPreviewConsu = validateReserva.elementosSalida.elmConsumibles;
       elementosPreviewDev = validateReserva.elementosSalida.elmDevolutivos;
 
-        console.log(validateReserva);
+      console.log(validateReserva);
     });
 
     previewBtnValidate.addEventListener("click", (e) => {
@@ -711,7 +719,9 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         alert("Selección de observación requerida");
         return;
       }
-      let observacion = !valuesForm.textarea1 ? '' : valuesForm.textarea1.trim();
+      let observacion = !valuesForm.textarea1
+        ? ""
+        : valuesForm.textarea1.trim();
 
       // Aplico spreead para traer las propiedades previas del objeto y adiciono la observación.
       validateReserva = {
@@ -719,16 +729,18 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         observacionSalida: observacion,
       };
 
-      let textConfirm = '';
+      let textConfirm = "";
       console.log(validateReserva);
-      textConfirm += `Consumibles:\n${elementosPreviewConsu.map(el => 
-        `Código: ${el.cod} Nombre: ${el.nombre} Cantidad: ${el.cantidad}`
-      ).join('\n')}\n`;
+      textConfirm += `Consumibles:\n${elementosPreviewConsu
+        .map(
+          (el) =>
+            `Código: ${el.cod} Nombre: ${el.nombre} Cantidad: ${el.cantidad}`
+        )
+        .join("\n")}\n`;
 
-      textConfirm += `Devolutivos:\n${elementosPreviewDev.map(el => 
-        `Código: ${el.cod} Nombre: ${el.nombre}`
-      ).join('\n')}`;
-
+      textConfirm += `Devolutivos:\n${elementosPreviewDev
+        .map((el) => `Código: ${el.cod} Nombre: ${el.nombre}`)
+        .join("\n")}`;
 
       if (confirm(`¿Deseas dar salida a estos elementos? \n${textConfirm}`)) {
         try {
@@ -776,12 +788,12 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       } else {
         initAlert("Proceso cancelado", "warning", tooltipOptions);
         modalValidate.close();
-        
+
         // Esto se repite, lo puedo modificar haciendo no una función sino cerrando el modal usando la función close modal, para ello debo de cambiar la forma de enviar los parámetros, lo ideal, enviarlos mediante objeto.
         BodydetailReserva.innerHTML = "";
         let falseChecked = checkBoxValidate.checked ? false : true;
         checkBoxValidate.checked = falseChecked;
-        
+
         previewBtnValidate.style.display = "none";
         nextBtnValidate.style.display = "none";
         resetModalValidate(true);
@@ -791,7 +803,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
   }
 });
 
-
 /**
  * aplico la función callback porque requiero de ocultar ambos botones dependiendo del contexto de cerrar el modal desde la ventana.
  */
@@ -800,7 +811,7 @@ closeModal(modalValidate, btnCloseValidte, () => {
   BodydetailReserva.innerHTML = "";
   let falseChecked = checkBoxValidate.checked ? false : true;
   checkBoxValidate.checked = falseChecked;
-  
+
   previewBtnValidate.style.display = "none";
   nextBtnValidate.style.display = "none";
   resetModalValidate(true);
@@ -808,14 +819,12 @@ closeModal(modalValidate, btnCloseValidte, () => {
   resetDataModal();
 });
 
-
 /**
  * Paginación de los prestamos.
  *
  */
 const previewReserva = document.querySelector("#previewReservas");
 const nextReserva = document.querySelector("#nextReservas");
-//TODO: necesito 2 funciones, 1 para mandar la solicitud y la otra para renderizar, usar fetch con async y await.
 
 previewReserva.addEventListener("click", (e) => {
   e.stopPropagation();
@@ -835,6 +844,25 @@ nextReserva.addEventListener("click", (e) => {
   if (pagesReserva >= pages) return;
   const nextPage = pagesReserva + 1;
   renderReservas(nextPage);
+});
+
+filtroTipoReserva.addEventListener('change', (e)=>{
+  e.preventDefault();
+  e.stopPropagation();
+
+  console.log(e.target);
+  let valueSelect = e.target.value;
+
+  //Si por algun motivo hay un error en el objeto, este me va a devolver siempre TODOS LOS ELEMENTOS.
+  let mapTypeLoan = typesPrestamosLoan[valueSelect] ?? 'all';
+  if (mapTypeLoan) {
+    renderReservas({page: 1, type:valueSelect});
+  }else{
+    renderReservas();
+  }
+
+  console.log(valueSelect);
+
 });
 
 

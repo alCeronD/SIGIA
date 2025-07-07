@@ -392,8 +392,6 @@ btnAddConsumibles.addEventListener("click", (event)=>{
       let divElements = document.createElement('div');
       divElements.setAttribute('class','actionsElements');
       let cantidadInput = document.createElement('input');
-      
-      
       let divCheckbox = document.createElement('div');
       let labelCheck = document.createElement('label');
       let checkBoxSelect = document.createElement('input');
@@ -406,7 +404,6 @@ btnAddConsumibles.addEventListener("click", (event)=>{
       labelCheck.append(checkBoxSelect,spanCheck);      
 
       cantidadInput.classList.add('browser-default');
-      // cantidadInput.classList.add('input-field');
       cantidadInput.setAttribute('type','number');
       cantidadInput.setAttribute('min',0);
       cantidadInput.setAttribute('data-cantidad',data.cantidad);
@@ -491,10 +488,11 @@ tableDevolutivos.addEventListener("click", (event) => {
       let tdNombre = document.createElement("td");
       let tdCantidad = document.createElement('td');
       let tdArea = document.createElement("td");
-
-
       //Capturo el valor del checkbox
       let valueInput = event.target.getAttribute("data-id");
+      trTablePreview.setAttribute("data-id",valueInput);
+
+
       //Valido, si el arreglo no contiene el valueInput, entonces que implemente el valor ahí.
       if (!ids.includes(valueInput)) {
           ids.push(valueInput);
@@ -509,14 +507,14 @@ tableDevolutivos.addEventListener("click", (event) => {
           trTablePreview.appendChild(tdArea);
           trTablePreview.appendChild(tdCantidad);
 
-          initAlert(`${nombre} agregado a reserva`,'info',{"inDuration": toastOptions.inDuration});
+          initAlert(`${nombre} agregado a reserva`,'info',toastOptions);
+
 
       }else{
         alert('el elemento seleccionado ya está seleccionado.');
         //Reinicio el evento.
         event.preventDefault();
       }
-
 
     }
   }
@@ -640,11 +638,20 @@ previewElement.addEventListener("click", () => {
       let tdElemento = document.createElement("td");
       let tdArea = document.createElement("td");
       let tdAccion = document.createElement("td");
-
       //A los elementos td les implemento su contenido, su contenido es la información de la tabla
       tdCodigo.textContent = codigo;
       tdElemento.textContent = elemento;
       tdArea.textContent = area;
+
+      ids.forEach((idsElements)=>{
+          
+        if (addElements.getAttribute('data-id') === idsElements){
+          addElements.checked = true;
+        }
+
+      });
+
+
       tdAccion.append(label);
       label.append(addElements,span);
       tableDevolutivos.appendChild(trTable);
@@ -684,6 +691,16 @@ nextElement.addEventListener("click", () => {
       let tdElemento = document.createElement("td");
       let tdArea = document.createElement("td");
       let tdAccion = document.createElement("td");
+
+      
+      console.log(addElements);
+      ids.forEach((idsElements)=>{
+          
+        if (addElements.getAttribute('data-id') === idsElements){
+          addElements.checked = true;
+        }
+
+      });
 
       //A los elementos td les implemento su contenido, su contenido es la información de la tabla
       tdCodigo.textContent = codigo;
@@ -842,10 +859,25 @@ previewElements2.addEventListener('click',(e)=>{
 /**
  * Submit al formulario.
  */
+
+  //Con esta función valido que los campos del formulario sean diligenciados.
+  function validateFormData(formData) {
+  for (const [key, value] of formData.entries()) {
+    const isEmpty = !value || value.toString().trim() === '';
+
+    // Evitamos validar campos opcionales como 'observaciones'
+    const camposOpcionales = ['observaciones'];
+    if (isEmpty && !camposOpcionales.includes(key)) {
+      initAlert(`El campo "${key}" debe ser diligenciado`, 'info', toastOptions);
+      return false;
+    }
+  }
+  return true;
+}
+
 formSolicitudPrestamo.addEventListener("submit", (event) => {
   event.preventDefault();
   event.stopPropagation();
-
     let rows = {
     codigoElementos: {
       devolutivos:[],
@@ -854,10 +886,13 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   };
 
   let tdArea = [];
-
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
   let data = Object.fromEntries(info);
+
+  if (!validateFormData(info)) {
+    return; // Detener si hay campos vacíos
+  }
 
   //Transformo la fecha en formato iso 8601
   let fechaReservaFormat = dateISOFormat(data.fechaReserva);
@@ -881,13 +916,12 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
       let codigoElemento = tds[0].textContent.trim();
       let cantidadElemento = tds[3] ? tds[3].textContent.trim() : '';
       cantidadElemento = cantidadElemento ? parseInt(cantidadElemento, 10) : 1;
-      
-      console.log('Área encontrada:', area);
+      let nombreElemento = tds[1].textContent.trim();
       if (!tdArea.includes(area)) {
         tdArea.push(area);
       }
 
-      const elements = {codigo: codigoElemento, cantidad: cantidadElemento};
+      const elements = {codigo: codigoElemento, cantidad: cantidadElemento, nombreElemento: nombreElemento};
       if (area === 'General') {
         rows.codigoElementos.consumibles.push(elements);
       }else{
@@ -925,16 +959,57 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     data["fin"] = null;
   }
 
-
   let dataJson = JSON.stringify({
     data: data,
     action: 'registrar'
     });
+
+  if (
+    rows.codigoElementos.devolutivos.length === 0 &&
+    rows.codigoElementos.consumibles.length === 0
+  ) {
+
+
+    initAlert(
+      "Debes agregar al menos un elemento para la solicitud.",
+      "error",
+      toastOptions
+    );
+    // ESTO NO LO PUEDO HACER PORQUE SI LO HAGO LOS ELEMENTOS NO VAN A ESTAR VISIBLES, la unica forma que sirva es que la petición se haga cuando se aplique el DOOMCONTENTLOADER.
+    // modalAddDevolutivos.open();
+    btnAddElements.classList.remove("shake");
+    //Obligo al doom a que vuelva a re ejecutar este elemento.
+    void btnAddElements.offsetWidth;
+    btnAddElements.classList.add("shake");
+    return;
+  }
+
+  let devolutivosRows = rows.codigoElementos.devolutivos;
+  let consumiblesRows = rows.codigoElementos.consumibles;
+  let textConfirmReserva = '';
+
+  //Valido si hay elementos seleccionados.
+  if (consumiblesRows.length > 0) {
+  
+    textConfirmReserva += `Consumibles:\n${consumiblesRows.map(el => 
+    `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
+    ).join('\n')}\n`;    
+  }
+
+  //Valido si hay elemento seleccionados.
+  if (devolutivosRows.length > 0) {
+  textConfirmReserva += `Devolutivos:\n${rows.codigoElementos.devolutivos.map(el => 
+        `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
+      ).join('\n')}\n`;    
+  }
+
+
+
   //TODO: transformar en sweet alert.
-  if (confirm("¿Deseas realizar el siguiente prestamo?")) {
+  if (confirm(`¿Deseas realizar el siguiente prestamo?\n${textConfirmReserva}`)) {
     objAjax.request.onload = () => {
       let response = JSON.parse(objAjax.request.responseText);
-
+      // Si el registro se realizó correctamente.
       if (response.status) {
         initAlert('Reserva realizada con exito','success',toastOptions);
         //Limpio el formulario, tabla y campos de span.

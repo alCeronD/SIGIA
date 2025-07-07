@@ -19,12 +19,14 @@ class ReservaController
     }
 
     //Muestra la vista de reserva formulario.
-    public function reservaView(){
+    public function reservaView()
+    {
 
         return include_once __DIR__ . '/../views/reservaView.php';
     }
 
-    public function consultaReservaView() {
+    public function consultaReservaView()
+    {
 
         return include_once __DIR__ . '/../views/consultarReservaView.php';
     }
@@ -35,9 +37,10 @@ class ReservaController
         success('Registros', $data);
     }
 
-    public function getElementosConsumibles (int $pages = 1, int $type = 2){
-        $data = $this->model->selectElements($pages,$type);
-        success('elementos consumibles',$data);
+    public function getElementosConsumibles(int $pages = 1, int $type = 2)
+    {
+        $data = $this->model->selectElements($pages, $type);
+        success('elementos consumibles', $data);
     }
 
     public function getUsers($page)
@@ -45,13 +48,36 @@ class ReservaController
         $data = $this->model->selectUsers($page);
 
         if ($data != null) {
-            // var_dump($data);
             success('Usuarios activos', $data);
         }
     }
 
-    //Función para establecer datos para realizar su reserva.
-    public function setReserva(array $data = []){
+    /**
+     * Procesa y estructura los datos de una solicitud o reserva de préstamo,
+     * transformándolos al formato requerido por la base de datos antes de ser insertados.
+     * 
+     * Determina el tipo de préstamo y estado según el rol del usuario actual, 
+     * organiza y limpia los datos, y luego delega la inserción al método insertReserva().
+     *
+     * @param array $data Datos del formulario recibidos desde el cliente. Espera una estructura con:
+     *  - 'cedula'                => string|int   - Documento del usuario solicitante.
+     *  - 'fechaReserva'          => string       - Fecha de inicio de la reserva (ISO 8601).
+     *  - 'fechaDevolucion'       => string       - Fecha de devolución esperada (ISO 8601).
+     *  - 'inicio'                => string|null  - Hora de inicio (si aplica).
+     *  - 'fin'                   => string|null  - Hora de fin (si aplica).
+     *  - 'observaciones'         => string       - Observaciones del usuario.
+     *  - 'areaDestino'           => string       - Área de destino ('centro', 'externo', etc).
+     *  - 'codigosElementos'      => array        - Lista de elementos separados por tipo:
+     *       - 'consumibles' => [ ['codigo' => int, 'cantidad' => int], ... ]
+     *       - 'devolutivos' => [ ['codigo' => int, 'cantidad' => int], ... ]
+     *
+     * @return void
+     *
+     * @throws void En caso de error, la función llama a `fail()` con el mensaje correspondiente.
+     *              Si tiene éxito, llama a `success()` con la confirmación.
+     */
+    public function setReserva(array $data = [])
+    {
         //Validar usuario. para guardar su rol. y su tipo de prestamo, reserva o solicitud.
         if (($_SESSION['usuario']['rol_id'] == 2) || ($_SESSION['usuario']['rol_id'] == 1)) {
             $pres_rol = $_SESSION['usuario']['rol_id'];
@@ -74,8 +100,8 @@ class ReservaController
         $ascDevolutivos = array_column($codDevolu, 'codigo');
         $ascConsu = array_column($codConsumibles, 'codigo');
         //Cordenar los elementos del arreglo basado en el código
-        array_multisort($codDevolu,SORT_ASC,$ascDevolutivos);
-        array_multisort($codConsumibles,SORT_ASC,$ascConsu);
+        array_multisort($codDevolu, SORT_ASC, $ascDevolutivos);
+        array_multisort($codConsumibles, SORT_ASC, $ascConsu);
 
         unset($data["codigosElementos"]);
 
@@ -105,59 +131,66 @@ class ReservaController
         $result = $this->model->insertReserva($data, $codDevolu, $codConsumibles);
         if (!$result) {
             fail($result['message']);
-        }else{
+        } else {
             success($result['message']);
         }
-
     }
 
     //Función para validar la solicitud del aprendiz/instructor y cambiar su estado a validado
-    public function setSolicitud(array $data =[]){
+    public function setSolicitud(array $data = [])
+    {
         $cedula = $data['dataUsuario']['nroIdentidad'];
 
         $result = $this->model->validateSolicitud($data, $cedula);
         if (!$result) {
             fail('error al validar el prestamo');
-        }        
+        }
         success('prestamo validado');
     }
 
     //Finalizar la reserva, es decir, cuando el usuario devuelve los elementos.
-    public function setEndReserva(array $elementos = [], int $codigo = 0){
+    public function setEndReserva(array $elementos = [], int $codigo = 0)
+    {
         // $data = $this->model->endReserva($elementos,$codigo);
-        $data = $this->model->endReserva($elementos,$codigo);
+        $data = $this->model->endReserva($elementos, $codigo);
         if ($data['status']) {
             success('Prestamo exitoso');
-        
         }
     }
 
     //Función para traer las reservas
-    public function getReservas(int $pages = 0) {
+    public function getReservas(int $pages = 0, String $type = '')
+    {
         if (!$pages) {
             fail('pagina no definida');
         }
 
-        // Me trae solo la información de la reserva.
-        $data = $this->model->selectDetailReserva($pages);
+        // Puedo guardar los estados en un arreglo y validarlo con la clave del arreglo que me recibe.
+        $estadoPrestamo =
+            $type === 'all'       ? 0 :
+            ($type === 'validate'   ? 1 :
+            ($type === 'Rechazado'  ? 2 :
+            ($type === 'toValidate' ? 3 :
+            ($type === 'done' ? 4 :
+            ($type === 'cancelado'  ? 5 : null)))));
+
+
+        $data = $this->model->selectDetailReserva($pages, $estadoPrestamo);
         if (!$data['status']) {
             fail('error', $data);
         }
-        //Trae los elementos de la reserva.
-        success('Registros', $data);    
+        success('Registros', $data);
     }
 
 
 
-    public function getElementsReserva($codigo ){
-        // var_dump($codigo);
+    public function getElementsReserva($codigo)
+    {
         $codigoInt = (int) $codigo;
-        // var_dump($codigoInt);
         $dataDetail = $this->model->selectElementsReserva($codigoInt);
         // $this->model->selectElementsReserva($codigoInt);
-        success('Elementos relacionados al codigo',$dataDetail);
+        success('Elementos relacionados al codigo', $dataDetail);
     }
-
 }
 
 $controller = new ReservaController();
@@ -179,33 +212,34 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 }
                 break;
             case 'consumibles';
-            //Elemento de tipo consumible;
-            $type = 2;
-            if (method_exists($controller,'getElementosConsumibles')) {
-                $controller->getElementosConsumibles($pages,$type);
-            }
+                //Elemento de tipo consumible;
+                $type = 2;
+                if (method_exists($controller, 'getElementosConsumibles')) {
+                    $controller->getElementosConsumibles($pages, $type);
+                }
 
-        
-            break;
+
+                break;
 
             case 'reservas':
 
                 $pages = (int) $_GET['pages'];
-                if (method_exists($controller,'getReservas')) {
-                    $controller->getReservas($pages);
+                $type = (String) $_GET['type'];
+                if (method_exists($controller, 'getReservas')) {
+                    $controller->getReservas($pages, $type);
                 }
                 break;
 
             case 'reservaDetailElements';
 
-            if (method_exists($controller,'getElementsReserva')) {
-                $controller->getElementsReserva($codigo);
-            }
+                if (method_exists($controller, 'getElementsReserva')) {
+                    $controller->getElementsReserva($codigo);
+                }
 
-            break;
+                break;
 
             case 'users':
-                if (method_exists($controller,'getUsers')) {
+                if (method_exists($controller, 'getUsers')) {
                     $controller->getUsers($pages);
                 }
                 break;
@@ -244,12 +278,10 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 //la validación del data es practicamente el setReserva pero la hare en otra función por cuestión de tiempo.
 
 
-            break;    
+                break;
             default:
                 break;
         }
-
     }
     exit();
 }
-

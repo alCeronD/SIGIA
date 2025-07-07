@@ -1,3 +1,5 @@
+import { validationRules } from "../utils/regex.js";
+
 document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('loginForm');
     const documInput = document.getElementById('docum');
@@ -9,8 +11,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const docum = documInput.value.trim();
         const pass = passInput.value;
 
-        if (!/^\d{5,15}$/.test(docum)) {
-            alert("El documento debe contener solo números (5 a 15 caracteres).");
+
+        // Valida la expresión regular desde regex.js
+        if (!validationRules.documento.regex.test(docum)) {
+            alert(validationRules.documento.message);
+            loginForm.reset();
             documInput.focus();
             return;
         }

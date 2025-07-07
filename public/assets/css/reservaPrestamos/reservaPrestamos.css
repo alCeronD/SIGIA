@@ -211,7 +211,7 @@ th {
 
 /* Estilos del modal */
 #modalAddDevolutivos,
-#modalUsers,#modalAddConsumible {
+#modalUsers,#modalAddConsumible, #modalPreviewElements {
   display: none;
   position: fixed;
   /* Stay in place */
@@ -274,6 +274,27 @@ th {
   justify-content: space-between;
 }
 
+/* Este modal es el de los elementos preview de la reserva */
+/* #modalPreviewElements{
+  width: fit-content;
+} */
+
+/* Efecto al boton en caso de no haber seleccionado items */
+
+.shake{
+  /* No va a ser infinita */
+  animation: tilt-shaking 0.8s;
+}
+
+@keyframes tilt-shaking {
+  0% { transform: rotate(0deg); 
+  }
+  25% { transform: rotate(20deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(-20deg); }
+  100% { transform: rotate(0deg); }
+}
+
 
 /* 
 
@@ -294,7 +315,7 @@ th {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-
+  align-items: center;
 }
 
 #contentConsultar #menuTitleConsult{
@@ -302,11 +323,27 @@ th {
 
 }
 
+/* #contentConsultar .closeItem{
+
+} */
+
 .searchInput{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  /* con esto le digo que me ocupe el 30% del contenedor padre. */
+  flex: 0 0 30%;
 }
+
+.filterTipoReserva{
+  display: flex;
+  flex: 0 0 50%;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.3rem;
+}
+
 
 .reservas{
   height: calc(90vh - 20vh);
@@ -348,7 +385,7 @@ th {
     "infoDetail"
     "tableContainer";
   gap: 2rem;
-  width: 100%;
+  width: fit-content;
 }
 
 .modalTitleDetail {

@@ -103,7 +103,7 @@
 
       <div class="input-field" style="margin-bottom: 20px;">
         <label for="usu_email" class="active">Correo</label>
-        <input type="email" name="usu_email" id="usu_email" required>
+        <input type="email" name="usu_email" id="usu_email">
       </div>
 
       <div class="input-field" style="margin-bottom: 20px;">

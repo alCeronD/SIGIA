@@ -16,4 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
   //Tooltips
   let tooltip = document.querySelectorAll('.tooltipped');
   M.Tooltip.init(tooltip, options);
+
+
 });

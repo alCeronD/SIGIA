@@ -1,6 +1,5 @@
 <?php
 
-use function PHPSTORM_META\map;
 
 require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../../../helpers/const.php';
@@ -23,7 +22,7 @@ class ReservaModel
     public function __construct()
     {
         $this->conect = new Conection();
-        $this->usuario = new usuarios($this->conect);
+        $this->usuario = new usuarios();
         $this->modelElemento = new ElementoModelo();
     }
 
@@ -33,6 +32,7 @@ class ReservaModel
         $conn = $this->conect->getConnect();
 
         try {
+            // var_dump($data);
             $conn->begin_transaction();
 
             $cedula = (int) $data["cedula"];
@@ -65,7 +65,6 @@ class ReservaModel
 
             $stmtPres = $conn->prepare($presSql);
 
-
             if (!$stmtPres) {
                 $conn->rollback();
                 return [
@@ -73,7 +72,7 @@ class ReservaModel
                     'status' => false
                 ];
             }
-            //Debo usar esta por el tema de la versión de php.
+            // //Debo usar esta por el tema de la versión de php.
             extract($data, EXTR_PREFIX_ALL, 'p');
             $stmtPres->bind_param(
                 'ssssssiii',
@@ -123,6 +122,41 @@ class ReservaModel
                 }
             }
 
+            $codsDevel = array_column($codDevolu, 'codigo');
+            $cantidadDevolutivo = 1;
+            //quinta transacción insertar los elementos devolutivos en la tabla prestamos_elementos.
+            $sqlElementosDev = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES(?,?,?,?)";
+            $stmtElementosDev = $conn->prepare($sqlElementosDev);
+            foreach ($codsDevel as $value) {
+                $value = (int) $value;
+                $stmtElementosDev->bind_param('iiii', $lastId, $id, $value, $cantidadDevolutivo);
+
+                if (!$stmtElementosDev->execute()) {
+                    $conn->rollback();
+                    return [
+                        'data' => $stmtElementosDev->error,
+                        'status' => false
+                    ];
+                }
+            }
+
+            //Sexta transacción, insertar los elementos consumibles
+            $sqlElementosConsu = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES(?,?,?,?)";
+            $stmtElementosConsu = $conn->prepare($sqlElementosConsu);
+            foreach ($codConsumibles as $value) {
+                $cod = (int) $value['codigo'];
+                $cant = $value['cantidad'];
+                $stmtElementosConsu->bind_param('iiii', $lastId, $id, $cod, $cant);
+
+                if (!$stmtElementosConsu->execute()) {
+                    $conn->rollback();
+                    return [
+                        'message' => $stmtElementosConsu->error,
+                        'status' => false
+                    ];
+                }
+            }
+
             $cantidadConsumibles = array_column($codConsumibles, 'cantidad');
             $codidogConsumibles = array_column($codConsumibles, 'codigo');
 
@@ -162,7 +196,8 @@ class ReservaModel
                 }
             }
 
-            $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn,ent_sal_cod_prestamo) VALUES(?,NOW(),?,?,?,?)";
+            //Transacción para validar la salida de los elementos.
+            $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,ent_sal_observacion,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn,ent_sal_cod_prestamo) VALUES(?,NOW(),?,?,?,?,?)";
 
             $stmtSalida = $conn->prepare($sqlInsertSalida);
             //Salida
@@ -173,11 +208,11 @@ class ReservaModel
                 $codigo = $element['codigo'];
                 $cant = $element['cantidad'];
 
-                $stmtSalida->bind_param('iiiii', $cant, $tipoMovimento, $id, $codigo, $lastId);
+                $stmtSalida->bind_param('isiiii', $cant,$p_pres_observacion ,$tipoMovimento, $id, $codigo, $lastId);
                 if (!$stmtSalida->execute()) {
                     $conn->rollback();
                     $result = [
-                        'message' => "$stmtConsumibles->error",
+                        'message' => "$stmtSalida->error",
                         'status' => false
                     ];
 
@@ -185,40 +220,24 @@ class ReservaModel
                 }
             }
 
-            $codsDevel = array_column($codDevolu, 'codigo');
-            $cantidadDevolutivo = 1;
-            //quinta transacción insertar los elementos devolutivos en la tabla prestamos_elementos.
-            $sqlElementosDev = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES(?,?,?,?)";
-            $stmtElementosDev = $conn->prepare($sqlElementosDev);
-            foreach ($codsDevel as $value) {
-                $value = (int) $value;
-                $stmtElementosDev->bind_param('iiii', $lastId, $id, $value, $cantidadDevolutivo);
-
-                if (!$stmtElementosDev->execute()) {
-                    $conn->rollback();
-                    return [
-                        'data' => $stmtElementosDev->error,
-                        'status' => false
-                    ];
-                }
-            }
-
-            //Sexta transacción, insertar los elementos consumibles
-            $sqlElementosConsu = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES(?,?,?,?)";
-            $stmtElementosConsu = $conn->prepare($sqlElementosConsu);
-            foreach ($codConsumibles as $value) {
-                $cod = (int) $value['codigo'];
+            foreach ($codDevolu as $key => $value) {
+                //Extraigo la cantidad y el código del elemento.
+                $codigo = $value['codigo'];
                 $cant = $value['cantidad'];
-                $stmtElementosConsu->bind_param('iiii', $lastId, $id, $cod, $cant);
 
-                if (!$stmtElementosConsu->execute()) {
+                $stmtSalida->bind_param('isiiii', $cant,$p_pres_observacion ,$tipoMovimento, $id, $codigo, $lastId);
+                if (!$stmtSalida->execute()) {
                     $conn->rollback();
-                    return [
-                        'message' => $stmtElementosConsu->error,
+                    $result = [
+                        'message' => "$stmtSalida->error",
                         'status' => false
                     ];
+
+                    return $result;
                 }
             }
+
+            
 
             $conn->commit();
             return [
@@ -511,10 +530,10 @@ class ReservaModel
 
     //Funcion para visualizar las reservas.
     /**
-     * Summary of selectReservas TODO: Cambiar a Páginado con javascript.
+     * Summary of selectReservas 
      * @return array{data: array, message: string, status: bool|string}
      */
-    public function selectDetailReserva(int $page = 1)
+    public function selectDetailReserva(int $page = 1, int $type = 0)
     {
         //valido que el page que mande sea como minimo 1 y Máximo la cantidad requerida.
         $page = max(1, (int)$page);
@@ -535,7 +554,7 @@ class ReservaModel
             //Cantidad de páginas.
             $pages = (int) ceil($getCountReservas / LIMIT);
 
-            $sqlReservas = "SELECT DISTINCT
+            $sqlBase = "SELECT DISTINCT
                 pre.pres_cod AS codigo,
                 us.usu_docum AS nroIdentidad,
                 us.usu_nombres AS nombre,
@@ -556,11 +575,46 @@ class ReservaModel
                 INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
                 INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
                 INNER JOIN roles r ON r.rl_id = pre.pres_rol
-                INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ?";
+                INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres ";
+
+
+        if ($type === 0) {
+            $sqlReservas = "$sqlBase ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ?";
             $stmtResevas = $conn->prepare($sqlReservas);
+            $stmtResevas->bind_param('ii', $limitConst, $offset);
+        } else {
+            $sqlReservas = "$sqlBase WHERE pre.pres_estado = ? ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ?";
+            $stmtResevas = $conn->prepare($sqlReservas);
+            $stmtResevas->bind_param('iii', $type, $limitConst, $offset);
+        }
+
+
+            // $sqlReservas = "SELECT DISTINCT
+            //     pre.pres_cod AS codigo,
+            //     us.usu_docum AS nroIdentidad,
+            //     us.usu_nombres AS nombre,
+            //     us.usu_apellidos AS apellido,
+            //     pre.pres_fch_slcitud AS fechaSolicitud,
+            //     pre.pres_fch_reserva AS fechaReserva,
+            //     pre.pres_hor_inicio AS horaInicio,
+            //     pre.pres_hor_fin AS horaFin,
+            //     pre.pres_fch_entrega AS fechaDevolucion,
+            //     pre.pres_observacion AS observacion,
+            //     esp.es_pr_nombre AS estadoPrestamo,
+            //     esp.es_pr_cod AS estadoCodigoPrestamo,
+            //     r.rl_nombre AS nombreRol,
+            //     tp_pr.tp_pre AS codigoTipoPrestamo,
+            //     tp_pr.tp_nombre AS tipoPrestamo
+            //     FROM prestamos pre
+            //     INNER JOIN prestamos_elementos pre_el ON pre_el.pres_cod = pre.pres_cod
+            //     INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
+            //     INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
+            //     INNER JOIN roles r ON r.rl_id = pre.pres_rol
+            //     INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ? ";
+            // $stmtResevas = $conn->prepare($sqlReservas);
             $limitConst = LIMIT;
 
-            $stmtResevas->bind_param('ii', $limitConst, $offset);
+            // $stmtResevas->bind_param('ii', $limitConst, $offset);
 
             if (!$stmtResevas->execute()) {
 
@@ -601,36 +655,30 @@ class ReservaModel
         $conn = $this->conect->getConnect();
         try {
 
-            // $sqlElementsReserva = "SELECT 
-            //     el.elm_cod AS 'codigo',
-            //     el.elm_nombre AS 'nombre',
-            //     `tpE`.tp_el_cod AS 'codTipoElemento',
-            //     `tpE`.tp_el_nombre as 'nombreTipoElemento',
-            //     prel.pres_el_cantidad AS 'cantidadSolicitada'
-            //     FROM elementos el
-            //     RIGHT JOIN prestamos_elementos prel ON
-            //     el.elm_cod = prel.pres_el_elem_cod 
-            //     LEFT JOIN prestamos pre ON
-            //     pre.pres_cod = prel.pres_cod
-            //     LEFT JOIN tipo_elemento tpE ON
-            //     el.elm_cod_tp_elemento = `tpE`.tp_el_cod
-            //     WHERE prel.pres_cod = ?";
+            //Esta consulta debe ser cambiada, dependiendo de si el tipo de movimiento es uno u otro, si el movimiento ya se ha validado y la cantidad de elementos ha cambiado, debe de mostrarme la cantidad de elementos que se validaron.
+    $sqlElementsReserva = "SELECT DISTINCT
+            el.elm_cod AS 'codigo',
+            el.elm_nombre AS 'nombre',
+            en_s.ent_sal_cantidad AS 'cantidadSolicitada',
+            tpE.tp_el_cod AS 'codTipoElemento',
+            tpE.tp_el_nombre AS 'nombreTipoElemento'
+        FROM
+            elementos el
+            LEFT JOIN prestamos_elementos prel ON prel.pres_el_elem_cod = el.elm_cod
+            LEFT JOIN prestamos pre ON pre.pres_cod = prel.pres_cod
+            INNER JOIN entradas_salidas en_s ON el.elm_cod = en_s.ent_sal_cod_elemtn
+                AND en_s.ent_sal_cod_prestamo = prel.pres_cod
+            RIGHT JOIN tipo_elemento tpE ON el.elm_cod_tp_elemento = tpE.tp_el_cod
+        WHERE
+            prel.pres_cod = ?
+            AND en_s.ent_sal_cod_prestamo = ?";
 
-                $sqlElementsReserva = "SELECT 
-                    el.elm_cod AS 'codigo',
-                    el.elm_nombre AS 'nombre',
-                    en_s.ent_sal_cantidad AS 'cantidadSolicitada',
-                    tpE.tp_el_cod AS 'codTipoElemento',
-                    tpE.tp_el_nombre AS 'nombreTipoElemento'
-                    FROM elementos el
-                    LEFT JOIN prestamos_elementos prel ON prel.pres_el_elem_cod = el.elm_cod
-                    LEFT JOIN prestamos pre ON pre.pres_cod = prel.pres_cod
-                    INNER JOIN entradas_salidas en_s ON
-                    el.elm_cod = en_s.ent_sal_cod_elemtn
-                    RIGHT JOIN tipo_elemento tpE ON el.elm_cod_tp_elemento = tpE.tp_el_cod WHERE prel.pres_cod = ? AND en_s.entr_tp_movmnt = 3";
+
+
 
             $stmtResevasElm = $conn->prepare($sqlElementsReserva);
-            $stmtResevasElm->bind_param('i', $codigo);
+            // $stmtResevasElm->bind_param('i', $codigo);
+            $stmtResevasElm->bind_param('ii', $codigo, $codigo);
 
             if (!$stmtResevasElm->execute()) {
                 return null;

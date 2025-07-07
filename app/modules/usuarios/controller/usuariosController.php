@@ -46,45 +46,56 @@ class usuariosController
     }
 
     public function createUser()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-            if ($this->conn->connect_error) {
-                die("Error de conexión: " . $this->conn->connect_error);
-            }
+        if ($this->conn->connect_error) {
+            die("Error de conexión: " . $this->conn->connect_error);
+        }
 
-            $usuariosModel = new usuarios($this->conn);
+        $usuariosModel = new usuarios();
 
-            $datos = [
-                'usu_docum'     => $_POST['usu_docum'],
-                'usu_nombres'   => $_POST['usu_nombres'],
-                'usu_apellidos' => $_POST['usu_apellidos'],
-                'usu_password'  => $_POST['usu_password'],
-                'usu_email'     => $_POST['usu_email'],
-                'usu_direccion' => $_POST['usu_direccion'],
-                'usu_telefono'  => $_POST['usu_telefono'],
-                'usu_id_estado' => 1,
-                'usu_tp_id' => $_POST['usu_tp_id'],
-                'rol_id'        => $_POST['rol_id'],
-            ];
+        // Verificar si ya existe un usuario con ese documento
+        $existeUsuario = $usuariosModel->searchU((int)$_POST['usu_docum'], true);
 
-            $resultado = $usuariosModel->create($datos);
-            // Validaciones
-            //Pendiente realizar la consulta del Num_doc y si no esta que continue si el proceso
+        if ($existeUsuario) {
+            echo "<script>alert('Ya existe un usuario registrado con ese número de documento.'); window.history.back();</script>";
+            return;
+        }
 
-            if ($resultado) {
-                echo "<script>alert('Usuario registrado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'userView', false, 'dashboard') . "';</script>";
-            } else {
-                echo $resultado;
-            }
+        if (empty($_POST['usu_email'])) {
+            echo "<script>alert('el email debe ser digitado'); window.history.back();</script>";
+            return;
+        }
+
+        $datos = [
+            'usu_docum'     => $_POST['usu_docum'],
+            'usu_nombres'   => $_POST['usu_nombres'],
+            'usu_apellidos' => $_POST['usu_apellidos'],
+            'usu_password'  => $_POST['usu_password'],
+            'usu_email'     => $_POST['usu_email'],
+            'usu_direccion' => $_POST['usu_direccion'],
+            'usu_telefono'  => $_POST['usu_telefono'],
+            'usu_id_estado' => 1,
+            'usu_tp_id'     => $_POST['usu_tp_id'],
+            'rol_id'        => $_POST['rol_id'],
+        ];
+
+        $resultado = $usuariosModel->create($datos);
+
+        if ($resultado) {
+            echo "<script>alert('Usuario registrado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'userView', false, 'dashboard') . "';</script>";
+        } else {
+            echo "<script>alert('Ocurrió un error al registrar el usuario');</script>";
         }
     }
+}
 
 
     public function consultUser()
     {
 
-        $modeloUsuarios = new usuarios($this->conn);
+        $modeloUsuarios = new usuarios();
 
         $usuarios = $modeloUsuarios->search();
         // dd($usuarios);
@@ -99,10 +110,19 @@ class usuariosController
 
         $id = $_POST['usu_id'];
         unset($_POST['usu_id']);
-        $dato = new usuarios($this->conn);
+        $dato = new usuarios();
+        $data = $_POST;
+
+        foreach ($data as $key => $value) {
+            if (empty($value)) {
+                echo "<script>alert('El campo \"$key\" debe ser diligenciado.'); window.history.back();</script>";
+                return;
+            }
+        }
+
         $dato->update($_POST, $id);
 
-        $modeloUsuarios = new usuarios($this->conn);
+        $modeloUsuarios = new usuarios();
         $usuarios = $modeloUsuarios->search();
 
 
@@ -119,7 +139,7 @@ class usuariosController
 
         $id = $_GET['usu_id'];
         $_SESSION['css'] = 'usuarios/usuarios.css';
-        $datos = new usuarios($this->conn);
+        $datos = new usuarios();
 
         $usuarioUpdate = $datos->searchU($id);
         include_once __DIR__ . '/../../usuarios/views/updateView.php';
