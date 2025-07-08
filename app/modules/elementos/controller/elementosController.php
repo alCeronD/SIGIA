@@ -56,6 +56,12 @@ class ElementosController
         }
         success('', $resultRow);
     }
+
+    public function getPlacas(String $value = ''){
+        $this->modeloElemento->getAllPlacas();
+
+    }
+
     public function registrarElemento()
     {
         // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -185,6 +191,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         //valor de la página, por defecto, es la página #1.
         $pages = (int) ($_GET['pages'] ?? 1);
 
+        // Esto se puede cambiar, en ves de switch case, arreglo con su calve y valor y ahí validar la información.
         switch ($case) {
             case 'elements':
                 $type = $_GET['type'];
@@ -215,7 +222,18 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 
                 break;
 
+            case 'marcas':
+                if (method_exists($elementosController,'getItems')) {
+                    $elementosController->getItems($case);
+                }
+                break;
 
+            case 'placas':
+                if (method_exists($elementosController,'getPlacas')) {
+                    $elementosController->getPlacas($case);
+                }
+
+                break;
 
             default:
                 fail('error de acción.');

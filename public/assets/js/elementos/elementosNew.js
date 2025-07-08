@@ -35,6 +35,11 @@ const contentPlaca = document.querySelector('.contentPlaca');
 const nuevaPlaca = document.querySelectorAll('input[name="placaRadio"]');
 const selectedPlaca = document.querySelector('#selectPlaca');
 
+// Input de unidad de medida.
+const undMedida = document.querySelector('#undMedida');
+const tpElemento = document.querySelectorAll('input[name="tpElementoRadio"]');
+const checkboxTpElemento = document.querySelector('.checkboxTpElemento');
+
 function viewPlacaInputs(status = false){
 
     if (!status) {
@@ -50,6 +55,30 @@ function viewPlacaInputs(status = false){
     }
 }
 
+function viewTpElementoInputs(status =false){
+
+    // Inicializar el select de la unidad de medida.
+    const undMedida = document.querySelector('#undMedida');
+    // Input cantidad 
+    const inputCantidad = document.querySelector('#inputCantidad');
+    M.FormSelect.init(undMedida);
+
+    if (status) {
+        checkboxTpElemento.style.display = "grid";
+        undMedida.value = 'unitario';
+        inputCantidad.readOnly = true;
+        inputCantidad.value = 1;
+        // Reinicializo el elmento
+        
+    }else{
+        checkboxTpElemento.style.display = "grid";
+        undMedida.value = 'default';
+        inputCantidad.value = '';
+        inputCantidad.readOnly = false;
+    }
+    M.FormSelect.init(undMedida);
+}
+
 // Capturo todos los inputs con el name placaRadio
 nuevaPlaca.forEach((inputRadio)=>{
     inputRadio.addEventListener('change', (e)=>{
@@ -59,11 +88,23 @@ nuevaPlaca.forEach((inputRadio)=>{
         }else if (e.target.id === 'selectPlaca'){
             viewPlacaInputs(true);
         }
-
     });
-
 });
 
+// Capturo todos los inputs del tipo de elemento, siendo devolutivo o consumible
+tpElemento.forEach((tpElement)=>{
+    tpElement.addEventListener('change', (e)=>{
+        console.log(e.target);
+
+        if (e.target.id === 'devolutivoCheckbox') {
+            viewTpElementoInputs(true);
+        }
+        if (e.target.id === 'consumibleCheckbox') {
+            viewTpElementoInputs();
+        }
+
+    });
+});
 
 /**
  * Renderiza elementos desde el backend utilizando filtros de tipo, acción y paginación.
@@ -161,37 +202,91 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
     }
     
 };
+
 const selectAreas = document.querySelector('#selectAreas');
-const renderSelectElements = async (action = '')=>{
+const selectCategorias = document.querySelector('#categoriaSelect');
+const selectMarcas = document.querySelector('#selectMarca');
+const selectTpElemento = document.querySelector('#selectTpElemento');
+const renderSelectAreas = async (action = '')=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
     let dataResponse = response.data;
-    console.log(dataResponse);
-    // selectAreas.innerHTML = '';
-    // const option = document.createElement('option');
-    // option.value = 0;
-    // option.textContent = "Seleccione un departamento";
-    // option.setAttribute('selected', 'selected');
-    // option.setAttribute('disabled', 'disabled');
-    // selectAreas.appendChild(option);
-    
-    // dataResponse.forEach((data)=>{
-    //     const optionDataAreas = document.createElement('option');
-    //     optionDataAreas.value = areas.codigo;
-    //     optionDataAreas.textContent = areas.nombre;
-    //     selectAreas.appendChild(optionDataAreas);
-    // });
-    // //Reinicializo los select, accedo a ellos mediante el objeto window.  
-    // if (window.M) {
-    //     M.FormSelect.init(selectAreas);
-    // }
 
+    selectAreas.innerHTML = '';
+    const option = document.createElement('option');
+    option.value = 0;
+    option.textContent = "Seleccione un departamento";
+    option.setAttribute('selected', 'selected');
+    option.setAttribute('disabled', 'disabled');
+    selectAreas.appendChild(option);
+    
+    dataResponse.forEach((data)=>{
+        const optionDataAreas = document.createElement('option');
+        optionDataAreas.value = data.ar_cod;
+        optionDataAreas.textContent = data.ar_nombre;
+        selectAreas.appendChild(optionDataAreas);
+    });
+    //Reinicializo los select, accedo a ellos mediante el objeto window.  
+    if (window.M) {
+        M.FormSelect.init(selectAreas);
+    }
 }
 
-const renderCategorias = async ()=>{
-    let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: 'categorias'});
+const renderSelectCategorias = async (action = '')=>{
+    let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: 'categoria'});
+    let categorias = response.data;
+    console.log(categorias);
+    selectCategorias.innerHTML = '';
+    const option = document.createElement('option');
+    option.value = 0;
+    option.textContent = "Seleccione una categoria";
+    option.setAttribute('selected', 'selected');
+    option.setAttribute('disabled', 'disabled');
+    selectCategorias.appendChild(option);
+    categorias.forEach((dataCat) => {
+        const optionDataCategorias = document.createElement('option');
+        optionDataCategorias.value = dataCat.ca_id;
+        optionDataCategorias.textContent = dataCat.ca_nombre;
+        selectCategorias.appendChild(optionDataCategorias);
+    });
+
+    if (window.M) {
+        M.FormSelect.init(selectCategorias);
+    }
+};
+
+const renderSelectMarcas = async (action = '') =>{
+    let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
+    console.log(response);
+    let marcaData = response.data;
+    selectMarcas.innerHTML = '';
+    selectMarcas.innerHTML = '';
+    const option = document.createElement('option');
+    option.value = 0;
+    option.textContent = "Seleccione una marca";
+    option.setAttribute('selected', 'selected');
+    option.setAttribute('disabled', 'disabled');
+    selectMarcas.appendChild(option);
+    marcaData.forEach((marca)=>{
+        const option = document.createElement('option');
+        option.value = marca.ma_id;
+        option.innerText = marca.ma_nombre;
+
+        selectMarcas.appendChild(option);
+    });
+
+    // Reinicializo el select
+        if (window.M) {
+        M.FormSelect.init(selectMarcas);
+    }
+
 
 };
 
+const renderSelectPlacas = async (action = '') =>{
+    let responsePlacas = await getData('modules/elementos/controller/elementosController.php', 'GET',{action: action});
+
+    console.log(responsePlacas);
+};
 
 document.addEventListener('DOMContentLoaded', ()=>{
     //Inicializo los select.
@@ -200,12 +295,22 @@ document.addEventListener('DOMContentLoaded', ()=>{
     //Renderizado de los elementos
     renderElements({type: currentType});
 
+    const selectAreas = document.querySelector('#selectAreas');
+    const selectCategorias = document.querySelector('#selectCategorias');
+
     // Inicializar select de las placas ya registradas
     const elemsSelect = document.querySelector('#placaAssoc');
     M.FormSelect.init(elemsSelect);
 
-    renderSelectElements('categoria');
-    renderSelectElements('areas');
+    M.FormSelect.init(selectCategorias);
+    M.FormSelect.init(selectMarcas);
+    M.FormSelect.init(selectTpElemento);
+
+    // Estas 3 funciones puedo transformarlas en 1.
+    renderSelectAreas('areas');
+    renderSelectCategorias('categoria');
+    renderSelectMarcas('marcas');
+    renderSelectPlacas('placas');
 });
 
 /**
@@ -255,7 +360,7 @@ nextElements.addEventListener('click', (e) => {
  */
 let timer;
 // También puedes buscar al escribir directamente
-    inputBusqueda.addEventListener('keyup', function (e) {
+inputBusqueda.addEventListener('keyup', function (e) {
         e.stopPropagation();
         const filtro = e.target.value.toLowerCase().trim();
         // console.log({"valor": filtro});
@@ -272,7 +377,7 @@ let timer;
 
         // }, 400);
         
-    });
+});
 
 
 /**

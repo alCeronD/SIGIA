@@ -195,7 +195,9 @@
 #addElementForm {
   display: grid;
   grid-template-areas: "placa placa"
-  "nombre area";
+  "nombre area"
+  "categoria marca"
+  "tipoElemento tipoElemento";
   /* grid-template-areas: "placa placa"
   "serie nombre"
   "unidadMedida unidadMedida"
@@ -251,6 +253,37 @@
     grid-area: area;
 }
 
+.marca{
+    grid-area: marca;
+}
+
+.categoria{
+    grid-area: categoria;
+}
+
+.tipoElemento{
+    grid-area: tipoElemento;
+}
+
+.radioTpElemento{
+    display: flex;
+    flex-direction: row;
+}
+
+.checkboxTpElemento{
+    display: none;
+    grid-template-areas: "unidadMedida cantidadElemento";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+}
+
+.unidadMedida{
+    grid-area: unidadMedida;
+}
+
+.cantidadElemento{
+    grid-area:cantidadElemento ;
+}
 
 /* 
 #addElementModal > #modalContentElements {

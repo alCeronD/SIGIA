@@ -90,7 +90,7 @@
         </div>
         <div class="modalContentForm">
             <form id="addElementForm">
-                <div class=" placa">
+                <div class="placa">
                     <!-- Inputs radio de la placa, dependiendo de la placa, me debe de mostrar uno u otro. -->
                     <div class="radioPlaca">
                         <label for="">¿Desea asociar el elemento nuevo a una placa o registrar una placa nueva?</label>
@@ -136,13 +136,60 @@
                     </div>
                 </div>
                 <div class="nombre">
-                    <input id="elm_nombre" name="elm_nombre" type="text">
-                    <label for="elm_nombre">Nombre elemento *</label>
+                    <label for="elm_nombre">Nombre elemento:</label>
+                    <input id="elm_nombre" name="elm_nombre" type="text" placeholder="">
                 </div>
                 <div class="area">
-                    <select id="selectAreas" class="select_area" name="elm_area_cod">
+                    <label for="areaCod">Área * </label>
+                    <select id="selectAreas" class="select_area" name="areaCod">
                     </select>
-                    <label for="elm_area_cod">Área</label>
+                </div>
+
+                <div class="categoria">
+                    <label for="categoriaSelect">Categorias:</label>
+                    <select name="categoriaSelect" id="categoriaSelect" class=""></select>
+                </div>
+
+                <div class="marca">
+                    <label for="selectMarca">Marcas:</label>
+                    <select class="" name="selectMarca" id="selectMarca"></select>
+                </div>
+
+                <div class="tipoElemento">
+                    <div class="radioTpElemento">
+                        <label for="selectTpElemento">Tipo Elemento:</label>
+                        <div class="checkboxDevolutivo">
+                            <p>
+                                <label>
+                                    <input class="with-gap" name="tpElementoRadio" type="radio" id="devolutivoCheckbox" />
+                                    <span>Devolutivo</span>
+                                </label>
+                            </p>
+                        </div>
+                        <div class="checkboxConsumible">
+                            <p>
+                                <label>
+                                    <input class="with-gap" name="tpElementoRadio" type="radio" id="consumibleCheckbox" />
+                                    <span>Consumible</span>
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="checkboxTpElemento">
+                        <div class="unidadMedida">
+                            <select class="" name="undMedida" id="undMedida">
+                                <option value="default" selected>Seleccione una opción</option>
+                                <option value="unitario">Unitario</option>
+                                <option value="galon">Galon</option>
+                                <option value="caja">Caja</option>
+                            </select>
+                            <label for="undMedida">Unidad Medida:</label>
+                        </div>
+                        <div class="cantidadElemento">    
+                            <input type="number" name="cantidad" id="inputCantidad" min="0">
+                            <label for="cantidad">Cantidad:</label>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- <div class="modal-footer">

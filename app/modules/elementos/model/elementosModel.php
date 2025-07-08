@@ -279,8 +279,7 @@ class ElementoModelo
         );
         return $stmt->execute();
     }
-
-
+    
     // Alternar estado entre Disponible (1) e Inhabilitado (4)
     public function toggleEstadoElemento($id)
     {
@@ -320,7 +319,6 @@ class ElementoModelo
 
         return false;
     }
-
     // Buscar elementos activos (devolutivo o consumible)//
     public function searchElements($tipoElemento = 1) {
         $query = "SELECT
@@ -357,7 +355,6 @@ class ElementoModelo
         return $stmt->execute();
     }
 
-
     public function disminuirExistenciaElemento($id, $cantidad) {
         $sql = "UPDATE elementos 
                 SET elm_existencia = elm_existencia - ? 
@@ -383,6 +380,11 @@ class ElementoModelo
 
         return (int) $result->fetch_assoc()['elm_cod_tp_elemento'];
 
+
+    }
+
+    public function getAllPlacas(){
+        $sql = "SELECT elm_placa AS placas FROM elementos";
 
     }
 
