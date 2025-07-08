@@ -75,9 +75,10 @@ class usuarios
 
     public function update($datos, $id)
     {
-
+        unset($datos['rol_id']);
         $datos;
         $cadena = "";
+        // dd($datos);
 
         foreach ($datos as $campo => $value) {
             $cadena .= "$campo = '$value' ,";
@@ -85,7 +86,6 @@ class usuarios
 
         $cadena = trim($cadena, ",");
         $query = "UPDATE usuarios SET $cadena WHERE usu_id = '$id'";
-        // dd($query);
         $resultado = $this->conn->query($query);
 
         if ($resultado) {
@@ -97,6 +97,7 @@ class usuarios
 
     public function organization($datos)
     {
+    
         $cadena = '';
         foreach ($datos as $key => $value) {
             # code...
@@ -115,6 +116,7 @@ class usuarios
             u.usu_apellidos,
             u.usu_email,
             u.usu_telefono,
+            u.usu_direccion,
             r.rl_nombre,
             eu.est_nombre AS estado_usuario
         FROM
@@ -146,7 +148,7 @@ class usuarios
             exit();
         }
 
-        $query = $isCedula ? "SELECT usu_id FROM usuarios WHERE usu_docum = ?" : "SELECT usu_id, usu_docum, usu_nombres, usu_apellidos, usu_email, usu_telefono FROM usuarios WHERE usu_id = ?";
+        $query = $isCedula ? "SELECT usu_id FROM usuarios WHERE usu_docum = ?" : "SELECT usu_id, usu_docum, usu_nombres, usu_apellidos, usu_email, usu_direccion, usu_telefono FROM usuarios WHERE usu_id = ?";
 
 
         $stmtUser = $this->conn->prepare($query);
@@ -161,10 +163,26 @@ class usuarios
         $result = $stmtUser->get_result();
 
         if ($result && $result->num_rows > 0) {
+        
             return $result->fetch_assoc();
         }
         
     }
+    
+    public function actualizarContrasena($id, $hashContrasena) {
+        $query = "UPDATE usuarios SET usu_password = '$hashContrasena' WHERE usu_id = '$id'";
+        $resultado = $this->conn->query($query);
+    
+        if ($resultado) {
+            return true;
+        } else {
+            echo "Error al actualizar la contraseña: " . $this->conn->error;
+            return false;
+        }
+    }
+
+
+    
     
     
 }

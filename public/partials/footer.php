@@ -49,6 +49,14 @@
         </li>
       <?php endif; ?>
 
+      <!-- Reportes -->
+    <li>
+      <a class="btn-floating cyan tooltipped submenu-trigger" data-tooltip="Reportes" data-submenu="submenu-reportes">
+        <i class="material-icons">bar_chart</i>
+      </a>
+    </li>
+
+
       <!-- Cerrar sesión -->
       <li>
         <a href="<?php echo getUrl('login','login','logout'); ?>" class="btn-floating red tooltipped" data-tooltip="Cerrar sesión">
@@ -79,6 +87,12 @@
       <a href="<?php echo getUrl('roles','roles','mostrarRoles',false,'dashboard'); ?>">Roles</a>
       <a href="<?php echo getUrl('categorias','categorias','consultCategoriasView',false,'dashboard'); ?>">Categorías</a>
     </div>
+    <div id="submenu-reportes" class="submenu hidden">
+      <a href="<?php echo getUrl('elementos', 'elementos', 'genReporteView', false, 'dashboard'); ?>">Reporte general</a>
+      <!-- <a href="<?php echo getUrl('reportes', 'reportes', 'detalleEquipoView', false, 'dashboard'); ?>">Detalle por equipo</a>
+      <a href="<?php echo getUrl('reportes', 'reportes', 'historialPrestamosView', false, 'dashboard'); ?>">Historial de préstamos</a> -->
+    </div>
+
   <?php endif; ?>
 
   <?php if ($rol == 4): ?>
@@ -152,7 +166,7 @@
         }, 200);
       });
 
-      submenu.addEventListener('mouseenter', () => submenu.classList.add('visible'));
+
       submenu.addEventListener('mouseleave', () => submenu.classList.remove('visible'));
     });
 

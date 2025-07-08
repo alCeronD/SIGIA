@@ -1,4 +1,4 @@
-<div class="content">
+<!-- <div class="content">
   <div class="menuTitle">
     <span id="textTitle">Editar Usuario</span>
     <a href="<?php echo getUrl('usuarios', 'usuarios', 'getAll'); ?>" class="close-btn" title="Volver al listado">&times;</a>
@@ -35,6 +35,12 @@
                value="<?= htmlspecialchars($usuarioUpdate['usu_email']) ?>" required>
       </div>
 
+      <div class="inputContentUpdate direccion">
+        <label class="labelForm" for="usu_direccion">Dirección:</label>
+        <input type="text" name="usu_direccion" id="usu_direccion" class="inputForm"
+               value="<?= htmlspecialchars($usuarioUpdate['usu_direccion']) ?>" required>
+      </div>
+
       <div class="inputContentUpdate telefono">
         <label class="labelForm" for="usu_telefono">Teléfono:</label>
         <input type="text" name="usu_telefono" id="usu_telefono" class="inputForm"
@@ -46,4 +52,4 @@
       </div>
     </form>
   </div>
-</div>
+</div> -->

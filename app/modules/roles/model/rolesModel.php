@@ -81,5 +81,21 @@ public function eliminarRol($rl_id,$status) {
     }
 }
 
+
+    //Actualizo rol del usuario
+    public function actRolUser($id_user, $rol_id) {
+        $query = "UPDATE usuarios_roles SET usr_rl_id = '$rol_id' WHERE usr_usu_id = '$id_user'";
+        $resultado = $this->conn->query($query);
+    
+        if ($resultado) {
+            return true;
+        } else {
+            echo "Error al actualizar el rol del usuario: " . $this->conn->error;
+            return false;
+        }
+    }
+
+
+
 }
 ?>

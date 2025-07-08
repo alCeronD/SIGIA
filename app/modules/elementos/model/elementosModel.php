@@ -383,8 +383,46 @@ class ElementoModelo
 
         return (int) $result->fetch_assoc()['elm_cod_tp_elemento'];
 
-
     }
+    ///////////////////////////////////////////////////////////
+    //Estare usando estas funciones para el reporte a generar// 
+    ///////////////////////////////////////////////////////////
+    
+   public function getEstadosReport() {
+        $sql = "SELECT est_el_cod,est_nombre FROM estados_elementos";
+        $stmt = $this->conn->prepare($sql);
+    
+        if (!$stmt->execute()) {
+            return null;
+        }
+    
+        $result = $stmt->get_result();
+        $estados = [];
+    
+        while ($row = $result->fetch_assoc()) {
+            $estados[] = $row;
+        }
+        // dd($estados);
+        return $estados;
+    }
+        public function getTiposElemento() {
+        $sql = "SELECT tp_el_cod AS tip_cod, tp_el_nombre AS tip_nombre FROM tipo_elemento";
+        $stmt = $this->conn->prepare($sql);
+    
+        if (!$stmt->execute()) {
+            return null;
+        }
+    
+        $result = $stmt->get_result();
+        $tipos = [];
+    
+        while ($row = $result->fetch_assoc()) {
+            $tipos[] = $row;
+        }
+    
+        return $tipos;
+    }
+
 
 
 }

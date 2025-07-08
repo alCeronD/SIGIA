@@ -176,6 +176,19 @@ class ElementosController
             echo "<div class='alert alert-danger text-center'>No se especificó el elemento para cambiar estado.</div>";
         }
     }
+    
+    public function genReporteView(){
+    
+        $obj = new ElementoModelo();
+        $elementos = $obj->obtenerElemento();
+        $estados = $obj->getEstadosReport();
+        $tipoElem = $obj->getTiposElemento();
+        
+        include_once __DIR__ . '/../views/reporteElementosView.php';
+    }
+    
+    
+    
 }
 
 $elementosController = new ElementosController();

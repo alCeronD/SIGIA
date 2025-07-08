@@ -55,7 +55,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (tipoFiltro && contenedorInputFiltro) {
       tipoFiltro.addEventListener('change', () => {
         contenedorInputFiltro.innerHTML = '';
+
+        // Limpiar input anterior si existe
+        const inputAnterior = document.getElementById("inputFiltro");
+        if (inputAnterior) inputAnterior.value = "";
+
         const tipo = tipoFiltro.value;
+        // Reinicia las filas
+        filasFiltradas = [...filas];
+        generarPaginacion();
 
         if (!tipo) {
           contenedorInputFiltro.style.display = 'none';
@@ -88,11 +96,23 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!input) return;
 
           const evento = (tipo === 'estado') ? 'change' : 'input';
+
           input.addEventListener(evento, () => {
+            const valor = input.value.trim().toLowerCase();
+
+            // Validaciones por tipo
+            if (tipo === 'documento') {
+              input.value = input.value.replace(/\D/g, '');
+            } else if (tipo === 'nombre') {
+              input.value = input.value.replace(/[^a-zA-ZÁÉÍÓÚáéíóúñÑ\s]/g, '');
+            }
+
             aplicarFiltroTabla(tipo, input.value.trim().toLowerCase());
           });
         }, 0);
+
       });
+
 
       function aplicarFiltroTabla(tipo, valor) {
         filasFiltradas = filas.filter(fila => {
@@ -113,8 +133,26 @@ document.addEventListener("DOMContentLoaded", () => {
           return !valor || texto.includes(valor);
         });
 
+        // Quitar mensaje anterior si existe
+        const tablaBody = document.querySelector("#tableConfig tbody");
+        const mensajeAnterior = document.getElementById("mensaje-no-resultados");
+        if (mensajeAnterior) mensajeAnterior.remove();
+
+        // Si no hay resultados, mostrar mensaje
+        if (filasFiltradas.length === 0) {
+          const filaMensaje = document.createElement("tr");
+          filaMensaje.id = "mensaje-no-resultados";
+          const celda = document.createElement("td");
+          celda.colSpan = 6; // número de columnas en tu tabla
+          celda.className = "center-align red-text";
+          celda.textContent = "No se encontraron resultados";
+          filaMensaje.appendChild(celda);
+          tablaBody.appendChild(filaMensaje);
+        }
+
         generarPaginacion();
       }
+
     }
 
     // Botones Editar
@@ -127,6 +165,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("usu_apellidos").value = btn.dataset.apellidos;
         document.getElementById("usu_email").value = btn.dataset.email;
         document.getElementById("usu_telefono").value = btn.dataset.telefono;
+        document.getElementById("usu_direccion").value = btn.dataset.direccion;
+
         document.getElementById("modalEditarUsuario").style.display = "flex";
       });
     });
@@ -175,6 +215,56 @@ document.addEventListener("DOMContentLoaded", () => {
   if (apellidosInput) soloLetras(apellidosInput);
   if (correoInput) validarCorreo(correoInput);
   if (textarea) M.textareaAutoResize(textarea);
+
+
+
+
+
+  //Validaciones formulario registro usuarios. No quiere funcionar joa 
+  const formUsuario = document.getElementById("formSolicitudPrestamo");
+  if (formUsuario) {
+    formUsuario.addEventListener("submit", (e) => {
+      const tipoDocumento = document.getElementById("usu_tp_id");
+      const rol = document.getElementById("rol_id");
+
+      let valid = true;
+
+      if (!tipoDocumento.value) {
+        M.toast({ html: 'Seleccione un tipo de documento', classes: 'teal darken-2' });
+        tipoDocumento.classList.add("invalid");
+        valid = false;
+      }
+
+      if (!rol.value) {
+        M.toast({ html: 'Seleccione un rol para el usuario', classes: 'teal darken-2' });
+        rol.classList.add("invalid");
+        valid = false;
+      }
+
+      if (!valid) {
+        e.preventDefault();
+      }
+    });
+
+  }
+
+
+
+  document.querySelectorAll(".toggle-password").forEach(icon => {
+    icon.addEventListener("click", () => {
+      const input = document.querySelector(icon.getAttribute("toggle"));
+      const isPassword = input.getAttribute("type") === "password";
+      input.setAttribute("type", isPassword ? "text" : "password");
+      icon.textContent = isPassword ? "visibility_off" : "visibility";
+    });
+  });
+
+
+
+
+
+
+
 });
 
 
