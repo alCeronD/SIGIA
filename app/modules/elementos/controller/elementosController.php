@@ -47,17 +47,10 @@ class ElementosController
         $elementos = array_merge(['cantidadPaginas' => $totalPaginas], $elementos);
 
         success('elementos', $elementos);
-
-
-
-
-        // // Incluir la vista pasando las variables necesarias
-        // include __DIR__ . '/../views/elementosView.php';
     }
 
     public function getElement(String $value = '')
     {
-        var_dump($value);
         if (!$resultRow = $this->modeloElemento->getElementLike($value)) {
             fail('sin registros');
         }
@@ -99,21 +92,26 @@ class ElementosController
         // }
     }
 
-    public function getItems(){
+    public function getItems(String $action = ''){
         // Obtener las áreas
         $modeloGenerico = new ConfigModulesModel();
         //Areas que esten activas.
-        $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas WHERE ar_status = 1");
+        $items = $modeloGenerico->select("SELECT * FROM $action");
 
-        // Buscar el código del área "general"
-        $area_general_codigo = null;
-        foreach ($areas as $area) {
-            if (strtolower(trim($area['nombre'])) === 'general') {
-                $area_general_codigo = $area['codigo'];
-                break;
+        $newData = [];
+
+        foreach ($items as $item) {
+            // Buscar clave *_status
+            foreach ($item as $key => $value) {
+                if (preg_match('/_status$/', $key)) {
+                    if ((int) $value === 1) {
+                        $newData[] = $item;
+                    }
+                    break;
+                }
             }
         }
-        success('areas', $areas);
+        success("registros de: $action", $newData);
         
     }
 
@@ -205,9 +203,16 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             case 'areas':
 
                 if (method_exists($elementosController,'getItems')) {
-                    $elementosController->getItems();
+                    $elementosController->getItems($case);
                 }
 
+                break;
+            case 'categoria':
+                
+                if (method_exists($elementosController,'getItems')) {
+                    $elementosController->getItems($case);
+                }
+                
                 break;
 
 

@@ -7,7 +7,7 @@
     box-sizing: border-box;
     padding: 20px;
     width: 100%;
-
+    
 }
 
 /* ----------------- Título ----------------- */
@@ -86,8 +86,6 @@
     font-size: 13px;
 }
 
-
-
 /* ----------------- Modal "Ver Más" ----------------- */
 #modalVerMas {
     display: none;
@@ -150,67 +148,141 @@
 }
 
 
-/* ---------- Ajuste de Ancho y Alineación del Formulario ---------- */
-/* #addElementModal{
-    display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:2000;
-} */
-
+/* ---------- Modal Elemento ---------- */
 
 #addElementModal{
     display: none;
-  position: fixed;
-  /* Stay in place */
-  z-index: 1;
-  /* Sit on top */
+  position: fixed; 
+  overflow:auto;
+  /* Sobre escribo el top de materialize */
+  top: 0 !important;
+  z-index: 9999;
   left: 0;
-  top: 0;
   width: 100%;
-  /* Full width */
-  height: 100%;
-  /* Full height */
-  overflow: auto;
-  /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4);
-  /* Black w/ opacity */
+  height: 100vh;
+  /* background-color: rgba(0, 0, 0, 0.5); */
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
 }
 
-#addElementModal form {
+/* Contenido del modal */
+#modalContentElements{
+    display: grid;
+    grid-template-areas: "modalContentTitle"
+    "modalContentForm";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    background-color: var(--white);
+    margin: 3% auto;
+    /* 15% from the top and centered */
+    /* padding: 20px; */
+    width: 50%;
+    height: fit-content;
+    max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modalContentTitle{
+    grid-area: modalContentTitle;
+}
+
+.modalContentForm{
+    grid-area: modalContentForm;
+}
+
+/* Estructura del formulario */
+#addElementForm {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  padding: 10px 20px;
-  font-family: 'Segoe UI', sans-serif;
+  grid-template-areas: "placa placa"
+  "nombre area";
+  /* grid-template-areas: "placa placa"
+  "serie nombre"
+  "unidadMedida unidadMedida"
+  "area"; */
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  gap: 3px;
   background-color: #fafafa;
   border-radius: 10px;
-  max-width: 500px;
-  margin: 0 auto; /* Centrado horizontal */
+  max-width: 100%px;
+  margin: 0 auto;
+  padding: 14px 5px;
 }
 
+/* Todo lo relacionado al contenedor de la placa */
+.placa {
+  grid-area: placa;
+
+  .radioPlaca{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+}
+
+/* Contenedor de los input de la placa, del tipo text o select */
+.inputPlaca, .selectPlaca, .inputSerie{
+    display: none;
+}
+
+.contentPlaca{
+    /* display: none; */
+    display: flex;
+    flex-direction: row;
+    gap: 12px; 
+    align-items: flex-end; 
+    margin-top: 8px;
+}
+
+.contentPlaca > .inputPlaca{
+    width: 100%;
+}
+.contentPlaca > .inputSerie{
+    width: 100%;
+    
+}
+
+.nombre{
+    grid-area: nombre;
+}
+
+.area{
+    grid-area: area;
+}
+
+
+/* 
 #addElementModal > #modalContentElements {
     margin: 0 auto;
     background:#fff; padding:20px; border-radius:8px; width:90%; max-width:600px; max-height:90vh; overflow-y:auto; position:relative;
+} */
+
+#btnCloseModalAddElements{
+    position:absolute; top:10px; right:15px; font-size:24px; background:none; border:none; cursor:pointer;
 }
 
+
 /* Grupos de campos */
-#addElementModal .mb-3 {
+/* #addElementModal .mb-3 {
   display: grid;
   grid-template-columns: 1fr;
   gap: 6px;
-}
+} */
 
 /* Etiquetas */
-#addElementModal label {
+/* #addElementModal label {
   font-weight: 600;
   font-size: 14px;
   color: #333;
-}
+} */
 
 /* Inputs y selects con ancho limitado */
-#addElementModal input[type="text"],
+/* #addElementModal input[type="text"],
 #addElementModal input[type="number"],
 #addElementModal select {
   padding: 6px;
-}
+} */
 
 
 /* Selector tipo de elemento */

@@ -47,7 +47,7 @@
                 </tr>
             </thead>
             <tbody id="tbodyElements">
-                
+
             </tbody>
 
             <!-- FILA DE PAGINACION DENTRO DE LA TABLA -->
@@ -61,8 +61,8 @@
                 <ul class="pagination center-align" style="margin-top: 20px;">
                     <!-- Botón Anterior -->
                     <li class="waves-effect">
-                        
-                        <button type="button"  class="waves-effect btn" id="previewElements">
+
+                        <button type="button" class="waves-effect btn" id="previewElements">
                             <i class="material-icons">chevron_left</i>
 
                         </button>
@@ -79,92 +79,79 @@
     </tfoot>
 </div>
 
-
-<!-- El resto de tus modales y scripts quedan igual -->
-
-
 <!-- Modal Registrar Elemento -->
-<div id="addElementModal">
+<div id="addElementModal" class="">
     <div id="modalContentElements">
-        <button id="cerrarModalRegistrar" style="position:absolute; top:10px; right:15px; font-size:24px; background:none; border:none; cursor:pointer;">&times;</button>
+        <div class="modalContentTitle">
+            <span class="">Registrar Nuevo Elemento</span>
+            <button type="button" class="closeModalBtn">
+                <span class="close-modal">&times;</span>
+            </button>
+        </div>
+        <div class="modalContentForm">
+            <form id="addElementForm">
+                <div class=" placa">
+                    <!-- Inputs radio de la placa, dependiendo de la placa, me debe de mostrar uno u otro. -->
+                    <div class="radioPlaca">
+                        <label for="">¿Desea asociar el elemento nuevo a una placa o registrar una placa nueva?</label>
+                        <div class="newPlaca">
+                            <p>
+                                <label>
+                                    <input class="with-gap" name="placaRadio" type="radio" id="nuevaPlaca" />
+                                    <span>Nueva placa</span>
+                                </label>
+                            </p>
+                        </div>
+                        <div class="selectedPlaca">
+                            <p>
+                                <label>
+                                    <input class="with-gap" name="placaRadio" type="radio" id="selectPlaca" />
+                                    <span>Asociar placa</span>
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="placaInputs">
+                        <!-- Input tipo text placa -->
+                        <div class="contentPlaca">
+                            <div class="inputPlaca">
+                                <input id="elm_placa" name="elm_placa" type="number">
+                                <label for="elm_placa">Número de placa *</label>
+                            </div>
+                            <div class="inputSerie">
+                                <!-- Validar, no se deben permitir catacteres con el arroba o el # -->
+                                <input id="elm_serie" name="elm_serie" type="text">
+                                <label for="elm_serie">Código de serie * Ejemplo = 922919587-1</label>
+                            </div>
+                        </div>
+                        <!-- Select de las placas de los elementos -->
+                        <div class="selectPlaca">
+                            <select name="" id="placaAssoc">
+                                <!-- Renderizado con javascript mediante petición. -->
+                                <option value="">1</option>
+                                <option value="">2</option>
+                                <option value="">3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="nombre">
+                    <input id="elm_nombre" name="elm_nombre" type="text">
+                    <label for="elm_nombre">Nombre elemento *</label>
+                </div>
+                <div class="area">
+                    <select id="selectAreas" class="select_area" name="elm_area_cod">
+                    </select>
+                    <label for="elm_area_cod">Área</label>
+                </div>
+                
+                <!-- <div class="modal-footer">
+                    <button type="submit" class="btn waves-effect waves-light left"><i class="material-icons">save</i></button>
+                </div> -->
 
-        <span class="mb-3">Registrar Nuevo Elemento</span>
 
-        <label for="tipoElementoSelect">Tipo de Elemento:</label>
-        <select id="tipoElementoSelect" class="form-select mb-3" required>
-            <option value="">Seleccione...</option>
-            <option value="devolutivo">Devolutivo</option>
-            <option value="consumible">Consumible</option>
-        </select>
-
-        <!-- Formulario Devolutivo -->
-        <form id="formDevolutivo" action="<?= getUrl('elementos', 'elementos', 'registrarElemento', false, 'dashboard') ?>" method="POST" style="display:none;">
-            <input type="hidden" name="elm_cod_tp_elemento" value="1">
-            <input type="hidden" name="elm_existencia" value="1">
-            <input type="hidden" name="elm_cod_estado" value="1">
-
-            <div class="input-field">
-                <input id="elm_placa" name="elm_placa" type="number" required>
-                <label for="elm_placa">Placa</label>
-            </div>
-
-            <div class="input-field">
-                <input id="elm_nombre" name="elm_nombre" type="text" required>
-                <label for="elm_nombre">Nombre</label>
-            </div>
-
-            <div>
-                <label for="elm_uni_medida">Unidad de Medida</label>
-                <input id="elm_uni_medida" name="elm_uni_medida" type="text" value="1" readonly>
-            </div>
-
-            <div class="input-field">
-                <select id="select_area_dev" class="select_area" name="elm_area_cod" required>
-                </select>
-                <label for="elm_area_cod">Área</label>
-            </div>
-
-            <button type="submit" class="btn waves-effect waves-light">Guardar Devolutivo</button>
-        </form>
-        <!-- Formulario Consumible -->
-        <form id="formConsumible" action="<?= getUrl('elementos', 'elementos', 'registrarElemento', false, 'dashboard') ?>" method="POST" style="display:none;">
-            <input type="hidden" name="elm_cod_tp_elemento" value="2">
-            <input type="hidden" name="elm_cod_estado" value="1">
-
-            <div class="input-field">
-                <input id="elm_placa_c" name="elm_placa" type="number" required>
-                <label for="elm_placa_c">Placa</label>
-            </div>
-
-            <div class="input-field">
-                <input id="elm_nombre_c" name="elm_nombre" type="text" required>
-                <label for="elm_nombre_c">Nombre</label>
-            </div>
-
-            <div class="input-field">
-                <input id="elm_existencia" name="elm_existencia" type="number" min="1" required>
-                <label for="elm_existencia">Cantidad a Agregar</label>
-            </div>
-
-            <div class="input-field">
-                <select id="elm_uni_medida_c" name="elm_uni_medida" required>
-                    <option value="" disabled selected>Unidad de medida</option>
-                    <option value="1">Unidad</option>
-                    <option value="2">Caja</option>
-                    <option value="3">Paquete</option>
-                </select>
-
-            </div>
-
-            <div class="input-field">
-                <select id="select_area_consu" class="select_area" readonly>
-                </select>
-
-                <label for="elm_area_cod_c">Área</label>
-            </div>
-
-            <button type="submit" class="btn waves-effect waves-light">Guardar Consumible</button>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 

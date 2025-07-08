@@ -18,14 +18,53 @@ const tipoElementoSelect = document.querySelector('#tipoElementoSelect');
 const addElementModal = instanceModal('#addElementModal', options);
 const btnAddModalElements = document.querySelector('#btnAddModalElements');
 const cerrarModalBtn = document.querySelector('#cerrarModalRegistrar');
-// Select de las areas, es para registrar el elemento.
-const selectAreaDev = document.querySelector('#select_area_dev');
-const selectAreaConsu = document.querySelector('#select_area_consu');
 let iBtnAddElements = createI();
 iBtnAddElements.innerText = 'add'
 btnAddModalElements.append(iBtnAddElements);
 //El tipo de elementos, creamos esta variable para reemplazarla ya que le daremos utilidad en los filtros.
 let currentType = typeElements.all;
+
+
+// Contenedor de la placa e inputs
+const placaInputs = document.querySelector('.placaInputs');
+const inputPlaca = document.querySelector('.inputPlaca');
+const selectPlaca = document.querySelector('.selectPlaca');
+const inputSerie = document.querySelector('.inputSerie');
+const contentPlaca = document.querySelector('.contentPlaca');
+// Radio button
+const nuevaPlaca = document.querySelectorAll('input[name="placaRadio"]');
+const selectedPlaca = document.querySelector('#selectPlaca');
+
+function viewPlacaInputs(status = false){
+
+    if (!status) {
+        contentPlaca.style.display = 'flex';
+        contentPlaca.style.flexDirection = 'row';
+        inputPlaca.style.display = 'grid';
+        inputSerie.style.display = 'grid';
+        selectPlaca.style.display = 'none';
+    }else{
+         inputPlaca.style.display = 'none';
+        inputSerie.style.display = 'none';
+        selectPlaca.style.display = 'grid';
+    }
+}
+
+// Capturo todos los inputs con el name placaRadio
+nuevaPlaca.forEach((inputRadio)=>{
+    inputRadio.addEventListener('change', (e)=>{
+
+        if (e.target.id === 'nuevaPlaca') {
+            viewPlacaInputs();
+        }else if (e.target.id === 'selectPlaca'){
+            viewPlacaInputs(true);
+        }
+
+    });
+
+});
+
+
 /**
  * Renderiza elementos desde el backend utilizando filtros de tipo, acción y paginación.
  * Realiza una petición GET al servidor y construye dinámicamente el contenido de una tabla HTML.
@@ -122,57 +161,51 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
     }
     
 };
-
-const getAreas = async (type = 'devolutivo')=>{
-    let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: 'areas'});
-    let data = response.data;
-    selectAreaDev.innerHTML = '';
-    selectAreaConsu.innerHTML = '';
-    const defaultOption = document.createElement('option');
-    defaultOption.setAttribute('selected', 'selected');
-    defaultOption.innerText = 'Seleccione un área';
-
-
-    selectAreaDev.appendChild(defaultOption);
-    selectAreaConsu.appendChild(defaultOption);
-
-        if (type === 'devolutivo') {
-            data.forEach((dta)=>{
-            
-                if (dta.nombre != 'General') {
-                    const option = document.createElement('option');
-                    option.innerText = dta.nombre;
-                    option.value = dta.codigo;
-                    selectAreaDev.appendChild(option);
-                } 
-            });           
-        }else if (type === 'consumible'){
-            const areaGeneral = data.find((dta) => dta.nombre === 'General');
-            if (areaGeneral) {
-                const option = document.createElement('option');
-                option.innerText = areaGeneral.nombre;
-                option.value = areaGeneral.codigo;
-                console.log(option);
-                selectAreaConsu.appendChild(option);
-            }
-            
-        }
-
-    //Reinicializo los select, accedo a ellos mediante el objeto window.  
-    if (window.M) {
-        M.FormSelect.init(selectAreaDev);
-        M.FormSelect.init(selectAreaConsu);
-    }
+const selectAreas = document.querySelector('#selectAreas');
+const renderSelectElements = async (action = '')=>{
+    let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
+    let dataResponse = response.data;
+    console.log(dataResponse);
+    // selectAreas.innerHTML = '';
+    // const option = document.createElement('option');
+    // option.value = 0;
+    // option.textContent = "Seleccione un departamento";
+    // option.setAttribute('selected', 'selected');
+    // option.setAttribute('disabled', 'disabled');
+    // selectAreas.appendChild(option);
+    
+    // dataResponse.forEach((data)=>{
+    //     const optionDataAreas = document.createElement('option');
+    //     optionDataAreas.value = areas.codigo;
+    //     optionDataAreas.textContent = areas.nombre;
+    //     selectAreas.appendChild(optionDataAreas);
+    // });
+    // //Reinicializo los select, accedo a ellos mediante el objeto window.  
+    // if (window.M) {
+    //     M.FormSelect.init(selectAreas);
+    // }
 
 }
 
+const renderCategorias = async ()=>{
+    let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: 'categorias'});
+
+};
+
+
 document.addEventListener('DOMContentLoaded', ()=>{
     //Inicializo los select.
-    M.FormSelect.init(formDevolutivo.querySelectorAll('select'));
+    // M.FormSelect.init(formDevolutivo.querySelectorAll('select'));
     initTooltip(btnAddModalElements,tooltipOptions,'Agregar elemento','top');
     //Renderizado de los elementos
     renderElements({type: currentType});
 
+    // Inicializar select de las placas ya registradas
+    const elemsSelect = document.querySelector('#placaAssoc');
+    M.FormSelect.init(elemsSelect);
+
+    renderSelectElements('categoria');
+    renderSelectElements('areas');
 });
 
 /**
@@ -257,22 +290,22 @@ btnAddModalElements.addEventListener('click', (e)=>{
 });
 
 //Elegir tipo de elemento
-tipoElementoSelect.addEventListener('change', (e) => {
-    const tipo = e.target.value;
+// tipoElementoSelect.addEventListener('change', (e) => {
+//     const tipo = e.target.value;
 
-    if (tipo === 'devolutivo') {
-        getAreas('devolutivo');
-        formDevolutivo.style.display = 'block';
-        formConsumible.style.display = 'none';
-    } else if (tipo === 'consumible') {
-        getAreas('consumible');
-        formConsumible.style.display = 'block';
-        formDevolutivo.style.display = 'none';
-    } else {
-        formDevolutivo.style.display = 'none';
-        formConsumible.style.display = 'none';
-    }
-});
+//     if (tipo === 'devolutivo') {
+//         getAreas('devolutivo');
+//         formDevolutivo.style.display = 'block';
+//         formConsumible.style.display = 'none';
+//     } else if (tipo === 'consumible') {
+//         getAreas('consumible');
+//         formConsumible.style.display = 'block';
+//         formDevolutivo.style.display = 'none';
+//     } else {
+//         formDevolutivo.style.display = 'none';
+//         formConsumible.style.display = 'none';
+//     }
+// });
 
 
 
