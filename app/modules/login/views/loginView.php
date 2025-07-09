@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="/proyecto_sigia/public/assets/css/login/login.css">
 </head>
 <body>
-  <div class="backGround">
+  <div class="backGround bg-light-pattern">
 
     <div class="login-container">
     <div class="login-card z-depth-3">

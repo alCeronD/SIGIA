@@ -284,8 +284,8 @@ const renderSelectMarcas = async (action = '') =>{
 
 const renderSelectPlacas = async (action = '') =>{
     let responsePlacas = await getData('modules/elementos/controller/elementosController.php', 'GET',{action: action});
-
-    console.log(responsePlacas);
+    let placas = responsePlacas.data.data;
+    console.log(placas);
 };
 
 document.addEventListener('DOMContentLoaded', ()=>{

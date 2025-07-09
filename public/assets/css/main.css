@@ -12,7 +12,26 @@ html, body {
     font-family:  "Open Sans", "Helvetica Neue", sans-serif;
   /* background-color: #f3d3d3; */
 
+
 }
+
+
+
+/* Fondo básico */
+/* .bg-light-pattern {
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(75, 85, 99, 0.08) 20px, rgba(75, 85, 99, 0.08) 21px),
+    repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(107, 114, 128, 0.06) 30px, rgba(107, 114, 128, 0.06) 31px),
+    repeating-linear-gradient(60deg, transparent, transparent 40px, rgba(55, 65, 81, 0.05) 40px, rgba(55, 65, 81, 0.05) 41px),
+    repeating-linear-gradient(150deg, transparent, transparent 35px, rgba(31, 41, 55, 0.04) 35px, rgba(31, 41, 55, 0.04) 36px);
+}  */
+/* .bg-light-pattern {
+  background-image: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.1) 0, rgba(0, 0, 0, 0.1) 1px, transparent 1px, transparent 20px),
+        repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.1) 0, rgba(0, 0, 0, 0.1) 1px, transparent 1px, transparent 20px);
+}  */
+
+
+
 
 /* Variables para los colores */
 :root {

@@ -1,5 +1,10 @@
 <?php
-require_once __DIR__ . '/../../../helpers/session.php';
+
+
+// require_once __DIR__ . '/../../../helpers/session.php';
+
+use function PHPSTORM_META\map;
+
 require_once __DIR__ . '/../../../helpers/const.php';
 include_once __DIR__ . '/../../../config/conn.php';
 class ElementoModelo
@@ -384,9 +389,86 @@ class ElementoModelo
     }
 
     public function getAllPlacas(){
-        $sql = "SELECT elm_placa AS placas FROM elementos";
+        try {
+            $placas = [];
 
+            $sqlPlacas = "SELECT elm_placa FROM elementos";
+
+            
+            $stmtPlacas = $this->conn->prepare($sqlPlacas);
+
+            if (!$stmtPlacas) {
+                return [
+                    'message'=>"error de consulta",
+                    'status'=> false
+                ];
+            }
+
+            $stmtPlacas->execute();
+            $stmtPlacas->execute();
+            // Este arreglo sirve para guardar solo las placas registradas
+            $placaRegistrada = [];
+            $result = $stmtPlacas->get_result();
+            $placasRow = $result->fetch_all(MYSQLI_ASSOC);
+            foreach ($placasRow as $key => $value) {
+                $placa = $value['elm_placa'];
+                // $placas [] = $value;
+                $sqlSerial = "SELECT elm_serie AS serie FROM elementos WHERE elm_serie LIKE ? GROUP BY elm_serie ORDER BY elm_serie ASC";
+                $stmtSerial = $this->conn->prepare($sqlSerial);
+
+                if (!$stmtSerial) {
+                    return [
+                        'message'=>"error al preparar la consulta",
+                        'status'=>false
+                    ];
+                }
+
+                // Si ya esta la placa en la placa registrada, omitir el proceso
+                if (in_array($placa,$placaRegistrada)) {
+                    continue;
+                }
+
+                // en caso de que no este, agrego la placa en la placa registrada.
+                $placaRegistrada []= $placa;
+
+
+                $likeParam = $placa . '-%';
+                $stmtSerial->bind_param('s',$likeParam);
+                if (!$stmtSerial->execute()) {
+                    return [
+                        'message'=>'error al ejecutar la consulta',
+                        'status'=> false
+                    ];
+                }
+                $serialesResult = $stmtSerial->get_result();
+                
+
+                // Si hay resultados, guardelo en un arreglo asociado, en caso de que no, dejalo como arreglo vacio.
+                $seriales = $serialesResult ? $serialesResult->fetch_all(MYSQLI_ASSOC) : [];
+                // puedes agregar el resultado al array si lo necesitas
+
+                $stmtSerial->close();
+
+                $placas[] = [
+                'elm_placa' => $placa,
+                'seriales' => $seriales
+            ];
+
+            }
+
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
+        return [
+            'message'=>'placas y seriales asociados',
+            'data'=> $placas,
+            'status'=> true
+        ];
     }
-
-
 }
+
+$data = new ElementoModelo();
+
+$data->getAllPlacas();

@@ -58,8 +58,11 @@ class ElementosController
     }
 
     public function getPlacas(String $value = ''){
-        $this->modeloElemento->getAllPlacas();
-
+        $data = $this->modeloElemento->getAllPlacas();
+        if (!$data) {
+            fail('no hay registros', $data);
+        }
+        success('placas y seriales', $data);
     }
 
     public function registrarElemento()
