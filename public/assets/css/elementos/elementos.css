@@ -227,9 +227,43 @@
 .inputPlaca, .selectPlaca, .inputSerie{
     display: none;
 }
+/* 
+.contentPlacaAssoc{
+    display: none;
+} */
 
 .tableResult{
     display: none;
+}
+
+.placaAssocContent {
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    display: none;
+    grid-template-areas:
+        "selectPlaca contentPlacaAssoc"
+        "tableResult tableResult";
+    row-gap: 1rem; /* opcional: separación vertical entre áreas */
+}
+
+.selectPlaca {
+    grid-area: selectPlaca;
+}
+
+.contentPlacaAssoc {
+    grid-area: contentPlacaAssoc;
+}
+
+.selectPlaca , .contentPlacaAssoc{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.3rem;
+}
+
+.tableResult {
+    grid-area: tableResult;
 }
 
 .contentPlaca{
@@ -240,6 +274,7 @@
     align-items: flex-end; 
     margin-top: 8px;
 }
+
 
 .contentPlaca > .inputPlaca{
     width: 100%;

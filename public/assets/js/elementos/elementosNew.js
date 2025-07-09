@@ -54,21 +54,29 @@ const tablePlaca = document.querySelector('.tableResult');
 const tbodyPlacaResult = document.querySelector('#tbodyPlacaResult');
 // Formulario de envio de elemento.
 const addElementForm = document.querySelector('#addElementForm');
-
-function viewPlacaInputs(status = false){
-
+const placaAssocContent = document.querySelector('.placaAssocContent');
+// Input del serial que se va a asociar con la placa
+const serialPlacaAssoc = document.querySelector('#serialPlacaAssoc');
+function viewPlacaInputs(status = false) {
     if (!status) {
+        // Placa nueva
         contentPlaca.style.display = 'flex';
-        contentPlaca.style.flexDirection = 'row';
+        contentPlaca.style.flexDirection = 'column';
         inputPlaca.style.display = 'grid';
-        tablePlaca.style.display = "none";
         inputSerie.style.display = 'grid';
+
+        tablePlaca.style.display = "none";
         selectPlaca.style.display = 'none';
-    }else{
+        placaAssocContent.style.display = "none"; 
+    } else {
+        // Asociar placa
+        contentPlaca.style.display = 'none'; 
         inputPlaca.style.display = 'none';
-        tablePlaca.style.display = "grid";
         inputSerie.style.display = 'none';
         selectPlaca.style.display = 'grid';
+        serialPlacaAssoc.readOnly = true;
+        tablePlaca.style.display = "grid";
+        placaAssocContent.style.display = "grid"; 
     }
 }
 
@@ -101,7 +109,8 @@ nuevaPlaca.forEach((inputRadio)=>{
     inputRadio.addEventListener('change', (e)=>{
 
         if (e.target.id === 'nuevaPlaca') {
-            viewPlacaInputs();
+            // Inputs para nueva placa
+            viewPlacaInputs(false);
         }else if (e.target.id === 'selectPlaca'){
             viewPlacaInputs(true);
         }
@@ -248,7 +257,6 @@ const renderSelectAreas = async (action = '')=>{
 const renderSelectCategorias = async (action = '')=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: 'categoria'});
     let categorias = response.data;
-    console.log(categorias);
     selectCategorias.innerHTML = '';
     const option = document.createElement('option');
     option.value = 0;
@@ -270,7 +278,6 @@ const renderSelectCategorias = async (action = '')=>{
 
 const renderSelectMarcas = async (action = '') =>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
-    console.log(response);
     let marcaData = response.data;
     selectMarcas.innerHTML = '';
     selectMarcas.innerHTML = '';
@@ -330,7 +337,6 @@ document.addEventListener('DOMContentLoaded',  ()=>{
     });
 
 });
-
 
 
 
@@ -413,6 +419,7 @@ searchPlaca.addEventListener('keyup', async (e)=>{
             renderResultPlacas({resultado: resultado, status: true});
         } else {
             renderResultPlacas({status: true});
+            serialPlacaAssoc.value = '';
         }
     }
 
@@ -431,21 +438,69 @@ function renderResultPlacas({ resultado = {}, status = false } = {}){
     const seriales = (!resultado) ?{} : resultado[0].seriales;
     const placa = resultado[0].elm_placa;
 
+    // console.log(seriales);
+    let serialesDisponibles = '';
+    seriales.forEach((srl)=>{
+        serialesDisponibles += `${srl.serie} `;
+
+    });
+
     // const placas = 
     tbodyPlacaResult.innerHTML = '';
     let tr = document.createElement('tr');
     let tdCodigo = document.createElement('td');
     let tdAcciones = document.createElement('td');
+    let tdSerial = document.createElement('td');
     let checkbox = createCheckbox(seriales);
     tdAcciones.appendChild(checkbox);
 
     tr.appendChild(tdCodigo);
+    tr.appendChild(tdSerial);
     tr.appendChild(tdAcciones);
+    tdSerial.textContent = serialesDisponibles;
     tdCodigo.textContent = placa;
     tbodyPlacaResult.appendChild(tr);
 
+    const checkboxPlacas = document.querySelectorAll('input[name="serialCheckbox"]');
+    console.log(checkboxPlacas);
+    checkboxPlacas.forEach((checkPl)=>{
+        checkPl.addEventListener('change', (e)=>{
+            e.stopPropagation();
+            if (e.target.checked) {
+                let seriesCheckbox = JSON.parse(e.target.dataset.seriales);
+
+                // Ordeno los objetos de menor a mayor, uso localCompare porque es un string, si fuese number, usaría Num
+                seriesCheckbox.sort((a, b) => a.serie.localeCompare(b.serie));
+
+                // Extraigo solo los valores que esten en la clave serie del objeto.
+                let valSeries = seriesCheckbox.map(ser => ser.serie);
+
+                // Ordeno el resultado
+                valSeries.sort();
+
+                // Extraigo el último valor
+                let ultimoValor = valSeries[valSeries.length - 1];
+                let serie = ultimoValor.slice(0,4);
+                // let codBasico = ultimoValor.indexOf(`${ultimoValor}"-"`);
+                let codBasico = ultimoValor.indexOf('-');
+                let consecutivo = parseInt(ultimoValor.slice(codBasico + 1));
+
+                consecutivo++;
+                let newCod = serie+"-"+consecutivo;
+
+                serialPlacaAssoc.value = newCod;
+            }else{
+                serialPlacaAssoc.value = '';
+            }
+        });
+    });
+
+
+
     
 }
+
+
 
 
 

@@ -395,8 +395,9 @@ export const createCheckbox = (seriales) => {
   let span = document.createElement('span');
 
   input.setAttribute('type', 'checkbox');
+  input.setAttribute('name', 'serialCheckbox');
   input.classList.add('filled-in'); 
-  span.innerText = 'Seleccione';
+  span.innerText = 'Asociar elemento';
 
   if (Array.isArray(seriales)) {
     input.setAttribute('data-seriales', JSON.stringify(seriales));

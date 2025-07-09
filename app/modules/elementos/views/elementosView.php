@@ -112,7 +112,7 @@
                         </div>
                     </div>
                     <div class="placaInputs">
-                        <!-- Input tipo text placa -->
+                        <!-- INPUTS DE PLACAS QUE SELECCIONE EL INPUT RADIO NUEVA PLACA -->
                         <div class="contentPlaca input-field">
                             <div class="inputPlaca">
                                 <input id="elm_placa" name="elm_placa" type="number">
@@ -124,22 +124,30 @@
                                 <label for="elm_serie">Código de serie * Ejemplo = 922919587-1</label>
                             </div>
                         </div>
-                        <!-- Select de las placas de los elementos -->
-                        <div class="selectPlaca input-field">
-                            <label for="searchPlaca">Digite el número de placa que desea asociar al elemento</label>
-                            <input type="text" class="" name="searchPlaca" id="searchPlaca">
+                        <!-- INPUTS DE LAS PLACAS ASOCIADAS. -->
+                         <div class="placaAssocContent">
+                            <div class="selectPlaca">
+                                <label for="searchPlaca">Digite el número de placa</label>
+                                <input type="text" name="searchPlaca" id="searchPlaca">
+                            </div>
+                            <div class="contentPlacaAssoc ">
+                                <label for="serialPlaca">Serial asociado</label>
+                                <input type="text" name="serialPlaca" id="serialPlacaAssoc" >
+                            </div>
+                            <div class="tableResult">
+                                <table class="striped responsive-table" id="tablePlaca">
+                                    <thead>
+                                        <tr>
+                                            <th>Codigo</th>
+                                            <th>Serial registrado</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyPlacaResult"></tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="tableResult">
-                            <table class="striped responsive-table" id="tablePlaca">
-                                <thead>
-                                    <tr>
-                                        <th>Codigo</th>
-                                        <th>Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbodyPlacaResult"></tbody>
-                            </table>
-                        </div>
+
                     </div>
                 </div>
                 <div class="nombre">
