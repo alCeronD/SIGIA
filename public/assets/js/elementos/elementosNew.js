@@ -1,6 +1,6 @@
 // import {renderElement, renderElements } from "./fetchElements.js";
 import { getData } from "../utils/fetch.js";
-import { closeModal, createBtn, createI, initTooltip, instanceModal, options, tooltipOptions } from "../utils/cases.js";
+import { closeModal, createBtn, createCheckbox, createI, initTooltip, instanceModal, options, tooltipOptions } from "../utils/cases.js";
 
 const typeElements = {
     dev: 'devolutivo',
@@ -410,11 +410,8 @@ searchPlaca.addEventListener('keyup', async (e)=>{
         const resultado = placas.filter(pl => String(pl.elm_placa) === filtro);
         // Traigo la coincidencia exacta, posiblemente requiera de ser una posible coincidencia y no exacto.
         if (resultado.length > 0) {
-            console.log('no valor');
-            console.log(resultado);
             renderResultPlacas({resultado: resultado, status: true});
         } else {
-            console.log('valor');
             renderResultPlacas({status: true});
         }
     }
@@ -434,18 +431,18 @@ function renderResultPlacas({ resultado = {}, status = false } = {}){
     const seriales = (!resultado) ?{} : resultado[0].seriales;
     const placa = resultado[0].elm_placa;
 
-    console.log(seriales);
-    console.log(placa);
+    // const placas = 
+    tbodyPlacaResult.innerHTML = '';
+    let tr = document.createElement('tr');
+    let tdCodigo = document.createElement('td');
+    let tdAcciones = document.createElement('td');
+    let checkbox = createCheckbox(seriales);
+    tdAcciones.appendChild(checkbox);
 
-
-        // const placas = 
-        tbodyPlacaResult.innerHTML = '';
-        let tr = document.createElement('tr');
-        let td = document.createElement('td');
-
-        tr.appendChild(td);
-        td.textContent = placa;
-        tbodyPlacaResult.appendChild(tr);
+    tr.appendChild(tdCodigo);
+    tr.appendChild(tdAcciones);
+    tdCodigo.textContent = placa;
+    tbodyPlacaResult.appendChild(tr);
 
     
 }

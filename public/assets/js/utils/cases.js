@@ -388,6 +388,29 @@ export const setReserva = (attribute = "", data = {}, elementos = {},target,acti
   }
 };
 
+export const createCheckbox = (seriales) => {
+  let p = document.createElement('p');
+  let label = document.createElement('label');
+  let input = document.createElement('input');
+  let span = document.createElement('span');
+
+  input.setAttribute('type', 'checkbox');
+  input.classList.add('filled-in'); 
+  span.innerText = 'Seleccione';
+
+  if (Array.isArray(seriales)) {
+    input.setAttribute('data-seriales', JSON.stringify(seriales));
+  } else {
+    input.setAttribute('data-seriales', seriales || '');
+  }
+
+  label.appendChild(input);
+  label.appendChild(span);
+  p.appendChild(label);
+
+  return p;
+};
+
 export default {
   closeModal,
   openModal,
