@@ -397,12 +397,13 @@ export const createCheckbox = (seriales) => {
   input.setAttribute('type', 'checkbox');
   input.setAttribute('name', 'serialCheckbox');
   input.classList.add('filled-in'); 
-  span.innerText = 'Asociar elemento';
-
+  
   if (Array.isArray(seriales)) {
     input.setAttribute('data-seriales', JSON.stringify(seriales));
+    span.innerText = 'Asociar elemento';
   } else {
     input.setAttribute('data-seriales', seriales || '');
+    span.innerText = 'Crear serial';
   }
 
   label.appendChild(input);

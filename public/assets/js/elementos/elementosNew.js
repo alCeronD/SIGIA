@@ -1,6 +1,7 @@
 // import {renderElement, renderElements } from "./fetchElements.js";
 import { getData } from "../utils/fetch.js";
 import { closeModal, createBtn, createCheckbox, createI, initTooltip, instanceModal, options, tooltipOptions } from "../utils/cases.js";
+import { validatePlaca, validationRules } from "../utils/regex.js";
 
 const typeElements = {
     dev: 'devolutivo',
@@ -406,23 +407,39 @@ inputBusqueda.addEventListener('keyup', function (e) {
         
 });
 
+
+// span en donde se visualizara la respuesta de la placa si es correcta o no.
+const respuestaPlaca = document.querySelector('#respuestaPlaca');
 // Busqueda de placas.
-searchPlaca.addEventListener('keyup', async (e)=>{
+searchPlaca.addEventListener('keyup', async (e) => {
     e.stopPropagation();
-    // TODO: validar implementando un regex para evitar letras.
-    if (e.target.value.length > 2) {
-        let filtro = e.target.value.trim();
+    const filtro = e.target.value.trim();
+
+    if (filtro.length > 2) {
+        if (!validatePlaca(filtro)) {
+            respuestaPlaca.style.display = 'block';
+            respuestaPlaca.innerText = validationRules.placa.message;
+            serialPlacaAssoc.value = '';
+            renderResultPlacas({ status: true }); 
+            return;
+        } else {
+            respuestaPlaca.style.display = 'none';
+        }
 
         const resultado = placas.filter(pl => String(pl.elm_placa) === filtro);
-        // Traigo la coincidencia exacta, posiblemente requiera de ser una posible coincidencia y no exacto.
+
         if (resultado.length > 0) {
-            renderResultPlacas({resultado: resultado, status: true});
+            renderResultPlacas({ resultado, status: true });
         } else {
-            renderResultPlacas({status: true});
+            renderResultPlacas({ status: true });
             serialPlacaAssoc.value = '';
         }
+    } else {
+        // Limpia mensaje si no hay suficientes caracteres
+        respuestaPlaca.style.display = 'none';
+        renderResultPlacas({ status: true });
+        serialPlacaAssoc.value = '';
     }
-
 });
 
 function renderResultPlacas({ resultado = {}, status = false } = {}){
@@ -438,10 +455,16 @@ function renderResultPlacas({ resultado = {}, status = false } = {}){
     const seriales = (!resultado) ?{} : resultado[0].seriales;
     const placa = resultado[0].elm_placa;
 
+    console.log(seriales);
+
     // console.log(seriales);
     let serialesDisponibles = '';
     seriales.forEach((srl)=>{
-        serialesDisponibles += `${srl.serie} `;
+        if (srl.serie && srl.serie.trim().length > 0) {
+            serialesDisponibles += `${srl.serie} `;
+        }else{
+            serialesDisponibles += "No hay placas";
+        }
 
     });
 
@@ -457,8 +480,8 @@ function renderResultPlacas({ resultado = {}, status = false } = {}){
     tr.appendChild(tdCodigo);
     tr.appendChild(tdSerial);
     tr.appendChild(tdAcciones);
-    tdSerial.textContent = serialesDisponibles;
-    tdCodigo.textContent = placa;
+    tdSerial.innerText = serialesDisponibles;
+    tdCodigo.innerText = placa;
     tbodyPlacaResult.appendChild(tr);
 
     const checkboxPlacas = document.querySelectorAll('input[name="serialCheckbox"]');
@@ -494,13 +517,9 @@ function renderResultPlacas({ resultado = {}, status = false } = {}){
             }
         });
     });
-
-
-
-    
 }
 
-
+// TODO: crear una función para poner en blanco los elementos cuando el radio button cambia de un lado a otro.
 
 
 

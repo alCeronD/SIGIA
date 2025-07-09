@@ -125,10 +125,11 @@
                             </div>
                         </div>
                         <!-- INPUTS DE LAS PLACAS ASOCIADAS. -->
-                         <div class="placaAssocContent">
+                        <div class="placaAssocContent">
                             <div class="selectPlaca">
                                 <label for="searchPlaca">Digite el número de placa</label>
-                                <input type="text" name="searchPlaca" id="searchPlaca">
+                                <span id="respuestaPlaca" style="display: none;"></span>
+                                <input type="text"  name="searchPlaca" id="searchPlaca">
                             </div>
                             <div class="contentPlacaAssoc ">
                                 <label for="serialPlaca">Serial asociado</label>
