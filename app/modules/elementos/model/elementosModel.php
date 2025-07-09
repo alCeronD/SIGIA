@@ -17,7 +17,11 @@ class ElementoModelo
         $this->conn = $conexion->getConnect();
     }
 
-    // Obtener todos los elementos con nombres relacionados
+/**
+     * Obtiene todos los elementos con información relacionada (área, tipo, estado).
+     *
+     * @return array Lista de elementos con sus respectivos datos.
+     */
     public function obtenerElemento()
     {
         $elementos = [];
@@ -78,7 +82,12 @@ class ElementoModelo
         $resultado = $stmt->get_result();
         return $resultado->fetch_assoc();
     }
-
+    /**
+     * Busca elementos cuyo nombre o placa coincida parcialmente con un valor.
+     *
+     * @param string $inputValue Valor de búsqueda.
+     * @return array Resultado con mensaje, estado y datos encontrados.
+     */
     public function getElementLike(String $inputValue = '')
     {
         $sql = "SELECT 
@@ -129,7 +138,14 @@ class ElementoModelo
         ];
     }
 
-    // Obtener elementos paginados con JOIN para nombres relacionados
+    /**
+     * Obtiene elementos paginados según su tipo (consumible, devolutivo o todos).
+     *
+     * @param int $limite Cantidad de resultados por página.
+     * @param int $offset Índice desde donde iniciar la búsqueda.
+     * @param string $type Tipo de elemento: 'consumible', 'devolutivo', o 'all'.
+     * @return array Resultado de la consulta con mensaje, estado y datos.
+     */
     public function obtenerElementoPaginado(int $limite, int $offset, string $type)
     {
         $elementos = [];
@@ -468,7 +484,3 @@ class ElementoModelo
         ];
     }
 }
-
-$data = new ElementoModelo();
-
-$data->getAllPlacas();

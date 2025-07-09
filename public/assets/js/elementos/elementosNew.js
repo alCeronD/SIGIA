@@ -40,16 +40,33 @@ const undMedida = document.querySelector('#undMedida');
 const tpElemento = document.querySelectorAll('input[name="tpElementoRadio"]');
 const checkboxTpElemento = document.querySelector('.checkboxTpElemento');
 
+
+const selectAreas = document.querySelector('#selectAreas');
+const selectCategorias = document.querySelector('#categoriaSelect');
+const selectMarcas = document.querySelector('#selectMarca');
+const selectTpElemento = document.querySelector('#selectTpElemento');
+// Input para buscar la placa.
+const searchPlaca = document.querySelector('#searchPlaca');
+// Tabla de las placas
+const tablePlaca = document.querySelector('.tableResult');
+
+// Aca voy a mostrar el resultado.
+const tbodyPlacaResult = document.querySelector('#tbodyPlacaResult');
+// Formulario de envio de elemento.
+const addElementForm = document.querySelector('#addElementForm');
+
 function viewPlacaInputs(status = false){
 
     if (!status) {
         contentPlaca.style.display = 'flex';
         contentPlaca.style.flexDirection = 'row';
         inputPlaca.style.display = 'grid';
+        tablePlaca.style.display = "none";
         inputSerie.style.display = 'grid';
         selectPlaca.style.display = 'none';
     }else{
-         inputPlaca.style.display = 'none';
+        inputPlaca.style.display = 'none';
+        tablePlaca.style.display = "grid";
         inputSerie.style.display = 'none';
         selectPlaca.style.display = 'grid';
     }
@@ -203,10 +220,7 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
     
 };
 
-const selectAreas = document.querySelector('#selectAreas');
-const selectCategorias = document.querySelector('#categoriaSelect');
-const selectMarcas = document.querySelector('#selectMarca');
-const selectTpElemento = document.querySelector('#selectTpElemento');
+
 const renderSelectAreas = async (action = '')=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
     let dataResponse = response.data;
@@ -282,13 +296,13 @@ const renderSelectMarcas = async (action = '') =>{
 
 };
 
+let placas = [];
 const renderSelectPlacas = async (action = '') =>{
     let responsePlacas = await getData('modules/elementos/controller/elementosController.php', 'GET',{action: action});
-    let placas = responsePlacas.data.data;
-    console.log(placas);
+    return responsePlacas.data.data;
 };
 
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded',  ()=>{
     //Inicializo los select.
     // M.FormSelect.init(formDevolutivo.querySelectorAll('select'));
     initTooltip(btnAddModalElements,tooltipOptions,'Agregar elemento','top');
@@ -310,8 +324,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
     renderSelectAreas('areas');
     renderSelectCategorias('categoria');
     renderSelectMarcas('marcas');
-    renderSelectPlacas('placas');
+    // Hago esto para evitar que mi función DOOM content loader sea asincrona.
+    renderSelectPlacas('placas').then((dataResult)=>{
+        placas = dataResult;
+    });
+
 });
+
+
+
 
 /**
  * Filtro de elementos
@@ -379,6 +400,57 @@ inputBusqueda.addEventListener('keyup', function (e) {
         
 });
 
+// Busqueda de placas.
+searchPlaca.addEventListener('keyup', async (e)=>{
+    e.stopPropagation();
+    // TODO: validar implementando un regex para evitar letras.
+    if (e.target.value.length > 2) {
+        let filtro = e.target.value.trim();
+
+        const resultado = placas.filter(pl => String(pl.elm_placa) === filtro);
+        // Traigo la coincidencia exacta, posiblemente requiera de ser una posible coincidencia y no exacto.
+        if (resultado.length > 0) {
+            console.log('no valor');
+            console.log(resultado);
+            renderResultPlacas({resultado: resultado, status: true});
+        } else {
+            console.log('valor');
+            renderResultPlacas({status: true});
+        }
+    }
+
+});
+
+function renderResultPlacas({ resultado = {}, status = false } = {}){
+
+    if (!status || !Array.isArray(resultado) || resultado.length === 0) {
+        tbodyPlacaResult.innerHTML = 'No hay coincidencias.';
+        console.log('No hay resultados válidos');
+        return;
+    }
+    
+
+    // Accedo a las series de la placa.
+    const seriales = (!resultado) ?{} : resultado[0].seriales;
+    const placa = resultado[0].elm_placa;
+
+    console.log(seriales);
+    console.log(placa);
+
+
+        // const placas = 
+        tbodyPlacaResult.innerHTML = '';
+        let tr = document.createElement('tr');
+        let td = document.createElement('td');
+
+        tr.appendChild(td);
+        td.textContent = placa;
+        tbodyPlacaResult.appendChild(tr);
+
+    
+}
+
+
 
 /**
  * Registrar elemento.
@@ -415,4 +487,5 @@ btnAddModalElements.addEventListener('click', (e)=>{
 
 
 
+// puedo ejecutar el callback que me permita reiniciar los campos del formulario.
 closeModal(addElementModal,cerrarModalBtn);

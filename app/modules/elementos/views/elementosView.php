@@ -113,25 +113,32 @@
                     </div>
                     <div class="placaInputs">
                         <!-- Input tipo text placa -->
-                        <div class="contentPlaca">
+                        <div class="contentPlaca input-field">
                             <div class="inputPlaca">
                                 <input id="elm_placa" name="elm_placa" type="number">
                                 <label for="elm_placa">Número de placa *</label>
                             </div>
-                            <div class="inputSerie">
+                            <div class="inputSerie input-field">
                                 <!-- Validar, no se deben permitir catacteres con el arroba o el # -->
                                 <input id="elm_serie" name="elm_serie" type="text">
                                 <label for="elm_serie">Código de serie * Ejemplo = 922919587-1</label>
                             </div>
                         </div>
                         <!-- Select de las placas de los elementos -->
-                        <div class="selectPlaca">
-                            <select name="" id="placaAssoc">
-                                <!-- Renderizado con javascript mediante petición. -->
-                                <option value="">1</option>
-                                <option value="">2</option>
-                                <option value="">3</option>
-                            </select>
+                        <div class="selectPlaca input-field">
+                            <label for="searchPlaca">Digite el número de placa que desea asociar al elemento</label>
+                            <input type="text" class="" name="searchPlaca" id="searchPlaca">
+                        </div>
+                        <div class="tableResult">
+                            <table class="striped responsive-table" id="tablePlaca">
+                                <thead>
+                                    <tr>
+                                        <th>Codigo</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyPlacaResult"></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -185,13 +192,13 @@
                             </select>
                             <label for="undMedida">Unidad Medida:</label>
                         </div>
-                        <div class="cantidadElemento">    
+                        <div class="cantidadElemento">
                             <input type="number" name="cantidad" id="inputCantidad" min="0">
                             <label for="cantidad">Cantidad:</label>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- <div class="modal-footer">
                     <button type="submit" class="btn waves-effect waves-light left"><i class="material-icons">save</i></button>
                 </div> -->

@@ -228,6 +228,10 @@
     display: none;
 }
 
+.tableResult{
+    display: none;
+}
+
 .contentPlaca{
     /* display: none; */
     display: flex;
