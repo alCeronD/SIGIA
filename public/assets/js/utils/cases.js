@@ -388,7 +388,7 @@ export const setReserva = (attribute = "", data = {}, elementos = {},target,acti
   }
 };
 
-export const createCheckbox = (seriales) => {
+export const createCheckbox = (seriales, placa) => {
   let p = document.createElement('p');
   let label = document.createElement('label');
   let input = document.createElement('input');
@@ -400,7 +400,10 @@ export const createCheckbox = (seriales) => {
   
   if (Array.isArray(seriales)) {
     input.setAttribute('data-seriales', JSON.stringify(seriales));
-    span.innerText = 'Asociar elemento';
+    input.setAttribute('data-placa',JSON.stringify(placa));
+
+     const ultimaSerie = seriales[seriales.length - 1]?.serie || '';
+    span.innerText = `Asociar desde ${ultimaSerie}`;
   } else {
     input.setAttribute('data-seriales', seriales || '');
     span.innerText = 'Crear serial';

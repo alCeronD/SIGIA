@@ -9,9 +9,13 @@ export const validationRules = {
     message: "El documento debe contener solo números (5 a 15 caracteres)."
   },
   placa:{
-    // se coloca el \- para evitar que se interprete como un rango de caracteres.
+    // Numeros permitidos del 0-9
     regex: /^\d+$/,
     message: "La placa no debe tener caracteres especiales ni letras."
+  },
+  cantidad:{
+    regex:/^\d+$/,
+    message: "Cantidad no permitida"
   }
 };
 
@@ -31,3 +35,10 @@ export const validatePlaca = (placa)=>{
   return regex.test(placa);
 
 };
+
+export const validarCantidad = (cantidad)=>{
+  regex = validationRules.cantidad.regex;
+
+  return regex.test(cantidad);
+
+}

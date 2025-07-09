@@ -84,7 +84,7 @@
     <div id="modalContentElements">
         <div class="modalContentTitle">
             <span class="">Registrar Nuevo Elemento</span>
-            <button type="button" class="closeModalBtn">
+            <button type="button" class="closeModalBtn" id="cerrarModalRegistrar">
                 <span class="close-modal">&times;</span>
             </button>
         </div>
@@ -115,7 +115,7 @@
                         <!-- INPUTS DE PLACAS QUE SELECCIONE EL INPUT RADIO NUEVA PLACA -->
                         <div class="contentPlaca input-field">
                             <div class="inputPlaca">
-                                <input id="elm_placa" name="elm_placa" type="number">
+                                <input id="elm_placa" name="elm_placa" type="text">
                                 <label for="elm_placa">Número de placa *</label>
                             </div>
                             <div class="inputSerie input-field">
@@ -202,15 +202,15 @@
                             <label for="undMedida">Unidad Medida:</label>
                         </div>
                         <div class="cantidadElemento">
-                            <input type="number" name="cantidad" id="inputCantidad" min="0">
+                            <input type="text" name="cantidad" id="inputCantidad">
                             <label for="cantidad">Cantidad:</label>
                         </div>
                     </div>
                 </div>
 
-                <!-- <div class="modal-footer">
-                    <button type="submit" class="btn waves-effect waves-light left"><i class="material-icons">save</i></button>
-                </div> -->
+                <div class="modal-footer">
+                    <button type="submit"  class="btn waves-effect waves-light left"><i class="material-icons">save</i></button>
+                </div>
 
 
             </form>

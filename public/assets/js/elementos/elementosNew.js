@@ -1,7 +1,7 @@
 // import {renderElement, renderElements } from "./fetchElements.js";
 import { getData } from "../utils/fetch.js";
-import { closeModal, createBtn, createCheckbox, createI, initTooltip, instanceModal, options, tooltipOptions } from "../utils/cases.js";
-import { validatePlaca, validationRules } from "../utils/regex.js";
+import { closeModal, createBtn, createCheckbox, createI, initAlert, initTooltip, instanceModal, options, toastOptions, tooltipOptions } from "../utils/cases.js";
+import { validarCantidad, validatePlaca, validationRules } from "../utils/regex.js";
 
 const typeElements = {
     dev: 'devolutivo',
@@ -37,7 +37,7 @@ const nuevaPlaca = document.querySelectorAll('input[name="placaRadio"]');
 const selectedPlaca = document.querySelector('#selectPlaca');
 
 // Input de unidad de medida.
-const undMedida = document.querySelector('#undMedida');
+// const undMedida = document.querySelector('#undMedida');
 const tpElemento = document.querySelectorAll('input[name="tpElementoRadio"]');
 const checkboxTpElemento = document.querySelector('.checkboxTpElemento');
 
@@ -81,13 +81,16 @@ function viewPlacaInputs(status = false) {
     }
 }
 
+// Input de cantidad del elemento
+const inputCantidad = document.querySelector('#inputCantidad');
+// Inicializar el select de la unidad de medida.
+const undMedida = document.querySelector('#undMedida');
+// Input placa
+const elm_placa = document.querySelector('#elm_placa');
 function viewTpElementoInputs(status =false){
 
-    // Inicializar el select de la unidad de medida.
-    const undMedida = document.querySelector('#undMedida');
-    // Input cantidad 
-    const inputCantidad = document.querySelector('#inputCantidad');
-    M.FormSelect.init(undMedida);
+
+    // IInicializar select de unidad de medida
 
     if (status) {
         checkboxTpElemento.style.display = "grid";
@@ -103,6 +106,98 @@ function viewTpElementoInputs(status =false){
         inputCantidad.readOnly = false;
     }
     M.FormSelect.init(undMedida);
+}
+
+function renderResultPlacas({ resultado = {}, status = false } = {}){
+
+    if (!status || !Array.isArray(resultado) || resultado.length === 0) {
+        tbodyPlacaResult.innerHTML = 'No hay coincidencias.';
+        console.log('No hay resultados válidos');
+        return;
+    }
+    
+    // Accedo a las series de la placa.
+    const seriales = (!resultado) ?{} : resultado[0].seriales;
+    const placa = resultado[0].elm_placa;
+
+
+    let serialesDisponibles = '';
+
+    if (!Array.isArray(seriales) || seriales.length === 0) {
+        serialesDisponibles = 'No hay seriales disponibles. Crear nuevo.';
+    }else{
+        // Filtra seriales válidos
+        const serialesValidos = seriales.filter(srl => srl.serie && srl.serie.trim().length > 0);
+
+        if (serialesValidos.length === 0) {
+            serialesDisponibles = 'No hay seriales disponibles. Crear nuevo.';
+        } else {
+            serialesDisponibles = serialesValidos.map(srl => srl.serie).join(', ');
+        }
+    }
+
+    // const placas = 
+    tbodyPlacaResult.innerHTML = '';
+    let tr = document.createElement('tr');
+    let tdCodigo = document.createElement('td');
+    let tdAcciones = document.createElement('td');
+    let tdSerial = document.createElement('td');
+    let checkbox = createCheckbox(seriales,placa);
+    tdAcciones.appendChild(checkbox);
+
+    tr.appendChild(tdCodigo);
+    tr.appendChild(tdSerial);
+    tr.appendChild(tdAcciones);
+    tdSerial.innerHTML = serialesDisponibles;
+    tdCodigo.innerHTML = placa;
+    tbodyPlacaResult.appendChild(tr);
+
+    const checkboxPlacas = document.querySelectorAll('input[name="serialCheckbox"]');
+    console.log(checkboxPlacas);
+    checkboxPlacas.forEach((checkPl)=>{
+        checkPl.addEventListener('change', (e)=>{
+            e.stopPropagation();
+            if (e.target.checked) {
+                let seriesCheckbox = JSON.parse(e.target.dataset.seriales);
+
+                let placaCheckbox = JSON.parse(e.target.dataset.placa);
+
+                console.log(seriesCheckbox);
+                console.log(placaCheckbox);
+
+                if (seriesCheckbox.length === 0) {
+                    console.log('Seriales vacíos');
+                    serialPlacaAssoc.value = placaCheckbox + '-1';
+                    return;
+                }   
+
+                    // Ordeno los objetos de menor a mayor, uso localCompare porque es un string, si fuese number, usaría Num
+                    seriesCheckbox.sort((a, b) => a.serie.localeCompare(b.serie));
+
+                    // Extraigo solo los valores que esten en la clave serie del objeto.
+                    let valSeries = seriesCheckbox.map(ser => ser.serie);
+
+                    // Ordeno el resultado
+                    valSeries.sort();
+
+                    // Extraigo el último valor
+                    let ultimoValor = valSeries[valSeries.length - 1];
+                    let serie = ultimoValor.slice(0,4);
+                    // let codBasico = ultimoValor.indexOf(`${ultimoValor}"-"`);
+                    let codBasico = ultimoValor.indexOf('-');
+                    let consecutivo = parseInt(ultimoValor.slice(codBasico + 1));
+
+                    consecutivo++;
+                    let newCod = serie+"-"+consecutivo;
+
+                    serialPlacaAssoc.value = newCod;
+
+                
+            }else{
+                serialPlacaAssoc.value = '';
+            }
+        });
+    });
 }
 
 // Capturo todos los inputs con el name placaRadio
@@ -322,11 +417,12 @@ document.addEventListener('DOMContentLoaded',  ()=>{
 
     // Inicializar select de las placas ya registradas
     const elemsSelect = document.querySelector('#placaAssoc');
-    M.FormSelect.init(elemsSelect);
 
+    M.FormSelect.init(elemsSelect);
     M.FormSelect.init(selectCategorias);
     M.FormSelect.init(selectMarcas);
     M.FormSelect.init(selectTpElemento);
+    M.FormSelect.init(undMedida);
 
     // Estas 3 funciones puedo transformarlas en 1.
     renderSelectAreas('areas');
@@ -442,82 +538,7 @@ searchPlaca.addEventListener('keyup', async (e) => {
     }
 });
 
-function renderResultPlacas({ resultado = {}, status = false } = {}){
 
-    if (!status || !Array.isArray(resultado) || resultado.length === 0) {
-        tbodyPlacaResult.innerHTML = 'No hay coincidencias.';
-        console.log('No hay resultados válidos');
-        return;
-    }
-    
-
-    // Accedo a las series de la placa.
-    const seriales = (!resultado) ?{} : resultado[0].seriales;
-    const placa = resultado[0].elm_placa;
-
-    console.log(seriales);
-
-    // console.log(seriales);
-    let serialesDisponibles = '';
-    seriales.forEach((srl)=>{
-        if (srl.serie && srl.serie.trim().length > 0) {
-            serialesDisponibles += `${srl.serie} `;
-        }else{
-            serialesDisponibles += "No hay placas";
-        }
-
-    });
-
-    // const placas = 
-    tbodyPlacaResult.innerHTML = '';
-    let tr = document.createElement('tr');
-    let tdCodigo = document.createElement('td');
-    let tdAcciones = document.createElement('td');
-    let tdSerial = document.createElement('td');
-    let checkbox = createCheckbox(seriales);
-    tdAcciones.appendChild(checkbox);
-
-    tr.appendChild(tdCodigo);
-    tr.appendChild(tdSerial);
-    tr.appendChild(tdAcciones);
-    tdSerial.innerText = serialesDisponibles;
-    tdCodigo.innerText = placa;
-    tbodyPlacaResult.appendChild(tr);
-
-    const checkboxPlacas = document.querySelectorAll('input[name="serialCheckbox"]');
-    console.log(checkboxPlacas);
-    checkboxPlacas.forEach((checkPl)=>{
-        checkPl.addEventListener('change', (e)=>{
-            e.stopPropagation();
-            if (e.target.checked) {
-                let seriesCheckbox = JSON.parse(e.target.dataset.seriales);
-
-                // Ordeno los objetos de menor a mayor, uso localCompare porque es un string, si fuese number, usaría Num
-                seriesCheckbox.sort((a, b) => a.serie.localeCompare(b.serie));
-
-                // Extraigo solo los valores que esten en la clave serie del objeto.
-                let valSeries = seriesCheckbox.map(ser => ser.serie);
-
-                // Ordeno el resultado
-                valSeries.sort();
-
-                // Extraigo el último valor
-                let ultimoValor = valSeries[valSeries.length - 1];
-                let serie = ultimoValor.slice(0,4);
-                // let codBasico = ultimoValor.indexOf(`${ultimoValor}"-"`);
-                let codBasico = ultimoValor.indexOf('-');
-                let consecutivo = parseInt(ultimoValor.slice(codBasico + 1));
-
-                consecutivo++;
-                let newCod = serie+"-"+consecutivo;
-
-                serialPlacaAssoc.value = newCod;
-            }else{
-                serialPlacaAssoc.value = '';
-            }
-        });
-    });
-}
 
 // TODO: crear una función para poner en blanco los elementos cuando el radio button cambia de un lado a otro.
 
@@ -526,6 +547,42 @@ function renderResultPlacas({ resultado = {}, status = false } = {}){
 /**
  * Registrar elemento.
  */
+
+
+// Validad cantidad sea digitada por numeros 
+inputCantidad.addEventListener('change', (e)=>{
+    e.stopPropagation();
+    let cantidad = e.target.value;
+
+    if (!validarCantidad(cantidad)) {
+        initAlert('Cantidad digitada no permitida','warning',toastOptions);
+        e.target.value = '';
+        return;
+    }
+});
+
+// Validad numero de placa
+elm_placa.addEventListener('change', (e)=>{
+    e.stopPropagation();
+    let placa = e.target.value;
+    if (!validarCantidad(placa)) {
+        initAlert('Número de placa digiado incorrecto','warning',toastOptions);
+        e.target.value = '';
+        return;
+    }
+});
+
+addElementForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+
+    const formElements = new FormData(e.target);
+    console.log(Object.fromEntries(formElements));
+
+    // Hacer una validación antes del envio, si el tipo de elemento seleccionado es consumible y en las opciones del select sea diferente de la primera y su cantidad sea mayor a 1.
+
+});
+
 
 //Abrir modal
 btnAddModalElements.addEventListener('click', (e)=>{
@@ -536,26 +593,6 @@ btnAddModalElements.addEventListener('click', (e)=>{
     
 
 });
-
-//Elegir tipo de elemento
-// tipoElementoSelect.addEventListener('change', (e) => {
-//     const tipo = e.target.value;
-
-//     if (tipo === 'devolutivo') {
-//         getAreas('devolutivo');
-//         formDevolutivo.style.display = 'block';
-//         formConsumible.style.display = 'none';
-//     } else if (tipo === 'consumible') {
-//         getAreas('consumible');
-//         formConsumible.style.display = 'block';
-//         formDevolutivo.style.display = 'none';
-//     } else {
-//         formDevolutivo.style.display = 'none';
-//         formConsumible.style.display = 'none';
-//     }
-// });
-
-
 
 
 // puedo ejecutar el callback que me permita reiniciar los campos del formulario.
