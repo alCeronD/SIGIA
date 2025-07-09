@@ -32,10 +32,10 @@ class ElementoModelo
         ORDER BY e.elm_placa ASC";
 
         $resultado = $this->conn->query($sql);
-
         if ($resultado) {
             while ($fila = $resultado->fetch_array(MYSQLI_ASSOC)) {
                 $elementos[] = $fila;
+                // dd($elementos);
             }
         } else {
             echo "Error al ejecutar la consulta: " . $this->conn->error;

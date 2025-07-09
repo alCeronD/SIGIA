@@ -1,4 +1,38 @@
-.content{
-    background: rgb(241, 167, 167) ;
-    width: 100%;
-}
+  .content {
+    background-color: #f9f9f9;
+    padding: 30px;
+  }
+
+  .card-filtros {
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  h4.center-align {
+    margin-bottom: 30px;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+
+  .btn {
+    margin-top: 20px;
+  }
+
+  .striped thead {
+    background-color: #2196f3;
+    color: white;
+  }
+
+  .striped tbody tr:hover {
+    background-color: #e3f2fd;
+  }
+
+  .pagination li.active {
+    background-color: #2196f3;
+  }
+
+  .page {
+    margin-top: 20px;
+  }

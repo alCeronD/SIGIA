@@ -1,25 +1,83 @@
+<style>
+  .content {
+    background-color: #f9f9f9;
+    padding: 30px;
+    width: 100%;
+  }
+
+  .card-filtros {
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  h4.center-align {
+    margin-bottom: 30px;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+
+  .btn {
+    margin-top: 20px;
+  }
+
+  .striped thead {
+    background-color: #2196f3;
+    color: white;
+  }
+
+  .striped tbody tr:hover {
+    background-color: #e3f2fd;
+  }
+
+  .pagination li.active {
+    background-color: #2196f3;
+  }
+
+  .page {
+    margin-top: 20px;
+  }
+</style>
+
 <div class="content">
   <h4 class="center-align">Reporte General de Elementos</h4>
 
   <div class="row">
-    <!-- FILTRO -->
+    <!-- FILTROS -->
     <div class="col s12 m5">
-      <div class="input-field">
-        <select id="estadoElemento">
-          <option value="">Todos los estados</option>
-          <?php foreach ($estados as $estado): ?>
-            <option value="<?= $estado['est_el_cod']; ?>">
-              <?= htmlspecialchars($estado['est_nombre']); ?>
-            </option>
-          <?php endforeach; ?>
-        </select>
-        <label for="estadoElemento">Filtrar por Estado</label>
-      </div>
+      <div class="card card-filtros">
+        <!-- FILTRO TIPO DE ELEMENTO -->
+        <div class="input-field">
+          <select id="tipoElemento">
+            <option value="">Todos los tipos</option>
+            <?php foreach ($tipos as $tipo): ?>
+              <option value="<?= $tipo['tp_el_cod']; ?>">
+                <?= htmlspecialchars($tipo['tp_el_nombre']); ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+          <label for="tipoElemento">Filtrar por Tipo</label>
+        </div>
 
-      <div class="center-align" style="margin-top: 15px;">
-        <a id="btnDescargar" href="<?= getUrl('reportes', 'reportes', 'generarReporteExcel'); ?>" class="btn waves-effect blue">
-          <i class="material-icons left">description</i>Descargar Reporte
-        </a>
+        <!-- FILTRO ESTADO DE ELEMENTO -->
+        <div class="input-field">
+          <select id="estadoElemento">
+            <option value="">Todos los estados</option>
+            <?php foreach ($estados as $estado): ?>
+              <option value="<?= $estado['est_el_cod']; ?>">
+                <?= htmlspecialchars($estado['est_nombre']); ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+          <label for="estadoElemento">Filtrar por Estado</label>
+        </div>
+
+        <div class="center-align">
+          <a id="btnDescargar" href="<?= getUrl('reportes', 'reportes', 'generarReporteExcel'); ?>" class="btn waves-effect blue">
+            <i class="material-icons left">description</i>Descargar Reporte
+          </a>
+        </div>
       </div>
     </div>
 
@@ -37,15 +95,12 @@
           </tr>
         </thead>
         <tbody id="tabla-elementos-body">
-          <tr><td colspan="5" class="grey-text">Seleccione un estado para ver los elementos</td></tr>
+          <tr><td colspan="5" class="grey-text">Seleccione filtros para ver los elementos</td></tr>
         </tbody>
       </table>
-      <!-- Paginación estilo Materialize -->
       <div class="page container-fluid col-12">
         <ul id="paginacion-elementos" class="pagination center-align"></ul>
       </div>
-
-
     </div>
   </div>
 </div>
@@ -54,6 +109,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   M.FormSelect.init(document.querySelectorAll('select'));
 
+  const selectTipo = document.getElementById('tipoElemento');
   const selectEstado = document.getElementById('estadoElemento');
   const tablaBody = document.getElementById('tabla-elementos-body');
   const paginacion = document.getElementById('paginacion-elementos');
@@ -79,7 +135,6 @@ document.addEventListener('DOMContentLoaded', function () {
         </tr>`;
     });
 
-    // Activar paginación
     document.querySelectorAll('#paginacion-elementos li').forEach(el => el.classList.remove('active'));
     const activo = document.querySelector(`#paginacion-elementos li[data-pagina="${pagina}"]`);
     if (activo) activo.classList.add('active');
@@ -107,10 +162,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  function cargarElementos(estado) {
+  function cargarElementos(tipo, estado) {
     const url = `<?= getUrl('reportes', 'reportes', 'filtrarElementosAjax', false, 'dashboard'); ?>`;
     const formData = new FormData();
     formData.append('estadoElemento', estado);
+    formData.append('tipoElemento', tipo);
 
     fetch(url, {
       method: 'POST',
@@ -127,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const totalPaginas = Math.ceil(visibles.length / itemsPorPagina);
       generarPaginacion(totalPaginas);
 
-      btnDescargar.href = `<?= getUrl('reportes', 'reportes', 'generarReporteExcel'); ?>&estadoElemento=${encodeURIComponent(estado)}`;
+      btnDescargar.href = `<?= getUrl('reportes', 'reportes', 'generarReporteExcel'); ?>&tipoElemento=${encodeURIComponent(tipo)}&estadoElemento=${encodeURIComponent(estado)}`;
     })
     .catch(err => {
       console.error('Error al cargar elementos:', err);
@@ -135,13 +191,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Cargar al inicio (todos los elementos)
-  cargarElementos('');
+  // Inicial cargar todos
+  cargarElementos('', '');
 
-  // Cambiar estado
+  selectTipo.addEventListener('change', () => {
+    cargarElementos(selectTipo.value, selectEstado.value);
+  });
+
   selectEstado.addEventListener('change', () => {
-    const estado = selectEstado.value;
-    cargarElementos(estado);
+    cargarElementos(selectTipo.value, selectEstado.value);
   });
 });
 </script>
