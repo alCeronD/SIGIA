@@ -52,13 +52,24 @@ class ReportesModel{
     }
 
     public function obtenerElementosPorEstado($estado) {
-        $sql = "SELECT e.codigo AS codigoElemento, e.nombre AS nombreElemento, e.placa, e.cantidad, es.est_nombre AS estadoElemento
+        $sql = "SELECT 
+                    e.elm_cod AS codigoElemento,
+                    e.elm_placa AS placa,
+                    e.elm_nombre AS nombreElemento,
+                    e.elm_existencia AS cantidad,
+                    e.elm_uni_medida AS unidadMedida,
+                    ar.ar_nombre AS nombreArea,
+                    tpE.tp_el_nombre AS tipoElemento,
+                    es_e.est_nombre AS estadoElemento
                 FROM elementos e
-                JOIN estados_elementos es ON e.estado_id = es.est_el_cod
-                WHERE es.est_el_cod = ?";
+                INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
+                INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
+                INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado
+                WHERE e.elm_cod_estado = ?
+                ORDER BY e.elm_placa ASC";
     
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $estado); // Usa "i" porque est_el_cod es int
+        $stmt->bind_param("i", $estado);
     
         if (!$stmt->execute()) {
             return [];
@@ -73,6 +84,7 @@ class ReportesModel{
     
         return $elementos;
     }
+
 
 
 
