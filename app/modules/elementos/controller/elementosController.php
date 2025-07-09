@@ -177,15 +177,7 @@ class ElementosController
         }
     }
     
-    public function genReporteView(){
     
-        $obj = new ElementoModelo();
-        $elementos = $obj->obtenerElemento();
-        $estados = $obj->getEstadosReport();
-        $tipoElem = $obj->getTiposElemento();
-        
-        include_once __DIR__ . '/../views/reporteElementosView.php';
-    }
     
     
     

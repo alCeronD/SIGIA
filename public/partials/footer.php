@@ -88,9 +88,7 @@
       <a href="<?php echo getUrl('categorias','categorias','consultCategoriasView',false,'dashboard'); ?>">Categorías</a>
     </div>
     <div id="submenu-reportes" class="submenu hidden">
-      <a href="<?php echo getUrl('elementos', 'elementos', 'genReporteView', false, 'dashboard'); ?>">Reporte general</a>
-      <!-- <a href="<?php echo getUrl('reportes', 'reportes', 'detalleEquipoView', false, 'dashboard'); ?>">Detalle por equipo</a>
-      <a href="<?php echo getUrl('reportes', 'reportes', 'historialPrestamosView', false, 'dashboard'); ?>">Historial de préstamos</a> -->
+      <a href="<?php echo getUrl('reportes', 'reportes', 'genReporteView', false, 'dashboard'); ?>">Reporte general</a>
     </div>
 
   <?php endif; ?>

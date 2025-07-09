@@ -49,7 +49,7 @@ class usuariosController
     public function createUser()
 {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
+        
         if ($this->conn->connect_error) {
             die("Error de conexión: " . $this->conn->connect_error);
         }
