@@ -186,7 +186,10 @@ class ElementosController
 
     //agregar elemento a la bd.
     public function addElement(array $data =[]){
-    var_dump($data);
+        if (!$result = $this->modeloElemento->insertarElemento($data)) {
+            fail('error al ejecuutar proceso', $result);
+        }
+        success('registro adicionado con exito', $result);
     }
 }
 

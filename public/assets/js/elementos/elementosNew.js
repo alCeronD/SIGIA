@@ -36,7 +36,7 @@ const nuevaPlaca = document.querySelectorAll('input[name="placaRadio"]');
 const selectedPlaca = document.querySelector('#selectPlaca');
 // Input de unidad de medida.
 // const undMedida = document.querySelector('#undMedida');
-const tpElemento = document.querySelectorAll('input[name="tpElemento"]');
+const tpElemento = document.querySelectorAll('input[name="elm_cod_tp_elemento"]');
 const checkboxTpElemento = document.querySelector('.checkboxTpElemento');
 const selectAreas = document.querySelector('#selectAreas');
 const selectCategorias = document.querySelector('#categoriaSelect');
@@ -53,6 +53,11 @@ const addElementForm = document.querySelector('#addElementForm');
 const placaAssocContent = document.querySelector('.placaAssocContent');
 // Input del serial que se va a asociar con la placa
 const serialPlacaAssoc = document.querySelector('#serialPlacaAssoc');
+
+// Campos de sugerencia y observación en registrar elemento
+const sugerenciaInput = document.querySelector('#sugerenciaInput');
+const observacionInput = document.querySelector('#observacionInput');
+
 function viewPlacaInputs(status = false) {
     if (!status) {
         // Placa nueva
@@ -263,7 +268,6 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
     );
 
     let data = dataElements.data.data;
-    console.log(data);
     pageGlobal = dataElements.data.cantidadPaginas;
     if (page > pageGlobal) {
         return;
@@ -431,7 +435,30 @@ document.addEventListener('DOMContentLoaded',  ()=>{
         placas = dataResult;
     });
 
+    const modals = document.querySelectorAll('.modal');
+    M.Modal.init(modals);
+
 });
+
+// Mensaje de confirmación.
+function mostrarConfirmacion(titulo, mensaje, callback) {
+  // Rellenar el contenido
+  document.getElementById('modalConfirmacionTitulo').textContent = titulo;
+  document.getElementById('modalConfirmacionMensaje').textContent = mensaje;
+
+  // Obtener instancia y abrir el modal
+  const modalElem = document.getElementById('modalConfirmacion');
+  const instance = M.Modal.getInstance(modalElem);
+  instance.open();
+
+  // Manejo de botones
+  const btnAceptar = document.getElementById('btnAceptar');
+  const btnCancelar = document.getElementById('btnCancelar');
+
+  // Limpiar cualquier listener anterior
+  btnAceptar.onclick = () => callback(true);
+  btnCancelar.onclick = () => callback(false);
+}
 
 /**
  * Filtro de elementos
@@ -568,6 +595,7 @@ elm_placa.addEventListener('change', (e)=>{
     }
 });
 
+
 // Enviar datos del formulario.
 addElementForm.addEventListener('submit', (e)=>{
     e.preventDefault();
@@ -575,12 +603,38 @@ addElementForm.addEventListener('submit', (e)=>{
 
     // Captura el valor del checkbox
     const checkboxTp = document.querySelector('input[name="tpElementoRadio"]:checked')?.value;
-
     const formElements = new FormData(e.target);
     const dataObj = Object.fromEntries(formElements.entries());
-    // formElements.delete('placaRadio');
+    delete dataObj.placaRadio;
     let data = dataObj;
-    sendData("modules/elementos/controller/elementosController.php","POST","registrar",data);
+
+    mostrarConfirmacion("Registrar elemento", "¿Estás seguro de eliminar este elemento?", function (respuesta){
+        
+    try {
+        
+        if (!respuesta) {
+        addElementModal.close();
+        addElementForm.reset();
+        // Ejecutar acción
+        } 
+        //La respuesta puedo tranformarla en una función generica.
+        sendData("modules/elementos/controller/elementosController.php","POST","registrar",data).then((result)=>{
+
+            if (result) {
+                // initAlert('Elemento agreado exitosamente','succes',{toastOptions});
+                initAlert('Elemento agreado exitosamente','succes',{toastOptions});
+                addElementModal.close();
+                addElementForm.reset();
+                renderSelectPlacas('placas')
+                renderElements({type: currentType, page: 1});
+            }
+
+        });
+    } catch (error) {
+        
+    }
+    
+});
 
 
 
@@ -601,4 +655,7 @@ btnAddModalElements.addEventListener('click', (e)=>{
 
 
 // puedo ejecutar el callback que me permita reiniciar los campos del formulario.
-closeModal(addElementModal,cerrarModalBtn);
+closeModal(addElementModal,cerrarModalBtn, ()=>{
+    addElementModal.reset();
+
+});

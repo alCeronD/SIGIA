@@ -177,12 +177,12 @@ class ElementoModelo
     INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado";
 
         if ($type === 'all') {
-            $sql = "$baseSql ORDER BY e.elm_fecha_registro ASC LIMIT ? OFFSET ?";
+            $sql = "$baseSql ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("ii", $limite, $offset);
         } else {
             $codType = ($type === 'consumible') ? 2 : 1;
-            $sql = "$baseSql WHERE tpE.tp_el_cod = ? ORDER BY e.elm_fecha_registro ASC LIMIT ? OFFSET ?";
+            $sql = "$baseSql WHERE tpE.tp_el_cod = ? ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("iii", $codType, $limite, $offset);
         }
@@ -264,17 +264,71 @@ class ElementoModelo
     }
 
     // Insertar nuevo elemento
-    public function insertarElemento($datos)
-    {
-        $sql = "INSERT INTO elementos (elm_placa, elm_nombre, elm_existencia, elm_uni_medida, elm_cod_tp_elemento, elm_cod_estado, elm_area_cod) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($sql);
-        if (!$stmt) {
-            echo "Error en prepare: " . $this->conn->error;
-            return false;
-        }
-        $stmt->bind_param("isiiiii", $datos['elm_placa'], $datos['elm_nombre'], $datos['elm_existencia'], $datos['elm_uni_medida'], $datos['elm_cod_tp_elemento'], $datos['elm_cod_estado'], $datos['elm_area_cod']);
-        return $stmt->execute();
+    public function insertarElemento(array $datos = [])
+{
+    $sql = "INSERT INTO elementos (
+        elm_placa,
+        elm_serie,
+        elm_nombre,
+        elm_existencia,
+        elm_fecha_registro,
+        elm_sugerencia,
+        elm_observacion,
+        elm_uni_medida,
+        elm_cod_tp_elemento,
+        elm_cod_estado,
+        elm_area_cod
+    ) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?)";
+
+    $stmt = $this->conn->prepare($sql);
+    $elm_cod_estado = 1; // valor fijo si aplica
+
+    if (!$stmt) {
+        return [
+            'message' => "Error en prepare: " . $this->conn->error,
+            'status' => false
+        ];
     }
+
+    $placa = (int) $datos['elm_placa'];
+    $serie = $datos['elm_serie'];
+    $nombre = $datos['elm_nombre'];
+    $existencia = (int) $datos['elm_existencia'];
+    $sugerencia = $datos['elm_sugerencia'];
+    $observacion = $datos['elm_observacion'];
+    $unidadMedida = (int) $datos['elm_uni_medida'];
+    $tpElemento = (int) $datos['elm_cod_tp_elemento'];
+    $estado = 1; // fijo
+    $area = (int) $datos['elm_area_cod'];
+
+    
+
+    $stmt->bind_param(
+        "ississiiii",
+        $placa,
+        $serie,
+        $nombre,
+        $existencia,
+        $sugerencia,
+        $observacion,
+        $unidadMedida,
+        $tpElemento,
+        $estado,
+        $area
+    );
+
+    if (!$stmt->execute()) {
+        return [
+            'message' => "Error al ejecutar la consulta:  $stmt->error",
+            'status' => false
+        ];
+    }
+
+    return [
+        'message' => 'Registro exitoso',
+        'status' => true
+    ];
+}
 
     // Actualizar elemento sin modificar placa ni tipo (solo otros campos)
     public function actualizarElemento($id, $datos)
@@ -298,6 +352,8 @@ class ElementoModelo
             $datos['elm_area_cod'],
             $id
         );
+
+        $this->conn->close();
         return $stmt->execute();
     }
     

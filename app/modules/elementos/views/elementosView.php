@@ -93,7 +93,7 @@
                 <div class="placa">
                     <!-- Inputs radio de la placa, dependiendo de la placa, me debe de mostrar uno u otro. -->
                     <div class="radioPlaca">
-                        <label for="">¿Desea asociar el elemento nuevo a una placa o registrar una placa nueva?</label>
+                        <label for="">¿Desea asociar el elemento nuevo a una placa o registrar una placa nueva? *</label>
                         <div class="newPlaca">
                             <p>
                                 <label>
@@ -129,11 +129,11 @@
                             <div class="selectPlaca">
                                 <label for="searchPlaca">Digite el número de placa</label>
                                 <span id="respuestaPlaca" style="display: none;"></span>
-                                <input type="text"  name="searchPlaca" id="searchPlaca">
+                                <input type="text" name="searchPlaca" id="searchPlaca">
                             </div>
                             <div class="contentPlacaAssoc ">
                                 <label for="serialPlaca">Serial asociado</label>
-                                <input type="text" name="serialPlaca" id="serialPlacaAssoc" >
+                                <input type="text" name="serialPlaca" id="serialPlacaAssoc">
                             </div>
                             <div class="tableResult">
                                 <table class="striped responsive-table" id="tablePlaca">
@@ -152,12 +152,12 @@
                     </div>
                 </div>
                 <div class="nombre">
-                    <label for="elm_nombre">Nombre elemento:</label>
+                    <label for="elm_nombre">Nombre elemento: *</label>
                     <input id="elm_nombre" name="elm_nombre" type="text" placeholder="">
                 </div>
                 <div class="area">
-                    <label for="areaCod">Área * </label>
-                    <select id="selectAreas" class="select_area" name="areaCod">
+                    <label for="elm_area_cod">Área * </label>
+                    <select id="selectAreas" class="select_area" name="elm_area_cod">
                     </select>
                 </div>
 
@@ -177,7 +177,7 @@
                         <div class="checkboxDevolutivo">
                             <p>
                                 <label>
-                                    <input class="with-gap" name="tpElemento" type="radio" id="devolutivoCheckbox" value="1"/>
+                                    <input class="with-gap" name="elm_cod_tp_elemento" type="radio" id="devolutivoCheckbox" value="1" />
                                     <span>Devolutivo</span>
                                 </label>
                             </p>
@@ -185,7 +185,7 @@
                         <div class="checkboxConsumible">
                             <p>
                                 <label>
-                                    <input class="with-gap" name="tpElemento" type="radio" id="consumibleCheckbox" value="2"/>
+                                    <input class="with-gap" name="elm_cod_tp_elemento" type="radio" id="consumibleCheckbox" value="2" />
                                     <span>Consumible</span>
                                 </label>
                             </p>
@@ -208,14 +208,40 @@
                     </div>
                 </div>
 
-                <div class="modal-footer">
-                    <button type="submit"  class="btn waves-effect waves-light left"><i class="material-icons">save</i></button>
+                <div class="apuntes">
+                    <!-- Observacion -->
+                    <div class="input-field observacion"> 
+                        <textarea id="observacionInput" class="materialize-textarea" name="elm_observacion" data-length="120"></textarea>
+                        <label for="observacionInput">Observación</label>
+                    </div>
+                    <div class="input-field sugerencia">
+                        <textarea id="sugerenciaInput" class="materialize-textarea" name="elm_sugerencia" data-length="120"></textarea>
+                        <label for="sugerenciaInput">Sugerencia</label>
+                    </div>
+                </div>
+
+                <div class="modal-footer footerBtn">
+                    <button type="submit" class="btn waves-effect waves-light left"><i class="material-icons">save</i></button>
                 </div>
 
 
             </form>
         </div>
     </div>
+</div>
+
+
+<!-- Modal confirmación -->
+
+<div id="modalConfirmacion" class="modal">
+  <div class="modal-content">
+    <h5 id="modalConfirmacionTitulo">Confirmación</h5>
+    <p id="modalConfirmacionMensaje">¿Estás seguro de realizar esta acción?</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="btnCancelar">Cancelar</a>
+    <a href="#!" class="modal-close waves-effect waves-red btn" id="btnAceptar">Aceptar</a>
+  </div>
 </div>
 
 <!-- Modal Ver Más -->

@@ -197,11 +197,9 @@
   grid-template-areas: "placa placa"
   "nombre area"
   "categoria marca"
-  "tipoElemento tipoElemento";
-  /* grid-template-areas: "placa placa"
-  "serie nombre"
-  "unidadMedida unidadMedida"
-  "area"; */
+  "tipoElemento tipoElemento"
+  "apuntes apuntes"
+  "footerBtn footerBtn";
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
   gap: 3px;
@@ -227,10 +225,7 @@
 .inputPlaca, .selectPlaca, .inputSerie{
     display: none;
 }
-/* 
-.contentPlacaAssoc{
-    display: none;
-} */
+
 
 .tableResult{
     display: none;
@@ -273,6 +268,40 @@
     gap: 12px; 
     align-items: flex-end; 
     margin-top: 8px;
+}
+
+
+.apuntes {
+    display: grid;
+    grid-template-areas: "observacion sugerencia";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 20px; /* espacio entre los dos */
+    width: 100%;
+    grid-area: apuntes;
+}
+
+
+.footerBtn{
+    grid-area: footerBtn;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.input-field {
+    flex: 1; /* que cada uno tome el 50% */
+}
+
+
+#observacionInput{
+    resize: none;
+    width: 100%;
+}
+
+#sugerenciaInput{
+    width: 100%;
+    resize: none;
 }
 
 
