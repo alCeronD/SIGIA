@@ -183,6 +183,11 @@ class ElementosController
             echo "<div class='alert alert-danger text-center'>No se especificó el elemento para cambiar estado.</div>";
         }
     }
+
+    //agregar elemento a la bd.
+    public function addElement(array $data =[]){
+    var_dump($data);
+    }
 }
 
 $elementosController = new ElementosController();
@@ -237,6 +242,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 }
 
                 break;
+            
 
             default:
                 fail('error de acción.');
@@ -244,41 +250,28 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         }
     }
 
-    // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //     $input = file_get_contents("php://input");
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $input = file_get_contents("php://input");
 
-    //     //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
-    //     $data = json_decode($input, true);
+        //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
+        $data = json_decode($input, true);
 
+        $action = $data['action'];
+        unset($data['action']);
 
-    //     switch ($data['action']) {
-    //         case 'finalizar':
+        switch ($action) {
 
-    //             $elementos = $data['data']["elementos"];
-    //             $codigoReserva = $data['data']["codigoReserva"];
+            case 'registrar':
+                $elemento = $data;
+                if (method_exists($elementosController,'addElement')) {
+                    $elementosController->addElement($elemento);
+                }
+                break;
+  
+            default:
+                break;
+        }
 
-    //             $controller->setEndReserva($elementos, $codigoReserva);
-    //             break;
-
-    //         case 'registrar':
-    //             $elementosPres = $data['data'];
-    //             $controller->setReserva($elementosPres);
-    //             break;
-    //         case 'validateLoan':
-    //             unset($data['action']);
-    //             $dataNuevo = $data;
-
-
-    //             $controller->setSolicitud($dataNuevo);
-
-    //             //la validación del data es practicamente el setReserva pero la hare en otra función por cuestión de tiempo.
-
-
-    //         break;    
-    //         default:
-    //             break;
-    //     }
-
-    // }
+    }
     exit();
 }

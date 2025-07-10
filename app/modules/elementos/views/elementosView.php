@@ -177,7 +177,7 @@
                         <div class="checkboxDevolutivo">
                             <p>
                                 <label>
-                                    <input class="with-gap" name="tpElementoRadio" type="radio" id="devolutivoCheckbox" />
+                                    <input class="with-gap" name="tpElemento" type="radio" id="devolutivoCheckbox" value="1"/>
                                     <span>Devolutivo</span>
                                 </label>
                             </p>
@@ -185,7 +185,7 @@
                         <div class="checkboxConsumible">
                             <p>
                                 <label>
-                                    <input class="with-gap" name="tpElementoRadio" type="radio" id="consumibleCheckbox" />
+                                    <input class="with-gap" name="tpElemento" type="radio" id="consumibleCheckbox" value="2"/>
                                     <span>Consumible</span>
                                 </label>
                             </p>
@@ -193,17 +193,17 @@
                     </div>
                     <div class="checkboxTpElemento">
                         <div class="unidadMedida">
-                            <select class="" name="undMedida" id="undMedida">
-                                <option value="default" selected>Seleccione una opción</option>
-                                <option value="unitario">Unitario</option>
-                                <option value="galon">Galon</option>
-                                <option value="caja">Caja</option>
+                            <select class="" name="elm_uni_medida" id="undMedida">
+                                <option value="0" selected>Seleccione una opción</option>
+                                <option value="1">Unitario</option>
+                                <option value="2">Caja</option>
+                                <option value="3">Galon</option>
                             </select>
-                            <label for="undMedida">Unidad Medida:</label>
+                            <label for="elm_uni_medida">Unidad Medida:</label>
                         </div>
                         <div class="cantidadElemento">
-                            <input type="text" name="cantidad" id="inputCantidad">
-                            <label for="cantidad">Cantidad:</label>
+                            <input type="text" name="elm_existencia" id="inputCantidad">
+                            <label for="elm_existencia">Cantidad:</label>
                         </div>
                     </div>
                 </div>

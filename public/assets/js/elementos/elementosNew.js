@@ -1,5 +1,5 @@
 // import {renderElement, renderElements } from "./fetchElements.js";
-import { getData } from "../utils/fetch.js";
+import { getData, sendData } from "../utils/fetch.js";
 import { closeModal, createBtn, createCheckbox, createI, initAlert, initTooltip, instanceModal, options, toastOptions, tooltipOptions } from "../utils/cases.js";
 import { validarCantidad, validatePlaca, validationRules } from "../utils/regex.js";
 
@@ -25,7 +25,6 @@ btnAddModalElements.append(iBtnAddElements);
 //El tipo de elementos, creamos esta variable para reemplazarla ya que le daremos utilidad en los filtros.
 let currentType = typeElements.all;
 
-
 // Contenedor de la placa e inputs
 const placaInputs = document.querySelector('.placaInputs');
 const inputPlaca = document.querySelector('.inputPlaca');
@@ -35,13 +34,10 @@ const contentPlaca = document.querySelector('.contentPlaca');
 // Radio button
 const nuevaPlaca = document.querySelectorAll('input[name="placaRadio"]');
 const selectedPlaca = document.querySelector('#selectPlaca');
-
 // Input de unidad de medida.
 // const undMedida = document.querySelector('#undMedida');
-const tpElemento = document.querySelectorAll('input[name="tpElementoRadio"]');
+const tpElemento = document.querySelectorAll('input[name="tpElemento"]');
 const checkboxTpElemento = document.querySelector('.checkboxTpElemento');
-
-
 const selectAreas = document.querySelector('#selectAreas');
 const selectCategorias = document.querySelector('#categoriaSelect');
 const selectMarcas = document.querySelector('#selectMarca');
@@ -50,7 +46,6 @@ const selectTpElemento = document.querySelector('#selectTpElemento');
 const searchPlaca = document.querySelector('#searchPlaca');
 // Tabla de las placas
 const tablePlaca = document.querySelector('.tableResult');
-
 // Aca voy a mostrar el resultado.
 const tbodyPlacaResult = document.querySelector('#tbodyPlacaResult');
 // Formulario de envio de elemento.
@@ -65,10 +60,13 @@ function viewPlacaInputs(status = false) {
         contentPlaca.style.flexDirection = 'column';
         inputPlaca.style.display = 'grid';
         inputSerie.style.display = 'grid';
-
         tablePlaca.style.display = "none";
         selectPlaca.style.display = 'none';
         placaAssocContent.style.display = "none"; 
+        // Elimino el atributo de la placa y de la serie asociada para evitar enviar campos vacios adicionales.
+        searchPlaca.removeAttribute('name');
+        serialPlacaAssoc.removeAttribute('name');
+
     } else {
         // Asociar placa
         contentPlaca.style.display = 'none'; 
@@ -77,7 +75,15 @@ function viewPlacaInputs(status = false) {
         selectPlaca.style.display = 'grid';
         serialPlacaAssoc.readOnly = true;
         tablePlaca.style.display = "grid";
-        placaAssocContent.style.display = "grid"; 
+        placaAssocContent.style.display = "grid";
+        
+        
+        // Agrego el name a los atributos para enviarlos en caso de que el usuario requiera Adicionar una nueva placa.
+        searchPlaca.setAttribute('name', 'searchPlaca');
+        serialPlacaAssoc.setAttribute('name', 'serialPlaca');
+
+        elm_placa.removeAttribute('name');
+        elm_serie.removeAttribute('name');
     }
 }
 
@@ -90,18 +96,18 @@ const elm_placa = document.querySelector('#elm_placa');
 function viewTpElementoInputs(status =false){
 
 
-    // IInicializar select de unidad de medida
+    // Inicializar select de unidad de medida
 
     if (status) {
         checkboxTpElemento.style.display = "grid";
-        undMedida.value = 'unitario';
+        undMedida.value = '1';
         inputCantidad.readOnly = true;
         inputCantidad.value = 1;
         // Reinicializo el elmento
         
     }else{
         checkboxTpElemento.style.display = "grid";
-        undMedida.value = 'default';
+        undMedida.value = '0';
         inputCantidad.value = '';
         inputCantidad.readOnly = false;
     }
@@ -112,14 +118,12 @@ function renderResultPlacas({ resultado = {}, status = false } = {}){
 
     if (!status || !Array.isArray(resultado) || resultado.length === 0) {
         tbodyPlacaResult.innerHTML = 'No hay coincidencias.';
-        console.log('No hay resultados válidos');
         return;
     }
     
     // Accedo a las series de la placa.
     const seriales = (!resultado) ?{} : resultado[0].seriales;
     const placa = resultado[0].elm_placa;
-
 
     let serialesDisponibles = '';
 
@@ -162,11 +166,7 @@ function renderResultPlacas({ resultado = {}, status = false } = {}){
 
                 let placaCheckbox = JSON.parse(e.target.dataset.placa);
 
-                console.log(seriesCheckbox);
-                console.log(placaCheckbox);
-
                 if (seriesCheckbox.length === 0) {
-                    console.log('Seriales vacíos');
                     serialPlacaAssoc.value = placaCheckbox + '-1';
                     return;
                 }   
@@ -203,7 +203,6 @@ function renderResultPlacas({ resultado = {}, status = false } = {}){
 // Capturo todos los inputs con el name placaRadio
 nuevaPlaca.forEach((inputRadio)=>{
     inputRadio.addEventListener('change', (e)=>{
-
         if (e.target.id === 'nuevaPlaca') {
             // Inputs para nueva placa
             viewPlacaInputs(false);
@@ -325,7 +324,6 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
     
 };
 
-
 const renderSelectAreas = async (action = '')=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
     let dataResponse = response.data;
@@ -434,8 +432,6 @@ document.addEventListener('DOMContentLoaded',  ()=>{
     });
 
 });
-
-
 
 /**
  * Filtro de elementos
@@ -572,12 +568,21 @@ elm_placa.addEventListener('change', (e)=>{
     }
 });
 
+// Enviar datos del formulario.
 addElementForm.addEventListener('submit', (e)=>{
     e.preventDefault();
     e.stopPropagation();
 
+    // Captura el valor del checkbox
+    const checkboxTp = document.querySelector('input[name="tpElementoRadio"]:checked')?.value;
+
     const formElements = new FormData(e.target);
-    console.log(Object.fromEntries(formElements));
+    const dataObj = Object.fromEntries(formElements.entries());
+    // formElements.delete('placaRadio');
+    let data = dataObj;
+    sendData("modules/elementos/controller/elementosController.php","POST","registrar",data);
+
+
 
     // Hacer una validación antes del envio, si el tipo de elemento seleccionado es consumible y en las opciones del select sea diferente de la primera y su cantidad sea mayor a 1.
 

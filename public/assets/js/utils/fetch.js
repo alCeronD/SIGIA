@@ -17,7 +17,7 @@ export const sendData = async (url, method = 'POST', parameters = {}, data = {})
         const response = await fetch(newUrl,optionsFetch);
         console.log(response);
         const json = await response.json();
-        console.log(json);
+        // console.log(json);
 
         if (!response.ok) {
             throw new Error(`Error al devolver la data ${response.status}`);
