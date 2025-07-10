@@ -1,7 +1,8 @@
 // import {renderElement, renderElements } from "./fetchElements.js";
-import { getData, sendData } from "../utils/fetch.js";
+// TODO: Depurar, este bloque del proyecto puede ser transladado a un archivo barril.
 import { closeModal, createBtn, createCheckbox, createI, initAlert, initTooltip, instanceModal, options, toastOptions, tooltipOptions } from "../utils/cases.js";
 import { validarCantidad, validatePlaca, validationRules } from "../utils/regex.js";
+import { getData, sendData } from "../utils/fetch.js";
 
 const typeElements = {
     dev: 'devolutivo',
@@ -232,6 +233,89 @@ tpElemento.forEach((tpElement)=>{
     });
 });
 
+const titleModal = document.querySelector('#titleModal');
+
+// Reiniciar formulario.
+function resetForm(form) {
+    const inputs = form.querySelectorAll('input, textarea, select');
+
+    inputs.forEach((input) => {
+        if (input.type === 'checkbox' || input.type === 'radio') {
+            input.checked = false;
+            input.disabled = false;
+
+        } else if (input.tagName === 'SELECT') {
+            // Esto no funciona como se espera, investigar
+            input.disabled = false;
+            input.selectedIndex = 0;
+
+        } else {
+            input.value = '';
+            input.readOnly = false;
+        }
+    });
+    
+
+}
+// Mostrar modal = TODO: Crear una función de un modal dinámico.
+function showModal({modal = '', type = 'registro', titulo = '', onAceptar = true, data = {}} = {}){
+    // modal.el = accedemos al elemento direcemtne del doom porque en materialize creamos una instancia del modal, no del doom directamente.
+    if (!modal || !modal.el) return;
+
+    console.log(data);
+
+    // El modal que le estamos pasando por parametro, le capturamos su formulario
+    const form = modal.el.querySelector('form');
+    // Capturo todos los inputs del formulario
+    const inputs = form.querySelectorAll('input, textarea, select');
+    if(!form) return;
+
+    const footerBtn = document.querySelector('.footerBtn');
+
+    // Llamo la función de reinicio antes de ejecutar el modal
+    resetForm(form);
+    // Reinicio por segunda ves el elemento.
+    form.reset();
+
+    switch (type) {
+        case 'registrar':
+            modal.open();
+            
+            if (onAceptar) footerBtn.style.display = "flex";
+            titleModal.innerText = titulo;
+
+        break;
+        
+            case 'info':
+                modal.open();
+                if (!onAceptar) footerBtn.style.display = "none";
+                titleModal.innerText = titulo;
+                
+            inputs.forEach((input)=>{
+                console.log(`${input}: ${input.type}`)
+
+                // Deshabilito los input tipo checkbox
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    input.disabled = true;
+                } else if (input.tagName === 'SELECT') {
+                      input.disabled = true;
+                } else {
+                    input.readOnly = true;
+                }
+            });
+
+        break;
+
+        case 'actualizar':
+            modal.open();
+        break;
+
+        default:
+            console.log('opcion no valida');
+            break;
+    }
+}
+
 /**
  * Renderiza elementos desde el backend utilizando filtros de tipo, acción y paginación.
  * Realiza una petición GET al servidor y construye dinámicamente el contenido de una tabla HTML.
@@ -267,6 +351,7 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         { action, pages: page, type }
     );
 
+
     let data = dataElements.data.data;
     pageGlobal = dataElements.data.cantidadPaginas;
     if (page > pageGlobal) {
@@ -291,7 +376,10 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         const btnEdit = createBtn('btn');
         const btnDelete = createBtn('btn');
         const btnAdd = createBtn('btn');
-        btnInfo.innerText = '1';
+        let iconInfo = createI();
+        iconInfo.innerText = 'info';
+        btnInfo.appendChild(iconInfo);
+        btnInfo.setAttribute('dataPlaca',dta.codigoElemento);
         btnEdit.innerText = '2';
         btnDelete.innerText = '3';
         btnAdd.innerText = '4';
@@ -313,18 +401,38 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
             initTooltip(tdPlaca,{...tooltipOptions,margin:-25},'Elemento por agotar existencia','buttom');     
         }
 
+        if (dta.tipoElemento === 'Consumible') {
+            tdAcciones.append(btnInfo,btnEdit,btnDelete,btnAdd);
+        }
+    
+        if (dta.tipoElemento === 'Devolutivo') {
+            tdAcciones.append(btnInfo,btnEdit,btnDelete);
+            
+        }
+
 
         tbodyElements.appendChild(tr);
-        tdAcciones.append(btnInfo,btnEdit,btnDelete,btnAdd);
         tr.append(tdPlaca,tdNombreElemento,tdCantidad,tdUnidadMedida,tdTipoElemento,tdEstadoElemento,tdAreaElemento,tdAcciones);
+
+
+        // Boton de información.
+        btnInfo.addEventListener('click', (e)=>{
+            e.preventDefault();
+            e.stopPropagation();
+            
+            showModal({modal: addElementModal, type: 'info',titulo:`Detalle elemento placa Nro ${dta.placa}`, onAceptar: false, data: dta});
+
+        });
 
 
     });
 
-    } catch (error) {
+        } catch (error) {
         throw new Error(`Error al consultar los elementos ${error}`);
                 
     }
+
+    
     
 };
 
@@ -407,39 +515,6 @@ const renderSelectPlacas = async (action = '') =>{
     return responsePlacas.data.data;
 };
 
-document.addEventListener('DOMContentLoaded',  ()=>{
-    //Inicializo los select.
-    // M.FormSelect.init(formDevolutivo.querySelectorAll('select'));
-    initTooltip(btnAddModalElements,tooltipOptions,'Agregar elemento','top');
-    //Renderizado de los elementos
-    renderElements({type: currentType});
-
-    const selectAreas = document.querySelector('#selectAreas');
-    const selectCategorias = document.querySelector('#selectCategorias');
-
-    // Inicializar select de las placas ya registradas
-    const elemsSelect = document.querySelector('#placaAssoc');
-
-    M.FormSelect.init(elemsSelect);
-    M.FormSelect.init(selectCategorias);
-    M.FormSelect.init(selectMarcas);
-    M.FormSelect.init(selectTpElemento);
-    M.FormSelect.init(undMedida);
-
-    // Estas 3 funciones puedo transformarlas en 1.
-    renderSelectAreas('areas');
-    renderSelectCategorias('categoria');
-    renderSelectMarcas('marcas');
-    // Hago esto para evitar que mi función DOOM content loader sea asincrona.
-    renderSelectPlacas('placas').then((dataResult)=>{
-        placas = dataResult;
-    });
-
-    const modals = document.querySelectorAll('.modal');
-    M.Modal.init(modals);
-
-});
-
 // Mensaje de confirmación.
 function mostrarConfirmacion(titulo, mensaje, callback) {
   // Rellenar el contenido
@@ -505,7 +580,7 @@ nextElements.addEventListener('click', (e) => {
 /**
  * Búsqueda de elementos TODO: por implementar, la consulta ya esta hecha.
  */
-let timer;
+// let timer;
 // También puedes buscar al escribir directamente
 inputBusqueda.addEventListener('keyup', function (e) {
         e.stopPropagation();
@@ -561,17 +636,6 @@ searchPlaca.addEventListener('keyup', async (e) => {
     }
 });
 
-
-
-// TODO: crear una función para poner en blanco los elementos cuando el radio button cambia de un lado a otro.
-
-
-
-/**
- * Registrar elemento.
- */
-
-
 // Validad cantidad sea digitada por numeros 
 inputCantidad.addEventListener('change', (e)=>{
     e.stopPropagation();
@@ -594,7 +658,6 @@ elm_placa.addEventListener('change', (e)=>{
         return;
     }
 });
-
 
 // Enviar datos del formulario.
 addElementForm.addEventListener('submit', (e)=>{
@@ -636,26 +699,63 @@ addElementForm.addEventListener('submit', (e)=>{
     
 });
 
-
-
     // Hacer una validación antes del envio, si el tipo de elemento seleccionado es consumible y en las opciones del select sea diferente de la primera y su cantidad sea mayor a 1.
 
 });
 
-
-//Abrir modal
+//Abrir modal Registrar elemento
 btnAddModalElements.addEventListener('click', (e)=>{
     e.stopPropagation();
     e.preventDefault();
 
-    addElementModal.open();
+    // addElementModal.open();
+    showModal({modal:addElementModal,titulo:'registrar elemento',type:'registrar'})
     
 
 });
 
+// Formulario del modal addElement
+const modalForm = document.querySelector('#addElementForm');
+document.addEventListener('DOMContentLoaded',  ()=>{
+    //Inicializo los select.
+    // M.FormSelect.init(formDevolutivo.querySelectorAll('select'));
+    initTooltip(btnAddModalElements,tooltipOptions,'Agregar elemento','top');
+    //Renderizado de los elementos
+    renderElements({type: currentType});
 
-// puedo ejecutar el callback que me permita reiniciar los campos del formulario.
-closeModal(addElementModal,cerrarModalBtn, ()=>{
-    addElementModal.reset();
+    const selectAreas = document.querySelector('#selectAreas');
+    const selectCategorias = document.querySelector('#selectCategorias');
+
+    // Inicializar select de las placas ya registradas
+    const elemsSelect = document.querySelector('#placaAssoc');
+
+    M.FormSelect.init(elemsSelect);
+    M.FormSelect.init(selectCategorias);
+    M.FormSelect.init(selectMarcas);
+    M.FormSelect.init(selectTpElemento);
+    M.FormSelect.init(undMedida);
+
+    // Estas 3 funciones puedo transformarlas en 1.
+    renderSelectAreas('areas');
+    renderSelectCategorias('categoria');
+    renderSelectMarcas('marcas');
+    // Hago esto para evitar que mi función DOOM content loader sea asincrona.
+    renderSelectPlacas('placas').then((dataResult)=>{
+        placas = dataResult;
+    });
+
+    // puedo ejecutar el callback que me permita reiniciar los campos del formulario.
+    closeModal(addElementModal,cerrarModalBtn, ()=>{
+        // Si existe el modal, traiga el selector form que se encuentra de manera interna.
+        if (addElementModal) {
+            const modalForm = addElementModal.el.document.querySelector('form');
+            resetForm(modalForm);
+            titleModal.innerText = '';
+        }
+    });
+
+    // Inicializo todos los modales.
+    const modals = document.querySelectorAll('.modal');
+    M.Modal.init(modals);
 
 });

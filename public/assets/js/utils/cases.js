@@ -388,6 +388,7 @@ export const setReserva = (attribute = "", data = {}, elementos = {},target,acti
   }
 };
 
+// Este checkbox hace parte de el checkbox de el elemento que se debe de asociar a la placa en el requerimiento registrar elemento.
 export const createCheckbox = (seriales, placa) => {
   let p = document.createElement('p');
   let label = document.createElement('label');
