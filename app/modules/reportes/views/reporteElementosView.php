@@ -105,6 +105,7 @@
   </div>
 </div>
 
+<!-- <script type="module" src="../public/assets/js/reportes/reportes.js"></script> Organizar para hacer las peticiones desde el fetch-->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   M.FormSelect.init(document.querySelectorAll('select'));

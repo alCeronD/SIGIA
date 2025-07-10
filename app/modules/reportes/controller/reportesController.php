@@ -25,7 +25,7 @@ class ReportesController {
         $objEstElm = new ReportesModel();
     
         $estados = $objEstElm->getEstadosReport();
-        $tipos = $objEstElm->tipoElemento(); // ← aquí traemos los tipos
+        $tipos = $objEstElm->tipoElemento();
     
         $estadoSeleccionado = $_GET['estadoElemento'] ?? '';
         $tipoSeleccionado = $_GET['tipoElemento'] ?? '';
