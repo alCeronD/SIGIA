@@ -246,31 +246,31 @@
 </div>
 
 <!-- Modal Ver Más -->
-<div id="modalVerMas" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:2000;">
-    <div style="background:#fff; padding:20px; border-radius:8px; width:90%; max-width:600px; position:relative;">
-        <span class="close-btn" id="modalCerrar" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer;">&times;</span>
+<div id="modalVerMas" class="modal">
+    <div>
+        <button id="modalCerrarVerMas">
+            <span class="close-btn" id="" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer;">&times;</span>
+        </button>
         <h4>Detalles del Elemento</h4>
         <table>
             <tbody>
                 <tr>
                     <th>Código</th>
-                    <td id="modalCod"></td>
-                </tr>
-                <tr>
-                    <th>Placa</th>
                     <td id="modalPlaca"></td>
                 </tr>
                 <tr>
+                    <th>Placa</th>
+                    <td id="modalSerie"></td>
+                </tr>
+                <tr>
                     <th>Nombre</th>
-                    <td id="modalNombre"></td>
+                    <td id="modalNombreElemento"></td>
                 </tr>
                 <tr>
                     <th>Existencia</th>
-                    <td id="modalExistencia"></td>
+                    <td id="modalCantidad"></td>
                 </tr>
                 <tr>
-                    <th>Unidad de Medida</th>
-                    <td id="modalUniMedida"></td>
                 </tr>
                 <tr>
                     <th>Tipo de Elemento</th>
@@ -278,7 +278,7 @@
                 </tr>
                 <tr>
                     <th>Estado</th>
-                    <td id="modalEstado"></td>
+                    <td id="modalEstadoElemento"></td>
                 </tr>
                 <tr>
                     <th>Área</th>

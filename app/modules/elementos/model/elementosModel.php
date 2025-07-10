@@ -161,8 +161,12 @@ class ElementoModelo
         $baseSql = "SELECT 
         e.elm_cod AS codigoElemento,
         e.elm_placa AS placa,
+        e.elm_serie AS serie,
         e.elm_nombre AS nombreElemento,
         e.elm_existencia AS cantidad,
+        e.elm_sugerencia AS sugerenciaIngresada,
+        e.elm_observacion AS observacionElemento,
+        e.elm_fecha_registro AS fechaRegistro,
         ar.ar_nombre AS nombreArea,
         tpE.tp_el_cod AS codTipoElemento,
         tpE.tp_el_nombre AS tipoElemento,

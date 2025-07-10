@@ -262,16 +262,13 @@ function showModal({modal = '', type = 'registro', titulo = '', onAceptar = true
     // modal.el = accedemos al elemento direcemtne del doom porque en materialize creamos una instancia del modal, no del doom directamente.
     if (!modal || !modal.el) return;
 
-    console.log(data);
 
-    // El modal que le estamos pasando por parametro, le capturamos su formulario
-    const form = modal.el.querySelector('form');
-    // Capturo todos los inputs del formulario
-    const inputs = form.querySelectorAll('input, textarea, select');
+   
     if(!form) return;
 
     const footerBtn = document.querySelector('.footerBtn');
-
+             // El modal que le estamos pasando por parametro, le capturamos su formulario
+    const form = modal.el.querySelector('form');
     // Llamo la función de reinicio antes de ejecutar el modal
     resetForm(form);
     // Reinicio por segunda ves el elemento.
@@ -285,8 +282,10 @@ function showModal({modal = '', type = 'registro', titulo = '', onAceptar = true
             titleModal.innerText = titulo;
 
         break;
-        
+
             case 'info':
+                    // Capturo todos los inputs del formulario
+    const inputs = form.querySelectorAll('input, textarea, select');
                 modal.open();
                 if (!onAceptar) footerBtn.style.display = "none";
                 titleModal.innerText = titulo;
@@ -315,6 +314,9 @@ function showModal({modal = '', type = 'registro', titulo = '', onAceptar = true
             break;
     }
 }
+
+// modal ver detalle
+const modalVerMas = instanceModal('#modalVerMas', options);
 
 /**
  * Renderiza elementos desde el backend utilizando filtros de tipo, acción y paginación.
@@ -419,22 +421,40 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         btnInfo.addEventListener('click', (e)=>{
             e.preventDefault();
             e.stopPropagation();
-            
-            showModal({modal: addElementModal, type: 'info',titulo:`Detalle elemento placa Nro ${dta.placa}`, onAceptar: false, data: dta});
 
+            modalVerMas.open();
+
+            const dataToTableMap = {
+            codigoElemento: 'modalPlaca',
+            serie: 'modalSerie',
+            nombreElemento: 'modalNombreElemento',
+            cantidad: 'modalCantidad',
+            tipoElemento: 'modalTipo',
+            estadoElemento: 'modalEstadoElemento',
+            nombreArea: 'modalArea'
+            };
+
+            // Ciclo el mapa creado y valido la info del campo cantidad, si este existe y su valor es 0, el text content mostrar la palabra sin existencia.
+            Object.entries(dataToTableMap).forEach(([dataKey, elementId]) => {
+                const cell = document.getElementById(elementId);
+                if (cell && dta[dataKey] !== undefined) {
+                    if (dataKey === 'cantidad' && dta[dataKey] === 0) {
+                        cell.textContent = 'Sin existencia';
+                    } else {
+                        cell.textContent = dta[dataKey];
+                    }
+                }
+            });
         });
 
-
     });
-
         } catch (error) {
         throw new Error(`Error al consultar los elementos ${error}`);
                 
-    }
-
-    
-    
+    } 
 };
+
+
 
 const renderSelectAreas = async (action = '')=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
@@ -708,10 +728,7 @@ btnAddModalElements.addEventListener('click', (e)=>{
     e.stopPropagation();
     e.preventDefault();
 
-    // addElementModal.open();
-    showModal({modal:addElementModal,titulo:'registrar elemento',type:'registrar'})
-    
-
+    addElementModal.open();
 });
 
 // Formulario del modal addElement
@@ -744,18 +761,25 @@ document.addEventListener('DOMContentLoaded',  ()=>{
         placas = dataResult;
     });
 
-    // puedo ejecutar el callback que me permita reiniciar los campos del formulario.
-    closeModal(addElementModal,cerrarModalBtn, ()=>{
-        // Si existe el modal, traiga el selector form que se encuentra de manera interna.
-        if (addElementModal) {
-            const modalForm = addElementModal.el.document.querySelector('form');
-            resetForm(modalForm);
-            titleModal.innerText = '';
-        }
-    });
 
     // Inicializo todos los modales.
     const modals = document.querySelectorAll('.modal');
     M.Modal.init(modals);
 
 });
+
+ // puedo ejecutar el callback que me permita reiniciar los campos del formulario.
+closeModal(addElementModal,cerrarModalBtn, ()=>{
+  // Si existe el modal, traiga el selector form que se encuentra de manera interna.
+  if (addElementModal) {
+    const modalForm = addElementModal.el.querySelector("form");
+    console.log(modalForm);
+    resetForm(modalForm);
+    modalForm.reset();
+    // resetForm(modalForm);
+    // titleModal.innerText = '';
+  }
+});
+
+const modalCerrarVerMas = document.querySelector('#modalCerrarVerMas');
+closeModal(modalVerMas,modalCerrarVerMas);
