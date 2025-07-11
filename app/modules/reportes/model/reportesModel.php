@@ -213,26 +213,27 @@ class ReportesModel{
      */
     public function consultEntSal($tipo = '', $fechaInicio = '', $fechaFin = '')
     {
-        /* ---- SELECT con los campos que necesitas en la vista ---- */
-            $sql = "SELECT 
-                e.elm_cod               AS codigoElemento,
-                e.elm_nombre            AS nombreElemento,
-                e.elm_placa             AS placa,
-                es.ent_sal_cantidad     AS cantidad,
-                tm.cod_tp_nombre        AS tipoMovimiento,  -- ← Nombre del tipo de movimiento
-                es.ent_fech_registro    AS fechaMovimiento,
-                tp.tp_el_nombre         AS tipoElemento
-            FROM entradas_salidas es
-            INNER JOIN elementos e          ON e.elm_cod = es.ent_sal_cod_elemtn
-            INNER JOIN tipo_elemento tp     ON tp.tp_el_cod = e.elm_cod_tp_elemento
-            INNER JOIN tipo_movimiento tm   ON tm.cod_tp = es.entr_tp_movmnt
-            WHERE 1 = 1";
+
+        $sql = "SELECT
+                  e.elm_cod            AS codigoElemento,
+                  e.elm_nombre         AS nombreElemento,
+                  e.elm_placa          AS placa,
+                  es.ent_sal_cantidad  AS cantidad,
+                  tm.cod_tp_nombre     AS tipoMovimiento,   
+                  es.ent_fech_registro AS fechaMovimiento,
+                  tp.tp_el_nombre      AS tipoElemento
+                FROM entradas_salidas es
+                INNER JOIN elementos      e  ON e.elm_cod = es.ent_sal_cod_elemtn
+                INNER JOIN tipo_elemento  tp ON tp.tp_el_cod = e.elm_cod_tp_elemento
+                INNER JOIN tipo_movimiento tm ON tm.cod_tp   = es.entr_tp_movmnt 
+                WHERE 1 = 1";
+        
 
     
         /* ---- filtros dinámicos ---- */
         $types  = '';  $params = [];
     
-        /* rango de fechas */
+       
         if ($fechaInicio !== '' && $fechaFin !== '') {
             $sql   .= " AND DATE(es.ent_fech_registro) BETWEEN ? AND ?";
             $types .= 'ss';
@@ -249,7 +250,6 @@ class ReportesModel{
     
         $sql .= " ORDER BY es.ent_fech_registro DESC";
     
-        /* ---- ejecución MySQLi ---- */
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) { return []; }
     

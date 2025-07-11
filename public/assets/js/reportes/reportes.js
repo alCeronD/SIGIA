@@ -1,98 +1,121 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
+
   M.FormSelect.init(document.querySelectorAll('select'));
-// console.log("HolaMundo");
-  const selectTipo = document.getElementById('tipoElemento');
+
+  /* ---------- Rutas inyectadas desde PHP ---------- */
+  const R = window.RUTAS_REPORTE;   // { filtrarElementos, filtrarTrazabilidad, reporteExcel, reporteTrazabilidad }
+
+  const selectTipo   = document.getElementById('tipoElemento');
   const selectEstado = document.getElementById('estadoElemento');
+
+  const tablaHead = document.getElementById('tabla-previa-head');
   const tablaBody = document.getElementById('tabla-elementos-body');
-  const paginacion = document.getElementById('paginacion-elementos');
-  const btnDescargar = document.getElementById('btnDescargar');
+  const pager     = document.getElementById('paginacion-elementos');
 
-  let elementos = [];
-  let visibles = [];
-  const itemsPorPagina = 10;
+  const btnExcelElementos  = document.getElementById('btnDescargar');
+  const btnExcelMovimientos= document.getElementById('btnDescargarTrazabilidad');
 
-  function mostrarPagina(pagina) {
-    const inicio = (pagina - 1) * itemsPorPagina;
-    const fin = inicio + itemsPorPagina;
+  const rbElementos    = document.getElementById('btnFiltroElementos');
+  const rbMovimientos  = document.getElementById('btnFiltroTrazabilidad');
 
-    tablaBody.innerHTML = '';
-    visibles.slice(inicio, fin).forEach(e => {
-      tablaBody.innerHTML += `
+  const filtroElementos  = document.getElementById('filtroElementos');
+  const filtroMovs       = document.getElementById('filtroTrazabilidad');
+
+  const trzTipo        = document.getElementById('trzTipoElemento');
+  const trzFechaInicio = document.getElementById('trzFechaInicio');
+  const trzFechaFin    = document.getElementById('trzFechaFin');
+  const btnBuscarMovs  = document.getElementById('btnBuscarTrazabilidad');
+
+  /* ---------- Estado ---------- */
+  let data  = [];
+  let page  = 1;
+  const per = 10;
+
+  /* ---------- Helpers ---------- */
+  const header = isMov =>
+    `<tr>
+       <th>#</th><th>Nombre</th><th>Placa</th>
+       ${isMov ? '<th>Tipo movimiento</th>' : ''}
+       <th>Existencia</th>
+       <th>${isMov ? 'Fecha' : 'Estado'}</th>
+     </tr>`;
+
+  const pintar = () => {
+    const inicio = (page - 1) * per;
+    const fin    = inicio + per;
+    tablaBody.innerHTML = data
+      .slice(inicio, fin)
+      .map(d => `
         <tr>
-          <td>${e.codigoElemento}</td>
-          <td>${e.nombreElemento}</td>
-          <td>${e.placa || '—'}</td>
-          <td>${e.cantidad || 0}</td>
-          <td>${e.estadoElemento}</td>
-        </tr>`;
+          <td>${d.codigoElemento}</td>
+          <td>${d.nombreElemento}</td>
+          <td>${d.placa || '—'}</td>
+          ${rbMovimientos.checked ? `<td>${d.tipoMovimiento}</td>` : ''}
+          <td>${d.cantidad || 0}</td>
+          <td>${rbMovimientos.checked ? d.fechaMovimiento : d.estadoElemento}</td>
+        </tr>`
+      ).join('') || `<tr><td colspan="${rbMovimientos.checked?6:5}" class="red-text">No se encontraron registros</td></tr>`;
+  };
+
+  const paginar = () => {
+    const total = Math.ceil(data.length / per);
+    pager.innerHTML = [...Array(total).keys()].map(i =>
+      `<li data-pag='${i+1}' class='waves-effect ${i+1===page?'active':''}'>
+         <a href="#!">${i+1}</a></li>`).join('');
+    pager.querySelectorAll('li').forEach(li=>{
+      li.onclick=e=>{e.preventDefault();page=+li.dataset.pag;pintar();paginar();};
     });
+  };
 
-    document.querySelectorAll('#paginacion-elementos li').forEach(el => el.classList.remove('active'));
-    const activo = document.querySelector(`#paginacion-elementos li[data-pagina="${pagina}"]`);
-    if (activo) activo.classList.add('active');
-  }
+  /* ---------- Fetch wrappers ---------- */
+  const fetchJSON = (url, fd) =>
+    fetch(url,{method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}})
+      .then(r=>{if(!r.ok)throw r.status; return r.json();});
 
-    //Paginacion
-  function generarPaginacion(totalPaginas) {
-    paginacion.innerHTML = '';
+  const cargarElementos = () => {
+    const fd = new FormData();
+    fd.append('tipoElemento',   selectTipo.value);
+    fd.append('estadoElemento', selectEstado.value);
+    fetchJSON(R.filtrarElementos, fd)
+      .then(res=>{
+        rbElementos.checked = true;
+        tablaHead.innerHTML = header(false);
+        data = res; page = 1; pintar(); paginar();
+        btnExcelElementos.href = `${R.reporteExcel}&tipoElemento=${encodeURIComponent(selectTipo.value)}&estadoElemento=${encodeURIComponent(selectEstado.value)}`;
+      })
+      .catch(()=>M.toast({html:'Error al cargar elementos'}));
+  };
 
-    for (let i = 1; i <= totalPaginas; i++) {
-      const li = document.createElement('li');
-      li.classList.add('waves-effect');
-      li.setAttribute('data-pagina', i);
-      li.innerHTML = `<a href="#!">${i}</a>`;
-      li.addEventListener('click', (e) => {
-        e.preventDefault();
-        mostrarPagina(i);
-      });
-      paginacion.appendChild(li);
+  const cargarMovimientos = () => {
+    if(!trzFechaInicio.value || !trzFechaFin.value){
+      M.toast({html:'Seleccione rango de fechas'});
+      return;
     }
+    const fd = new FormData();
+    fd.append('tipoElemento', trzTipo.value);
+    fd.append('fechaInicio',  trzFechaInicio.value);
+    fd.append('fechaFin',     trzFechaFin.value);
+    fetchJSON(R.filtrarTrazabilidad, fd)
+      .then(res=>{
+        rbMovimientos.checked=true;
+        tablaHead.innerHTML = header(true);
+        data=res; page=1; pintar(); paginar();
+        btnExcelMovimientos.href =
+          `${R.reporteTrazabilidad}&tipoElemento=${encodeURIComponent(trzTipo.value)}`
+          + `&fi=${encodeURIComponent(trzFechaInicio.value)}&ff=${encodeURIComponent(trzFechaFin.value)}`;
+      })
+      .catch(()=>M.toast({html:'Error al cargar entradas/salidas'}));
+  };
 
-    if (totalPaginas > 0) {
-      mostrarPagina(1);
-    } else {
-      tablaBody.innerHTML = `<tr><td colspan="5" class="red-text">No se encontraron elementos</td></tr>`;
-    }
-  }
+  /* ---------- Listeners ---------- */
+  selectTipo.onchange   = ()=>rbElementos.checked && cargarElementos();
+  selectEstado.onchange = ()=>rbElementos.checked && cargarElementos();
+  btnBuscarMovs.onclick= cargarMovimientos;
 
-    //Consulta y carga de elementos por estado
-  function cargarElementos(tipo, estado) {
-    const url = `<?= getUrl('reportes', 'reportes', 'filtrarElementosAjax', false, 'dashboard'); ?>`;
-    const formData = new FormData();
-    formData.append('estadoElemento', estado);
-    formData.append('tipoElemento', tipo);
+  rbElementos.onchange  = () => { filtroElementos.style.display='';filtroMovs.style.display='none';cargarElementos();};
+  rbMovimientos.onchange= () => { filtroElementos.style.display='none';filtroMovs.style.display='';tablaHead.innerHTML=header(true);tablaBody.innerHTML='';pager.innerHTML='';};
 
-    fetch(url, {
-      method: 'POST',
-      body: formData,
-      headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    })
-    .then(res => {
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json();
-    })
-    .then(data => {
-      elementos = data;
-      visibles = [...elementos];
-      const totalPaginas = Math.ceil(visibles.length / itemsPorPagina);
-      generarPaginacion(totalPaginas);
-
-      btnDescargar.href = `<?= getUrl('reportes', 'reportes', 'generarReporteExcel'); ?>&tipoElemento=${encodeURIComponent(tipo)}&estadoElemento=${encodeURIComponent(estado)}`;
-    })
-    .catch(err => {
-      console.error('Error al cargar elementos:', err);
-      tablaBody.innerHTML = `<tr><td colspan="5" class="red-text">Error al cargar elementos</td></tr>`;
-    });
-  }
-
-  // Inicial cargar todos
-  cargarElementos('', '');
-
-  selectTipo.addEventListener('change', () => {
-    cargarElementos(selectTipo.value, selectEstado.value);
-  });
-
-  selectEstado.addEventListener('change', () => {
-    cargarElementos(selectTipo.value, selectEstado.value);
-  });
+  /* ---------- Inicio ---------- */
+  tablaHead.innerHTML = header(false);
+  cargarElementos();
 });

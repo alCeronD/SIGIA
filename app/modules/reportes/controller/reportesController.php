@@ -39,17 +39,17 @@ class ReportesController {
         $fechaFin    = $_GET['ff'] ?? '';   
     
            
-        /* Si trae fechas “Trazabilidad” */
+        /* Si trae fechas  */
         if ($fechaInicio !== '' && $fechaFin !== '') {
             $elementos     = []; 
             $trazabilidad  = $reportMdl->consultEntSal($tipoSeleccionado, $fechaInicio, $fechaFin);
         }
-        /* Si se llama al filtro elementos */
+        /* Si vienen filtros de elementos */
         elseif ($estadoSeleccionado !== '' || $tipoSeleccionado !== '') {
             $trazabilidad = []; // no cargamos movimientos
             $elementos    = $reportMdl->obtenerElementosFiltrados($tipoSeleccionado, $estadoSeleccionado);
         }
-        /* sin filtrocarga todo */
+        /* Sin filtros: carga todo (vista por defecto) */
         else {
             $trazabilidad = [];
             $elementos    = $objElm->obtenerElemento();
@@ -132,7 +132,7 @@ class ReportesController {
     
     public function generarReporteTrazabilidad()
         {
-            // 1.  Filtros recibidos por GET
+            //Filtros recibidos por GET
             $tipo        = $_GET['tipoElemento'] ?? '';
             $fechaInicio = $_GET['fi'] ?? '';
             $fechaFin    = $_GET['ff'] ?? '';
@@ -141,11 +141,11 @@ class ReportesController {
                 exit('Rango de fechas no válido.');
             }
         
-            // 2.  Consultar datos
+            //Consultar datos
             $modelo   = new ReportesModel();
             $registros = $modelo->consultEntSal($tipo, $fechaInicio, $fechaFin);
         
-            // 3.  Crear Excel
+            //Crear Excel
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
         
