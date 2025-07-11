@@ -286,6 +286,8 @@ const modalVerMas = instanceModal('#modalVerMas', options);
 const modalEditarElemento = instanceModal('#modalEditarElemento', options);
 
 
+// modal de confirmación
+const modalConfirmacion = document.querySelector('#modalConfirmacion');
 /**
  * Renderiza elementos desde el backend utilizando filtros de tipo, acción y paginación.
  * Realiza una petición GET al servidor y construye dinámicamente el contenido de una tabla HTML.
@@ -348,7 +350,6 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         const btnEdit = createBtn('btn');
         addClassItem(btnEdit, {cyan: "cyan", blueGrey:"blue-grey"});
 
-        console.log(dta);
         
         const btnDelete = createBtn('btn');
         const btnAdd = createBtn('btn');
@@ -359,13 +360,18 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         iconInfo.innerText = 'info';
         iconDelete.innerText = 'delete_sweep';
         btnInfo.appendChild(iconInfo);
-        btnInfo.setAttribute('dataPlaca',dta.codigoElemento);
+        btnInfo.setAttribute('dataPlaca',dta.codEstadoElemento);
         btnEdit.appendChild(iconUpdate);
         btnDelete.appendChild(iconDelete);
+        btnDelete.setAttribute('data-Cod', dta.codigoElemento);
+        btnDelete.setAttribute('data-Status', dta.codEstadoElemento);
         addClassItem(btnDelete, {deepOrangeDarken:"deep-orange darken-1"});
         btnAdd.innerText = '4';
 
         //TODO: esto se puede mejorar implementando la información de manera dinámica.
+        /**
+         * buscar como funciona document.createDocumentFragment
+         */
         tdPlaca.innerText = dta.placa;
         tdCantidad.innerText = dta.cantidad;
         tdCodigoElemento.innerText = dta.codigoElemento;
@@ -387,8 +393,6 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         
     
         if (dta.tipoElemento === 'Devolutivo') tdAcciones.append(btnInfo,btnEdit,btnDelete);
-
-
 
         tbodyElements.appendChild(tr);
         tr.append(tdPlaca,tdNombreElemento,tdCantidad,tdUnidadMedida,tdTipoElemento,tdEstadoElemento,tdAreaElemento,tdAcciones);
@@ -424,6 +428,7 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
             });
         });
 
+        // Botón de edición.
         btnEdit.addEventListener('click', async (e)=>{
             e.stopPropagation();
             e.preventDefault();
@@ -471,12 +476,74 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
 
         });
 
+        // boton de inhabilitar elemento
+        btnDelete.addEventListener('click', (e)=>{
+            e.preventDefault();
+            e.stopPropagation();
+            console.log(e.target);
+            const btn = e.currentTarget;
+
+            mostrarConfirmacion('Inhabilitar elemento',"¿Esta seguro de inhabilitar este elemento? no esta disponibiel para su uso", (response)=>{
+
+                if (!response) {
+                    console.log('hello world');
+                    initAlert('Proceso cancelado', 'info', toastOptions);
+                    return;   
+                }else{
+
+                    try {
+                
+                        const dataCod = parseInt(btn.dataset.cod) || null;
+                        const dataStatus = parseInt(btn.dataset.status) || null;
+
+                        if (parseInt(dataStatus) === 3) {
+                            initAlert('El cambio de estado del elemento debe ser validado desde las reservas', 'info',toastOptions);
+                            return;
+                        }
+
+                        const data = {
+                            elm_cod: dataCod,
+                            elm_cod_estado: dataStatus
+                        };
+
+
+                    let responseStatus = sendData("modules/elementos/controller/elementosController.php", 'PUT','statusElement',data);
+
+                    responseStatus.then((resultUpdate)=>{
+                        let messageData = resultUpdate.data.message;
+                        let status = resultUpdate.data.status;
+                        // TODO: arreglar, este icono debe de cambiar cuando el elemento se inhabilite.
+                        if (status) {
+                            const icon = btn.querySelector('i');
+                            if (icon) {
+                                icon.innerText = 'compare_arrows';
+                            }
+                            initAlert(messageData,'success',toastOptions);
+                        }
+                        renderElements({page:pageElement});
+                    });
+
+                } catch (error) {
+                    console.warn("proceso "+error);
+                }
+
+
+                }
+
+                
+            });
+
+        });
+
     });
-        } catch (error) {
+
+     } catch (error) {
         throw new Error(`Error al consultar los elementos ${error}`);
 
     }
+       
 };
+
 
 const renderSelectAreas = async (action = '', inputSelect)=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
@@ -781,9 +848,6 @@ document.addEventListener('DOMContentLoaded',  ()=>{
     M.FormSelect.init(selectTpElemento);
     M.FormSelect.init(undMedida);
 
-    console.log(selectCategorias)
-
-
     // Inicializo todos los modales.
     const modals = document.querySelectorAll('.modal');
     M.Modal.init(modals);
@@ -816,8 +880,9 @@ editarElementForm.addEventListener('submit', (e)=>{
                     }
                     initAlert('recurso actualizado con exito', 'success',toastOptions);
                     modalEditarElemento.close();
-                    // renderElements({type});
-
+                    // renderizo los elementos en base a la página en la que se encuentra.
+                    renderElements({page:pageElement});
+                    
                 });
             } catch (error) {
                 throw new Error("Error al actualizar el recurso.");
@@ -825,7 +890,8 @@ editarElementForm.addEventListener('submit', (e)=>{
             }
             
         }else{
-            console.warn('proceso cancelado');
+            initAlert('Proceso cancelado','info', toastOptions);
+            modalEditarElemento.close();
         }
 
     });
@@ -844,6 +910,7 @@ closeModal(addElementModal,cerrarModalBtn, ()=>{
     // titleModal.innerText = '';
   }
 });
+
 
 const modalCerrarVerMas = document.querySelector('#modalCerrarVerMas');
 closeModal(modalVerMas,modalCerrarVerMas);

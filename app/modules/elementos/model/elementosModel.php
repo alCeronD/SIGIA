@@ -171,7 +171,7 @@ class ElementoModelo
         ar.ar_cod as codArea,
         tpE.tp_el_cod AS codTipoElemento,
         tpE.tp_el_nombre AS tipoElemento,
-        es_e.est_nombre AS codEstadoElemento,
+        es_e.est_el_cod  AS codEstadoElemento,
         es_e.est_nombre AS estadoElemento,
         tpU.nombre_tp_uni AS nombreUnidad,
         tpU.cod_tp_uni AS codUnidadMedida
@@ -378,7 +378,13 @@ class ElementoModelo
     }
     
     // Alternar estado entre Disponible (1) e Inhabilitado (4)
-    public function toggleEstadoElemento($id)
+    /**
+     * Summary of toggleEstadoElemento cambiar el estado del elemento desde el modulo de ELEMENTOS.
+     * @param int $cod
+     * @param int $status
+     * @return array{message: string, status: bool|array{messsage: string, status: bool}|bool}
+     */
+    public function toggleEstadoElemento(int $cod = 0, int $status = 0)
     {
         $estadoDisponible = 1;
         $estadoInhabilitado = 4;
@@ -386,10 +392,12 @@ class ElementoModelo
         $sql = "SELECT elm_cod_estado FROM elementos WHERE elm_cod = ?";
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
-            echo "Error en prepare: " . $this->conn->error;
-            return false;
+            return [
+                'messsage'=> "error al preprar consulta ".$this->conn->error,
+                'status'=>false
+            ];
         }
-        $stmt->bind_param("i", $id);
+        $stmt->bind_param("i", $cod);
         $stmt->execute();
         $resultado = $stmt->get_result();
 
@@ -410,11 +418,20 @@ class ElementoModelo
                 echo "Error en prepare: " . $this->conn->error;
                 return false;
             }
-            $stmtUpdate->bind_param("ii", $nuevoEstado, $id);
-            return $stmtUpdate->execute();
+            $stmtUpdate->bind_param("ii", $nuevoEstado, $cod);
+            if (!$stmtUpdate->execute()) {
+                return [
+                    'message'=> "error al actualizar el registro".$stmtUpdate->error,
+                    'status'=> false
+                ];
+            }
+            
         }
 
-        return false;
+        return [
+            'message'=> $nuevoEstado === 1 ? "elemento disponible" : "elemento inhabilitado",
+            'status' => true
+        ];
     }
     // Buscar elementos activos (devolutivo o consumible)//
     public function searchElements($tipoElemento = 1) {
@@ -444,6 +461,7 @@ class ElementoModelo
         return $elementos;
     }
 
+    // Hace parte de lógica solicitud prestamo, con esta función se actualiza el estado de en reserva a cancelado.
     public function actualizarEstadoElemento($id, $nuevo_estado)
     {
         $sql = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";

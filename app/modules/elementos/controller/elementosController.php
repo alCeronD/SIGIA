@@ -139,19 +139,20 @@ class ElementosController
         
     }
 
-    public function cambiarEstadoElemento()
+    public function cambiarEstadoElemento(array $data = [])
     {
-        if (isset($_GET['elm_cod'])) {
-            $id = $_GET['elm_cod'];
-            $exito = $this->modeloElemento->toggleEstadoElemento($id);
+        if (isset($data['elm_cod']) && isset($data['elm_cod_estado'])) {
+            $cod = (int) $data['elm_cod'];
+            $id = (int) $data['elm_cod_estado'];
+            $exito = $this->modeloElemento->toggleEstadoElemento($cod, $id);
 
-            if ($exito) {
-                echo "<script>alert('Estado del elemento cambiado correctamente'); window.location.href = '" . getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') . "';</script>";
-            } else {
-                echo "<div class='alert alert-danger text-center'>Error al cambiar estado del elemento.</div>";
+            if (!$exito) {
+               fail('Error al actualizar el elemento', $exito);
             }
-        } else {
-            echo "<div class='alert alert-danger text-center'>No se especificó el elemento para cambiar estado.</div>";
+            success('recurso actualizado',$exito);
+        }else{
+            // en caso de quie no se mande ningun elemento, devolver respuesta.
+            return;
         }
     }
 
@@ -265,8 +266,10 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                     $elementosController->editarElemento($data);
                 }
                 break;
-            case 'label':
-                # code...
+            case 'statusElement':
+                if (method_exists($elementosController, 'cambiarEstadoElemento')) {
+                    $elementosController->cambiarEstadoElemento($data);
+                }
                 break;
             default:
                 # code...
