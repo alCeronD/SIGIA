@@ -1,3 +1,8 @@
+:root{
+  --btnEdit: #007D78;
+
+}
+
 
 /* ----------------- Contenedor General ----------------- */
 .container-fluid.px-4 {
@@ -70,6 +75,17 @@
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
+}
+
+.accionesElements{
+    gap: 0.3rem;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.infoColor{
+    background-color: var(--btnEdit) !important;
+    color: var(--white) !important;
 }
 
 /* ----------------- Botones de Acción ----------------- */

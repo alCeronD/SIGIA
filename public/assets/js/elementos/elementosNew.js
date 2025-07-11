@@ -1,6 +1,5 @@
-// import {renderElement, renderElements } from "./fetchElements.js";
 // TODO: Depurar, este bloque del proyecto puede ser transladado a un archivo barril.
-import { closeModal, createBtn, createCheckbox, createI, initAlert, initTooltip, instanceModal, options, toastOptions, tooltipOptions } from "../utils/cases.js";
+import { addClassItem, closeModal, createBtn, createCheckbox, createI, initAlert, initTooltip, instanceModal, options, toastOptions, tooltipOptions } from "../utils/cases.js";
 import { validarCantidad, validatePlaca, validationRules } from "../utils/regex.js";
 import { getData, sendData } from "../utils/fetch.js";
 
@@ -377,7 +376,9 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         let tdUnidadMedida = document.createElement('td');
         let tdTipoElemento = document.createElement('td');
         let tdAcciones = document.createElement('td');
+        tdAcciones.setAttribute('class', 'accionesElements');
         const btnInfo = createBtn('btn');
+        addClassItem(btnInfo,{"infoColor": "infoColor"});
         const btnEdit = createBtn('btn');
         const btnDelete = createBtn('btn');
         const btnAdd = createBtn('btn');
@@ -486,8 +487,8 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
     });
         } catch (error) {
         throw new Error(`Error al consultar los elementos ${error}`);
-                
-    } 
+
+    }
 };
 
 const renderSelectAreas = async (action = '', inputSelect)=>{
@@ -514,7 +515,6 @@ const renderSelectAreas = async (action = '', inputSelect)=>{
     }
 }
 const categoriaSelect = document.querySelector('#categoriaSelect');
-
 const renderSelectCategorias = async (action = '',inputSelect)=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: 'categoria'});
     let categorias = response.data;
@@ -800,6 +800,25 @@ document.addEventListener('DOMContentLoaded',  ()=>{
     // Inicializo todos los modales.
     const modals = document.querySelectorAll('.modal');
     M.Modal.init(modals);
+
+});
+
+// Formulario del modal editarElemento
+const editarElementForm = document.querySelector('#editarElementForm');
+editarElementForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    mostrarConfirmacion('Guardar cambios','¿Esta seguro de guardar los cambios?', (respuesta)=>{
+        if (respuesta) {
+            const formUpdate = new FormData(e.target);
+            let dataUpdate = Object.fromEntries(formUpdate);
+            console.log(dataUpdate);
+            console.log(e.target)
+        }else{
+            console.log('proceso cancelado');
+        }
+
+    });
 
 });
 

@@ -1,8 +1,8 @@
 <div class="container-fluid px-4">
     <div class="row valign-wrapper" style="margin-bottom: 20px;">
         <!-- Título -->
-        <div class="col s12 m6">
-            <h5 style="margin: 0;">Listado de Elementos</h5>
+        <div class="col s12 m7">
+            <h5 style="margin: 0;">Gestión de elementos</h5>
         </div>
 
         <!-- Botón de registro -->
@@ -230,117 +230,7 @@
     </div>
 </div>
 
-
-<!-- Modal confirmación -->
-<!-- Sive para validar confirmación del un acción o no. -->
-<div id="modalConfirmacion" class="modal">
-  <div class="modal-content">
-    <h5 id="modalConfirmacionTitulo">Confirmación</h5>
-    <p id="modalConfirmacionMensaje">¿Estás seguro de realizar esta acción?</p>
-  </div>
-  <!-- el ! significa un elemento de referencia hacia javascript. -->
-  <div class="modal-footer">
-    <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="btnCancelar">Cancelar</a>
-    <a href="#!" class="modal-close waves-effect waves-red btn" id="btnAceptar">Aceptar</a>
-  </div>
-</div>
-
-<!-- Modal Ver Más -->
-<div id="modalVerMas" class="modal">
-    <div>
-        <button id="modalCerrarVerMas">
-            <span class="close-btn" id="" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer;">&times;</span>
-        </button>
-        <h4>Detalles del Elemento</h4>
-        <table>
-            <tbody>
-                <tr>
-                    <th>Código</th>
-                    <td id="modalPlaca"></td>
-                </tr>
-                <tr>
-                    <th>Placa</th>
-                    <td id="modalSerie"></td>
-                </tr>
-                <tr>
-                    <th>Nombre</th>
-                    <td id="modalNombreElemento"></td>
-                </tr>
-                <tr>
-                    <th>Existencia</th>
-                    <td id="modalCantidad"></td>
-                </tr>
-                <tr>
-                </tr>
-                <tr>
-                    <th>Tipo de Elemento</th>
-                    <td id="modalTipo"></td>
-                </tr>
-                <tr>
-                    <th>Estado</th>
-                    <td id="modalEstadoElemento"></td>
-                </tr>
-                <tr>
-                    <th>Área</th>
-                    <td id="modalArea"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
 <!-- Modal Editar Elemento -->
-<div id="" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:3000;">
-
-    <button id="cerrarModalEditar" style="position:absolute; top:10px; right:15px; font-size:24px; background:none; border:none; cursor:pointer;">&times;</button>
-
-    <form class="editar-form" action="<?= getUrl('elementos', 'elementos', 'editarElemento', false, 'dashboard') ?>" method="POST">
-        <h2>Editar Elemento</h2>
-
-        <input type="hidden" name="elm_cod" id="elm_cod" value="">
-        <input type="hidden" name="elm_cod_tp_elemento" id="elm_cod_tp_elemento" value="">
-
-        <div class="form-group">
-            <label>Placa</label>
-            <label id="label_placa"></label>
-        </div>
-
-        <div class="form-group">
-            <label for="elm_nombre">Nombre</label>
-            <input type="text" id="elm_nombre" name="elm_nombre" value="" required>
-        </div>
-
-        <div class="form-group">
-            <label>Existencia</label>
-            <label id="label_existencia"></label>
-        </div>
-
-        <div class="form-group">
-            <label for="elm_uni_medida">Unidad de Medida</label>
-            <input type="number" id="elm_uni_medida" name="elm_uni_medida" value="" required>
-        </div>
-
-        <div class="form-group">
-            <label>Tipo de Elemento</label>
-            <label id="label_tipoElemento"></label>
-        </div>
-
-        <div class="form-group">
-            <label for="elm_area_cod">Área</label>
-            <select id="elm_area_cod" name="elm_area_cod" required>
-                <?php foreach ($areas as $area): ?>
-                    <option value="<?= $area['codigo'] ?>"><?= htmlspecialchars($area['nombre']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-            <button type="button" id="cancelarEditar" class="btn btn-secondary">Cancelar</button>
-        </div>
-    </form>
-
-</div>
 
 <div id="modalEditarElemento" class="">
     <div id="modalContentElements">
@@ -351,7 +241,7 @@
             </button>
         </div>
         <div class="modalContentForm">
-            <form id="editarElementForm" action="" method="">
+            <form id="editarElementForm">
                 <div class="placa">
                     <label>Placa:</label>
                     <label id="label_placa"></label>
@@ -410,5 +300,62 @@
     </div>
 </div>
 
+<!-- Modal Ver Más -->
+<div id="modalVerMas" class="modal">
+    <div>
+        <button id="modalCerrarVerMas">
+            <span class="close-btn" id="" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer;">&times;</span>
+        </button>
+        <h4>Detalles del Elemento</h4>
+        <table>
+            <tbody>
+                <tr>
+                    <th>Código</th>
+                    <td id="modalPlaca"></td>
+                </tr>
+                <tr>
+                    <th>Placa</th>
+                    <td id="modalSerie"></td>
+                </tr>
+                <tr>
+                    <th>Nombre</th>
+                    <td id="modalNombreElemento"></td>
+                </tr>
+                <tr>
+                    <th>Existencia</th>
+                    <td id="modalCantidad"></td>
+                </tr>
+                <tr>
+                </tr>
+                <tr>
+                    <th>Tipo de Elemento</th>
+                    <td id="modalTipo"></td>
+                </tr>
+                <tr>
+                    <th>Estado</th>
+                    <td id="modalEstadoElemento"></td>
+                </tr>
+                <tr>
+                    <th>Área</th>
+                    <td id="modalArea"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal confirmación -->
+<!-- Sive para validar confirmación del un acción o no. -->
+<div id="modalConfirmacion" class="modal">
+  <div class="modal-content">
+    <h5 id="modalConfirmacionTitulo">Confirmación</h5>
+    <p id="modalConfirmacionMensaje">¿Estás seguro de realizar esta acción?</p>
+  </div>
+  <!-- el ! significa un elemento de referencia hacia javascript. -->
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="btnCancelar">Cancelar</a>
+    <a href="#!" class="modal-close waves-effect waves-red btn" id="btnAceptar">Aceptar</a>
+  </div>
+</div>
 
 <script type="module" src="../public/assets/js/elementos/elementosNew.js"></script>
