@@ -1,8 +1,8 @@
 <div class="container-fluid px-4">
     <div class="row valign-wrapper" style="margin-bottom: 20px;">
         <!-- Título -->
-        <div class="col s12 m6">
-            <h5 style="margin: 0;">Listado de Elementos</h5>
+        <div class="col s12 m7">
+            <h5 style="margin: 0;">Gestión de elementos</h5>
         </div>
 
         <!-- Botón de registro -->
@@ -47,7 +47,7 @@
                 </tr>
             </thead>
             <tbody id="tbodyElements">
-                
+
             </tbody>
 
             <!-- FILA DE PAGINACION DENTRO DE LA TABLA -->
@@ -61,8 +61,8 @@
                 <ul class="pagination center-align" style="margin-top: 20px;">
                     <!-- Botón Anterior -->
                     <li class="waves-effect">
-                        
-                        <button type="button"  class="waves-effect btn" id="previewElements">
+
+                        <button type="button" class="waves-effect btn" id="previewElements">
                             <i class="material-icons">chevron_left</i>
 
                         </button>
@@ -79,121 +79,293 @@
     </tfoot>
 </div>
 
-
-<!-- El resto de tus modales y scripts quedan igual -->
-
-
 <!-- Modal Registrar Elemento -->
-<div id="addElementModal">
+<div id="addElementModal" class="">
     <div id="modalContentElements">
-        <button id="cerrarModalRegistrar" style="position:absolute; top:10px; right:15px; font-size:24px; background:none; border:none; cursor:pointer;">&times;</button>
+        <div class="modalContentTitle">
+            <span class="" id="titleModal">Registrar Nuevo Elemento</span>
+            <button type="button" class="closeModalBtn" id="cerrarModalRegistrar">
+                <span class="close-modal">&times;</span>
+            </button>
+        </div>
+        <div class="modalContentForm">
+            <form id="addElementForm">
+                <div class="placa">
+                    <!-- Inputs radio de la placa, dependiendo de la placa, me debe de mostrar uno u otro. -->
+                    <div class="radioPlaca">
+                        <label for="">¿Desea asociar el elemento nuevo a una placa o registrar una placa nueva? *</label>
+                        <div class="newPlaca">
+                            <p>
+                                <label>
+                                    <input class="with-gap" name="placaRadio" type="radio" id="nuevaPlaca" />
+                                    <span>Nueva placa</span>
+                                </label>
+                            </p>
+                        </div>
+                        <div class="selectedPlaca">
+                            <p>
+                                <label>
+                                    <input class="with-gap" name="placaRadio" type="radio" id="selectPlaca" />
+                                    <span>Asociar placa</span>
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="placaInputs">
+                        <!-- INPUTS DE PLACAS QUE SELECCIONE EL INPUT RADIO NUEVA PLACA -->
+                        <div class="contentPlaca input-field">
+                            <div class="inputPlaca">
+                                <input id="elm_placa" name="elm_placa" type="text">
+                                <label for="elm_placa">Número de placa *</label>
+                            </div>
+                            <div class="inputSerie input-field">
+                                <!-- Validar, no se deben permitir catacteres con el arroba o el # -->
+                                <input id="elm_serie" name="elm_serie" type="text">
+                                <label for="elm_serie">Código de serie * Ejemplo = 922919587-1</label>
+                            </div>
+                        </div>
+                        <!-- INPUTS DE LAS PLACAS ASOCIADAS. -->
+                        <div class="placaAssocContent">
+                            <div class="selectPlaca">
+                                <label for="searchPlaca">Digite el número de placa</label>
+                                <span id="respuestaPlaca" style="display: none;"></span>
+                                <input type="text" name="searchPlaca" id="searchPlaca">
+                            </div>
+                            <div class="contentPlacaAssoc ">
+                                <label for="serialPlaca">Serial asociado</label>
+                                <input type="text" name="serialPlaca" id="serialPlacaAssoc">
+                            </div>
+                            <div class="tableResult">
+                                <table class="striped responsive-table" id="tablePlaca">
+                                    <thead>
+                                        <tr>
+                                            <th>Codigo</th>
+                                            <th>Serial registrado</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyPlacaResult"></tbody>
+                                </table>
+                            </div>
+                        </div>
 
-        <span class="mb-3">Registrar Nuevo Elemento</span>
+                    </div>
+                </div>
+                <div class="nombre">
+                    <label for="elm_nombre">Nombre elemento: *</label>
+                    <input id="elm_nombre" name="elm_nombre" type="text" placeholder="">
+                </div>
+                <div class="area">
+                    <label for="elm_area_cod">Área * </label>
+                    <select id="selectAreas" class="select_area" name="elm_area_cod">
+                    </select>
+                </div>
 
-        <label for="tipoElementoSelect">Tipo de Elemento:</label>
-        <select id="tipoElementoSelect" class="form-select mb-3" required>
-            <option value="">Seleccione...</option>
-            <option value="devolutivo">Devolutivo</option>
-            <option value="consumible">Consumible</option>
-        </select>
+                <div class="categoria">
+                    <label for="categoriaSelect">Categorias:</label>
+                    <select name="categoriaSelect" id="selectCategorias" class=""></select>
+                </div>
 
-        <!-- Formulario Devolutivo -->
-        <form id="formDevolutivo" action="<?= getUrl('elementos', 'elementos', 'registrarElemento', false, 'dashboard') ?>" method="POST" style="display:none;">
-            <input type="hidden" name="elm_cod_tp_elemento" value="1">
-            <input type="hidden" name="elm_existencia" value="1">
-            <input type="hidden" name="elm_cod_estado" value="1">
+                <div class="marca">
+                    <label for="selectMarca">Marcas:</label>
+                    <select class="" name="selectMarca" id="selectMarca"></select>
+                </div>
 
-            <div class="input-field">
-                <input id="elm_placa" name="elm_placa" type="number" required>
-                <label for="elm_placa">Placa</label>
-            </div>
+                <div class="tipoElemento">
+                    <div class="radioTpElemento">
+                        <label for="selectTpElemento">Tipo Elemento:</label>
+                        <div class="checkboxDevolutivo">
+                            <p>
+                                <label>
+                                    <input class="with-gap" name="elm_cod_tp_elemento" type="radio" id="devolutivoCheckbox" value="1" />
+                                    <span>Devolutivo</span>
+                                </label>
+                            </p>
+                        </div>
+                        <div class="checkboxConsumible">
+                            <p>
+                                <label>
+                                    <input class="with-gap" name="elm_cod_tp_elemento" type="radio" id="consumibleCheckbox" value="2" />
+                                    <span>Consumible</span>
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="checkboxTpElemento">
+                        <div class="unidadMedida">
+                            <select class="" name="elm_uni_medida" id="undMedida">
+                                <option value="0" selected>Seleccione una opción</option>
+                                <option value="1">Unitario</option>
+                                <option value="2">Caja</option>
+                                <option value="3">Galon</option>
+                            </select>
+                            <label for="elm_uni_medida">Unidad Medida:</label>
+                        </div>
+                        <div class="cantidadElemento">
+                            <input type="text" name="elm_existencia" id="inputCantidad">
+                            <label for="elm_existencia">Cantidad:</label>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="input-field">
-                <input id="elm_nombre" name="elm_nombre" type="text" required>
-                <label for="elm_nombre">Nombre</label>
-            </div>
+                <div class="apuntes">
+                    <!-- Observacion -->
+                    <div class="input-field observacion">
+                        <textarea id="observacionInput" class="materialize-textarea" name="elm_observacion" data-length="120"></textarea>
+                        <label for="observacionInput">Observación</label>
+                    </div>
+                    <div class="input-field sugerencia">
+                        <textarea id="sugerenciaInput" class="materialize-textarea" name="elm_sugerencia" data-length="120"></textarea>
+                        <label for="sugerenciaInput">Sugerencia</label>
+                    </div>
+                </div>
 
-            <div>
-                <label for="elm_uni_medida">Unidad de Medida</label>
-                <input id="elm_uni_medida" name="elm_uni_medida" type="text" value="1" readonly>
-            </div>
+                <div class="modal-footer footerBtn">
+                    <button type="submit" class="btn waves-effect waves-light left"><i class="material-icons">save</i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-            <div class="input-field">
-                <select id="select_area_dev" class="select_area" name="elm_area_cod" required>
-                </select>
-                <label for="elm_area_cod">Área</label>
-            </div>
+<!-- Modal Editar Elemento -->
 
-            <button type="submit" class="btn waves-effect waves-light">Guardar Devolutivo</button>
-        </form>
-        <!-- Formulario Consumible -->
-        <form id="formConsumible" action="<?= getUrl('elementos', 'elementos', 'registrarElemento', false, 'dashboard') ?>" method="POST" style="display:none;">
-            <input type="hidden" name="elm_cod_tp_elemento" value="2">
-            <input type="hidden" name="elm_cod_estado" value="1">
+<div id="modalEditarElemento" class="">
+    <div id="modalContentElements">
+        <div class="modalContentTitle">
+            <span id="titleModalEditar">Editar Elemento</span>
+            <button type="button" class="closeModalBtn" id="cerrarModalEditar">
+                <span class="close-modal">&times;</span>
+            </button>
+        </div>
+        <div class="modalContentForm">
+            <form id="editarElementForm">
+                <div class="codElemento">
+                    <input type="hidden" name="elm_cod" id="codElementoEditar" value="">
+                </div>
+                <div class="placa">
+                    <label>Placa:</label>
+                    <label id="label_placa"></label>
+                    <input id="elm_placa_editar" name="elm_nombre" type="text" required>
+                </div>
+                <div class="placaInputsEditar">
+                    <!-- INPUTS DE PLACAS QUE SELECCIONE EL INPUT RADIO NUEVA PLACA -->
+                    <div class="contentPlacaEdit input-field">
+                        <!-- <div class="inputPlacaEditar">
+                            <input id="elm_placa" name="elm_placa" type="text">
+                            <label for="elm_placa">Número de placa *</label>
+                        </div> -->
+                        <div class="inputSerieEdit input-field">
+                            <!-- Validar, no se deben permitir catacteres con el arroba o el # -->
+                            <input id="elm_serie" name="elm_serie" type="text">
+                            <label for="elm_serie">Código de serie * Ejemplo = 922919587-1</label>
+                        </div>
+                    </div>
+                    <!-- INPUTS DE LAS PLACAS ASOCIADAS. -->
+                    <div class="placaAssocContent">
+                        <div class="selectPlaca">
+                            <label for="searchPlaca">Digite el número de placa</label>
+                            <span id="respuestaPlaca" style="display: none;"></span>
+                            <input type="text" name="searchPlaca" id="searchPlaca">
+                        </div>
+                        <div class="contentPlacaAssoc ">
+                            <label for="serialPlaca">Serial asociado</label>
+                            <input type="text" name="serialPlaca" id="serialPlacaAssoc">
+                        </div>
+                        <div class="tableResult">
+                            <table class="striped responsive-table" id="tablePlaca">
+                                <thead>
+                                    <tr>
+                                        <th>Codigo</th>
+                                        <th>Serial registrado</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyPlacaResult"></tbody>
+                            </table>
+                        </div>
+                    </div>
 
-            <div class="input-field">
-                <input id="elm_placa_c" name="elm_placa" type="number" required>
-                <label for="elm_placa_c">Placa</label>
-            </div>
+                </div>
 
-            <div class="input-field">
-                <input id="elm_nombre_c" name="elm_nombre" type="text" required>
-                <label for="elm_nombre_c">Nombre</label>
-            </div>
+                <div class="nombre">
+                    <label for="elm_nombre_editar">Nombre elemento *</label>
+                    <input id="elm_nombre_editar" name="elm_nombre" type="text" required>
+                </div>
+                <div class="area">
+                    <label for="elm_area_cod_editar">Área *</label>
+                    <select id="elm_area_cod_editar" name="elm_area_cod" required>
+                    </select>
+                </div>
 
-            <div class="input-field">
-                <input id="elm_existencia" name="elm_existencia" type="number" min="1" required>
-                <label for="elm_existencia">Cantidad a Agregar</label>
-            </div>
+                <div class="unidadMedida">
+                    <select class="" name="elm_uni_medida_select" id="undMedida">
+                        <option value="0" selected>Seleccione una opción</option>
+                        <option value="1">Unitario</option>
+                        <option value="2">Caja</option>
+                        <option value="3">Galon</option>
+                    </select>
+                </div>
 
-            <div class="input-field">
-                <select id="elm_uni_medida_c" name="elm_uni_medida" required>
-                    <option value="" disabled selected>Unidad de medida</option>
-                    <option value="1">Unidad</option>
-                    <option value="2">Caja</option>
-                    <option value="3">Paquete</option>
-                </select>
+                <div class="tipoElemento">
+                    <label for="tp_elemento">Tipo de Elemento:</label>
+                    <select class="" name="tp_elemento" id="tp_elemento">
+                        <option value="0" selected>Seleccione una opción</option>
+                        <option value="1">devolutivo</option>
+                        <option value="2">consumible</option>
+                    </select>
+                </div>
 
-            </div>
-
-            <div class="input-field">
-                <select id="select_area_consu" class="select_area" readonly>
-                </select>
-
-                <label for="elm_area_cod_c">Área</label>
-            </div>
-
-            <button type="submit" class="btn waves-effect waves-light">Guardar Consumible</button>
-        </form>
+                <div class="existencia">
+                    <label for="elm_existencia">existencia</label>
+                    <input id="elm_existencia_editar" name="elm_existencia" type="text" required>
+                </div>
+                <div class="apuntes">
+                    <div class="input-field observacion">
+                        <label for="observacionInputEditar">Observación</label>
+                        <textarea id="observacionInputEditar" class="materialize-textarea" placeholder="Observacion" name="elm_observacion" data-length="120"></textarea>
+                    </div>
+                    <div class="input-field sugerencia">
+                        <label for="sugerenciaInputEditar">Sugerencia</label>
+                        <textarea id="sugerenciaInputEditar" class="materialize-textarea" placeholder="Sugerencia " name="elm_sugerencia" data-length="120"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer footerBtn">
+                    <button type="submit" class="btn waves-effect waves-light left">
+                        <i class="material-icons">save</i>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <!-- Modal Ver Más -->
-<div id="modalVerMas" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:2000;">
-    <div style="background:#fff; padding:20px; border-radius:8px; width:90%; max-width:600px; position:relative;">
-        <span class="close-btn" id="modalCerrar" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer;">&times;</span>
+<div id="modalVerMas" class="modal">
+    <div>
+        <button id="modalCerrarVerMas">
+            <span class="close-btn" id="" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer;">&times;</span>
+        </button>
         <h4>Detalles del Elemento</h4>
         <table>
             <tbody>
                 <tr>
                     <th>Código</th>
-                    <td id="modalCod"></td>
-                </tr>
-                <tr>
-                    <th>Placa</th>
                     <td id="modalPlaca"></td>
                 </tr>
                 <tr>
+                    <th>Placa</th>
+                    <td id="modalSerie"></td>
+                </tr>
+                <tr>
                     <th>Nombre</th>
-                    <td id="modalNombre"></td>
+                    <td id="modalNombreElemento"></td>
                 </tr>
                 <tr>
                     <th>Existencia</th>
-                    <td id="modalExistencia"></td>
+                    <td id="modalCantidad"></td>
                 </tr>
                 <tr>
-                    <th>Unidad de Medida</th>
-                    <td id="modalUniMedida"></td>
                 </tr>
                 <tr>
                     <th>Tipo de Elemento</th>
@@ -201,7 +373,7 @@
                 </tr>
                 <tr>
                     <th>Estado</th>
-                    <td id="modalEstado"></td>
+                    <td id="modalEstadoElemento"></td>
                 </tr>
                 <tr>
                     <th>Área</th>
@@ -212,58 +384,18 @@
     </div>
 </div>
 
-<!-- Modal Editar Elemento -->
-<div id="modalEditarElemento" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:3000;">
-
-    <button id="cerrarModalEditar" style="position:absolute; top:10px; right:15px; font-size:24px; background:none; border:none; cursor:pointer;">&times;</button>
-
-    <form class="editar-form" action="<?= getUrl('elementos', 'elementos', 'editarElemento', false, 'dashboard') ?>" method="POST">
-        <h2>Editar Elemento</h2>
-
-        <input type="hidden" name="elm_cod" id="elm_cod" value="">
-        <input type="hidden" name="elm_cod_tp_elemento" id="elm_cod_tp_elemento" value="">
-
-        <div class="form-group">
-            <label>Placa</label>
-            <label id="label_placa"></label>
-        </div>
-
-        <div class="form-group">
-            <label for="elm_nombre">Nombre</label>
-            <input type="text" id="elm_nombre" name="elm_nombre" value="" required>
-        </div>
-
-        <div class="form-group">
-            <label>Existencia</label>
-            <label id="label_existencia"></label>
-        </div>
-
-        <div class="form-group">
-            <label for="elm_uni_medida">Unidad de Medida</label>
-            <input type="number" id="elm_uni_medida" name="elm_uni_medida" value="" required>
-        </div>
-
-        <div class="form-group">
-            <label>Tipo de Elemento</label>
-            <label id="label_tipoElemento"></label>
-        </div>
-
-        <div class="form-group">
-            <label for="elm_area_cod">Área</label>
-            <select id="elm_area_cod" name="elm_area_cod" required>
-                <?php foreach ($areas as $area): ?>
-                    <option value="<?= $area['codigo'] ?>"><?= htmlspecialchars($area['nombre']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-            <button type="button" id="cancelarEditar" class="btn btn-secondary">Cancelar</button>
-        </div>
-    </form>
-
+<!-- Modal confirmación -->
+<!-- Sive para validar confirmación del un acción o no. -->
+<div id="modalConfirmacion" class="modal">
+    <div class="modal-content">
+        <h5 id="modalConfirmacionTitulo">Confirmación</h5>
+        <p id="modalConfirmacionMensaje">¿Estás seguro de realizar esta acción?</p>
+    </div>
+    <!-- el ! significa un elemento de referencia hacia javascript. -->
+    <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="btnCancelar">Cancelar</a>
+        <a href="#!" class="modal-close waves-effect waves-red btn" id="btnAceptar">Aceptar</a>
+    </div>
 </div>
-
 
 <script type="module" src="../public/assets/js/elementos/elementosNew.js"></script>

@@ -23,7 +23,7 @@ if ($css) {
 require_once '../public/partials/header.php'; 
 ?>
 
-<div class="container">
+<div class="container bg-light-pattern">
     <?php resolve(); ?>
 </div>
 

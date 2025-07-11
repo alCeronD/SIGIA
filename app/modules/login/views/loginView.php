@@ -12,10 +12,13 @@
   <link rel="stylesheet" href="/proyecto_sigia/public/assets/css/login/login.css">
 </head>
 <body>
-  <div class="login-container">
+  <div class="backGround bg-light-pattern">
+
+    <div class="login-container">
     <div class="login-card z-depth-3">
       <div class="brand-logo">
-        <img src="/proyecto_sigia/public/assets/image/login/logo_sena.png" width="80" alt="Logo SENA">
+        <img src="/proyecto_sigia/public/assets/image/login/sigiaS.svg" width="100px" alt="Logo SENA" id="logoSena">
+        <img src="/proyecto_sigia/public/assets/image/login/logo_sena.png" width="100px" alt="Logo SENA" id="logoSigia">
       </div>
       <h5 class="center-align">Iniciar sesión</h5>
 
@@ -36,6 +39,9 @@
       </form>
     </div>
   </div>
+  </div>
+
+  
 
   <!-- Materialize JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>

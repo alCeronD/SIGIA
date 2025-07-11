@@ -1,5 +1,10 @@
 <?php
-require_once __DIR__ . '/../../../helpers/session.php';
+
+
+// require_once __DIR__ . '/../../../helpers/session.php';
+
+use function PHPSTORM_META\map;
+
 require_once __DIR__ . '/../../../helpers/const.php';
 include_once __DIR__ . '/../../../config/conn.php';
 class ElementoModelo
@@ -12,7 +17,11 @@ class ElementoModelo
         $this->conn = $conexion->getConnect();
     }
 
-    // Obtener todos los elementos con nombres relacionados
+/**
+     * Obtiene todos los elementos con información relacionada (área, tipo, estado).
+     *
+     * @return array Lista de elementos con sus respectivos datos.
+     */
     public function obtenerElemento()
     {
         $elementos = [];
@@ -73,7 +82,12 @@ class ElementoModelo
         $resultado = $stmt->get_result();
         return $resultado->fetch_assoc();
     }
-
+    /**
+     * Busca elementos cuyo nombre o placa coincida parcialmente con un valor.
+     *
+     * @param string $inputValue Valor de búsqueda.
+     * @return array Resultado con mensaje, estado y datos encontrados.
+     */
     public function getElementLike(String $inputValue = '')
     {
         $sql = "SELECT 
@@ -124,7 +138,14 @@ class ElementoModelo
         ];
     }
 
-    // Obtener elementos paginados con JOIN para nombres relacionados
+    /**
+     * Obtiene elementos paginados según su tipo (consumible, devolutivo o todos).
+     *
+     * @param int $limite Cantidad de resultados por página.
+     * @param int $offset Índice desde donde iniciar la búsqueda.
+     * @param string $type Tipo de elemento: 'consumible', 'devolutivo', o 'all'.
+     * @return array Resultado de la consulta con mensaje, estado y datos.
+     */
     public function obtenerElementoPaginado(int $limite, int $offset, string $type)
     {
         $elementos = [];
@@ -140,12 +161,17 @@ class ElementoModelo
         $baseSql = "SELECT 
         e.elm_cod AS codigoElemento,
         e.elm_placa AS placa,
+        e.elm_serie AS serie,
         e.elm_nombre AS nombreElemento,
         e.elm_existencia AS cantidad,
+        e.elm_sugerencia AS sugerenciaIngresada,
+        e.elm_observacion AS observacionElemento,
+        e.elm_fecha_registro AS fechaRegistro,
         ar.ar_nombre AS nombreArea,
+        ar.ar_cod as codArea,
         tpE.tp_el_cod AS codTipoElemento,
         tpE.tp_el_nombre AS tipoElemento,
-        es_e.est_nombre AS codEstadoElemento,
+        es_e.est_el_cod  AS codEstadoElemento,
         es_e.est_nombre AS estadoElemento,
         tpU.nombre_tp_uni AS nombreUnidad,
         tpU.cod_tp_uni AS codUnidadMedida
@@ -156,12 +182,12 @@ class ElementoModelo
     INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado";
 
         if ($type === 'all') {
-            $sql = "$baseSql ORDER BY e.elm_fecha_registro ASC LIMIT ? OFFSET ?";
+            $sql = "$baseSql ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("ii", $limite, $offset);
         } else {
             $codType = ($type === 'consumible') ? 2 : 1;
-            $sql = "$baseSql WHERE tpE.tp_el_cod = ? ORDER BY e.elm_fecha_registro ASC LIMIT ? OFFSET ?";
+            $sql = "$baseSql WHERE tpE.tp_el_cod = ? ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("iii", $codType, $limite, $offset);
         }
@@ -243,46 +269,122 @@ class ElementoModelo
     }
 
     // Insertar nuevo elemento
-    public function insertarElemento($datos)
-    {
-        $sql = "INSERT INTO elementos (elm_placa, elm_nombre, elm_existencia, elm_uni_medida, elm_cod_tp_elemento, elm_cod_estado, elm_area_cod) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($sql);
-        if (!$stmt) {
-            echo "Error en prepare: " . $this->conn->error;
-            return false;
-        }
-        $stmt->bind_param("isiiiii", $datos['elm_placa'], $datos['elm_nombre'], $datos['elm_existencia'], $datos['elm_uni_medida'], $datos['elm_cod_tp_elemento'], $datos['elm_cod_estado'], $datos['elm_area_cod']);
-        return $stmt->execute();
+    public function insertarElemento(array $datos = [])
+{
+    $sql = "INSERT INTO elementos (
+        elm_placa,
+        elm_serie,
+        elm_nombre,
+        elm_existencia,
+        elm_fecha_registro,
+        elm_sugerencia,
+        elm_observacion,
+        elm_uni_medida,
+        elm_cod_tp_elemento,
+        elm_cod_estado,
+        elm_area_cod
+    ) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?)";
+
+    $stmt = $this->conn->prepare($sql);
+    $elm_cod_estado = 1; // valor fijo si aplica
+
+    if (!$stmt) {
+        return [
+            'message' => "Error en prepare: " . $this->conn->error,
+            'status' => false
+        ];
     }
 
+    $placa = (int) $datos['elm_placa'];
+    $serie = $datos['elm_serie'];
+    $nombre = $datos['elm_nombre'];
+    $existencia = (int) $datos['elm_existencia'];
+    $sugerencia = $datos['elm_sugerencia'];
+    $observacion = $datos['elm_observacion'];
+    $unidadMedida = (int) $datos['elm_uni_medida'];
+    $tpElemento = (int) $datos['elm_cod_tp_elemento'];
+    $estado = 1; // fijo
+    $area = (int) $datos['elm_area_cod'];
+
+    
+
+    $stmt->bind_param(
+        "ississiiii",
+        $placa,
+        $serie,
+        $nombre,
+        $existencia,
+        $sugerencia,
+        $observacion,
+        $unidadMedida,
+        $tpElemento,
+        $estado,
+        $area
+    );
+
+    if (!$stmt->execute()) {
+        return [
+            'message' => "Error al ejecutar la consulta:  $stmt->error",
+            'status' => false
+        ];
+    }
+
+    return [
+        'message' => 'Registro exitoso',
+        'status' => true
+    ];
+}
+
     // Actualizar elemento sin modificar placa ni tipo (solo otros campos)
-    public function actualizarElemento($id, $datos)
+    public function actualizarElemento(array $data = [])
     {
+        
         $sql = "UPDATE elementos 
             SET elm_nombre = ?, 
-                elm_uni_medida = ?, 
-                elm_cod_estado = ?, 
-                elm_area_cod = ? 
+                elm_area_cod = ?, 
+                elm_sugerencia = ?,
+                elm_observacion = ?
             WHERE elm_cod = ?";
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
-            echo "Error en prepare: " . $this->conn->error;
-            return false;
+            return [
+                'message'=>"error al ejecutar actualización",
+                'status'=>false
+            ];;
         }
+
+        $codArea = (int) $data['elm_area_cod'];
         $stmt->bind_param(
-            "siiii",
-            $datos['elm_nombre'],
-            $datos['elm_uni_medida'],
-            $datos['elm_cod_estado'],
-            $datos['elm_area_cod'],
-            $id
-        );
-        return $stmt->execute();
+        "sissi", // nombre(string), área(int), sugerencia(string), observación(string), id(int)
+        $data['elm_nombre'],
+        $codArea,
+        $data['elm_sugerencia'],
+        $data['elm_observacion'],
+        $data['elm_cod']
+    );
+
+        if (!$stmt->execute()) {
+            return [
+                'message'=>"error al ejecutar actualización",
+                'status'=>false
+            ];
+        }
+
+        $this->conn->close();
+        return [
+            'message'=>"Elemento actualizado",
+            'status'=> true
+        ];
     }
-
-
+    
     // Alternar estado entre Disponible (1) e Inhabilitado (4)
-    public function toggleEstadoElemento($id)
+    /**
+     * Summary of toggleEstadoElemento cambiar el estado del elemento desde el modulo de ELEMENTOS.
+     * @param int $cod
+     * @param int $status
+     * @return array{message: string, status: bool|array{messsage: string, status: bool}|bool}
+     */
+    public function toggleEstadoElemento(int $cod = 0, int $status = 0)
     {
         $estadoDisponible = 1;
         $estadoInhabilitado = 4;
@@ -290,10 +392,12 @@ class ElementoModelo
         $sql = "SELECT elm_cod_estado FROM elementos WHERE elm_cod = ?";
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
-            echo "Error en prepare: " . $this->conn->error;
-            return false;
+            return [
+                'messsage'=> "error al preprar consulta ".$this->conn->error,
+                'status'=>false
+            ];
         }
-        $stmt->bind_param("i", $id);
+        $stmt->bind_param("i", $cod);
         $stmt->execute();
         $resultado = $stmt->get_result();
 
@@ -314,13 +418,21 @@ class ElementoModelo
                 echo "Error en prepare: " . $this->conn->error;
                 return false;
             }
-            $stmtUpdate->bind_param("ii", $nuevoEstado, $id);
-            return $stmtUpdate->execute();
+            $stmtUpdate->bind_param("ii", $nuevoEstado, $cod);
+            if (!$stmtUpdate->execute()) {
+                return [
+                    'message'=> "error al actualizar el registro".$stmtUpdate->error,
+                    'status'=> false
+                ];
+            }
+            
         }
 
-        return false;
+        return [
+            'message'=> $nuevoEstado === 1 ? "elemento disponible" : "elemento inhabilitado",
+            'status' => true
+        ];
     }
-
     // Buscar elementos activos (devolutivo o consumible)//
     public function searchElements($tipoElemento = 1) {
         $query = "SELECT
@@ -349,6 +461,7 @@ class ElementoModelo
         return $elementos;
     }
 
+    // Hace parte de lógica solicitud prestamo, con esta función se actualiza el estado de en reserva a cancelado.
     public function actualizarEstadoElemento($id, $nuevo_estado)
     {
         $sql = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
@@ -356,7 +469,6 @@ class ElementoModelo
         $stmt->bind_param("ii", $nuevo_estado, $id);
         return $stmt->execute();
     }
-
 
     public function disminuirExistenciaElemento($id, $cantidad) {
         $sql = "UPDATE elementos 
@@ -384,5 +496,84 @@ class ElementoModelo
         return (int) $result->fetch_assoc()['elm_cod_tp_elemento'];
 
     }
-    
+
+    public function getAllPlacas(){
+        try {
+            $placas = [];
+
+            $sqlPlacas = "SELECT elm_placa FROM elementos";
+
+            
+            $stmtPlacas = $this->conn->prepare($sqlPlacas);
+
+            if (!$stmtPlacas) {
+                return [
+                    'message'=>"error de consulta",
+                    'status'=> false
+                ];
+            }
+
+            $stmtPlacas->execute();
+            $stmtPlacas->execute();
+            // Este arreglo sirve para guardar solo las placas registradas
+            $placaRegistrada = [];
+            $result = $stmtPlacas->get_result();
+            $placasRow = $result->fetch_all(MYSQLI_ASSOC);
+            foreach ($placasRow as $key => $value) {
+                $placa = $value['elm_placa'];
+                // $placas [] = $value;
+                $sqlSerial = "SELECT elm_serie AS serie FROM elementos WHERE elm_serie LIKE ? GROUP BY elm_serie ORDER BY elm_serie ASC";
+                $stmtSerial = $this->conn->prepare($sqlSerial);
+
+                if (!$stmtSerial) {
+                    return [
+                        'message'=>"error al preparar la consulta",
+                        'status'=>false
+                    ];
+                }
+
+                // Si ya esta la placa en la placa registrada, omitir el proceso
+                if (in_array($placa,$placaRegistrada)) {
+                    continue;
+                }
+
+                // en caso de que no este, agrego la placa en la placa registrada.
+                $placaRegistrada []= $placa;
+
+
+                $likeParam = $placa . '-%';
+                $stmtSerial->bind_param('s',$likeParam);
+                if (!$stmtSerial->execute()) {
+                    return [
+                        'message'=>'error al ejecutar la consulta',
+                        'status'=> false
+                    ];
+                }
+                $serialesResult = $stmtSerial->get_result();
+                
+
+                // Si hay resultados, guardelo en un arreglo asociado, en caso de que no, dejalo como arreglo vacio.
+                $seriales = $serialesResult ? $serialesResult->fetch_all(MYSQLI_ASSOC) : [];
+                // puedes agregar el resultado al array si lo necesitas
+
+                $stmtSerial->close();
+
+                $placas[] = [
+                'elm_placa' => $placa,
+                'seriales' => $seriales
+            ];
+
+            }
+
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
+        return [
+            'message'=>'placas y seriales asociados',
+            'data'=> $placas,
+            'status'=> true
+        ];
+    }
 }

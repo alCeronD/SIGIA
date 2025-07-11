@@ -1,6 +1,7 @@
-// import {renderElement, renderElements } from "./fetchElements.js";
-import { getData } from "../utils/fetch.js";
-import { closeModal, createBtn, createI, initTooltip, instanceModal, options, tooltipOptions } from "../utils/cases.js";
+// TODO: Depurar, este bloque del proyecto puede ser transladado a un archivo barril.
+import { addClassItem, closeModal, createBtn, createCheckbox, createI, initAlert, initTooltip, instanceModal, options, toastOptions, tooltipOptions } from "../utils/cases.js";
+import { validarCantidad, validatePlaca, validationRules } from "../utils/regex.js";
+import { getData, sendData } from "../utils/fetch.js";
 
 const typeElements = {
     dev: 'devolutivo',
@@ -18,14 +19,275 @@ const tipoElementoSelect = document.querySelector('#tipoElementoSelect');
 const addElementModal = instanceModal('#addElementModal', options);
 const btnAddModalElements = document.querySelector('#btnAddModalElements');
 const cerrarModalBtn = document.querySelector('#cerrarModalRegistrar');
-// Select de las areas, es para registrar el elemento.
-const selectAreaDev = document.querySelector('#select_area_dev');
-const selectAreaConsu = document.querySelector('#select_area_consu');
 let iBtnAddElements = createI();
 iBtnAddElements.innerText = 'add'
 btnAddModalElements.append(iBtnAddElements);
 //El tipo de elementos, creamos esta variable para reemplazarla ya que le daremos utilidad en los filtros.
 let currentType = typeElements.all;
+
+// Contenedor de la placa e inputs
+const placaInputs = document.querySelector('.placaInputs');
+const inputPlaca = document.querySelector('.inputPlaca');
+const selectPlaca = document.querySelector('.selectPlaca');
+const inputSerie = document.querySelector('.inputSerie');
+const contentPlaca = document.querySelector('.contentPlaca');
+// Radio button
+const nuevaPlaca = document.querySelectorAll('input[name="placaRadio"]');
+const selectedPlaca = document.querySelector('#selectPlaca');
+// Input de unidad de medida.
+// const undMedida = document.querySelector('#undMedida');
+const tpElemento = document.querySelectorAll('input[name="elm_cod_tp_elemento"]');
+const checkboxTpElemento = document.querySelector('.checkboxTpElemento');
+const selectAreas = document.querySelector('#selectAreas');
+const selectCategorias = document.querySelector('#categoriaSelect');
+const selectMarcas = document.querySelector('#selectMarca');
+const selectTpElemento = document.querySelector('#selectTpElemento');
+// Input para buscar la placa.
+const searchPlaca = document.querySelector('#searchPlaca');
+// Tabla de las placas
+const tablePlaca = document.querySelector('.tableResult');
+// Aca voy a mostrar el resultado.
+const tbodyPlacaResult = document.querySelector('#tbodyPlacaResult');
+// Formulario de envio de elemento.
+const addElementForm = document.querySelector('#addElementForm');
+const placaAssocContent = document.querySelector('.placaAssocContent');
+// Input del serial que se va a asociar con la placa
+const serialPlacaAssoc = document.querySelector('#serialPlacaAssoc');
+
+// Campos de sugerencia y observación en registrar elemento
+const sugerenciaInput = document.querySelector('#sugerenciaInput');
+const observacionInput = document.querySelector('#observacionInput');
+
+// FUNCIÓN PARA RENDERIZAR Y VISUALIZAR LAS PLACAS EN EL REGISTRAR ELEMENTO.
+function viewPlacaInputs(status = false) {
+    if (!status) {
+        // Placa nueva
+        contentPlaca.style.display = 'flex';
+        contentPlaca.style.flexDirection = 'column';
+        inputPlaca.style.display = 'grid';
+        inputSerie.style.display = 'grid';
+        tablePlaca.style.display = "none";
+        selectPlaca.style.display = 'none';
+        placaAssocContent.style.display = "none"; 
+        // Elimino el atributo de la placa y de la serie asociada para evitar enviar campos vacios adicionales.
+        searchPlaca.removeAttribute('name');
+        serialPlacaAssoc.removeAttribute('name');
+
+    } else {
+        // Asociar placa
+        contentPlaca.style.display = 'none'; 
+        inputPlaca.style.display = 'none';
+        inputSerie.style.display = 'none';
+        selectPlaca.style.display = 'grid';
+        serialPlacaAssoc.readOnly = true;
+        tablePlaca.style.display = "grid";
+        placaAssocContent.style.display = "grid";
+        
+        
+        // Agrego el name a los atributos para enviarlos en caso de que el usuario requiera Adicionar una nueva placa.
+        searchPlaca.setAttribute('name', 'searchPlaca');
+        serialPlacaAssoc.setAttribute('name', 'serialPlaca');
+
+        elm_placa.removeAttribute('name');
+        elm_serie.removeAttribute('name');
+    }
+}
+
+
+const contentPlacaEdit = document.querySelector('.contentPlacaEdit');
+// FUNCIÓN PARA RENDERIZAR LA PLACA EN EL EDITAR ELEMENTO
+function showPlacaAsociadaEditar() {
+    contentPlacaEdit.style.display = 'none'; 
+    inputPlaca.style.display = 'none';
+    inputSerie.style.display = 'none';
+
+    selectPlaca.style.display = 'grid';
+    tablePlaca.style.display = 'grid';
+    placaAssocContent.style.display = 'grid';
+
+    serialPlacaAssoc.readOnly = true;
+
+    // Asegúrate de tener los nombres correctos
+    searchPlaca.setAttribute('name', 'searchPlaca');
+    serialPlacaAssoc.setAttribute('name', 'serialPlaca');
+
+    elm_placa.removeAttribute('name');
+    elm_serie.removeAttribute('name');
+}
+
+// Input de cantidad del elemento
+const inputCantidad = document.querySelector('#inputCantidad');
+// Inicializar el select de la unidad de medida.
+const undMedida = document.querySelector('#undMedida');
+// Input placa
+const elm_placa = document.querySelector('#elm_placa');
+function viewTpElementoInputs(status =false){
+
+
+    // Inicializar select de unidad de medida
+
+    if (status) {
+        checkboxTpElemento.style.display = "grid";
+        undMedida.value = '1';
+        inputCantidad.readOnly = true;
+        inputCantidad.value = 1;
+        // Reinicializo el elmento
+        
+    }else{
+        checkboxTpElemento.style.display = "grid";
+        undMedida.value = '0';
+        inputCantidad.value = '';
+        inputCantidad.readOnly = false;
+    }
+    M.FormSelect.init(undMedida);
+}
+
+function renderResultPlacas({ resultado = {}, status = false } = {}){
+
+    if (!status || !Array.isArray(resultado) || resultado.length === 0) {
+        tbodyPlacaResult.innerHTML = 'No hay coincidencias.';
+        return;
+    }
+    
+    // Accedo a las series de la placa.
+    const seriales = (!resultado) ?{} : resultado[0].seriales;
+    const placa = resultado[0].elm_placa;
+
+    let serialesDisponibles = '';
+
+    if (!Array.isArray(seriales) || seriales.length === 0) {
+        serialesDisponibles = 'No hay seriales disponibles. Crear nuevo.';
+    }else{
+        // Filtra seriales válidos
+        const serialesValidos = seriales.filter(srl => srl.serie && srl.serie.trim().length > 0);
+
+        if (serialesValidos.length === 0) {
+            serialesDisponibles = 'No hay seriales disponibles. Crear nuevo.';
+        } else {
+            serialesDisponibles = serialesValidos.map(srl => srl.serie).join(', ');
+        }
+    }
+
+    // const placas = 
+    tbodyPlacaResult.innerHTML = '';
+    let tr = document.createElement('tr');
+    let tdCodigo = document.createElement('td');
+    let tdAcciones = document.createElement('td');
+    let tdSerial = document.createElement('td');
+    let checkbox = createCheckbox(seriales,placa);
+    tdAcciones.appendChild(checkbox);
+
+    tr.appendChild(tdCodigo);
+    tr.appendChild(tdSerial);
+    tr.appendChild(tdAcciones);
+    tdSerial.innerHTML = serialesDisponibles;
+    tdCodigo.innerHTML = placa;
+    tbodyPlacaResult.appendChild(tr);
+
+    const checkboxPlacas = document.querySelectorAll('input[name="serialCheckbox"]');
+    console.log(checkboxPlacas);
+    checkboxPlacas.forEach((checkPl)=>{
+        checkPl.addEventListener('change', (e)=>{
+            e.stopPropagation();
+            if (e.target.checked) {
+                let seriesCheckbox = JSON.parse(e.target.dataset.seriales);
+
+                let placaCheckbox = JSON.parse(e.target.dataset.placa);
+
+                if (seriesCheckbox.length === 0) {
+                    serialPlacaAssoc.value = placaCheckbox + '-1';
+                    return;
+                }   
+
+                    // Ordeno los objetos de menor a mayor, uso localCompare porque es un string, si fuese number, usaría Num
+                    seriesCheckbox.sort((a, b) => a.serie.localeCompare(b.serie));
+
+                    // Extraigo solo los valores que esten en la clave serie del objeto.
+                    let valSeries = seriesCheckbox.map(ser => ser.serie);
+
+                    // Ordeno el resultado
+                    valSeries.sort();
+
+                    // Extraigo el último valor
+                    let ultimoValor = valSeries[valSeries.length - 1];
+                    let serie = ultimoValor.slice(0,4);
+                    // let codBasico = ultimoValor.indexOf(`${ultimoValor}"-"`);
+                    let codBasico = ultimoValor.indexOf('-');
+                    let consecutivo = parseInt(ultimoValor.slice(codBasico + 1));
+
+                    consecutivo++;
+                    let newCod = serie+"-"+consecutivo;
+
+                    serialPlacaAssoc.value = newCod;
+
+                
+            }else{
+                serialPlacaAssoc.value = '';
+            }
+        });
+    });
+}
+
+// Capturo todos los inputs con el name placaRadio
+nuevaPlaca.forEach((inputRadio)=>{
+    inputRadio.addEventListener('change', (e)=>{
+        if (e.target.id === 'nuevaPlaca') {
+            // Inputs para nueva placa
+            viewPlacaInputs(false);
+        }else if (e.target.id === 'selectPlaca'){
+            viewPlacaInputs(true);
+        }
+    });
+});
+
+// Capturo todos los inputs del tipo de elemento, siendo devolutivo o consumible
+tpElemento.forEach((tpElement)=>{
+    tpElement.addEventListener('change', (e)=>{
+        console.log(e.target);
+
+        if (e.target.id === 'devolutivoCheckbox') {
+            viewTpElementoInputs(true);
+        }
+        if (e.target.id === 'consumibleCheckbox') {
+            viewTpElementoInputs();
+        }
+
+    });
+});
+
+const titleModal = document.querySelector('#titleModal');
+
+// Reiniciar formulario.
+function resetForm(form) {
+    const inputs = form.querySelectorAll('input, textarea, select');
+
+    inputs.forEach((input) => {
+        if (input.type === 'checkbox' || input.type === 'radio') {
+            input.checked = false;
+            input.disabled = false;
+
+        } else if (input.tagName === 'SELECT') {
+            // Esto no funciona como se espera, investigar
+            input.disabled = false;
+            input.selectedIndex = 0;
+
+        } else {
+            input.value = '';
+            input.readOnly = false;
+        }
+    });
+    
+
+}
+
+// modal ver detalle
+const modalVerMas = instanceModal('#modalVerMas', options);
+// Modal edit.
+const modalEditarElemento = instanceModal('#modalEditarElemento', options);
+
+
+// modal de confirmación
+const modalConfirmacion = document.querySelector('#modalConfirmacion');
 /**
  * Renderiza elementos desde el backend utilizando filtros de tipo, acción y paginación.
  * Realiza una petición GET al servidor y construye dinámicamente el contenido de una tabla HTML.
@@ -61,8 +323,8 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         { action, pages: page, type }
     );
 
+
     let data = dataElements.data.data;
-    console.log(data);
     pageGlobal = dataElements.data.cantidadPaginas;
     if (page > pageGlobal) {
         return;
@@ -82,15 +344,34 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         let tdUnidadMedida = document.createElement('td');
         let tdTipoElemento = document.createElement('td');
         let tdAcciones = document.createElement('td');
+        tdAcciones.setAttribute('class', 'accionesElements');
         const btnInfo = createBtn('btn');
+        addClassItem(btnInfo,{"infoColor": "infoColor"});
         const btnEdit = createBtn('btn');
+        addClassItem(btnEdit, {cyan: "cyan", blueGrey:"blue-grey"});
+
+        
         const btnDelete = createBtn('btn');
         const btnAdd = createBtn('btn');
-        btnInfo.innerText = '1';
-        btnEdit.innerText = '2';
-        btnDelete.innerText = '3';
+        let iconInfo = createI();
+        let iconUpdate = createI();
+        let iconDelete = createI();
+        iconUpdate.innerText = 'border_color'
+        iconInfo.innerText = 'info';
+        iconDelete.innerText = 'delete_sweep';
+        btnInfo.appendChild(iconInfo);
+        btnInfo.setAttribute('dataPlaca',dta.codEstadoElemento);
+        btnEdit.appendChild(iconUpdate);
+        btnDelete.appendChild(iconDelete);
+        btnDelete.setAttribute('data-Cod', dta.codigoElemento);
+        btnDelete.setAttribute('data-Status', dta.codEstadoElemento);
+        addClassItem(btnDelete, {deepOrangeDarken:"deep-orange darken-1"});
         btnAdd.innerText = '4';
 
+        //TODO: esto se puede mejorar implementando la información de manera dinámica.
+        /**
+         * buscar como funciona document.createDocumentFragment
+         */
         tdPlaca.innerText = dta.placa;
         tdCantidad.innerText = dta.cantidad;
         tdCodigoElemento.innerText = dta.codigoElemento;
@@ -108,72 +389,259 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
             initTooltip(tdPlaca,{...tooltipOptions,margin:-25},'Elemento por agotar existencia','buttom');     
         }
 
+        if (dta.tipoElemento === 'Consumible') tdAcciones.append(btnInfo,btnEdit,btnDelete,btnAdd);
+        
+    
+        if (dta.tipoElemento === 'Devolutivo') tdAcciones.append(btnInfo,btnEdit,btnDelete);
 
         tbodyElements.appendChild(tr);
-        tdAcciones.append(btnInfo,btnEdit,btnDelete,btnAdd);
         tr.append(tdPlaca,tdNombreElemento,tdCantidad,tdUnidadMedida,tdTipoElemento,tdEstadoElemento,tdAreaElemento,tdAcciones);
 
 
+        // Boton de información.
+        btnInfo.addEventListener('click', (e)=>{
+            e.preventDefault();
+            e.stopPropagation();
+
+            modalVerMas.open();
+
+            const dataToTableMap = {
+            codigoElemento: 'modalPlaca',
+            serie: 'modalSerie',
+            nombreElemento: 'modalNombreElemento',
+            cantidad: 'modalCantidad',
+            tipoElemento: 'modalTipo',
+            estadoElemento: 'modalEstadoElemento',
+            nombreArea: 'modalArea'
+            };
+
+            // Ciclo el mapa creado y valido la info del campo cantidad, si este existe y su valor es 0, el text content mostrar la palabra sin existencia.
+            Object.entries(dataToTableMap).forEach(([dataKey, elementId]) => {
+                const cell = document.getElementById(elementId);
+                if (cell && dta[dataKey] !== undefined) {
+                    if (dataKey === 'cantidad' && dta[dataKey] === 0) {
+                        cell.textContent = 'Sin existencia';
+                    } else {
+                        cell.textContent = dta[dataKey];
+                    }
+                }
+            });
+        });
+
+        // Botón de edición.
+        btnEdit.addEventListener('click', async (e)=>{
+            e.stopPropagation();
+            e.preventDefault();
+
+            // console.log(dta);
+            modalEditarElemento.open();
+
+            console.log(dta.codigoElemento);
+        
+            // TODO, puedo hacerlo de mejor forma creando un objeto y ciclando el formulario, no se hace x falta de tiempo.
+            let elm_placa_editar = document.querySelector('#elm_placa_editar');
+            let elm_nombre_editar = document.querySelector('#elm_nombre_editar');
+            let tp_elemento = document.querySelector('#tp_elemento');
+            let undMedida = document.querySelector('#undMedida');
+            let elm_area_cod_editar = document.querySelector('#elm_area_cod_editar');
+            let sugerenciaInputEditar = document.querySelector('#sugerenciaInputEditar');
+            let observacionInputEditar = document.querySelector('#observacionInputEditar');
+            let elm_existencia_editar = document.querySelector('#elm_existencia_editar');
+            let codElementoEditar = document.querySelector('#codElementoEditar');
+            elm_placa_editar.value = dta.placa;
+            elm_placa_editar.readOnly = true;
+            elm_nombre_editar.value = dta.nombreElemento;
+            tp_elemento.value = dta.codTipoElemento;
+            elm_existencia_editar.value = dta.codTipoElemento === 1 ? 1 : dta.cantidad;
+            undMedida.value = dta.codUnidadMedida;
+            observacionInputEditar.value = dta.observacionElemento;
+            sugerenciaInputEditar.value = dta.sugerenciaIngresada;
+            codElementoEditar.value = dta.codigoElemento;
+            
+            await renderSelectAreas('areas', elm_area_cod_editar);
+            elm_area_cod_editar.value = dta.codArea;
+
+            // Dejar pendiente esta sección.
+            // const placaInputsEditar = document.querySelector('.placaInputsEditar');
+            // const inputPlacaEditar = document.querySelector('.inputPlacaEditar');
+            // const contentPlacaEdit = document.querySelector('.contentPlacaEdit');
+            // const inputSerieEdit = document.querySelector('.inputSerieEdit');
+            // placaInputsEditar.style.display = "grid";
+            // contentPlacaEdit.style.display = "grid";
+            // inputPlacaEditar.style.display = "grid";
+
+            M.FormSelect.init(tp_elemento);
+            M.FormSelect.init(undMedida);
+            M.FormSelect.init(elm_area_cod_editar);
+
+        });
+
+        // boton de inhabilitar elemento
+        btnDelete.addEventListener('click', (e)=>{
+            e.preventDefault();
+            e.stopPropagation();
+            console.log(e.target);
+            const btn = e.currentTarget;
+
+            mostrarConfirmacion('Inhabilitar elemento',"¿Esta seguro de inhabilitar este elemento? no esta disponibiel para su uso", (response)=>{
+
+                if (!response) {
+                    console.log('hello world');
+                    initAlert('Proceso cancelado', 'info', toastOptions);
+                    return;   
+                }else{
+
+                    try {
+                
+                        const dataCod = parseInt(btn.dataset.cod) || null;
+                        const dataStatus = parseInt(btn.dataset.status) || null;
+
+                        if (parseInt(dataStatus) === 3) {
+                            initAlert('El cambio de estado del elemento debe ser validado desde las reservas', 'info',toastOptions);
+                            return;
+                        }
+
+                        const data = {
+                            elm_cod: dataCod,
+                            elm_cod_estado: dataStatus
+                        };
+
+
+                    let responseStatus = sendData("modules/elementos/controller/elementosController.php", 'PUT','statusElement',data);
+
+                    responseStatus.then((resultUpdate)=>{
+                        let messageData = resultUpdate.data.message;
+                        let status = resultUpdate.data.status;
+                        // TODO: arreglar, este icono debe de cambiar cuando el elemento se inhabilite.
+                        if (status) {
+                            const icon = btn.querySelector('i');
+                            if (icon) {
+                                icon.innerText = 'compare_arrows';
+                            }
+                            initAlert(messageData,'success',toastOptions);
+                        }
+                        renderElements({page:pageElement});
+                    });
+
+                } catch (error) {
+                    console.warn("proceso "+error);
+                }
+
+
+                }
+
+                
+            });
+
+        });
+
     });
 
-    } catch (error) {
+     } catch (error) {
         throw new Error(`Error al consultar los elementos ${error}`);
-                
+
     }
-    
+       
 };
 
-const getAreas = async (type = 'devolutivo')=>{
-    let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: 'areas'});
-    let data = response.data;
-    selectAreaDev.innerHTML = '';
-    selectAreaConsu.innerHTML = '';
-    const defaultOption = document.createElement('option');
-    defaultOption.setAttribute('selected', 'selected');
-    defaultOption.innerText = 'Seleccione un área';
 
+const renderSelectAreas = async (action = '', inputSelect)=>{
+    let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
+    let dataResponse = response.data;
 
-    selectAreaDev.appendChild(defaultOption);
-    selectAreaConsu.appendChild(defaultOption);
-
-        if (type === 'devolutivo') {
-            data.forEach((dta)=>{
-            
-                if (dta.nombre != 'General') {
-                    const option = document.createElement('option');
-                    option.innerText = dta.nombre;
-                    option.value = dta.codigo;
-                    selectAreaDev.appendChild(option);
-                } 
-            });           
-        }else if (type === 'consumible'){
-            const areaGeneral = data.find((dta) => dta.nombre === 'General');
-            if (areaGeneral) {
-                const option = document.createElement('option');
-                option.innerText = areaGeneral.nombre;
-                option.value = areaGeneral.codigo;
-                console.log(option);
-                selectAreaConsu.appendChild(option);
-            }
-            
-        }
-
+    inputSelect.innerHTML = '';
+    const option = document.createElement('option');
+    option.value = 0;
+    option.textContent = "Seleccione un departamento";
+    option.setAttribute('selected', 'selected');
+    option.setAttribute('disabled', 'disabled');
+    inputSelect.appendChild(option);
+    
+    dataResponse.forEach((data)=>{
+        const optionDataAreas = document.createElement('option');
+        optionDataAreas.value = data.ar_cod;
+        optionDataAreas.textContent = data.ar_nombre;
+        inputSelect.appendChild(optionDataAreas);
+    });
     //Reinicializo los select, accedo a ellos mediante el objeto window.  
     if (window.M) {
-        M.FormSelect.init(selectAreaDev);
-        M.FormSelect.init(selectAreaConsu);
+        M.FormSelect.init(inputSelect);
+    }
+}
+const categoriaSelect = document.querySelector('#categoriaSelect');
+const renderSelectCategorias = async (action = '',inputSelect)=>{
+    let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: 'categoria'});
+    let categorias = response.data;
+    inputSelect.innerHTML = '';
+    const option = document.createElement('option');
+    option.value = 0;
+    option.textContent = "Seleccione una categoria";
+    option.setAttribute('selected', 'selected');
+    option.setAttribute('disabled', 'disabled');
+    inputSelect.appendChild(option);
+    categorias.forEach((dataCat) => {
+        const optionDataCategorias = document.createElement('option');
+        optionDataCategorias.value = dataCat.ca_id;
+        optionDataCategorias.textContent = dataCat.ca_nombre;
+        inputSelect.appendChild(optionDataCategorias);
+    });
+
+    if (window.M) {
+        M.FormSelect.init(inputSelect);
+    }
+};
+
+const renderSelectMarcas = async (action = '') =>{
+    let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
+    let marcaData = response.data;
+    selectMarcas.innerHTML = '';
+    const option = document.createElement('option');
+    option.value = 0;
+    option.textContent = "Seleccione una marca";
+    option.setAttribute('selected', 'selected');
+    option.setAttribute('disabled', 'disabled');
+    selectMarcas.appendChild(option);
+    marcaData.forEach((marca)=>{
+        const option = document.createElement('option');
+        option.value = marca.ma_id;
+        option.innerText = marca.ma_nombre;
+
+        selectMarcas.appendChild(option);
+    });
+
+    // Reinicializo el select
+        if (window.M) {
+        M.FormSelect.init(selectMarcas);
     }
 
+
+};
+
+let placas = [];
+const renderSelectPlacas = async (action = '') =>{
+    let responsePlacas = await getData('modules/elementos/controller/elementosController.php', 'GET',{action: action});
+    return responsePlacas.data.data;
+};
+
+// Mensaje de confirmación.
+function mostrarConfirmacion(titulo, mensaje, callback) {
+  // Rellenar el contenido
+  document.getElementById('modalConfirmacionTitulo').textContent = titulo;
+  document.getElementById('modalConfirmacionMensaje').textContent = mensaje;
+
+  // Obtener instancia y abrir el modal
+  const modalElem = document.getElementById('modalConfirmacion');
+  const instance = M.Modal.getInstance(modalElem);
+  instance.open();
+
+  // Manejo de botones
+  const btnAceptar = document.getElementById('btnAceptar');
+  const btnCancelar = document.getElementById('btnCancelar');
+
+  // Limpiar cualquier listener anterior
+  btnAceptar.onclick = () => callback(true);
+  btnCancelar.onclick = () => callback(false);
 }
-
-document.addEventListener('DOMContentLoaded', ()=>{
-    //Inicializo los select.
-    M.FormSelect.init(formDevolutivo.querySelectorAll('select'));
-    initTooltip(btnAddModalElements,tooltipOptions,'Agregar elemento','top');
-    //Renderizado de los elementos
-    renderElements({type: currentType});
-
-});
 
 /**
  * Filtro de elementos
@@ -220,9 +688,9 @@ nextElements.addEventListener('click', (e) => {
 /**
  * Búsqueda de elementos TODO: por implementar, la consulta ya esta hecha.
  */
-let timer;
+// let timer;
 // También puedes buscar al escribir directamente
-    inputBusqueda.addEventListener('keyup', function (e) {
+inputBusqueda.addEventListener('keyup', function (e) {
         e.stopPropagation();
         const filtro = e.target.value.toLowerCase().trim();
         // console.log({"valor": filtro});
@@ -239,42 +707,210 @@ let timer;
 
         // }, 400);
         
-    });
+});
 
 
-/**
- * Registrar elemento.
- */
+// span en donde se visualizara la respuesta de la placa si es correcta o no.
+const respuestaPlaca = document.querySelector('#respuestaPlaca');
+// Busqueda de placas.
+searchPlaca.addEventListener('keyup', async (e) => {
+    e.stopPropagation();
+    const filtro = e.target.value.trim();
 
-//Abrir modal
+    if (filtro.length > 2) {
+        if (!validatePlaca(filtro)) {
+            respuestaPlaca.style.display = 'block';
+            respuestaPlaca.innerText = validationRules.placa.message;
+            serialPlacaAssoc.value = '';
+            renderResultPlacas({ status: true }); 
+            return;
+        } else {
+            respuestaPlaca.style.display = 'none';
+        }
+
+        const resultado = placas.filter(pl => String(pl.elm_placa) === filtro);
+
+        if (resultado.length > 0) {
+            renderResultPlacas({ resultado, status: true });
+        } else {
+            renderResultPlacas({ status: true });
+            serialPlacaAssoc.value = '';
+        }
+    } else {
+        // Limpia mensaje si no hay suficientes caracteres
+        respuestaPlaca.style.display = 'none';
+        renderResultPlacas({ status: true });
+        serialPlacaAssoc.value = '';
+    }
+});
+
+// Validad cantidad sea digitada por numeros 
+inputCantidad.addEventListener('change', (e)=>{
+    e.stopPropagation();
+    let cantidad = e.target.value;
+
+    if (!validarCantidad(cantidad)) {
+        initAlert('Cantidad digitada no permitida','warning',toastOptions);
+        e.target.value = '';
+        return;
+    }
+});
+
+// Validad numero de placa
+elm_placa.addEventListener('change', (e)=>{
+    e.stopPropagation();
+    let placa = e.target.value;
+    if (!validarCantidad(placa)) {
+        initAlert('Número de placa digiado incorrecto','warning',toastOptions);
+        e.target.value = '';
+        return;
+    }
+});
+
+// Enviar datos del formulario.
+addElementForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Captura el valor del checkbox
+    const checkboxTp = document.querySelector('input[name="tpElementoRadio"]:checked')?.value;
+    const formElements = new FormData(e.target);
+    const dataObj = Object.fromEntries(formElements.entries());
+    delete dataObj.placaRadio;
+    let data = dataObj;
+
+    mostrarConfirmacion("Registrar elemento", "¿Estás seguro de eliminar este elemento?", function (respuesta){
+        
+    try {
+        
+        if (!respuesta) {
+        addElementModal.close();
+        addElementForm.reset();
+        // Ejecutar acción
+        } 
+        //La respuesta puedo tranformarla en una función generica.
+        sendData("modules/elementos/controller/elementosController.php","POST","registrar",data).then((result)=>{
+
+            if (result) {
+                // initAlert('Elemento agreado exitosamente','succes',{toastOptions});
+                initAlert('Elemento agreado exitosamente','succes',{toastOptions});
+                addElementModal.close();
+                addElementForm.reset();
+                renderSelectPlacas('placas')
+                renderElements({type: currentType, page: 1});
+            }
+
+        });
+    } catch (error) {
+        
+    }
+    
+});
+
+    // Hacer una validación antes del envio, si el tipo de elemento seleccionado es consumible y en las opciones del select sea diferente de la primera y su cantidad sea mayor a 1.
+
+});
+
+//Abrir modal Registrar elemento
 btnAddModalElements.addEventListener('click', (e)=>{
     e.stopPropagation();
     e.preventDefault();
 
     addElementModal.open();
-    
+});
+
+// Formulario del modal addElement
+const modalForm = document.querySelector('#addElementForm');
+document.addEventListener('DOMContentLoaded',  ()=>{
+    //Inicializo los select.
+    // M.FormSelect.init(formDevolutivo.querySelectorAll('select'));
+    initTooltip(btnAddModalElements,tooltipOptions,'Agregar elemento','top');
+    //Renderizado de los elementos
+    renderElements({type: currentType});
+
+    const selectAreas = document.querySelector('#selectAreas');
+    const selectCategorias = document.querySelector('#selectCategorias');
+
+    // Inicializar select de las placas ya registradas
+    const elemsSelect = document.querySelector('#placaAssoc');
+
+    // Estas 3 funciones puedo transformarlas en 1.
+    renderSelectAreas('areas', selectAreas);
+    renderSelectCategorias('categoria',selectCategorias);
+    renderSelectMarcas('marcas');
+    // Hago esto para evitar que mi función DOOM content loader sea asincrona.
+    renderSelectPlacas('placas').then((dataResult)=>{
+        placas = dataResult;
+    });
+    M.FormSelect.init(elemsSelect);
+    M.FormSelect.init(selectCategorias);
+    M.FormSelect.init(selectMarcas);
+    M.FormSelect.init(selectTpElemento);
+    M.FormSelect.init(undMedida);
+
+    // Inicializo todos los modales.
+    const modals = document.querySelectorAll('.modal');
+    M.Modal.init(modals);
 
 });
 
-//Elegir tipo de elemento
-tipoElementoSelect.addEventListener('change', (e) => {
-    const tipo = e.target.value;
+// Formulario del modal editarElemento
+const editarElementForm = document.querySelector('#editarElementForm');
+editarElementForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    mostrarConfirmacion('Guardar cambios','¿Esta seguro de guardar los cambios?', (respuesta)=>{
+        if (respuesta) {
+            try {
+                //TODO Validar campos obligatorios.
+                const formUpdate = new FormData(e.target);
+                const dataObj = Object.fromEntries(formUpdate.entries());
 
-    if (tipo === 'devolutivo') {
-        getAreas('devolutivo');
-        formDevolutivo.style.display = 'block';
-        formConsumible.style.display = 'none';
-    } else if (tipo === 'consumible') {
-        getAreas('consumible');
-        formConsumible.style.display = 'block';
-        formDevolutivo.style.display = 'none';
-    } else {
-        formDevolutivo.style.display = 'none';
-        formConsumible.style.display = 'none';
-    }
+                // Estos 3 elementos los estoy por ahora, borrando pero les daremos utilidad.
+                delete dataObj['elm_serie'];
+                delete dataObj['serialPlaca'];
+                delete dataObj['elm_uni_medida_select'];
+
+                let data = dataObj;
+                let response = sendData("modules/elementos/controller/elementosController.php",'PUT','updateElement',data);
+
+                response.then((result)=>{
+                    if (!result) {
+                        initAlert('error al actualizar el recuros','warning', toastOptions);
+                    }
+                    initAlert('recurso actualizado con exito', 'success',toastOptions);
+                    modalEditarElemento.close();
+                    // renderizo los elementos en base a la página en la que se encuentra.
+                    renderElements({page:pageElement});
+                    
+                });
+            } catch (error) {
+                throw new Error("Error al actualizar el recurso.");
+                
+            }
+            
+        }else{
+            initAlert('Proceso cancelado','info', toastOptions);
+            modalEditarElemento.close();
+        }
+
+    });
+
+});
+
+// puedo ejecutar el callback que me permita reiniciar los campos del formulario.
+closeModal(addElementModal,cerrarModalBtn, ()=>{
+  // Si existe el modal, traiga el selector form que se encuentra de manera interna.
+  if (addElementModal) {
+    const modalForm = addElementModal.el.querySelector("form");
+    console.log(modalForm);
+    resetForm(modalForm);
+    modalForm.reset();
+    // resetForm(modalForm);
+    // titleModal.innerText = '';
+  }
 });
 
 
-
-
-closeModal(addElementModal,cerrarModalBtn);
+const modalCerrarVerMas = document.querySelector('#modalCerrarVerMas');
+closeModal(modalVerMas,modalCerrarVerMas);

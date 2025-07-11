@@ -47,22 +47,24 @@ class ElementosController
         $elementos = array_merge(['cantidadPaginas' => $totalPaginas], $elementos);
 
         success('elementos', $elementos);
-
-
-
-
-        // // Incluir la vista pasando las variables necesarias
-        // include __DIR__ . '/../views/elementosView.php';
     }
 
     public function getElement(String $value = '')
     {
-        var_dump($value);
         if (!$resultRow = $this->modeloElemento->getElementLike($value)) {
             fail('sin registros');
         }
         success('', $resultRow);
     }
+
+    public function getPlacas(String $value = ''){
+        $data = $this->modeloElemento->getAllPlacas();
+        if (!$data) {
+            fail('no hay registros', $data);
+        }
+        success('placas y seriales', $data);
+    }
+
     public function registrarElemento()
     {
         // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -99,82 +101,67 @@ class ElementosController
         // }
     }
 
-    public function getItems(){
+    public function getItems(String $action = ''){
         // Obtener las áreas
         $modeloGenerico = new ConfigModulesModel();
         //Areas que esten activas.
-        $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas WHERE ar_status = 1");
+        $items = $modeloGenerico->select("SELECT * FROM $action");
 
-        // Buscar el código del área "general"
-        $area_general_codigo = null;
-        foreach ($areas as $area) {
-            if (strtolower(trim($area['nombre'])) === 'general') {
-                $area_general_codigo = $area['codigo'];
-                break;
+        $newData = [];
+
+        foreach ($items as $item) {
+            // Buscar clave *_status
+            foreach ($item as $key => $value) {
+                if (preg_match('/_status$/', $key)) {
+                    if ((int) $value === 1) {
+                        $newData[] = $item;
+                    }
+                    break;
+                }
             }
         }
-        success('areas', $areas);
+        success("registros de: $action", $newData);
         
     }
 
-    public function editarElemento()
+    public function editarElemento(array $data = [])
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (isset($_POST['elm_cod'], $_POST['elm_nombre'], $_POST['elm_uni_medida'], $_POST['elm_area_cod'])) {
-                $id = $_POST['elm_cod'];
 
-                // Llenar arreglo con los datos que sí se actualizan
-                $datos = [
-                    'elm_nombre' => $_POST['elm_nombre'],
-                    'elm_uni_medida' => $_POST['elm_uni_medida'],
-                    'elm_area_cod' => $_POST['elm_area_cod'],
-                    'elm_cod_estado' => 1 // Siempre activo (o puedes recibirlo por POST si quieres que sea editable)
-                ];
+        // Llamar al modelo para actualizar
+        $exito = $this->modeloElemento->actualizarElemento($data);
+        if (!$exito) {
+        fail('error al procesar actualización', $exito);
 
-                // Llamar al modelo para actualizar
-                $exito = $this->modeloElemento->actualizarElemento($id, $datos);
+        }
+        success('recurso actualizado con exito', $exito);
+     
+            
+        
+    }
 
-                if ($exito) {
-                    echo "<script>alert('Elemento actualizado correctamente'); window.location.href = '" . getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') . "';</script>";
-                } else {
-                    echo "<div class='alert alert-danger text-center'>Error al actualizar el elemento.</div>";
-                }
-            } else {
-                echo "<div class='alert alert-danger text-center'>Faltan datos obligatorios.</div>";
+    public function cambiarEstadoElemento(array $data = [])
+    {
+        if (isset($data['elm_cod']) && isset($data['elm_cod_estado'])) {
+            $cod = (int) $data['elm_cod'];
+            $id = (int) $data['elm_cod_estado'];
+            $exito = $this->modeloElemento->toggleEstadoElemento($cod, $id);
+
+            if (!$exito) {
+               fail('Error al actualizar el elemento', $exito);
             }
-        } else {
-            // Mostrar formulario de edición
-            if (isset($_GET['elm_cod'])) {
-                $id = $_GET['elm_cod'];
-                $elemento = $this->modeloElemento->obtenerElementoPorId($id);
-
-                // Usamos el modelo genérico para obtener áreas
-                $modeloGenerico = new ConfigModulesModel();
-                $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
-
-                if ($elemento) {
-                    include __DIR__ . '/../views/elementosEditar.php';
-                } else {
-                    echo "<div class='alert alert-danger text-center'>Elemento no encontrado.</div>";
-                }
-            }
+            success('recurso actualizado',$exito);
+        }else{
+            // en caso de quie no se mande ningun elemento, devolver respuesta.
+            return;
         }
     }
 
-    public function cambiarEstadoElemento()
-    {
-        if (isset($_GET['elm_cod'])) {
-            $id = $_GET['elm_cod'];
-            $exito = $this->modeloElemento->toggleEstadoElemento($id);
-
-            if ($exito) {
-                echo "<script>alert('Estado del elemento cambiado correctamente'); window.location.href = '" . getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') . "';</script>";
-            } else {
-                echo "<div class='alert alert-danger text-center'>Error al cambiar estado del elemento.</div>";
-            }
-        } else {
-            echo "<div class='alert alert-danger text-center'>No se especificó el elemento para cambiar estado.</div>";
+    //agregar elemento a la bd.
+    public function addElement(array $data =[]){
+        if (!$result = $this->modeloElemento->insertarElemento($data)) {
+            fail('error al ejecuutar proceso', $result);
         }
+        success('registro adicionado con exito', $result);
     }
     
     
@@ -192,6 +179,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         //valor de la página, por defecto, es la página #1.
         $pages = (int) ($_GET['pages'] ?? 1);
 
+        // Esto se puede cambiar, en ves de switch case, arreglo con su calve y valor y ahí validar la información.
         switch ($case) {
             case 'elements':
                 $type = $_GET['type'];
@@ -210,12 +198,31 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             case 'areas':
 
                 if (method_exists($elementosController,'getItems')) {
-                    $elementosController->getItems();
+                    $elementosController->getItems($case);
                 }
 
                 break;
+            case 'categoria':
+                
+                if (method_exists($elementosController,'getItems')) {
+                    $elementosController->getItems($case);
+                }
+                
+                break;
 
+            case 'marcas':
+                if (method_exists($elementosController,'getItems')) {
+                    $elementosController->getItems($case);
+                }
+                break;
 
+            case 'placas':
+                if (method_exists($elementosController,'getPlacas')) {
+                    $elementosController->getPlacas($case);
+                }
+
+                break;
+            
 
             default:
                 fail('error de acción.');
@@ -223,41 +230,58 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         }
     }
 
-    // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //     $input = file_get_contents("php://input");
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $input = file_get_contents("php://input");
 
-    //     //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
-    //     $data = json_decode($input, true);
+        //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
+        $data = json_decode($input, true);
+
+        $action = $data['action'];
+        unset($data['action']);
+
+        switch ($action) {
+
+            case 'registrar':
+                $elemento = $data;
+                if (method_exists($elementosController,'addElement')) {
+                    $elementosController->addElement($elemento);
+                }
+                break;
+  
+            default:
+                break;
+        }
+
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
+        $input = file_get_contents("php://input");
+
+        //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
+        $data = json_decode($input, true);
+
+        $action = $data['action'];
+        unset($data['action']);
 
 
-    //     switch ($data['action']) {
-    //         case 'finalizar':
-
-    //             $elementos = $data['data']["elementos"];
-    //             $codigoReserva = $data['data']["codigoReserva"];
-
-    //             $controller->setEndReserva($elementos, $codigoReserva);
-    //             break;
-
-    //         case 'registrar':
-    //             $elementosPres = $data['data'];
-    //             $controller->setReserva($elementosPres);
-    //             break;
-    //         case 'validateLoan':
-    //             unset($data['action']);
-    //             $dataNuevo = $data;
-
-
-    //             $controller->setSolicitud($dataNuevo);
-
-    //             //la validación del data es practicamente el setReserva pero la hare en otra función por cuestión de tiempo.
+        switch ($action) {
+            case 'updateElement':
+                // var_dump($data);
+                if (method_exists($elementosController, 'editarElemento')) {
+                    $elementosController->editarElemento($data);
+                }
+                break;
+            case 'statusElement':
+                if (method_exists($elementosController, 'cambiarEstadoElemento')) {
+                    $elementosController->cambiarEstadoElemento($data);
+                }
+                break;
+            default:
+                # code...
+                break;
+        }
+    }
 
 
-    //         break;    
-    //         default:
-    //             break;
-    //     }
-
-    // }
     exit();
 }

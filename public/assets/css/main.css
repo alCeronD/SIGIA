@@ -12,7 +12,10 @@ html, body {
     font-family:  "Open Sans", "Helvetica Neue", sans-serif;
   /* background-color: #f3d3d3; */
 
+
 }
+
+
 
 /* Variables para los colores */
 :root {
@@ -21,6 +24,7 @@ html, body {
   --btnInfo : green;
   --other: #ccc;
   --white: #f0f0f0;
+  --btnEdit: #007D78;
 }
 
 
