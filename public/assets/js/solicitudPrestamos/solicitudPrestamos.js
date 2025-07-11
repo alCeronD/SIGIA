@@ -4,16 +4,52 @@
 document.addEventListener('DOMContentLoaded', function () {
   M.Modal.init(document.querySelectorAll('.modal'));
   M.FormSelect.init(document.querySelectorAll('select'));
-  M.Datepicker.init(document.querySelectorAll('.datepicker'), {
-    format: 'yyyy-mm-dd',
-    minDate: new Date(),
-    autoClose: true,
-    i18n: {
-      cancel: 'Cancelar',
-      clear: 'Limpiar',
-      done: 'Aceptar'
-    }
-  });
+  const presFchReserva = document.getElementById('pres_fch_reserva');
+  const presFchEntrega = document.getElementById('pres_fch_entrega');
+
+  if (presFchReserva && presFchEntrega) {
+    // Inicializa datepicker de entrega por defecto
+    M.Datepicker.init(presFchEntrega, {
+      format: 'yyyy-mm-dd',
+      minDate: new Date(),
+      autoClose: true,
+      i18n: {
+        cancel: 'Cancelar',
+        clear: 'Limpiar',
+        done: 'Aceptar'
+      }
+    });
+
+    // Inicializa datepicker de reserva con onSelect
+    M.Datepicker.init(presFchReserva, {
+      format: 'yyyy-mm-dd',
+      minDate: new Date(),
+      autoClose: true,
+      i18n: {
+        cancel: 'Cancelar',
+        clear: 'Limpiar',
+        done: 'Aceptar'
+      },
+      onSelect: (fechaReserva) => {
+        const pickerEntrega = M.Datepicker.getInstance(presFchEntrega);
+        if (pickerEntrega) {
+          pickerEntrega.destroy();
+        }
+        M.Datepicker.init(presFchEntrega, {
+          format: 'yyyy-mm-dd',
+          minDate: new Date(fechaReserva.getTime() + 24 * 60 * 60 * 1000),
+          autoClose: true,
+          i18n: {
+            cancel: 'Cancelar',
+            clear: 'Limpiar',
+            done: 'Aceptar'
+          }
+        });
+        presFchEntrega.value = '';
+      }
+    });
+  }
+
 
   const filtroArea = document.getElementById('filtro_area_modal');
   const paginacion = document.getElementById('paginacion');
@@ -85,6 +121,18 @@ document.addEventListener('DOMContentLoaded', function () {
     // Insertar los valores en el campo oculto como una lista separada por comas
     document.getElementById('elementos_devolutivos_seleccionados').value = seleccionados.join(',');
   });
+
+
+
+  const textareaObs = document.getElementById('pres_observacion');
+  const contador = document.getElementById('contadorObservacion');
+
+  if (textareaObs && contador) {
+    textareaObs.addEventListener('input', () => {
+      const longitud = textareaObs.value.length;
+      contador.textContent = `${longitud} / 50`;
+    });
+  }
 
 });
 

@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ .'/helpers/getUrl.php';
 require_once __DIR__ .'/helpers/session.php';
 require_once __DIR__ .'/helpers/ScanFiles.php';

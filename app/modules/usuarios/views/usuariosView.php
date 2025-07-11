@@ -7,28 +7,30 @@
   <div class="registrarUsuario">
     <form id="formSolicitudPrestamo" method="POST" action="<?= getUrl('usuarios','usuarios','createUser'); ?>">
       <div class="inputContent tipoDocumento input-field">
-        <select name="usu_tp_id" id="usu_tp_id" class="" required>
-          <label for="usu_tp_id">Tipo documento:</label>
+        <label for="usu_tp_id">Tipo documento:</label>
+        <select name="usu_tp_id" id="usu_tp_id" >
           <option value="">Seleccione tipo de documento</option>
           <?php foreach ($rowTp as $tp): ?>
-            <option class="input-field" value="<?= $tp['tp_id']; ?>"><?= htmlspecialchars($tp['tp_sigla'] . " - " . $tp['tp_nombre']); ?></option>
-            <?php endforeach; ?>
-          </select>
+            <option value="<?= $tp['tp_id']; ?>"><?= htmlspecialchars($tp['tp_sigla'] . " - " . $tp['tp_nombre']); ?></option>
+          <?php endforeach; ?>
+        </select>
       </div>
+
       <div class="inputContent cedula input-field">
         <input type="text" id="usu_docum" name="usu_docum" class="validate" required>
         <label for="usu_docum">Número de identificación:</label>
       </div>
 
-      <div class="inputContent rol ">
+      <div class="inputContent rol input-field">
         <label for="rol_id">Rol:</label>
-          <select name="rol_id" id="rol_id" class="" required>
+        <select name="rol_id" id="rol_id">
           <option value="">Seleccione un rol</option>
           <?php foreach ($roles as $roli): ?>
-            <option class="input-field" value="<?= $roli['rl_id']; ?>"><?= htmlspecialchars($roli['rl_nombre']); ?></option>
+            <option value="<?= $roli['rl_id']; ?>"><?= htmlspecialchars($roli['rl_nombre']); ?></option>
           <?php endforeach; ?>
         </select>
-        </div>
+      </div>
+
       <div class="inputContent nombres input-field">
         <input type="text" id="usu_nombres" name="usu_nombres" class="validate" required >
         <label for="usu_nombres">Nombres:</label>

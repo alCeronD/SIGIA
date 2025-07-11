@@ -41,10 +41,10 @@ class ElementoModelo
         ORDER BY e.elm_placa ASC";
 
         $resultado = $this->conn->query($sql);
-
         if ($resultado) {
             while ($fila = $resultado->fetch_array(MYSQLI_ASSOC)) {
                 $elementos[] = $fila;
+                // dd($elementos);
             }
         } else {
             echo "Error al ejecutar la consulta: " . $this->conn->error;
@@ -495,8 +495,8 @@ class ElementoModelo
 
         return (int) $result->fetch_assoc()['elm_cod_tp_elemento'];
 
-
     }
+    
 
     public function getAllPlacas(){
         try {

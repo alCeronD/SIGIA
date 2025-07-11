@@ -1,5 +1,6 @@
 <?php
 include_once __DIR__ . '/../model/usuariosModel.php';
+include_once __DIR__ . '/../../roles/model/rolesModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 
 class usuariosController
@@ -48,7 +49,7 @@ class usuariosController
     public function createUser()
 {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
+        
         if ($this->conn->connect_error) {
             die("Error de conexión: " . $this->conn->connect_error);
         }
@@ -101,47 +102,70 @@ class usuariosController
         // dd($usuarios);
         $path = __DIR__ . '/../views/consultView.php';
         $_SESSION['css'] = 'usuarios/usuarios.css';
+        $rol = new RolModelo($this->conn);
+    
+        $roles = $rol->obtenerRoles();
+                // dd($roles);
         // var_dump($path);
         return include $path;
     }
 
     public function updateUser()
     {
-
         $id = $_POST['usu_id'];
         unset($_POST['usu_id']);
-        $dato = new usuarios();
+    
+        $rol_id = $_POST['rol_id'];
+        unset($_POST['rol_id']);
+    
+        $contrasena = $_POST['usu_password'];
+        unset($_POST['usu_password']);
+    
         $data = $_POST;
-
+    
+        // Validar campos obligatorios (excepto contraseña)
         foreach ($data as $key => $value) {
             if (empty($value)) {
                 echo "<script>alert('El campo \"$key\" debe ser diligenciado.'); window.history.back();</script>";
                 return;
             }
         }
-
-        $dato->update($_POST, $id);
-
+    
+        $dato = new usuarios();
+    
+        // Actualizar datos generales
+        $dato->update($data, $id);
+    
+        // Si la contraseña fue diligenciada, actualizarla
+        if (!empty($contrasena)) {
+            $hash = password_hash($contrasena, PASSWORD_DEFAULT);
+            $dato->actualizarContrasena($id, $hash);
+        }
+    
+        // Actualizar rol del usuario
+        $obj = new RolModelo($this->conn);
+        $obj->actRolUser($id, $rol_id);
+    
+        // Mostrar usuarios actualizados
         $modeloUsuarios = new usuarios();
         $usuarios = $modeloUsuarios->search();
-
-
-        if ($dato) {
-            echo "<script>alert('Usuario actualizado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard') . "';</script>";
-            return include_once __DIR__ . '/../views/consultView.php';
-        }
+    
+        echo "<script>alert('Usuario actualizado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard') . "';</script>";
+        return include_once __DIR__ . '/../views/consultView.php';
     }
+
+
     public function offUser() {}
 
     //
     public function updateUserView()
     {
-
         $id = $_GET['usu_id'];
         $_SESSION['css'] = 'usuarios/usuarios.css';
         $datos = new usuarios();
-
         $usuarioUpdate = $datos->searchU($id);
+        
+        // dd($roles);
         include_once __DIR__ . '/../../usuarios/views/updateView.php';
     }
 
@@ -173,6 +197,10 @@ class usuariosController
             echo "Método no permitido";
         }
     }
+    
+    
+    
+    
     
     
     public function userPermView(){

@@ -1,4 +1,3 @@
-
 /* MODULO USUARIOS */
 .contentUsuarios {
   width: 100%;
@@ -14,7 +13,7 @@
   padding: 1rem;
 }
 
-.titleUsuarios{
+.titleUsuarios {
   grid-area: titleUsuarios;
   display: flex;
   flex-direction: row;
@@ -23,29 +22,29 @@
 }
 
 .registrarUsuario {
-    display: flex;
-    width: 80%;
-    align-items: center;
-    margin-left: 10%;
-    margin-bottom: 10%;
+  display: flex;
+  width: 80%;
+  align-items: center;
+  margin-left: 10%;
+  margin-bottom: 10%;
 }
 
-.tblUsuarios{
+.tblUsuarios {
   grid-area: titleUsuarios;
 }
 
-#textTitle{
+#textTitle {
   font-size: 20pt;
 
 }
 
-.filtroUsuarios{
+.filtroUsuarios {
   display: flex;
   margin: 0;
   padding: 0;
 }
 
-#contenedorInputFiltro{
+#contenedorInputFiltro {
   display: none;
   margin: 0 !important;
   padding: 0 !important;
@@ -68,7 +67,8 @@
   background-color: #f2f2f2;
 }
 
-#tableConfig th, #tableConfig td {
+#tableConfig th,
+#tableConfig td {
   padding: 0.75rem;
   border: 1px solid #ddd;
   text-align: left;
@@ -106,17 +106,49 @@
   box-sizing: border-box;
 }
 
-.tipoDocumento   { grid-area: tipoDocumento; }
-.cedula          { grid-area: cedula; }
-.rol             { grid-area: rol; }
-.nombres         { grid-area: nombres; }
-.apellidos       { grid-area: apellidos; }
-.telefono        { grid-area: telefono; }
-.password        { grid-area: password; }
-.email           { grid-area: email; }
-.direccion       { grid-area: direccion; }
-.observaciones   { grid-area: observaciones; }
-.inputBtn        { grid-area: inputBtn; }
+.tipoDocumento {
+  grid-area: tipoDocumento;
+}
+
+.cedula {
+  grid-area: cedula;
+}
+
+.rol {
+  grid-area: rol;
+}
+
+.nombres {
+  grid-area: nombres;
+}
+
+.apellidos {
+  grid-area: apellidos;
+}
+
+.telefono {
+  grid-area: telefono;
+}
+
+.password {
+  grid-area: password;
+}
+
+.email {
+  grid-area: email;
+}
+
+.direccion {
+  grid-area: direccion;
+}
+
+.observaciones {
+  grid-area: observaciones;
+}
+
+.inputBtn {
+  grid-area: inputBtn;
+}
 
 .inputContent {
   display: flex;
@@ -160,9 +192,10 @@ textarea {
 
 
 
+
 /* ///////////////////////// */
 /* //UPDATE USUARIOS// */
-.content{
+.content {
   width: 100%;
   height: 85vh;
   display: grid;
@@ -175,11 +208,11 @@ textarea {
   padding: 1rem;
 }
 
-.inputContentUpdate{
+.inputContentUpdate {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  width: 100%;
+  width: 50% !important;
   height: 35px;
   gap: .5em;
 }
@@ -189,26 +222,33 @@ textarea {
   display: none;
   position: fixed;
   z-index: 999;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.6);
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
   justify-content: center;
   align-items: center;
+  padding: 1rem;
 }
+
 
 .modal-content-custom {
   background: #fff;
   padding: 2rem;
   border-radius: 10px;
-  width: 450px;
-  /* position: relative; */
-  position: absolute;
+  width: 35vw;
+  /* Más pequeño, proporcional */
+  max-width: 550px;
+  /* Evita que se expanda demasiado */
+  min-width: 320px;
+  position: relative;
   animation: fadeIn 0.3s ease-in-out;
 }
 
+
 .close-modal {
   position: absolute;
-  right: 15px; top: 10px;
+  right: 15px;
+  top: 10px;
   font-size: 1.5rem;
   cursor: pointer;
 }
@@ -216,11 +256,76 @@ textarea {
 .input-field label {
   transform: none !important;
   font-size: 0.9rem;
-  top: -10px !important;
+  /* top: -10px !important; */
   left: 0 !important;
 }
 
+#modalEditarUsuario {
+  display: none;
+}
+
+#formUpdateUser {
+  display: grid;
+  grid-template-areas:
+    "docum docum"
+    "nombres apellidos"
+    "email telefono"
+    "direccion rol"
+    "password password"
+    ". btn-update";
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.docum {
+  grid-area: docum;
+}
+
+.nombres {
+  grid-area: nombres;
+}
+
+.apellidos {
+  grid-area: apellidos;
+}
+
+.email {
+  grid-area: email;
+}
+
+.telefono {
+  grid-area: telefono;
+}
+
+.direccion {
+  grid-area: direccion;
+}
+
+.password {
+  grid-area: password;
+}
+
+.rol {
+  grid-area: rol;
+}
+
+.btn-update {
+  grid-area: btn-update;
+  text-align: center;
+}
+
+
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

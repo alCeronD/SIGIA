@@ -7,27 +7,63 @@
   <div class="solicPrestamos">
     <form id="formSolicitudPrestamo" method="POST" action="<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'registrarPrestamo'); ?>" class="row">
 
+      <!-- Nombre y rol del solicitante -->
       <div class="input-field nombre">
-        <label for="pres_nombre" class="active  fontInfo">
-          Nombre del Solicitante: <span class="black-text "><?php echo $nombre . " " . $apellido; ?></span>
+        <label for="pres_nombre" class="active fontInfo">
+          Nombre del Solicitante: <span class="black-text"><?= htmlspecialchars($nombre . " " . $apellido); ?></span>
         </label>
       </div>
 
       <div class="input-field rol">
         <label for="pres_rol" class="active fontInfo">
-          Rol del Solicitante <span class="black-text"><?php echo $rol_nombre; ?></span>
+          Rol del Solicitante: <span class="black-text"><?= htmlspecialchars($rol_nombre); ?></span>
         </label>
       </div>
 
+      <!-- Teléfono, dirección y correo -->
+      <div class="input-field telefono">
+        <label for="pres_telefono" class="active fontInfo">
+          Teléfono: <span class="black-text"><?= htmlspecialchars($telefono); ?></span>
+        </label>
+      </div>
+
+      <div class="input-field direccion">
+        <label for="pres_direccion" class="active fontInfo">
+          Dirección: <span class="black-text"><?= htmlspecialchars($direccion); ?></span>
+        </label>
+      </div>
+
+      <div class="input-field correo">
+        <label for="pres_email" class="active fontInfo">
+          Correo electrónico: <span class="black-text"><?= htmlspecialchars($email); ?></span>
+        </label>
+      </div>
+
+      <!-- Fechas -->
+      <!-- Fechas -->
       <div class="input-field fechaReserva">
         <input type="text" id="pres_fch_reserva" name="pres_fch_reserva" class="datepicker" required>
         <label for="pres_fch_reserva" class="active">Fecha de Reserva *</label>
       </div>
 
+      <!-- Hora de Inicio -->
+      <div class="input-field horaInicio">
+        <input type="time" id="pres_hor_inicio" name="pres_hor_inicio" required>
+        <label for="pres_hor_inicio" class="active">Hora de Inicio *</label>
+      </div>
+
+      <!-- Fecha de Entrega -->
       <div class="input-field fechaEntrega">
         <input type="text" id="pres_fch_entrega" name="pres_fch_entrega" class="datepicker" required>
         <label for="pres_fch_entrega" class="active">Fecha de Devolución *</label>
       </div>
+
+      <!-- Hora de Fin -->
+      <div class="input-field horaFin">
+        <input type="time" id="pres_hor_fin" name="pres_hor_fin" required>
+        <label for="pres_hor_fin" class="active">Hora de Fin *</label>
+      </div>
+
 
       <div class="input-field destino">
         <input type="text" id="pres_destino" name="pres_destino" maxlength="30" required>
@@ -35,22 +71,19 @@
       </div>
 
       <div class="input-field inputObservaciones">
-        <textarea id="pres_observacion" name="pres_observacion" class="materialize-textarea" required></textarea>
+        <textarea id="pres_observacion" name="pres_observacion" class="materialize-textarea" maxlength="50" required></textarea>
         <label for="pres_observacion">Observaciones *</label>
+        <span id="contadorObservacion" class="helper-text right-align grey-text text-darken-1">0 / 50</span>
       </div>
 
 
-
-      <!-- SELECCIONAR EL MODAL QUE SE QUEIERE ABRIR -->
+      <!-- Modal Triggers -->
       <div class="input-field inputAddElements">
         <a class="waves-effect waves-light btn modal-trigger" href="#modalSeleccionElementos">Selec. Elementos devolutivos</a>
         <a class="waves-effect waves-light btn modal-trigger" href="#modalSeleccionConsumibles">Selec. Elementos consumibles</a>
       </div>
 
-      <!-- ///////////////////////////// -->
-      <!-- MODAL ELEMENTOS DEVOLUTIVOSS -->
-      <!-- ///////////////////////////// -->
-
+      <!-- Modal Elementos Devolutivos -->
       <div id="modalSeleccionElementos" class="modal">
         <div class="modal-content">
           <h5>Seleccionar Elementos Devolutivos</h5>
@@ -101,15 +134,11 @@
         </div>
       </div>
 
-
-
-      <!-- ///////////////////////////// -->
-      <!-- MODAL ELEMENTOS CONSUMIBLES -->
-      <!-- ///////////////////////////// -->
+      <!-- Modal Elementos Consumibles -->
       <div id="modalSeleccionConsumibles" class="modal">
         <div class="modal-content">
           <h5>Seleccionar Elementos Consumibles</h5>
-      
+
           <div class="input-field">
             <select id="filtro_area_modal_consumibles" name="filtro_area_modal_consumibles">
               <option value="" selected>Todas las áreas</option>
@@ -119,7 +148,7 @@
             </select>
             <label for="filtro_area_modal_consumibles">Filtrar por área</label>
           </div>
-      
+
           <div class="table-responsive">
             <table class="highlight">
               <thead>
@@ -151,21 +180,19 @@
               </tbody>
             </table>
           </div>
-      
+
           <ul id="paginacion_consumibles" class="pagination center-align"></ul>
         </div>
-      
+
         <div class="modal-footer">
           <a href="#!" class="modal-close waves-effect waves-green btn-flat">Confirmar Selección</a>
         </div>
       </div>
 
+      <!-- Campo oculto para devolver valores -->
       <input type="hidden" name="elementos_devolutivos_seleccionados[]" id="elementos_devolutivos_seleccionados">
 
-
-      <!-- ///////////////////////////// -->
-      <!-- enviar solicitud -->
-      <!-- ///////////////////////////// -->
+      <!-- Botón de enviar -->
       <div class="input-field center-align inputBtn">
         <button type="submit" class="btn blue">Solicitar</button>
       </div>

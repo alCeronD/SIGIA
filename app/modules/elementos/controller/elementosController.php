@@ -163,6 +163,11 @@ class ElementosController
         }
         success('registro adicionado con exito', $result);
     }
+    
+    
+    
+    
+    
 }
 
 $elementosController = new ElementosController();

@@ -4,6 +4,7 @@ include_once __DIR__ . '/../model/solicitudPrestamosModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
 include_once __DIR__ . '/../../elementos/model/elementosModel.php';
+include_once __DIR__ . '/../../usuarios/model/usuariosModel.php';
 include_once __DIR__ . '/../../../helpers/session.php';
 include_once __DIR__ . '/../../../helpers/response.php';
 
@@ -16,18 +17,28 @@ class solicitudPrestamosController {
     }
 
     public function registrarPrestamosView() {
-        $nombre = $_SESSION['usuario']['nombre'];
-        $apellido = $_SESSION['usuario']['apellido'];
+    
+        $idUsuario = $_SESSION['usuario']['id'];
         $rol_nombre = $_SESSION['usuario']['rol_nombre'];
-
+        $obj = new usuarios();
+        $datosU = $obj->searchU($idUsuario);
+        
+        // dd($datosU);
+        
+        $nombre = $datosU['usu_nombres'];
+        $apellido =  $datosU['usu_apellidos'];
+        $telefono = $datosU['usu_telefono'];
+        $direccion = $datosU['usu_direccion'];
+        $email = $datosU['usu_email']; 
+        
         $objetoArea = new ConfigModulesModel();
         $areas = $objetoArea->select("SELECT * FROM areas WHERE ar_status = 1");
-
+        
         // $objetoElemento = new ElementoModelo($this->conn);
         $objetoElemento = new ElementoModelo();
         $elementos = $objetoElemento->searchElements(1);
         $elementos_consumibles = $objetoElemento->searchElements(2);
-
+        
         return include_once __DIR__ . '/../views/solicitudPrestamosView.php';
     }
 
@@ -215,6 +226,8 @@ class solicitudPrestamosController {
         $resultado = $modelo->cancelarPrestamo($presCod);
         echo json_encode($resultado);
         exit;
+        
+        //Realizar accion de entrada_Salidas al momento de cancelar Prestamo
  
     }
 
