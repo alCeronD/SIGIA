@@ -336,30 +336,45 @@ class ElementoModelo
 }
 
     // Actualizar elemento sin modificar placa ni tipo (solo otros campos)
-    public function actualizarElemento($id, $datos)
+    public function actualizarElemento(array $data = [])
     {
+        
         $sql = "UPDATE elementos 
             SET elm_nombre = ?, 
-                elm_uni_medida = ?, 
-                elm_cod_estado = ?, 
-                elm_area_cod = ? 
+                elm_area_cod = ?, 
+                elm_sugerencia = ?,
+                elm_observacion = ?
             WHERE elm_cod = ?";
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
-            echo "Error en prepare: " . $this->conn->error;
-            return false;
+            return [
+                'message'=>"error al ejecutar actualización",
+                'status'=>false
+            ];;
         }
+
+        $codArea = (int) $data['elm_area_cod'];
         $stmt->bind_param(
-            "siiii",
-            $datos['elm_nombre'],
-            $datos['elm_uni_medida'],
-            $datos['elm_cod_estado'],
-            $datos['elm_area_cod'],
-            $id
-        );
+        "sissi", // nombre(string), área(int), sugerencia(string), observación(string), id(int)
+        $data['elm_nombre'],
+        $codArea,
+        $data['elm_sugerencia'],
+        $data['elm_observacion'],
+        $data['elm_cod']
+    );
+
+        if (!$stmt->execute()) {
+            return [
+                'message'=>"error al ejecutar actualización",
+                'status'=>false
+            ];
+        }
 
         $this->conn->close();
-        return $stmt->execute();
+        return [
+            'message'=>"Elemento actualizado",
+            'status'=> true
+        ];
     }
     
     // Alternar estado entre Disponible (1) e Inhabilitado (4)

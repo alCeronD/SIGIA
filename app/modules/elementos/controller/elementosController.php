@@ -124,48 +124,19 @@ class ElementosController
         
     }
 
-    public function editarElemento()
+    public function editarElemento(array $data = [])
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (isset($_POST['elm_cod'], $_POST['elm_nombre'], $_POST['elm_uni_medida'], $_POST['elm_area_cod'])) {
-                $id = $_POST['elm_cod'];
 
-                // Llenar arreglo con los datos que sí se actualizan
-                $datos = [
-                    'elm_nombre' => $_POST['elm_nombre'],
-                    'elm_uni_medida' => $_POST['elm_uni_medida'],
-                    'elm_area_cod' => $_POST['elm_area_cod'],
-                    'elm_cod_estado' => 1 // Siempre activo (o puedes recibirlo por POST si quieres que sea editable)
-                ];
+        // Llamar al modelo para actualizar
+        $exito = $this->modeloElemento->actualizarElemento($data);
+        if (!$exito) {
+        fail('error al procesar actualización', $exito);
 
-                // Llamar al modelo para actualizar
-                $exito = $this->modeloElemento->actualizarElemento($id, $datos);
-
-                if ($exito) {
-                    echo "<script>alert('Elemento actualizado correctamente'); window.location.href = '" . getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') . "';</script>";
-                } else {
-                    echo "<div class='alert alert-danger text-center'>Error al actualizar el elemento.</div>";
-                }
-            } else {
-                echo "<div class='alert alert-danger text-center'>Faltan datos obligatorios.</div>";
-            }
-        } else {
-            // Mostrar formulario de edición
-            if (isset($_GET['elm_cod'])) {
-                $id = $_GET['elm_cod'];
-                $elemento = $this->modeloElemento->obtenerElementoPorId($id);
-
-                // Usamos el modelo genérico para obtener áreas
-                $modeloGenerico = new ConfigModulesModel();
-                $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
-
-                if ($elemento) {
-                    include __DIR__ . '/../views/elementosEditar.php';
-                } else {
-                    echo "<div class='alert alert-danger text-center'>Elemento no encontrado.</div>";
-                }
-            }
         }
+        success('recurso actualizado con exito', $exito);
+     
+            
+        
     }
 
     public function cambiarEstadoElemento()
@@ -276,5 +247,33 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         }
 
     }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
+        $input = file_get_contents("php://input");
+
+        //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
+        $data = json_decode($input, true);
+
+        $action = $data['action'];
+        unset($data['action']);
+
+
+        switch ($action) {
+            case 'updateElement':
+                // var_dump($data);
+                if (method_exists($elementosController, 'editarElemento')) {
+                    $elementosController->editarElemento($data);
+                }
+                break;
+            case 'label':
+                # code...
+                break;
+            default:
+                # code...
+                break;
+        }
+    }
+
+
     exit();
 }

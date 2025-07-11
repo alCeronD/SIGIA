@@ -88,19 +88,9 @@
     color: var(--white) !important;
 }
 
-/* ----------------- Botones de Acción ----------------- */
-.btn-group {
-    display: flex;
-    gap: 5px;
-    flex-wrap: nowrap;
-    justify-content: center;
-    flex-wrap: wrap;
-}
+/* ----------------- Botones de acción del modolu ----------------- */
 
-.btn-sm {
-    padding: 5px 10px;
-    font-size: 13px;
-}
+
 
 /* ----------------- Modal "Ver Más" ----------------- */
 #modalVerMas {
@@ -361,37 +351,10 @@
     grid-area:cantidadElemento ;
 }
 
-/* 
-#addElementModal > #modalContentElements {
-    margin: 0 auto;
-    background:#fff; padding:20px; border-radius:8px; width:90%; max-width:600px; max-height:90vh; overflow-y:auto; position:relative;
-} */
 
 #btnCloseModalAddElements{
     position:absolute; top:10px; right:15px; font-size:24px; background:none; border:none; cursor:pointer;
 }
-
-
-/* Grupos de campos */
-/* #addElementModal .mb-3 {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 6px;
-} */
-
-/* Etiquetas */
-/* #addElementModal label {
-  font-weight: 600;
-  font-size: 14px;
-  color: #333;
-} */
-
-/* Inputs y selects con ancho limitado */
-/* #addElementModal input[type="text"],
-#addElementModal input[type="number"],
-#addElementModal select {
-  padding: 6px;
-} */
 
 
 /* Selector tipo de elemento */
@@ -490,6 +453,7 @@
     display: grid;
     grid-template-areas:
         "placa placa"
+        "placaInputsEditar placaInputsEditar"
         "nombre area"
         "unidadMedida unidadMedida"
         "tipoElemento existencia"
@@ -502,6 +466,19 @@
     max-width: 100%;
     margin: 0 auto;
     padding: 14px 5px;
+}
+
+#modalEditarElemento form .placaInputsEditar{
+    display: none;
+    grid-area: placaInputsEditar;
+}
+
+.inputPlacaEditar{
+    display: none;
+}
+
+.inputSerieEdit{
+    display: none;
 }
 
 /* Áreas */

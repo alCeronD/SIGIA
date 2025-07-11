@@ -58,6 +58,7 @@ const serialPlacaAssoc = document.querySelector('#serialPlacaAssoc');
 const sugerenciaInput = document.querySelector('#sugerenciaInput');
 const observacionInput = document.querySelector('#observacionInput');
 
+// FUNCIÓN PARA RENDERIZAR Y VISUALIZAR LAS PLACAS EN EL REGISTRAR ELEMENTO.
 function viewPlacaInputs(status = false) {
     if (!status) {
         // Placa nueva
@@ -90,6 +91,28 @@ function viewPlacaInputs(status = false) {
         elm_placa.removeAttribute('name');
         elm_serie.removeAttribute('name');
     }
+}
+
+
+const contentPlacaEdit = document.querySelector('.contentPlacaEdit');
+// FUNCIÓN PARA RENDERIZAR LA PLACA EN EL EDITAR ELEMENTO
+function showPlacaAsociadaEditar() {
+    contentPlacaEdit.style.display = 'none'; 
+    inputPlaca.style.display = 'none';
+    inputSerie.style.display = 'none';
+
+    selectPlaca.style.display = 'grid';
+    tablePlaca.style.display = 'grid';
+    placaAssocContent.style.display = 'grid';
+
+    serialPlacaAssoc.readOnly = true;
+
+    // Asegúrate de tener los nombres correctos
+    searchPlaca.setAttribute('name', 'searchPlaca');
+    serialPlacaAssoc.setAttribute('name', 'serialPlaca');
+
+    elm_placa.removeAttribute('name');
+    elm_serie.removeAttribute('name');
 }
 
 // Input de cantidad del elemento
@@ -256,63 +279,6 @@ function resetForm(form) {
     
 
 }
-// Mostrar modal = TODO: Crear una función de un modal dinámico.
-function showModal({modal = '', type = 'registro', titulo = '', onAceptar = true, data = {}} = {}){
-    // modal.el = accedemos al elemento direcemtne del doom porque en materialize creamos una instancia del modal, no del doom directamente.
-    if (!modal || !modal.el) return;
-
-
-   
-    if(!form) return;
-
-    const footerBtn = document.querySelector('.footerBtn');
-             // El modal que le estamos pasando por parametro, le capturamos su formulario
-    const form = modal.el.querySelector('form');
-    // Llamo la función de reinicio antes de ejecutar el modal
-    resetForm(form);
-    // Reinicio por segunda ves el elemento.
-    form.reset();
-
-    switch (type) {
-        case 'registrar':
-            modal.open();
-            
-            if (onAceptar) footerBtn.style.display = "flex";
-            titleModal.innerText = titulo;
-
-        break;
-
-            case 'info':
-                    // Capturo todos los inputs del formulario
-    const inputs = form.querySelectorAll('input, textarea, select');
-                modal.open();
-                if (!onAceptar) footerBtn.style.display = "none";
-                titleModal.innerText = titulo;
-                
-            inputs.forEach((input)=>{
-                console.log(`${input}: ${input.type}`)
-
-                // Deshabilito los input tipo checkbox
-                if (input.type === 'checkbox' || input.type === 'radio') {
-                    input.disabled = true;
-                } else if (input.tagName === 'SELECT') {
-                      input.disabled = true;
-                } else {
-                    input.readOnly = true;
-                }
-            });
-
-        break;
-
-        case 'actualizar':
-            modal.open();
-        break;
-
-        default:
-            console.log('opcion no valida');
-            break;
-    }
-}
 
 // modal ver detalle
 const modalVerMas = instanceModal('#modalVerMas', options);
@@ -380,16 +346,23 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         const btnInfo = createBtn('btn');
         addClassItem(btnInfo,{"infoColor": "infoColor"});
         const btnEdit = createBtn('btn');
+        addClassItem(btnEdit, {cyan: "cyan", blueGrey:"blue-grey"});
+
+        console.log(dta);
+        
         const btnDelete = createBtn('btn');
         const btnAdd = createBtn('btn');
         let iconInfo = createI();
         let iconUpdate = createI();
+        let iconDelete = createI();
         iconUpdate.innerText = 'border_color'
         iconInfo.innerText = 'info';
+        iconDelete.innerText = 'delete_sweep';
         btnInfo.appendChild(iconInfo);
         btnInfo.setAttribute('dataPlaca',dta.codigoElemento);
         btnEdit.appendChild(iconUpdate);
-        btnDelete.innerText = '3';
+        btnDelete.appendChild(iconDelete);
+        addClassItem(btnDelete, {deepOrangeDarken:"deep-orange darken-1"});
         btnAdd.innerText = '4';
 
         //TODO: esto se puede mejorar implementando la información de manera dinámica.
@@ -455,8 +428,10 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
             e.stopPropagation();
             e.preventDefault();
 
-            console.log(dta);
+            // console.log(dta);
             modalEditarElemento.open();
+
+            console.log(dta.codigoElemento);
         
             // TODO, puedo hacerlo de mejor forma creando un objeto y ciclando el formulario, no se hace x falta de tiempo.
             let elm_placa_editar = document.querySelector('#elm_placa_editar');
@@ -467,16 +442,28 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
             let sugerenciaInputEditar = document.querySelector('#sugerenciaInputEditar');
             let observacionInputEditar = document.querySelector('#observacionInputEditar');
             let elm_existencia_editar = document.querySelector('#elm_existencia_editar');
+            let codElementoEditar = document.querySelector('#codElementoEditar');
             elm_placa_editar.value = dta.placa;
+            elm_placa_editar.readOnly = true;
             elm_nombre_editar.value = dta.nombreElemento;
             tp_elemento.value = dta.codTipoElemento;
             elm_existencia_editar.value = dta.codTipoElemento === 1 ? 1 : dta.cantidad;
             undMedida.value = dta.codUnidadMedida;
             observacionInputEditar.value = dta.observacionElemento;
             sugerenciaInputEditar.value = dta.sugerenciaIngresada;
+            codElementoEditar.value = dta.codigoElemento;
             
             await renderSelectAreas('areas', elm_area_cod_editar);
             elm_area_cod_editar.value = dta.codArea;
+
+            // Dejar pendiente esta sección.
+            // const placaInputsEditar = document.querySelector('.placaInputsEditar');
+            // const inputPlacaEditar = document.querySelector('.inputPlacaEditar');
+            // const contentPlacaEdit = document.querySelector('.contentPlacaEdit');
+            // const inputSerieEdit = document.querySelector('.inputSerieEdit');
+            // placaInputsEditar.style.display = "grid";
+            // contentPlacaEdit.style.display = "grid";
+            // inputPlacaEditar.style.display = "grid";
 
             M.FormSelect.init(tp_elemento);
             M.FormSelect.init(undMedida);
@@ -810,19 +797,42 @@ editarElementForm.addEventListener('submit', (e)=>{
     e.stopPropagation();
     mostrarConfirmacion('Guardar cambios','¿Esta seguro de guardar los cambios?', (respuesta)=>{
         if (respuesta) {
-            const formUpdate = new FormData(e.target);
-            let dataUpdate = Object.fromEntries(formUpdate);
-            console.log(dataUpdate);
-            console.log(e.target)
+            try {
+                //TODO Validar campos obligatorios.
+                const formUpdate = new FormData(e.target);
+                const dataObj = Object.fromEntries(formUpdate.entries());
+
+                // Estos 3 elementos los estoy por ahora, borrando pero les daremos utilidad.
+                delete dataObj['elm_serie'];
+                delete dataObj['serialPlaca'];
+                delete dataObj['elm_uni_medida_select'];
+
+                let data = dataObj;
+                let response = sendData("modules/elementos/controller/elementosController.php",'PUT','updateElement',data);
+
+                response.then((result)=>{
+                    if (!result) {
+                        initAlert('error al actualizar el recuros','warning', toastOptions);
+                    }
+                    initAlert('recurso actualizado con exito', 'success',toastOptions);
+                    modalEditarElemento.close();
+                    // renderElements({type});
+
+                });
+            } catch (error) {
+                throw new Error("Error al actualizar el recurso.");
+                
+            }
+            
         }else{
-            console.log('proceso cancelado');
+            console.warn('proceso cancelado');
         }
 
     });
 
 });
 
- // puedo ejecutar el callback que me permita reiniciar los campos del formulario.
+// puedo ejecutar el callback que me permita reiniciar los campos del formulario.
 closeModal(addElementModal,cerrarModalBtn, ()=>{
   // Si existe el modal, traiga el selector form que se encuentra de manera interna.
   if (addElementModal) {

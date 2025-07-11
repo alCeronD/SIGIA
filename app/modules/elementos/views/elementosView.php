@@ -210,7 +210,7 @@
 
                 <div class="apuntes">
                     <!-- Observacion -->
-                    <div class="input-field observacion"> 
+                    <div class="input-field observacion">
                         <textarea id="observacionInput" class="materialize-textarea" name="elm_observacion" data-length="120"></textarea>
                         <label for="observacionInput">Observación</label>
                     </div>
@@ -223,8 +223,6 @@
                 <div class="modal-footer footerBtn">
                     <button type="submit" class="btn waves-effect waves-light left"><i class="material-icons">save</i></button>
                 </div>
-
-
             </form>
         </div>
     </div>
@@ -242,10 +240,52 @@
         </div>
         <div class="modalContentForm">
             <form id="editarElementForm">
+                <div class="codElemento">
+                    <input type="hidden" name="elm_cod" id="codElementoEditar" value="">
+                </div>
                 <div class="placa">
                     <label>Placa:</label>
                     <label id="label_placa"></label>
                     <input id="elm_placa_editar" name="elm_nombre" type="text" required>
+                </div>
+                <div class="placaInputsEditar">
+                    <!-- INPUTS DE PLACAS QUE SELECCIONE EL INPUT RADIO NUEVA PLACA -->
+                    <div class="contentPlacaEdit input-field">
+                        <!-- <div class="inputPlacaEditar">
+                            <input id="elm_placa" name="elm_placa" type="text">
+                            <label for="elm_placa">Número de placa *</label>
+                        </div> -->
+                        <div class="inputSerieEdit input-field">
+                            <!-- Validar, no se deben permitir catacteres con el arroba o el # -->
+                            <input id="elm_serie" name="elm_serie" type="text">
+                            <label for="elm_serie">Código de serie * Ejemplo = 922919587-1</label>
+                        </div>
+                    </div>
+                    <!-- INPUTS DE LAS PLACAS ASOCIADAS. -->
+                    <div class="placaAssocContent">
+                        <div class="selectPlaca">
+                            <label for="searchPlaca">Digite el número de placa</label>
+                            <span id="respuestaPlaca" style="display: none;"></span>
+                            <input type="text" name="searchPlaca" id="searchPlaca">
+                        </div>
+                        <div class="contentPlacaAssoc ">
+                            <label for="serialPlaca">Serial asociado</label>
+                            <input type="text" name="serialPlaca" id="serialPlacaAssoc">
+                        </div>
+                        <div class="tableResult">
+                            <table class="striped responsive-table" id="tablePlaca">
+                                <thead>
+                                    <tr>
+                                        <th>Codigo</th>
+                                        <th>Serial registrado</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyPlacaResult"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="nombre">
@@ -281,7 +321,7 @@
                     <input id="elm_existencia_editar" name="elm_existencia" type="text" required>
                 </div>
                 <div class="apuntes">
-                    <div class="input-field observacion"> 
+                    <div class="input-field observacion">
                         <label for="observacionInputEditar">Observación</label>
                         <textarea id="observacionInputEditar" class="materialize-textarea" placeholder="Observacion" name="elm_observacion" data-length="120"></textarea>
                     </div>
@@ -347,15 +387,15 @@
 <!-- Modal confirmación -->
 <!-- Sive para validar confirmación del un acción o no. -->
 <div id="modalConfirmacion" class="modal">
-  <div class="modal-content">
-    <h5 id="modalConfirmacionTitulo">Confirmación</h5>
-    <p id="modalConfirmacionMensaje">¿Estás seguro de realizar esta acción?</p>
-  </div>
-  <!-- el ! significa un elemento de referencia hacia javascript. -->
-  <div class="modal-footer">
-    <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="btnCancelar">Cancelar</a>
-    <a href="#!" class="modal-close waves-effect waves-red btn" id="btnAceptar">Aceptar</a>
-  </div>
+    <div class="modal-content">
+        <h5 id="modalConfirmacionTitulo">Confirmación</h5>
+        <p id="modalConfirmacionMensaje">¿Estás seguro de realizar esta acción?</p>
+    </div>
+    <!-- el ! significa un elemento de referencia hacia javascript. -->
+    <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="btnCancelar">Cancelar</a>
+        <a href="#!" class="modal-close waves-effect waves-red btn" id="btnAceptar">Aceptar</a>
+    </div>
 </div>
 
 <script type="module" src="../public/assets/js/elementos/elementosNew.js"></script>
