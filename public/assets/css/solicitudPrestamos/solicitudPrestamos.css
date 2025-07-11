@@ -89,18 +89,12 @@ th {
   text-align: center;
 }
 
-/* 
+ 
 .input-field {
-    border: 1px dashed red;
+    margin-left: 10px !important;
+    width: 90%;
   }
-   */
-.input-field {
-  /* border: 1px dashed red; */
-  width: 90%;
-
-}
-
-
+  
 .nombre {
   grid-area: nombre;
 }
@@ -523,3 +517,4 @@ td {
     width: 100%;
   }
 }
+

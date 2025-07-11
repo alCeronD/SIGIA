@@ -38,36 +38,53 @@
   .page {
     margin-top: 20px;
   }
+
+  .switch-container {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .switch-container label {
+    margin: 0 15px;
+  }
 </style>
 
 <div class="content">
-  <h4 class="center-align">Reporte General de Elementos</h4>
+  <h4 class="center-align">Reporte General</h4>
+
+  <!-- botones para cambiar filtro -->
+  <div class="switch-container">
+    <label>
+      <input class="with-gap" name="filtroSelector" type="radio" id="btnFiltroElementos" checked />
+      <span>Filtro por Elementos</span>
+    </label>
+    <label>
+      <input class="with-gap" name="filtroSelector" type="radio" id="btnFiltroTrazabilidad" />
+      <span>Filtro por Entradas/Salidas</span>
+    </label>
+  </div>
 
   <div class="row">
-    <!-- FILTROS -->
-    <div class="col s12 m5">
+    <!-- FILTROS ELEMENTOS -->
+    <div class="col s12 m5" id="filtroElementos">
       <div class="card card-filtros">
-        <!-- FILTRO TIPO DE ELEMENTO -->
+        <!-- FILTRO TIPO -->
         <div class="input-field">
           <select id="tipoElemento">
             <option value="">Todos los tipos</option>
             <?php foreach ($tipos as $tipo): ?>
-              <option value="<?= $tipo['tp_el_cod']; ?>">
-                <?= htmlspecialchars($tipo['tp_el_nombre']); ?>
-              </option>
+              <option value="<?= $tipo['tp_el_cod']; ?>"><?= htmlspecialchars($tipo['tp_el_nombre']); ?></option>
             <?php endforeach; ?>
           </select>
           <label for="tipoElemento">Filtrar por Tipo</label>
         </div>
 
-        <!-- FILTRO ESTADO DE ELEMENTO -->
+        <!-- FILTRO ESTADO -->
         <div class="input-field">
           <select id="estadoElemento">
             <option value="">Todos los estados</option>
             <?php foreach ($estados as $estado): ?>
-              <option value="<?= $estado['est_el_cod']; ?>">
-                <?= htmlspecialchars($estado['est_nombre']); ?>
-              </option>
+              <option value="<?= $estado['est_el_cod']; ?>"><?= htmlspecialchars($estado['est_nombre']); ?></option>
             <?php endforeach; ?>
           </select>
           <label for="estadoElemento">Filtrar por Estado</label>
@@ -81,19 +98,48 @@
       </div>
     </div>
 
-    <!-- TABLA -->
+    <!-- FILTROS TRAZABILIDAD -->
+    <div class="col s12 m5" id="filtroTrazabilidad" style="display: none;">
+      <div class="card card-filtros">
+        <!-- tipo elemento -->
+        <div class="input-field">
+          <select id="trzTipoElemento">
+            <option value="">Todos los tipos</option>
+            <?php foreach ($tipos as $tipo): ?>
+              <option value="<?= $tipo['tp_el_cod']; ?>"><?= htmlspecialchars($tipo['tp_el_nombre']); ?></option>
+            <?php endforeach; ?>
+          </select>
+          <label for="trzTipoElemento">Tipo de Elemento</label>
+        </div>
+
+        <div class="input-field">
+          <input type="date" id="trzFechaInicio">
+          <label for="trzFechaInicio" class="active">Fecha Inicio</label>
+        </div>
+        <div class="input-field">
+          <input type="date" id="trzFechaFin">
+          <label for="trzFechaFin" class="active">Fecha Fin</label>
+        </div>
+
+        <div class="center-align">
+          <button id="btnBuscarTrazabilidad" type="button" class="btn waves-effect teal darken-1">
+            <i class="material-icons left">search</i>Buscar
+          </button>
+          
+          <a id="btnDescargarTrazabilidad" href="#" class="btn waves-effect blue" style="margin-left:10px">
+            <i class="material-icons left">description</i>Descargar
+          </a>
+        </div>
+      </div>
+    </div>
+
     <div class="col s12 m7">
       <h5 class="center-align">Previsualización</h5>
       <table id="tabla-previa" class="striped responsive-table highlight centered">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Nombre</th>
-            <th>Placa</th>
-            <th>Existencia</th>
-            <th>Estado</th>
-          </tr>
+        <thead id="tabla-previa-head">
+          <!-- Generate tabla jodaaaaa "dinamica pero no quiere funcionar"-->
         </thead>
+      </thead>
         <tbody id="tabla-elementos-body">
           <tr><td colspan="5" class="grey-text">Seleccione filtros para ver los elementos</td></tr>
         </tbody>
@@ -105,102 +151,184 @@
   </div>
 </div>
 
+
 <!-- <script type="module" src="../public/assets/js/reportes/reportes.js"></script> Organizar para hacer las peticiones desde el fetch-->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+
   M.FormSelect.init(document.querySelectorAll('select'));
 
-  const selectTipo = document.getElementById('tipoElemento');
-  const selectEstado = document.getElementById('estadoElemento');
-  const tablaBody = document.getElementById('tabla-elementos-body');
-  const paginacion = document.getElementById('paginacion-elementos');
-  const btnDescargar = document.getElementById('btnDescargar');
+  /* --------- Referencias DOM --------- */
+  const selectTipo     = document.getElementById('tipoElemento');
+  const selectEstado   = document.getElementById('estadoElemento');
+  const tablaHead      = document.getElementById('tabla-previa-head');  
+  
+  const tablaBody      = document.getElementById('tabla-elementos-body');
+  const paginacion     = document.getElementById('paginacion-elementos');
+  const btnDescargar   = document.getElementById('btnDescargar');
+
+  const rbElementos    = document.getElementById('btnFiltroElementos');
+  const rbTrazabilidad = document.getElementById('btnFiltroTrazabilidad');
+
+  const contFiltroElem = document.getElementById('filtroElementos');
+  const contFiltroTraz = document.getElementById('filtroTrazabilidad');
+
+  const trzTipo        = document.getElementById('trzTipoElemento');
+  const trzFechaInicio = document.getElementById('trzFechaInicio');
+  const trzFechaFin    = document.getElementById('trzFechaFin');
+  const btnDescTraz    = document.getElementById('btnDescargarTrazabilidad');
+  const btnBuscarTraz  = document.getElementById('btnBuscarTrazabilidad');
 
   let elementos = [];
-  let visibles = [];
+  let visibles  = [];
   const itemsPorPagina = 10;
 
+  /* --------- Encabezado dinámico --------- */
+  function renderizarEncabezadoTabla(esTrazabilidad = false) {
+    tablaHead.innerHTML = `
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Placa</th>
+        ${esTrazabilidad ? '<th>Tipo movimiento</th>' : ''}
+        <th>Existencia</th>
+        <th>${esTrazabilidad ? 'Fecha' : 'Estado'}</th>
+      </tr>`;
+  }
+
+  /* --------- Paginación / Render --------- */
   function mostrarPagina(pagina) {
     const inicio = (pagina - 1) * itemsPorPagina;
-    const fin = inicio + itemsPorPagina;
-
+    const fin    = inicio + itemsPorPagina;
     tablaBody.innerHTML = '';
+
     visibles.slice(inicio, fin).forEach(e => {
       tablaBody.innerHTML += `
         <tr>
           <td>${e.codigoElemento}</td>
           <td>${e.nombreElemento}</td>
           <td>${e.placa || '—'}</td>
+          ${rbTrazabilidad.checked ? `<td>${e.tipoMovimiento}</td>` : ''}
           <td>${e.cantidad || 0}</td>
-          <td>${e.estadoElemento}</td>
+          <td>${rbTrazabilidad.checked ? e.fechaMovimiento : e.estadoElemento}</td>
         </tr>`;
     });
 
-    document.querySelectorAll('#paginacion-elementos li').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('#paginacion-elementos li').forEach(li => li.classList.remove('active'));
     const activo = document.querySelector(`#paginacion-elementos li[data-pagina="${pagina}"]`);
     if (activo) activo.classList.add('active');
   }
 
   function generarPaginacion(totalPaginas) {
     paginacion.innerHTML = '';
-
     for (let i = 1; i <= totalPaginas; i++) {
       const li = document.createElement('li');
       li.classList.add('waves-effect');
-      li.setAttribute('data-pagina', i);
+      li.dataset.pagina = i;
       li.innerHTML = `<a href="#!">${i}</a>`;
-      li.addEventListener('click', (e) => {
+      li.addEventListener('click', e => {
         e.preventDefault();
         mostrarPagina(i);
       });
       paginacion.appendChild(li);
     }
-
-    if (totalPaginas > 0) {
-      mostrarPagina(1);
-    } else {
-      tablaBody.innerHTML = `<tr><td colspan="5" class="red-text">No se encontraron elementos</td></tr>`;
+    if (totalPaginas > 0) mostrarPagina(1);
+    else {
+      const colSpan = rbTrazabilidad.checked ? 6 : 5;
+      tablaBody.innerHTML =
+        `<tr><td colspan="${colSpan}" class="red-text">No se encontraron elementos</td></tr>`;
     }
   }
 
-  function cargarElementos(tipo, estado) {
-    const url = `<?= getUrl('reportes', 'reportes', 'filtrarElementosAjax', false, 'dashboard'); ?>`;
-    const formData = new FormData();
-    formData.append('estadoElemento', estado);
-    formData.append('tipoElemento', tipo);
+  /* --------- Consultas --------- */
+  function cargarElementos(tipo = '', estado = '') {
+    const url = "<?= getUrl('reportes','reportes','filtrarElementosAjax',false,'dashboard'); ?>";
+    const fd  = new FormData();
+    fd.append('tipoElemento', tipo);
+    fd.append('estadoElemento', estado);
 
-    fetch(url, {
-      method: 'POST',
-      body: formData,
-      headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    })
-    .then(res => {
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json();
-    })
-    .then(data => {
-      elementos = data;
-      visibles = [...elementos];
-      const totalPaginas = Math.ceil(visibles.length / itemsPorPagina);
-      generarPaginacion(totalPaginas);
-
-      btnDescargar.href = `<?= getUrl('reportes', 'reportes', 'generarReporteExcel'); ?>&tipoElemento=${encodeURIComponent(tipo)}&estadoElemento=${encodeURIComponent(estado)}`;
-    })
-    .catch(err => {
-      console.error('Error al cargar elementos:', err);
-      tablaBody.innerHTML = `<tr><td colspan="5" class="red-text">Error al cargar elementos</td></tr>`;
-    });
+    fetch(url, { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' }})
+      .then(r => r.json())
+      .then(data => {
+        renderizarEncabezadoTabla(false);
+        elementos = data;
+        visibles  = [...elementos];
+        generarPaginacion(Math.ceil(visibles.length / itemsPorPagina));
+        btnDescargar.href = `<?= getUrl('reportes','reportes','generarReporteExcel'); ?>`
+                          + `&tipoElemento=${encodeURIComponent(tipo)}`
+                          + `&estadoElemento=${encodeURIComponent(estado)}`;
+      })
+      .catch(err => {
+        console.error(err);
+        const colSpan = 5;
+        tablaBody.innerHTML =
+          `<tr><td colspan="${colSpan}" class="red-text">Error al cargar elementos</td></tr>`;
+      });
   }
 
-  // Inicial cargar todos
-  cargarElementos('', '');
+  function cargarTrazabilidad() {
+    const tipo  = trzTipo.value;
+    const fi    = trzFechaInicio.value;
+    const ff    = trzFechaFin.value;
 
-  selectTipo.addEventListener('change', () => {
-    cargarElementos(selectTipo.value, selectEstado.value);
+    if (!fi || !ff) {
+      M.toast({ html: 'Seleccione un rango de fechas válido' });
+      return;
+    }
+
+    const url = "<?= getUrl('reportes','reportes','filtrarTrazabilidadAjax',false,'dashboard'); ?>";
+    const fd  = new FormData();
+    fd.append('tipoElemento', tipo);
+    fd.append('fechaInicio',  fi);
+    fd.append('fechaFin',     ff);
+
+    fetch(url, { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' }})
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(data => {
+        renderizarEncabezadoTabla(true);
+        elementos = data;
+        visibles  = [...elementos];
+        generarPaginacion(Math.ceil(visibles.length / itemsPorPagina));
+
+        btnDescTraz.href = `<?= getUrl('reportes','reportes','generarReporteTrazabilidad'); ?>`
+                         + `&tipoElemento=${encodeURIComponent(tipo)}`
+                         + `&fi=${encodeURIComponent(fi)}&ff=${encodeURIComponent(ff)}`;
+      })
+      .catch(err => {
+        console.error(err);
+        const colSpan = 6;
+        tablaBody.innerHTML =
+          `<tr><td colspan="${colSpan}" class="red-text">Error al cargar trazabilidad</td></tr>`;
+      });
+  }
+
+  /* --------- Listeners --------- */
+  rbElementos.addEventListener('change', () => {
+    if (rbElementos.checked) {
+      contFiltroElem.style.display = '';
+      contFiltroTraz.style.display = 'none';
+      cargarElementos(selectTipo.value, selectEstado.value);
+    }
   });
 
-  selectEstado.addEventListener('change', () => {
-    cargarElementos(selectTipo.value, selectEstado.value);
+  rbTrazabilidad.addEventListener('change', () => {
+    if (rbTrazabilidad.checked) {
+      contFiltroElem.style.display = 'none';
+      contFiltroTraz.style.display = '';
+      renderizarEncabezadoTabla(true);
+      const colSpan = 6;
+      tablaBody.innerHTML =
+        `<tr><td colspan="${colSpan}" class="grey-text">Seleccione filtros para ver los elementos</td></tr>`;
+      paginacion.innerHTML = '';
+    }
   });
+
+  selectTipo  .addEventListener('change', () => rbElementos.checked && cargarElementos(selectTipo.value, selectEstado.value));
+  selectEstado.addEventListener('change', () => rbElementos.checked && cargarElementos(selectTipo.value, selectEstado.value));
+  btnBuscarTraz.addEventListener('click', cargarTrazabilidad);
+
+  /* --------- Carga inicial --------- */
+  renderizarEncabezadoTabla(false);
+  cargarElementos();
 });
 </script>
