@@ -317,6 +317,9 @@ function showModal({modal = '', type = 'registro', titulo = '', onAceptar = true
 
 // modal ver detalle
 const modalVerMas = instanceModal('#modalVerMas', options);
+// Modal edit.
+const modalEditarElemento = instanceModal('#modalEditarElemento', options);
+
 
 /**
  * Renderiza elementos desde el backend utilizando filtros de tipo, acción y paginación.
@@ -379,13 +382,16 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         const btnDelete = createBtn('btn');
         const btnAdd = createBtn('btn');
         let iconInfo = createI();
+        let iconUpdate = createI();
+        iconUpdate.innerText = 'border_color'
         iconInfo.innerText = 'info';
         btnInfo.appendChild(iconInfo);
         btnInfo.setAttribute('dataPlaca',dta.codigoElemento);
-        btnEdit.innerText = '2';
+        btnEdit.appendChild(iconUpdate);
         btnDelete.innerText = '3';
         btnAdd.innerText = '4';
 
+        //TODO: esto se puede mejorar implementando la información de manera dinámica.
         tdPlaca.innerText = dta.placa;
         tdCantidad.innerText = dta.cantidad;
         tdCodigoElemento.innerText = dta.codigoElemento;
@@ -403,14 +409,11 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
             initTooltip(tdPlaca,{...tooltipOptions,margin:-25},'Elemento por agotar existencia','buttom');     
         }
 
-        if (dta.tipoElemento === 'Consumible') {
-            tdAcciones.append(btnInfo,btnEdit,btnDelete,btnAdd);
-        }
+        if (dta.tipoElemento === 'Consumible') tdAcciones.append(btnInfo,btnEdit,btnDelete,btnAdd);
+        
     
-        if (dta.tipoElemento === 'Devolutivo') {
-            tdAcciones.append(btnInfo,btnEdit,btnDelete);
-            
-        }
+        if (dta.tipoElemento === 'Devolutivo') tdAcciones.append(btnInfo,btnEdit,btnDelete);
+
 
 
         tbodyElements.appendChild(tr);
@@ -447,6 +450,39 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
             });
         });
 
+        btnEdit.addEventListener('click', async (e)=>{
+            e.stopPropagation();
+            e.preventDefault();
+
+            console.log(dta);
+            modalEditarElemento.open();
+        
+            // TODO, puedo hacerlo de mejor forma creando un objeto y ciclando el formulario, no se hace x falta de tiempo.
+            let elm_placa_editar = document.querySelector('#elm_placa_editar');
+            let elm_nombre_editar = document.querySelector('#elm_nombre_editar');
+            let tp_elemento = document.querySelector('#tp_elemento');
+            let undMedida = document.querySelector('#undMedida');
+            let elm_area_cod_editar = document.querySelector('#elm_area_cod_editar');
+            let sugerenciaInputEditar = document.querySelector('#sugerenciaInputEditar');
+            let observacionInputEditar = document.querySelector('#observacionInputEditar');
+            let elm_existencia_editar = document.querySelector('#elm_existencia_editar');
+            elm_placa_editar.value = dta.placa;
+            elm_nombre_editar.value = dta.nombreElemento;
+            tp_elemento.value = dta.codTipoElemento;
+            elm_existencia_editar.value = dta.codTipoElemento === 1 ? 1 : dta.cantidad;
+            undMedida.value = dta.codUnidadMedida;
+            observacionInputEditar.value = dta.observacionElemento;
+            sugerenciaInputEditar.value = dta.sugerenciaIngresada;
+            
+            await renderSelectAreas('areas', elm_area_cod_editar);
+            elm_area_cod_editar.value = dta.codArea;
+
+            M.FormSelect.init(tp_elemento);
+            M.FormSelect.init(undMedida);
+            M.FormSelect.init(elm_area_cod_editar);
+
+        });
+
     });
         } catch (error) {
         throw new Error(`Error al consultar los elementos ${error}`);
@@ -454,58 +490,56 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
     } 
 };
 
-
-
-const renderSelectAreas = async (action = '')=>{
+const renderSelectAreas = async (action = '', inputSelect)=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
     let dataResponse = response.data;
 
-    selectAreas.innerHTML = '';
+    inputSelect.innerHTML = '';
     const option = document.createElement('option');
     option.value = 0;
     option.textContent = "Seleccione un departamento";
     option.setAttribute('selected', 'selected');
     option.setAttribute('disabled', 'disabled');
-    selectAreas.appendChild(option);
+    inputSelect.appendChild(option);
     
     dataResponse.forEach((data)=>{
         const optionDataAreas = document.createElement('option');
         optionDataAreas.value = data.ar_cod;
         optionDataAreas.textContent = data.ar_nombre;
-        selectAreas.appendChild(optionDataAreas);
+        inputSelect.appendChild(optionDataAreas);
     });
     //Reinicializo los select, accedo a ellos mediante el objeto window.  
     if (window.M) {
-        M.FormSelect.init(selectAreas);
+        M.FormSelect.init(inputSelect);
     }
 }
+const categoriaSelect = document.querySelector('#categoriaSelect');
 
-const renderSelectCategorias = async (action = '')=>{
+const renderSelectCategorias = async (action = '',inputSelect)=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: 'categoria'});
     let categorias = response.data;
-    selectCategorias.innerHTML = '';
+    inputSelect.innerHTML = '';
     const option = document.createElement('option');
     option.value = 0;
     option.textContent = "Seleccione una categoria";
     option.setAttribute('selected', 'selected');
     option.setAttribute('disabled', 'disabled');
-    selectCategorias.appendChild(option);
+    inputSelect.appendChild(option);
     categorias.forEach((dataCat) => {
         const optionDataCategorias = document.createElement('option');
         optionDataCategorias.value = dataCat.ca_id;
         optionDataCategorias.textContent = dataCat.ca_nombre;
-        selectCategorias.appendChild(optionDataCategorias);
+        inputSelect.appendChild(optionDataCategorias);
     });
 
     if (window.M) {
-        M.FormSelect.init(selectCategorias);
+        M.FormSelect.init(inputSelect);
     }
 };
 
 const renderSelectMarcas = async (action = '') =>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
     let marcaData = response.data;
-    selectMarcas.innerHTML = '';
     selectMarcas.innerHTML = '';
     const option = document.createElement('option');
     option.value = 0;
@@ -746,20 +780,21 @@ document.addEventListener('DOMContentLoaded',  ()=>{
     // Inicializar select de las placas ya registradas
     const elemsSelect = document.querySelector('#placaAssoc');
 
+    // Estas 3 funciones puedo transformarlas en 1.
+    renderSelectAreas('areas', selectAreas);
+    renderSelectCategorias('categoria',selectCategorias);
+    renderSelectMarcas('marcas');
+    // Hago esto para evitar que mi función DOOM content loader sea asincrona.
+    renderSelectPlacas('placas').then((dataResult)=>{
+        placas = dataResult;
+    });
     M.FormSelect.init(elemsSelect);
     M.FormSelect.init(selectCategorias);
     M.FormSelect.init(selectMarcas);
     M.FormSelect.init(selectTpElemento);
     M.FormSelect.init(undMedida);
 
-    // Estas 3 funciones puedo transformarlas en 1.
-    renderSelectAreas('areas');
-    renderSelectCategorias('categoria');
-    renderSelectMarcas('marcas');
-    // Hago esto para evitar que mi función DOOM content loader sea asincrona.
-    renderSelectPlacas('placas').then((dataResult)=>{
-        placas = dataResult;
-    });
+    console.log(selectCategorias)
 
 
     // Inicializo todos los modales.

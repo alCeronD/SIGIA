@@ -163,7 +163,7 @@
 
                 <div class="categoria">
                     <label for="categoriaSelect">Categorias:</label>
-                    <select name="categoriaSelect" id="categoriaSelect" class=""></select>
+                    <select name="categoriaSelect" id="selectCategorias" class=""></select>
                 </div>
 
                 <div class="marca">
@@ -290,7 +290,7 @@
 </div>
 
 <!-- Modal Editar Elemento -->
-<div id="modalEditarElemento" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:3000;">
+<div id="" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:3000;">
 
     <button id="cerrarModalEditar" style="position:absolute; top:10px; right:15px; font-size:24px; background:none; border:none; cursor:pointer;">&times;</button>
 
@@ -340,6 +340,74 @@
         </div>
     </form>
 
+</div>
+
+<div id="modalEditarElemento" class="">
+    <div id="modalContentElements">
+        <div class="modalContentTitle">
+            <span id="titleModalEditar">Editar Elemento</span>
+            <button type="button" class="closeModalBtn" id="cerrarModalEditar">
+                <span class="close-modal">&times;</span>
+            </button>
+        </div>
+        <div class="modalContentForm">
+            <form id="editarElementForm" action="" method="">
+                <div class="placa">
+                    <label>Placa:</label>
+                    <label id="label_placa"></label>
+                    <input id="elm_placa_editar" name="elm_nombre" type="text" required>
+                </div>
+
+                <div class="nombre">
+                    <label for="elm_nombre_editar">Nombre elemento *</label>
+                    <input id="elm_nombre_editar" name="elm_nombre" type="text" required>
+                </div>
+                <div class="area">
+                    <label for="elm_area_cod_editar">Área *</label>
+                    <select id="elm_area_cod_editar" name="elm_area_cod" required>
+                    </select>
+                </div>
+
+                <div class="unidadMedida">
+                    <select class="" name="elm_uni_medida_select" id="undMedida">
+                        <option value="0" selected>Seleccione una opción</option>
+                        <option value="1">Unitario</option>
+                        <option value="2">Caja</option>
+                        <option value="3">Galon</option>
+                    </select>
+                </div>
+
+                <div class="tipoElemento">
+                    <label for="tp_elemento">Tipo de Elemento:</label>
+                    <select class="" name="tp_elemento" id="tp_elemento">
+                        <option value="0" selected>Seleccione una opción</option>
+                        <option value="1">devolutivo</option>
+                        <option value="2">consumible</option>
+                    </select>
+                </div>
+
+                <div class="existencia">
+                    <label for="elm_existencia">existencia</label>
+                    <input id="elm_existencia_editar" name="elm_existencia" type="text" required>
+                </div>
+                <div class="apuntes">
+                    <div class="input-field observacion"> 
+                        <label for="observacionInputEditar">Observación</label>
+                        <textarea id="observacionInputEditar" class="materialize-textarea" placeholder="Observacion" name="elm_observacion" data-length="120"></textarea>
+                    </div>
+                    <div class="input-field sugerencia">
+                        <label for="sugerenciaInputEditar">Sugerencia</label>
+                        <textarea id="sugerenciaInputEditar" class="materialize-textarea" placeholder="Sugerencia " name="elm_sugerencia" data-length="120"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer footerBtn">
+                    <button type="submit" class="btn waves-effect waves-light left">
+                        <i class="material-icons">save</i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 

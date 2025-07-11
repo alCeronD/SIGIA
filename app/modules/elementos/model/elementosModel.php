@@ -168,6 +168,7 @@ class ElementoModelo
         e.elm_observacion AS observacionElemento,
         e.elm_fecha_registro AS fechaRegistro,
         ar.ar_nombre AS nombreArea,
+        ar.ar_cod as codArea,
         tpE.tp_el_cod AS codTipoElemento,
         tpE.tp_el_nombre AS tipoElemento,
         es_e.est_nombre AS codEstadoElemento,
