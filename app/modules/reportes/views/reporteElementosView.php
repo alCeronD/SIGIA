@@ -137,7 +137,6 @@
       <h5 class="center-align">Previsualización</h5>
       <table id="tabla-previa" class="striped responsive-table highlight centered">
         <thead id="tabla-previa-head">
-          <!-- Generate tabla jodaaaaa "dinamica pero no quiere funcionar"-->
         </thead>
       </thead>
         <tbody id="tabla-elementos-body">
