@@ -1,10 +1,12 @@
-    :root {
+:root {
   --primary: #3a6c52;
   --secundary: #004034;
-  --btnSubmit : rgba(128, 255, 0, 0.371);
-  --btnInfo : green;
-  --other: gray;
+  --other: #ccc;
   --white: #f0f0f0;
+  --btnEdit: #007D78;
+  --teal :#4db6ac;
+  --blue: #42a5f5;
+  --red: #ef5350;
 }
 
 /* Botón para ir al dashboard. */
@@ -60,6 +62,14 @@
   text-align: center;
 }
 
+#btnAreaSend{
+  background-color: var(--blue);
+  color: white;
+  border: 1px;
+  border-radius: 10px;
+  width: auto;
+} 
+
 .contentAreaNem {
   grid-area: contentAreaNem;
 }
@@ -90,11 +100,14 @@
 #tableBodyArea tr td:last-child {
   display: flex;
   flex-direction: row;
+  gap: 0.6rem;
 }
 
 #btnAreaUpdate {
   width: fit-content;
   text-align: center;
+  background-color: var(--blue);
+  color: var(--white);
 }
 
 #modalArea{
@@ -249,6 +262,8 @@
 #tableBodyTp tr td:last-child {
   display: flex;
   flex-direction: row;
+  gap: 0.5rem;
+  justify-content: center;
 }
 
 /* CAMBIAR LOS LA ESTRUCTURA GENERAL DEL MODAL. */

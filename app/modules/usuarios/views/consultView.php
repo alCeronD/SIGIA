@@ -43,7 +43,7 @@
               <td>
                 <div class="center-align">
                   <a href="#"
-                    class="btnEditarUsuario btn-small teal darken-1 white-text waves-effect waves-light"
+                    class="btnEdit btn btnEditarUsuario  white-text waves-effect waves-red"
                     data-id="<?= $usuario['usu_id'] ?>"
                     data-nombres="<?= htmlspecialchars($usuario['usu_nombres']) ?>"
                     data-apellidos="<?= htmlspecialchars($usuario['usu_apellidos']) ?>"
@@ -51,13 +51,12 @@
                     data-telefono="<?= htmlspecialchars($usuario['usu_telefono']) ?>"
                     data-documento="<?= htmlspecialchars($usuario['usu_docum']) ?>"
                     data-direccion="<?= htmlspecialchars($usuario['usu_direccion'] ?? '') ?>">
-                    <i class="material-icons left">edit</i>Editar
+                    <i class="material-icons">edit</i>
                   </a>
-
                   <a href="<?= getUrl('usuarios', 'usuarios', 'cambiarEstadoUsuario', ['usu_id' => $usuario['usu_id']], 'dashboard') ?>"
-                    class="btn-small red lighten-1 white-text waves-effect waves-light"
+                    class="btn btnInvalida white-text waves-effect waves-light"
                     onclick="return confirm('¿Estás seguro de que deseas cambiar el estado del usuario?');">
-                    <i class="material-icons left">autorenew</i>Activar/Desactivar
+                    <i class="material-icons">autorenew</i>
                   </a>
                 </div>
               </td>
@@ -74,7 +73,6 @@
     <div class="pagination-container center-align">
       <ul id="paginacion-usuarios" class="pagination"></ul>
     </div>
-
   </div>
 </div>
 
@@ -133,8 +131,8 @@
       </div>
 
       <div class="inputBtn btn-update">
-        <button type="submit" class="btn waves-effect teal darken-2">
-          <i class="material-icons left">save</i>Actualizar Usuario
+        <button type="submit" class="btn  waves-effect  btnInfo">
+          <i class="material-icons">save</i>
         </button>
       </div>
     </form>

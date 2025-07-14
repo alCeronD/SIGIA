@@ -18,7 +18,7 @@
 
     <!-- Botón -->
     <div class="center-align contentRlBtn">
-        <button type="submit" class="btn waves-effect waves-light"><i class="material-icons">send</i></button>
+        <button type="submit" class="btnSubmitRol btn waves-effect waves-light"><i class="material-icons">send</i></button>
     </div>
     
 </form>

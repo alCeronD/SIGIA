@@ -1,13 +1,13 @@
 <div class="content">
     <div class="menuTitle">
-        <span id="textTitle">Reserva</span>
+        <span id="textTitle">Gestión de reserva</span>
         <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
     </div>
     <div class="searchUser">
         <label for="">Instructor: </label>
-        <button type="button" id="searchBtn" class="btnClick btn waves-effect waves-light">
+        <button type="button" id="searchBtn" class="btnInfo btnClick btn waves-effect waves-light">
             <i class="material-icons">person_add</i>
         </button>
     </div>
@@ -74,7 +74,7 @@
             </div>
 
             <div class="inputBtn">
-                <button type="submit" id="btnSubmit" class="btn waves-effect waves-light"></button>
+                <button type="submit" id="btnSubmit" class="btnSave btn waves-effect waves-light"></button>
             </div>
         </form>
     </div>

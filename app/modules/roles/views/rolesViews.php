@@ -62,7 +62,7 @@
 <div id="modalEditar" class="modal">
     <div class="modal-contenido">
         <div class="titleSection">
-            <h2>Editar Rol</h2>
+            <span>Editar rol</span>
 
             <button type="button" class="closeModalBtn">
                 <span class="close-modal">&times;</span>

@@ -65,12 +65,9 @@
         <textarea name="observaciones" id="observaciones" class="materialize-textarea"> </textarea>
         <label for="observaciones">Notas adicionales al usuario:</label>
       </div>
-
-
       <div class="inputBtn">
-        <button type="submit" class="btn waves-effect waves-light teal darken-3"> <i class="Medium material-icons">save</i></button>
+        <button type="submit" class="btn waves-effect waves-light btnInfo"> <i class="Medium material-icons">save</i></button>
       </div>
-
     </form>
   </div>
 </div>

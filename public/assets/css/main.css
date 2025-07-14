@@ -11,22 +11,30 @@ html, body {
   margin: 0;
     font-family:  "Open Sans", "Helvetica Neue", sans-serif;
   /* background-color: #f3d3d3; */
-
-
 }
-
 
 
 /* Variables para los colores */
 :root {
   --primary: #3a6c52;
   --secundary: #004034;
-  --btnInfo : green;
   --other: #ccc;
   --white: #f0f0f0;
   --btnEdit: #007D78;
+  --teal :#4db6ac;
+  --blue: #42a5f5;
+  --red: #ef5350;
 }
 
+.btnInvalida{
+  color: var(--white);
+  background-color: var(--red);
+}
+
+.btnInfo{
+  background-color: var(--teal);
+  color: var(--white);
+}
 
 /* Estilo de header, corresponde al titulo que está en la parte de arriba. */
 .header {
@@ -223,14 +231,7 @@ input[type="number"] {
   width: 100%;
 }
 
-.btnSubmit{
-  background-color: #6c757d;
-  color: white;
-  border: 1px;
-  border-radius: 10px;
-  width: auto;
-  height: 20pt;
-} 
+
 
 /* Estilo a las tablas del modulo de configuración */
 .tblConfigModules th,

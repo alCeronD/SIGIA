@@ -97,7 +97,7 @@
     "nombres apellidos telefono"
     "password email direccion"
     "observaciones observaciones observaciones"
-    ". inputBtn .";
+    "inputBtn inputBtn inputBtn";
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   /* padding: 2rem; */
@@ -148,6 +148,9 @@
 
 .inputBtn {
   grid-area: inputBtn;
+  /* text-align: center; */
+  display: flex;
+  align-items: center;
 }
 
 .inputContent {
@@ -272,7 +275,7 @@ textarea {
     "email telefono"
     "direccion rol"
     "password password"
-    ". btn-update";
+    "btn-update btn-update";
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   width: 100%;

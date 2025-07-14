@@ -1,11 +1,12 @@
 :root {
   --primary: #3a6c52;
   --secundary: #004034;
-  --btnSubmit : rgba(128, 255, 0, 0.371);
-  --btnInfo : green;
-  --other: gray;
+  --other: #ccc;
   --white: #f0f0f0;
-  /* --backGroundModal: #00000066; */
+  --btnEdit: #007D78;
+  --teal :#4db6ac;
+  --blue: #42a5f5;
+  --red: #ef5350;
 }
 
 /* Botón para ir al dashboard. */
@@ -26,6 +27,19 @@
     justify-content: space-between;
     align-items: center;
 }
+
+/* .titleRoles{
+    width: 100%;
+    grid-area: titleRoles;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: var(--primary);
+    padding: 1rem 1.5rem;
+    border-radius: 8px 8px 0 0;
+    align-items: center;
+    color: var(--white);
+} */
 
 .formRl{
     grid-area: formRl;
@@ -108,16 +122,6 @@
     display: none !important;
 }
 
-/* .modal-contenido {
-    background: var(--white);
-    padding: 1.5rem;
-    display: grid;
-    gap: 0.8rem;
-    width: 100%;
-    max-width: 400px;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-} */
 .modal-contenido {
     background-color: var(--white);
     margin: 10% auto;
@@ -134,10 +138,16 @@
 }
 
 .titleSection{
+    width: 100%;
     grid-area: titleSection;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    background-color: var(--secundary);
+    padding: 1rem 1.5rem;
+    border-radius: 8px 8px 0 0;
+    align-items: center;
+    color: var(--white);
 }
 
 .formRol{
@@ -159,6 +169,35 @@
     transition: color 0.3s ease;
 }
 
+.closeModalBtn{
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 2rem;
+    color: var(--white);
+    padding: 0.3rem;
+    line-height: 1;
+}
+
+/* Botón del formulario de actualización */
+.btnSubmit {
+    background-color: var(--blue);
+    color: var(--secundary);
+}
+
+
 .cerrar:hover {
     color: #e74c3c;
 }
+
+.btnEditar {
+    background-color: var(--blue);
+    color: var(--white);
+}
+
+.btnSubmitRol{
+    color: var(--secundary);
+    background-color: var(--blue);
+    
+}
+

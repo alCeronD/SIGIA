@@ -20,7 +20,7 @@
                     </div>
 
                     <div class="contentSubmit">
-                        <button type="submit" id="btnAreaSend" class="btnSubmit waves-effect waves-light btn"></button>
+                        <button type="submit" id="btnAreaSend" class=" waves-effect waves-light btn"></button>
                     </div>
                 </form>
             </div>

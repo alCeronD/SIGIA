@@ -1,11 +1,15 @@
+/* Variables para los colores */
 :root {
   --primary: #3a6c52;
   --secundary: #004034;
-  --btnSubmit : rgba(128, 255, 0, 0.371);
-  --btnInfo : green;
-  --other: gray;
+  --other: #ccc;
   --white: #f0f0f0;
+  --btnEdit: #007D78;
+  --teal :#4db6ac;
+  --blue: #42a5f5;
+  --red: #ef5350;
 }
+
 
 
 /* 
@@ -42,6 +46,12 @@
   min-height: 0;
   height: 3rem;
   font-size: 13pt;
+}
+
+/* Botón agregar persona */
+#searchBtn{
+  color: var(--secundary);
+  background-color: var(--blue);
 }
 
 .solicPrestamos {
@@ -137,6 +147,16 @@
   width: auto;
 }
 
+#btnAddElements{
+  background-color: var(--red);
+  color: var(--white);
+}
+
+#btnAddConsumibles{
+  background-color: var(--red);
+  color: var(--white);
+}
+
 #observaciones {
   resize: none;
   width: 100%;
@@ -199,6 +219,8 @@ th {
 /* boton */
 .inputBtn #btnSubmit{
   width: auto;
+  background-color: var(--blue);
+  color: var(--secundary);
 }
 
 .inputBtn #btnSubmit span{
@@ -354,6 +376,12 @@ th {
 
 #tableElementsConsult legend {
   font-size: 1rem;
+}
+
+/* Separación a los botones de acciones */
+#tableElementsConsult tbody tr td:last-child{
+  display: flex;
+  gap: 0.3rem;
 }
 
 #modalDetail {
@@ -563,6 +591,13 @@ paginación reservas
 .btn-small i {
   pointer-events: none; /* hace que los clics pasen al botón, no al <i> */
 }
+
+.btnDetail {
+background-color: var(--teal);
+color: var(--secundary);
+}
+
+
 
 /* --------------------------------- */
 /* modal validacion de prestamo */
