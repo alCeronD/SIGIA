@@ -1,3 +1,19 @@
+/* Variables para los colores */
+:root {
+  --primary: #3a6c52;
+  --secundary: #004034;
+  --other: #ccc;
+  --white: #f0f0f0;
+  --btnEdit: #007D78;
+  --teal :#4db6ac;
+  --blue: #42a5f5;
+  --red: #ef5350;
+  --info: #004034;
+  --success: #3a6c52;
+  --warning: #fb8c00;
+  --error: #b71c1c;
+}
+
 html, body {
   height: 100%;
   margin: 0;
@@ -111,5 +127,22 @@ html, body {
         margin-bottom: 30px;
     }
     
-    
-    
+    /* Estilos de alertas toast de materialize */
+#toast-container{
+    position: absolute !important;
+    right: .5em;
+    bottom: 0;
+}
+.toast{
+  background-color: var(--white);
+  color: black;
+  border: 1px solid black;
+  text-align: left;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14pt;
+  min-width: 150px;
+  max-width: 250px;
+  width: auto;
+  z-index: 1000;
+}

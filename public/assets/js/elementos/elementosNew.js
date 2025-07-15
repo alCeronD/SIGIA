@@ -280,10 +280,13 @@ function resetForm(form) {
 const modalVerMas = instanceModal('#modalVerMas', options);
 // Modal edit.
 const modalEditarElemento = instanceModal('#modalEditarElemento', options);
-
+// modal agregarExistencia
+// const modalAddExistencia = document.querySelector('#modalAddExistencia');
 
 // modal de confirmación
 const modalConfirmacion = document.querySelector('#modalConfirmacion');
+const modalAddExistencia = instanceModal('#modalAddExistencia', options);
+
 /**
  * Renderiza elementos desde el backend utilizando filtros de tipo, acción y paginación.
  * Realiza una petición GET al servidor y construye dinámicamente el contenido de una tabla HTML.
@@ -488,10 +491,20 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
                 return;
             }
 
-            mostrarConfirmacion('Inhabilitar elemento',"¿Esta seguro de inhabilitar este elemento? no esta disponibiel para su uso", (response)=>{
+            let message="";
+            let title = "";
+            if (dta.estadoElemento === 'Inhabilitado') {
+                message = "¿Desea habilitar este elemento?";
+                title = `Habilitar elemento - Placa #${dta.placa}`;
+                
+            }else{
+                message = "¿Desea Inhabilitar este elemento?";
+                title = `Inhabilitar elemento - Placa #${dta.placa}`;
+            }
+
+            mostrarConfirmacion(title,message, (response)=>{
 
                 if (!response) {
-                    console.log('hello world');
                     initAlert('Proceso cancelado', 'info', toastOptions);
                     return;   
                 }else{
@@ -529,14 +542,25 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
                     });
 
                 } catch (error) {
-                    console.warn("proceso "+error);
+                    throw new Error("Error al ejecutar proceso"+error);
                 }
-
-
                 }
 
                 
             });
+
+        });
+
+        //Boton adicionar existencia
+        btnAdd.addEventListener('click', (e)=>{
+            e.stopPropagation();
+            e.preventDefault();
+
+            console.log(e.target);
+            modalAddExistencia.open();
+
+
+
 
         });
 
@@ -901,6 +925,9 @@ document.addEventListener('DOMContentLoaded',  ()=>{
     // Inicializar select de las placas ya registradas
     const elemsSelect = document.querySelector('#placaAssoc');
 
+    // inicializo el tipo de movimiento para el modal de agregar compra
+    const tipo_movimiento = document.querySelector('#tipo_movimiento');
+
     // Estas 3 funciones puedo transformarlas en 1.
     renderSelectAreas('areas', selectAreas);
     renderSelectCategorias('categoria',selectCategorias);
@@ -914,6 +941,7 @@ document.addEventListener('DOMContentLoaded',  ()=>{
     M.FormSelect.init(selectMarcas);
     M.FormSelect.init(selectTpElemento);
     M.FormSelect.init(undMedida);
+    M.FormSelect.init(tipo_movimiento);
 
     // Inicializo todos los modales.
     const modals = document.querySelectorAll('.modal');
@@ -961,6 +989,21 @@ editarElementForm.addEventListener('submit', (e)=>{
         }
 
     });
+
+});
+
+
+
+// Formulario agregar existencia.
+const formAddExistencia = document.querySelector('#formAddExistencia');
+formAddExistencia.addEventListener('submit', (e)=>{
+    e.stopPropagation();
+    e.preventDefault();
+    const form = new FormData(e.target);
+    const data = Object.fromEntries(form);
+    console.log(data);
+
+    checkObject(data);
 
 });
 

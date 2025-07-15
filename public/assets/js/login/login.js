@@ -1,3 +1,4 @@
+import { initAlert, toastOptions } from "../utils/cases.js";
 import { validationRules } from "../utils/regex.js";
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -35,7 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.success && data.url) {
                 window.location.href = data.url;
             } else {
-                alert(data.message || "La contraseña no está correcta");
+                initAlert("Contraseña incorrecta", "error", toastOptions);
+                // alert(data.message || "La contraseña no está correcta");
             }
         })
         .catch(error => {

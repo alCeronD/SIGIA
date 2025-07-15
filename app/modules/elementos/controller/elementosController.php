@@ -134,6 +134,13 @@ class ElementosController
         }
     }
 
+    public function editarExistencia(array $data=[]){
+        $codElemento = (int) $data['co_cod_elm'];
+        $cantidad = (int) $data['co_tp_movimiento'];
+        $descripcion = (String) $data['co_descripcion'];
+        
+    }
+
 }
 
 $elementosController = new ElementosController();

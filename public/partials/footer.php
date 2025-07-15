@@ -2,7 +2,7 @@
 
 <?php if ($rol == 2 || $rol == 4): ?>
   <div class="fixed-action-btn direction-top">
-    <a class="btn-floating btn-large red tooltipped" data-tooltip="Menú principal">
+    <a class="btn-floating btn-large teal darken-2 tooltipped" data-tooltip="Menú principal">
       <i class="material-icons">menu</i>
     </a>
     <ul>
@@ -29,7 +29,7 @@
         <!-- Admin: Elementos -->
         <li>
           <a class="btn-floating purple tooltipped submenu-trigger" data-tooltip="Elementos" data-submenu="submenu-elementos">
-            <i class="material-icons">inventory_2</i>
+            <i class="material-icons">local_see</i>
           </a>
         </li>
         <!-- Admin: Configuración -->

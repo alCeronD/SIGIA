@@ -476,6 +476,7 @@ class ElementoModelo
         return $stmt->execute();
     }
 
+// Esta función sirve para disminuir la existencia del elemento cuando da salida.
     public function disminuirExistenciaElemento($id, $cantidad) {
         $sql = "UPDATE elementos 
                 SET elm_existencia = elm_existencia - ? 
@@ -485,6 +486,12 @@ class ElementoModelo
         $stmt->reset();
         $stmt->bind_param("iii", $cantidad, $id, $cantidad);
         return $stmt->execute();
+    }
+
+    // Función para adicionar compra
+    public function cambiarExistencia(){
+
+
     }
 
     public function getElementByType(int $id = 1){
