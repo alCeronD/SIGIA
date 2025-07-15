@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let page  = 1;
   const per = 10;
 
-  /* --- helpers de render --- */
   const header = (isMov) => `
      <tr>
        <th>#</th><th>Nombre</th><th>Placa</th>
