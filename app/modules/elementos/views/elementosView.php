@@ -246,7 +246,7 @@
                 <div class="placa">
                     <label>Placa:</label>
                     <label id="label_placa"></label>
-                    <input id="elm_placa_editar" name="elm_nombre" type="text" required>
+                    <input id="elm_placa_editar" name="elm_placa" type="text" required>
                 </div>
                 <div class="placaInputsEditar">
                     <!-- INPUTS DE PLACAS QUE SELECCIONE EL INPUT RADIO NUEVA PLACA -->
@@ -266,11 +266,11 @@
                         <div class="selectPlaca">
                             <label for="searchPlaca">Digite el número de placa</label>
                             <span id="respuestaPlaca" style="display: none;"></span>
-                            <input type="text" name="searchPlaca" id="searchPlaca">
+                            <!-- <input type="text" name="searchPlaca" id="searchPlaca"> -->
                         </div>
                         <div class="contentPlacaAssoc ">
                             <label for="serialPlaca">Serial asociado</label>
-                            <input type="text" name="serialPlaca" id="serialPlacaAssoc">
+                            <!-- <input type="text" name="serialPlaca" id="serialPlacaAssoc"> -->
                         </div>
                         <div class="tableResult">
                             <table class="striped responsive-table" id="tablePlaca">
@@ -285,32 +285,31 @@
                             </table>
                         </div>
                     </div>
-
                 </div>
-
                 <div class="nombre">
                     <label for="elm_nombre_editar">Nombre elemento *</label>
                     <input id="elm_nombre_editar" name="elm_nombre" type="text" required>
                 </div>
                 <div class="area">
-                    <label for="elm_area_cod_editar">Área *</label>
+                    <label for="elm_area_cod_editar">Departamento *</label>
                     <select id="elm_area_cod_editar" name="elm_area_cod" required>
                     </select>
                 </div>
 
                 <div class="unidadMedida">
-                    <select class="" name="elm_uni_medida_select" id="undMedida">
-                        <option value="0" selected>Seleccione una opción</option>
-                        <option value="1">Unitario</option>
+                    <label for="elm_ma_cod">Marca: </label>
+                    <select class="" name="elm_ma_cod" id="elm_marca_cod_editar">
+                        <option value="" selected>Seleccione una opción</option>
+                        <!-- <option value="1">Unitario</option>
                         <option value="2">Caja</option>
-                        <option value="3">Galon</option>
+                        <option value="3">Galon</option> -->
                     </select>
                 </div>
 
                 <div class="tipoElemento">
-                    <label for="tp_elemento">Tipo de Elemento:</label>
-                    <select class="" name="tp_elemento" id="tp_elemento">
-                        <option value="0" selected>Seleccione una opción</option>
+                    <label for="elm_cod_tp_elemento">Tipo De Elemento: *</label>
+                    <select class="" name="elm_cod_tp_elemento" id="tp_elemento">
+                        <option value="" selected>Seleccine una opción</option>
                         <option value="1">devolutivo</option>
                         <option value="2">consumible</option>
                     </select>
@@ -318,7 +317,7 @@
 
                 <div class="existencia">
                     <label for="elm_existencia">existencia</label>
-                    <input id="elm_existencia_editar" name="elm_existencia" type="text" required>
+                    <input id="elm_existencia_editar" name="elm_existencia" type="text" required disabled>
                 </div>
                 <div class="apuntes">
                     <div class="input-field observacion">

@@ -119,12 +119,9 @@ function showPlacaAsociadaEditar() {
     elm_serie.removeAttribute('name');
 }
 
-
 function viewTpElementoInputs(status =false){
 
-
     // Inicializar select de unidad de medida
-
     if (status) {
         checkboxTpElemento.style.display = "grid";
         undMedida.value = '1';
@@ -133,9 +130,9 @@ function viewTpElementoInputs(status =false){
         
     }else{
         checkboxTpElemento.style.display = "grid";
-        undMedida.value = '0';
-        inputCantidad.value = '';
-        inputCantidad.readOnly = false;
+        undMedida.value = '1';
+        inputCantidad.value = 1;
+        inputCantidad.readOnly = true;
     }
     // Reinicializo el elmento
     M.FormSelect.init(undMedida);
@@ -314,25 +311,20 @@ const modalConfirmacion = document.querySelector('#modalConfirmacion');
  * renderElements({ type: 'devolutivo', action: 'buscarElementos', page: 1 });
  */
 const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}) => {
-
     try {
         const dataElements = await getData(
         'modules/elementos/controller/elementosController.php',
         'GET',
         { action, pages: page, type }
     );
-
-
     let data = dataElements.data.data;
     pageGlobal = dataElements.data.cantidadPaginas;
     if (page > pageGlobal) {
         return;
     }
-    
     //Puedo hacer que si el tipo del elemento es consumible o no, se renderice solo unas columnas, no otras.
     tbodyElements.innerHTML = "";
     data.forEach((dta)=>{
-
         let tr = document.createElement('tr');
         let tdPlaca = document.createElement('td');
         let tdCantidad = document.createElement('td');
@@ -345,11 +337,7 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         let tdAcciones = document.createElement('td');
         tdAcciones.setAttribute('class', 'accionesElements');
         const btnInfo = createBtn('btn');
-        addClassItem(btnInfo,{"infoColor": "infoColor"});
         const btnEdit = createBtn('btn');
-        addClassItem(btnEdit, {cyan: "cyan", blueGrey:"blue-grey"});
-
-        
         const btnDelete = createBtn('btn');
         const btnAdd = createBtn('btn');
         let iconInfo = createI();
@@ -357,15 +345,27 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         let iconDelete = createI();
         iconUpdate.innerText = 'border_color'
         iconInfo.innerText = 'info';
-        iconDelete.innerText = 'delete_sweep';
         btnInfo.appendChild(iconInfo);
         btnInfo.setAttribute('dataPlaca',dta.codEstadoElemento);
         btnEdit.appendChild(iconUpdate);
+
+        addClassItem(btnInfo,{"infoColor": "infoColor"});
+        addClassItem(btnDelete, {deepOrangeDarken:"deep-orange darken-1"});
+        addClassItem(btnEdit, {cyan: "cyan", blueGrey:"blue-grey"});
+        btnAdd.innerText = '4';
+
+        // Valido si el estado del elemento es inhabilitado le implemento otro icono.
+        if (dta.codEstadoElemento === 4) {
+            iconDelete.innerText = 'loop';
+        }
+        
+        if (dta.codEstadoElemento === 1 || dta.codEstadoElemento === 3 || dta.codEstadoElemento === 5) {
+            iconDelete.innerText = 'delete_sweep';
+        }
+
         btnDelete.appendChild(iconDelete);
         btnDelete.setAttribute('data-Cod', dta.codigoElemento);
         btnDelete.setAttribute('data-Status', dta.codEstadoElemento);
-        addClassItem(btnDelete, {deepOrangeDarken:"deep-orange darken-1"});
-        btnAdd.innerText = '4';
 
         //TODO: esto se puede mejorar implementando la información de manera dinámica.
         /**
@@ -389,8 +389,6 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         }
 
         if (dta.tipoElemento === 'Consumible') tdAcciones.append(btnInfo,btnEdit,btnDelete,btnAdd);
-        
-    
         if (dta.tipoElemento === 'Devolutivo') tdAcciones.append(btnInfo,btnEdit,btnDelete);
 
         tbodyElements.appendChild(tr);
@@ -432,8 +430,8 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
             e.stopPropagation();
             e.preventDefault();
 
-            // console.log(dta);
             modalEditarElemento.open();
+            
 
             console.log(dta.codigoElemento);
         
@@ -443,6 +441,7 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
             let tp_elemento = document.querySelector('#tp_elemento');
             let undMedida = document.querySelector('#undMedida');
             let elm_area_cod_editar = document.querySelector('#elm_area_cod_editar');
+            let elm_marca_cod_editar = document.querySelector('#elm_marca_cod_editar');
             let sugerenciaInputEditar = document.querySelector('#sugerenciaInputEditar');
             let observacionInputEditar = document.querySelector('#observacionInputEditar');
             let elm_existencia_editar = document.querySelector('#elm_existencia_editar');
@@ -458,20 +457,15 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
             codElementoEditar.value = dta.codigoElemento;
             
             await renderSelectAreas('areas', elm_area_cod_editar);
+            await renderSelectMarcas('marcas', elm_marca_cod_editar);
             elm_area_cod_editar.value = dta.codArea;
-
-            // Dejar pendiente esta sección.
-            // const placaInputsEditar = document.querySelector('.placaInputsEditar');
-            // const inputPlacaEditar = document.querySelector('.inputPlacaEditar');
-            // const contentPlacaEdit = document.querySelector('.contentPlacaEdit');
-            // const inputSerieEdit = document.querySelector('.inputSerieEdit');
-            // placaInputsEditar.style.display = "grid";
-            // contentPlacaEdit.style.display = "grid";
-            // inputPlacaEditar.style.display = "grid";
+            elm_marca_cod_editar.value = dta.codMarca;
 
             M.FormSelect.init(tp_elemento);
             M.FormSelect.init(undMedida);
             M.FormSelect.init(elm_area_cod_editar);
+            M.FormSelect.init(elm_marca_cod_editar);
+            
 
         });
 
@@ -481,6 +475,18 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
             e.stopPropagation();
             console.log(e.target);
             const btn = e.currentTarget;
+
+            console.log(btn.dataset.status);
+            // Validar que el estado del elemento sea prestado para evitar inhabilitar el elemento
+            if (parseInt(btn.dataset.status) === 3) {
+                initAlert("Este elemento no puede inhabilitarse hasta que elemento haya sido devuelto", "info", toastOptions);
+                return;
+            }
+
+            if (parseInt(btn.dataset.status) === 5) {
+                initAlert("Este elemento no puede inhabilitarse hasta que su reserva haya sido procesada", "info", toastOptions);
+                return;
+            }
 
             mostrarConfirmacion('Inhabilitar elemento',"¿Esta seguro de inhabilitar este elemento? no esta disponibiel para su uso", (response)=>{
 
@@ -540,14 +546,14 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         throw new Error(`Error al consultar los elementos ${error}`);
 
     }
-       
 };
 
 
+const categoriaSelect = document.querySelector('#categoriaSelect');
 const renderSelectAreas = async (action = '', inputSelect)=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
     let dataResponse = response.data;
-
+    console.log('hello worldAreas');
     inputSelect.innerHTML = '';
     const option = document.createElement('option');
     option.value = 0;
@@ -567,7 +573,6 @@ const renderSelectAreas = async (action = '', inputSelect)=>{
         M.FormSelect.init(inputSelect);
     }
 }
-const categoriaSelect = document.querySelector('#categoriaSelect');
 const renderSelectCategorias = async (action = '',inputSelect)=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: 'categoria'});
     let categorias = response.data;
@@ -590,12 +595,12 @@ const renderSelectCategorias = async (action = '',inputSelect)=>{
     }
 };
 
-const renderSelectMarcas = async (action = '') =>{
+const renderSelectMarcas = async (action = '',selectMarcas) =>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
     let marcaData = response.data;
     selectMarcas.innerHTML = '';
     const option = document.createElement('option');
-    option.value = 0;
+    option.value = "";
     option.textContent = "Seleccione una marca";
     option.setAttribute('selected', 'selected');
     option.setAttribute('disabled', 'disabled');
@@ -604,10 +609,8 @@ const renderSelectMarcas = async (action = '') =>{
         const option = document.createElement('option');
         option.value = marca.ma_id;
         option.innerText = marca.ma_nombre;
-
         selectMarcas.appendChild(option);
     });
-
     // Reinicializo el select
         if (window.M) {
         M.FormSelect.init(selectMarcas);
@@ -766,19 +769,35 @@ elm_placa.addEventListener('change', (e)=>{
     }
 });
 
-function checkObject(object){
-    // Campos del formulario
-    const fieldLabels = {
-        elm_placa: "Placa",
-        elm_serie: "Serie",
-        elm_nombre: "Nombre del elemento",
-        elm_uni_medida: "Unidad de medida",
-        elm_existencia: "Existencia",
-        elm_observacion: "Observaciones",
-        elm_sugerencia: "Sugerencias",
-        elm_area_cod: "Area"
-    };
+// Mapeo de elementos del formulario registrar.
+const fieldLabels = {
+    elm_placa: "Placa",
+    elm_serie: "Serie",
+    elm_nombre: "Nombre del elemento",
+    elm_uni_medida: "Unidad de medida",
+    elm_existencia: "Existencia",
+    elm_observacion: "Observaciones",
+    elm_sugerencia: "Sugerencias",
+    elm_area_cod: "Area"
+};
 
+// Mapeo de elementos del formulario editar.
+const fieldLabelsEditar = {
+  elm_cod: "Código del elemento",
+  elm_nombre: "Nombre del elemento",
+  elm_area_cod: "Departamento",
+  elm_ma_cod: "Marca",
+  elm_cod_tp_elemento: "Tipo de elemento",
+  elm_existencia: "Existencia",
+  elm_observacion: "Observación",
+  elm_sugerencia: "Sugerencia",
+//   searchPlaca: "Búsqueda de placa",
+//   serialPlaca: "Serial asociado",
+//   elm_placa: "Número de placa",
+//   elm_serie: "Código de serie"
+};
+
+function checkObject(object, campos){
     for (const key in object) {
         if (Object.prototype.hasOwnProperty.call(object, key)) {
             const element = object[key];
@@ -786,12 +805,14 @@ function checkObject(object){
                     continue;
             }
             if (element === "") {
-                
-                initAlert(`el campo ${fieldLabels[key]} debe ser obligatorio`, 'info', toastOptions);
+                console.log(key);
+                initAlert(`el campo ${campos[key]} debe ser obligatorio`, 'info', toastOptions);
                 return;
             }
         }
     }
+
+    return true;
 
 
 }
@@ -818,7 +839,7 @@ addElementForm.addEventListener('submit', (e)=>{
     }
 
     // valido que los campos del formulario obligatorios esten validados.
-    checkObject(dataObj);
+    checkObject(dataObj,fieldLabels);
 
     if (!validateValueChecked(checkboxTp)) {
         initAlert("El tipo de elemento debe ser seleccionado", "warning",toastOptions);
@@ -841,7 +862,7 @@ addElementForm.addEventListener('submit', (e)=>{
                 initAlert('Elemento agreado exitosamente','succes',{toastOptions});
                 addElementModal.close();
                 addElementForm.reset();
-                renderSelectPlacas('placas')
+                renderSelectPlacas('placas');
                 renderElements({type: currentType, page: 1});
             }
 
@@ -875,6 +896,7 @@ document.addEventListener('DOMContentLoaded',  ()=>{
 
     const selectAreas = document.querySelector('#selectAreas');
     const selectCategorias = document.querySelector('#selectCategorias');
+    const selectMarcas = document.querySelector('#selectMarca');
 
     // Inicializar select de las placas ya registradas
     const elemsSelect = document.querySelector('#placaAssoc');
@@ -882,7 +904,7 @@ document.addEventListener('DOMContentLoaded',  ()=>{
     // Estas 3 funciones puedo transformarlas en 1.
     renderSelectAreas('areas', selectAreas);
     renderSelectCategorias('categoria',selectCategorias);
-    renderSelectMarcas('marcas');
+    renderSelectMarcas('marcas',selectMarcas);
     // Hago esto para evitar que mi función DOOM content loader sea asincrona.
     renderSelectPlacas('placas').then((dataResult)=>{
         placas = dataResult;
@@ -904,19 +926,20 @@ const editarElementForm = document.querySelector('#editarElementForm');
 editarElementForm.addEventListener('submit', (e)=>{
     e.preventDefault();
     e.stopPropagation();
-    mostrarConfirmacion('Guardar cambios','¿Esta seguro de guardar los cambios?', (respuesta)=>{
+
+    //TODO Validar campos obligatorios.
+    const formUpdate = new FormData(e.target);
+    const dataObj = Object.fromEntries(formUpdate.entries());
+    let data = dataObj;
+    if(!checkObject(dataObj,fieldLabelsEditar)) return;
+    // Estos 3 elementos los estoy por ahora, borrando pero les daremos utilidad.
+    delete dataObj['elm_serie'];
+    delete dataObj['serialPlaca'];
+    delete dataObj['elm_uni_medida_select'];
+
+    mostrarConfirmacion('Guardar cambios',"¿Está seguro de continuar con el proceso?", (respuesta)=>{
         if (respuesta) {
             try {
-                //TODO Validar campos obligatorios.
-                const formUpdate = new FormData(e.target);
-                const dataObj = Object.fromEntries(formUpdate.entries());
-
-                // Estos 3 elementos los estoy por ahora, borrando pero les daremos utilidad.
-                delete dataObj['elm_serie'];
-                delete dataObj['serialPlaca'];
-                delete dataObj['elm_uni_medida_select'];
-
-                let data = dataObj;
                 let response = sendData("modules/elementos/controller/elementosController.php",'PUT','updateElement',data);
 
                 response.then((result)=>{
@@ -931,9 +954,7 @@ editarElementForm.addEventListener('submit', (e)=>{
                 });
             } catch (error) {
                 throw new Error("Error al actualizar el recurso.");
-                
             }
-            
         }else{
             initAlert('Proceso cancelado','info', toastOptions);
             modalEditarElemento.close();
@@ -953,7 +974,6 @@ closeModal(addElementModal,cerrarModalBtn, ()=>{
     modalForm.reset();
   }
 });
-
 
 const modalCerrarVerMas = document.querySelector('#modalCerrarVerMas');
 closeModal(modalVerMas,modalCerrarVerMas);

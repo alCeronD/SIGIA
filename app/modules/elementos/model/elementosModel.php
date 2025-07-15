@@ -167,6 +167,7 @@ class ElementoModelo
         e.elm_sugerencia AS sugerenciaIngresada,
         e.elm_observacion AS observacionElemento,
         e.elm_fecha_registro AS fechaRegistro,
+        e.elm_ma_cod AS codMarca,
         ar.ar_nombre AS nombreArea,
         ar.ar_cod as codArea,
         tpE.tp_el_cod AS codTipoElemento,
@@ -343,7 +344,9 @@ class ElementoModelo
             SET elm_nombre = ?, 
                 elm_area_cod = ?, 
                 elm_sugerencia = ?,
-                elm_observacion = ?
+                elm_observacion = ?,
+                elm_ma_cod = ?,
+                elm_cod_tp_elemento = ?
             WHERE elm_cod = ?";
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
@@ -352,15 +355,18 @@ class ElementoModelo
                 'status'=>false
             ];;
         }
-
         $codArea = (int) $data['elm_area_cod'];
+        $codMarca = (empty($data['elm_ma_cod'])) ? NULL : (int) $data['elm_ma_cod'] ;
+        $codTpElemento = (int) $data['elm_cod_tp_elemento'];
         $stmt->bind_param(
-        "sissi", // nombre(string), área(int), sugerencia(string), observación(string), id(int)
+        "sissiii", // nombre(string), área(int), sugerencia(string), observación(string), id(int)
         $data['elm_nombre'],
         $codArea,
         $data['elm_sugerencia'],
         $data['elm_observacion'],
-        $data['elm_cod']
+        $codMarca,
+        $codTpElemento,
+        $data['elm_cod'],
     );
 
         if (!$stmt->execute()) {

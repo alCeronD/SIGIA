@@ -81,8 +81,6 @@ class ElementosController
         success('registro adicionado con exito', $result);
     }
 
-
-
     public function getItems(String $action = ''){
         // Obtener las áreas
         $modeloGenerico = new ConfigModulesModel();
@@ -108,7 +106,7 @@ class ElementosController
 
     public function editarElemento(array $data = [])
     {
-
+        // var_dump($data);
         // Llamar al modelo para actualizar
         $exito = $this->modeloElemento->actualizarElemento($data);
         if (!$exito) {
@@ -116,8 +114,6 @@ class ElementosController
 
         }
         success('recurso actualizado con exito', $exito);
-     
-            
         
     }
 
@@ -138,12 +134,6 @@ class ElementosController
         }
     }
 
-
-    
-    
-    
-    
-    
 }
 
 $elementosController = new ElementosController();
