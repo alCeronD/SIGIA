@@ -509,10 +509,6 @@ class ElementoModelo
         return (int) $result->fetch_assoc()['elm_cod_tp_elemento'];
 
     }
-<<<<<<< HEAD
-    
-=======
->>>>>>> 44a18933c79440f04c98a868b35c85ea591440aa
 
     public function getAllPlacas(){
         try {
