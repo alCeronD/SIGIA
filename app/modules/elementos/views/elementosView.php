@@ -121,19 +121,19 @@
                             <div class="inputSerie input-field">
                                 <!-- Validar, no se deben permitir catacteres con el arroba o el # -->
                                 <input id="elm_serie" name="elm_serie" type="text">
-                                <label for="elm_serie">Código de serie * Ejemplo = 922919587-1</label>
+                                <label for="elm_serie">Código de serie  Ejemplo = 922919587-1</label>
                             </div>
                         </div>
                         <!-- INPUTS DE LAS PLACAS ASOCIADAS. -->
                         <div class="placaAssocContent">
                             <div class="selectPlaca">
-                                <label for="searchPlaca">Digite el número de placa</label>
+                                <label for="elm_placa">Digite el número de placa</label>
                                 <span id="respuestaPlaca" style="display: none;"></span>
-                                <input type="text" name="searchPlaca" id="searchPlaca">
+                                <input type="text" name="elm_placa" id="searchPlaca">
                             </div>
                             <div class="contentPlacaAssoc ">
                                 <label for="serialPlaca">Serial asociado</label>
-                                <input type="text" name="serialPlaca" id="serialPlacaAssoc">
+                                <input type="text" name="elm_serie" id="serialPlacaAssoc">
                             </div>
                             <div class="tableResult">
                                 <table class="striped responsive-table" id="tablePlaca">
@@ -194,7 +194,7 @@
                     <div class="checkboxTpElemento">
                         <div class="unidadMedida">
                             <select class="" name="elm_uni_medida" id="undMedida">
-                                <option value="0" selected>Seleccione una opción</option>
+                                <option value="" selected>Seleccione una opción</option>
                                 <option value="1">Unitario</option>
                                 <option value="2">Caja</option>
                                 <option value="3">Galon</option>

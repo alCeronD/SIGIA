@@ -312,44 +312,27 @@ export const dateISOFormat = (fecha) => {
 };
 
 export const toastOptions = {
-  displayLenght: 4000,
-  clases: null,
+  displayLength: 4000,
+  classes: "",
   inDuration: 300,
   outDuration: 500,
   activationPercent: 0.8,
 };
 
 export const initAlert = (message = "", type = "info", options = {}) => {
-  if (M.toast) {
-    M.Toast.dismissAll();
-  }
-
-  const colors = {
-    warning: "#fb8c00",
-    info: "#004034",
-    error: "#b71c1c",
-    success: "#3a6c52",
-  };
 
   M.toast({
     html: message,
     ...options,
   });
 
-  const typeColor = Object.keys(colors);
+  const toastElements = document.querySelectorAll(".toast");
+  toastElements.forEach((tod)=>{
+    if (!tod.classList.contains(`toast-${type}`)) {
+      tod.classList.add(`toast-${type}`);
+    }
+  });
 
-  const toastElements = document.querySelector(".toast");
-  if (toastElements) {
-    const color = typeColor.includes(type) ? colors[type] : colors.info;
-    toastElements.style.borderLeft = `8px solid ${color}`;
-  }
-  //Destruyo los .toast para implementar el estilo del borde en la segunda selección.
-  setTimeout(() => {
-    const toastElement = document.querySelectorAll(".toast");
-    toastElement.forEach((toast) => {
-      toast.remove();
-    });
-  }, 1200);
 };
 
 /**

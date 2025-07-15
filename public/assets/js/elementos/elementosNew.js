@@ -57,7 +57,13 @@ const serialPlacaAssoc = document.querySelector('#serialPlacaAssoc');
 // Campos de sugerencia y observación en registrar elemento
 const sugerenciaInput = document.querySelector('#sugerenciaInput');
 const observacionInput = document.querySelector('#observacionInput');
-
+// Input de cantidad del elemento
+const inputCantidad = document.querySelector('#inputCantidad');
+// Inicializar el select de la unidad de medida.
+const undMedida = document.querySelector('#undMedida');
+// Input placa
+const elm_placa = document.querySelector('#elm_placa');
+const elm_serie = document.querySelector('#elm_serie');
 // FUNCIÓN PARA RENDERIZAR Y VISUALIZAR LAS PLACAS EN EL REGISTRAR ELEMENTO.
 function viewPlacaInputs(status = false) {
     if (!status) {
@@ -72,7 +78,8 @@ function viewPlacaInputs(status = false) {
         // Elimino el atributo de la placa y de la serie asociada para evitar enviar campos vacios adicionales.
         searchPlaca.removeAttribute('name');
         serialPlacaAssoc.removeAttribute('name');
-
+        elm_placa.setAttribute('name', 'elm_placa');
+        elm_serie.setAttribute('name','elm_serie');
     } else {
         // Asociar placa
         contentPlaca.style.display = 'none'; 
@@ -82,12 +89,9 @@ function viewPlacaInputs(status = false) {
         serialPlacaAssoc.readOnly = true;
         tablePlaca.style.display = "grid";
         placaAssocContent.style.display = "grid";
-        
-        
         // Agrego el name a los atributos para enviarlos en caso de que el usuario requiera Adicionar una nueva placa.
-        searchPlaca.setAttribute('name', 'searchPlaca');
-        serialPlacaAssoc.setAttribute('name', 'serialPlaca');
-
+        searchPlaca.setAttribute('name', 'elm_placa');
+        serialPlacaAssoc.setAttribute('name', 'elm_serie');
         elm_placa.removeAttribute('name');
         elm_serie.removeAttribute('name');
     }
@@ -115,12 +119,7 @@ function showPlacaAsociadaEditar() {
     elm_serie.removeAttribute('name');
 }
 
-// Input de cantidad del elemento
-const inputCantidad = document.querySelector('#inputCantidad');
-// Inicializar el select de la unidad de medida.
-const undMedida = document.querySelector('#undMedida');
-// Input placa
-const elm_placa = document.querySelector('#elm_placa');
+
 function viewTpElementoInputs(status =false){
 
 
@@ -131,7 +130,6 @@ function viewTpElementoInputs(status =false){
         undMedida.value = '1';
         inputCantidad.readOnly = true;
         inputCantidad.value = 1;
-        // Reinicializo el elmento
         
     }else{
         checkboxTpElemento.style.display = "grid";
@@ -139,6 +137,7 @@ function viewTpElementoInputs(status =false){
         inputCantidad.value = '';
         inputCantidad.readOnly = false;
     }
+    // Reinicializo el elmento
     M.FormSelect.init(undMedida);
 }
 
@@ -767,20 +766,66 @@ elm_placa.addEventListener('change', (e)=>{
     }
 });
 
+function checkObject(object){
+    // Campos del formulario
+    const fieldLabels = {
+        elm_placa: "Placa",
+        elm_serie: "Serie",
+        elm_nombre: "Nombre del elemento",
+        elm_uni_medida: "Unidad de medida",
+        elm_existencia: "Existencia",
+        elm_observacion: "Observaciones",
+        elm_sugerencia: "Sugerencias",
+        elm_area_cod: "Area"
+    };
+
+    for (const key in object) {
+        if (Object.prototype.hasOwnProperty.call(object, key)) {
+            const element = object[key];
+            if (key === "elm_serie" || key === "elm_observacion" || key === "elm_sugerencia") {
+                    continue;
+            }
+            if (element === "") {
+                
+                initAlert(`el campo ${fieldLabels[key]} debe ser obligatorio`, 'info', toastOptions);
+                return;
+            }
+        }
+    }
+
+
+}
+
+const checkboxTp = document.querySelectorAll('input[name="elm_cod_tp_elemento"]');
+function validateValueChecked(inputRadio){
+    return Array.from(inputRadio).some((radio)=> radio.checked);
+
+}
+
 // Enviar datos del formulario.
 addElementForm.addEventListener('submit', (e)=>{
     e.preventDefault();
     e.stopPropagation();
 
-    // Captura el valor del checkbox
-    const checkboxTp = document.querySelector('input[name="tpElementoRadio"]:checked')?.value;
     const formElements = new FormData(e.target);
     const dataObj = Object.fromEntries(formElements.entries());
     delete dataObj.placaRadio;
     let data = dataObj;
 
+    if (!validateValueChecked(nuevaPlaca)) {
+        initAlert("Debe seleccionar una opción para registrar la placa.", "warning",toastOptions);
+        return;
+    }
+
+    // valido que los campos del formulario obligatorios esten validados.
+    checkObject(dataObj);
+
+    if (!validateValueChecked(checkboxTp)) {
+        initAlert("El tipo de elemento debe ser seleccionado", "warning",toastOptions);
+        return;
+    }
+
     mostrarConfirmacion("Registrar elemento", "¿Estás seguro de eliminar este elemento?", function (respuesta){
-        
     try {
         
         if (!respuesta) {
@@ -906,8 +951,6 @@ closeModal(addElementModal,cerrarModalBtn, ()=>{
     console.log(modalForm);
     resetForm(modalForm);
     modalForm.reset();
-    // resetForm(modalForm);
-    // titleModal.innerText = '';
   }
 });
 

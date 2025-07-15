@@ -24,6 +24,10 @@ html, body {
   --teal :#4db6ac;
   --blue: #42a5f5;
   --red: #ef5350;
+  --info: #004034;
+  --success: #3a6c52;
+  --warning: #fb8c00;
+  --error: #b71c1c;
 }
 
 .btnInvalida{
@@ -282,4 +286,21 @@ input[type="number"] {
 /* evitamos que los elementos i dentro de botones capturen el evento principal */
 .material-icons {
   pointer-events: none;
+}
+
+/* Estilos de las alertas de toast De materialize */
+.toast-info {
+  border-left: 8px solid var(--info);
+}
+
+.toast-warning {
+  border-left: 8px solid var(--warning);
+}
+
+.toast-error {
+  border-left: 8px solid var(--info);
+}
+
+.toast-success {
+  border-left: 8px solid var(--success);
 }

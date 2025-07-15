@@ -65,41 +65,23 @@ class ElementosController
         success('placas y seriales', $data);
     }
 
-    public function registrarElemento()
-    {
-        // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        //     // Validar que existan todos los campos obligatorios
-        //     if (
-        //         isset($_POST['elm_placa'], $_POST['elm_nombre'], $_POST['elm_existencia'],
-        //                $_POST['elm_uni_medida'], $_POST['elm_cod_tp_elemento'],
-        //                $_POST['elm_cod_estado'], $_POST['elm_area_cod'])
-        //     ) {
-        //         $datos = [
-        //             'elm_placa' => $_POST['elm_placa'],
-        //             'elm_nombre' => $_POST['elm_nombre'],
-        //             'elm_existencia' => $_POST['elm_existencia'],
-        //             'elm_uni_medida' => $_POST['elm_uni_medida'],
-        //             'elm_cod_tp_elemento' => $_POST['elm_cod_tp_elemento'],
-        //             'elm_cod_estado' => $_POST['elm_cod_estado'],
-        //             'elm_area_cod' => $_POST['elm_area_cod']
-        //         ];
+    //agregar elemento a la bd.
+    public function addElement(array $data =[]){
 
-        //         $exito = $this->modeloElemento->insertarElemento($datos);
 
-        //         if ($exito) {
-        //             echo "<script>alert('Elemento registrado exitosamente'); window.location.href = '" . getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard') . "';</script>";
-        //         } else {
-        //             echo "<div class='alert alert-danger text-center'>Error al registrar el elemento.</div>";
-        //         }
-        //     } else {
-        //         echo "<div class='alert alert-danger text-center'>Faltan datos obligatorios para registrar.</div>";
-        //     }
-        // } else {
-        //     $modeloGenerico = new ConfigModulesModel();
-        //     $areas = $modeloGenerico->select("SELECT ar_cod AS codigo, ar_nombre AS nombre FROM areas");
-        //     include __DIR__ . '/../views/elementosRegistrar.php';
-        // }
+        foreach ($data as $key => $value) {
+
+            // Valido si no se ha enviado nada en la serie para establecerla como NULL.
+            if ($key == 'elm_serie' && empty($value))  $data['elm_serie'] = null;
+        }
+
+        if (!$result = $this->modeloElemento->insertarElemento($data)) {
+            fail('error al ejecuutar proceso', $result);
+        }
+        success('registro adicionado con exito', $result);
     }
+
+
 
     public function getItems(String $action = ''){
         // Obtener las áreas
@@ -156,13 +138,7 @@ class ElementosController
         }
     }
 
-    //agregar elemento a la bd.
-    public function addElement(array $data =[]){
-        if (!$result = $this->modeloElemento->insertarElemento($data)) {
-            fail('error al ejecuutar proceso', $result);
-        }
-        success('registro adicionado con exito', $result);
-    }
+
     
     
     
