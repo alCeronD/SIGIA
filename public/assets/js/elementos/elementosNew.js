@@ -687,7 +687,7 @@ function mostrarConfirmacion(titulo, mensaje, callback) {
 }
 
 
-
+// Los botones preview puedo crear una función para mandar el handlePage.
 /**
  * Paginación de elementos
  */
@@ -696,7 +696,15 @@ previewElements.addEventListener('click', (e)=>{
     e.preventDefault();
     if (pageElement <= 1 )return;
     pageElement--;
-    renderElements({type: currentType ,page: pageElement});
+    console.log(currentType);
+if (currentType === typeElements.all) {
+        renderElements({type: currentType, page:pageElement});
+    }else{
+        renderElements({type: currentType, page:pageElement}).then(()=>{
+            renderWithFilter();
+
+        });
+    }
 
 });
 
@@ -705,7 +713,16 @@ nextElements.addEventListener('click', (e) => {
     e.preventDefault();
     if (pageElement >= pageGlobal) return;
     pageElement++;
-    renderElements({type: currentType, page:pageElement});
+    console.log(currentType);
+    if (currentType === typeElements.all) {
+        renderElements({type: currentType, page:pageElement});
+    }else{
+        
+        renderElements({type: currentType, page:pageElement}).then(()=>{
+            renderWithFilter();
+
+        });
+    }
 
 });
   
@@ -718,8 +735,10 @@ filtroTipo.addEventListener('change', (e) => {
 
     // Reemplazo la página actual para que me visualize los elementos filtrados desde la página 1.
     pageElement = 1;
+    tbodyElements.innerHTML = ""; 
     console.log({"page elemento en filtro":pageElement});
 
+    // Acá cambiamos el tipo de elemento que ha sido seleccionado para ser páginado.
     const selectedOption = e.target.options[e.target.selectedIndex].value.toLowerCase();
     if ([typeElements.dev, typeElements.consu].includes(selectedOption)) {
         currentType = selectedOption;
@@ -727,10 +746,21 @@ filtroTipo.addEventListener('change', (e) => {
         currentType = typeElements.all;
     }
     renderElements({ type: currentType, page: pageElement }).then (()=>{
-        // Si veo que requiero esto en más funciones, transformarlo en función generica.
+        if (currentType != typeElements.all) {
+            renderWithFilter();  
+            
+        }
+
+    });
+
+});
+
+function renderWithFilter() {
+     // Si veo que requiero esto en más funciones, transformarlo en función generica.
         const ths = tblElements.querySelectorAll('thead tr th');
         const filas = tbodyElements.querySelectorAll(`tbody tr [data-type=${typeElements.consu}]`);
-
+        // const filas = tbodyElements.querySelectorAll(`tbody tr td`);
+        
         // El numero 4 corresponde a la columna del tipo de elemento.
         if (currentType === typeElements.consu) {
             ths[4].style.display = 'none';
@@ -742,12 +772,11 @@ filtroTipo.addEventListener('change', (e) => {
             console.log(fila);
             if (fila) {
                 fila.style.display = "none";
+            }else{
+                fila.style.display = "";
             }
         });
-
-    });
-
-});
+}
 
 /**
  * Búsqueda de elementos TODO: por implementar, la consulta ya esta hecha.
