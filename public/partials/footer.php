@@ -8,7 +8,7 @@
     <ul>
       <!-- Inicio -->
       <li>
-        <a href="/proyecto_sigia/app/dashboard.php" class="btn-floating blue tooltipped" data-tooltip="Inicio">
+        <a href="/proyecto_sigia/app/dashboard.php" class="btn-floating blue " data-tooltip="Inicio">
           <i class="material-icons">home</i>
         </a>
       </li>
@@ -16,25 +16,25 @@
       <?php if ($rol == 2): ?>
         <!-- Admin: Usuarios -->
         <li>
-          <a class="btn-floating green tooltipped submenu-trigger" data-tooltip="Usuarios" data-submenu="submenu-usuarios">
+          <a class="btn-floating green  submenu-trigger" data-tooltip="Usuarios" data-submenu="submenu-usuarios">
             <i class="material-icons">person</i>
           </a>
         </li>
         <!-- Admin: Préstamos -->
         <li>
-          <a class="btn-floating orange tooltipped submenu-trigger" data-tooltip="Préstamos" data-submenu="submenu-prestamos">
+          <a class="btn-floating orange  submenu-trigger" data-tooltip="Préstamos" data-submenu="submenu-prestamos">
             <i class="material-icons">assignment</i>
           </a>
         </li>
         <!-- Admin: Elementos -->
         <li>
-          <a class="btn-floating purple tooltipped submenu-trigger" data-tooltip="Elementos" data-submenu="submenu-elementos">
+          <a class="btn-floating purple  submenu-trigger" data-tooltip="Elementos" data-submenu="submenu-elementos">
             <i class="material-icons">local_see</i>
           </a>
         </li>
         <!-- Admin: Configuración -->
         <li>
-          <a class="btn-floating teal tooltipped submenu-trigger" data-tooltip="Configuración" data-submenu="submenu-config">
+          <a class="btn-floating teal  submenu-trigger" data-tooltip="Configuración" data-submenu="submenu-config">
             <i class="material-icons">settings</i>
           </a>
         </li>
@@ -43,7 +43,7 @@
       <?php if ($rol == 4): ?>
         <!-- Instructor: Préstamos -->
         <li>
-          <a class="btn-floating orange tooltipped submenu-trigger" data-tooltip="Préstamos" data-submenu="submenu-instructor">
+          <a class="btn-floating orange  submenu-trigger" data-tooltip="Préstamos" data-submenu="submenu-instructor">
             <i class="material-icons">assignment</i>
           </a>
         </li>
@@ -51,7 +51,7 @@
 
       <!-- Reportes -->
     <li>
-      <a class="btn-floating cyan tooltipped submenu-trigger" data-tooltip="Reportes" data-submenu="submenu-reportes">
+      <a class="btn-floating cyan  submenu-trigger" data-tooltip="Reportes" data-submenu="submenu-reportes">
         <i class="material-icons">bar_chart</i>
       </a>
     </li>
@@ -59,7 +59,7 @@
 
       <!-- Cerrar sesión -->
       <li>
-        <a href="<?php echo getUrl('login','login','logout'); ?>" class="btn-floating red tooltipped" data-tooltip="Cerrar sesión">
+        <a href="<?php echo getUrl('login','login','logout'); ?>" class="btn-floating red " data-tooltip="Cerrar sesión">
           <i class="material-icons">exit_to_app</i>
         </a>
       </li>

@@ -207,6 +207,10 @@
 
 .modalContentTitle{
     grid-area: modalContentTitle;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .modalContentForm{
@@ -283,7 +287,6 @@
 }
 
 .contentPlaca{
-    /* display: none; */
     display: flex;
     flex-direction: row;
     gap: 12px; 
@@ -297,13 +300,14 @@
     grid-template-areas: "observacion sugerencia";
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
-    gap: 20px; /* espacio entre los dos */
+    gap: 20px;
     width: 100%;
     grid-area: apuntes;
 }
 
 .footerBtn{
     grid-area: footerBtn;
+    /* text-align: center; */
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -376,6 +380,12 @@
     position:absolute; top:10px; right:15px; font-size:24px; background:none; border:none; cursor:pointer;
 }
 
+#cerrarModalRegistrar{
+    border: none;
+    cursor: pointer;
+    font-size: 22pt;
+}
+
 
 /* Selector tipo de elemento */
 #tipoElementoSelect {
@@ -389,8 +399,6 @@
   margin: 0 auto 16px auto; /* <-- Esto centra horizontalmente */
   display: block;
 }
-
-
 
 #filtroTipo {
   display: block !important;
@@ -423,7 +431,7 @@
     padding: 20px;
     display: grid;
     grid-template-areas:
-        "modalContentTitle"
+        "modalContentTitleEditar"
         "modalContentForm";
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
@@ -435,9 +443,7 @@
     overflow-y: auto;
 }
 
-#modalEditarElemento .modalContentTitle {
-    grid-area: modalContentTitle;
-}
+
 
 /* Cuerpo del formulario */
 #modalEditarElemento .modalContentForm {
@@ -447,7 +453,7 @@
     padding: 20px;
     display: grid;
     grid-template-areas:
-        "modalContentTitle"
+        "modalContentTitleEditar"
         "modalContentForm";
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
@@ -459,8 +465,13 @@
     overflow-y: auto;
 }
 
-#modalEditarElemento .modalContentTitle {
-    grid-area: modalContentTitle;
+#modalEditarElemento .modalContentTitleEditar {
+    grid-area: modalContentTitleEditar;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* Cuerpo del formulario */
@@ -559,7 +570,7 @@
 
 /* Botón de cerrar modal */
 #cerrarModalEditar, #cerrarModalExistencia {
-    position: relative;
+    /* position: relative; */
     top: 10px;
     right: 15px;
     font-size: 24px;

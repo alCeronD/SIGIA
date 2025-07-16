@@ -1,5 +1,5 @@
 // TODO: Depurar, este bloque del proyecto puede ser transladado a un archivo barril.
-import { addClassItem, closeModal, createBtn, createCheckbox, createI, initAlert, initTooltip, instanceModal, options, replaceln, toastOptions, tooltipOptions } from "../utils/cases.js";
+import { addClassItem, closeModal, createBtn, createCheckbox, createI, createSpan, initAlert, initTooltip, instanceModal, options, replaceln, toastOptions, tooltipOptions } from "../utils/cases.js";
 import { validarCantidad, validatePlaca, validationRules } from "../utils/regex.js";
 import { getData, sendData } from "../utils/fetch.js";
 
@@ -363,7 +363,6 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         addClassItem(btnDelete, {btnInactive:"btnInactive"});
         addClassItem(btnEdit, {cyan: "cyan", blueGrey:"blue-grey"});
         addClassItem(btnAdd, {btnAddExistencia: "btnAddExistencia"});
-
         // Valido si el estado del elemento es inhabilitado le implemento otro icono.
         if (dta.codEstadoElemento === 4) {
             iconDelete.innerText = 'loop';
@@ -696,7 +695,6 @@ previewElements.addEventListener('click', (e)=>{
     e.preventDefault();
     if (pageElement <= 1 )return;
     pageElement--;
-    console.log(currentType);
 if (currentType === typeElements.all) {
         renderElements({type: currentType, page:pageElement});
     }else{
@@ -705,7 +703,6 @@ if (currentType === typeElements.all) {
 
         });
     }
-
 });
 
 nextElements.addEventListener('click', (e) => {
@@ -713,7 +710,6 @@ nextElements.addEventListener('click', (e) => {
     e.preventDefault();
     if (pageElement >= pageGlobal) return;
     pageElement++;
-    console.log(currentType);
     if (currentType === typeElements.all) {
         renderElements({type: currentType, page:pageElement});
     }else{
@@ -736,7 +732,6 @@ filtroTipo.addEventListener('change', (e) => {
     // Reemplazo la página actual para que me visualize los elementos filtrados desde la página 1.
     pageElement = 1;
     tbodyElements.innerHTML = ""; 
-    console.log({"page elemento en filtro":pageElement});
 
     // Acá cambiamos el tipo de elemento que ha sido seleccionado para ser páginado.
     const selectedOption = e.target.options[e.target.selectedIndex].value.toLowerCase();
@@ -756,26 +751,29 @@ filtroTipo.addEventListener('change', (e) => {
 });
 
 function renderWithFilter() {
-     // Si veo que requiero esto en más funciones, transformarlo en función generica.
-        const ths = tblElements.querySelectorAll('thead tr th');
-        const filas = tbodyElements.querySelectorAll(`tbody tr [data-type=${typeElements.consu}]`);
-        // const filas = tbodyElements.querySelectorAll(`tbody tr td`);
-        
-        // El numero 4 corresponde a la columna del tipo de elemento.
-        if (currentType === typeElements.consu) {
-            ths[4].style.display = 'none';
-        } else {
-            ths[4].style.display = '';
-        }
+  // Si veo que requiero esto en más funciones, transformarlo en función generica.
+  const ths = tblElements.querySelectorAll("thead tr th");
+  const filas = tbodyElements.querySelectorAll(
+    `tbody tr [data-type=${typeElements.consu}]`
+  );
+      // El numero 4 corresponde a la columna del tipo de elemento.
+    if ((currentType === typeElements.consu)) {
+        ths[4].style.display = "none";
+    } else {
+        ths[4].style.display = "table-cell";
+    }
 
-        filas.forEach(fila => {
-            console.log(fila);
-            if (fila) {
-                fila.style.display = "none";
-            }else{
-                fila.style.display = "";
-            }
-        });
+  filas.forEach((fila) => {
+    
+    if ((currentType === typeElements.consu) ) {
+      fila.style.display = "none";
+    }else{
+        fila.style.display = "table-cell";
+    } 
+    if (currentType === typeElements.dev || currentType === typeElements.all) {
+      fila.style.display = "table-cell";
+    }
+  });
 }
 
 /**
@@ -1149,6 +1147,8 @@ closeModal(modalVerMas,modalCerrarVerMas);
 // boton de cerrar modal addexistencia
 const cerrarModalExistencia = document.querySelector('#cerrarModalExistencia');
 closeModal(modalAddExistencia, cerrarModalExistencia);
+const cerrarModalEditar = document.querySelector('#cerrarModalEditar');
+closeModal(modalEditarElemento,cerrarModalEditar);
 
 // Formulario del modal addElement
 const modalForm = document.querySelector('#addElementForm');

@@ -14,7 +14,7 @@ class ElementoModelo
         $this->conn = $conexion->getConnect();
     }
 
-/**
+    /**
      * Obtiene todos los elementos con información relacionada (área, tipo, estado).
      *
      * @return array Lista de elementos con sus respectivos datos.
@@ -269,8 +269,8 @@ class ElementoModelo
 
     // Insertar nuevo elemento
     public function insertarElemento(array $datos = [])
-{
-    $sql = "INSERT INTO elementos (
+    {
+        $sql = "INSERT INTO elementos (
         elm_placa,
         elm_serie,
         elm_nombre,
@@ -284,60 +284,60 @@ class ElementoModelo
         elm_area_cod
     ) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?)";
 
-    $stmt = $this->conn->prepare($sql);
-    $elm_cod_estado = 1; // valor fijo si aplica
+        $stmt = $this->conn->prepare($sql);
+        $elm_cod_estado = 1; // valor fijo si aplica
 
-    if (!$stmt) {
+        if (!$stmt) {
+            return [
+                'message' => "Error en prepare: " . $this->conn->error,
+                'status' => false
+            ];
+        }
+
+        $placa = (int) $datos['elm_placa'];
+        $serie = $datos['elm_serie'];
+        $nombre = $datos['elm_nombre'];
+        $existencia = (int) $datos['elm_existencia'];
+        $sugerencia = $datos['elm_sugerencia'];
+        $observacion = $datos['elm_observacion'];
+        $unidadMedida = (int) $datos['elm_uni_medida'];
+        $tpElemento = (int) $datos['elm_cod_tp_elemento'];
+        $estado = 1; // fijo
+        $area = (int) $datos['elm_area_cod'];
+
+
+
+        $stmt->bind_param(
+            "ississiiii",
+            $placa,
+            $serie,
+            $nombre,
+            $existencia,
+            $sugerencia,
+            $observacion,
+            $unidadMedida,
+            $tpElemento,
+            $estado,
+            $area
+        );
+
+        if (!$stmt->execute()) {
+            return [
+                'message' => "Error al ejecutar la consulta:  $stmt->error",
+                'status' => false
+            ];
+        }
+
         return [
-            'message' => "Error en prepare: " . $this->conn->error,
-            'status' => false
+            'message' => 'Registro exitoso',
+            'status' => true
         ];
     }
-
-    $placa = (int) $datos['elm_placa'];
-    $serie = $datos['elm_serie'];
-    $nombre = $datos['elm_nombre'];
-    $existencia = (int) $datos['elm_existencia'];
-    $sugerencia = $datos['elm_sugerencia'];
-    $observacion = $datos['elm_observacion'];
-    $unidadMedida = (int) $datos['elm_uni_medida'];
-    $tpElemento = (int) $datos['elm_cod_tp_elemento'];
-    $estado = 1; // fijo
-    $area = (int) $datos['elm_area_cod'];
-
-    
-
-    $stmt->bind_param(
-        "ississiiii",
-        $placa,
-        $serie,
-        $nombre,
-        $existencia,
-        $sugerencia,
-        $observacion,
-        $unidadMedida,
-        $tpElemento,
-        $estado,
-        $area
-    );
-
-    if (!$stmt->execute()) {
-        return [
-            'message' => "Error al ejecutar la consulta:  $stmt->error",
-            'status' => false
-        ];
-    }
-
-    return [
-        'message' => 'Registro exitoso',
-        'status' => true
-    ];
-}
 
     // Actualizar elemento sin modificar placa ni tipo (solo otros campos)
     public function actualizarElemento(array $data = [])
     {
-        
+
         $sql = "UPDATE elementos 
             SET elm_nombre = ?, 
                 elm_area_cod = ?, 
@@ -349,38 +349,38 @@ class ElementoModelo
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
             return [
-                'message'=>"error al ejecutar actualización",
-                'status'=>false
+                'message' => "error al ejecutar actualización",
+                'status' => false
             ];;
         }
         $codArea = (int) $data['elm_area_cod'];
-        $codMarca = (empty($data['elm_ma_cod'])) ? NULL : (int) $data['elm_ma_cod'] ;
+        $codMarca = (empty($data['elm_ma_cod'])) ? NULL : (int) $data['elm_ma_cod'];
         $codTpElemento = (int) $data['elm_cod_tp_elemento'];
         $stmt->bind_param(
-        "sissiii", // nombre(string), área(int), sugerencia(string), observación(string), id(int)
-        $data['elm_nombre'],
-        $codArea,
-        $data['elm_sugerencia'],
-        $data['elm_observacion'],
-        $codMarca,
-        $codTpElemento,
-        $data['elm_cod'],
-    );
+            "sissiii", // nombre(string), área(int), sugerencia(string), observación(string), id(int)
+            $data['elm_nombre'],
+            $codArea,
+            $data['elm_sugerencia'],
+            $data['elm_observacion'],
+            $codMarca,
+            $codTpElemento,
+            $data['elm_cod'],
+        );
 
         if (!$stmt->execute()) {
             return [
-                'message'=>"error al ejecutar actualización",
-                'status'=>false
+                'message' => "error al ejecutar actualización",
+                'status' => false
             ];
         }
 
         $this->conn->close();
         return [
-            'message'=>"Elemento actualizado",
-            'status'=> true
+            'message' => "Elemento actualizado",
+            'status' => true
         ];
     }
-    
+
     // Alternar estado entre Disponible (1) e Inhabilitado (4)
     /**
      * Summary of toggleEstadoElemento cambiar el estado del elemento desde el modulo de ELEMENTOS.
@@ -397,8 +397,8 @@ class ElementoModelo
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
             return [
-                'messsage'=> "error al preprar consulta ".$this->conn->error,
-                'status'=>false
+                'messsage' => "error al preprar consulta " . $this->conn->error,
+                'status' => false
             ];
         }
         $stmt->bind_param("i", $cod);
@@ -413,32 +413,37 @@ class ElementoModelo
             } elseif ($estadoActual === $estadoInhabilitado) {
                 $nuevoEstado = $estadoDisponible;
             } else {
-                return false;
+                return [
+                    "message"=> "estado no definido",
+                    "status"=> false
+                ];
             }
 
             $sqlUpdate = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
             $stmtUpdate = $this->conn->prepare($sqlUpdate);
             if (!$stmtUpdate) {
-                echo "Error en prepare: " . $this->conn->error;
-                return false;
+                return [
+                    "message"=>"Error en prepare: " . $this->conn->error,
+                    "status" => false
+                ];
             }
             $stmtUpdate->bind_param("ii", $nuevoEstado, $cod);
             if (!$stmtUpdate->execute()) {
                 return [
-                    'message'=> "error al actualizar el registro".$stmtUpdate->error,
-                    'status'=> false
+                    'message' => "error al actualizar el registro" . $stmtUpdate->error,
+                    'status' => false
                 ];
             }
-            
         }
 
         return [
-            'message'=> $nuevoEstado === 1 ? "elemento disponible" : "elemento inhabilitado",
+            'message' => $nuevoEstado === 1 ? "elemento disponible" : "elemento inhabilitado",
             'status' => true
         ];
     }
     // Buscar elementos activos (devolutivo o consumible)//
-    public function searchElements($tipoElemento = 1) {
+    public function searchElements($tipoElemento = 1)
+    {
         $query = "SELECT
             e.*,
             a.ar_cod,
@@ -451,17 +456,17 @@ class ElementoModelo
         WHERE ee.est_el_cod = 1 
           AND elm_cod_tp_elemento = ? 
           AND (e.elm_existencia IS NULL OR e.elm_existencia > 0)";
-    
+
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $tipoElemento); 
+        $stmt->bind_param("i", $tipoElemento);
         $stmt->execute();
         $result = $stmt->get_result();
-    
+
         $elementos = [];
         while ($row = $result->fetch_assoc()) {
             $elementos[] = $row;
         }
-    
+
         return $elementos;
     }
 
@@ -474,12 +479,13 @@ class ElementoModelo
         return $stmt->execute();
     }
 
-// Esta función sirve para disminuir la existencia del elemento cuando da salida.
-    public function disminuirExistenciaElemento($id, $cantidad) {
+    // Esta función sirve para disminuir la existencia del elemento cuando da salida.
+    public function disminuirExistenciaElemento($id, $cantidad)
+    {
         $sql = "UPDATE elementos 
                 SET elm_existencia = elm_existencia - ? 
                 WHERE elm_cod = ? AND elm_existencia >= ?";
-        
+
         $stmt = $this->conn->prepare($sql);
         $stmt->reset();
         $stmt->bind_param("iii", $cantidad, $id, $cantidad);
@@ -488,30 +494,31 @@ class ElementoModelo
 
 
     /**
- * Cambia la existencia de un elemento en inventario, registrando la operación como una compra o reembolso.
- *
- * Este método realiza dos operaciones dentro de una transacción:
- * 1. Inserta un registro en la tabla `compras` con la información de la operación.
- * 2. Actualiza el campo `elm_existencia` en la tabla `elementos` según el tipo de movimiento.
- *
- * @param array $data Arreglo asociativo con los siguientes índices:
- *  - 'elm_cod' (int): Código del elemento a modificar.
- *  - 'co_cantidad' (int): Cantidad del movimiento.
- *  - 'co_cantidad_disponible' (int): Existencia actual del elemento antes de la operación.
- *  - 'tipo_movimiento' (int): Tipo de movimiento (1 = Compra, 5 = Reembolso).
- *  - 'descripcion_movimiento' (string): Descripción del movimiento.
- *  - 'operation' (int): Operación a ejecutar (1 = Suma, 5 = Resta).
- *
- * @return array Resultado del proceso con las claves:
- *  - 'message' (string): Mensaje informativo del resultado.
- *  - 'status' (bool): `true` si la operación fue exitosa, `false` en caso de error.
- */
-    public function cambiarExistencia(array $data = []){
+     * Cambia la existencia de un elemento en inventario, registrando la operación como una compra o reembolso.
+     *
+     * Este método realiza dos operaciones dentro de una transacción:
+     * 1. Inserta un registro en la tabla `compras` con la información de la operación.
+     * 2. Actualiza el campo `elm_existencia` en la tabla `elementos` según el tipo de movimiento.
+     *
+     * @param array $data Arreglo asociativo con los siguientes índices:
+     *  - 'elm_cod' (int): Código del elemento a modificar.
+     *  - 'co_cantidad' (int): Cantidad del movimiento.
+     *  - 'co_cantidad_disponible' (int): Existencia actual del elemento antes de la operación.
+     *  - 'tipo_movimiento' (int): Tipo de movimiento (1 = Compra, 5 = Reembolso).
+     *  - 'descripcion_movimiento' (string): Descripción del movimiento.
+     *  - 'operation' (int): Operación a ejecutar (1 = Suma, 5 = Resta).
+     *
+     * @return array Resultado del proceso con las claves:
+     *  - 'message' (string): Mensaje informativo del resultado.
+     *  - 'status' (bool): `true` si la operación fue exitosa, `false` en caso de error.
+     */
+    public function cambiarExistencia(array $data = [])
+    {
         $codElemento = (int) $data['elm_cod'];
         $cantidad = (int) $data['co_cantidad'];
         $cantidadActual = (int) $data['co_cantidad_disponible'];
         $tp_mvmento = (int) $data['tipo_movimiento'];
-        $descripcion = (String) $data['descripcion_movimiento'];
+        $descripcion = (string) $data['descripcion_movimiento'];
 
         $conn = $this->conn;
 
@@ -524,18 +531,18 @@ class ElementoModelo
 
             if (!$sqlCompra) {
                 return [
-                    "message"=>"error al preparar la consulta",
-                    "status"=> false
+                    "message" => "error al preparar la consulta",
+                    "status" => false
                 ];
             }
 
-            $stmtCompra->bind_param("iiis",$codElemento,$cantidad,$tp_mvmento,$descripcion);
+            $stmtCompra->bind_param("iiis", $codElemento, $cantidad, $tp_mvmento, $descripcion);
             if (!$stmtCompra->execute()) {
                 return
-                [
-                    "message"=> "Error al ejecutar la consulta".$stmtCompra->error_list,
-                    "status"=>false
-                ];
+                    [
+                        "message" => "Error al ejecutar la consulta" . $stmtCompra->error_list,
+                        "status" => false
+                    ];
             }
             // // Compra
             if ($tp_mvmento === 1) {
@@ -552,41 +559,41 @@ class ElementoModelo
             $stmtExistencia = $conn->prepare($sqlExistencia);
             if (!$stmtExistencia) {
                 return [
-                    "message"=>"error al preparar la consulta",
-                    "status"=> false
+                    "message" => "error al preparar la consulta",
+                    "status" => false
                 ];
             }
 
-            $stmtExistencia->bind_param("ii", $existenciaActual,$codElemento);
+            $stmtExistencia->bind_param("ii", $existenciaActual, $codElemento);
             if (!$stmtExistencia->execute()) {
-                 return
-                [
-                    "message"=> "Error al ejecutar la consulta".$stmtExistencia->error_list,
-                    "status"=>false
-                ];
+                return
+                    [
+                        "message" => "Error al ejecutar la consulta" . $stmtExistencia->error_list,
+                        "status" => false
+                    ];
             }
 
             $conn->commit();
         } catch (\Throwable $th) {
             $conn->rollback();
             return [
-                "message"=>"error al ejecutar el proceso ".$th->getMessage(),
-                "status"=> false
+                "message" => "error al ejecutar el proceso " . $th->getMessage(),
+                "status" => false
             ];
         }
 
         return [
             "message" => $tp_mvmento === 1 ? "Existencia adicionada con exito" : "Existencia disminuida con exito.",
-            "status"=> true
+            "status" => true
         ];
-
     }
 
-    public function getElementByType(int $id = 1){
+    public function getElementByType(int $id = 1)
+    {
         $sqlType = "SELECT elm_cod_tp_elemento  FROM elementos e WHERE elm_cod = ?";
 
         $stmtType = $this->conn->prepare($sqlType);
-        $stmtType->bind_param('i',$id);
+        $stmtType->bind_param('i', $id);
 
         if (!$stmtType->execute()) {
             return null;
@@ -595,23 +602,23 @@ class ElementoModelo
         $result = $stmtType->get_result();
 
         return (int) $result->fetch_assoc()['elm_cod_tp_elemento'];
-
     }
-    
 
-    public function getAllPlacas(){
+
+    public function getAllPlacas()
+    {
         try {
             $placas = [];
 
             $sqlPlacas = "SELECT elm_placa FROM elementos";
 
-            
+
             $stmtPlacas = $this->conn->prepare($sqlPlacas);
 
             if (!$stmtPlacas) {
                 return [
-                    'message'=>"error de consulta",
-                    'status'=> false
+                    'message' => "error de consulta",
+                    'status' => false
                 ];
             }
 
@@ -629,30 +636,30 @@ class ElementoModelo
 
                 if (!$stmtSerial) {
                     return [
-                        'message'=>"error al preparar la consulta",
-                        'status'=>false
+                        'message' => "error al preparar la consulta",
+                        'status' => false
                     ];
                 }
 
                 // Si ya esta la placa en la placa registrada, omitir el proceso
-                if (in_array($placa,$placaRegistrada)) {
+                if (in_array($placa, $placaRegistrada)) {
                     continue;
                 }
 
                 // en caso de que no este, agrego la placa en la placa registrada.
-                $placaRegistrada []= $placa;
+                $placaRegistrada[] = $placa;
 
 
                 $likeParam = $placa . '-%';
-                $stmtSerial->bind_param('s',$likeParam);
+                $stmtSerial->bind_param('s', $likeParam);
                 if (!$stmtSerial->execute()) {
                     return [
-                        'message'=>'error al ejecutar la consulta',
-                        'status'=> false
+                        'message' => 'error al ejecutar la consulta',
+                        'status' => false
                     ];
                 }
                 $serialesResult = $stmtSerial->get_result();
-                
+
 
                 // Si hay resultados, guardelo en un arreglo asociado, en caso de que no, dejalo como arreglo vacio.
                 $seriales = $serialesResult ? $serialesResult->fetch_all(MYSQLI_ASSOC) : [];
@@ -661,21 +668,18 @@ class ElementoModelo
                 $stmtSerial->close();
 
                 $placas[] = [
-                'elm_placa' => $placa,
-                'seriales' => $seriales
-            ];
-
+                    'elm_placa' => $placa,
+                    'seriales' => $seriales
+                ];
             }
-
-
         } catch (\Throwable $th) {
             //throw $th;
         }
 
         return [
-            'message'=>'placas y seriales asociados',
-            'data'=> $placas,
-            'status'=> true
+            'message' => 'placas y seriales asociados',
+            'data' => $placas,
+            'status' => true
         ];
     }
 }

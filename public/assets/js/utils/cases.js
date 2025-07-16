@@ -58,7 +58,7 @@ export const createI = () => {
 
 export const createSpan = () => {
   const span = document.createElement("span");
-  span.setAttribute("class", "material-symbols-outlined");
+  // span.setAttribute("class", "material-symbols-outlined");
   return span;
 };
 

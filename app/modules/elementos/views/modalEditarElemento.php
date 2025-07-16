@@ -1,7 +1,7 @@
 <!-- Modal Editar Elemento -->
 <div id="modalEditarElemento" class="">
     <div id="modalContentElements">
-        <div class="modalContentTitle">
+        <div class="modalContentTitleEditar">
             <span id="titleModalEditar">Editar Elemento</span>
             <button type="button" class="closeModalBtn" id="cerrarModalEditar">
                 <span class="close-modal">&times;</span>
