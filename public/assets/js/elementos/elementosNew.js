@@ -697,6 +697,7 @@ previewElements.addEventListener('click', (e)=>{
     if (pageElement <= 1 )return;
     pageElement--;
     renderElements({type: currentType ,page: pageElement});
+
 });
 
 nextElements.addEventListener('click', (e) => {
@@ -705,11 +706,9 @@ nextElements.addEventListener('click', (e) => {
     if (pageElement >= pageGlobal) return;
     pageElement++;
     renderElements({type: currentType, page:pageElement});
+
 });
-
-function filterElement(){
-
-    
+  
 /**
  * Filtro de elementos
  */
@@ -717,7 +716,8 @@ filtroTipo.addEventListener('change', (e) => {
     e.stopPropagation();
     e.preventDefault();
 
-    // pageElement = 1;
+    // Reemplazo la página actual para que me visualize los elementos filtrados desde la página 1.
+    pageElement = 1;
     console.log({"page elemento en filtro":pageElement});
 
     const selectedOption = e.target.options[e.target.selectedIndex].value.toLowerCase();
@@ -748,9 +748,6 @@ filtroTipo.addEventListener('change', (e) => {
     });
 
 });
-
-}
-
 
 /**
  * Búsqueda de elementos TODO: por implementar, la consulta ya esta hecha.
