@@ -589,11 +589,9 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
     }
 };
 
-
 const renderSelectAreas = async (action = '', inputSelect)=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
     let dataResponse = response.data;
-    console.log('hello worldAreas');
     inputSelect.innerHTML = '';
     const option = document.createElement('option');
     option.value = 0;
@@ -690,31 +688,31 @@ function mostrarConfirmacion(titulo, mensaje, callback) {
 /**
  * Paginación de elementos
  */
-previewElements.addEventListener('click', (e)=>{
+previewElements.addEventListener('click', async (e)=>{
     e.stopPropagation();
     e.preventDefault();
     if (pageElement <= 1 )return;
     pageElement--;
 if (currentType === typeElements.all) {
-        renderElements({type: currentType, page:pageElement});
+        await renderElements({type: currentType, page:pageElement});
     }else{
-        renderElements({type: currentType, page:pageElement}).then(()=>{
+        await renderElements({type: currentType, page:pageElement}).then(()=>{
             renderWithFilter();
 
         });
     }
 });
 
-nextElements.addEventListener('click', (e) => {
+nextElements.addEventListener('click',async  (e) => {
     e.stopPropagation();
     e.preventDefault();
     if (pageElement >= pageGlobal) return;
     pageElement++;
     if (currentType === typeElements.all) {
-        renderElements({type: currentType, page:pageElement});
+        await renderElements({type: currentType, page:pageElement});
     }else{
         
-        renderElements({type: currentType, page:pageElement}).then(()=>{
+        await renderElements({type: currentType, page:pageElement}).then(()=>{
             renderWithFilter();
 
         });
@@ -750,6 +748,7 @@ filtroTipo.addEventListener('change', (e) => {
 
 });
 
+// todo: Esta funcion debo moverla dentro de renderelements para que se ejecute y validarla con si su tipo es diferente de todos, esto para evitar buffer de desincronización.
 function renderWithFilter() {
   // Si veo que requiero esto en más funciones, transformarlo en función generica.
   const ths = tblElements.querySelectorAll("thead tr th");
@@ -766,15 +765,18 @@ function renderWithFilter() {
   filas.forEach((fila) => {
     
     if ((currentType === typeElements.consu) ) {
-      fila.style.display = "none";
-    }else{
-        fila.style.display = "table-cell";
-    } 
+        console.log({"primer if":currentType});
+        fila.style.display = "none";
+    }// }else{
+    //     fila.style.display = "table-cell";
+    // } 
     if (currentType === typeElements.dev || currentType === typeElements.all) {
+        console.log({"segundo if":currentType});
       fila.style.display = "table-cell";
     }
   });
 }
+
 
 /**
  * Búsqueda de elementos TODO: por implementar, la consulta ya esta hecha.
