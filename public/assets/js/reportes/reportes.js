@@ -1,36 +1,41 @@
-/* public/assets/js/reportes/reportes.js */
 import { initAlert, toastOptions } from "../utils/cases.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  
   M.FormSelect.init(document.querySelectorAll("select"));
-
   const R = window.RUTAS_REPORTE;
 
-  /* --- refs DOM --- */
-  const selectTipo   = document.getElementById("tipoElemento");
-  const selectEstado = document.getElementById("estadoElemento");
+  /* --------- REFERENCIAS DOM --------- */
+  const selectTipo    = document.getElementById("tipoElemento");
+  const selectEstado  = document.getElementById("estadoElemento");
 
-  const tablaHead = document.getElementById("tabla-previa-head");
-  const tablaBody = document.getElementById("tabla-elementos-body");
-  const pager     = document.getElementById("paginacion-elementos");
+  const tablaHead     = document.getElementById("tabla-previa-head");
+  const tablaBody     = document.getElementById("tabla-elementos-body");
+  const pager         = document.getElementById("paginacion-elementos");
 
-  const btnExcelElementos   = document.getElementById("btnDescargar");
-  const btnExcelMovimientos = document.getElementById("btnDescargarTrazabilidad");
+  const btnExcelElem  = document.getElementById("btnDescargar");
+  const btnExcelMov   = document.getElementById("btnDescargarTrazabilidad");
+  const btnExcelPlaca = document.getElementById("btnDescargarMovimientoPlaca");
 
-  const rbElementos   = document.getElementById("btnFiltroElementos");
-  const rbMovimientos = document.getElementById("btnFiltroTrazabilidad");
+  const rbElem   = document.getElementById("btnFiltroElementos");
+  const rbMov    = document.getElementById("btnFiltroTrazabilidad");
+  const rbPlaca  = document.getElementById("btnFiltroElementoMovimiento");
 
-  const filtroElementos = document.getElementById("filtroElementos");
-  const filtroMovs      = document.getElementById("filtroTrazabilidad");
+  const filtroElem  = document.getElementById("filtroElementos");
+  const filtroMov   = document.getElementById("filtroTrazabilidad");
+  const filtroPlaca = document.getElementById("filtroMovimientoElemento");
 
   const trzTipo        = document.getElementById("trzTipoElemento");
   const trzFechaInicio = document.getElementById("trzFechaInicio");
   const trzFechaFin    = document.getElementById("trzFechaFin");
-  const btnBuscarMovs  = document.getElementById("btnBuscarTrazabilidad");
+  const btnBuscarMov   = document.getElementById("btnBuscarTrazabilidad");
 
-  /* --- estado tabla --- */
-  let data  = [];
-  let page  = 1;
+  const inputPlaca  = document.getElementById("placaElemento");
+  const btnBuscarPl = document.getElementById("btnBuscarPorPlaca");
+
+  /* --------- ESTADO --------- */
+  let data = [];
+  let page = 1;
   const per = 10;
 
   const header = (isMov) => `
@@ -44,19 +49,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const ini = (page - 1) * per;
     const fin = ini + per;
     tablaBody.innerHTML =
-      data.slice(ini, fin).map((d) => `
+      data.slice(ini, fin).map(d => `
         <tr>
           <td>${d.codigoElemento}</td>
           <td>${d.nombreElemento}</td>
           <td>${d.placa || "—"}</td>
-          ${rbMovimientos.checked ? `<td>${d.tipoMovimiento}</td>` : ""}
+          ${ (rbMov.checked || rbPlaca.checked) ? `<td>${d.tipoMovimiento}</td>` : "" }
           <td>${d.cantidad || 0}</td>
-          <td>${rbMovimientos.checked ? d.fechaMovimiento : d.estadoElemento}</td>
-        </tr>`
-      ).join("") ||
-      `<tr><td colspan="${rbMovimientos.checked ? 6 : 5}" class="red-text">
-        No se encontraron registros
-      </td></tr>`;
+          <td>${ (rbMov.checked || rbPlaca.checked) ? d.fechaMovimiento : d.estadoElemento}</td>
+        </tr>`).join("") ||
+      `<tr><td colspan="${(rbMov.checked || rbPlaca.checked) ? 6 : 5}" class="red-text">No se encontraron registros</td></tr>`;
   };
 
   const paginar = () => {
@@ -67,87 +69,127 @@ document.addEventListener("DOMContentLoaded", () => {
       </li>`).join("");
 
     pager.querySelectorAll("li").forEach(li => {
-      li.onclick = (e) => { e.preventDefault(); page = +li.dataset.pag; pintar(); paginar(); };
+      li.onclick = e => { e.preventDefault(); page = +li.dataset.pag; pintar(); paginar(); };
     });
   };
 
-  /* --- ajax wrapper --- */
   const fetchJSON = (url, fd) =>
     fetch(url, { method: "POST", body: fd, headers: { "X-Requested-With": "XMLHttpRequest" } })
       .then(r => { if (!r.ok) throw r.status; return r.json(); });
 
-  /* ---------- ELEMENTOS ---------- */
+  /* --------- CARGAS --------- */
   const cargarElementos = () => {
     const fd = new FormData();
-    fd.append("tipoElemento",   selectTipo.value);
+    fd.append("tipoElemento", selectTipo.value);
     fd.append("estadoElemento", selectEstado.value);
 
     fetchJSON(R.filtrarElementos, fd)
       .then(res => {
-        rbElementos.checked = true;
+        rbElem.checked = true;
         tablaHead.innerHTML = header(false);
         data = res; page = 1; pintar(); paginar();
-
-        btnExcelElementos.href =
-          `${R.reporteExcel}&tipoElemento=${encodeURIComponent(selectTipo.value)}`
-          + `&estadoElemento=${encodeURIComponent(selectEstado.value)}`;
+        btnExcelElem.href =
+          `${R.reporteExcel}&tipoElemento=${encodeURIComponent(selectTipo.value)}&estadoElemento=${encodeURIComponent(selectEstado.value)}`;
       })
-      .catch(() => initAlert("Error al cargar elementos", "error", toastOptions)); // <- solicitado
+      .catch(() => initAlert("Error al cargar elementos", "error", toastOptions));
   };
 
-  /* ---------- MOVIMIENTOS ---------- */
   const cargarMovimientos = () => {
     if (!trzFechaInicio.value || !trzFechaFin.value) {
-      initAlert("Favor ingresar fechas", "info", toastOptions);
-      return;
+      initAlert("Favor ingresar fechas", "info", toastOptions); return;
     }
-
     const fd = new FormData();
     fd.append("tipoElemento", trzTipo.value);
-    fd.append("fechaInicio",  trzFechaInicio.value);
-    fd.append("fechaFin",     trzFechaFin.value);
+    fd.append("fechaInicio", trzFechaInicio.value);
+    fd.append("fechaFin", trzFechaFin.value);
 
     fetchJSON(R.filtrarTrazabilidad, fd)
       .then(res => {
-        rbMovimientos.checked = true;
+        rbMov.checked = true;
         tablaHead.innerHTML = header(true);
         data = res; page = 1; pintar(); paginar();
-
-        btnExcelMovimientos.href =
-          `${R.reporteTrazabilidad}&tipoElemento=${encodeURIComponent(trzTipo.value)}`
-          + `&fi=${encodeURIComponent(trzFechaInicio.value)}&ff=${encodeURIComponent(trzFechaFin.value)}`;
+        btnExcelMov.href =
+          `${R.reporteTrazabilidad}&tipoElemento=${encodeURIComponent(trzTipo.value)}&fi=${trzFechaInicio.value}&ff=${trzFechaFin.value}`;
       })
       .catch(() => initAlert("Error al cargar entradas/salidas", "error", toastOptions));
   };
 
-  /* --- Listeners filtros --- */
-  selectTipo.onchange   = () => rbElementos.checked && cargarElementos();
-  selectEstado.onchange = () => rbElementos.checked && cargarElementos();
-  btnBuscarMovs.onclick = cargarMovimientos;
+  const cargarMovPorPlaca = () => {
+    const placa = inputPlaca.value.trim();
+    if (!placa) { initAlert("Ingrese un número de placa", "info", toastOptions); return; }
 
-  rbElementos.onchange = () => {
-    filtroElementos.style.display = "";
-    filtroMovs.style.display      = "none";
+    const fd = new FormData();
+    fd.append("placa", placa);
+
+    fetchJSON(R.filtrarPorPlaca, fd)
+      .then(res => {
+        rbPlaca.checked = true;
+        tablaHead.innerHTML = header(true);
+        data = res; page = 1; pintar(); paginar();
+      })
+      .catch(() => initAlert("Error al buscar por placa", "error", toastOptions));
+  };
+
+  /* --------- EVENTOS --------- */
+  selectTipo.onchange   = () => rbElem.checked && cargarElementos();
+  selectEstado.onchange = () => rbElem.checked && cargarElementos();
+  btnBuscarMov.onclick  = cargarMovimientos;
+  btnBuscarPl.onclick   = cargarMovPorPlaca;
+
+  rbElem.onchange = () => {
+    filtroElem.style.display = "";
+    filtroMov.style.display  = "none";
+    filtroPlaca.style.display = "none";
     cargarElementos();
   };
-
-  rbMovimientos.onchange = () => {
-    filtroElementos.style.display = "none";
-    filtroMovs.style.display      = "";
+  rbMov.onchange = () => {
+    filtroElem.style.display = "none";
+    filtroMov.style.display  = "";
+    filtroPlaca.style.display = "none";
     tablaHead.innerHTML = header(true);
-    tablaBody.innerHTML = "";
-    pager.innerHTML     = "";
+    tablaBody.innerHTML = ""; pager.innerHTML = "";
+  };
+  rbPlaca.onchange = () => {
+    filtroElem.style.display = "none";
+    filtroMov.style.display  = "none";
+    filtroPlaca.style.display = "";
+    tablaHead.innerHTML = header(true);
+    tablaBody.innerHTML = ""; pager.innerHTML = "";
   };
 
-  /* ---------- Bloquea descarga sin fechas ---------- */
-  btnExcelMovimientos.addEventListener("click", (e) => {
-    if (!trzFechaInicio.value || !trzFechaFin.value || btnExcelMovimientos.getAttribute("href") === "#") {
-      e.preventDefault();
-      initAlert("Favor ingresar fechas", "info", toastOptions);
+  /* --- bloquea descarga si faltan fechas --- */
+  btnExcelMov.addEventListener("click", e => {
+    if (!trzFechaInicio.value || !trzFechaFin.value) {
+      e.preventDefault(); initAlert("Favor ingresar fechas", "info", toastOptions);
     }
   });
 
-  /* ---------- Carga inicial ---------- */
+  /* --- descarga por placa --- */
+/* --- descarga por placa --- */
+btnExcelPlaca.addEventListener("click", e => {
+  const placa = inputPlaca.value.trim();
+  if (!placa) {
+    e.preventDefault();               // sólo si no hay placa
+    initAlert("Ingrese un número de placa para descargar", "info", toastOptions);
+    return;
+  }
+  btnExcelPlaca.href = `${R.reporteMovimientoPlaca}?placaElemento=${encodeURIComponent(placa)}`;
+});
+
+  btnExcelPlaca.addEventListener("click", e => {
+    const placa = inputPlaca.value.trim();
+    if (!placa) {
+      e.preventDefault();
+      initAlert("Ingrese un número de placa para descargar", "info", toastOptions);
+      return;
+    }
+  
+    btnExcelPlaca.href =
+      `${R.reporteMovimientoPlaca}&placaElemento=${encodeURIComponent(placa)}`;
+  
+  });
+
+  /* --------- CARGA INICIAL --------- */
   tablaHead.innerHTML = header(false);
   cargarElementos();
 });

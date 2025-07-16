@@ -1,27 +1,28 @@
+
+
 <?php
 $conexion    = new Conection();
-$controlador = new ReportesController($conexion->getConnect());
+$ctrl        = new ReportesController($conexion->getConnect());
 
 // --- FILTRO TRAZABILIDAD ---
-if (
-    isset($_POST['fechaInicio'], $_POST['fechaFin']) &&
-    strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest'
-) {
-    $controlador->filtrarTrazabilidadAjax();
+if (isset($_POST['fechaInicio'], $_POST['fechaFin']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest') {
+    $ctrl->filtrarTrazabilidadAjax();
     exit;
 }
 
 // --- FILTRO ELEMENTOS ---
-if (
-    isset($_POST['estadoElemento']) &&
-    strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest'
-) {
-    $controlador->filtrarElementosAjax();
+if (isset($_POST['estadoElemento']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest') {
+    $ctrl->filtrarElementosAjax();
     exit;
 }
 
-// --- BLOQUEO POR DEFECTO ---
+// --- FILTRO MOVIMIENTOS POR PLACA ---
+if (isset($_POST['placa']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest') {
+    $ctrl->filtrarPorPlacaAjax();
+    exit;
+}
+
 http_response_code(403);
 echo json_encode(['error' => 'Acceso no permitido']);
 exit;
-
+?>

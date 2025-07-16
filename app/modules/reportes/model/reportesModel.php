@@ -270,7 +270,39 @@ class ReportesModel{
     
         return $movimientos;
     }
+    
+    /**
+     * Devuelve todas las entradas / salidas de un elemento a partir de su placa.
+     *
+     * @param string $placa Placa del elemento
+     * @return array
+     */
+    public function consultarMovimientosPorPlaca(string $placa): array
+    {
+        $sql = "SELECT
+                    e.elm_cod            AS codigoElemento,
+                    e.elm_nombre         AS nombreElemento,
+                    e.elm_placa          AS placa,
+                    es.ent_sal_cantidad  AS cantidad,
+                    tm.cod_tp_nombre     AS tipoMovimiento,
+                    es.ent_fech_registro AS fechaMovimiento
+                 FROM elementos e
+                 INNER JOIN entradas_salidas es ON es.ent_sal_cod_elemtn = e.elm_cod
+                 INNER JOIN tipo_movimiento  tm ON tm.cod_tp            = es.entr_tp_movmnt
+                 WHERE e.elm_placa = ?
+                 ORDER BY es.ent_fech_registro DESC";
 
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) return [];
+
+        $stmt->bind_param('s', $placa);
+        if (!$stmt->execute()) return [];
+
+        $res   = $stmt->get_result();
+        $movs  = [];
+        while ($row = $res->fetch_assoc()) { $movs[] = $row; }
+        return $movs;
+    }
 }
 
 
