@@ -1,10 +1,6 @@
 <?php
 
-
-// require_once __DIR__ . '/../../../helpers/session.php';
-
-use function PHPSTORM_META\map;
-
+require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../../../helpers/const.php';
 include_once __DIR__ . '/../../../config/conn.php';
 class ElementoModelo
@@ -14,6 +10,7 @@ class ElementoModelo
     public function __construct()
     {
         $conexion = new Conection();
+        //Esto no es lo ideal, lo ideal es en cada función traer la conexión y cerrarla.
         $this->conn = $conexion->getConnect();
     }
 
@@ -172,6 +169,7 @@ class ElementoModelo
         ar.ar_cod as codArea,
         tpE.tp_el_cod AS codTipoElemento,
         tpE.tp_el_nombre AS tipoElemento,
+        tpE.tp_el_nombre AS nombreTipoElemento,
         es_e.est_el_cod  AS codEstadoElemento,
         es_e.est_nombre AS estadoElemento,
         tpU.nombre_tp_uni AS nombreUnidad,
@@ -488,9 +486,99 @@ class ElementoModelo
         return $stmt->execute();
     }
 
-    // Función para adicionar compra
-    public function cambiarExistencia(){
 
+    /**
+ * Cambia la existencia de un elemento en inventario, registrando la operación como una compra o reembolso.
+ *
+ * Este método realiza dos operaciones dentro de una transacción:
+ * 1. Inserta un registro en la tabla `compras` con la información de la operación.
+ * 2. Actualiza el campo `elm_existencia` en la tabla `elementos` según el tipo de movimiento.
+ *
+ * @param array $data Arreglo asociativo con los siguientes índices:
+ *  - 'elm_cod' (int): Código del elemento a modificar.
+ *  - 'co_cantidad' (int): Cantidad del movimiento.
+ *  - 'co_cantidad_disponible' (int): Existencia actual del elemento antes de la operación.
+ *  - 'tipo_movimiento' (int): Tipo de movimiento (1 = Compra, 5 = Reembolso).
+ *  - 'descripcion_movimiento' (string): Descripción del movimiento.
+ *  - 'operation' (int): Operación a ejecutar (1 = Suma, 5 = Resta).
+ *
+ * @return array Resultado del proceso con las claves:
+ *  - 'message' (string): Mensaje informativo del resultado.
+ *  - 'status' (bool): `true` si la operación fue exitosa, `false` en caso de error.
+ */
+    public function cambiarExistencia(array $data = []){
+        $codElemento = (int) $data['elm_cod'];
+        $cantidad = (int) $data['co_cantidad'];
+        $cantidadActual = (int) $data['co_cantidad_disponible'];
+        $tp_mvmento = (int) $data['tipo_movimiento'];
+        $descripcion = (String) $data['descripcion_movimiento'];
+
+        $conn = $this->conn;
+
+        try {
+            $conn->begin_transaction();
+            // Primera transacción, insertar los valores en la tabla compras.
+            $sqlCompra = "INSERT INTO compras (co_cod_elm,co_cantidad,co_tp_movimiento,co_descripcion,co_fecha_compra) VALUES (?,?,?,?,NOW())";
+
+            $stmtCompra = $conn->prepare($sqlCompra);
+
+            if (!$sqlCompra) {
+                return [
+                    "message"=>"error al preparar la consulta",
+                    "status"=> false
+                ];
+            }
+
+            $stmtCompra->bind_param("iiis",$codElemento,$cantidad,$tp_mvmento,$descripcion);
+            if (!$stmtCompra->execute()) {
+                return
+                [
+                    "message"=> "Error al ejecutar la consulta".$stmtCompra->error_list,
+                    "status"=>false
+                ];
+            }
+            // // Compra
+            if ($tp_mvmento === 1) {
+                $existenciaActual = $cantidad + $cantidadActual;
+            }
+
+            // Reembolzo
+            if ($tp_mvmento === 5) {
+                $existenciaActual = $cantidadActual - $cantidad;
+            }
+            // Segunda transacción actualizar la cantidad del elemento en la tabla elementos.
+            $sqlExistencia = "UPDATE elementos SET elm_existencia = ? WHERE elm_cod  = ?";
+
+            $stmtExistencia = $conn->prepare($sqlExistencia);
+            if (!$stmtExistencia) {
+                return [
+                    "message"=>"error al preparar la consulta",
+                    "status"=> false
+                ];
+            }
+
+            $stmtExistencia->bind_param("ii", $existenciaActual,$codElemento);
+            if (!$stmtExistencia->execute()) {
+                 return
+                [
+                    "message"=> "Error al ejecutar la consulta".$stmtExistencia->error_list,
+                    "status"=>false
+                ];
+            }
+
+            $conn->commit();
+        } catch (\Throwable $th) {
+            $conn->rollback();
+            return [
+                "message"=>"error al ejecutar el proceso ".$th->getMessage(),
+                "status"=> false
+            ];
+        }
+
+        return [
+            "message" => $tp_mvmento === 1 ? "Existencia adicionada con exito" : "Existencia disminuida con exito.",
+            "status"=> true
+        ];
 
     }
 

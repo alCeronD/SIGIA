@@ -1,5 +1,5 @@
 // TODO: Depurar, este bloque del proyecto puede ser transladado a un archivo barril.
-import { addClassItem, closeModal, createBtn, createCheckbox, createI, initAlert, initTooltip, instanceModal, options, toastOptions, tooltipOptions } from "../utils/cases.js";
+import { addClassItem, closeModal, createBtn, createCheckbox, createI, initAlert, initTooltip, instanceModal, options, replaceln, toastOptions, tooltipOptions } from "../utils/cases.js";
 import { validarCantidad, validatePlaca, validationRules } from "../utils/regex.js";
 import { getData, sendData } from "../utils/fetch.js";
 
@@ -14,6 +14,7 @@ const filtroTipo = document.querySelector('#filtroTipo');
 const previewElements = document.querySelector('#previewElements');
 const nextElements = document.querySelector('#nextElements');
 const inputBusqueda = document.querySelector('#inputBusqueda');
+const tblElements = document.querySelector('#tblElements');
 const tbodyElements = document.querySelector('#tbodyElements');
 const tipoElementoSelect = document.querySelector('#tipoElementoSelect');
 const addElementModal = instanceModal('#addElementModal', options);
@@ -53,7 +54,8 @@ const addElementForm = document.querySelector('#addElementForm');
 const placaAssocContent = document.querySelector('.placaAssocContent');
 // Input del serial que se va a asociar con la placa
 const serialPlacaAssoc = document.querySelector('#serialPlacaAssoc');
-
+// variable para guardar la cantidad disponible del elemento.
+let cantidadExistencia = null;
 // Campos de sugerencia y observación en registrar elemento
 const sugerenciaInput = document.querySelector('#sugerenciaInput');
 const observacionInput = document.querySelector('#observacionInput');
@@ -64,6 +66,7 @@ const undMedida = document.querySelector('#undMedida');
 // Input placa
 const elm_placa = document.querySelector('#elm_placa');
 const elm_serie = document.querySelector('#elm_serie');
+
 // FUNCIÓN PARA RENDERIZAR Y VISUALIZAR LAS PLACAS EN EL REGISTRAR ELEMENTO.
 function viewPlacaInputs(status = false) {
     if (!status) {
@@ -286,7 +289,8 @@ const modalEditarElemento = instanceModal('#modalEditarElemento', options);
 // modal de confirmación
 const modalConfirmacion = document.querySelector('#modalConfirmacion');
 const modalAddExistencia = instanceModal('#modalAddExistencia', options);
-
+const titleModalExistencia = document.querySelector('#titleModalExistencia');
+const categoriaSelect = document.querySelector('#categoriaSelect');
 /**
  * Renderiza elementos desde el backend utilizando filtros de tipo, acción y paginación.
  * Realiza una petición GET al servidor y construye dinámicamente el contenido de una tabla HTML.
@@ -346,16 +350,19 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         let iconInfo = createI();
         let iconUpdate = createI();
         let iconDelete = createI();
+        let iconAdd = createI();
         iconUpdate.innerText = 'border_color'
         iconInfo.innerText = 'info';
+        iconAdd.innerText = "exposure";
         btnInfo.appendChild(iconInfo);
         btnInfo.setAttribute('dataPlaca',dta.codEstadoElemento);
         btnEdit.appendChild(iconUpdate);
+        btnAdd.appendChild(iconAdd);
 
         addClassItem(btnInfo,{"infoColor": "infoColor"});
-        addClassItem(btnDelete, {deepOrangeDarken:"deep-orange darken-1"});
+        addClassItem(btnDelete, {btnInactive:"btnInactive"});
         addClassItem(btnEdit, {cyan: "cyan", blueGrey:"blue-grey"});
-        btnAdd.innerText = '4';
+        addClassItem(btnAdd, {btnAddExistencia: "btnAddExistencia"});
 
         // Valido si el estado del elemento es inhabilitado le implemento otro icono.
         if (dta.codEstadoElemento === 4) {
@@ -374,6 +381,7 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         /**
          * buscar como funciona document.createDocumentFragment
          */
+
         tdPlaca.innerText = dta.placa;
         tdCantidad.innerText = dta.cantidad;
         tdCodigoElemento.innerText = dta.codigoElemento;
@@ -382,6 +390,14 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
         tdAreaElemento.innerText = dta.nombreArea;
         tdUnidadMedida.innerText = dta.nombreUnidad;
         tdTipoElemento.innerText = dta.tipoElemento;
+
+        const type = dta.nombreTipoElemento.toLowerCase();
+        if (type === typeElements.consu) {
+            tdTipoElemento.setAttribute('data-type', typeElements.consu);
+        }else if (type === typeElements.dev){
+            tdTipoElemento.setAttribute('data-type', typeElements.dev);
+        }
+
         tdEstadoElemento.innerText = dta.estadoElemento;
         tdAreaElemento.innerText = dta.nombreArea;
         if (dta.cantidad <= 10 && dta.tipoElemento === 'Consumible') {
@@ -556,11 +572,13 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
             e.stopPropagation();
             e.preventDefault();
 
-            console.log(e.target);
             modalAddExistencia.open();
-
-
-
+            titleModalExistencia.innerText = `Registrar movimiento - Placa #${dta.placa} Elemento: ${dta.nombreElemento}`;
+            const codAddExistencia = document.querySelector('#codAddExistencia');
+            codAddExistencia.value = dta.codigoElemento;
+            const row = e.target.closest('tr');
+            let cell = row.children;
+            cantidadExistencia = cell[2].textContent.trim();
 
         });
 
@@ -573,7 +591,6 @@ const renderElements = async ({type = 'all', action = 'elements', page = 1} = {}
 };
 
 
-const categoriaSelect = document.querySelector('#categoriaSelect');
 const renderSelectAreas = async (action = '', inputSelect)=>{
     let response = await getData('modules/elementos/controller/elementosController.php','GET',{action: action});
     let dataResponse = response.data;
@@ -653,7 +670,7 @@ const renderSelectPlacas = async (action = '') =>{
 function mostrarConfirmacion(titulo, mensaje, callback) {
   // Rellenar el contenido
   document.getElementById('modalConfirmacionTitulo').textContent = titulo;
-  document.getElementById('modalConfirmacionMensaje').textContent = mensaje;
+  document.getElementById('modalConfirmacionMensaje').innerHTML = mensaje;
 
   // Obtener instancia y abrir el modal
   const modalElem = document.getElementById('modalConfirmacion');
@@ -669,28 +686,7 @@ function mostrarConfirmacion(titulo, mensaje, callback) {
   btnCancelar.onclick = () => callback(false);
 }
 
-/**
- * Filtro de elementos
- */
-filtroTipo.addEventListener('change', (e)=>{
-    e.stopPropagation();
-    e.preventDefault();
-    // reinicio a la primera Página para que siempre dependiendo del filtro, visualice la primera página como inicio.
-    pageElement = 1;
-    //Hacer una validación de que el valor de optión exista.
-    /**
-     * por ejemplo, si el optin es devolutivo o cnsumible o todo, debe ejecutar, pero si hay OTRO, debe de mostrar x defecto el todo.
-     */
-    const selectedOption = e.target.options[e.target.selectedIndex];
-    if (selectedOption.value === typeElements.dev) {
-        currentType = typeElements.dev;
-    }else if (selectedOption.value === typeElements.consu){
-        currentType = typeElements.consu;
-    }else{
-        currentType = typeElements.all;
-    }    
-    renderElements({type : currentType, page: pageElement});
-});
+
 
 /**
  * Paginación de elementos
@@ -710,6 +706,51 @@ nextElements.addEventListener('click', (e) => {
     pageElement++;
     renderElements({type: currentType, page:pageElement});
 });
+
+function filterElement(){
+
+    
+/**
+ * Filtro de elementos
+ */
+filtroTipo.addEventListener('change', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    // pageElement = 1;
+    console.log({"page elemento en filtro":pageElement});
+
+    const selectedOption = e.target.options[e.target.selectedIndex].value.toLowerCase();
+    if ([typeElements.dev, typeElements.consu].includes(selectedOption)) {
+        currentType = selectedOption;
+    } else {
+        currentType = typeElements.all;
+    }
+    renderElements({ type: currentType, page: pageElement }).then (()=>{
+        // Si veo que requiero esto en más funciones, transformarlo en función generica.
+        const ths = tblElements.querySelectorAll('thead tr th');
+        const filas = tbodyElements.querySelectorAll(`tbody tr [data-type=${typeElements.consu}]`);
+
+        // El numero 4 corresponde a la columna del tipo de elemento.
+        if (currentType === typeElements.consu) {
+            ths[4].style.display = 'none';
+        } else {
+            ths[4].style.display = '';
+        }
+
+        filas.forEach(fila => {
+            console.log(fila);
+            if (fila) {
+                fila.style.display = "none";
+            }
+        });
+
+    });
+
+});
+
+}
+
 
 /**
  * Búsqueda de elementos TODO: por implementar, la consulta ya esta hecha.
@@ -822,12 +863,17 @@ const fieldLabelsEditar = {
 };
 
 function checkObject(object, campos){
+    const opcionalFielLabels = ['elm_serie', 'elm_observacion', 'elm_sugerencia', 'descripcion_movimiento' ];
+
+
     for (const key in object) {
         if (Object.prototype.hasOwnProperty.call(object, key)) {
             const element = object[key];
-            if (key === "elm_serie" || key === "elm_observacion" || key === "elm_sugerencia") {
-                    continue;
+            // Valido si la key esta en el arreglo de campos opcionales, de ser así, omita el paso.
+            if (opcionalFielLabels.includes(key)) {
+                continue;
             }
+
             if (element === "") {
                 console.log(key);
                 initAlert(`el campo ${campos[key]} debe ser obligatorio`, 'info', toastOptions);
@@ -909,46 +955,6 @@ btnAddModalElements.addEventListener('click', (e)=>{
     addElementModal.open();
 });
 
-// Formulario del modal addElement
-const modalForm = document.querySelector('#addElementForm');
-document.addEventListener('DOMContentLoaded',  ()=>{
-    //Inicializo los select.
-    // M.FormSelect.init(formDevolutivo.querySelectorAll('select'));
-    initTooltip(btnAddModalElements,tooltipOptions,'Agregar elemento','top');
-    //Renderizado de los elementos
-    renderElements({type: currentType});
-
-    const selectAreas = document.querySelector('#selectAreas');
-    const selectCategorias = document.querySelector('#selectCategorias');
-    const selectMarcas = document.querySelector('#selectMarca');
-
-    // Inicializar select de las placas ya registradas
-    const elemsSelect = document.querySelector('#placaAssoc');
-
-    // inicializo el tipo de movimiento para el modal de agregar compra
-    const tipo_movimiento = document.querySelector('#tipo_movimiento');
-
-    // Estas 3 funciones puedo transformarlas en 1.
-    renderSelectAreas('areas', selectAreas);
-    renderSelectCategorias('categoria',selectCategorias);
-    renderSelectMarcas('marcas',selectMarcas);
-    // Hago esto para evitar que mi función DOOM content loader sea asincrona.
-    renderSelectPlacas('placas').then((dataResult)=>{
-        placas = dataResult;
-    });
-    M.FormSelect.init(elemsSelect);
-    M.FormSelect.init(selectCategorias);
-    M.FormSelect.init(selectMarcas);
-    M.FormSelect.init(selectTpElemento);
-    M.FormSelect.init(undMedida);
-    M.FormSelect.init(tipo_movimiento);
-
-    // Inicializo todos los modales.
-    const modals = document.querySelectorAll('.modal');
-    M.Modal.init(modals);
-
-});
-
 // Formulario del modal editarElemento
 const editarElementForm = document.querySelector('#editarElementForm');
 editarElementForm.addEventListener('submit', (e)=>{
@@ -992,20 +998,114 @@ editarElementForm.addEventListener('submit', (e)=>{
 
 });
 
-
+// mapeo de adicionar existencia.
+const formAddExistenciaLabels = {
+    tipo_movimiento: "Tipo de movimiento",
+    co_cantidad: "Cantidad del elemento",
+    descripcion_movimiento: "Descripción del movimiento"
+};
 
 // Formulario agregar existencia.
 const formAddExistencia = document.querySelector('#formAddExistencia');
+// Cantidad del elemento del modal agregar existencia.
+const co_cantidad = document.querySelector('#co_cantidad');
+// Descripción del elemento modal agregar existencia.
+const descripcion_movimiento = document.querySelector('#descripcion_movimiento');
+const tipo_movimiento = document.querySelector('#tipo_movimiento');
 formAddExistencia.addEventListener('submit', (e)=>{
     e.stopPropagation();
     e.preventDefault();
     const form = new FormData(e.target);
     const data = Object.fromEntries(form);
-    console.log(data);
+    let total = 0;
+    let title = "";
+    if (data.tipo_movimiento === "1") {
+        title = "Agregar existencia";
+        total = parseInt(cantidadExistencia) + parseInt(data.co_cantidad);
+    }else if(data.tipo_movimiento === "5"){
+        title = "Reembolzar existencia";
+        total = parseInt(cantidadExistencia) - parseInt(data.co_cantidad);
+    }
 
-    checkObject(data);
+    if(!checkObject(data,formAddExistenciaLabels)) return;
+    let message = replaceln(`Cantidad actual: ${cantidadExistencia}\nCantidad adicionada: ${data.co_cantidad}\nTotal: ${total}`);
+    data['co_cantidad_disponible'] = cantidadExistencia;
 
+    if ((parseInt(data.co_cantidad) > parseInt(cantidadExistencia)) && (tipo_movimiento.value === "5")) {
+        console.log("cantidad existencia");
+        initAlert("La cantidad no debe ser mayor a la cantidad disponible",'info', toastOptions);
+        return;
+    }else{
+        mostrarConfirmacion(title, message, (result)=>{
+
+        if (result) {
+            console.log('hello world');
+            const response = sendData("modules/elementos/controller/elementosController.php", 'PUT', 'ChangeExistencia', data);
+
+            response.then((rs)=>{
+                let responseMessage = rs.data.message;
+                let status = rs.data.status;
+
+                // Esto se puede mejorar.
+                if (status) {
+                    // Renderizo la página nuevamente dependiendo del tipo y la página actual.
+                    renderElements({type: currentType, page: pageElement});
+                    initAlert(responseMessage, 'success', toastOptions);
+                    modalAddExistencia.close();
+                    formAddExistencia.reset();
+                    return;
+                }else{
+                    initAlert(responseMessage, 'success', toastOptions);
+                    modalAddExistencia.close();
+                   return; 
+                }
+
+            });
+            
+        }else{
+            co_cantidad.value = "";
+            tipo_movimiento.value = "";
+            // descripcion_movimiento.value = "";
+            tipo_movimiento.selected = true;
+            initAlert("Proceso cancelado", "info", toastOptions);
+            M.FormSelect.init(tipo_movimiento);
+            return;
+        }
+    });
+    }
 });
+
+// Validar cantidad.
+co_cantidad.addEventListener('change', (e)=>{
+    e.stopPropagation();
+    const value = e.target.value;
+    if (!validarCantidad(value)) {    
+        initAlert("Caracter Número digitado no valido", "error",toastOptions);
+        e.target.value = "";
+        return;
+    }
+    if ((parseInt(cantidadExistencia, 10) < value) && (tipo_movimiento.value === "5")) {
+        console.log("cantidad existencia");
+        initAlert("La cantidad no debe ser mayor a la cantidad disponible",'info', toastOptions);
+        return;
+    }
+    // cantidadExistencia
+});
+
+descripcion_movimiento.addEventListener('input', (e) => {
+    e.stopPropagation();
+
+    const value = e.target.value;
+    const maxLegth = parseInt(e.target.dataset.length,10);
+    console.log(value);
+
+    if (value.length > maxLegth) {
+        initAlert("Cantidad máxima de caracteres alcanzada", 'info', toastOptions);
+        e.target.value = value.slice(0, maxLegth);
+        return;
+    }
+});
+
 
 // puedo ejecutar el callback que me permita reiniciar los campos del formulario.
 closeModal(addElementModal,cerrarModalBtn, ()=>{
@@ -1020,3 +1120,52 @@ closeModal(addElementModal,cerrarModalBtn, ()=>{
 
 const modalCerrarVerMas = document.querySelector('#modalCerrarVerMas');
 closeModal(modalVerMas,modalCerrarVerMas);
+// boton de cerrar modal addexistencia
+const cerrarModalExistencia = document.querySelector('#cerrarModalExistencia');
+closeModal(modalAddExistencia, cerrarModalExistencia);
+
+// Formulario del modal addElement
+const modalForm = document.querySelector('#addElementForm');
+document.addEventListener('DOMContentLoaded',  ()=>{
+    //Inicializo los select.
+    // M.FormSelect.init(formDevolutivo.querySelectorAll('select'));
+    //Renderizado de los elementos
+    renderElements({type: currentType});
+
+    const selectAreas = document.querySelector('#selectAreas');
+    const selectCategorias = document.querySelector('#selectCategorias');
+    const selectMarcas = document.querySelector('#selectMarca');
+    const selectFiltro = document.querySelector('#filtroTipo');
+    // Inicializar select de las placas ya registradas
+    const elemsSelect = document.querySelector('#placaAssoc');
+
+    // inicializo el tipo de movimiento para el modal de agregar compra
+    const tipo_movimiento = document.querySelector('#tipo_movimiento');
+
+    // Estas 3 funciones puedo transformarlas en 1.
+    renderSelectAreas('areas', selectAreas);
+    renderSelectCategorias('categoria',selectCategorias);
+    renderSelectMarcas('marcas',selectMarcas);
+    // Hago esto para evitar que mi función DOOM content loader sea asincrona.
+    renderSelectPlacas('placas').then((dataResult)=>{
+        placas = dataResult;
+    });
+    M.FormSelect.init(elemsSelect);
+    M.FormSelect.init(selectCategorias);
+    M.FormSelect.init(selectMarcas);
+    M.FormSelect.init(selectTpElemento);
+    M.FormSelect.init(undMedida);
+    M.FormSelect.init(tipo_movimiento);
+
+    // Inicializo todos los modales.
+    const modals = document.querySelectorAll('.modal');
+    M.Modal.init(modals);
+    const elems = document.querySelectorAll('.tooltipped');
+    M.Tooltip.init(elems);
+    const infoTpMovimiento = document.querySelector('#infoTpMvnto');
+    initTooltip(infoTpMovimiento, tooltipOptions, "Compra: agregar cantidad al elemento \n Regresión: reducir cantidad al elemento");
+    initTooltip(btnAddModalElements,tooltipOptions,'Agregar elemento','top');
+
+    // Inicializar tooltips
+
+});

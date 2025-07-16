@@ -28,6 +28,7 @@ html, body {
   --success: #3a6c52;
   --warning: #fb8c00;
   --error: #b71c1c;
+  --error2: #e57373;
 }
 
 .btnInvalida{
@@ -57,7 +58,6 @@ html, body {
   background-color: #2c5e42;
 }
 
-
 .container{
   display: flex;
   width: 90%;
@@ -68,15 +68,11 @@ html, body {
   overflow: visible;
   padding: 0.5rem;
 
-
   /* border: 1px solid var(--other); */
   border-radius: 8px;
 
   /* Sombra sutil */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-  /* Fondo opcional */
-  /* background-color: #f3d3d3; */
 
 }
 
@@ -93,105 +89,7 @@ html, body {
 }
 
 /* Estilos de menu */
-#mainMenu {
-    background-color: #2c5e42;
-    width: 100%;
-    height: 7%;
-    margin: 0 auto;
-    /* padding: 1%; */
-    position: fixed;
-    z-index: 2;
-    bottom: 0;
-    left: 0;
-  }
 
-  
-
-
-  .footer-icon.text-center {
-  margin-top: -30px;
-}
-
-
-  .footer-icon {
-    color: white;
-    text-decoration: none;
-    font-size: 13px;
-    padding: 5px;
-  }
-
-  .footer-icon small {
-    display: block;
-    font-size: 13px;
-  }
-
-
-  .horizontalMenu {
-    display: flex;
-    justify-content: center;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .horizontalMenu > li {
-    position: relative;
-  }
-
-  .horizontalMenu > li > a {
-    color: white;
-    text-decoration: none;
-    width: 100%;
-    padding: 0;
-    display: block;
-    font-size: 14px;
-    padding: 8px 12px;
-    font-weight: 500;
-    align-items: center;
-
-  }
-
-  .horizontalMenu > li:hover > a {
-    color: #88e0b5;
-    width: 100%;
-
-  }
-
-  .verticalMenu {
-    display: none;
-    position: absolute;
-    bottom: 100%;
-    background-color: var(--primary);
-    padding: 0.3rem;
-    list-style: none;
-    min-width: 160px;
-    border-radius: 4px;
-  }
-
-  .verticalMenu li a {
-    display: block;
-    padding: 0px;
-    color: white;
-    text-decoration: none;
-    font-size: 13px;
-  }
-
-  .verticalMenu li a:hover {
-    background-color: var(--primary);
-
-  }
-
-  .horizontalMenu > li:hover .verticalMenu {
-    display: block;
-    width: 100%;
-  }
-
-  .horizontalMenu > li.menu-open .verticalMenu {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
 /* Estilos de botones */
 
 /* Estilos de tablas */

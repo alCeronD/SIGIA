@@ -9,13 +9,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   //buscar los modales
   const elemsModals = document.querySelectorAll('.modal');
-  //Iniciializar los modales
+  //inicializar los modales
   M.Modal.init(elemsModals); 
   M.FormSelect.init(document.querySelectorAll('select'));
 
   //Tooltips
   let tooltip = document.querySelectorAll('.tooltipped');
-  M.Tooltip.init(tooltip, options);
+  M.Tooltip.init(tooltip);
 
 
 });

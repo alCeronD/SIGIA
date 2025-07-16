@@ -147,6 +147,11 @@ export const initTooltip = (
   M.Tooltip.init(btn, mergedOptions);
 };
 
+// Reemplazar los saltos de línea de un texto por etiquetas br html.
+export const replaceln = (message) => {
+  return message.replace(/\n/g, "<br>");
+};
+
 //Configuración de las opciones del modal
 export const options = {
   opacity: 0.7,

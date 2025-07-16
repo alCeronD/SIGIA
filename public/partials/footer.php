@@ -2,7 +2,7 @@
 
 <?php if ($rol == 2 || $rol == 4): ?>
   <div class="fixed-action-btn direction-top">
-    <a class="btn-floating btn-large teal darken-2 tooltipped" data-tooltip="Menú principal">
+    <a class="btn-floating btn-large teal darken-2 tooltipped" data-position="left" data-tooltip="Menú principal">
       <i class="material-icons">menu</i>
     </a>
     <ul>

@@ -12,8 +12,8 @@
   --success: #3a6c52;
   --warning: #fb8c00;
   --error: #b71c1c;
+  --error2: #e57373;
 }
-
 
 /* ----------------- Contenedor General ----------------- */
 .container-fluid.px-4 {
@@ -99,8 +99,17 @@
     color: var(--white) !important;
 }
 
-/* ----------------- Botones de acción del modolu ----------------- */
+/* ----------------- Botones de acción del modulo ----------------- */
+.btnInactive{
+    background-color: var(--error2);
+    color: var(--white);
+}
 
+/*  */
+.btnAddExistencia{
+    background-color: var(--blue);
+    color: var(--secundary);
+}
 
 
 /* ----------------- Modal "Ver Más" ----------------- */
@@ -549,8 +558,8 @@
 }
 
 /* Botón de cerrar modal */
-#cerrarModalEditar {
-    position: absolute;
+#cerrarModalEditar, #cerrarModalExistencia {
+    position: relative;
     top: 10px;
     right: 15px;
     font-size: 24px;
@@ -615,8 +624,14 @@
     gap: 0.4rem;
 }
 
-.tpMovimiento {
+.tp_movimiento {
   grid-area: tp_movimiento;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
 }
 
 .cantidad {

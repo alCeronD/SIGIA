@@ -36,9 +36,9 @@ export const validatePlaca = (placa)=>{
 
 };
 
-export const validarCantidad = (cantidad)=>{
+export const validarCantidad = (valor)=>{
   regex = validationRules.cantidad.regex;
 
-  return regex.test(cantidad);
+  return regex.test(valor);
 
 }

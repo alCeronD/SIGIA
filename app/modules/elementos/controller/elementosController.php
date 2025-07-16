@@ -4,7 +4,6 @@ require_once __DIR__ . '/../../configModules/model/configModulesModel.php';
 require_once __DIR__ . '/../../../helpers/response.php';
 require_once __DIR__ . '/../../../helpers/const.php';
 
-
 class ElementosController
 {
     private $modeloElemento;
@@ -135,10 +134,13 @@ class ElementosController
     }
 
     public function editarExistencia(array $data=[]){
-        $codElemento = (int) $data['co_cod_elm'];
-        $cantidad = (int) $data['co_tp_movimiento'];
-        $descripcion = (String) $data['co_descripcion'];
         
+        $result = $this->modeloElemento->cambiarExistencia($data);
+        if (!$result) {
+            fail($result['message']);
+        }
+
+        success($result['message'], $result);
     }
 
 }
@@ -247,6 +249,11 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             case 'statusElement':
                 if (method_exists($elementosController, 'cambiarEstadoElemento')) {
                     $elementosController->cambiarEstadoElemento($data);
+                }
+                break;
+            case 'ChangeExistencia':
+                if (method_exists($elementosController, 'editarExistencia')) {
+                    $elementosController->editarExistencia($data);
                 }
                 break;
             default:

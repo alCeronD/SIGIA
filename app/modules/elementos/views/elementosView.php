@@ -14,7 +14,7 @@
         <div class="col s12 m2">
             <div class="input-field" style="margin: 0;">
                 <select id="filtroTipo">
-                    <option value="todos" selected>Todos</option>
+                    <option value="all" selected>Todos</option>
                     <option value="devolutivo">Devolutivo</option>
                     <option value="consumible">Consumible</option>
                 </select>
@@ -33,7 +33,7 @@
     </div>
 
     <div class="table-responsive table-responsive-fixed">
-        <table class="table table-striped table-bordered text-center align-middle">
+        <table class="table table-striped table-bordered text-center align-middle" id="tblElements">
             <thead class="table-light">
                 <tr>
                     <th>Placa</th>
