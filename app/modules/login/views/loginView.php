@@ -29,7 +29,7 @@
         </div>
 
         <div class="input-field">
-          <input id="pass" name="pass" type="password" class="validate" required>
+          <input id="pass" name="pass" type="password" class="validate">
           <label for="pass">Contraseña</label>
         </div>
 

@@ -21,11 +21,8 @@ export const validationRules = {
 
 export const  validarGenero= (genero) =>{
     let regex = /[a-zA-Z]+/g;
-    //la idea de aca es validar la expresión regular e implementar el dentro de un div un span con el texto de que diga que no es optimo este genero.
     let regexNumber = /[0-1]+/g;
     generoValue.innerHTML = 'valor digitado: '+genero;
-    //return alert('El genero digitado es '+genero);
-    //return regex.test(genero);
     return regex.test(genero);
 }
 
@@ -42,3 +39,30 @@ export const validarCantidad = (valor)=>{
   return regex.test(valor);
 
 }
+
+// Validar que solo se puedan escribir No#.
+export const soloNumeros = (input) => {
+    input.addEventListener("input", () => {
+      input.value = input.value.replace(/\D/g, "");
+    });
+};
+
+// Solo se puedan escribir letras
+export const soloLetras = (input) => {
+    input.addEventListener("input", () => {
+      input.value = input.value.replace(/[^a-zA-ZÁÉÍÓÚáéíóúñÑ\s]/g, "");
+    });
+};
+
+// formato para el correo
+export const validarCorreo = (input) => {
+    input.addEventListener("blur", () => {
+      const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (input.value && !correoValido.test(input.value)) {
+        M.toast({ html: 'Correo electrónico no válido', classes: 'red darken-1' });
+        input.classList.add('invalid');
+      } else {
+        input.classList.remove('invalid');
+      }
+    });
+};

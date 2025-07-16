@@ -6,18 +6,35 @@ document.addEventListener('DOMContentLoaded', function () {
     const documInput = document.getElementById('docum');
     const passInput = document.getElementById('pass');
 
+    documInput.addEventListener('change', (e)=>{
+        const docum = e.target.value.trim();
+        e.stopPropagation();
+        if (!validationRules.documento.regex.test(docum)) {
+            initAlert(validationRules.documento.message,"info", toastOptions);
+            loginForm.reset();
+            documInput.focus();
+            return;
+        }
+    });
+
+    passInput.addEventListener('blur', (e) => {
+        e.stopPropagation();
+        const password = e.target.value.trim();
+
+        if (password.length === 0) {
+            initAlert("La contraseña no debe estar vacía", "info", toastOptions);
+            passInput.focus();
+            return;
+        }
+    });
+
     loginForm.addEventListener('submit', function (e) {
         e.preventDefault();
 
         const docum = documInput.value.trim();
-        const pass = passInput.value;
+        const pass = passInput.value.trim();
 
-
-        // Valida la expresión regular desde regex.js
-        if (!validationRules.documento.regex.test(docum)) {
-            alert(validationRules.documento.message);
-            loginForm.reset();
-            documInput.focus();
+        if (pass.length === 0) {
             return;
         }
 
@@ -36,8 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.success && data.url) {
                 window.location.href = data.url;
             } else {
-                initAlert("Contraseña incorrecta", "error", toastOptions);
-                // alert(data.message || "La contraseña no está correcta");
+                initAlert("Usuario y contraseña incorrectos", "error", toastOptions);
             }
         })
         .catch(error => {

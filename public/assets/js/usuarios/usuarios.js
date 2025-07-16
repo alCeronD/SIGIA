@@ -1,3 +1,6 @@
+import { soloLetras, soloNumeros, validarCorreo } from "../utils/regex";
+
+
 document.addEventListener("DOMContentLoaded", () => {
 
   // ==== Vist consulta usuarios ========
@@ -181,32 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const correoInput = document.getElementById("usu_email");
   const textarea = document.getElementById("observaciones");
 
-  // Validar que solo se puedan escribir No#.
-  const soloNumeros = (input) => {
-    input.addEventListener("input", () => {
-      input.value = input.value.replace(/\D/g, "");
-    });
-  };
-
-  // Solo se puedan escribir letras
-  const soloLetras = (input) => {
-    input.addEventListener("input", () => {
-      input.value = input.value.replace(/[^a-zA-ZÁÉÍÓÚáéíóúñÑ\s]/g, "");
-    });
-  };
-
-  // formato para el correo
-  const validarCorreo = (input) => {
-    input.addEventListener("blur", () => {
-      const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (input.value && !correoValido.test(input.value)) {
-        M.toast({ html: 'Correo electrónico no válido', classes: 'red darken-1' });
-        input.classList.add('invalid');
-      } else {
-        input.classList.remove('invalid');
-      }
-    });
-  };
 
   // Aplicar validaciones si los elementos estan
   if (docInput) soloNumeros(docInput);
@@ -215,9 +192,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (apellidosInput) soloLetras(apellidosInput);
   if (correoInput) validarCorreo(correoInput);
   if (textarea) M.textareaAutoResize(textarea);
-
-
-
 
 
   //Validaciones formulario registro usuarios. No quiere funcionar joa 
