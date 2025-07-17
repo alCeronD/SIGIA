@@ -3,7 +3,10 @@
 
 require_once __DIR__ . '/../../../../vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+// Esto es para escribir la información en el excel
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+// Este paquete lo uso para conocer la cantidad de celdas y así hacer el filtrado de manera dinámica.
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 include_once __DIR__ . '/../../elementos/model/elementosModel.php';
 include_once __DIR__ . '/../model/reportesModel.php';
@@ -121,6 +124,19 @@ class ReportesController {
         exit;
     }
 
+    // generar filtro automático
+    public function setAutoFiltro($sh, array $filtros = []) {
+        $sh->fromArray($filtros, null, 'A1');
+
+        // Traigo la longitud del arreglo.
+        $colIndex = count($filtros);
+        // traigo el numero de indices que hay por columna y lo tranformo en letras.
+        $lastCol = Coordinate::stringFromColumnIndex($colIndex); 
+
+        // Aplicar autofiltro en el rango correcto (solo en la fila 1)
+        $sh->setAutoFilter("A1:{$lastCol}1");
+    }
+
     /* ------------------------------------------------------------------
      * REPORTE EXCEL – ELEMENTOS
      * ----------------------------------------------------------------*/
@@ -135,8 +151,9 @@ class ReportesController {
 
         $ss   = new Spreadsheet();
         $sh   = $ss->getActiveSheet();
-        $sh->fromArray(['Código', 'Nombre', 'Placa', 'Existencia', 'Estado'], null, 'A1');
-
+        $encabezadosElementos = ['Código', 'Nombre', 'Placa', 'Existencia', 'Estado'];
+        $sh->fromArray($encabezadosElementos, null, 'A1');
+        $this->setAutoFiltro($sh,$encabezadosElementos);
         $row = 2;
         foreach ($elementos as $e) {
             $sh->fromArray([
@@ -166,12 +183,14 @@ class ReportesController {
         $fechaFin    = $_GET['ff'] ?? '';
         if (!$fechaInicio || !$fechaFin) exit('Rango de fechas no válido.');
 
+        $filtro = ['Código','Nombre','Placa','Cantidad','Tipo movimiento','Fecha'];
+
         $mdl   = new ReportesModel();
         $regs  = $mdl->consultEntSal($tipo, $fechaInicio, $fechaFin);
 
         $ss = new Spreadsheet();
         $sh = $ss->getActiveSheet();
-        $sh->fromArray(['Código','Nombre','Placa','Cantidad','Tipo movimiento','Fecha'], null, 'A1');
+        $this->setAutoFiltro($sh,$filtro);
 
         $row = 2;
         foreach ($regs as $r) {
@@ -212,13 +231,16 @@ class ReportesController {
     
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-    
+
+        $filtrosEncabezados = ['Código', 'Nombre', 'Placa', 'Cantidad', 'Tipo Movimiento', 'Fecha Movimiento'];
         // Encabezados
         $sheet->fromArray(
-            ['Código', 'Nombre', 'Placa', 'Cantidad', 'Tipo Movimiento', 'Fecha Movimiento'],
+            $filtrosEncabezados,
             null,
             'A1'
         );
+
+        $this->setAutoFiltro($sheet, $filtrosEncabezados);
     
         // Contenido
         $row = 2;
