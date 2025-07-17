@@ -32,7 +32,6 @@ class ReservaModel
         $conn = $this->conect->getConnect();
 
         try {
-            // var_dump($data);
             $conn->begin_transaction();
 
             $cedula = (int) $data["cedula"];
@@ -280,7 +279,6 @@ class ReservaModel
                 if (!$stmtStatus->execute()) {
 
                     $conn->rollback();
-                    // var_dump($stmtStatus->error);
                     return $stmtStatus->error;
                 }
             }
@@ -294,7 +292,6 @@ class ReservaModel
 
             if (!$stmtEndReserva->execute()) {
                 $conn->rollback();
-                //var_dump($stmtStatus->error);
                 return $stmtEndReserva->error;
             }
 
@@ -540,19 +537,13 @@ class ReservaModel
 
         $conn = $this->conect->getConnect();
         try {
-            $queryCountReservas = "SELECT COUNT(DISTINCT pre.pres_cod) AS Total
-                FROM prestamos pre
-                INNER JOIN prestamos_elementos pre_el ON pre_el.pres_cod = pre.pres_cod
-                INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
-                INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
-                INNER JOIN roles r ON r.rl_id = pre.pres_rol
-                INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres";
-            //Obtengo la cantidad de registros de la tabla prestamos
-            $getCountReservas = (int) $this->getCount($queryCountReservas, 'prestamos');
+            $limitConst = LIMIT;
+
+
+           
+
 
             $offset = ($page - 1) * LIMIT;
-            //Cantidad de páginas.
-            $pages = (int) ceil($getCountReservas / LIMIT);
 
             $sqlBase = "SELECT DISTINCT
                 pre.pres_cod AS codigo,
@@ -578,18 +569,32 @@ class ReservaModel
                 INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres ";
 
             $type = $type === 0 ? null : $type;
+
+            $sqlBaseCountReserva = "SELECT COUNT(DISTINCT pre.pres_cod) AS Total
+                FROM prestamos pre
+                INNER JOIN prestamos_elementos pre_el ON pre_el.pres_cod = pre.pres_cod
+                INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
+                INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
+                INNER JOIN roles r ON r.rl_id = pre.pres_rol
+                INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres ";
         if (is_null($type)) {
+            $queryCountReservas = $sqlBaseCountReserva;
+            //Obtengo la cantidad de registros de la tabla prestamos
             $sqlReservas = "$sqlBase ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ?";
             $stmtResevas = $conn->prepare($sqlReservas);
             $stmtResevas->bind_param('ii', $limitConst, $offset);
         } else {
+            $queryCountReservas = "$sqlBaseCountReserva WHERE esp.es_pr_cod = $type";
             $sqlReservas = "$sqlBase WHERE pre.pres_estado = ? ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ?";
             $stmtResevas = $conn->prepare($sqlReservas);
             $stmtResevas->bind_param('iii', $type, $limitConst, $offset);
         }
-           
-            $limitConst = LIMIT;
+        $getCountReservas = (int) $this->getCount($queryCountReservas, 'prestamos');
+        
+                    //Redondear cantidad de páginas.
+            $pages = (int) ceil($getCountReservas / LIMIT);
 
+        
             if (!$stmtResevas->execute()) {
 
                 $result = [
