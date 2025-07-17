@@ -81,8 +81,6 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
   let status = result.status;
   data = result.data.data;
   pages = result.data.pages;
-  console.log({"data":data});
-  console.log({"pages":pages});
 
   if (pagesReserva > pages) return;
 
@@ -91,6 +89,7 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     tbodyReservaConsult.innerHTML = "";
     return;
   }
+
 
   tbodyReservaConsult.innerHTML = "";
   data.forEach((dta) => {
@@ -142,8 +141,8 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     btnEnd.append(iFinalizar);
     let tdCodigo = document.createElement("td");
     let tdNombreCompleto = document.createElement("td");
+    // Capturo el span del modal title 
 
-    //TODO: la cantidad la saco haciendo una consulta basada en el count del prestamo al cual pertenecen los prestamos, por ahora, estalbecer por 1.
     let tdCantidad = document.createElement("td");
     let tdEstado = document.createElement("td");
     let tdAcciones = document.createElement("td");
@@ -375,7 +374,8 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     let nombreCompleto = dataTr.children[1].textContent;
     let tipo = dataTr.children[2].textContent;
     let estado = dataTr.children[3].textContent;
-
+    
+    const modalTitle = document.querySelector('#modalTitle');
     codigo = parseInt(btnDetail.getAttribute("data-id"));
     //TODO: refactorizarlo y transformarlo en una sola función.
     const reserva = data.find((item) => item.codigo === codigo);
@@ -424,6 +424,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     fechaSolicitud.innerText = reserva.fechaSolicitud;
     fechaDevolucion.innerText = reserva.fechaDevolucion;
     observaciones.innerText = reserva.observacion;
+    modalTitle.innerText = `Reserva # ${reserva.codigo}`;
   }
 
   //Finalizar el prestamo de los elementos.

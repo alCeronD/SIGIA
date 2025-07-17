@@ -1,7 +1,8 @@
 <div id="modalDetail" class="modal" style="display: none;">
   <div class="modal-content " id="modalContentDetail">
     <div class="modal-title modalTitleDetail">
-      <span id="modalTitle">Reserva #</span>
+      <!-- El texto se implementa desde javascript. -->
+      <span id="modalTitle"></span>
       <button type="button" id="closeModalBtn">
         <span class="close-modal">&times;</span>
       </button>

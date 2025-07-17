@@ -539,10 +539,6 @@ class ReservaModel
         try {
             $limitConst = LIMIT;
 
-
-           
-
-
             $offset = ($page - 1) * LIMIT;
 
             $sqlBase = "SELECT DISTINCT
