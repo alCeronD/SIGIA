@@ -577,8 +577,8 @@ class ReservaModel
                 INNER JOIN roles r ON r.rl_id = pre.pres_rol
                 INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres ";
 
-
-        if ($type === 0) {
+            $type = $type === 0 ? null : $type;
+        if (is_null($type)) {
             $sqlReservas = "$sqlBase ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ?";
             $stmtResevas = $conn->prepare($sqlReservas);
             $stmtResevas->bind_param('ii', $limitConst, $offset);
@@ -587,34 +587,8 @@ class ReservaModel
             $stmtResevas = $conn->prepare($sqlReservas);
             $stmtResevas->bind_param('iii', $type, $limitConst, $offset);
         }
-
-
-            // $sqlReservas = "SELECT DISTINCT
-            //     pre.pres_cod AS codigo,
-            //     us.usu_docum AS nroIdentidad,
-            //     us.usu_nombres AS nombre,
-            //     us.usu_apellidos AS apellido,
-            //     pre.pres_fch_slcitud AS fechaSolicitud,
-            //     pre.pres_fch_reserva AS fechaReserva,
-            //     pre.pres_hor_inicio AS horaInicio,
-            //     pre.pres_hor_fin AS horaFin,
-            //     pre.pres_fch_entrega AS fechaDevolucion,
-            //     pre.pres_observacion AS observacion,
-            //     esp.es_pr_nombre AS estadoPrestamo,
-            //     esp.es_pr_cod AS estadoCodigoPrestamo,
-            //     r.rl_nombre AS nombreRol,
-            //     tp_pr.tp_pre AS codigoTipoPrestamo,
-            //     tp_pr.tp_nombre AS tipoPrestamo
-            //     FROM prestamos pre
-            //     INNER JOIN prestamos_elementos pre_el ON pre_el.pres_cod = pre.pres_cod
-            //     INNER JOIN usuarios us ON pre_el.pres_el_usu_id = us.usu_id
-            //     INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
-            //     INNER JOIN roles r ON r.rl_id = pre.pres_rol
-            //     INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ? ";
-            // $stmtResevas = $conn->prepare($sqlReservas);
+           
             $limitConst = LIMIT;
-
-            // $stmtResevas->bind_param('ii', $limitConst, $offset);
 
             if (!$stmtResevas->execute()) {
 
@@ -672,9 +646,6 @@ class ReservaModel
         WHERE
             prel.pres_cod = ?
             AND en_s.ent_sal_cod_prestamo = ?";
-
-
-
 
             $stmtResevasElm = $conn->prepare($sqlElementsReserva);
             // $stmtResevasElm->bind_param('i', $codigo);

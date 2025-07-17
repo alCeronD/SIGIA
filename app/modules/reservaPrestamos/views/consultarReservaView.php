@@ -7,7 +7,8 @@
         <div class=" filterTipoReserva">
             <span>Filtrar reservas:</span>
             <select id="filtroTipoReserva">
-                <option value="all" selected>Todos</option>
+                <option value="" selected>Seleccione una opción</option>
+                <option value="all">Todos</option>
                 <option value="toValidate">Por Validar</option>
                 <option value="validate">Validado</option>
                 <option value="done">Finalizados</option>
@@ -15,7 +16,6 @@
         </div>
         <div class="closeItem">
             <a class="close close-btn" title="volver a dashboard" href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>">&times;</a>
-
         </div>
 
     </div>

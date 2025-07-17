@@ -34,7 +34,9 @@ export const sendData = async (url, method = 'POST', parameters = {}, data = {})
 
 //Función para establecer el fetch.
 const setFetch = (method = 'GET',action = '', data = {})=>{
-    data['action'] =action;
+    if (method === 'GET') {
+        data['action'] =action;
+    }
     let returnPrueba = {
         method,
         body: method != 'GET' ? JSON.stringify(data) : undefined,

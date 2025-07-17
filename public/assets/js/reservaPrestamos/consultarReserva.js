@@ -52,6 +52,8 @@ const BodydetailReserva = document.querySelector("#BodydetailReserva");
 let cases = "reservas";
 let codigo;
 let pages;
+// En esta variable guardo toda la información que voy a enviar cuando doy salida a los elementos.
+let validateReserva;
 //Página actual.
 let pagesReserva = 1;
 const checkBoxValidate = document.querySelector("#allValidateItems");
@@ -66,6 +68,8 @@ let elementosDetalle = [];
 
 const renderReservas = async ({page = 1, type = 'all'} = {}) => {
   pagesReserva = page;
+  // console.log({"pagesReserva": pagesReserva});
+  // console.log({"page": page});
 
   //Traigo la data por medio de fetch.
   const result = await getData(
@@ -77,8 +81,9 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
   let status = result.status;
   data = result.data.data;
   pages = result.data.pages;
+  console.log({"data":data});
+  console.log({"pages":pages});
 
-  console.log({"resultado de la consulta": data});
   if (pagesReserva > pages) return;
 
   if (!status) {
@@ -196,58 +201,53 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
 
     //Re factorizarlo y transformarlo en fetch, en una sola función.
     const reserva = data.find((item) => item.codigo === codigo);
-
     if (reserva) {
-      let getReservaElementos = getData(
+      let getReservaElementos =  getData(
         "modules/reservaPrestamos/controller/reservaController.php",
         "GET",
-        { action: "reservaDetailElements" }
-      );
-
-      const detalleAjax = new Ajax();
-      let action = "reservaDetailElements";
-      detalleAjax.request.open(
-        "GET",
-        `modules/reservaPrestamos/controller/reservaController.php?codigo=${encodeURIComponent(
-          codigo
-        )}&action=${encodeURIComponent(action)}`,
-        true
-      );
-      detalleAjax.request.setRequestHeader(
-        "X-Requested-With",
-        "XMLHttpRequest"
-      );
-
-      detalleAjax.request.onload = () => {
-        let response = JSON.parse(detalleAjax.request.responseText);
+        { action: "reservaDetailElements" , codigo: dta.codigo}
+      ).then((result)=>{
 
         //Guardo el código de la reserva con los elementos que están asociados a ese prestamo.
         //Response.data tiene los elementos.
         elementos[dta.codigo] = {
           reserva: dta,
-          elementos: response.data,
+          elementos: result.data,
         };
-      };
 
-      detalleAjax.request.setRequestHeader("Accept", "application/json");
-      detalleAjax.request.send();
+      });
+
+
+      // const detalleAjax = new Ajax();
+      // let action = "reservaDetailElements";
+      // detalleAjax.request.open(
+      //   "GET",
+      //   `modules/reservaPrestamos/controller/reservaController.php?codigo=${encodeURIComponent(
+      //     codigo
+      //   )}&action=${encodeURIComponent(action)}`,
+      //   true
+      // );
+      // detalleAjax.request.setRequestHeader(
+      //   "X-Requested-With",
+      //   "XMLHttpRequest"
+      // );
+
+      // detalleAjax.request.onload = () => {
+      //   let response = JSON.parse(detalleAjax.request.responseText);
+
+        
+      // };
+
+      // detalleAjax.request.setRequestHeader("Accept", "application/json");
+      // detalleAjax.request.send();
     }
   });
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-  renderReservas();
-
-  // Inicializar select 
-  const elemsSelect = document.querySelector('#filtroTipoReserva');
-  M.FormSelect.init(elemsSelect);
-});
-
 //Estas variables las uso para guardar los elementos que no han sido validados.
 let noselectedDevolutivos = [];
 let noselectedConsumibles = [];
-// En esta variable guardo toda la información que voy a enviar cuando doy salida a los elementos.
-let validateReserva;
+
 
 function validateCheckboxChecked(inputValidate, checkBoxValidate) {
   /**
@@ -656,10 +656,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       resetModalValidate(false);
       addElementsNoSelected(inputValidate);
 
-      // console.log({ "validatereserva nextBtnValidate": validateReserva });
-      // console.log({'elementosDevNoSelected': noselectedDevolutivos})
-      // console.log({"elementosConsuNoSelected":noselectedConsumibles});
-
       validateReserva.elementosSalida = {
         elmConsumibles: consumibles,
         elmDevolutivos: devolutivos,
@@ -673,13 +669,11 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       elementosPreviewConsu = validateReserva.elementosSalida.elmConsumibles;
       elementosPreviewDev = validateReserva.elementosSalida.elmDevolutivos;
 
-      console.log(validateReserva);
     });
 
     previewBtnValidate.addEventListener("click", (e) => {
       e.stopPropagation();
       e.preventDefault();
-      // console.log({ "validatereserva preview": validateReserva });
 
       resetModalValidate(true);
     });
@@ -730,7 +724,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       };
 
       let textConfirm = "";
-      console.log(validateReserva);
       textConfirm += `Consumibles:\n${elementosPreviewConsu
         .map(
           (el) =>
@@ -833,7 +826,7 @@ previewReserva.addEventListener("click", (e) => {
   if (pagesReserva <= 1) return;
 
   const prevPage = pagesReserva - 1;
-  renderReservas(prevPage);
+  renderReservas({page:prevPage, type:valueSelect});
 });
 
 nextReserva.addEventListener("click", (e) => {
@@ -843,27 +836,27 @@ nextReserva.addEventListener("click", (e) => {
   //Si el numero de Páginas enviado es mayor o igual al numero de paginas que tiene los registros, no haga petición.
   if (pagesReserva >= pages) return;
   const nextPage = pagesReserva + 1;
-  renderReservas(nextPage);
+  renderReservas({page:nextPage, type:valueSelect});
 });
-
+let valueSelect;
 filtroTipoReserva.addEventListener('change', (e)=>{
   e.preventDefault();
   e.stopPropagation();
 
-  console.log(e.target);
-  let valueSelect = e.target.value;
+  valueSelect = e.target.value;
 
   //Si por algun motivo hay un error en el objeto, este me va a devolver siempre TODOS LOS ELEMENTOS.
   let mapTypeLoan = typesPrestamosLoan[valueSelect] ?? 'all';
   if (mapTypeLoan) {
     renderReservas({page: 1, type:valueSelect});
   }else{
-    renderReservas();
+    renderReservas({page:1});
   }
-
-  console.log(valueSelect);
-
 });
 
-
 closeModal(modalDetail, btnCloseElements);
+document.addEventListener("DOMContentLoaded", () => {
+  renderReservas();
+  // Inicializar select 
+  M.FormSelect.init(filtroTipoReserva);
+});
