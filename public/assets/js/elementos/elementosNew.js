@@ -173,7 +173,9 @@ function renderResultPlacas({ resultado = {}, status = false } = {}){
     let tdCodigo = document.createElement('td');
     let tdAcciones = document.createElement('td');
     let tdSerial = document.createElement('td');
+    console.log(createCheckbox());
     let checkbox = createCheckbox(seriales,placa);
+    
     tdAcciones.appendChild(checkbox);
 
     tr.appendChild(tdCodigo);

@@ -54,7 +54,7 @@
                     <i class="material-icons">edit</i>
                   </a>
                   <a href="<?= getUrl('usuarios', 'usuarios', 'cambiarEstadoUsuario', ['usu_id' => $usuario['usu_id']], 'dashboard') ?>"
-                    class="btn btnInvalida white-text waves-effect waves-light"
+                    class="btn btnInvalida white-text waves-effect waves-dark"
                     onclick="return confirm('¿Estás seguro de que deseas cambiar el estado del usuario?');">
                     <i class="material-icons">autorenew</i>
                   </a>
