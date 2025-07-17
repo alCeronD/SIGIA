@@ -138,6 +138,7 @@ function fetchData(action = "", page = 1) {
       objDataDevolutivos = response.data.data;
       pagesElements = response.data.pages;
 
+
     }
 
     if (action === "users") {
@@ -248,6 +249,8 @@ function resetTableUsers(action = "", resetToFirstPage = false) {
   objAjax.request.send();
 
 }
+
+
 
 //TODO: Documentar la función usando JSDOC
 function resetTableElements(action = "", pages = 1, resetFirstPage = false) {

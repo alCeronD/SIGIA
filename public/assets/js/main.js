@@ -1,5 +1,11 @@
 // Inicializar selects de materialize.
 document.addEventListener('DOMContentLoaded', function () {
+
+  
+  //Tooltips
+  let tooltip = document.querySelectorAll('.tooltipped');
+  M.Tooltip.init(tooltip);
+
   let elems = document.querySelectorAll('select:not(.browser-default)');
   M.FormSelect.init(elems);
   //Inicializar los inputs
@@ -13,9 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
   M.Modal.init(elemsModals); 
   M.FormSelect.init(document.querySelectorAll('select'));
 
-  //Tooltips
-  let tooltip = document.querySelectorAll('.tooltipped');
-  M.Tooltip.init(tooltip);
 
 
 });

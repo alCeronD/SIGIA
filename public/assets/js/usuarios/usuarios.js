@@ -1,9 +1,9 @@
-import { soloLetras, soloNumeros, validarCorreo } from "../utils/regex";
+import { soloLetras, soloNumeros, validarCorreo } from "../utils/regex.js";
 
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ==== Vist consulta usuarios ========
+  // ==== Vist consulta usuarios ======== //
 
   const paginacion = document.getElementById('paginacion-usuarios');
   const filas = Array.from(document.querySelectorAll('#tableConfig tbody tr'));

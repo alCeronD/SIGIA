@@ -34,7 +34,7 @@
                 <select id="areaDestino" name="areaDestino">
                     <option value="" disabled selected>Seleccione una opción</option>
                     <option value="centro">Centro</option>
-                    <option value="externo">Externo</option>
+                    <!-- <option value="externo">Externo</option> -->
                 </select>
                 <label for="areaDestino">Área de destino: *</label>
             </div>

@@ -31,8 +31,7 @@
             <a id="btnBuscar" class="waves-effect waves-light btn">Buscar</a>
         </div>
     </div>
-
-    <div class="table-responsive table-responsive-fixed">
+    <div class="table table-responsive-fixed">
         <table class="table table-striped table-bordered text-center align-middle" id="tblElements">
             <thead class="table-light">
                 <tr>
@@ -47,9 +46,7 @@
                 </tr>
             </thead>
             <tbody id="tbodyElements">
-
             </tbody>
-
             <!-- FILA DE PAGINACION DENTRO DE LA TABLA -->
         </table>
     </div>
