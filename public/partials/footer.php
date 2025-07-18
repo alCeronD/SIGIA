@@ -55,8 +55,6 @@
         <i class="material-icons">bar_chart</i>
       </a>
     </li>
-
-
       <!-- Cerrar sesión -->
       <li>
         <a href="<?php echo getUrl('login','login','logout'); ?>" class="btn-floating red " data-tooltip="Cerrar sesión">

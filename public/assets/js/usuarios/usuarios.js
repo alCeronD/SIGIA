@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        contenedorInputFiltro.style.display = 'block';
+        contenedorInputFiltro.style.display = 'grid';
 
         if (tipo === 'estado') {
           contenedorInputFiltro.innerHTML = `

@@ -1,18 +1,12 @@
-/* 
-Este documento contiene todos los estilos que se repiten sus componentes, como botones, Tablas, menus, entre otros.
-*/
 * {
   box-sizing: border-box;
-  margin: 0px;
+  /* margin: 0px; */
   padding: 0px;
 }
 html, body {
-  height: 100%;
-  margin: 0;
+  height: 100vh;
     font-family:  "Open Sans", "Helvetica Neue", sans-serif;
-  /* background-color: #f3d3d3; */
 }
-
 
 /* Variables para los colores */
 :root {
@@ -46,34 +40,55 @@ html, body {
   position: fixed;
   top: 0;
   width: 100%;
-  color: var(--white);
-  font-weight: 700;
-  font-size: 1.8rem;
-  padding: 20px 0;
-  height: 10vh;
+  color: var(--white) !important;
+  height: 7vh;
   text-align: center;
   font-family: "Segoe UI", Roboto, Oxygen, "Open Sans", "Helvetica Neue", sans-serif;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   user-select: none;
-  background-color: #2c5e42;
+  background-color:var(--btnEdit);
+}
+
+.nav-wrapper {
+  display: flex;
+  align-items: center; 
+  justify-content: space-between; 
+  height: 7vh; 
+}
+.logo {
+  background-image: url('/../proyecto_sigia/public/assets/image/login/sSigiaNegative.svg');
+  background-repeat: no-repeat;
+  width: 70px;
+  height: 7vh;
+}
+
+.contentUser{
+  width: 100%;
+  height: 5vh;
+  gap: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  font-size: 12pt;
+  justify-content: center;
+}
+
+#userText{
+  display: flex;
 }
 
 .container{
   display: flex;
-  width: 90%;
+  width: 100%;
   height: 80vh;
   margin: 0 auto;
   position: relative;
   top: calc(100vh - 90vh);
   overflow: visible;
   padding: 0.5rem;
-
-  /* border: 1px solid var(--other); */
   border-radius: 8px;
-
   /* Sombra sutil */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
 }
 
 .container * {
