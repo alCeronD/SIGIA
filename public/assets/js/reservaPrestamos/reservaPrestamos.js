@@ -1,26 +1,10 @@
-import { Ajax } from "../utils/ajax.js";
-import {
-  closeModal,
-  createI,
-  instanceDate,
-  instanceModal,
-  options,
-  opcionesDatepicker,
-  instanceDateTime,
-  timePickerOptions,
-  dateISOFormat,
-  initTooltip,
-  tooltipOptions,
-  initAlert,
-  toastOptions,
-} from "../utils/cases.js";
+import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,timePickerOptions,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom } from "./index.js";
 
 const objAjax = new Ajax();
 const btnSubmit = document.querySelector("#btnSubmit");
-const tableDevolutivos = document.querySelector("#bodyDevolutions");
-const tableUsers = document.querySelector("#tableBodyUsers");
-const tablePreviewElements = document.querySelector(
-  "#tableBodyPreviewElements");
+// const tableDevolutivos = document.querySelector("#bodyDevolutions");
+// const tableUsers = document.querySelector("#tableBodyUsers");
+const tablePreviewElements = document.querySelector('#tablePreviewElements');
 const modalAddDevolutivos = instanceModal("#modalAddDevolutivos", { options });
 const modalAddConsumibles = instanceModal("#modalAddConsumible", { options });
 const modalUsers = instanceModal("#modalUsers", { options });
@@ -71,7 +55,7 @@ let inputNroDocumento = document.querySelector("#cedula");
 let inputApellido = document.querySelector("#apellido");
 let inputTelefono = document.querySelector("#telefono");
 let inputEmail = document.querySelector("#email");
-tableUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
+tablesDoom.tableUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
 const btnPreview = document.querySelector("#preview");
 const btnNext = document.querySelector("#next");
 
@@ -191,7 +175,7 @@ function resetTableUsers(action = "", resetToFirstPage = false) {
       //por defecto, lo coloco en 1.
       // valuePage.value = String(pgUsers);
 
-      tableUsers.innerHTML = "";
+      tablesDoom.tableUsers.innerHTML = "";
       data.forEach((us) => {
         let btnAdd = document.createElement("button");
         let iCreate = createI();
@@ -217,7 +201,7 @@ function resetTableUsers(action = "", resetToFirstPage = false) {
         tdEmail.textContent = us.email;
         tdRol.textContent = us.rol;
 
-        tableUsers.appendChild(trTableUsers);
+        tablesDoom.tableUsers.appendChild(trTableUsers);
         trTableUsers.appendChild(tdNroDocumento);
         trTableUsers.appendChild(tdNombre);
         trTableUsers.appendChild(tdApellido);
@@ -313,7 +297,7 @@ btnAddElements.addEventListener("click", (btnTarget) => {
    */
 
   resetTableElements("elements", 1).then((respuesta) => {
-    tableDevolutivos.innerHTML = "";
+    tablesDoom.tableDevolutivos.innerHTML = "";
 
     //Implementar los datos en en la tabla.
     respuesta.forEach((dta) => {
@@ -342,7 +326,7 @@ btnAddElements.addEventListener("click", (btnTarget) => {
       tdAccion.append(label);
       label.append(addElements, span);
 
-      tableDevolutivos.appendChild(trTable);
+      tablesDoom.tableDevolutivos.appendChild(trTable);
       trTable.appendChild(tdCodigo);
       trTable.appendChild(tdElemento);
       trTable.appendChild(tdArea);
@@ -361,8 +345,10 @@ btnAddConsumibles.addEventListener("click", (event) => {
   event.preventDefault();
   //Respuesta de la promesa.
   resetTableElements("consumibles", 1).then((result) => {
-    const tblBodyConsumibles = document.querySelector("#tblBodyConsumibles");
-    tblBodyConsumibles.innerHTML = "";
+    // const tblBodyConsumibles = document.querySelector("#tblBodyConsumibles");
+    // tblBodyConsumibles.innerHTML = "";
+    tablesDoom.tblBodyConsumibles.innerHTML = "";
+    
     result.forEach((data) => {
       let trConsumbile = document.createElement("tr");
 
@@ -394,7 +380,7 @@ btnAddConsumibles.addEventListener("click", (event) => {
       tdNombre.innerText = data.elemento;
       tdCantidad.innerText = data.cantidad;
 
-      tblBodyConsumibles.appendChild(trConsumbile);
+      tablesDoom.tblBodyConsumibles.appendChild(trConsumbile);
       trConsumbile.appendChild(tdCodigo);
       trConsumbile.appendChild(tdNombre);
       trConsumbile.appendChild(tdCantidad);
@@ -421,7 +407,7 @@ btnSearchUser.addEventListener("click", (event) => {
 });
 
 //Delegar evento sobre la tabla usuarios
-tableUsers.addEventListener("click", (e) => {
+tablesDoom.tableUsers.addEventListener("click", (e) => {
   e.stopPropagation();
   e.preventDefault();
 
@@ -452,7 +438,7 @@ tableUsers.addEventListener("click", (e) => {
 });
 
 //Delegar evento sobre la tabla de elementos devolutivos.
-tableDevolutivos.addEventListener("click", (event) => {
+tablesDoom.tableDevolutivos.addEventListener("click", (event) => {
   event.stopPropagation();
 
   //Valido si el evento ejecutado corresponde a un input con la clase checkboxInput.
@@ -479,8 +465,7 @@ tableDevolutivos.addEventListener("click", (event) => {
       //Valido, si el arreglo no contiene el valueInput, entonces que implemente el valor ahí.
       if (!ids.includes(valueInput)) {
         ids.push(valueInput);
-
-        tablePreviewElements.appendChild(trTablePreview);
+        tablesDoom.tablePreviewElements.appendChild(trTablePreview);
         tdCodigo.textContent = codigo;
         tdNombre.textContent = nombre;
         tdCantidad.textContent = "1";
@@ -519,13 +504,9 @@ tableConsumible.addEventListener("click", (event) => {
     let inputCantidad = info.querySelector(`[type=number]`);
     let codigoConsu = info.children[0].textContent;
     let nombreConsu = info.children[1].textContent;
-    //let cantidadConsu = info.children[3].inputCantidad.dataset.cantidad;
     let cantidadConsu = inputCantidad.value;
-    // console.log({codigoConsu,nombreConsu,cantidadConsu});
     let checkboxChecked = event.target.checked;
-
     let trConsu = document.createElement("tr");
-
     let tdCodigoConsu = document.createElement("td");
     let tdNombreConsu = document.createElement("td");
     tdCodigoConsu.setAttribute("class", "codigoElemento");
@@ -552,7 +533,8 @@ tableConsumible.addEventListener("click", (event) => {
           toastOptions
         );
 
-        tablePreviewElements.appendChild(trConsu);
+        tablesDoom.tablePreviewElements.appendChild(trConsu);
+        // tablePreviewElements.appendChild(trConsu);
         trConsu.appendChild(tdCodigoConsu);
         trConsu.appendChild(tdNombreConsu);
         trConsu.appendChild(tdAreaConsu);
@@ -637,6 +619,7 @@ previewElement.addEventListener("click", () => {
       tdElemento.textContent = elemento;
       tdArea.textContent = area;
 
+      // verificar si ya esta seleccionado el elemento;
       ids.forEach((idsElements) => {
         if (addElements.getAttribute("data-id") === idsElements) {
           addElements.checked = true;
@@ -660,7 +643,9 @@ nextElement.addEventListener("click", () => {
     pgElementsDevolutivos++;
   }
   resetTableElements("elements", pgElementsDevolutivos).then((result) => {
-    tableDevolutivos.innerHTML = "";
+    // tableDevolutivos.innerHTML = "";
+    // tableDevolutivos.innerHTML = "";
+    tablesDoom.tableDevolutivos.innerHTML = "";
     //Implementar los datos en en la tabla.
     result.forEach((dta) => {
       let codigo = dta.codigo;
@@ -681,7 +666,6 @@ nextElement.addEventListener("click", () => {
       let tdArea = document.createElement("td");
       let tdAccion = document.createElement("td");
 
-      console.log(addElements);
       ids.forEach((idsElements) => {
         if (addElements.getAttribute("data-id") === idsElements) {
           addElements.checked = true;
@@ -695,7 +679,7 @@ nextElement.addEventListener("click", () => {
       tdAccion.append(label);
       label.append(addElements, span);
 
-      tableDevolutivos.appendChild(trTable);
+      tablesDoom.tableDevolutivos.appendChild(trTable);
       trTable.appendChild(tdCodigo);
       trTable.appendChild(tdElemento);
       trTable.appendChild(tdArea);
@@ -719,8 +703,9 @@ document
 
     //TODO: el renderizado pasarlo a una función así reutilizarlo en 3 lugares, boton preview, boton next y cuando abre el modal.
     resetTableElements("consumibles", pagesConsumibles).then((result) => {
-      const tblBodyConsumibles = document.querySelector("#tblBodyConsumibles");
-      tblBodyConsumibles.innerHTML = "";
+      tablesDoom.tblBodyConsumibles.innerHTML = "";
+      // const tblBodyConsumibles = document.querySelector("#tblBodyConsumibles");
+      // tblBodyConsumibles.innerHTML = "";
       result.forEach((data) => {
         let trConsumbile = document.createElement("tr");
 
@@ -756,7 +741,7 @@ document
         tdNombre.innerText = data.elemento;
         tdCantidad.innerText = data.cantidad;
 
-        tblBodyConsumibles.appendChild(trConsumbile);
+        tablesDoom.tblBodyConsumibles.appendChild(trConsumbile);
         trConsumbile.appendChild(tdCodigo);
         trConsumbile.appendChild(tdNombre);
         trConsumbile.appendChild(tdCantidad);
@@ -777,8 +762,7 @@ document
     }
 
     resetTableElements("consumibles", pagesConsumibles).then((result) => {
-      const tblBodyConsumibles = document.querySelector("#tblBodyConsumibles");
-      tblBodyConsumibles.innerHTML = "";
+      tablesDoom.tblBodyConsumibles.innerHTML = "";
       result.forEach((data) => {
         let trConsumbile = document.createElement("tr");
 
@@ -814,7 +798,7 @@ document
         tdNombre.innerText = data.elemento;
         tdCantidad.innerText = data.cantidad;
 
-        tblBodyConsumibles.appendChild(trConsumbile);
+        tablesDoom.tblBodyConsumibles.appendChild(trConsumbile);
         trConsumbile.appendChild(tdCodigo);
         trConsumbile.appendChild(tdNombre);
         trConsumbile.appendChild(tdCantidad);
@@ -879,7 +863,7 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
   let data = Object.fromEntries(info);
-
+  console.log(data);
   if (!validateFormData(info)) {
     return; // Detener si hay campos vacíos
   }
@@ -895,8 +879,9 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
 
   //Data de elementos.
   let filas = document.querySelectorAll(
-    ".tableElements .previewElements #tableBodyPreviewElements tr"
+    ".tableElements .previewElements #tblBodyPreviewElements tr"
   );
+  console.log({"filas encontradas": filas.length});
   //Capturo el codigo del elemento y lo guardo.
   //TODO: Validar que cuando el usuario presione el botón de enviar aplique un return cuando no se ha diligenciado ningún campo.
   filas.forEach((fl) => {
@@ -911,7 +896,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
       if (!tdArea.includes(area)) {
         tdArea.push(area);
       }
-
       const elements = {
         codigo: codigoElemento,
         cantidad: cantidadElemento,
@@ -924,7 +908,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
       }
     }
   });
-
   let codigosElementos = rows.codigoElementos;
   //Agrego los códigos de los elementos al data.
   data.codigosElementos = codigosElementos;
@@ -962,11 +945,7 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     data: data,
     action: "registrar",
   });
-
-  if (
-    rows.codigoElementos.devolutivos.length === 0 &&
-    rows.codigoElementos.consumibles.length === 0
-  ) {
+  if (rows.codigoElementos.devolutivos.length === 0 && rows.codigoElementos.consumibles.length === 0) {
     initAlert(
       "Debes agregar al menos un elemento para la solicitud.",
       "error",
@@ -984,7 +963,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let devolutivosRows = rows.codigoElementos.devolutivos;
   let consumiblesRows = rows.codigoElementos.consumibles;
   let textConfirmReserva = "";
-
   //Valido si hay elementos seleccionados.
   if (consumiblesRows.length > 0) {
     textConfirmReserva += `Consumibles:\n${consumiblesRows
@@ -1021,7 +999,7 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
         inputApellido.textContent = "";
         inputEmail.textContent = "";
         inputTelefono.textContent = "";
-        tablePreviewElements.innerHTML = "";
+        tablesDoom.tablePreviewElements.innerHTML = "";
 
         //Oculto inputs de tipo time.
         horaInicio.style.visibility = "hidden";

@@ -1,3 +1,4 @@
+<!-- Realizar la reserva -->
 <div class="content">
     <div class="menuTitle">
         <span id="textTitle">Gestión de reserva</span>

@@ -8,8 +8,6 @@
             <th>Cantidad Adicionar</th>
         </tr>
     <tbody id="tblBodyConsumibles">
-        <!-- cuerpo renderizado con javascript. -->
-
     </tbody>
     </thead>
 </table>

@@ -17,7 +17,7 @@
                         <!-- <th>Acciones</th> -->
                     </tr>
                 </thead>
-                <tbody id="tableBodyPreviewElements">
+                <tbody id="tblBodyPreviewElements">
 
                 </tbody>
 

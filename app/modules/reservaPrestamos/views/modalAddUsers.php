@@ -19,7 +19,7 @@
                         <td>Acciones</td>
                     </tr>
                 </thead>
-                <tbody id="tableBodyUsers">
+                <tbody id="tblBodyUsers">
                     <!-- Renderizado con javascript. -->
                 </tbody>
             </table>

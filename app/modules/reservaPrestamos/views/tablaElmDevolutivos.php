@@ -10,7 +10,7 @@
             </tr>
         </thead>
         <!-- Renderizado con javascript. -->
-        <tbody id="bodyDevolutions">
+        <tbody id="tblBodyDevolutions">
             
         </tbody>
 

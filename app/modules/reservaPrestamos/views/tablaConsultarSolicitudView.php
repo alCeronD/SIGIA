@@ -1,3 +1,4 @@
+<!-- CONSULTAR RESERVAS -->
 <table id="tableElementsConsult">
     <legend>Listado de reservas:</legend>    
     <thead>
