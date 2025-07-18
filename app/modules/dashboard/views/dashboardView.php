@@ -1,26 +1,61 @@
-<div class="dashboard-grid">
-    <div class="option-card">
-        <h5>Consular Elementos</h5>
-        <p>Contiene una Consulta de los Elementos.</p>
-        <a class="btn-success btnGetUrl" href="<?php echo getUrl("elementos", "elementos", "mostrarElementos", false, 'dashboard'); ?>">Consultar Elementos</a>
-    </div>
-    <div class="option-card">
+<?php $rol_id = $_SESSION['usuario']['rol_id']; ?>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<div class="content">
+  <div class="dashboard-grid">
+
+    <?php if ($rol_id == 2):  ?>
+    
+      <div class="option-card z-depth-1">
+        <i class="material-icons large green-text text-darken-2 center-align">search</i>
+        <h5>Consultar Elementos</h5>
+        <p>Contiene una consulta de los elementos.</p>
+        <a class="btn green btnGetUrl" href="<?php echo getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard'); ?>">Consultar Elementos</a>
+      </div>
+
+      <div class="option-card z-depth-1">
+        <i class="material-icons large grey-text text-darken-2 center-align">settings</i>
         <h5>Configuraciones</h5>
         <p>Configuraciones poco recurrentes.</p>
-        <a class="btn-secondary btnGetUrl" href="<?php echo getUrl("configModules", "configModules", "renderViewArea", false, 'dashboard'); ?>">Areas</a>
-        <a class="btn-secondary btnGetUrl" href="<?php echo getUrl("configModules", "configModules", "renderViewTp", false, 'dashboard'); ?>">Tipo documento</a>
-        <a class="btn-success btnGetUrl" href="<?php echo getUrl("roles", "roles", "mostrarRoles", false, 'dashboard'); ?>" class="footer-icon text-center">Roles</a>
+        <a class="btn grey btnGetUrl" href="<?php echo getUrl('configModules', 'configModules', 'renderViewArea', false, 'dashboard'); ?>">Áreas</a>
+        <a class="btn grey btnGetUrl" href="<?php echo getUrl('configModules', 'configModules', 'renderViewTp', false, 'dashboard'); ?>">Tipo documento</a>
+        <a class="btn green btnGetUrl" href="<?php echo getUrl('roles', 'roles', 'mostrarRoles', false, 'dashboard'); ?>">Roles</a>
+      </div>
 
-    </div>
-    <div class="option-card">
-        <h5>Prestamos de Elementos</h5>
-        <p>Consulta los prestamos Actuales.</p>
-        <a class="btn-secondary btnGetUrl" href="<?php echo getUrl("reservaPrestamos", "reserva", "reservaView", false, 'dashboard'); ?>">Ver prestamos</a>
-    </div>
-    <div class="option-card">
+      <div class="option-card z-depth-1">
+        <i class="material-icons large grey-text text-darken-2 center-align">assignment</i>
+        <h5>Préstamos de Elementos</h5>
+        <p>Consulta los préstamos actuales.</p>
+        <a class="btn grey btnGetUrl" href="<?php echo getUrl('reservaPrestamos', 'reserva', 'reservaView', false, 'dashboard'); ?>">Ver préstamos</a>
+      </div>
+
+      <div class="option-card z-depth-1">
+        <i class="material-icons large green-text text-darken-2 center-align">person</i>
         <h5>Usuarios</h5>
-        <p>crea o busca usuarios.</p>
-        <a class="btn-success btnGetUrl" href="<?php echo getUrl("usuarios", "usuarios", "userView", false, 'dashboard'); ?>">Crear usuario</a>
-        <a class="btn-success btnGetUrl" href="<?php echo getUrl("usuarios", "usuarios", "consultUser", false, 'dashboard'); ?>">Consultar usuario</a>
-    </div>
+        <p>Crea o busca usuarios.</p>
+        <a class="btn green btnGetUrl" href="<?php echo getUrl('usuarios', 'usuarios', 'userView', false, 'dashboard'); ?>">Crear usuario</a>
+        <a class="btn green btnGetUrl" href="<?php echo getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard'); ?>">Consultar usuario</a>
+      </div>
+    <?php endif; ?>
+
+    <?php if ($rol_id == 4):  ?>
+      <div class="option-card z-depth-1">
+        <i class="material-icons large green-text text-darken-2 center-align">assignment</i>
+        <h5>Solicitar Préstamo</h5>
+        <p>Realiza la solicitud de préstamo de elementos.</p>
+        <a class="btn green btnGetUrl" href="<?php echo getUrl('solicitudPrestamos', 'solicitudPrestamos', 'registrarPrestamosView', false, 'dashboard'); ?>">Solicitar préstamo</a>
+      </div>
+    
+      <div class="option-card z-depth-1">
+        <i class="material-icons large grey-text text-darken-2 center-align">visibility</i>
+        <h5>Ver Préstamos</h5>
+        <p>Consulta el estado de tus préstamos.</p>
+        <a class="btn grey btnGetUrl" href="<?php echo getUrl('solicitudPrestamos', 'solicitudPrestamos', 'consultarPrestamosView', false, 'dashboard'); ?>">Ver préstamos</a>
+      </div>
+    <?php endif; ?>
+
+
+  </div>
 </div>
