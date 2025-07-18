@@ -1,13 +1,11 @@
+import { getData } from "../utils/fetch.js";
 import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,timePickerOptions,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom } from "./index.js";
 
 const objAjax = new Ajax();
 const btnSubmit = document.querySelector("#btnSubmit");
-// const tableDevolutivos = document.querySelector("#bodyDevolutions");
-// const tableUsers = document.querySelector("#tableBodyUsers");
-const tablePreviewElements = document.querySelector('#tablePreviewElements');
 const modalAddDevolutivos = instanceModal("#modalAddDevolutivos", { options });
 const modalAddConsumibles = instanceModal("#modalAddConsumible", { options });
-const modalUsers = instanceModal("#modalUsers", { options });
+const modalUsers = instanceModal("#modalUsers", options);
 const btnAddElements = document.querySelector("#btnAddElements");
 const ispanAddElements = createI();
 ispanAddElements.innerText = "add";
@@ -33,8 +31,6 @@ let button;
 const valuePage = document.querySelector("#valuePage");
 //Aplico tooltip al boton de usuarios
 iCreatePreview.innerText = "info";
-
-
 previewElements2.append(iCreatePreview);
 //Creo una instancia del modal
 const instanPreview = instanceModal("#modalPreviewElements", {
@@ -58,7 +54,6 @@ let inputEmail = document.querySelector("#email");
 tablesDoom.tableUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
 const btnPreview = document.querySelector("#preview");
 const btnNext = document.querySelector("#next");
-
 areaDestino.addEventListener("change", () => {
   let value = areaDestino.options[areaDestino.selectedIndex];
   //console.log(value);
@@ -86,16 +81,13 @@ let iAddElement = createI();
 iAddElement.innerText = "add_a_photo";
 btnAddElements.classList.add("btnClick");
 btnAddElements.append(iAddElement);
-
 let iConsumible = createI();
 iConsumible.innerText = "battery_std";
 btnAddConsumibles.append(iConsumible);
-
 let iClass = createI();
 modalTitle.innerText = "Elementos seleccionados";
 iClass.innerText = "send";
 btnSubmit.append(iClass);
-
 // variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
 let pagesUsers;
 let pagesElements;
@@ -138,31 +130,30 @@ function fetchData(action = "", page = 1) {
   objAjax.request.send();
 }
 
-//Función para reestablecer los elementos a la página 1.
-//TODO: Documentar la función usando JSDOC
-function resetTableUsers(action = "", resetToFirstPage = false) {
-  if (resetToFirstPage) {
-    pgUsers = 1;
-  }
-  //TODO: Si se le envía más parámetros, buscar como funciona URLSearchParams para poder enviar muchos parámetros en forma de objeto.
-  objAjax.request.open(
-    "GET",
-    `modules/reservaPrestamos/controller/reservaController.php?pages=${encodeURIComponent(
-      pgUsers
-    )}&action=${encodeURIComponent(action)}`,
-    true
-  );
-  objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-  objAjax.request.onload = () => {
-    // valuePage.innerHTML = "";
-    if (action === "users") {
-      let response = JSON.parse(objAjax.request.responseText);
-      let data = response.data.data;
-      let allPages = response.data.pages;
 
-      //Evitar que no se aumente la página más allá del número de páginas.
+/**
+ * Renderiza los usuarios en una tabla HTML.
+ * 
+ * @param {Object} options - Opciones de configuración.
+ * @param {string} options.action - Acción para la consulta (por defecto: "users").
+ * @param {number} options.pages - Página actual (por defecto: 1).
+ * @param {boolean} options.resetToFirstPage - Si debe reiniciar a la primera página.
+ */
+const renderUsers = async ({action = "users", pages = 1, resetToFirstPage = false} = {})=>{
+  try {
+    const response = await getData("modules/reservaPrestamos/controller/reservaController.php","GET", {action: action, pages});
+
+    let data = response.data.data;
+    let allPages = response.data.pages;
+
+    //Evitar que no se aumente la página más allá del número de páginas.
       if (pgUsers > allPages) {
         pgUsers = allPages;
+        return;
+      }
+
+      if (resetToFirstPage) {
+        pgUsers = 1;
       }
 
       //Limpio los selects, evito que hayan duplicados.
@@ -211,12 +202,101 @@ function resetTableUsers(action = "", resetToFirstPage = false) {
         trTableUsers.appendChild(tdAcciones);
         tdAcciones.appendChild(btnAdd);
       });
-    }
-  };
 
-  objAjax.request.setRequestHeader("accept", "application/json");
-  objAjax.request.send();
-}
+  } catch (error) {
+    throw new Error(`Error de procesado ${error}`);
+    
+  }
+
+};
+
+
+const renderElements = async ({action = "devolutivos", pages = 1, resetToFirstPage = false})=>{
+
+
+};
+
+
+
+//Función para reestablecer los elementos a la página 1.
+//TODO: Documentar la función usando JSDOC
+// function resetTableUsers(action = "", resetToFirstPage = false) {
+//   if (resetToFirstPage) {
+//     pgUsers = 1;
+//   }
+//   //TODO: Si se le envía más parámetros, buscar como funciona URLSearchParams para poder enviar muchos parámetros en forma de objeto.
+//   objAjax.request.open(
+//     "GET",
+//     `modules/reservaPrestamos/controller/reservaController.php?pages=${encodeURIComponent(
+//       pgUsers
+//     )}&action=${encodeURIComponent(action)}`,
+//     true
+//   );
+//   objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+//   objAjax.request.onload = () => {
+//     // valuePage.innerHTML = "";
+//     if (action === "users") {
+//       let response = JSON.parse(objAjax.request.responseText);
+//       let data = response.data.data;
+//       let allPages = response.data.pages;
+
+//       //Evitar que no se aumente la página más allá del número de páginas.
+//       if (pgUsers > allPages) {
+//         pgUsers = allPages;
+//       }
+
+//       //Limpio los selects, evito que hayan duplicados.
+//       for (let index = 1; index <= allPages; index++) {
+//         let pagesOptions = document.createElement("option");
+//         pagesOptions.value = index;
+//         pagesOptions.innerHTML = index;
+//         // valuePage.append(pagesOptions);
+//       }
+//       //por defecto, lo coloco en 1.
+//       // valuePage.value = String(pgUsers);
+
+//       tablesDoom.tableUsers.innerHTML = "";
+//       data.forEach((us) => {
+//         let btnAdd = document.createElement("button");
+//         let iCreate = createI();
+//         // iCreate.setAttribute('class','material-icons');
+//         iCreate.innerText = "add";
+//         button = btnAdd;
+//         btnAdd.setAttribute("type", "button");
+//         btnAdd.setAttribute("class", "btn waves-effect waves-light");
+//         btnAdd.append(iCreate);
+//         let trTableUsers = document.createElement("tr");
+//         let tdNroDocumento = document.createElement("td");
+//         let tdNombre = document.createElement("td");
+//         let tdApellido = document.createElement("td");
+//         let tdTelefono = document.createElement("td");
+//         let tdEmail = document.createElement("td");
+//         let tdRol = document.createElement("td");
+//         let tdAcciones = document.createElement("td");
+
+//         tdNroDocumento.textContent = us.nroDocumento;
+//         tdNombre.textContent = us.nombres;
+//         tdApellido.textContent = us.apellidos;
+//         tdTelefono.textContent = us.telefono;
+//         tdEmail.textContent = us.email;
+//         tdRol.textContent = us.rol;
+
+//         tablesDoom.tableUsers.appendChild(trTableUsers);
+//         trTableUsers.appendChild(tdNroDocumento);
+//         trTableUsers.appendChild(tdNombre);
+//         trTableUsers.appendChild(tdApellido);
+//         trTableUsers.appendChild(tdTelefono);
+//         trTableUsers.appendChild(tdEmail);
+//         trTableUsers.appendChild(tdRol);
+//         trTableUsers.appendChild(tdAcciones);
+//         tdAcciones.appendChild(btnAdd);
+//       });
+//     }
+//   };
+
+//   objAjax.request.setRequestHeader("accept", "application/json");
+//   objAjax.request.send();
+// }
 
 //TODO: Documentar la función usando JSDOC
 function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
@@ -401,7 +481,9 @@ btnSearchUser.addEventListener("click", (event) => {
   event.preventDefault();
 
   //Vuelvo a reiniciar la tabla para que inicie en la Página #1.
-  resetTableUsers("users", true);
+  // resetTableUsers("users", true);
+  renderUsers({action:"users", pages: 1});
+
 
   modalUsers.open();
 });
@@ -565,7 +647,8 @@ btnPreview.addEventListener("click", (event) => {
   pgUsers = pgUsers === 1 ? 1 : pgUsers - 1;
 
   //Decrementa la página por el valor del pages.
-  resetTableUsers("users");
+  // resetTableUsers("users");
+  renderUsers({action:"users", pages:pgUsers});
 });
 
 //Botón para marcar el next de la página.
@@ -573,13 +656,11 @@ btnNext.addEventListener("click", (event) => {
   event.stopPropagation();
   event.preventDefault();
   pgUsers++;
+  renderUsers({action:"users", pages:pgUsers});
 
-  //Aumenta la Página hasta que llega al final.
-  resetTableUsers("users");
 });
 
-//Con el true se devuelve a la primera página.
-resetTableUsers("", true);
+
 
 /**
  * Paginación elementos devolutivos disponibles
@@ -810,6 +891,12 @@ document
       });
     });
   });
+
+
+// Cerrar el modal de los usuarios.
+closeModal(modalUsers, btnCloseUsers, ()=>{
+  renderUsers({action: "users", pages: 1, resetToFirstPage:true});
+});
 
 //Cerrar el modal de elementos devolutivos
 closeModal(modalAddDevolutivos, btnCloseDevolutivos);

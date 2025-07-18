@@ -100,7 +100,6 @@ function viewPlacaInputs(status = false) {
     }
 }
 
-
 const contentPlacaEdit = document.querySelector('.contentPlacaEdit');
 // FUNCIÓN PARA RENDERIZAR LA PLACA EN EL EDITAR ELEMENTO
 function showPlacaAsociadaEditar() {
@@ -1140,7 +1139,6 @@ closeModal(addElementModal,cerrarModalBtn, ()=>{
   // Si existe el modal, traiga el selector form que se encuentra de manera interna.
   if (addElementModal) {
     const modalForm = addElementModal.el.querySelector("form");
-    console.log(modalForm);
     resetForm(modalForm);
     modalForm.reset();
   }

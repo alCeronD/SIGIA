@@ -157,7 +157,7 @@ export const options = {
   opacity: 0.7,
   inDuration: 300,
   outDuration: 200,
-  dismissible: true,
+  dismissible: false,
   startingTop: "4%",
   endingTop: "10%",
   onOpenStart: () => {},
