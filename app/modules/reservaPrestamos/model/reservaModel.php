@@ -436,7 +436,6 @@ class ReservaModel
     //Función apra traer los elementos, posiblemente da implementarla en el modelo de usuarios.
     public function selectUsers($pages)
     {
-
         try {
 
             $conn = $this->conect->getConnect();
@@ -576,7 +575,7 @@ class ReservaModel
         if (is_null($type)) {
             $queryCountReservas = $sqlBaseCountReserva;
             //Obtengo la cantidad de registros de la tabla prestamos
-            $sqlReservas = "$sqlBase ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ?";
+            $sqlReservas = "$sqlBase ORDER BY pre.pres_fch_slcitud DESC LIMIT ? OFFSET ?";
             $stmtResevas = $conn->prepare($sqlReservas);
             $stmtResevas->bind_param('ii', $limitConst, $offset);
         } else {

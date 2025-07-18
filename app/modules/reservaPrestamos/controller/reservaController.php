@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../model/reservaModel.php';
+require_once __DIR__ . '/../../usuarios/model/usuariosModel.php';
 require_once __DIR__ . '/../../../helpers/getUrl.php';
 
 
@@ -183,10 +184,7 @@ class ReservaController
         }
         success('Registros', $data);
     }
-
-
-
-    public function getElementsReserva($codigo)
+        public function getElementsReserva($codigo)
     {
         $codigoInt = (int) $codigo;
         $dataDetail = $this->model->selectElementsReserva($codigoInt);
@@ -248,7 +246,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
             default:
                 //TODO: Retornar un valor no valido.
-                # code...
+                
                 break;
         }
     }
