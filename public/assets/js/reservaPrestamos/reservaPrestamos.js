@@ -105,7 +105,7 @@ initTooltip(btnAddElements,tooltipOptions,'Seleccione los elementos \n que requi
 initTooltip(btnAddConsumibles,tooltipOptions,'Seleccione elementos \n a consumir sin \ndevolución obligatoria','bottom');
 
 let iClass = createI();
-modalTitle.innerText = "Elementos disponibles";
+modalTitle.innerText = "Elementos seleccionados";
 iClass.innerText = 'send';
 btnSubmit.append(iClass);
 
@@ -115,7 +115,8 @@ let pagesElements;
 //Este arreglo lo voy a crear con el fin de guardar los ids de los elementos para saber cuales son los elementos seleccionados.
 let ids = [];
 let addElements;
-
+// Boton para cierrar el modal de elementsPreview
+const closeModalBtnPreview = document.querySelector('#closeModalBtnPreview');
 /**
  * Función de renderizado y peticiones, TODO: Re factorizar y mover a otros archivos.
  */
@@ -250,8 +251,6 @@ function resetTableUsers(action = "", resetToFirstPage = false) {
 
 }
 
-
-
 //TODO: Documentar la función usando JSDOC
 function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
 
@@ -306,13 +305,16 @@ function definirCantidad(cantidadInput, cantidad) {
     let valor = parseInt(event.target.value,10);
 
     if (valor < 0) {
-      alert("Cantidad no disponible");
+      // alert("Cantidad no disponible");
+      initAlert("Cantidad no disponible", "info", toastOptions);
       event.target.value = valor;
+      return;
     }
 
     if (event.target.value > cantidad) {
-      alert(`Cantidad Máxima permitida ${cantidad}`);
+      initAlert(`Cantidad Máxima permitida ${cantidad}`, "info", toastOptions);
       cantidadInput.value = "";
+      return;
     }
 
     //El valor insertado en cantidad lo actualizo en el data del input. Si el usuario digita una cantidad menor a la cantidad disponible, el valor se actualiza.
@@ -514,7 +516,7 @@ tableDevolutivos.addEventListener("click", (event) => {
 
 
       }else{
-        alert('el elemento seleccionado ya está seleccionado.');
+        initAlert('El elemento seleccionado ya esta seleccionado', 'info', toastOptions);
         //Reinicio el evento.
         event.preventDefault();
       }
@@ -554,9 +556,9 @@ tableConsumible.addEventListener(('click'),(event)=>{
     tdCantidadConsu.textContent = cantidadConsu;
     
     if (checkboxChecked && (cantidadConsu === "")) {
-      alert('digite la cantidad requerida en base a su disponibilidad');
       //Desmarcar el checkbox en caso de que no haya elegido cantidad al elemento.
       event.target.checked = false;      
+      return;
     }else{
 
       //Valido que el elemento no este en la tabla, en caso de que este, evitar duplicidad.
@@ -571,7 +573,7 @@ tableConsumible.addEventListener(('click'),(event)=>{
         trConsu.appendChild(tdAreaConsu);
         trConsu.appendChild(tdCantidadConsu);
       }else{
-        alert('Elemento consumible ya ha sido agregado');
+        initAlert("Elemento consumible ya ha sido agregado", "info", toastOptions);
         inputCantidad.value = "";
         event.preventDefault();
       }
@@ -605,7 +607,8 @@ btnNext.addEventListener("click", (event) => {
   resetTableUsers("users");
 });
 
-closeModal(modalUsers, btnCloseUsers);
+
+
 //Con el true se devuelve a la primera página.
 resetTableUsers("", true);
 
@@ -615,6 +618,7 @@ resetTableUsers("", true);
  */
 let pgElementsDevolutivos = 1;
 const previewElement = document.querySelector("#previewElement");
+const modalPreviewElements = instanceModal('#modalPreviewElements', options);
 const nextElement = document.querySelector("#nextElement");
 // Selector = Puede que no lo use. Este selector es para colocar la cantidad de páginas que tengo basado en la cantidad de elementos de la tabla.
 previewElement.addEventListener("click", () => {
@@ -723,6 +727,11 @@ nextElement.addEventListener("click", () => {
   });
 });
 
+
+closeModalBtnPreview.addEventListener('click', (e)=>{
+  e.stopPropagation();
+  instanPreview.close();
+});
 /**
  * Paginación elementos consumibles disponibles.
 */
@@ -938,7 +947,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   data.codigosElementos = codigosElementos;
 
   if (!data["areaDestino"]) {
-    // alert("El área de destino es obligatoria.");
     initAlert('El área de destino es obligatoria.','error',toastOptions);
     return;
   }
@@ -953,7 +961,8 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   //TODO: Mejorar logica antes de validar todo.
   if (data["areaDestino"] === "centro") {
     if (!data["inicio"] || !data["fin"]) {
-      alert("La hora de inicio y fin son obligatorias para el centro.");
+      // alert("La hora de inicio y fin son obligatorias para el centro.");
+      initAlert("La hora de inicio y fin son obligatorias para el centro.", "warning", toastOptions);
       return;
     }
   } else if (data["areaDestino"] === "externo") {
@@ -1038,3 +1047,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     objAjax.request.send(dataJson);
   }
 });
+
+closeModal(modalUsers, btnCloseUsers);
+closeModal(instanPreview, closeModalBtnPreview);

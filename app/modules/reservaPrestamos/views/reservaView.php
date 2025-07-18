@@ -92,7 +92,7 @@
 
 <!-- Contenedor modal que contiene los registros de los usuarios -->
  <div id="users">
-    <?php require_once 'tableUsers.php'; ?>
+    <?php require_once 'modalAddUsers.php'; ?>
  </div>
 
 

@@ -25,8 +25,8 @@
             </table>
             <!-- Contenedor que contiene los botones previews y next de la Página -->
             <div class="buttons">
-                <input type="button" value="<" id="preview">
-                <input type="button" value=">" id="next">
+                <button type="button" class="previewBtn" id="preview"><i class="material-icons">keyboard_arrow_left</i></button>
+                <button type="button" class="nextBtn" id="next"><i class="material-icons">keyboard_arrow_right</i></button>
             </div>
         </div>
     </div>
