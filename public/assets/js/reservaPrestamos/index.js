@@ -18,4 +18,4 @@ export {
   toastOptions,
 } from "../utils/cases.js";
 
-export { tablesDoom,modalDoom, btnDoom} from "./reserva/domElementsReservas.js";
+export { tablesDoom,modalDoom, btnDoom, inputsForm} from "./reserva/domElementsReservas.js";

@@ -1,12 +1,8 @@
 // import { getData } from "../utils/fetch.js";
-import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,timePickerOptions,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, sendData } from "./index.js";
+import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,timePickerOptions,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, sendData, inputsForm } from "./index.js";
 const objAjax = new Ajax();
 const ispanAddElements = createI();
 ispanAddElements.innerText = "add";
-const areaDestino = document.querySelector("#areaDestino");
-const horaInicio = document.querySelector(".horaInicio");
-const horaFin = document.querySelector(".horaFin");
-const horaInicioFin = document.querySelector(".horaInicioFin");
 
 const iCreatePreview = createI();
 iCreatePreview.innerText = "info";
@@ -18,48 +14,42 @@ let objDataDevolutivos = {};
 let objDataUsers = {};
 let button;
 const valuePage = document.querySelector("#valuePage");
-//Aplico tooltip al boton de usuarios
 
 //Creo una instancia del modal
 const instanPreview = instanceModal("#modalPreviewElements", options);
 const formSolicitudPrestamo = document.querySelector("#formSolicitudPrestamo");
-horaInicio.style.visibility = "hidden";
-horaInicio.style.opacity = "0";
-horaFin.style.visibility = "hidden";
-horaFin.style.opacity = "0";
-horaInicioFin.style.visibility = "hidden";
-horaInicioFin.style.opacity = "0";
-//Inputs del formulario
-let inputNombre = document.querySelector("#nombre");
-let inputNroDocumento = document.querySelector("#cedula");
-let inputApellido = document.querySelector("#apellido");
-let inputTelefono = document.querySelector("#telefono");
-let inputEmail = document.querySelector("#email");
+inputsForm.horaInicio.style.visibility = "hidden";
+inputsForm.horaInicio.style.opacity = "0";
+inputsForm.horaFin.style.visibility = "hidden";
+inputsForm.horaFin.style.opacity = "0";
+inputsForm.horaInicioFin.style.visibility = "hidden";
+inputsForm.horaInicioFin.style.opacity = "0";
 tablesDoom.tblBodyUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
 
-areaDestino.addEventListener("change", () => {
+inputsForm.areaDestino.addEventListener("change", () => {
   let value = areaDestino.options[areaDestino.selectedIndex];
   //console.log(value);
   if (value.value === "centro") {
     //TODO: Mejorar a función para mostrar los elementos
     //TODO: Cambiar los input de tipo type, en vez de que esten ocultos, implementarlos en el html cuando su valor sea centro.
-    horaInicio.style.visibility = "visible";
-    horaInicio.style.opacity = "1";
-    horaFin.style.visibility = "visible";
-    horaFin.style.opacity = "1";
-    horaInicioFin.style.visibility = "visible";
-    horaInicioFin.style.opacity = "1";
+    inputsForm.horaInicio.style.visibility = "visible";
+    inputsForm.horaInicio.style.opacity = "1";
+    inputsForm.horaFin.style.visibility = "visible";
+    inputsForm.horaFin.style.opacity = "1";
+    inputsForm.horaInicioFin.style.visibility = "visible";
+    inputsForm.horaInicioFin.style.opacity = "1";
   }
   if (value.value === "externo" || value.value === "---") {
     //TODO: mejorar a función para ocultar los elementos.
-    horaInicio.style.visibility = "hidden";
-    horaInicio.style.opacity = "0";
-    horaFin.style.visibility = "hidden";
-    horaFin.style.opacity = "0";
-    horaInicioFin.style.visibility = "hidden";
-    horaInicioFin.style.opacity = "0";
+    inputsForm.horaInicio.style.visibility = "hidden";
+    inputsForm.horaInicio.style.opacity = "0";
+    inputsForm.horaFin.style.visibility = "hidden";
+    inputsForm.horaFin.style.opacity = "0";
+    inputsForm.horaInicioFin.style.visibility = "hidden";
+    inputsForm.horaInicioFin.style.opacity = "0";
   }
 });
+
 let iAddElement = createI();
 iAddElement.innerText = "add_a_photo";
 btnDoom.btnAddElements.classList.add("btnClick");
@@ -188,9 +178,7 @@ const renderUsers = async ({action = "users", pages = 1, resetToFirstPage = fals
 
   } catch (error) {
     throw new Error(`Error de procesado ${error}`);
-    
   }
-
 };
 
 const getElements = async ({ action = "", pages = 1 } = {}) => {
@@ -424,11 +412,11 @@ tablesDoom.tblBodyUsers.addEventListener("click", (e) => {
     let telefono = elements.children[3].textContent;
     let email = elements.children[4].textContent;
 
-    inputNroDocumento.textContent = nroDocumento;
-    inputNombre.textContent = nombre;
-    inputApellido.textContent = apellido;
-    inputTelefono.textContent = telefono;
-    inputEmail.textContent = email;
+    inputsForm.inputNroDocumento.textContent = nroDocumento;
+    inputsForm.inputNombre.textContent = nombre;
+    inputsForm.inputApellido.textContent = apellido;
+    inputsForm.inputTelefono.textContent = telefono;
+    inputsForm.inputEmail.textContent = email;
 
     initAlert(
       `Usuario ${nombre} ${apellido} asociado al prestamo`,
@@ -927,20 +915,20 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
         initAlert("Reserva realizada con exito", "success", toastOptions);
         //Limpio el formulario, tabla y campos de span.
         formSolicitudPrestamo.reset();
-        inputNroDocumento.textContent = "";
-        inputNombre.textContent = "";
-        inputApellido.textContent = "";
-        inputEmail.textContent = "";
-        inputTelefono.textContent = "";
+        inputsForm.inputNroDocumento.textContent = "";
+        inputsForm.inputNombre.textContent = "";
+        inputsForm.inputApellido.textContent = "";
+        inputsForm.inputEmail.textContent = "";
+        inputsForm.inputTelefono.textContent = "";
         tablesDoom.tblBodyPreviewElements.innerHTML = "";
 
         //Oculto inputs de tipo time.
-        horaInicio.style.visibility = "hidden";
-        horaInicio.style.opacity = "0";
-        horaFin.style.visibility = "hidden";
-        horaFin.style.opacity = "0";
-        horaInicioFin.style.visibility = "hidden";
-        horaInicioFin.style.opacity = "0";
+        inputsForm.horaInicio.style.visibility = "hidden";
+        inputsForm.horaInicio.style.opacity = "0";
+        inputsForm.horaFin.style.visibility = "hidden";
+        inputsForm.horaFin.style.opacity = "0";
+        inputsForm.horaInicioFin.style.visibility = "hidden";
+        inputsForm.horaInicioFin.style.opacity = "0";
       }
     };
 

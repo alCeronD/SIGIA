@@ -15,9 +15,9 @@ export const modalDoom = {
 };
 //Buttons
 export const btnDoom = {
-    btnSubmit: document.querySelector("#btnSubmit"),
-    btnAddElements: document.querySelector("#btnAddElements"),
-    btnAddConsumibles: document.querySelector("#btnAddConsumibles"),
+    btnSubmit: getSelector("#btnSubmit"),
+    btnAddElements: getSelector("#btnAddElements"),
+    btnAddConsumibles: getSelector("#btnAddConsumibles"),
     btnAddUser : getSelector('#btnAddUser'),
     btnModalPreviewElements: getSelector("#previewElements"),
     btnCloseDevolutivos : getSelector("#modalAddDevolutivos .close-modal"),
@@ -26,4 +26,18 @@ export const btnDoom = {
     btnClosePreviewElements: getSelector("#btnClosePreviewElements"),
     btnPreviewUsers : getSelector("#btnPreviewUsers"),
     btnNextUsers: getSelector("#btnNextUsers")
+}
+
+// inputsForm
+export const inputsForm = {
+    areaDestino: getSelector("#areaDestino"),
+    horaInicio: getSelector('.horaInicio'),
+    horaFin: getSelector('.horaFin'),
+    horaInicioFin: getSelector('.horaInicioFin'),
+    inputNombre : getSelector("#nombre"),
+    inputNroDocumento: getSelector("#cedula"),
+    inputApellido: getSelector("#apellido"),
+    inputTelefono: getSelector("#telefono"),
+    inputEmail: getSelector("#email")
+
 }
