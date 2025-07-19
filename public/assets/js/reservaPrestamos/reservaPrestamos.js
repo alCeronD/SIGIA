@@ -4,7 +4,7 @@ import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDate
 const objAjax = new Ajax();
 const btnSubmit = document.querySelector("#btnSubmit");
 const modalAddDevolutivos = instanceModal("#modalAddDevolutivos", { options });
-const modalAddConsumibles = instanceModal("#modalAddConsumible", { options });
+const modalAddConsumibles = instanceModal("#modalAddConsumible", options);
 const modalUsers = instanceModal("#modalUsers", options);
 const btnAddElements = document.querySelector("#btnAddElements");
 const ispanAddElements = createI();
@@ -33,11 +33,7 @@ const valuePage = document.querySelector("#valuePage");
 iCreatePreview.innerText = "info";
 previewElements2.append(iCreatePreview);
 //Creo una instancia del modal
-const instanPreview = instanceModal("#modalPreviewElements", {
-  opacity: options.opacity,
-  inDuration: options.inDuration,
-  outDuration: options.outDuration,
-});
+const instanPreview = instanceModal("#modalPreviewElements", options);
 const formSolicitudPrestamo = document.querySelector("#formSolicitudPrestamo");
 horaInicio.style.visibility = "hidden";
 horaInicio.style.opacity = "0";
@@ -91,6 +87,8 @@ btnSubmit.append(iClass);
 // variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
 let pagesUsers;
 let pagesElements;
+let pagesElementsConsumibles;
+let pagesElementsDevolutivos;
 //Este arreglo lo voy a crear con el fin de guardar los ids de los elementos para saber cuales son los elementos seleccionados.
 let ids = [];
 let addElements;
@@ -210,94 +208,81 @@ const renderUsers = async ({action = "users", pages = 1, resetToFirstPage = fals
 
 };
 
+const getElements = async ({ action = "", pages = 1 } = {}) => {
+  try {
+    const response = await getData(
+      "modules/reservaPrestamos/controller/reservaController.php",
+      "GET",
+      { action, pages }
+    );
 
-const renderElements = async ({action = "devolutivos", pages = 1, resetToFirstPage = false})=>{
+    const data = response.data.data;
+    const pagesResult = response.data.pages;
 
+    if (action === "elementsConsumibles") {
+      return {
+        objDataConsumibles: data,
+        pagesElementsConsumibles: pagesResult
+      };
+    }
 
+    if (action === "elementsDevolutivos") {
+      return {
+        objDataDevolutivos: data,
+        pagesElementsDevolutivos: pagesResult
+      };
+    }
+
+    throw new Error("Acción no reconocida.");
+  } catch (error) {
+    throw new Error(`Error al procesar la solicitud: ${error}`);
+  }
 };
 
+const renderConsumibles = async ({objDataConsumibles = {}, pagesElementsConsumibles = 1} = {}) =>{
+  //Si el valor es true pues devuelvo la página al principio.
+ tablesDoom.tblBodyConsumibles.innerHTML = "";
+    
+  objDataConsumibles.forEach((data) => {
+    let trConsumbile = document.createElement("tr");
+    let tdCodigo = document.createElement("td");
+    tdCodigo.setAttribute("class", "codigoElemento");
+    let tdNombre = document.createElement("td");
+    let tdCantidad = document.createElement("td");
+    let tdOpciones = document.createElement("td");
+    let divElements = document.createElement("div");
+    divElements.setAttribute("class", "actionsElements");
+    let cantidadInput = document.createElement("input");
+    let labelCheck = document.createElement("label");
+    let checkBoxSelect = document.createElement("input");
+    let spanCheck = document.createElement("span");
+    checkBoxSelect.classList.add("filled-in", "checkboxInput");
+    checkBoxSelect.setAttribute("type", "checkbox");
+    checkBoxSelect.setAttribute("data-id", data.codigo);
+    labelCheck.appendChild(checkBoxSelect);
+    labelCheck.appendChild(spanCheck);
+    cantidadInput.classList.add("browser-default");
+    cantidadInput.setAttribute("type", "number");
+    cantidadInput.setAttribute("min", 0);
+    cantidadInput.setAttribute("data-cantidad", data.cantidad);
+    divElements.appendChild(cantidadInput);
+    divElements.appendChild(labelCheck);
+    tdCodigo.innerText = data.codigo;
+    tdNombre.innerText = data.elemento;
+    tdCantidad.innerText = data.cantidad;
+    tablesDoom.tblBodyConsumibles.appendChild(trConsumbile);
+    trConsumbile.appendChild(tdCodigo);
+    trConsumbile.appendChild(tdNombre);
+    trConsumbile.appendChild(tdCantidad);
+    trConsumbile.appendChild(tdOpciones);
+    tdOpciones.appendChild(divElements);
 
+    let cantidad = data.cantidad;
+    definirCantidad(cantidadInput, cantidad);
+  });
 
-//Función para reestablecer los elementos a la página 1.
-//TODO: Documentar la función usando JSDOC
-// function resetTableUsers(action = "", resetToFirstPage = false) {
-//   if (resetToFirstPage) {
-//     pgUsers = 1;
-//   }
-//   //TODO: Si se le envía más parámetros, buscar como funciona URLSearchParams para poder enviar muchos parámetros en forma de objeto.
-//   objAjax.request.open(
-//     "GET",
-//     `modules/reservaPrestamos/controller/reservaController.php?pages=${encodeURIComponent(
-//       pgUsers
-//     )}&action=${encodeURIComponent(action)}`,
-//     true
-//   );
-//   objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-//   objAjax.request.onload = () => {
-//     // valuePage.innerHTML = "";
-//     if (action === "users") {
-//       let response = JSON.parse(objAjax.request.responseText);
-//       let data = response.data.data;
-//       let allPages = response.data.pages;
-
-//       //Evitar que no se aumente la página más allá del número de páginas.
-//       if (pgUsers > allPages) {
-//         pgUsers = allPages;
-//       }
-
-//       //Limpio los selects, evito que hayan duplicados.
-//       for (let index = 1; index <= allPages; index++) {
-//         let pagesOptions = document.createElement("option");
-//         pagesOptions.value = index;
-//         pagesOptions.innerHTML = index;
-//         // valuePage.append(pagesOptions);
-//       }
-//       //por defecto, lo coloco en 1.
-//       // valuePage.value = String(pgUsers);
-
-//       tablesDoom.tableUsers.innerHTML = "";
-//       data.forEach((us) => {
-//         let btnAdd = document.createElement("button");
-//         let iCreate = createI();
-//         // iCreate.setAttribute('class','material-icons');
-//         iCreate.innerText = "add";
-//         button = btnAdd;
-//         btnAdd.setAttribute("type", "button");
-//         btnAdd.setAttribute("class", "btn waves-effect waves-light");
-//         btnAdd.append(iCreate);
-//         let trTableUsers = document.createElement("tr");
-//         let tdNroDocumento = document.createElement("td");
-//         let tdNombre = document.createElement("td");
-//         let tdApellido = document.createElement("td");
-//         let tdTelefono = document.createElement("td");
-//         let tdEmail = document.createElement("td");
-//         let tdRol = document.createElement("td");
-//         let tdAcciones = document.createElement("td");
-
-//         tdNroDocumento.textContent = us.nroDocumento;
-//         tdNombre.textContent = us.nombres;
-//         tdApellido.textContent = us.apellidos;
-//         tdTelefono.textContent = us.telefono;
-//         tdEmail.textContent = us.email;
-//         tdRol.textContent = us.rol;
-
-//         tablesDoom.tableUsers.appendChild(trTableUsers);
-//         trTableUsers.appendChild(tdNroDocumento);
-//         trTableUsers.appendChild(tdNombre);
-//         trTableUsers.appendChild(tdApellido);
-//         trTableUsers.appendChild(tdTelefono);
-//         trTableUsers.appendChild(tdEmail);
-//         trTableUsers.appendChild(tdRol);
-//         trTableUsers.appendChild(tdAcciones);
-//         tdAcciones.appendChild(btnAdd);
-//       });
-//     }
-//   };
-
-//   objAjax.request.setRequestHeader("accept", "application/json");
-//   objAjax.request.send();
-// }
-
+  modalAddConsumibles.open();
+}
 //TODO: Documentar la función usando JSDOC
 function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
   return new Promise((resolve, reject) => {
@@ -420,58 +405,11 @@ btnAddElements.addEventListener("click", (btnTarget) => {
 });
 
 //Abrir modal de elementos disponibles consumibles.
-btnAddConsumibles.addEventListener("click", (event) => {
+btnAddConsumibles.addEventListener("click", async (event) => {
   event.stopPropagation();
   event.preventDefault();
-  //Respuesta de la promesa.
-  resetTableElements("consumibles", 1).then((result) => {
-    // const tblBodyConsumibles = document.querySelector("#tblBodyConsumibles");
-    // tblBodyConsumibles.innerHTML = "";
-    tablesDoom.tblBodyConsumibles.innerHTML = "";
-    
-    result.forEach((data) => {
-      let trConsumbile = document.createElement("tr");
-
-      let tdCodigo = document.createElement("td");
-      tdCodigo.setAttribute("class", "codigoElemento");
-      let tdNombre = document.createElement("td");
-      let tdCantidad = document.createElement("td");
-      let tdOpciones = document.createElement("td");
-      let divElements = document.createElement("div");
-      divElements.setAttribute("class", "actionsElements");
-      let cantidadInput = document.createElement("input");
-      let divCheckbox = document.createElement("div");
-      let labelCheck = document.createElement("label");
-      let checkBoxSelect = document.createElement("input");
-      let spanCheck = document.createElement("span");
-      checkBoxSelect.classList.add("checkboxInput");
-      checkBoxSelect.setAttribute("type", "checkbox");
-      checkBoxSelect.classList.add("filled-in");
-      checkBoxSelect.setAttribute("data-id", data.codigo);
-      divCheckbox.append(labelCheck);
-      labelCheck.append(checkBoxSelect, spanCheck);
-
-      cantidadInput.classList.add("browser-default");
-      cantidadInput.setAttribute("type", "number");
-      cantidadInput.setAttribute("min", 0);
-      cantidadInput.setAttribute("data-cantidad", data.cantidad);
-      divElements.append(cantidadInput, divCheckbox);
-      tdCodigo.innerText = data.codigo;
-      tdNombre.innerText = data.elemento;
-      tdCantidad.innerText = data.cantidad;
-
-      tablesDoom.tblBodyConsumibles.appendChild(trConsumbile);
-      trConsumbile.appendChild(tdCodigo);
-      trConsumbile.appendChild(tdNombre);
-      trConsumbile.appendChild(tdCantidad);
-      trConsumbile.appendChild(tdOpciones);
-      tdOpciones.append(divElements);
-
-      let cantidad = data.cantidad;
-      definirCantidad(cantidadInput, cantidad);
-    });
-  });
-
+  const {objDataConsumibles, pagesElementsConsumibles} = await getElements({action:"elementsConsumibles", pages:1, resetToFirstPage: true});
+  await renderConsumibles({objDataConsumibles, pagesElementsConsumibles});
   modalAddConsumibles.open();
 });
 
@@ -481,10 +419,7 @@ btnSearchUser.addEventListener("click", (event) => {
   event.preventDefault();
 
   //Vuelvo a reiniciar la tabla para que inicie en la Página #1.
-  // resetTableUsers("users", true);
   renderUsers({action:"users", pages: 1});
-
-
   modalUsers.open();
 });
 
@@ -511,7 +446,7 @@ tablesDoom.tableUsers.addEventListener("click", (e) => {
     inputEmail.textContent = email;
 
     initAlert(
-      `Instructor ${nombre} ${apellido} asociado al prestamo`,
+      `Usuario ${nombre} ${apellido} asociado al prestamo`,
       "info",
       toastOptions
     );
@@ -575,7 +510,7 @@ tablesDoom.tableDevolutivos.addEventListener("click", (event) => {
 const tableConsumible = document.querySelector("#tableConsumible");
 tableConsumible.addEventListener("click", (event) => {
   event.stopPropagation();
-
+  console.log(event.target);
   //Si se selecciona, debo de guardar el elemento en la tabla.
   if (
     event.target.tagName === "INPUT" &&
@@ -584,6 +519,7 @@ tableConsumible.addEventListener("click", (event) => {
   ) {
     let info = event.target.closest("tr");
     let inputCantidad = info.querySelector(`[type=number]`);
+    console.log(info);
     let codigoConsu = info.children[0].textContent;
     let nombreConsu = info.children[1].textContent;
     let cantidadConsu = inputCantidad.value;
@@ -616,7 +552,6 @@ tableConsumible.addEventListener("click", (event) => {
         );
 
         tablesDoom.tablePreviewElements.appendChild(trConsu);
-        // tablePreviewElements.appendChild(trConsu);
         trConsu.appendChild(tdCodigoConsu);
         trConsu.appendChild(tdNombreConsu);
         trConsu.appendChild(tdAreaConsu);
@@ -637,7 +572,6 @@ tableConsumible.addEventListener("click", (event) => {
 /**
  * Paginación usuarios
  */
-
 let pgUsers = 1;
 //Botón de evento para marcar el preview de la página.
 btnPreview.addEventListener("click", (event) => {
@@ -676,7 +610,7 @@ previewElement.addEventListener("click", () => {
     pgElementsDevolutivos === 1 ? 1 : pgElementsDevolutivos - 1;
 
   resetTableElements("elements", pgElementsDevolutivos).then((result) => {
-    tableDevolutivos.innerHTML = "";
+    tablesDoom.tableDevolutivos.innerHTML = "";
     //Implementar los datos en en la tabla.
     result.forEach((dta) => {
       let codigo = dta.codigo;
@@ -709,7 +643,7 @@ previewElement.addEventListener("click", () => {
 
       tdAccion.append(label);
       label.append(addElements, span);
-      tableDevolutivos.appendChild(trTable);
+      tablesDoom.tableDevolutivos.appendChild(trTable);
       trTable.appendChild(tdCodigo);
       trTable.appendChild(tdElemento);
       trTable.appendChild(tdArea);
@@ -777,121 +711,49 @@ closeModalBtnPreview.addEventListener("click", (e) => {
  * Paginación elementos consumibles disponibles.
  */
 let pagesConsumibles = 1;
-document
-  .querySelector("#previewElementConsumible")
-  .addEventListener("click", (event) => {
-    pagesConsumibles = pagesConsumibles === 1 ? 1 : pagesConsumibles - 1;
+document.querySelector("#previewElementConsumible")
+  .addEventListener("click", async (event) => {
+    event.stopPropagation();
 
-    //TODO: el renderizado pasarlo a una función así reutilizarlo en 3 lugares, boton preview, boton next y cuando abre el modal.
-    resetTableElements("consumibles", pagesConsumibles).then((result) => {
-      tablesDoom.tblBodyConsumibles.innerHTML = "";
-      // const tblBodyConsumibles = document.querySelector("#tblBodyConsumibles");
-      // tblBodyConsumibles.innerHTML = "";
-      result.forEach((data) => {
-        let trConsumbile = document.createElement("tr");
+    const prevPage = pagesConsumibles - 1;
 
-        let tdCodigo = document.createElement("td");
-        tdCodigo.setAttribute("class", "codigoElemento");
-        let tdNombre = document.createElement("td");
-        let tdCantidad = document.createElement("td");
-        let tdOpciones = document.createElement("td");
-        let divElements = document.createElement("div");
-        divElements.setAttribute("class", "actionsElements");
-        let cantidadInput = document.createElement("input");
+    if (prevPage < 1) return;
 
-        let divCheckbox = document.createElement("div");
-        let labelCheck = document.createElement("label");
-        let checkBoxSelect = document.createElement("input");
-        let spanCheck = document.createElement("span");
-        checkBoxSelect.classList.add("checkboxInput");
-        checkBoxSelect.setAttribute("type", "checkbox");
-        checkBoxSelect.classList.add("filled-in");
-        checkBoxSelect.setAttribute("data-id", data.codigo);
-        divCheckbox.append(labelCheck);
-        labelCheck.append(checkBoxSelect, spanCheck);
+    const { objDataConsumibles, pagesElementsConsumibles: totalPages } =
+      await getElements({ action: "elementsConsumibles", pages: prevPage });
 
-        cantidadInput.classList.add("browser-default");
-        // cantidadInput.classList.add('input-field');
-        cantidadInput.setAttribute("type", "number");
-        cantidadInput.setAttribute("min", 0);
-        cantidadInput.setAttribute("data-cantidad", data.cantidad);
+    if (objDataConsumibles.length > 0) {
+      pagesConsumibles = prevPage;
+      pagesElementsConsumibles = totalPages;
 
-        divElements.append(cantidadInput, divCheckbox);
-
-        tdCodigo.innerText = data.codigo;
-        tdNombre.innerText = data.elemento;
-        tdCantidad.innerText = data.cantidad;
-
-        tablesDoom.tblBodyConsumibles.appendChild(trConsumbile);
-        trConsumbile.appendChild(tdCodigo);
-        trConsumbile.appendChild(tdNombre);
-        trConsumbile.appendChild(tdCantidad);
-        trConsumbile.appendChild(tdOpciones);
-        tdOpciones.append(divElements);
-
-        let cantidad = data.cantidad;
-        definirCantidad(cantidadInput, cantidad);
+      await renderConsumibles({
+        objDataConsumibles,
+        pagesElementsConsumibles: totalPages
       });
-    });
-  });
-
-document
-  .querySelector("#nextElementConsumible")
-  .addEventListener("click", (event) => {
-    if (pagesConsumibles < pagesElements) {
-      pagesConsumibles++;
     }
-
-    resetTableElements("consumibles", pagesConsumibles).then((result) => {
-      tablesDoom.tblBodyConsumibles.innerHTML = "";
-      result.forEach((data) => {
-        let trConsumbile = document.createElement("tr");
-
-        let tdCodigo = document.createElement("td");
-        tdCodigo.setAttribute("class", "codigoElemento");
-        let tdNombre = document.createElement("td");
-        let tdCantidad = document.createElement("td");
-        let tdOpciones = document.createElement("td");
-        let divElements = document.createElement("div");
-        divElements.setAttribute("class", "actionsElements");
-        let cantidadInput = document.createElement("input");
-
-        let divCheckbox = document.createElement("div");
-        let labelCheck = document.createElement("label");
-        let checkBoxSelect = document.createElement("input");
-        let spanCheck = document.createElement("span");
-        checkBoxSelect.classList.add("checkboxInput");
-        checkBoxSelect.setAttribute("type", "checkbox");
-        checkBoxSelect.classList.add("filled-in");
-        checkBoxSelect.setAttribute("data-id", data.codigo);
-        divCheckbox.append(labelCheck);
-        labelCheck.append(checkBoxSelect, spanCheck);
-
-        cantidadInput.classList.add("browser-default");
-        // cantidadInput.classList.add('input-field');
-        cantidadInput.setAttribute("type", "number");
-        cantidadInput.setAttribute("min", 0);
-        cantidadInput.setAttribute("data-cantidad", data.cantidad);
-
-        divElements.append(cantidadInput, divCheckbox);
-
-        tdCodigo.innerText = data.codigo;
-        tdNombre.innerText = data.elemento;
-        tdCantidad.innerText = data.cantidad;
-
-        tablesDoom.tblBodyConsumibles.appendChild(trConsumbile);
-        trConsumbile.appendChild(tdCodigo);
-        trConsumbile.appendChild(tdNombre);
-        trConsumbile.appendChild(tdCantidad);
-        trConsumbile.appendChild(tdOpciones);
-        tdOpciones.append(divElements);
-
-        let cantidad = data.cantidad;
-        definirCantidad(cantidadInput, cantidad);
-      });
-    });
   });
 
+document.querySelector("#nextElementConsumible")
+  .addEventListener("click", async (event) => {
+    event.stopPropagation();
+
+    // Obtener los datos de la siguiente página
+    const nextPage = pagesConsumibles + 1;
+
+    const { objDataConsumibles, pagesElementsConsumibles: totalPages } =
+      await getElements({ action: "elementsConsumibles", pages: nextPage });
+
+    // valido que en el objeto hayan resultados para poder renderizar la siguiente página.
+    if (objDataConsumibles.length > 0 && nextPage <= totalPages) {
+      pagesConsumibles = nextPage; 
+      pagesElementsConsumibles = totalPages;
+      
+      await renderConsumibles({
+        objDataConsumibles,
+        pagesElementsConsumibles: totalPages
+      });
+    }
+  });
 
 // Cerrar el modal de los usuarios.
 closeModal(modalUsers, btnCloseUsers, ()=>{
@@ -903,8 +765,11 @@ closeModal(modalAddDevolutivos, btnCloseDevolutivos);
 resetTableElements("elements", pgElementsDevolutivos, true);
 
 //Cerrar el modal de elementos consumibles
-closeModal(modalAddConsumibles, btnCloseConsumible);
-resetTableElements("consumibles", 1, true);
+closeModal(modalAddConsumibles, btnCloseConsumible, ()=>{
+  // Reinicio la página para que cuando vuelva a ingresar este en la página inicial.
+  pagesConsumibles = 1;
+});
+// resetTableElements("consumibles", 1, true);
 
 //Preview de los elementos en forma de tabla.
 previewElements2.addEventListener("click", (e) => {
@@ -1106,7 +971,7 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
 document.addEventListener("DOMContentLoaded", () => {
   fetchData("elements", 1);
 
-    initTooltip(
+  initTooltip(
     btnSearchUser,
     tooltipOptions,
     "Seleccione el instructor\npara asignar al préstamo",
