@@ -1,4 +1,4 @@
-import { options, instanceModal, getSelector } from "../../utils/cases.js";
+import { options, instanceModal, getSelector, createI } from "../../utils/cases.js";
 
 //Tables
 export const tablesDoom = {
@@ -26,6 +26,15 @@ export const btnDoom = {
     btnClosePreviewElements: getSelector("#btnClosePreviewElements"),
     btnPreviewUsers : getSelector("#btnPreviewUsers"),
     btnNextUsers: getSelector("#btnNextUsers")
+}
+
+// <i> elements to add materialIcons
+export const iDom = {
+    iCreatePreview : createI("info"),
+    iAddUser: createI("add"),
+    iAddElement: createI("add_a_photo"),
+    iAddConsumible: createI("battery_std"),
+    iSendReserva: createI("send")
 }
 
 // inputsForm

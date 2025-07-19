@@ -1,18 +1,18 @@
 // import { getData } from "../utils/fetch.js";
-import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,timePickerOptions,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, sendData, inputsForm } from "./index.js";
+import { addClassItem } from "../utils/cases.js";
+import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,timePickerOptions,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, sendData, inputsForm, iDom } from "./index.js";
 const objAjax = new Ajax();
-const ispanAddElements = createI();
-ispanAddElements.innerText = "add";
 
-const iCreatePreview = createI();
-iCreatePreview.innerText = "info";
-btnDoom.btnModalPreviewElements.append(iCreatePreview);
+btnDoom.btnModalPreviewElements.append(iDom.iCreatePreview);
+btnDoom.btnAddElements.classList.add("btnClick");
+btnDoom.btnAddElements.append(iDom.iAddElement);
+btnDoom.btnAddConsumibles.append(iDom.iAddConsumible);
+btnDoom.btnSubmit.append(iDom.iSendReserva);
 
 // Estas variables las uso para re utilizar la información
 let objDataConsumibles = {};
 let objDataDevolutivos = {};
 let objDataUsers = {};
-let button;
 const valuePage = document.querySelector("#valuePage");
 
 //Creo una instancia del modal
@@ -49,18 +49,6 @@ inputsForm.areaDestino.addEventListener("change", () => {
     inputsForm.horaInicioFin.style.opacity = "0";
   }
 });
-
-let iAddElement = createI();
-iAddElement.innerText = "add_a_photo";
-btnDoom.btnAddElements.classList.add("btnClick");
-btnDoom.btnAddElements.append(iAddElement);
-let iConsumible = createI();
-iConsumible.innerText = "battery_std";
-btnDoom.btnAddConsumibles.append(iConsumible);
-let iClass = createI();
-// modalTitle.innerText = "Elementos seleccionados";
-iClass.innerText = "send";
-btnDoom.btnSubmit.append(iClass);
 // variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
 let pagesUsers;
 let pagesElements;
@@ -69,12 +57,8 @@ let pagesElementsDevolutivos;
 //Este arreglo lo voy a crear con el fin de guardar los ids de los elementos para saber cuales son los elementos seleccionados.
 let ids = [];
 let addElements;
-// Boton para cierrar el modal de elementsPreview
-/**
- * Función de renderizado y peticiones, TODO: Re factorizar y mover a otros archivos.
- */
-//TODO: Documentar la función usando JSDOC
 
+//TODO: Documentar la función usando JSDOC
 function fetchData(action = "", page = 1) {
   objAjax.request.open(
     "GET",
@@ -103,7 +87,6 @@ function fetchData(action = "", page = 1) {
   objAjax.request.setRequestHeader("Accept", "application/json");
   objAjax.request.send();
 }
-
 
 /**
  * Renderiza los usuarios en una tabla HTML.
@@ -142,13 +125,10 @@ const renderUsers = async ({action = "users", pages = 1, resetToFirstPage = fals
       tablesDoom.tblBodyUsers.innerHTML = "";
       data.forEach((us) => {
         let btnAdd = document.createElement("button");
-        let iCreate = createI();
-        // iCreate.setAttribute('class','material-icons');
-        iCreate.innerText = "add";
-        button = btnAdd;
         btnAdd.setAttribute("type", "button");
-        btnAdd.setAttribute("class", "btn waves-effect waves-light");
-        btnAdd.append(iCreate);
+        addClassItem(btnAdd, {btn: "btn", effect: "waves-effect", light:"waves-light"});
+        // Envio la función a crear, no puedo retornar el nodo, porque sino se reemplaza.
+        btnAdd.appendChild(createI("add"));
         let trTableUsers = document.createElement("tr");
         let tdNroDocumento = document.createElement("td");
         let tdNombre = document.createElement("td");

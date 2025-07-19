@@ -49,10 +49,11 @@ export const openModal = (modal) => {
   modal.style.display = "flex";
 };
 
-export const createI = () => {
+export const createI = (text) => {
   const i = document.createElement("i");
   i.setAttribute("class", "material-icons");
   i.style.pointerEvents = "none";
+  i.innerText = text;
   return i;
 };
 
