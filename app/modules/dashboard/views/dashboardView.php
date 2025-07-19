@@ -4,58 +4,105 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <div class="content">
-  <div class="dashboard-grid">
+    <div class="dashboard-grid">
 
-    <?php if ($rol_id == 2):  ?>
-    
-      <div class="option-card z-depth-1">
-        <i class="material-icons large green-text text-darken-2 center-align">search</i>
-        <h5>Consultar Elementos</h5>
-        <p>Contiene una consulta de los elementos.</p>
-        <a class="btn green btnGetUrl" href="<?php echo getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard'); ?>">Consultar Elementos</a>
-      </div>
+        <?php if ($rol_id == 2):  ?>
 
-      <div class="option-card z-depth-1">
-        <i class="material-icons large grey-text text-darken-2 center-align">settings</i>
-        <h5>Configuraciones</h5>
-        <p>Configuraciones poco recurrentes.</p>
-        <a class="btn grey btnGetUrl" href="<?php echo getUrl('configModules', 'configModules', 'renderViewArea', false, 'dashboard'); ?>">Áreas</a>
-        <a class="btn grey btnGetUrl" href="<?php echo getUrl('configModules', 'configModules', 'renderViewTp', false, 'dashboard'); ?>">Tipo documento</a>
-        <a class="btn green btnGetUrl" href="<?php echo getUrl('roles', 'roles', 'mostrarRoles', false, 'dashboard'); ?>">Roles</a>
-      </div>
+            <div class="option-card z-depth-1">
+                <i class="material-icons large green-text text-darken-2 center-align">search</i>
+                <h5>Consultar Elementos</h5>
+                <p>Contiene una consulta de los elementos.</p>
+                <a class="btn green btnGetUrl" href="<?php echo getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard'); ?>">Consultar Elementos</a>
+            </div>
 
-      <div class="option-card z-depth-1">
-        <i class="material-icons large grey-text text-darken-2 center-align">assignment</i>
-        <h5>Préstamos de Elementos</h5>
-        <p>Consulta los préstamos actuales.</p>
-        <a class="btn grey btnGetUrl" href="<?php echo getUrl('reservaPrestamos', 'reserva', 'reservaView', false, 'dashboard'); ?>">Ver préstamos</a>
-      </div>
+            <div class="option-card z-depth-1">
+                <i class="material-icons large grey-text text-darken-2 center-align">settings</i>
+                <h5>Configuraciones</h5>
+                <p>Configuraciones poco recurrentes.</p>
+                <a class="btn grey btnGetUrl" href="<?php echo getUrl('configModules', 'configModules', 'renderViewArea', false, 'dashboard'); ?>">Áreas</a>
+                <a class="btn grey btnGetUrl" href="<?php echo getUrl('configModules', 'configModules', 'renderViewTp', false, 'dashboard'); ?>">Tipo documento</a>
+                <a class="btn green btnGetUrl" href="<?php echo getUrl('roles', 'roles', 'mostrarRoles', false, 'dashboard'); ?>">Roles</a>
+            </div>
 
-      <div class="option-card z-depth-1">
-        <i class="material-icons large green-text text-darken-2 center-align">person</i>
-        <h5>Usuarios</h5>
-        <p>Crea o busca usuarios.</p>
-        <a class="btn green btnGetUrl" href="<?php echo getUrl('usuarios', 'usuarios', 'userView', false, 'dashboard'); ?>">Crear usuario</a>
-        <a class="btn green btnGetUrl" href="<?php echo getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard'); ?>">Consultar usuario</a>
-      </div>
-    <?php endif; ?>
+            <div class="option-card z-depth-1">
+                <i class="material-icons large grey-text text-darken-2 center-align">assignment</i>
+                <h5>Préstamos de Elementos</h5>
+                <p>Consulta los préstamos actuales.</p>
+                <a class="btn grey btnGetUrl" href="<?php echo getUrl('reservaPrestamos', 'reserva', 'reservaView', false, 'dashboard'); ?>">Ver préstamos</a>
+            </div>
 
-    <?php if ($rol_id == 4):  ?>
-      <div class="option-card z-depth-1">
-        <i class="material-icons large green-text text-darken-2 center-align">assignment</i>
-        <h5>Solicitar Préstamo</h5>
-        <p>Realiza la solicitud de préstamo de elementos.</p>
-        <a class="btn green btnGetUrl" href="<?php echo getUrl('solicitudPrestamos', 'solicitudPrestamos', 'registrarPrestamosView', false, 'dashboard'); ?>">Solicitar préstamo</a>
-      </div>
-    
-      <div class="option-card z-depth-1">
-        <i class="material-icons large grey-text text-darken-2 center-align">visibility</i>
-        <h5>Ver Préstamos</h5>
-        <p>Consulta el estado de tus préstamos.</p>
-        <a class="btn grey btnGetUrl" href="<?php echo getUrl('solicitudPrestamos', 'solicitudPrestamos', 'consultarPrestamosView', false, 'dashboard'); ?>">Ver préstamos</a>
-      </div>
-    <?php endif; ?>
+            <div class="option-card z-depth-1">
+                <i class="material-icons large green-text text-darken-2 center-align">person</i>
+                <h5>Usuarios</h5>
+                <p>Crea o busca usuarios.</p>
+                <a class="btn green btnGetUrl" href="<?php echo getUrl('usuarios', 'usuarios', 'userView', false, 'dashboard'); ?>">Crear usuario</a>
+                <a class="btn green btnGetUrl" href="<?php echo getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard'); ?>">Consultar usuario</a>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($rol_id == 4):  ?>
+            <div class="option-card z-depth-1">
+                <i class="material-icons large green-text text-darken-2 center-align">assignment</i>
+                <h5>Solicitar Préstamo</h5>
+                <p>Realiza la solicitud de préstamo de elementos.</p>
+                <a class="btn green btnGetUrl" href="<?php echo getUrl('solicitudPrestamos', 'solicitudPrestamos', 'registrarPrestamosView', false, 'dashboard'); ?>">Solicitar préstamo</a>
+            </div>
+
+            <div class="option-card z-depth-1">
+                <i class="material-icons large grey-text text-darken-2 center-align">visibility</i>
+                <h5>Ver Préstamos</h5>
+                <p>Consulta el estado de tus préstamos.</p>
+                <a class="btn grey btnGetUrl" href="<?php echo getUrl('solicitudPrestamos', 'solicitudPrestamos', 'consultarPrestamosView', false, 'dashboard'); ?>">Ver préstamos</a>
+            </div>
 
 
-  </div>
+            <div class="table-content">
+                <div class="section">
+                    
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">Prestamos solicitados</span>
+
+                            <table class="highlight responsive-table">
+                                <thead>
+                                    <tr>
+                                        <th>Código de Solicitud</th>
+                                        <th>Solicitante</th>
+                                        <th>Fecha de Reserva</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($prestamos)): ?>
+                                        <?php foreach ($prestamos as $prestamo): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($prestamo['codigoSolicitud']) ?></td>
+                                                <td><?= htmlspecialchars($nombreCompleto) ?></td>
+                                                <td><?= htmlspecialchars($prestamo['fechaReserva']) ?></td>
+                                                <td><?= htmlspecialchars($prestamo['estadoNombre']) ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="4" class="center-align grey-text text-darken-2">
+                                                No hay préstamos registrados.
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        <?php endif; ?>
+
+
+    </div>
 </div>
+<script type="module" src="../public/assets/js/dashboard/dashboard.js"></script>
+
+
