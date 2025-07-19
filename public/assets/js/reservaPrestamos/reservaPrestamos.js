@@ -54,36 +54,6 @@ let pagesElementsDevolutivos;
 let ids = [];
 let addElements;
 
-//TODO: Documentar la función usando JSDOC
-function fetchData(action = "", page = 1) {
-  objAjax.request.open(
-    "GET",
-    `modules/reservaPrestamos/controller/reservaController.php?pages=${encodeURIComponent(
-      page
-    )}&action=${encodeURIComponent(action)}`,
-    true
-  );
-  objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
-  objAjax.request.onload = () => {
-    if (action === "elements") {
-      //Transformo la respuesta
-      let response = JSON.parse(objAjax.request.responseText);
-      objDataDevolutivos = response.data.data;
-      pagesElements = response.data.pages;
-    }
-
-    if (action === "users") {
-      let response = JSON.parse(objAjax.request.responseText);
-      objDataUsers = response.data.data;
-      // pagesElementsConsumible = response.data.pages;
-    }
-  };
-  //Específicamos que respuesta queremos recibir
-  objAjax.request.setRequestHeader("Accept", "application/json");
-  objAjax.request.send();
-}
-
 /**
  * Renderiza los usuarios en una tabla HTML.
  * 
@@ -234,41 +204,51 @@ const renderConsumibles = async ({objDataConsumibles = {}, pagesElementsConsumib
 
   modalDoom.modalAddConsumibles.open();
 }
-//TODO: Documentar la función usando JSDOC
-function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
-  return new Promise((resolve, reject) => {
-    //Evitar que el numero de páginas sea mayor a las páginas de los elementos.
 
-    //Si el valor es true pues devuelvo la página al principio.
-    if (resetFirstPage) {
-      pages = 1;
-    }
+const renderDevolutivos = async ({objDataDevolutivos = {}, pagesElementsDevolutivos = 1 ,resetPage = false})=>{
 
-    if (pages > pagesElements) {
-      pages = pagesElements;
-    }
+  // if (resetPage) pagesElementsDevolutivos = 1;
 
-    objAjax.request.open(
-      "GET",
-      `modules/reservaPrestamos/controller/reservaController.php?pages=${encodeURIComponent(
-        pages
-      )}&action=${encodeURIComponent(action)}`,
-      true
-    );
-    objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    objAjax.request.onload = () => {
-      try {
-        let response = JSON.parse(objAjax.request.responseText);
-        pagesElements = response.data.pages;
-        resolve(response.data.data);
-      } catch (error) {
-        reject(error);
-      }
-    };
+  // if (pagesElementsDevolutivos > pages) return;
 
-    objAjax.request.setRequestHeader("accept", "application/json");
-    objAjax.request.send();
-  });
+  tablesDoom.tblBodyDevolutivos.innerHTML = "";
+
+    //Implementar los datos en en la tabla.
+    objDataDevolutivos.forEach((dta) => {
+      let codigo = dta.codigo;
+      let elemento = dta.elemento;
+      let area = dta.area;
+
+      addElements = document.createElement("input");
+      addElements.setAttribute("type", "checkbox");
+      addElements.setAttribute("class", "checkboxInput");
+      addElements.classList.add("filled-in");
+      addElements.setAttribute("data-id", codigo);
+      addElements.setAttribute("id", codigo);
+      let label = document.createElement("label");
+      let span = document.createElement("span");
+      let trTable = document.createElement("tr");
+      let tdCodigo = document.createElement("td");
+      let tdElemento = document.createElement("td");
+      let tdArea = document.createElement("td");
+      let tdAccion = document.createElement("td");
+
+      //A los elementos td les implemento su contenido, su contenido es la información de la tabla
+      tdCodigo.textContent = codigo;
+      tdElemento.textContent = elemento;
+      tdArea.textContent = area;
+      tdAccion.append(label);
+      label.append(addElements, span);
+
+      tablesDoom.tblBodyDevolutivos.appendChild(trTable);
+      trTable.appendChild(tdCodigo);
+      trTable.appendChild(tdElemento);
+      trTable.appendChild(tdArea);
+      trTable.append(tdAccion);
+    });
+
+
+
 }
 
 /**
@@ -303,54 +283,14 @@ function definirCantidad(cantidadInput, cantidad) {
 }
 
 // Abrir modal de elementos disponibles devolutivos
-btnDoom.btnAddElements.addEventListener("click", (btnTarget) => {
+btnDoom.btnAddElements.addEventListener("click", async (btnTarget) => {
   btnTarget.preventDefault();
   btnTarget.stopPropagation();
 
-  // Concepto aprendido nuevo: PROMISE
-  /**
-   * Esto es la respuesta de una promesa, hace que el aplicativo continue su flujo mientras que ejecuta este proceso.
-   */
+  let {objDataDevolutivos, pagesElementsDevolutivos} = await getElements({action: "elementsDevolutivos", pages: 1});
 
-  resetTableElements("elements", 1).then((respuesta) => {
-    tablesDoom.tblBodyDevolutivos.innerHTML = "";
+  renderDevolutivos({objDataDevolutivos: objDataDevolutivos, pagesElementsDevolutivos: 1});
 
-    //Implementar los datos en en la tabla.
-    respuesta.forEach((dta) => {
-      let codigo = dta.codigo;
-      let elemento = dta.elemento;
-      let area = dta.area;
-
-      addElements = document.createElement("input");
-      addElements.setAttribute("type", "checkbox");
-      addElements.setAttribute("class", "checkboxInput");
-      addElements.classList.add("filled-in");
-      addElements.setAttribute("data-id", codigo);
-      addElements.setAttribute("id", codigo);
-      let label = document.createElement("label");
-      let span = document.createElement("span");
-      let trTable = document.createElement("tr");
-      let tdCodigo = document.createElement("td");
-      let tdElemento = document.createElement("td");
-      let tdArea = document.createElement("td");
-      let tdAccion = document.createElement("td");
-
-      //A los elementos td les implemento su contenido, su contenido es la información de la tabla
-      tdCodigo.textContent = codigo;
-      tdElemento.textContent = elemento;
-      tdArea.textContent = area;
-      tdAccion.append(label);
-      label.append(addElements, span);
-
-      tablesDoom.tblBodyDevolutivos.appendChild(trTable);
-      trTable.appendChild(tdCodigo);
-      trTable.appendChild(tdElemento);
-      trTable.appendChild(tdArea);
-      trTable.append(tdAccion);
-    });
-  });
-
-  //visualizar modal.
   modalDoom.modalAddDevolutivos.open();
   //Uso esta función para renderizar por defecto los elementos de tipo devolutivo, en la página 1.
 });
@@ -554,100 +494,27 @@ const previewElement = document.querySelector("#previewElement");
 const modalPreviewElements = instanceModal("#modalPreviewElements", options);
 const nextElement = document.querySelector("#nextElement");
 // Selector = Puede que no lo use. Este selector es para colocar la cantidad de páginas que tengo basado en la cantidad de elementos de la tabla.
-previewElement.addEventListener("click", () => {
-  pgElementsDevolutivos =
-    pgElementsDevolutivos === 1 ? 1 : pgElementsDevolutivos - 1;
+previewElement.addEventListener("click",async  (e) => {
+  e.stopPropagation();
+  pgElementsDevolutivos = pgElementsDevolutivos === 1 ? 1 : pgElementsDevolutivos - 1;
 
-  resetTableElements("elements", pgElementsDevolutivos).then((result) => {
-    tablesDoom.tblBodyDevolutivos.innerHTML = "";
-    //Implementar los datos en en la tabla.
-    result.forEach((dta) => {
-      let codigo = dta.codigo;
-      let elemento = dta.elemento;
-      let area = dta.area;
-      addElements = document.createElement("input");
-      addElements.setAttribute("type", "checkbox");
-      addElements.setAttribute("class", "checkboxInput");
-      addElements.classList.add("checkboxInput", "filled-in");
-      addElements.setAttribute("data-id", codigo);
-      addElements.setAttribute("id", codigo);
-      let label = document.createElement("label");
-      let span = document.createElement("span");
-      let trTable = document.createElement("tr");
-      let tdCodigo = document.createElement("td");
-      let tdElemento = document.createElement("td");
-      let tdArea = document.createElement("td");
-      let tdAccion = document.createElement("td");
-      //A los elementos td les implemento su contenido, su contenido es la información de la tabla
-      tdCodigo.textContent = codigo;
-      tdElemento.textContent = elemento;
-      tdArea.textContent = area;
+  let {objDataDevolutivos, pagesElementsDevolutivos} = await getElements({action: "elementsDevolutivos", pages: pgElementsDevolutivos});
 
-      // verificar si ya esta seleccionado el elemento;
-      ids.forEach((idsElements) => {
-        if (addElements.getAttribute("data-id") === idsElements) {
-          addElements.checked = true;
-        }
-      });
+  renderDevolutivos({objDataDevolutivos: objDataDevolutivos, pagesElementsDevolutivos: pgElementsDevolutivos});
 
-      tdAccion.append(label);
-      label.append(addElements, span);
-      tablesDoom.tblBodyDevolutivos.appendChild(trTable);
-      trTable.appendChild(tdCodigo);
-      trTable.appendChild(tdElemento);
-      trTable.appendChild(tdArea);
-      trTable.append(tdAccion);
-    });
-  });
 });
 
-nextElement.addEventListener("click", () => {
-  // Validación adicional para evitar que se desacople la información.
-  if (pgElementsDevolutivos < pagesElements) {
-    pgElementsDevolutivos++;
+nextElement.addEventListener("click", async () => {
+  pgElementsDevolutivos++;
+
+  let {objDataDevolutivos, pagesElementsDevolutivos} = await getElements({action: "elementsDevolutivos", pages: pgElementsDevolutivos});
+
+  if (pgElementsDevolutivos > pagesElementsDevolutivos) {
+    pgElementsDevolutivos = pagesElementsDevolutivos;
+    return;  
   }
-  resetTableElements("elements", pgElementsDevolutivos).then((result) => {
+  renderDevolutivos({objDataDevolutivos: objDataDevolutivos, pagesElementsDevolutivos: pgElementsDevolutivos});
 
-    tablesDoom.tblBodyDevolutivos.innerHTML = "";
-    result.forEach((dta) => {
-      let codigo = dta.codigo;
-      let elemento = dta.elemento;
-      let area = dta.area;
-
-      addElements = document.createElement("input");
-      addElements.setAttribute("type", "checkbox");
-      addElements.setAttribute("class", "checkboxInput");
-      addElements.classList.add("checkboxInput", "filled-in");
-      addElements.setAttribute("data-id", codigo);
-      addElements.setAttribute("id", codigo);
-      let label = document.createElement("label");
-      let span = document.createElement("span");
-      let trTable = document.createElement("tr");
-      let tdCodigo = document.createElement("td");
-      let tdElemento = document.createElement("td");
-      let tdArea = document.createElement("td");
-      let tdAccion = document.createElement("td");
-
-      ids.forEach((idsElements) => {
-        if (addElements.getAttribute("data-id") === idsElements) {
-          addElements.checked = true;
-        }
-      });
-
-      //A los elementos td les implemento su contenido, su contenido es la información de la tabla
-      tdCodigo.textContent = codigo;
-      tdElemento.textContent = elemento;
-      tdArea.textContent = area;
-      tdAccion.append(label);
-      label.append(addElements, span);
-
-      tablesDoom.tblBodyDevolutivos.appendChild(trTable);
-      trTable.appendChild(tdCodigo);
-      trTable.appendChild(tdElemento);
-      trTable.appendChild(tdArea);
-      trTable.append(tdAccion);
-    });
-  });
 });
 
 btnDoom.btnClosePreviewElements.addEventListener("click", (e) => {
@@ -700,23 +567,22 @@ document.querySelector("#nextElementConsumible")
         pagesElementsConsumibles: totalPages
       });
     }
-  });
+});
 
 // Cerrar el modal de los usuarios.
 closeModal(modalDoom.modalUsers, btnDoom.btnCloseUsers, ()=>{
   renderUsers({action: "users", pages: 1, resetToFirstPage:true});
 });
 
-//Cerrar el modal de elementos devolutivos
-closeModal(modalDoom.modalAddDevolutivos, btnDoom.btnCloseDevolutivos);
-resetTableElements("elements", pgElementsDevolutivos, true);
+closeModal(modalDoom.modalAddDevolutivos,btnDoom.btnCloseDevolutivos, ()=>{
+  pgElementsDevolutivos = 1;
+});
 
 //Cerrar el modal de elementos consumibles
 closeModal(modalDoom.modalAddConsumibles, btnDoom.btnCloseConsumible, ()=>{
   // Reinicio la página para que cuando vuelva a ingresar este en la página inicial.
   pagesConsumibles = 1;
 });
-// resetTableElements("consumibles", 1, true);
 
 //Preview de los elementos en forma de tabla.
 btnDoom.btnModalPreviewElements.addEventListener("click", (e) => {
@@ -724,10 +590,6 @@ btnDoom.btnModalPreviewElements.addEventListener("click", (e) => {
   e.preventDefault();
   instanPreview.open();
 });
-
-/**
- * Submit al formulario.
- */
 
 //Con esta función valido que los campos del formulario sean diligenciados.
 function validateFormData(formData) {
@@ -748,6 +610,9 @@ function validateFormData(formData) {
   return true;
 }
 
+/**
+ * Submit al formulario.
+ */
 formSolicitudPrestamo.addEventListener("submit", (event) => {
   event.preventDefault();
   event.stopPropagation();
@@ -775,7 +640,10 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
 
   //Agrego la cedula al objeto data.
   data.cedula = document.getElementById("cedula").textContent.trim();
-
+  if (!data.cedula) {
+    initAlert("Los datos del usuario son obligatorios", "info", toastOptions);
+    return;
+  }
   //Data de elementos.
   let filas = document.querySelectorAll(
     ".tableElements .previewElements #tblBodyPreviewElements tr"
@@ -916,7 +784,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  fetchData("elements", 1);
 
   initTooltip(
     btnDoom.btnAddUser,
