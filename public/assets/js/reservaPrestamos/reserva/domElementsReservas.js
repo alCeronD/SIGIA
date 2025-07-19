@@ -11,7 +11,8 @@ export const tablesDoom = {
 export const modalDoom = {
     modalAddDevolutivos: instanceModal("#modalAddDevolutivos", options),
     modalAddConsumibles: instanceModal("#modalAddConsumible", options),
-    modalUsers: instanceModal("#modalUsers", options)
+    modalUsers: instanceModal("#modalUsers", options),
+
 };
 //Buttons
 export const btnDoom = {
@@ -50,3 +51,8 @@ export const inputsForm = {
     inputEmail: getSelector("#email")
 
 }
+
+// Este proceso lo hago por si requiero usar el objeto en otro archivo.
+export let objDataConsumibles = [];
+// export const objDataDevolutivos = {};
+export let objDataUsers = [];

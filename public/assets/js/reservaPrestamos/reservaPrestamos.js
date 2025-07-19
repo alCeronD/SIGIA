@@ -1,6 +1,5 @@
-// import { getData } from "../utils/fetch.js";
 import { addClassItem } from "../utils/cases.js";
-import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,timePickerOptions,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, sendData, inputsForm, iDom } from "./index.js";
+import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,timePickerOptions,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, sendData, inputsForm, iDom, objDataConsumibles, objDataUsers } from "./index.js";
 const objAjax = new Ajax();
 
 btnDoom.btnModalPreviewElements.append(iDom.iCreatePreview);
@@ -8,11 +7,8 @@ btnDoom.btnAddElements.classList.add("btnClick");
 btnDoom.btnAddElements.append(iDom.iAddElement);
 btnDoom.btnAddConsumibles.append(iDom.iAddConsumible);
 btnDoom.btnSubmit.append(iDom.iSendReserva);
-
-// Estas variables las uso para re utilizar la información
-let objDataConsumibles = {};
+// Estas variables las uso para re utilizar la información en otros bloques.
 let objDataDevolutivos = {};
-let objDataUsers = {};
 const valuePage = document.querySelector("#valuePage");
 
 //Creo una instancia del modal
@@ -168,20 +164,23 @@ const getElements = async ({ action = "", pages = 1 } = {}) => {
       "GET",
       { action, pages }
     );
-
     const data = response.data.data;
     const pagesResult = response.data.pages;
-
+    
     if (action === "elementsConsumibles") {
+      // Limpio el arreglo.
+      objDataConsumibles.length = 0;
+      // Si voy a pasar la data con su misma referencia uso el operado spread (...) para así evitar que la data se desacople.
+      objDataConsumibles.push(...data);
       return {
-        objDataConsumibles: data,
+        objDataConsumibles,
         pagesElementsConsumibles: pagesResult
       };
     }
-
     if (action === "elementsDevolutivos") {
+      
       return {
-        objDataDevolutivos: data,
+        objDataDevolutivos:  data,
         pagesElementsDevolutivos: pagesResult
       };
     }
@@ -195,7 +194,6 @@ const getElements = async ({ action = "", pages = 1 } = {}) => {
 const renderConsumibles = async ({objDataConsumibles = {}, pagesElementsConsumibles = 1} = {}) =>{
   //Si el valor es true pues devuelvo la página al principio.
  tablesDoom.tblBodyConsumibles.innerHTML = "";
-    
   objDataConsumibles.forEach((data) => {
     let trConsumbile = document.createElement("tr");
     let tdCodigo = document.createElement("td");
