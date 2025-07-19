@@ -2,8 +2,8 @@
     <div class="modal-content">
         <div class="previewElements">
             <div class="modal-title">
-                <span id="modalTitle"></span>
-                <button type="button" id="closeModalBtnPreview">
+                <span id="modalTitle">Elementos seleccionados</span>
+                <button type="button" id="btnClosePreviewElements">
                     <span class="close-modal">&times;</span>
                 </button>
             </div>

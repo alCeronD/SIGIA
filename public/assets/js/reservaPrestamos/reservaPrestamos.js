@@ -1,28 +1,17 @@
-import { getData } from "../utils/fetch.js";
-import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,timePickerOptions,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom } from "./index.js";
-
+// import { getData } from "../utils/fetch.js";
+import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,timePickerOptions,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, sendData } from "./index.js";
 const objAjax = new Ajax();
-const btnSubmit = document.querySelector("#btnSubmit");
-const modalAddDevolutivos = instanceModal("#modalAddDevolutivos", { options });
-const modalAddConsumibles = instanceModal("#modalAddConsumible", options);
-const modalUsers = instanceModal("#modalUsers", options);
-const btnAddElements = document.querySelector("#btnAddElements");
 const ispanAddElements = createI();
 ispanAddElements.innerText = "add";
-const btnAddConsumibles = document.querySelector("#btnAddConsumibles");
-const modalTitle = document.querySelector("#modalTitle");
 const areaDestino = document.querySelector("#areaDestino");
 const horaInicio = document.querySelector(".horaInicio");
 const horaFin = document.querySelector(".horaFin");
 const horaInicioFin = document.querySelector(".horaInicioFin");
-const btnCloseDevolutivos = document.querySelector("#modalAddDevolutivos .close-modal");
-const btnCloseConsumible = document.querySelector(
-  "#modalAddConsumible .close-modal"
-);
-const btnCloseUsers = document.querySelector("#modalUsers .close-modal");
-const btnSearchUser = document.querySelector("#searchBtn");
-const previewElements2 = document.querySelector("#previewElements2");
+
 const iCreatePreview = createI();
+iCreatePreview.innerText = "info";
+btnDoom.btnModalPreviewElements.append(iCreatePreview);
+
 // Estas variables las uso para re utilizar la información
 let objDataConsumibles = {};
 let objDataDevolutivos = {};
@@ -30,8 +19,7 @@ let objDataUsers = {};
 let button;
 const valuePage = document.querySelector("#valuePage");
 //Aplico tooltip al boton de usuarios
-iCreatePreview.innerText = "info";
-previewElements2.append(iCreatePreview);
+
 //Creo una instancia del modal
 const instanPreview = instanceModal("#modalPreviewElements", options);
 const formSolicitudPrestamo = document.querySelector("#formSolicitudPrestamo");
@@ -47,9 +35,8 @@ let inputNroDocumento = document.querySelector("#cedula");
 let inputApellido = document.querySelector("#apellido");
 let inputTelefono = document.querySelector("#telefono");
 let inputEmail = document.querySelector("#email");
-tablesDoom.tableUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
-const btnPreview = document.querySelector("#preview");
-const btnNext = document.querySelector("#next");
+tablesDoom.tblBodyUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
+
 areaDestino.addEventListener("change", () => {
   let value = areaDestino.options[areaDestino.selectedIndex];
   //console.log(value);
@@ -75,15 +62,15 @@ areaDestino.addEventListener("change", () => {
 });
 let iAddElement = createI();
 iAddElement.innerText = "add_a_photo";
-btnAddElements.classList.add("btnClick");
-btnAddElements.append(iAddElement);
+btnDoom.btnAddElements.classList.add("btnClick");
+btnDoom.btnAddElements.append(iAddElement);
 let iConsumible = createI();
 iConsumible.innerText = "battery_std";
-btnAddConsumibles.append(iConsumible);
+btnDoom.btnAddConsumibles.append(iConsumible);
 let iClass = createI();
-modalTitle.innerText = "Elementos seleccionados";
+// modalTitle.innerText = "Elementos seleccionados";
 iClass.innerText = "send";
-btnSubmit.append(iClass);
+btnDoom.btnSubmit.append(iClass);
 // variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
 let pagesUsers;
 let pagesElements;
@@ -93,7 +80,6 @@ let pagesElementsDevolutivos;
 let ids = [];
 let addElements;
 // Boton para cierrar el modal de elementsPreview
-const closeModalBtnPreview = document.querySelector("#closeModalBtnPreview");
 /**
  * Función de renderizado y peticiones, TODO: Re factorizar y mover a otros archivos.
  */
@@ -153,7 +139,6 @@ const renderUsers = async ({action = "users", pages = 1, resetToFirstPage = fals
       if (resetToFirstPage) {
         pgUsers = 1;
       }
-
       //Limpio los selects, evito que hayan duplicados.
       for (let index = 1; index <= allPages; index++) {
         let pagesOptions = document.createElement("option");
@@ -164,7 +149,7 @@ const renderUsers = async ({action = "users", pages = 1, resetToFirstPage = fals
       //por defecto, lo coloco en 1.
       // valuePage.value = String(pgUsers);
 
-      tablesDoom.tableUsers.innerHTML = "";
+      tablesDoom.tblBodyUsers.innerHTML = "";
       data.forEach((us) => {
         let btnAdd = document.createElement("button");
         let iCreate = createI();
@@ -190,7 +175,7 @@ const renderUsers = async ({action = "users", pages = 1, resetToFirstPage = fals
         tdEmail.textContent = us.email;
         tdRol.textContent = us.rol;
 
-        tablesDoom.tableUsers.appendChild(trTableUsers);
+        tablesDoom.tblBodyUsers.appendChild(trTableUsers);
         trTableUsers.appendChild(tdNroDocumento);
         trTableUsers.appendChild(tdNombre);
         trTableUsers.appendChild(tdApellido);
@@ -281,7 +266,7 @@ const renderConsumibles = async ({objDataConsumibles = {}, pagesElementsConsumib
     definirCantidad(cantidadInput, cantidad);
   });
 
-  modalAddConsumibles.open();
+  modalDoom.modalAddConsumibles.open();
 }
 //TODO: Documentar la función usando JSDOC
 function resetTableElements(action = "", pages = 1, resetFirstPage = false) {
@@ -352,7 +337,7 @@ function definirCantidad(cantidadInput, cantidad) {
 }
 
 // Abrir modal de elementos disponibles devolutivos
-btnAddElements.addEventListener("click", (btnTarget) => {
+btnDoom.btnAddElements.addEventListener("click", (btnTarget) => {
   btnTarget.preventDefault();
   btnTarget.stopPropagation();
 
@@ -362,7 +347,7 @@ btnAddElements.addEventListener("click", (btnTarget) => {
    */
 
   resetTableElements("elements", 1).then((respuesta) => {
-    tablesDoom.tableDevolutivos.innerHTML = "";
+    tablesDoom.tblBodyDevolutivos.innerHTML = "";
 
     //Implementar los datos en en la tabla.
     respuesta.forEach((dta) => {
@@ -391,7 +376,7 @@ btnAddElements.addEventListener("click", (btnTarget) => {
       tdAccion.append(label);
       label.append(addElements, span);
 
-      tablesDoom.tableDevolutivos.appendChild(trTable);
+      tablesDoom.tblBodyDevolutivos.appendChild(trTable);
       trTable.appendChild(tdCodigo);
       trTable.appendChild(tdElemento);
       trTable.appendChild(tdArea);
@@ -400,31 +385,31 @@ btnAddElements.addEventListener("click", (btnTarget) => {
   });
 
   //visualizar modal.
-  modalAddDevolutivos.open();
+  modalDoom.modalAddDevolutivos.open();
   //Uso esta función para renderizar por defecto los elementos de tipo devolutivo, en la página 1.
 });
 
 //Abrir modal de elementos disponibles consumibles.
-btnAddConsumibles.addEventListener("click", async (event) => {
+btnDoom.btnAddConsumibles.addEventListener("click", async (event) => {
   event.stopPropagation();
   event.preventDefault();
   const {objDataConsumibles, pagesElementsConsumibles} = await getElements({action:"elementsConsumibles", pages:1, resetToFirstPage: true});
   await renderConsumibles({objDataConsumibles, pagesElementsConsumibles});
-  modalAddConsumibles.open();
+  modalDoom.modalAddConsumibles.open();
 });
 
 //Abrir modal usuarios
-btnSearchUser.addEventListener("click", (event) => {
+btnAddUser.addEventListener("click", (event) => {
   event.stopPropagation();
   event.preventDefault();
 
   //Vuelvo a reiniciar la tabla para que inicie en la Página #1.
   renderUsers({action:"users", pages: 1});
-  modalUsers.open();
+  modalDoom.modalUsers.open();
 });
 
 //Delegar evento sobre la tabla usuarios
-tablesDoom.tableUsers.addEventListener("click", (e) => {
+tablesDoom.tblBodyUsers.addEventListener("click", (e) => {
   e.stopPropagation();
   e.preventDefault();
 
@@ -450,12 +435,12 @@ tablesDoom.tableUsers.addEventListener("click", (e) => {
       "info",
       toastOptions
     );
-    closeModal(modalUsers);
+    closeModal(modalDoom.modalUsers);
   }
 });
 
 //Delegar evento sobre la tabla de elementos devolutivos.
-tablesDoom.tableDevolutivos.addEventListener("click", (event) => {
+tablesDoom.tblBodyDevolutivos.addEventListener("click", (event) => {
   event.stopPropagation();
 
   //Valido si el evento ejecutado corresponde a un input con la clase checkboxInput.
@@ -482,7 +467,7 @@ tablesDoom.tableDevolutivos.addEventListener("click", (event) => {
       //Valido, si el arreglo no contiene el valueInput, entonces que implemente el valor ahí.
       if (!ids.includes(valueInput)) {
         ids.push(valueInput);
-        tablesDoom.tablePreviewElements.appendChild(trTablePreview);
+        tablesDoom.tblBodyPreviewElements.appendChild(trTablePreview);
         tdCodigo.textContent = codigo;
         tdNombre.textContent = nombre;
         tdCantidad.textContent = "1";
@@ -551,7 +536,7 @@ tableConsumible.addEventListener("click", (event) => {
           toastOptions
         );
 
-        tablesDoom.tablePreviewElements.appendChild(trConsu);
+        tablesDoom.tblBodyPreviewElements.appendChild(trConsu);
         trConsu.appendChild(tdCodigoConsu);
         trConsu.appendChild(tdNombreConsu);
         trConsu.appendChild(tdAreaConsu);
@@ -574,7 +559,7 @@ tableConsumible.addEventListener("click", (event) => {
  */
 let pgUsers = 1;
 //Botón de evento para marcar el preview de la página.
-btnPreview.addEventListener("click", (event) => {
+btnDoom.btnPreviewUsers.addEventListener("click", (event) => {
   event.stopPropagation();
   event.preventDefault();
 
@@ -586,15 +571,13 @@ btnPreview.addEventListener("click", (event) => {
 });
 
 //Botón para marcar el next de la página.
-btnNext.addEventListener("click", (event) => {
+btnDoom.btnNextUsers.addEventListener("click", (event) => {
   event.stopPropagation();
   event.preventDefault();
   pgUsers++;
   renderUsers({action:"users", pages:pgUsers});
 
 });
-
-
 
 /**
  * Paginación elementos devolutivos disponibles
@@ -610,7 +593,7 @@ previewElement.addEventListener("click", () => {
     pgElementsDevolutivos === 1 ? 1 : pgElementsDevolutivos - 1;
 
   resetTableElements("elements", pgElementsDevolutivos).then((result) => {
-    tablesDoom.tableDevolutivos.innerHTML = "";
+    tablesDoom.tblBodyDevolutivos.innerHTML = "";
     //Implementar los datos en en la tabla.
     result.forEach((dta) => {
       let codigo = dta.codigo;
@@ -643,7 +626,7 @@ previewElement.addEventListener("click", () => {
 
       tdAccion.append(label);
       label.append(addElements, span);
-      tablesDoom.tableDevolutivos.appendChild(trTable);
+      tablesDoom.tblBodyDevolutivos.appendChild(trTable);
       trTable.appendChild(tdCodigo);
       trTable.appendChild(tdElemento);
       trTable.appendChild(tdArea);
@@ -658,10 +641,8 @@ nextElement.addEventListener("click", () => {
     pgElementsDevolutivos++;
   }
   resetTableElements("elements", pgElementsDevolutivos).then((result) => {
-    // tableDevolutivos.innerHTML = "";
-    // tableDevolutivos.innerHTML = "";
-    tablesDoom.tableDevolutivos.innerHTML = "";
-    //Implementar los datos en en la tabla.
+
+    tablesDoom.tblBodyDevolutivos.innerHTML = "";
     result.forEach((dta) => {
       let codigo = dta.codigo;
       let elemento = dta.elemento;
@@ -694,7 +675,7 @@ nextElement.addEventListener("click", () => {
       tdAccion.append(label);
       label.append(addElements, span);
 
-      tablesDoom.tableDevolutivos.appendChild(trTable);
+      tablesDoom.tblBodyDevolutivos.appendChild(trTable);
       trTable.appendChild(tdCodigo);
       trTable.appendChild(tdElemento);
       trTable.appendChild(tdArea);
@@ -703,7 +684,7 @@ nextElement.addEventListener("click", () => {
   });
 });
 
-closeModalBtnPreview.addEventListener("click", (e) => {
+btnDoom.btnClosePreviewElements.addEventListener("click", (e) => {
   e.stopPropagation();
   instanPreview.close();
 });
@@ -756,23 +737,23 @@ document.querySelector("#nextElementConsumible")
   });
 
 // Cerrar el modal de los usuarios.
-closeModal(modalUsers, btnCloseUsers, ()=>{
+closeModal(modalDoom.modalUsers, btnDoom.btnCloseUsers, ()=>{
   renderUsers({action: "users", pages: 1, resetToFirstPage:true});
 });
 
 //Cerrar el modal de elementos devolutivos
-closeModal(modalAddDevolutivos, btnCloseDevolutivos);
+closeModal(modalDoom.modalAddDevolutivos, btnDoom.btnCloseDevolutivos);
 resetTableElements("elements", pgElementsDevolutivos, true);
 
 //Cerrar el modal de elementos consumibles
-closeModal(modalAddConsumibles, btnCloseConsumible, ()=>{
+closeModal(modalDoom.modalAddConsumibles, btnDoom.btnCloseConsumible, ()=>{
   // Reinicio la página para que cuando vuelva a ingresar este en la página inicial.
   pagesConsumibles = 1;
 });
 // resetTableElements("consumibles", 1, true);
 
 //Preview de los elementos en forma de tabla.
-previewElements2.addEventListener("click", (e) => {
+btnDoom.btnModalPreviewElements.addEventListener("click", (e) => {
   e.stopPropagation();
   e.preventDefault();
   instanPreview.open();
@@ -905,10 +886,10 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     );
     // ESTO NO LO PUEDO HACER PORQUE SI LO HAGO LOS ELEMENTOS NO VAN A ESTAR VISIBLES, la unica forma que sirva es que la petición se haga cuando se aplique el DOOMCONTENTLOADER.
     // modalAddDevolutivos.open();
-    btnAddElements.classList.remove("shake");
+    btnDoom.btnAddElements.classList.remove("shake");
     //Obligo al doom a que vuelva a re ejecutar este elemento.
-    void btnAddElements.offsetWidth;
-    btnAddElements.classList.add("shake");
+    void btnDoom.btnAddElements.offsetWidth;
+    btnDoom.btnAddElements.classList.add("shake");
     return;
   }
 
@@ -951,7 +932,7 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
         inputApellido.textContent = "";
         inputEmail.textContent = "";
         inputTelefono.textContent = "";
-        tablesDoom.tablePreviewElements.innerHTML = "";
+        tablesDoom.tblBodyPreviewElements.innerHTML = "";
 
         //Oculto inputs de tipo time.
         horaInicio.style.visibility = "hidden";
@@ -972,25 +953,25 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchData("elements", 1);
 
   initTooltip(
-    btnSearchUser,
+    btnDoom.btnAddUser,
     tooltipOptions,
     "Seleccione el instructor\npara asignar al préstamo",
     "left"
   );
   initTooltip(
-    previewElements2,
+    btnDoom.btnModalPreviewElements,
     tooltipOptions,
     "Visualize los elementos\n que ha seleccionado \n para su respectivo prestamo",
     "bottom"
   );
   initTooltip(
-    btnAddElements,
+    btnDoom.btnAddElements,
     tooltipOptions,
     "Seleccione los elementos \n que requieren una \n devolución",
     "bottom"
   );
   initTooltip(
-    btnAddConsumibles,
+    btnDoom.btnAddConsumibles,
     tooltipOptions,
     "Seleccione elementos \n a consumir sin \ndevolución obligatoria",
     "bottom"
@@ -1007,6 +988,6 @@ document.addEventListener("DOMContentLoaded", () => {
   instanceDateTime("#fin", timePickerOptions);
   instanceDateTime("#inicio", timePickerOptions);
 
-  closeModal(modalUsers, btnCloseUsers);
-  closeModal(instanPreview, closeModalBtnPreview);
+  closeModal(modalDoom.modalUsers, btnDoom.btnCloseUsers);
+  closeModal(instanPreview, btnDoom.btnClosePreviewElements);
 });

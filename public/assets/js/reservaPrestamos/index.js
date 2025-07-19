@@ -1,3 +1,5 @@
+export { getData, sendData } from "../utils/fetch.js";
+
 export { Ajax } from "../utils/ajax.js";
 
 export {
@@ -16,4 +18,4 @@ export {
   toastOptions,
 } from "../utils/cases.js";
 
-export { tablesDoom } from "./reserva/doomElementsReservas.js";
+export { tablesDoom,modalDoom, btnDoom} from "./reserva/domElementsReservas.js";

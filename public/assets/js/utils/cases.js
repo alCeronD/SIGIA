@@ -405,7 +405,12 @@ export const createCheckbox = (seriales, placa) => {
   return p;
 };
 
-export default {
-  closeModal,
-  openModal,
-};
+export const getSelector = (selector) =>{
+  const el = document.querySelector(selector);
+
+  if (!el) {
+    console.warn("elemento no idenfificado");
+  }
+
+  return el;
+}

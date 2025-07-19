@@ -8,7 +8,7 @@
     </div>
     <div class="searchUser">
         <label for="">Instructor: </label>
-        <button type="button" id="searchBtn" class="btnInfo btnClick btn waves-effect waves-light">
+        <button type="button" id="btnAddUser" class="btnInfo btnClick btn waves-effect waves-light">
             <i class="material-icons">person_add</i>
         </button>
     </div>
@@ -64,7 +64,7 @@
                 <Span>Seleccione los elementos:</Span>
                 <div class="btnItems">
                     <button type="button" class="btn waves-effect waves-light" id="btnAddElements"></button>
-                    <button type="button" class="btn waves-effect waves-light" id="previewElements2"></button>
+                    <button type="button" class="btn waves-effect waves-light" id="previewElements"></button>
                     <button type="button" class="btn waves-effect waves-light" id="btnAddConsumibles"></button>
                 </div>
             </div>
