@@ -59,9 +59,10 @@ let pagesReserva = 1;
 const checkBoxValidate = document.querySelector("#allValidateItems");
 // capturo el input de la tabla para seleccionarlos todos.
 const inputValidate = document.querySelectorAll(".inputValidate");
-const nextBtnValidate = document.querySelector(
-  ".nextBtnValidate #btnNextValidate"
-);
+// const nextBtnValidate = document.querySelector(  ".nextBtnValidate #btnNextValidate");
+const nextBtnValidate = document.querySelector("#btnNextValidate");
+
+const btnNextValidate = document.querySelector('#btnNextValidate');
 
 //Variable para mostrar la información en el modal.
 let elementosDetalle = [];
@@ -251,7 +252,6 @@ function addElementsToArray(input) {
 
   if (input.checked) {
     if (tipo === "Devolutivo" && !devolutivos.includes(cod)) {
-      // devolutivos.push(cod);
       devolutivos.push({
         tipo: tipo,
         cod: cod,
@@ -261,7 +261,6 @@ function addElementsToArray(input) {
     }
 
     if (tipo === "Consumible" && !consumibles.includes(cod)) {
-      // consumibles.push(cod);
       consumibles.push({
         tipo: tipo,
         cod: cod,
@@ -586,7 +585,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
           const cantidad = intp.dataset.cantidadSalida;
           const nombreElemento = intp.dataset.nombreElemento;
           if (tipo === "Consumible" && !noselectedConsumibles.includes(cod)) {
-            // noselectedConsumibles.push(cod);
             noselectedConsumibles.push({
               cod: cod,
               nombreElemento: nombreElemento,
@@ -611,7 +609,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         e.preventDefault();
         if (e.target.checked) {
           addElementsToArray(input);
-          // addElementsNoSelected(inputValidate);
           validateCheckboxChecked(inputValidate, checkBoxValidate);
         } else {
           addElementsToArray(input);
@@ -764,7 +761,8 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
         // Esto se repite, lo puedo modificar haciendo no una función sino cerrando el modal usando la función close modal, para ello debo de cambiar la forma de enviar los parámetros, lo ideal, enviarlos mediante objeto.
         BodydetailReserva.innerHTML = "";
-        let falseChecked = checkBoxValidate.checked ? false : true;
+        // let falseChecked = checkBoxValidate.checked ? false : true;
+        let falseChecked = false;
         checkBoxValidate.checked = falseChecked;
 
         previewBtnValidate.style.display = "none";
@@ -782,15 +780,18 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 closeModal(modalValidate, btnCloseValidte, () => {
   //Limpiar la tabla apenas se cierre el modal.
   BodydetailReserva.innerHTML = "";
-  let falseChecked = checkBoxValidate.checked ? false : true;
+  let falseChecked = false;
   checkBoxValidate.checked = falseChecked;
-
-  previewBtnValidate.style.display = "none";
-  nextBtnValidate.style.display = "none";
-  resetModalValidate(true);
+  if (checkBoxValidate.checked) {
+    previewBtnValidate.style.display = "none";
+    nextBtnValidate.style.display = "none";
+  }
 
   resetDataModal();
+  resetModalValidate(true);
 });
+
+
 
 /**
  * Paginación de los prestamos.
