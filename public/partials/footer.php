@@ -32,6 +32,12 @@
             <i class="material-icons">local_see</i>
           </a>
         </li>
+        <!-- Reportes -->
+        <li>
+          <a class="btn-floating cyan  submenu-trigger" data-tooltip="Reportes" data-submenu="submenu-reportes">
+            <i class="material-icons">bar_chart</i>
+          </a>
+        </li>
         <!-- Admin: Configuración -->
         <li>
           <a class="btn-floating teal  submenu-trigger" data-tooltip="Configuración" data-submenu="submenu-config">
@@ -48,13 +54,11 @@
           </a>
         </li>
       <?php endif; ?>
+      
 
-      <!-- Reportes -->
-    <li>
-      <a class="btn-floating cyan  submenu-trigger" data-tooltip="Reportes" data-submenu="submenu-reportes">
-        <i class="material-icons">bar_chart</i>
-      </a>
-    </li>
+
+
+
       <!-- Cerrar sesión -->
       <li>
         <a href="<?php echo getUrl('login','login','logout'); ?>" class="btn-floating red " data-tooltip="Cerrar sesión">

@@ -189,7 +189,7 @@ class solicitudPrestamos
         $usua_id = (int) $usuario_id;
         $cantidad = 1;
 
-        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod) VALUES ($pres_cod, $usua_id, $elm_cod)";
+        $query = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES ($pres_cod, $usua_id, $elm_cod, $cantidad)";
 
         return $this->conn->query($query);
     }
@@ -199,8 +199,9 @@ class solicitudPrestamos
         $pres_cod = (int) $pres_cod;
         $elm_cod = (int) $elm_cod;
         $usua_id = (int) $usuario_id;
+        $cantidadElemento = (int) $cantidad;
 
-        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod) VALUES ($pres_cod, $usua_id, $elm_cod)";
+        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod,pres_el_cantidad) VALUES ($pres_cod, $usua_id, $elm_cod,$cantidadElemento)";
 
         return $this->conn->query($query);
     }
