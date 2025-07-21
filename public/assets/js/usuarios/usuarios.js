@@ -234,7 +234,6 @@ document.addEventListener("DOMContentLoaded", () => {
         rol.classList.add("invalid");
         valid = false;
       }
-
       try {
         const response = sendData("modules/usuarios/controller/usuariosController.php", "POST", "addUser", data);
         response.then((result)=>{
@@ -243,7 +242,6 @@ document.addEventListener("DOMContentLoaded", () => {
             formUsuario.reset();
             return;
           }
-
         });
 
 
