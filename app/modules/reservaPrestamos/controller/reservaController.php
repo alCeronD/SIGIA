@@ -170,12 +170,9 @@ class ReservaController
         $estadoPrestamo =
             $type === 'all'       ? 0 : ($type === 'validate'   ? 1 : ($type === 'Rechazado'  ? 2 : ($type === 'toValidate' ? 3 : ($type === 'done' ? 4 : ($type === 'cancelado'  ? 5 : null)))));
 
-        // var_dump($estadoPrestamo);
-
-
         $data = $this->model->selectDetailReserva($pages, $estadoPrestamo);
-        if (!$data['status']) {
-            fail('error', $data);
+        if (!$data['status'] && empty($data['data'])) {
+            success('No hay registros.', $data);
         }
         success('Registros', $data);
     }

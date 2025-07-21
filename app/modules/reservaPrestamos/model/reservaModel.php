@@ -526,7 +526,7 @@ class ReservaModel
 
     //Funcion para visualizar las reservas.
     /**
-     * Summary of selectReservas 
+     * Summary of selectReservas Trae las reservas, por defecto, trae todas, pero aplicando el filtrado me captura el tipo de prestamo específicos basado en su estado.
      * @return array{data: array, message: string, status: bool|string}
      */
     public function selectDetailReserva(int $page = 1, int $type = 0)
@@ -604,24 +604,20 @@ class ReservaModel
             $dataReservas = [];
             while ($row = $resultReservas->fetch_assoc()) {
 
-                $dataReservas[] = $row;
+                    $dataReservas[] = $row;
             }
-
-            $result = [
+            return [
                 'status' => count($dataReservas) == 0 ? false : true,
                 'data' => $dataReservas,
                 'message' => count($dataReservas) > 0 ? 'reservas encontradas' : 'no hay reservas registradas',
                 'pages' => $pages,
                 'totalRows' => $getCountReservas
             ];
-            return $result;
         } catch (\Throwable $e) {
-
-            $result = [
+            return [
                 'status' => false,
                 'message' => $e->getMessage()
             ];
-            return $result;
         }
     }
     public function selectElementsReserva(int $codigo = 0)

@@ -68,28 +68,23 @@ let elementosDetalle = [];
 
 const renderReservas = async ({page = 1, type = 'all'} = {}) => {
   pagesReserva = page;
-  // console.log({"pagesReserva": pagesReserva});
-  // console.log({"page": page});
 
-  //Traigo la data por medio de fetch.
+  try {
+    //Traigo la data por medio de fetch.
   const result = await getData(
     "modules/reservaPrestamos/controller/reservaController.php",
     "GET",
     { action: "reservas", pages: page, type }
   );
-  // let registros = result;
   let status = result.status;
   data = result.data.data;
   pages = result.data.pages;
-
-  if (pagesReserva > pages) return;
-
-  if (!status) {
-    //Implementar mensaje de que no hay registros.
+  if (status && data.length === 0) {
     tbodyReservaConsult.innerHTML = "";
+    tbodyReservaConsult.innerHTML = "No hay prestamos para el estado del prestamo seleccionado.";
     return;
   }
-
+  if (pagesReserva > pages) return;
 
   tbodyReservaConsult.innerHTML = "";
   data.forEach((dta) => {
@@ -216,31 +211,15 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
 
       });
 
-
-      // const detalleAjax = new Ajax();
-      // let action = "reservaDetailElements";
-      // detalleAjax.request.open(
-      //   "GET",
-      //   `modules/reservaPrestamos/controller/reservaController.php?codigo=${encodeURIComponent(
-      //     codigo
-      //   )}&action=${encodeURIComponent(action)}`,
-      //   true
-      // );
-      // detalleAjax.request.setRequestHeader(
-      //   "X-Requested-With",
-      //   "XMLHttpRequest"
-      // );
-
-      // detalleAjax.request.onload = () => {
-      //   let response = JSON.parse(detalleAjax.request.responseText);
-
-        
-      // };
-
-      // detalleAjax.request.setRequestHeader("Accept", "application/json");
-      // detalleAjax.request.send();
     }
   });
+  } catch (error) {
+    console.warn(`Error al procesar la solicitud, intente más tarde ${error}`);
+    tbodyReservaConsult.innerHTML = "Error al realizar la solicitud, intente nuevamente";
+
+  }
+
+  
 };
 
 //Estas variables las uso para guardar los elementos que no han sido validados.
