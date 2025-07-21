@@ -1,7 +1,9 @@
 <?php
-include_once __DIR__ . '/../model/usuariosModel.php';
+require_once __DIR__ . "/../model/usuariosModel.php";
 include_once __DIR__ . '/../../roles/model/rolesModel.php';
+include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
+require_once __DIR__ . "/../../../helpers/response.php";
 
 class usuariosController
 {
@@ -17,11 +19,16 @@ class usuariosController
 
     private $conn;
 
-    public function __construct($conexion)
-    {
-        $this->conn = $conexion;
-    }
+    protected $rolesModel;
+    protected $configModules;
+    protected $usuariosModel;
 
+    public function __construct()
+    {
+        $this->rolesModel = new RolModelo();
+        $this->configModules = new ConfigModulesModel();
+        $this->usuariosModel = new usuarios();
+    }
 
     public function userView()
     {
@@ -29,67 +36,40 @@ class usuariosController
         $roles = [];
 
         //TODO: mandar a modelo.
-        $resultado = $this->conn->query("SELECT * FROM roles");
-        if ($resultado && $resultado->num_rows > 0) {
-            while ($row = $resultado->fetch_assoc()) {
-                $roles[] = $row;
-            }
-        }
-        // dd($roles);
-        $rowTp = $this->conn->query("SELECT * FROM tipo_documento");
-        if ($rowTp && $rowTp->num_rows > 0) {
-            while ($row = $rowTp->fetch_assoc()) {
-                $tp_documento[] = $row;
-            }
-        }
+        $resultado = $this->rolesModel->obtenerRoles();
+        $rowTp = $this->configModules->select("SELECT * FROM tipo_documento");
+
         $_SESSION['css'] = 'usuarios/usuarios.css';
         return include __DIR__ . '/../views/usuariosView.php';
     }
 
-    public function createUser()
+    public function createUser(array $data = [])
 {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        
-        if ($this->conn->connect_error) {
-            die("Error de conexión: " . $this->conn->connect_error);
-        }
-
-        $usuariosModel = new usuarios();
 
         // Verificar si ya existe un usuario con ese documento
-        $existeUsuario = $usuariosModel->searchU((int)$_POST['usu_docum'], true);
+        $existeUsuario = $this->usuariosModel->searchU((int)$data['usu_docum'], true);
 
-        if ($existeUsuario) {
-            echo "<script>alert('Ya existe un usuario registrado con ese número de documento.'); window.history.back();</script>";
-            return;
-        }
-
-        if (empty($_POST['usu_email'])) {
-            echo "<script>alert('el email debe ser digitado'); window.history.back();</script>";
-            return;
-        }
 
         $datos = [
-            'usu_docum'     => $_POST['usu_docum'],
-            'usu_nombres'   => $_POST['usu_nombres'],
-            'usu_apellidos' => $_POST['usu_apellidos'],
-            'usu_password'  => $_POST['usu_password'],
-            'usu_email'     => $_POST['usu_email'],
-            'usu_direccion' => $_POST['usu_direccion'],
-            'usu_telefono'  => $_POST['usu_telefono'],
+            'usu_docum'     => $data['usu_docum'],
+            'usu_nombres'   => $data['usu_nombres'],
+            'usu_apellidos' => $data['usu_apellidos'],
+            'usu_password'  => $data['usu_password'],
+            'usu_email'     => $data['usu_email'],
+            'usu_direccion' => $data['usu_direccion'],
+            'usu_telefono'  => $data['usu_telefono'],
             'usu_id_estado' => 1,
-            'usu_tp_id'     => $_POST['usu_tp_id'],
-            'rol_id'        => $_POST['rol_id'],
+            'usu_tp_id'     => $data['usu_tp_id'],
+            'rol_id'        => $data['rol_id'],
+            'usu_observacion' => $data['usu_observacion']
         ];
 
-        $resultado = $usuariosModel->create($datos);
+        $resultado = $this->usuariosModel->create($datos);
 
-        if ($resultado) {
-            echo "<script>alert('Usuario registrado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'userView', false, 'dashboard') . "';</script>";
-        } else {
-            echo "<script>alert('Ocurrió un error al registrar el usuario');</script>";
+        if (!$resultado) {
+            fail('error al crear el recurso');
         }
-    }
+        success('usuario creado exitosamente');
 }
 
 
@@ -102,11 +82,6 @@ class usuariosController
         // dd($usuarios);
         $path = __DIR__ . '/../views/consultView.php';
         $_SESSION['css'] = 'usuarios/usuarios.css';
-        $rol = new RolModelo($this->conn);
-    
-        $roles = $rol->obtenerRoles();
-                // dd($roles);
-        // var_dump($path);
         return include $path;
     }
 
@@ -143,8 +118,6 @@ class usuariosController
         }
     
         // Actualizar rol del usuario
-        $obj = new RolModelo($this->conn);
-        $obj->actRolUser($id, $rol_id);
     
         // Mostrar usuarios actualizados
         $modeloUsuarios = new usuarios();
@@ -197,15 +170,32 @@ class usuariosController
             echo "Método no permitido";
         }
     }
-    
-    
-    
-    
-    
-    
     public function userPermView(){
-        
-        
-        
+    }
+}
+
+$objUsuarios = new usuariosController();
+
+if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $input = file_get_contents("php://input");
+
+        $data = json_decode($input, true);
+        // dd($data);
+
+        $action = $data['action'];
+        unset($data['action']);
+        $newData = $data;
+        switch ($action) {
+            case 'addUser';
+            $objUsuarios->createUser($newData);
+                break;
+
+                
+            
+            default:
+                # code...
+                break;
+        }
     }
 }

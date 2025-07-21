@@ -415,3 +415,23 @@ export const getSelector = (selector) =>{
 
   return el;
 }
+
+
+// Función para validar campos el dormulario.
+export const validateFormData = ({formData, campos, mapForm}={}) =>{
+  for (const [key, value] of formData.entries()) {
+    const isEmpty = !value || value.toString().trim() === "";
+    console.log(mapForm);
+    // Evitamos validar campos opcionales como 'observaciones'
+    const camposOpcionales = campos;
+    if (isEmpty && !camposOpcionales.includes(key)) {
+      initAlert(
+        `El campo "${mapForm[key]}" debe ser diligenciado`,
+        "info",
+        toastOptions
+      );
+      return false;
+    }
+  }
+  return true;
+}

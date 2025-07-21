@@ -244,39 +244,32 @@ function validateCheckboxChecked(inputValidate, checkBoxValidate) {
   }
 }
 
-function addElementsToArray(input) {
+function addElementsToArray(input, cantidadPersonalizada = null) {
   const tipo = input.dataset.tipoElemento;
   const cod = input.dataset.codigo;
   const nombre = input.dataset.nombreElemento;
-  const cantidad = input.dataset.cantidadSalida;
+  const cantidad = cantidadPersonalizada ?? input.dataset.cantidadSalida;
 
   if (input.checked) {
-    if (tipo === "Devolutivo" && !devolutivos.includes(cod)) {
-      devolutivos.push({
-        tipo: tipo,
-        cod: cod,
-        nombre: nombre,
-        cantidadSalida: cantidad,
-      });
+    if (tipo === "Devolutivo" && !devolutivos.find(dev => dev.cod === cod)) {
+      devolutivos.push({ tipo, cod, nombre, cantidadSalida: cantidad });
     }
 
-    if (tipo === "Consumible" && !consumibles.includes(cod)) {
-      consumibles.push({
-        tipo: tipo,
-        cod: cod,
-        nombre: nombre,
-        cantidadSalida: cantidad,
-      });
+    if (tipo === "Consumible") {
+      consumibles = consumibles.filter(consu => consu.cod !== cod); // Reemplazar si ya existe
+      consumibles.push({ tipo, cod, nombre, cantidadSalida: cantidad });
     }
   } else {
     if (tipo === "Consumible") {
-      consumibles = consumibles.filter((consu) => consu.cod !== cod);
+      consumibles = consumibles.filter(consu => consu.cod !== cod);
     }
 
     if (tipo === "Devolutivo") {
-      devolutivos = devolutivos.filter((dev) => dev.cod !== cod);
+      devolutivos = devolutivos.filter(dev => dev.cod !== cod);
     }
   }
+
+  console.log({ devolutivos, consumibles });
 }
 
 /**
@@ -522,24 +515,30 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       let tdCantidad = document.createElement("td");
       let tdTipoElemento = document.createElement("td");
       let tdAcciones = document.createElement("td");
-
+      tdAcciones.setAttribute("class", "idAccionesPreviewElements");
       // Input checkbox
       let label = document.createElement("label");
       let span = document.createElement("span");
       let input = document.createElement("input");
 
+      //Input agregar cantidad.
+      let inputCantidad = document.createElement("input");
+      inputCantidad.type = "number";
+      inputCantidad.setAttribute("min", 0);
+      inputCantidad.dataset.codigo = el.codigo;
+      inputCantidad.dataset.tipoElemento = el.nombreTipoElemento;
+      inputCantidad.dataset.nombreElemento = el.nombre;
+      inputCantidad.dataset.cantidadSalida = el.cantidadSolicitada;
+      inputCantidad.disabled = true;
+      inputCantidad.classList.add("input-cantidad");
       input.type = "checkbox";
       input.classList.add("filled-in");
       input.classList.add("inputValidate");
-      // input.value = el.codigo;
+
       input.dataset.codigo = el.codigo;
       input.dataset.tipoElemento = el.nombreTipoElemento;
       input.dataset.nombreElemento = el.nombre;
       input.dataset.cantidadSalida = el.cantidadSolicitada;
-
-      label.appendChild(input);
-      label.appendChild(span);
-      tdAcciones.appendChild(label);
 
       tdCodigo.innerText = el.codigo;
       tdNombre.innerText = el.nombre;
@@ -550,7 +549,16 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       tr.appendChild(tdNombre);
       tr.appendChild(tdCantidad);
       tr.appendChild(tdTipoElemento);
+
+      label.appendChild(input);
+      label.appendChild(span);
+      tdAcciones.appendChild(label);
+      if (el.nombreTipoElemento === "Consumible") {
+        tdAcciones.appendChild(inputCantidad);
+      }
+
       tr.appendChild(tdAcciones);
+
     });
 
     const inputValidate = document.querySelectorAll(".inputValidate");
@@ -564,7 +572,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
       inputValidate.forEach((inV) => {
         inV.checked = e.target.checked;
-
         if (inV.checked) {
           addElementsToArray(inV);
         }
@@ -604,16 +611,43 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     }
 
     inputValidate.forEach((input) => {
+      const row = input.closest("tr");
+      const inputCantidad = row.querySelector(".input-cantidad");
+      const maxCantidad = parseInt(input.dataset.cantidadSalida);
+      const tipo = input.dataset.tipoElemento;
+
+      if (inputCantidad) {
+        inputCantidad.addEventListener("input", (e) => {
+          const val = parseInt(e.target.value);
+          if (isNaN(val) || val <= 0 || val > maxCantidad) {
+            e.target.value = "";
+            input.checked = false;
+            inputCantidad.disabled = true;
+            initAlert(
+              `Ingrese una cantidad entre 1 y ${maxCantidad}`,
+              "info",
+              toastOptions
+            );
+            return;
+          }
+          addElementsToArray(input, val); 
+        });
+      }
+
       input.addEventListener("change", (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        if (e.target.checked) {
-          addElementsToArray(input);
-          validateCheckboxChecked(inputValidate, checkBoxValidate);
-        } else {
-          addElementsToArray(input);
-          validateCheckboxChecked(inputValidate, checkBoxValidate);
+        const checked = e.target.checked;
+
+        if (tipo === "Consumible") {
+          if (inputCantidad) inputCantidad.disabled = !checked;
+          if (!checked) inputCantidad.value = "";
+          if (!checked) addElementsToArray(input); 
         }
+
+        if (tipo === "Devolutivo") {
+          addElementsToArray(input);
+        }
+
+        validateCheckboxChecked(inputValidate, checkBoxValidate);
       });
     });
 
@@ -704,7 +738,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       textConfirm += `Consumibles:\n${elementosPreviewConsu
         .map(
           (el) =>
-            `Código: ${el.cod} Nombre: ${el.nombre} Cantidad: ${el.cantidad}`
+            `Código: ${el.cod} Nombre: ${el.nombre} Cantidad: ${el.cantidadSalida}`
         )
         .join("\n")}\n`;
 
@@ -790,8 +824,6 @@ closeModal(modalValidate, btnCloseValidte, () => {
   resetDataModal();
   resetModalValidate(true);
 });
-
-
 
 /**
  * Paginación de los prestamos.

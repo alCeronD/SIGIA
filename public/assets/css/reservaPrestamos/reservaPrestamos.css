@@ -567,6 +567,23 @@ table td .actionsElements {
   border: 1px solid #ccc;
 }
 
+/* #tblBodyConsumibles th,td:last-child{
+  background-color: yellow;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+    padding: 4px 8px;
+  border: 1px solid #ccc;
+} */
+
+.idAccionesPreviewElements{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+
+
 /**
 paginación reservas
 */
