@@ -48,9 +48,16 @@ class usuariosController
     public function createUser(array $data = [])
 {
 
-      
+    $emailExists = $this->usuariosModel->validateEmail($data['usu_email'], $data['usu_docum'], false);
 
-        $datos = [
+    if ($emailExists) {
+        // TODO: modificar los response.php con mensajes personalizados y captura de data.
+    http_response_code(409); // CONFLICT
+    echo json_encode(["message" => "El correo ya está registrado."]);
+    exit;
+}
+
+    $datos = [
             'usu_docum'     => $data['usu_docum'],
             'usu_nombres'   => $data['usu_nombres'],
             'usu_apellidos' => $data['usu_apellidos'],
@@ -105,7 +112,7 @@ class usuariosController
         }
 
         $data = $_POST;
-        $email = $this->usuariosModel->validateEmail($data['usu_email'], $id);
+        $email = $this->usuariosModel->validateEmail($data['usu_email'], $id, false);
         if ($email) {
             echo "<script>alert('El correo ya se encuentra en uso por otro usuario.'); window.history.back();</script>";
             return;

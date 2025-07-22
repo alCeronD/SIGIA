@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
   //Validaciones formulario registro usuarios.
   const formUsuario = document.getElementById("formSolicitudPrestamo");
   if (formUsuario) {
-    formUsuario.addEventListener("submit", (e) => {
+    formUsuario.addEventListener("submit", async (e) => {
       e.stopPropagation();
       e.preventDefault();
       const tipoDocumento = document.getElementById("usu_tp_id");
@@ -235,21 +235,27 @@ document.addEventListener("DOMContentLoaded", () => {
         rol.classList.add("invalid");
         valid = false;
       }
-      try {
-        const response = sendData("modules/usuarios/controller/usuariosController.php", "POST", "addUser", data);
-        response.then((result)=>{
-          if (result) {
-            initAlert("Usuario creado exitosamente", "success", toastOptions);
-            formUsuario.reset();
-            return;
-          }
-        });
 
+        try {
+          const result = await sendData(
+            "modules/usuarios/controller/usuariosController.php",
+            "POST",
+            "addUser",
+            data
+          );
 
-      } catch (error) {
-        throw new Error(`Error al registrar el usuario, intente nuevamente ${error}`);
-        
-      }
+          // Éxito
+          initAlert("Usuario creado exitosamente", "success", toastOptions);
+          formUsuario.reset();
+        } catch (error) {
+          console.error(error);
+          // Mostrar mensaje del backend si existe
+          const message =
+            error.message ||
+            error.data?.message ||
+            "Error al registrar el usuario";
+          initAlert(message, "error", toastOptions);
+        }
 
 
     });

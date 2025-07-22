@@ -13,20 +13,18 @@ export const sendData = async (url, method = 'POST', parameters = {}, data = {})
 
         let newUrl = parameters ? `${url}?${setParameter}` : url;
         const optionsFetch = setFetch(method,parameters,data);
-        console.log(optionsFetch);
+        // console.log(optionsFetch);
         const response = await fetch(newUrl,optionsFetch);
-        console.log(response);
+        // console.log(response);
         const json = await response.json();
 
         if (!response.ok) {
-            throw new Error(`Error al devolver la data ${response.status}`);
+            throw { status: response.status, ...json };
         }
-
-
         return json;
 
     } catch (error) {
-        throw new Error(`${error}`);
+        throw error;
         
     }
 

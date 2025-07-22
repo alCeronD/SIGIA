@@ -167,25 +167,30 @@ VALUES
         }
     }
 
+public function validateEmail(string $email = "", $identifier = 0, bool $isId = true): bool
+{
+    $conn = $this->conn->getConnect();
+    $query = $isId
+        ? "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_id != ?"
+        : "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_docum != ?";
 
-    public function validateEmail(string $email = "", int $id = 0)
-    {
-        $conn = $this->conn->getConnect();
-
-        $query = "SELECT usu_email FROM usuarios WHERE usu_email = ? AND usu_id != ?";
-        $stmt = $conn->prepare($query);
-
-        if (!$stmt) {
-            return true; 
-        }
-
-        $stmt->bind_param("si", $email, $id);
-        $stmt->execute();
-
-        $result = $stmt->get_result();
-
-        return $result->num_rows > 0;
+    $stmt = $conn->prepare($query);
+    if (!$stmt) {
+        // Lanza una excepción, o registra el error según tu estructura
+        return false;
     }
+
+    // Bind según tipo
+    $paramType = $isId ? "si" : "ss";
+    $stmt->bind_param($paramType, $email, $identifier);
+
+    if (!$stmt->execute()) {
+        return false;
+    }
+
+    $result = $stmt->get_result();
+    return $result->num_rows > 0;
+}
     public function actualizarContrasena($id, $hashContrasena)
     {
 
