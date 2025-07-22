@@ -11,7 +11,7 @@
                 <i class="material-icons large green-text text-darken-2 center-align">search</i>
                 <h5>Consultar Elementos</h5>
                 <p>Contiene una consulta de los elementos.</p>
-                <a class="btn green btnGetUrl" href="<?php echo getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard'); ?>">Consultar</a>
+                <a class="btn green btnGetUrl" href="<?php echo getUrl('elementos', 'Elementos', 'renderViewElements', false, 'dashboard'); ?>">Consultar</a>
             </div>
     
             <div class="option-card z-depth-1 div2">

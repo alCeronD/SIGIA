@@ -43,14 +43,15 @@
               <td>
                 <div class="center-align">
                   <a href="#"
-                    class="btnEdit btn btnEditarUsuario  white-text waves-effect waves-red"
+                    class="btnEdit btn btnEditarUsuario white-text waves-effect waves-red"
                     data-id="<?= $usuario['usu_id'] ?>"
                     data-nombres="<?= htmlspecialchars($usuario['usu_nombres']) ?>"
                     data-apellidos="<?= htmlspecialchars($usuario['usu_apellidos']) ?>"
                     data-email="<?= htmlspecialchars($usuario['usu_email']) ?>"
                     data-telefono="<?= htmlspecialchars($usuario['usu_telefono']) ?>"
                     data-documento="<?= htmlspecialchars($usuario['usu_docum']) ?>"
-                    data-direccion="<?= htmlspecialchars($usuario['usu_direccion'] ?? '') ?>">
+                    data-direccion="<?= htmlspecialchars($usuario['usu_direccion'] ?? '') ?>"
+                    data-rol="<?= htmlspecialchars($usuario['rolIdUser']) ?>">
                     <i class="material-icons">edit</i>
                   </a>
                   <a href="<?= getUrl('usuarios', 'usuarios', 'cambiarEstadoUsuario', ['usu_id' => $usuario['usu_id']], 'dashboard') ?>"
@@ -122,11 +123,11 @@
 
       <div class="input-field rol">
         <label for="rol_id" class="active">Rol</label>
-        <select name="rol_id" id="rol_id" class="browser-default" >
+        <select  name="rol_id" id="rol_id" class="browser-default" >
           <option value="">Seleccione un rol</option>
-          <?php foreach ($roles as $rol): ?>
+          <?php foreach ($resultado as $rol): ?>
             <option value="<?= $rol['rl_id'] ?>"><?= htmlspecialchars($rol['rl_nombre']) ?></option>
-          <?php endforeach; ?>
+          <?php  endforeach; ?>
         </select>
       </div>
 

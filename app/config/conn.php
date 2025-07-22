@@ -8,7 +8,6 @@ class Conection {
     }
 
     public function setConnect() {
-        // Ya no necesitas variables intermedias
     }
 
     public function getConnect() {

@@ -107,7 +107,7 @@ class ReservaModel
             //tercera para actualizar el estado de los elementos devolutivos
             $updateStatusElements = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
             $stmtUpdateStatus = $conn->prepare($updateStatusElements);
-            $status = 3;
+            $status = (int) 3;
             $codigosDevolu = array_column($codDevolu, 'codigo');
             foreach ($codigosDevolu as $elementos) {
                 $stmtUpdateStatus->bind_param('ii', $status, $elementos);
@@ -267,9 +267,7 @@ class ReservaModel
             $conn->begin_transaction();
             $disponible = 1;
             $sqlStatus = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
-
             $stmtStatus = $conn->prepare($sqlStatus);
-
             $codElementos = array_column($elementos, 'codigo');
 
             //Primera transacción.
@@ -606,6 +604,12 @@ class ReservaModel
 
                     $dataReservas[] = $row;
             }
+
+            // Aplico recursividad en caso de que la cantidad de registros sea 0 para que vuelva a ejecutar dicha función.
+            if (count($dataReservas) === 0 && $page !== 1) {
+                return $this->selectDetailReserva(1, $type);
+            }
+
             return [
                 'status' => count($dataReservas) == 0 ? false : true,
                 'data' => $dataReservas,

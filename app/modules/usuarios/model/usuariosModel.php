@@ -21,8 +21,10 @@ class usuarios
 
     public function __construct()
     {
-        $objConn = new Conection();
-        $this->conn = $objConn->getConnect();
+
+        $objConn= new Conection();
+        // $this->conn = $objConn->getConnect();
+        $this->conn = $objConn;
     }
 
     public function create(array $data = [])
@@ -33,47 +35,52 @@ class usuarios
             exit();
         }
 
-        $usu_docum     = $this->conn->real_escape_string($data['usu_docum']);
-        $usu_nombres   = $this->conn->real_escape_string($data['usu_nombres']);
-        $usu_apellidos = $this->conn->real_escape_string($data['usu_apellidos']);
+        $conn = $this->conn->getConnect();
+
+
+        $usu_docum     = $conn->real_escape_string($data['usu_docum']);
+        $usu_nombres   = $conn->real_escape_string($data['usu_nombres']);
+        $usu_apellidos = $conn->real_escape_string($data['usu_apellidos']);
         $usu_password  = password_hash($data['usu_password'], PASSWORD_DEFAULT);
-        $usu_email     = $this->conn->real_escape_string($data['usu_email']);
-        $usu_direccion = $this->conn->real_escape_string($data['usu_direccion']);
-        $usu_telefono  = $this->conn->real_escape_string($data['usu_telefono']);
+        $usu_email     = $conn->real_escape_string($data['usu_email']);
+        $usu_direccion = $conn->real_escape_string($data['usu_direccion']);
+        $usu_telefono  = $conn->real_escape_string($data['usu_telefono']);
         $rol_id        = (int)$data['rol_id'];
         //1 activo = 2 inactivo.
         $usu_id_estado = 1;
         $usu_tp_id = (int)$data['usu_tp_id'];
-        $usu_observacion = $this->conn->real_escape_string($data['usu_observacion']);
+        $usu_observacion = $conn->real_escape_string($data['usu_observacion']);
 
         $query = "INSERT INTO usuarios 
 (usu_docum, usu_nombres, usu_apellidos, usu_password, usu_email, usu_direccion ,usu_telefono, usu_id_estado, usu_tp_id, usu_observacion)
 VALUES 
 ('$usu_docum', '$usu_nombres', '$usu_apellidos', '$usu_password', '$usu_email', '$usu_direccion' ,'$usu_telefono', '$usu_id_estado','$usu_tp_id', '$usu_observacion')";
 
-        if ($this->conn->query($query)) {
-            $usu_id = $this->conn->insert_id;
+        if ($conn->query($query)) {
+            $usu_id = $conn->insert_id;
             $queryRol = "
                 INSERT INTO usuarios_roles (usr_usu_id, usr_rl_id) 
                 VALUES ($usu_id, $rol_id)
             ";
 
-            if ($this->conn->query($queryRol)) {
+            if ($conn->query($queryRol)) {
                 return true;
             } else {
-                return "Error al asignar el rol: " . $this->conn->error;
+                return "Error al asignar el rol: " . $conn->error;
             }
         } else {
-            return "Error al registrar el usuario: " . $this->conn->error;
+            return "Error al registrar el usuario: " . $conn->error;
         }
     }
 
-    public function update($datos, $id)
+    public function update(array $datos = [], int $id = 0)
     {
+
+        // $rolModel = 
+        $conn = $this->conn->getConnect();
         unset($datos['rol_id']);
         $datos;
         $cadena = "";
-        // dd($datos);
 
         foreach ($datos as $campo => $value) {
             $cadena .= "$campo = '$value' ,";
@@ -81,12 +88,15 @@ VALUES
 
         $cadena = trim($cadena, ",");
         $query = "UPDATE usuarios SET $cadena WHERE usu_id = '$id'";
-        $resultado = $this->conn->query($query);
+        $resultado = $conn->query($query);
+
+
 
         if ($resultado) {
             return true;
         } else {
-            return "Error al actualizar: " . $this->conn->error;
+            $conn->close();
+            return "Error al actualizar: " . $conn->error;
         }
     }
 
@@ -101,10 +111,10 @@ VALUES
 
     public function search()
     {
-        $usuarios = [];
 
-        $query = "
-            SELECT
+        $conn = $this->conn->getConnect();
+        $usuarios = [];
+        $query = "SELECT
             u.usu_id,
             u.usu_docum,
             u.usu_nombres,
@@ -113,6 +123,7 @@ VALUES
             u.usu_telefono,
             u.usu_direccion,
             r.rl_nombre,
+            ur.usr_rl_id AS 'rolIdUser',
             eu.est_nombre AS estado_usuario
         FROM
             usuarios u
@@ -124,20 +135,20 @@ VALUES
             u.usu_id_estado = eu.est_id;
         ";
 
-        $resultado = $this->conn->query($query);
+        $resultado = $conn->query($query);
         if ($resultado && $resultado->num_rows > 0) {
             while ($fila = $resultado->fetch_assoc()) {
                 $usuarios[] = $fila;
             }
         }
 
-        // dd($usuarios);
         return $usuarios;
     }
 
     //Busca un registro específico. basado en su id.
     public function searchU(int $id = 0, $isCedula = false)
     {
+        $conn = $this->conn->getConnect();
 
         if (!is_int($id)) {
             exit();
@@ -146,7 +157,7 @@ VALUES
         $query = $isCedula ? "SELECT usu_id FROM usuarios WHERE usu_docum = ?" : "SELECT usu_id, usu_docum, usu_nombres, usu_apellidos, usu_email, usu_direccion, usu_telefono FROM usuarios WHERE usu_id = ?";
 
 
-        $stmtUser = $this->conn->prepare($query);
+        $stmtUser = $conn->prepare($query);
 
 
         $stmtUser->bind_param("i", $id);
@@ -165,14 +176,38 @@ VALUES
 
     public function actualizarContrasena($id, $hashContrasena)
     {
+
+        $conn = $this->conn->getConnect();
         $query = "UPDATE usuarios SET usu_password = '$hashContrasena' WHERE usu_id = '$id'";
-        $resultado = $this->conn->query($query);
+        $resultado = $conn->query($query);
 
         if ($resultado) {
             return true;
         } else {
-            echo "Error al actualizar la contraseña: " . $this->conn->error;
+            echo "Error al actualizar la contraseña: " . $conn->error;
             return false;
         }
     }
+
+    public function inhabilitarUsuario(int $usu_id = 0){
+
+
+        $conn = $this->conn->getConnect();
+
+         $query = "UPDATE usuarios 
+                      SET usu_id_estado = CASE 
+                        WHEN usu_id_estado = 1 THEN 2 
+                        ELSE 1 END 
+                      WHERE usu_id = ?";
+
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("i", $usu_id);
+
+            if (!$stmt->execute()) {
+                return null;  
+            } 
+
+            return true;
+    }
+
 }

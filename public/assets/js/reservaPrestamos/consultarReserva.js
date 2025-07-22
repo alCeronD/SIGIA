@@ -19,13 +19,15 @@ import { getData, sendData } from "../utils/fetch.js";
 const typesPrestamosLoan  ={
   all: 'all',
   validate: 'validate',
-  done: 'finalizado',
+  done: 'done',
   toValidate: 'toValidate'
 };
 
 // Selector del filtro.
 const filtroTipoReserva = document.querySelector('#filtroTipoReserva');
 
+// Página actual de los prestamos
+let currentPage =1;
 const objAjax = new Ajax();
 //Cuerpo de la tabla para renderizar los datos.
 const tbodyReservaConsult = document.querySelector("#tbodyReservaConsult");
@@ -269,7 +271,6 @@ function addElementsToArray(input, cantidadPersonalizada = null) {
     }
   }
 
-  console.log({ devolutivos, consumibles });
 }
 
 /**
@@ -414,6 +415,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       event.target,
       "finalizar"
     );
+
     const objEndReserva = new Ajax();
     if (
       confirm(
@@ -443,7 +445,8 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       objEndReserva.request.onload = () => {
         try {
           let response = JSON.parse(objEndReserva.request.responseText);
-
+          // console.log(response.data.pages);
+          console.log(response);
           if (response.status) {
             initAlert(
               `Prestamo # ${endReserva.codigoReserva} finalizada`,
@@ -451,29 +454,12 @@ tbodyReservaConsult.addEventListener("click", (event) => {
               toastOptions
             );
 
+            // Lo ideal es renderizar esto en la página actual a la cual se encuentran los prestamos, no re direccionar a la página 1.
+            renderReservas({page:1, type:valueSelect});
+
             let codigoAdd = endReserva.codigoReserva;
             let tr = [...document.querySelectorAll("#tbodyReservaConsult tr")];
 
-            tr.forEach((infoTr) => {
-              if (
-                infoTr
-                  .querySelector("td")
-                  .textContent.includes(String(codigoAdd))
-              ) {
-                let tdEstado = infoTr.children[2];
-                let tdAcciones = infoTr.children[4];
-                let btnEnd = tdAcciones.querySelector(
-                  'button[data-end="' + codigoAdd + '"]'
-                );
-
-                btnEnd.style.display = "none";
-                tdEstado.textContent = "Finalizado";
-
-                if (tdEstado.textContent === "Finalizado") {
-                  btnEnd.style.display = "none";
-                }
-              }
-            });
           } else {
             console.warn("Respuesta negativa del servidor:", response.message);
           }
@@ -837,9 +823,8 @@ previewReserva.addEventListener("click", (e) => {
   e.preventDefault();
   //Si es 1, el sale del evento y no ejecuta Más.
   if (pagesReserva <= 1) return;
-
-  const prevPage = pagesReserva - 1;
-  renderReservas({page:prevPage, type:valueSelect});
+  currentPage = currentPage - 1;
+  renderReservas({page:currentPage, type:valueSelect});
 });
 
 nextReserva.addEventListener("click", (e) => {
@@ -848,8 +833,8 @@ nextReserva.addEventListener("click", (e) => {
 
   //Si el numero de Páginas enviado es mayor o igual al numero de paginas que tiene los registros, no haga petición.
   if (pagesReserva >= pages) return;
-  const nextPage = pagesReserva + 1;
-  renderReservas({page:nextPage, type:valueSelect});
+  currentPage = currentPage + 1;
+  renderReservas({page:currentPage, type:valueSelect});
 });
 let valueSelect;
 filtroTipoReserva.addEventListener('change', (e)=>{
@@ -858,10 +843,9 @@ filtroTipoReserva.addEventListener('change', (e)=>{
 
   valueSelect = e.target.value;
 
-  //Si por algun motivo hay un error en el objeto, este me va a devolver siempre TODOS LOS ELEMENTOS.
   let mapTypeLoan = typesPrestamosLoan[valueSelect] ?? 'all';
   if (mapTypeLoan) {
-    renderReservas({page: 1, type:valueSelect});
+    renderReservas({page: currentPage, type:mapTypeLoan});
   }else{
     renderReservas({page:1});
   }

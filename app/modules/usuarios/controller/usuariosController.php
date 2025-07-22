@@ -4,6 +4,8 @@ include_once __DIR__ . '/../../roles/model/rolesModel.php';
 include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 require_once __DIR__ . "/../../../helpers/response.php";
+require_once __DIR__ . "/../../../helpers/session.php";
+require_once __DIR__ . "/../../login/controller/loginController.php";
 
 class usuariosController
 {
@@ -79,7 +81,9 @@ class usuariosController
         $modeloUsuarios = new usuarios();
 
         $usuarios = $modeloUsuarios->search();
-        // dd($usuarios);
+        $resultado = $this->rolesModel->obtenerRoles();
+        $rowTp = $this->configModules->select("SELECT * FROM tipo_documento");
+
         $path = __DIR__ . '/../views/consultView.php';
         $_SESSION['css'] = 'usuarios/usuarios.css';
         return include $path;
@@ -87,15 +91,21 @@ class usuariosController
 
     public function updateUser()
     {
-        $id = $_POST['usu_id'];
-        unset($_POST['usu_id']);
-    
-        $rol_id = $_POST['rol_id'];
-        unset($_POST['rol_id']);
-    
-        $contrasena = $_POST['usu_password'];
-        unset($_POST['usu_password']);
-    
+
+        if ($_SERVER['REQUEST_METHOD'] ==='POST') {
+            
+            $id = $_POST['usu_id'];
+            unset($_POST['usu_id']);
+           
+        
+            $rol_id = $_POST['rol_id'];
+            unset($_POST['rol_id']);
+        
+            $contrasena = $_POST['usu_password'];
+            unset($_POST['usu_password']);
+        
+        }
+
         $data = $_POST;
         // Validar campos obligatorios (excepto contraseña)
         foreach ($data as $key => $value) {
@@ -117,7 +127,9 @@ class usuariosController
         }
     
         // Actualizar rol del usuario
-    
+        $rolesModel = new RolModelo();
+        $rolesModel->actRolUser($id,$rol_id);
+
         // Mostrar usuarios actualizados
         $modeloUsuarios = new usuarios();
         $usuarios = $modeloUsuarios->search();
@@ -137,7 +149,6 @@ class usuariosController
         $datos = new usuarios();
         $usuarioUpdate = $datos->searchU($id);
         
-        // dd($roles);
         include_once __DIR__ . '/../../usuarios/views/updateView.php';
     }
 
@@ -149,22 +160,15 @@ class usuariosController
     public function cambiarEstadoUsuario()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            $usu_id = $_GET['usu_id'];
+            $usu_id = (int) $_GET['usu_id'];
 
-            $query = "UPDATE usuarios 
-                      SET usu_id_estado = CASE 
-                        WHEN usu_id_estado = 1 THEN 2 
-                        ELSE 1 END 
-                      WHERE usu_id = ?";
+            $result = $this->usuariosModel->inhabilitarUsuario($usu_id);
 
-            $stmt = $this->conn->prepare($query);
-            $stmt->bind_param("i", $usu_id);
-
-            if ($stmt->execute()) {
+            if ($result) {
                 echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard') . "';</script>";
-            } else {
-                echo "Error al cambiar estado: " . $stmt->error;
             }
+
+           
         } else {
             echo "Método no permitido";
         }
@@ -185,11 +189,9 @@ class usuariosController
     {
         $id = $_POST['usu_id'];
         unset($_POST['usu_id']);
-        $rol_id = $_POST['rol_id'];
-        unset($_POST['rol_id']);
-        $contrasena = $_POST['usu_password'];
-        unset($_POST['usu_password']);
-    
+
+        // dd($usuario = $_SESSION['usuario']);
+
         $data = $_POST;
         foreach ($data as $key => $value) {
             if (empty($value)) {
@@ -201,15 +203,15 @@ class usuariosController
         $dato = new usuarios();
         $dato->update($data, $id);
     
-        if (!empty($contrasena)) {
-            $hash = password_hash($contrasena, PASSWORD_DEFAULT);
-            $dato->actualizarContrasena($id, $hash);
-        }
-    
         $modeloUsuarios = new usuarios();
         $usuarios = $modeloUsuarios->search();
-    
-        echo "<script>alert('Usuario actualizado exitosamente'); window.location.href = '" . getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard') . "';</script>";
+
+        $loginObj = new loginController($this->conn);
+
+        
+        echo "<script>alert('Usuario actualizado exitosamente, vuelve a iniciar la sesión.'); window.location.href = '" . getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard') . "';</script>";
+        $loginObj->logout();
+        
     }
     
     public function userPermView(){
@@ -229,7 +231,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         $input = file_get_contents("php://input");
 
         $data = json_decode($input, true);
-        // dd($data);
+        dd($data);
 
         $action = $data['action'];
         unset($data['action']);
@@ -237,6 +239,10 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         switch ($action) {
             case 'addUser';
             $objUsuarios->createUser($newData);
+                break;
+
+            case 'updatEuSER':
+                # code...
                 break;
 
                 
