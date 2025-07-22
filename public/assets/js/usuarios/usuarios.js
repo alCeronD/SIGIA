@@ -169,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("usu_email").value = btn.dataset.email;
         document.getElementById("usu_telefono").value = btn.dataset.telefono;
         document.getElementById("usu_direccion").value = btn.dataset.direccion;
+        document.getElementById("rol_id").value = btn.dataset.rol;
 
         document.getElementById("modalEditarUsuario").style.display = "flex";
       });
