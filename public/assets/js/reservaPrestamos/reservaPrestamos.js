@@ -207,10 +207,6 @@ const renderConsumibles = async ({objDataConsumibles = {}, pagesElementsConsumib
 
 const renderDevolutivos = async ({objDataDevolutivos = {}, pagesElementsDevolutivos = 1 ,resetPage = false})=>{
 
-  // if (resetPage) pagesElementsDevolutivos = 1;
-
-  // if (pagesElementsDevolutivos > pages) return;
-
   tablesDoom.tblBodyDevolutivos.innerHTML = "";
 
     //Implementar los datos en en la tabla.
@@ -289,7 +285,7 @@ btnDoom.btnAddElements.addEventListener("click", async (btnTarget) => {
 
   let {objDataDevolutivos, pagesElementsDevolutivos} = await getElements({action: "elementsDevolutivos", pages: 1});
 
-  renderDevolutivos({objDataDevolutivos: objDataDevolutivos, pagesElementsDevolutivos: 1});
+  await renderDevolutivos({objDataDevolutivos: objDataDevolutivos, pagesElementsDevolutivos: 1});
 
   modalDoom.modalAddDevolutivos.open();
   //Uso esta función para renderizar por defecto los elementos de tipo devolutivo, en la página 1.
@@ -373,6 +369,7 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", (event) => {
       //Valido, si el arreglo no contiene el valueInput, entonces que implemente el valor ahí.
       if (!ids.includes(valueInput)) {
         ids.push(valueInput);
+        console.log(ids);
         tablesDoom.tblBodyPreviewElements.appendChild(trTablePreview);
         tdCodigo.textContent = codigo;
         tdNombre.textContent = nombre;
@@ -410,7 +407,6 @@ tableConsumible.addEventListener("click", (event) => {
   ) {
     let info = event.target.closest("tr");
     let inputCantidad = info.querySelector(`[type=number]`);
-    console.log(info);
     let codigoConsu = info.children[0].textContent;
     let nombreConsu = info.children[1].textContent;
     let cantidadConsu = inputCantidad.value;
@@ -627,7 +623,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
   let data = Object.fromEntries(info);
-  console.log(data);
   if (!validateFormData(info)) {
     return; // Detener si hay campos vacíos
   }
@@ -648,7 +643,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let filas = document.querySelectorAll(
     ".tableElements .previewElements #tblBodyPreviewElements tr"
   );
-  console.log({"filas encontradas": filas.length});
   //Capturo el codigo del elemento y lo guardo.
   //TODO: Validar que cuando el usuario presione el botón de enviar aplique un return cuando no se ha diligenciado ningún campo.
   filas.forEach((fl) => {
