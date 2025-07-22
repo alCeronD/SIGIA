@@ -35,7 +35,6 @@
                 $url.="&$key=$value";
             }
         }
-        // dd($url);
         return $url;
     }
     
@@ -47,13 +46,14 @@
             $funcion = $_GET['funcion'];
         }
 
+        // dd("$modulo $controlador $funcion");
+
         $controllerPath = __DIR__ . "/../modules/$modulo/controller/{$controlador}Controller.php";
         if (is_dir(__DIR__ . "/../modules/$modulo")){
             if (is_file($controllerPath)) {
             
                 include_once $controllerPath;
                 $nombreClase = $controlador . "Controller";
-                // dd($modulo);
                 
                 include_once __DIR__. '/../config/conn.php'; 
                 $conexion = (new Conection())->getConnect();

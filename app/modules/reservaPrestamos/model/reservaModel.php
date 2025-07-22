@@ -349,7 +349,7 @@ class ReservaModel
             $rows = $resultCount->fetch_assoc()['Total'];
 
             //TODO: implementar paginado valor limit de manera gglobal.
-            $limit = 10;
+            $limit = LIMIT;
 
             //Numero de páginas en base a la cantidad de elementos, redondeo hacía el número más grande.
 
@@ -436,7 +436,6 @@ class ReservaModel
     //Función apra traer los elementos, posiblemente da implementarla en el modelo de usuarios.
     public function selectUsers($pages)
     {
-
         try {
 
             $conn = $this->conect->getConnect();
@@ -527,7 +526,7 @@ class ReservaModel
 
     //Funcion para visualizar las reservas.
     /**
-     * Summary of selectReservas 
+     * Summary of selectReservas Trae las reservas, por defecto, trae todas, pero aplicando el filtrado me captura el tipo de prestamo específicos basado en su estado.
      * @return array{data: array, message: string, status: bool|string}
      */
     public function selectDetailReserva(int $page = 1, int $type = 0)
@@ -576,7 +575,7 @@ class ReservaModel
         if (is_null($type)) {
             $queryCountReservas = $sqlBaseCountReserva;
             //Obtengo la cantidad de registros de la tabla prestamos
-            $sqlReservas = "$sqlBase ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ?";
+            $sqlReservas = "$sqlBase ORDER BY pre.pres_fch_slcitud DESC LIMIT ? OFFSET ?";
             $stmtResevas = $conn->prepare($sqlReservas);
             $stmtResevas->bind_param('ii', $limitConst, $offset);
         } else {
@@ -605,24 +604,20 @@ class ReservaModel
             $dataReservas = [];
             while ($row = $resultReservas->fetch_assoc()) {
 
-                $dataReservas[] = $row;
+                    $dataReservas[] = $row;
             }
-
-            $result = [
+            return [
                 'status' => count($dataReservas) == 0 ? false : true,
                 'data' => $dataReservas,
                 'message' => count($dataReservas) > 0 ? 'reservas encontradas' : 'no hay reservas registradas',
                 'pages' => $pages,
                 'totalRows' => $getCountReservas
             ];
-            return $result;
         } catch (\Throwable $e) {
-
-            $result = [
+            return [
                 'status' => false,
                 'message' => $e->getMessage()
             ];
-            return $result;
         }
     }
     public function selectElementsReserva(int $codigo = 0)

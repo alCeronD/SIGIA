@@ -19,10 +19,6 @@ class usuarios
     private $campos = ['usu_docum', 'usu_nombres', 'usu_apellidos', 'usu_email', 'usu_telefono'];
     private $conn;
 
-    // public function __construct($conexion)
-    // {
-    //     $this->conn = $conexion;
-    // }
     public function __construct()
     {
         $objConn= new Conection();
@@ -31,7 +27,7 @@ class usuarios
 
     public function create(array $data = [])
     {
-
+        
         // Valida si el tipo de dato recibido es de tipo array.
         if (!is_array($data)) {
             exit();
@@ -47,14 +43,13 @@ class usuarios
         $rol_id        = (int)$data['rol_id'];
         //1 activo = 2 inactivo.
         $usu_id_estado = 1;
-        $usu_tp_id = 3;
+        $usu_tp_id = (int)$data['usu_tp_id'];
+        $usu_observacion = $this->conn->real_escape_string($data['usu_observacion']);
 
-        $query = "
-            INSERT INTO usuarios 
-            (usu_docum, usu_nombres, usu_apellidos, usu_password, usu_email, usu_direccion ,usu_telefono,usu_id_estado,usu_tp_id)
-            VALUES 
-            ('$usu_docum', '$usu_nombres', '$usu_apellidos', '$usu_password', '$usu_email', '$usu_direccion' ,'$usu_telefono', '$usu_id_estado','$usu_tp_id')
-        ";
+        $query = "INSERT INTO usuarios 
+(usu_docum, usu_nombres, usu_apellidos, usu_password, usu_email, usu_direccion ,usu_telefono, usu_id_estado, usu_tp_id, usu_observacion)
+VALUES 
+('$usu_docum', '$usu_nombres', '$usu_apellidos', '$usu_password', '$usu_email', '$usu_direccion' ,'$usu_telefono', '$usu_id_estado','$usu_tp_id', '$usu_observacion')";
 
         if ($this->conn->query($query)) {
             $usu_id = $this->conn->insert_id;

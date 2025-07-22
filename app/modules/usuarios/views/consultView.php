@@ -122,7 +122,7 @@
 
       <div class="input-field rol">
         <label for="rol_id" class="active">Rol</label>
-        <select name="rol_id" id="rol_id" class="browser-default" required>
+        <select name="rol_id" id="rol_id" class="browser-default" >
           <option value="">Seleccione un rol</option>
           <?php foreach ($roles as $rol): ?>
             <option value="<?= $rol['rl_id'] ?>"><?= htmlspecialchars($rol['rl_nombre']) ?></option>

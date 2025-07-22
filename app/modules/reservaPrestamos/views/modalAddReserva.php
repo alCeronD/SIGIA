@@ -12,9 +12,5 @@
         <div class="tableElmDevolutivos">
             <?php include_once 'tablaElmDevolutivos.php'; ?>
         </div>
-        <!-- Tabla de elementos consumibles -->
-        <div class="tablaElmConsumible">
-            <?php //include_once 'tablaElmConsumible.php'; ?>
-        </div>
     </div>
 </div>

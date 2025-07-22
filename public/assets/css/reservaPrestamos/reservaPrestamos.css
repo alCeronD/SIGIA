@@ -1,4 +1,5 @@
 /* Variables para los colores */
+/* Variables para los colores */
 :root {
   --primary: #3a6c52;
   --secundary: #004034;
@@ -8,8 +9,12 @@
   --teal :#4db6ac;
   --blue: #42a5f5;
   --red: #ef5350;
+  --info: #004034;
+  --success: #3a6c52;
+  --warning: #fb8c00;
+  --error: #b71c1c;
+  --error2: #e57373;
 }
-
 
 
 /* 
@@ -236,21 +241,19 @@ th {
 #modalUsers,#modalAddConsumible, #modalPreviewElements {
   display: none;
   position: fixed;
-  /* Stay in place */
   z-index: 1;
-  /* Sit on top */
   left: 0;
   top: 0;
-  width: 100%;
-  /* Full width */
-  height: 100%;
-  /* Full height */
+  width: fit-content;
+  height: auto;
   overflow: auto;
-  /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0);
-  /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4);
-  /* Black w/ opacity */
+}
+
+/* Botones siguiente y anterior de los modales */
+.previewBtn, .nextBtn{
+  border: none;
+  background-color: white;
+  color: var(--secundary);
 }
 
 .modal-content {
@@ -294,6 +297,7 @@ th {
 .buttons {
   display: flex;
   justify-content: space-between;
+  margin-top: 0.3rem;
 }
 
 /* Este modal es el de los elementos preview de la reserva */
@@ -384,26 +388,29 @@ th {
   gap: 0.3rem;
 }
 
-#modalDetail {
+#modalDetail{
   display: none;
   position: fixed;
-  /* Stay in place */
   z-index: 1;
-  /* Sit on top */
   left: 0;
   top: 0;
-  width: 100%;
-  /* Full width */
-  height: 100%;
-  /* Full height */
+  width: 50%;
+  height: auto;
   overflow: auto;
-  /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0);
-  /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4);
-  /* Black w/ opacity */
 }
 
+#modalValidate{
+    display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: fit-content;
+  height: auto;
+  overflow: auto;
+}
+
+/* Puedo dejarlo junto, pero la tabla del modalValidate se rompe */
 #modalContentDetail {
   display: grid;
   grid-template-columns: 1fr;
@@ -414,6 +421,7 @@ th {
     "tableContainer";
   gap: 2rem;
   width: fit-content;
+  width: 100%;
 }
 
 .modalTitleDetail {
@@ -429,7 +437,7 @@ th {
 }
 
 .modal-title {
-  background-color: var(--secundary);
+  background-color: var(--btnEdit);
   color: white;
   display: flex;
   height: auto;
@@ -559,6 +567,23 @@ table td .actionsElements {
   border: 1px solid #ccc;
 }
 
+/* #tblBodyConsumibles th,td:last-child{
+  background-color: yellow;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+    padding: 4px 8px;
+  border: 1px solid #ccc;
+} */
+
+.idAccionesPreviewElements{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+
+
 /**
 paginación reservas
 */
@@ -602,26 +627,6 @@ color: var(--secundary);
 /* --------------------------------- */
 /* modal validacion de prestamo */
 /* ---------------------------------- */
-#modalValidate{
-    display: none;
-  position: fixed;
-  /* Stay in place */
-  z-index: 1;
-  /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%;
-  /* Full width */
-  height: 100%;
-  /* Full height */
-  overflow: auto;
-  /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0);
-  /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4);
-  /* Black w/ opacity */
-}
-
 /* Detalle de validación de elementos */
 #modalContentValidate{
   display: grid;
@@ -684,6 +689,7 @@ color: var(--secundary);
   height: fit-content;
   flex-direction: column;
   gap: 0.3rem;
+  align-items: center;
 }
 
 #submitValidate{

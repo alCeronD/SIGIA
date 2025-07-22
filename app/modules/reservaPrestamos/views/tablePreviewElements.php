@@ -1,5 +1,4 @@
 <div class="previewElements">
-
     <legend>Elementos</legend>
     <table id="">
         <thead>
@@ -11,7 +10,7 @@
                 <th>Acciones</th>
             </tr>
         </thead>
-        <tbody id="tableBodyPreviewElements">
+        <tbody id="tblBodyPreviewElements">
             
         </tbody>
 
@@ -24,5 +23,4 @@
         </div>
         <input type="button" value=">" id="nextElements">
     </div>
-
 </div>

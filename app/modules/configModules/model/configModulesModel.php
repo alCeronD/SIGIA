@@ -1,7 +1,5 @@
 <?php
 
-
-// Este es el modelo que tendrá el crud general para las tablas Categoría, tipoDocumento,Area, Marca.
 require_once __DIR__ . '/../../../config/conn.php';
 
 //Crud general para todos los elementos.

@@ -1,4 +1,6 @@
 import { soloLetras, soloNumeros, validarCorreo } from "../utils/regex.js";
+import {sendData} from "../utils/fetch.js";
+import { initAlert, toastOptions, validateFormData } from "../utils/cases.js";
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -74,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        contenedorInputFiltro.style.display = 'block';
+        contenedorInputFiltro.style.display = 'grid';
 
         if (tipo === 'estado') {
           contenedorInputFiltro.innerHTML = `
@@ -115,8 +117,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 0);
 
       });
-
-
       function aplicarFiltroTabla(tipo, valor) {
         filasFiltradas = filas.filter(fila => {
           let texto = '';
@@ -174,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
-
   // ==== Acciones para registro de usuario ===
 
   const docInput = document.getElementById("usu_docum");
@@ -184,7 +183,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const correoInput = document.getElementById("usu_email");
   const textarea = document.getElementById("observaciones");
 
-
   // Aplicar validaciones si los elementos estan
   if (docInput) soloNumeros(docInput);
   if (telefonoInput) soloNumeros(telefonoInput);
@@ -193,14 +191,36 @@ document.addEventListener("DOMContentLoaded", () => {
   if (correoInput) validarCorreo(correoInput);
   if (textarea) M.textareaAutoResize(textarea);
 
+  const inputOptionals = ["usu_observacion", "usu_direccion"];
+  const mapForm = {
+  usu_tp_id: "Tipo de documento",
+  usu_docum: "Número de identificación",
+  rol_id: "Rol",
+  usu_nombres: "Nombres",
+  usu_apellidos: "Apellidos",
+  usu_telefono: "Teléfono",
+  usu_password: "Contraseña",
+  usu_email: "Correo electrónico",
+  usu_direccion: "Dirección",
+  usu_observacion: "Notas adicionales al usuario"
+};
 
-  //Validaciones formulario registro usuarios. No quiere funcionar joa 
+  
+  //Validaciones formulario registro usuarios.
   const formUsuario = document.getElementById("formSolicitudPrestamo");
   if (formUsuario) {
     formUsuario.addEventListener("submit", (e) => {
+      e.stopPropagation();
+      e.preventDefault();
       const tipoDocumento = document.getElementById("usu_tp_id");
       const rol = document.getElementById("rol_id");
-
+      const formData = new FormData(formUsuario);
+      // Valida que los campos del formulario sean visibles.
+      if (!validateFormData({formData: formData, campos: inputOptionals, mapForm: mapForm})) {
+        return;
+      }
+      const data = Object.fromEntries(formData.entries());
+      console.log(data);
       let valid = true;
 
       if (!tipoDocumento.value) {
@@ -214,16 +234,26 @@ document.addEventListener("DOMContentLoaded", () => {
         rol.classList.add("invalid");
         valid = false;
       }
+      try {
+        const response = sendData("modules/usuarios/controller/usuariosController.php", "POST", "addUser", data);
+        response.then((result)=>{
+          if (result) {
+            initAlert("Usuario creado exitosamente", "success", toastOptions);
+            formUsuario.reset();
+            return;
+          }
+        });
 
-      if (!valid) {
-        e.preventDefault();
+
+      } catch (error) {
+        throw new Error(`Error al registrar el usuario, intente nuevamente ${error}`);
+        
       }
+
+
     });
 
   }
-
-
-
   document.querySelectorAll(".toggle-password").forEach(icon => {
     icon.addEventListener("click", () => {
       const input = document.querySelector(icon.getAttribute("toggle"));
@@ -233,14 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-
-
-
-
-
-
 });
-
 
 function cerrarModalUsuario() {
   const modal = document.getElementById("modalEditarUsuario");

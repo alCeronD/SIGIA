@@ -4,7 +4,7 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <div class="content">
-    <div class="dashboard-grid">
+    <!-- <div class="dashboard-grid"> -->
 
         <?php if ($rol_id == 2):  ?>
 
@@ -12,7 +12,7 @@
                 <i class="material-icons large green-text text-darken-2 center-align">search</i>
                 <h5>Consultar Elementos</h5>
                 <p>Contiene una consulta de los elementos.</p>
-                <a class="btn green btnGetUrl" href="<?php echo getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard'); ?>">Consultar Elementos</a>
+                <a class="btn green btnGetUrl" href="<?php echo getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard'); ?>">Consultar</a>
             </div>
 
             <div class="option-card z-depth-1">
@@ -101,7 +101,7 @@
         <?php endif; ?>
 
 
-    </div>
+    <!-- </div> -->
 </div>
 <script type="module" src="../public/assets/js/dashboard/dashboard.js"></script>
 

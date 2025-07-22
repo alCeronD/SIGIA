@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../model/reservaModel.php';
+require_once __DIR__ . '/../../usuarios/model/usuariosModel.php';
 require_once __DIR__ . '/../../../helpers/getUrl.php';
 
 
@@ -167,30 +168,18 @@ class ReservaController
 
         // Puedo guardar los estados en un arreglo y validarlo con la clave del arreglo que me recibe.
         $estadoPrestamo =
-            $type === 'all'       ? 0 :
-            ($type === 'validate'   ? 1 :
-            ($type === 'Rechazado'  ? 2 :
-            ($type === 'toValidate' ? 3 :
-            ($type === 'done' ? 4 :
-            ($type === 'cancelado'  ? 5 : null)))));
-
-            // var_dump($estadoPrestamo);
-
+            $type === 'all'       ? 0 : ($type === 'validate'   ? 1 : ($type === 'Rechazado'  ? 2 : ($type === 'toValidate' ? 3 : ($type === 'done' ? 4 : ($type === 'cancelado'  ? 5 : null)))));
 
         $data = $this->model->selectDetailReserva($pages, $estadoPrestamo);
-        if (!$data['status']) {
-            fail('error', $data);
+        if (!$data['status'] && empty($data['data'])) {
+            success('No hay registros.', $data);
         }
         success('Registros', $data);
     }
-
-
-
     public function getElementsReserva($codigo)
     {
         $codigoInt = (int) $codigo;
         $dataDetail = $this->model->selectElementsReserva($codigoInt);
-        // $this->model->selectElementsReserva($codigoInt);
         success('Elementos relacionados al codigo', $dataDetail);
     }
 }
@@ -223,10 +212,26 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
                 break;
 
+            case 'elementsDevolutivos':
+                if (method_exists($controller, 'getElementosDevolutivos')) {
+                    $controller->getElementosDevolutivos($pages);
+                }
+                break;
+            case 'elementsConsumibles';
+                //Elemento de tipo consumible;
+                $type = 2;
+                if (method_exists($controller, 'getElementosConsumibles')) {
+                    $controller->getElementosConsumibles($pages, $type);
+                }
+
+
+                break;
+
+
             case 'reservas':
 
                 $pages = (int) $_GET['pages'];
-                $type = (String) $_GET['type'];
+                $type = (string) $_GET['type'];
                 if (method_exists($controller, 'getReservas')) {
                     $controller->getReservas($pages, $type);
                 }
@@ -248,7 +253,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
             default:
                 //TODO: Retornar un valor no valido.
-                # code...
+
                 break;
         }
     }

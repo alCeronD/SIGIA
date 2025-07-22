@@ -49,10 +49,11 @@ export const openModal = (modal) => {
   modal.style.display = "flex";
 };
 
-export const createI = () => {
+export const createI = (text) => {
   const i = document.createElement("i");
   i.setAttribute("class", "material-icons");
   i.style.pointerEvents = "none";
+  i.innerText = text;
   return i;
 };
 
@@ -157,7 +158,7 @@ export const options = {
   opacity: 0.7,
   inDuration: 300,
   outDuration: 200,
-  dismissible: true,
+  dismissible: false,
   startingTop: "4%",
   endingTop: "10%",
   onOpenStart: () => {},
@@ -405,7 +406,32 @@ export const createCheckbox = (seriales, placa) => {
   return p;
 };
 
-export default {
-  closeModal,
-  openModal,
-};
+export const getSelector = (selector) =>{
+  const el = document.querySelector(selector);
+
+  if (!el) {
+    console.warn("elemento no idenfificado");
+  }
+
+  return el;
+}
+
+
+// Función para validar campos el dormulario.
+export const validateFormData = ({formData, campos, mapForm}={}) =>{
+  for (const [key, value] of formData.entries()) {
+    const isEmpty = !value || value.toString().trim() === "";
+    console.log(mapForm);
+    // Evitamos validar campos opcionales como 'observaciones'
+    const camposOpcionales = campos;
+    if (isEmpty && !camposOpcionales.includes(key)) {
+      initAlert(
+        `El campo "${mapForm[key]}" debe ser diligenciado`,
+        "info",
+        toastOptions
+      );
+      return false;
+    }
+  }
+  return true;
+}

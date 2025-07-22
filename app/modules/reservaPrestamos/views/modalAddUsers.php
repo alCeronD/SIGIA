@@ -19,14 +19,14 @@
                         <td>Acciones</td>
                     </tr>
                 </thead>
-                <tbody id="tableBodyUsers">
+                <tbody id="tblBodyUsers">
                     <!-- Renderizado con javascript. -->
                 </tbody>
             </table>
             <!-- Contenedor que contiene los botones previews y next de la Página -->
             <div class="buttons">
-                <input type="button" value="<" id="preview">
-                <input type="button" value=">" id="next">
+                <button type="button" class="previewBtn" id="btnPreviewUsers"><i class="material-icons">keyboard_arrow_left</i></button>
+                <button type="button" class="nextBtn" id="btnNextUsers"><i class="material-icons">keyboard_arrow_right</i></button>
             </div>
         </div>
     </div>

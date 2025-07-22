@@ -65,13 +65,12 @@ class solicitudPrestamosController {
         $rol_id = $_SESSION['usuario']['rol_id'];
         $elementos_seleccionados = $_POST['elementos_seleccionados'];
         $cantidades_consumibles = $_POST['cantidades_consumibles'];
-        
+        $devolutivosElements = $_POST['elementos_devolutivos_seleccionados'];
         unset($_POST['elementos_seleccionados'],
         $_POST['elementos_devolutivos_seleccionados']);
 
-        $data = $_POST;
 
-        
+        $data = $_POST;
         // dd($data);
 
         $datos = new solicitudPrestamos($this->conn);
@@ -84,8 +83,6 @@ class solicitudPrestamosController {
             // Registrar devolutivos seleccionados
             foreach ($elementos_seleccionados as $elemento_id) {
                 $typeElement = $elementoModel->getElementByType($elemento_id);
-
-
                 $prestamoElemento->registrarElem($lastId, $usuario_id, $elemento_id);
 
                 if ($typeElement == 2) {        

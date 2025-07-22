@@ -7,24 +7,32 @@
 
  function success(String $value = '', array $data = []){
     header('Content-Type: application/json');
-    $data = [
+    $result = [
         'status' => true,
         'message' => $value,
-        'data' => $data
+        'data' => $data = count($data) === 0 ? [] : $data
     ];
     http_response_code(200);
-    echo json_encode($data,JSON_PRETTY_PRINT);
+    echo json_encode($result,JSON_PRETTY_PRINT);
     exit();
 }
 
 function fail(String $value = '', array $data = []){
     header('Content-Type: application/json');
+    $statusData = $data['status'];
+    $src = $data['data'];
+    if ((count($src) === 0) && (!$statusData)) {
+        $errorCode = 404;
+    }else{
+        $errorCode = 400;
+    }
+
     $data = [
         'status' => false,
         'message' => $value,
         'data' => $data
     ];
-    http_response_code(400);
+    http_response_code($errorCode);
     echo json_encode($data,JSON_PRETTY_PRINT);
     exit();
 }

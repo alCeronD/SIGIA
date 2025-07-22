@@ -59,37 +59,33 @@ let pagesReserva = 1;
 const checkBoxValidate = document.querySelector("#allValidateItems");
 // capturo el input de la tabla para seleccionarlos todos.
 const inputValidate = document.querySelectorAll(".inputValidate");
-const nextBtnValidate = document.querySelector(
-  ".nextBtnValidate #btnNextValidate"
-);
+// const nextBtnValidate = document.querySelector(  ".nextBtnValidate #btnNextValidate");
+const nextBtnValidate = document.querySelector("#btnNextValidate");
+
+const btnNextValidate = document.querySelector('#btnNextValidate');
 
 //Variable para mostrar la información en el modal.
 let elementosDetalle = [];
 
 const renderReservas = async ({page = 1, type = 'all'} = {}) => {
   pagesReserva = page;
-  // console.log({"pagesReserva": pagesReserva});
-  // console.log({"page": page});
 
-  //Traigo la data por medio de fetch.
+  try {
+    //Traigo la data por medio de fetch.
   const result = await getData(
     "modules/reservaPrestamos/controller/reservaController.php",
     "GET",
     { action: "reservas", pages: page, type }
   );
-  // let registros = result;
   let status = result.status;
   data = result.data.data;
   pages = result.data.pages;
-
-  if (pagesReserva > pages) return;
-
-  if (!status) {
-    //Implementar mensaje de que no hay registros.
+  if (status && data.length === 0) {
     tbodyReservaConsult.innerHTML = "";
+    tbodyReservaConsult.innerHTML = "No hay prestamos para el estado del prestamo seleccionado.";
     return;
   }
-
+  if (pagesReserva > pages) return;
 
   tbodyReservaConsult.innerHTML = "";
   data.forEach((dta) => {
@@ -216,31 +212,15 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
 
       });
 
-
-      // const detalleAjax = new Ajax();
-      // let action = "reservaDetailElements";
-      // detalleAjax.request.open(
-      //   "GET",
-      //   `modules/reservaPrestamos/controller/reservaController.php?codigo=${encodeURIComponent(
-      //     codigo
-      //   )}&action=${encodeURIComponent(action)}`,
-      //   true
-      // );
-      // detalleAjax.request.setRequestHeader(
-      //   "X-Requested-With",
-      //   "XMLHttpRequest"
-      // );
-
-      // detalleAjax.request.onload = () => {
-      //   let response = JSON.parse(detalleAjax.request.responseText);
-
-        
-      // };
-
-      // detalleAjax.request.setRequestHeader("Accept", "application/json");
-      // detalleAjax.request.send();
     }
   });
+  } catch (error) {
+    console.warn(`Error al procesar la solicitud, intente más tarde ${error}`);
+    tbodyReservaConsult.innerHTML = "Error al realizar la solicitud, intente nuevamente";
+
+  }
+
+  
 };
 
 //Estas variables las uso para guardar los elementos que no han sido validados.
@@ -264,41 +244,32 @@ function validateCheckboxChecked(inputValidate, checkBoxValidate) {
   }
 }
 
-function addElementsToArray(input) {
+function addElementsToArray(input, cantidadPersonalizada = null) {
   const tipo = input.dataset.tipoElemento;
   const cod = input.dataset.codigo;
   const nombre = input.dataset.nombreElemento;
-  const cantidad = input.dataset.cantidadSalida;
+  const cantidad = cantidadPersonalizada ?? input.dataset.cantidadSalida;
 
   if (input.checked) {
-    if (tipo === "Devolutivo" && !devolutivos.includes(cod)) {
-      // devolutivos.push(cod);
-      devolutivos.push({
-        tipo: tipo,
-        cod: cod,
-        nombre: nombre,
-        cantidadSalida: cantidad,
-      });
+    if (tipo === "Devolutivo" && !devolutivos.find(dev => dev.cod === cod)) {
+      devolutivos.push({ tipo, cod, nombre, cantidadSalida: cantidad });
     }
 
-    if (tipo === "Consumible" && !consumibles.includes(cod)) {
-      // consumibles.push(cod);
-      consumibles.push({
-        tipo: tipo,
-        cod: cod,
-        nombre: nombre,
-        cantidadSalida: cantidad,
-      });
+    if (tipo === "Consumible") {
+      consumibles = consumibles.filter(consu => consu.cod !== cod); // Reemplazar si ya existe
+      consumibles.push({ tipo, cod, nombre, cantidadSalida: cantidad });
     }
   } else {
     if (tipo === "Consumible") {
-      consumibles = consumibles.filter((consu) => consu.cod !== cod);
+      consumibles = consumibles.filter(consu => consu.cod !== cod);
     }
 
     if (tipo === "Devolutivo") {
-      devolutivos = devolutivos.filter((dev) => dev.cod !== cod);
+      devolutivos = devolutivos.filter(dev => dev.cod !== cod);
     }
   }
+
+  console.log({ devolutivos, consumibles });
 }
 
 /**
@@ -544,24 +515,30 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       let tdCantidad = document.createElement("td");
       let tdTipoElemento = document.createElement("td");
       let tdAcciones = document.createElement("td");
-
+      tdAcciones.setAttribute("class", "idAccionesPreviewElements");
       // Input checkbox
       let label = document.createElement("label");
       let span = document.createElement("span");
       let input = document.createElement("input");
 
+      //Input agregar cantidad.
+      let inputCantidad = document.createElement("input");
+      inputCantidad.type = "number";
+      inputCantidad.setAttribute("min", 0);
+      inputCantidad.dataset.codigo = el.codigo;
+      inputCantidad.dataset.tipoElemento = el.nombreTipoElemento;
+      inputCantidad.dataset.nombreElemento = el.nombre;
+      inputCantidad.dataset.cantidadSalida = el.cantidadSolicitada;
+      inputCantidad.disabled = true;
+      inputCantidad.classList.add("input-cantidad");
       input.type = "checkbox";
       input.classList.add("filled-in");
       input.classList.add("inputValidate");
-      // input.value = el.codigo;
+
       input.dataset.codigo = el.codigo;
       input.dataset.tipoElemento = el.nombreTipoElemento;
       input.dataset.nombreElemento = el.nombre;
       input.dataset.cantidadSalida = el.cantidadSolicitada;
-
-      label.appendChild(input);
-      label.appendChild(span);
-      tdAcciones.appendChild(label);
 
       tdCodigo.innerText = el.codigo;
       tdNombre.innerText = el.nombre;
@@ -572,7 +549,16 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       tr.appendChild(tdNombre);
       tr.appendChild(tdCantidad);
       tr.appendChild(tdTipoElemento);
+
+      label.appendChild(input);
+      label.appendChild(span);
+      tdAcciones.appendChild(label);
+      if (el.nombreTipoElemento === "Consumible") {
+        tdAcciones.appendChild(inputCantidad);
+      }
+
       tr.appendChild(tdAcciones);
+
     });
 
     const inputValidate = document.querySelectorAll(".inputValidate");
@@ -586,7 +572,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
       inputValidate.forEach((inV) => {
         inV.checked = e.target.checked;
-
         if (inV.checked) {
           addElementsToArray(inV);
         }
@@ -607,7 +592,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
           const cantidad = intp.dataset.cantidadSalida;
           const nombreElemento = intp.dataset.nombreElemento;
           if (tipo === "Consumible" && !noselectedConsumibles.includes(cod)) {
-            // noselectedConsumibles.push(cod);
             noselectedConsumibles.push({
               cod: cod,
               nombreElemento: nombreElemento,
@@ -627,17 +611,43 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     }
 
     inputValidate.forEach((input) => {
+      const row = input.closest("tr");
+      const inputCantidad = row.querySelector(".input-cantidad");
+      const maxCantidad = parseInt(input.dataset.cantidadSalida);
+      const tipo = input.dataset.tipoElemento;
+
+      if (inputCantidad) {
+        inputCantidad.addEventListener("input", (e) => {
+          const val = parseInt(e.target.value);
+          if (isNaN(val) || val <= 0 || val > maxCantidad) {
+            e.target.value = "";
+            input.checked = false;
+            inputCantidad.disabled = true;
+            initAlert(
+              `Ingrese una cantidad entre 1 y ${maxCantidad}`,
+              "info",
+              toastOptions
+            );
+            return;
+          }
+          addElementsToArray(input, val); 
+        });
+      }
+
       input.addEventListener("change", (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        if (e.target.checked) {
-          addElementsToArray(input);
-          // addElementsNoSelected(inputValidate);
-          validateCheckboxChecked(inputValidate, checkBoxValidate);
-        } else {
-          addElementsToArray(input);
-          validateCheckboxChecked(inputValidate, checkBoxValidate);
+        const checked = e.target.checked;
+
+        if (tipo === "Consumible") {
+          if (inputCantidad) inputCantidad.disabled = !checked;
+          if (!checked) inputCantidad.value = "";
+          if (!checked) addElementsToArray(input); 
         }
+
+        if (tipo === "Devolutivo") {
+          addElementsToArray(input);
+        }
+
+        validateCheckboxChecked(inputValidate, checkBoxValidate);
       });
     });
 
@@ -728,7 +738,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       textConfirm += `Consumibles:\n${elementosPreviewConsu
         .map(
           (el) =>
-            `Código: ${el.cod} Nombre: ${el.nombre} Cantidad: ${el.cantidad}`
+            `Código: ${el.cod} Nombre: ${el.nombre} Cantidad: ${el.cantidadSalida}`
         )
         .join("\n")}\n`;
 
@@ -785,7 +795,8 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
         // Esto se repite, lo puedo modificar haciendo no una función sino cerrando el modal usando la función close modal, para ello debo de cambiar la forma de enviar los parámetros, lo ideal, enviarlos mediante objeto.
         BodydetailReserva.innerHTML = "";
-        let falseChecked = checkBoxValidate.checked ? false : true;
+        // let falseChecked = checkBoxValidate.checked ? false : true;
+        let falseChecked = false;
         checkBoxValidate.checked = falseChecked;
 
         previewBtnValidate.style.display = "none";
@@ -803,14 +814,15 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 closeModal(modalValidate, btnCloseValidte, () => {
   //Limpiar la tabla apenas se cierre el modal.
   BodydetailReserva.innerHTML = "";
-  let falseChecked = checkBoxValidate.checked ? false : true;
+  let falseChecked = false;
   checkBoxValidate.checked = falseChecked;
-
-  previewBtnValidate.style.display = "none";
-  nextBtnValidate.style.display = "none";
-  resetModalValidate(true);
+  if (checkBoxValidate.checked) {
+    previewBtnValidate.style.display = "none";
+    nextBtnValidate.style.display = "none";
+  }
 
   resetDataModal();
+  resetModalValidate(true);
 });
 
 /**
