@@ -217,3 +217,31 @@ input[type="number"] {
 .toast-success {
   border-left: 8px solid var(--success);
 }
+
+
+
+/* ////////////submenu para actualizar datos en HEADER////////////// */
+.submenu {
+  display: none;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  text-align: center !important;
+  border-radius: 4px;
+  width: 30px !important;
+
+}
+
+.material-icons.left {
+  font-size: 15px;
+  margin: 0 !important;
+}
+
+.submenu a{
+  padding: 0 !important;
+}
+
+#userDropdownMenu{
+  padding: 0 !important;
+  margin: 0 !important;
+  text-align: center !important;
+}

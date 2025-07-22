@@ -1,78 +1,138 @@
-.dashboard-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 0 15px;
-}
-.option-card {
-  background: #d9d9d9;
-  border-radius: 10px;
-  padding: 15px;
-  flex: 1 1 calc(50% - 20px);
+.content {
+  width: 100%;
+  margin: 0 auto; /* Centrado horizontal */
   box-sizing: border-box;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+}
 
+/* ////////////dashboard instructor/////////// */
+.instruc {
+  /* background-color: aqua; */
+  display: block;
+  box-sizing: border-box;
+}
+
+
+.instruc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .instruc-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ///////////dashboard admin/////////// */
+.admin {
+  /* background-color: crimson; */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto auto;
+  gap: 0.5rem;
+  box-sizing: border-box;
+}
+
+
+
+/* ///////////////Stylos de las carticas//////////////////////// */
+.option-card {
   display: flex;
   flex-direction: column;
   justify-content: center;
-
+  background-color: #f5f5f5;
+  /* padding: 1.5rem; */
+  text-align: center;
+  border-radius: 10px;
+  transition: transform 0.2s ease;
 }
+
 .option-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
-a {
-  cursor: pointer;
-  padding: 8px 15px;
-  border-radius: 6px;
-  border: none;
-  margin: 5px;
-  font-weight: 600;
+
+.option-card i.material-icons {
+  font-size: 48px;
+  margin-bottom: 0.5rem;
+}
+
+.option-card h5 {
+  font-size: 1.25rem;
+  margin: 0.5rem 0;
+}
+
+.option-card p {
+  font-size: 0.95rem;
+}
+
+.option-card a.btn {
+  width: 80%;
+  margin: 0.3rem auto;
+  display: block;
   font-size: 0.9rem;
-  transition: background-color 0.3s ease;
 }
 
-/* Estilos del input de tipo A, no borrar. */
-.btnGetUrl{
-    justify-content: center;
+/* Grid positioning */
+.div1 {
+  grid-column: 1;
+  grid-row: 1;
+}
+.div2 {
+  grid-column: 2;
+  grid-row: 1;
+}
+.div3 {
+  grid-column: 1;
+  grid-row: 2;
+}
+.div4 {
+  grid-column: 2;
+  grid-row: 2;
 }
 
-.btn-dark {
-  background-color: #3a3a3a;
-  color: #fff;
+/* Responsive */
+@media (max-width: 600px) {
+ 
+  .div1, .div2, .div3, .div4 {
+    grid-column: 1;
+    grid-row: auto;
+  }
 }
-.btn-dark:hover {
-  background-color: #2a2a2a;
+
+.table-content {
+  width: 100%;
+  max-width: 1000px;
+  min-width: 200px;
+  margin: 0 auto;
 }
-.btn-light {
-  background-color: #e0e0e0;
-  color: #333;
+
+.card-content {
+  min-height: 300px;
+  max-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
-.btn-light:hover {
-  background-color: #cfcfcf;
+
+.pagination {
+  margin-top: 1rem;
 }
-.btn-warning {
-  background-color: var(--blue);
-  color: #fff;
+
+.responsive-table tbody {
+  min-height: 130px;
+  display: block;
 }
-.btn-warning:hover {
-  background-color: #d18c22;
+
+.responsive-table thead,
+.responsive-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
-.btn-success {
-  background-color: #5cb85c;
-  color: #fff;
-}
-.btn-success:hover {
-  background-color: #449d44;
-}
-.btn-secondary {
-  background-color: #6c757d;
-  color: #fff;
-}
-.btn-secondary:hover {
-  background-color: #565e64;
-}
+
+/* ////////////////////// */
+
+

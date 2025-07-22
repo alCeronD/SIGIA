@@ -4,6 +4,8 @@ include_once __DIR__ . '/../../roles/model/rolesModel.php';
 include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 require_once __DIR__ . "/../../../helpers/response.php";
+require_once __DIR__ . "/../../../helpers/session.php";
+require_once __DIR__ . "/../../login/controller/loginController.php";
 
 class usuariosController
 {
@@ -105,8 +107,7 @@ class usuariosController
         }
 
         $data = $_POST;
-        
-        //Validar campos obligatorios (excepto contraseña)
+        // Validar campos obligatorios (excepto contraseña)
         foreach ($data as $key => $value) {
             if (empty($value)) {
                 echo "<script>alert('El campo \"$key\" debe ser diligenciado.'); window.history.back();</script>";
@@ -172,8 +173,55 @@ class usuariosController
             echo "Método no permitido";
         }
     }
+    
+    public function actualizarDatosView(){
+        $_SESSION['css'] = 'usuarios/usuarios.css';
+        $id = $_SESSION['usuario']['id'];
+        $datos = new usuarios();
+        $usuarioUpdate = $datos->searchU($id);
+        
+        include_once __DIR__ . '/../../usuarios/views/updateUserDate.php';
+        
+        
+    }
+    
+    public function updateUserInfo()
+    {
+        $id = $_POST['usu_id'];
+        unset($_POST['usu_id']);
+
+        // dd($usuario = $_SESSION['usuario']);
+
+        $data = $_POST;
+        foreach ($data as $key => $value) {
+            if (empty($value)) {
+                echo "<script>alert('El campo \"$key\" debe ser diligenciado.'); window.history.back();</script>";
+                return;
+            }
+        }
+    
+        $dato = new usuarios();
+        $dato->update($data, $id);
+    
+        $modeloUsuarios = new usuarios();
+        $usuarios = $modeloUsuarios->search();
+
+        $loginObj = new loginController($this->conn);
+
+        
+        echo "<script>alert('Usuario actualizado exitosamente, vuelve a iniciar la sesión.'); window.location.href = '" . getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard') . "';</script>";
+        $loginObj->logout();
+        
+    }
+    
     public function userPermView(){
     }
+    
+    
+    
+    
+    
+    
 }
 
 $objUsuarios = new usuariosController();
@@ -204,4 +252,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 break;
         }
     }
+    
+    
 }

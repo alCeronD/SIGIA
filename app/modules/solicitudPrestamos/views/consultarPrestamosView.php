@@ -44,22 +44,23 @@
               <td><?= htmlspecialchars($prestamo['fechaReserva']) ?></td>
               <td><?= htmlspecialchars($prestamo['estadoNombre']) ?></td>
               <td>
-                <!-- accion para ver los detalles -->
-                <button type="button"
-                  class="btn-small teal darken-1 white-text waves-effect waves-light btn-ver-detalle"
-                  data-id="<?= $prestamo['codigoSolicitud'] ?>">
-                  Ver detalle
-                </button>
-
-                <!-- Botón cancelar, solo si no esta cancelado -->
-                <?php if (strtolower($prestamo['estadoNombre']) !== 'cancelado'): ?>
+                <div class="center-align">
                   <button type="button"
-                    class="btn-small red lighten-1 white-text waves-effect waves-light btn-cancelar-prestamo"
+                    class="btn btn-ver-detalle btn-small waves-effect waves-teal white-text"
                     data-id="<?= $prestamo['codigoSolicitud'] ?>"
-                    data-url="<?php echo getUrl('solicitudPrestamos', 'solicitudPrestamos', 'cancelarPrestamo', false, 'dashboard'); ?>">
-                    Cancelar
+                    title="Ver detalle del préstamo">
+                    <i class="material-icons">visibility</i>
                   </button>
-                <?php endif; ?>
+                  <?php if (strtolower($prestamo['estadoNombre']) !== 'cancelado'): ?>
+                    <button type="button"
+                      class="btn btn-cancelar-prestamo btn-small red lighten-1 white-text waves-effect"
+                      data-id="<?= $prestamo['codigoSolicitud'] ?>"
+                      data-url="<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'cancelarPrestamo', false, 'dashboard'); ?>"
+                      title="Cancelar préstamo">
+                      <i class="material-icons">cancel</i>
+                    </button>
+                  <?php endif; ?>
+                </div>
               </td>
             </tr>
           <?php endforeach; ?>

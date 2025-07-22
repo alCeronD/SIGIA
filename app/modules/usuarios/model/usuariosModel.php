@@ -21,6 +21,7 @@ class usuarios
 
     public function __construct()
     {
+
         $objConn= new Conection();
         // $this->conn = $objConn->getConnect();
         $this->conn = $objConn;
@@ -28,11 +29,14 @@ class usuarios
 
     public function create(array $data = [])
     {
-        $conn = $this->conn->getConnect();
+
         // Valida si el tipo de dato recibido es de tipo array.
         if (!is_array($data)) {
             exit();
         }
+
+        $conn = $this->conn->getConnect();
+
 
         $usu_docum     = $conn->real_escape_string($data['usu_docum']);
         $usu_nombres   = $conn->real_escape_string($data['usu_nombres']);
@@ -98,7 +102,7 @@ VALUES
 
     public function organization($datos)
     {
-    
+
         $cadena = '';
         foreach ($datos as $key => $value) {
             # code...
@@ -155,7 +159,7 @@ VALUES
 
         $stmtUser = $conn->prepare($query);
 
-    
+
         $stmtUser->bind_param("i", $id);
 
         if (!$stmtUser->execute()) {
@@ -165,17 +169,18 @@ VALUES
         $result = $stmtUser->get_result();
 
         if ($result && $result->num_rows > 0) {
-            $conn->close();
+
             return $result->fetch_assoc();
         }
-        
     }
-    
-    public function actualizarContrasena($id, $hashContrasena) {
+
+    public function actualizarContrasena($id, $hashContrasena)
+    {
+
         $conn = $this->conn->getConnect();
         $query = "UPDATE usuarios SET usu_password = '$hashContrasena' WHERE usu_id = '$id'";
         $resultado = $conn->query($query);
-    
+
         if ($resultado) {
             return true;
         } else {
@@ -185,6 +190,7 @@ VALUES
     }
 
     public function inhabilitarUsuario(int $usu_id = 0){
+
 
         $conn = $this->conn->getConnect();
 

@@ -10,29 +10,51 @@
   <link rel="stylesheet" href="<?php echo $_SESSION['css']; ?>">
 
 </head>
-<!-- <div class="header">Sigia - Servicio Nacional de Aprendizaje</div> -->
-  <nav class="header">
-    <div class="nav-wrapper">
-      <a href="<?php echo getUrl('dashboard', 'Dashboard','dashboard',false,'dashboard'); ?>" class="brand-logo logo center">
-      </a>
-      <ul id="" class="right">
-        <li>
-          <div class="contentUser">
-            <span id="userText"><?php echo $_SESSION['usuario']['nombre'] ?> <?php echo $_SESSION['usuario']['apellido'];?></span>
-            <span id="rolText"><?php echo $_SESSION['usuario']['rol_nombre'];?></span>
-          </div>
-          </li>
-      </ul>
-      <!-- Todo: se puede cambiar con javascript. -->
-      <ul class="left">
+<nav class="header">
+  <div class="nav-wrapper">
+    <a href="<?php echo getUrl('dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>" class="brand-logo logo center">
+    </a>
+    <ul id="" class="right">
+      <li>
         <div class="contentUser">
-          <a href="<?php echo getUrl('login','login','logout'); ?>">
-            <span id="userText">cerrar Sesión</span>
-          </a>
+      <li class="user-dropdown">
+        <div class="contentUser" id="userDropdownToggle">
+          <span id="userText">
+            <?php echo $_SESSION['usuario']['nombre'] ?> <?php echo $_SESSION['usuario']['apellido']; ?>
+            <i class="material-icons right">arrow_drop_down</i>
+          </span>
+          <span id="rolText"><?php echo $_SESSION['usuario']['rol_nombre']; ?></span>
         </div>
-      </ul>
-    </div>
-  </nav>
 
+        <ul class="submenu" id="userDropdownMenu">
+          <li>
+            <a href="<?php echo getUrl('usuarios', 'usuarios', 'actualizarDatosView',false,'dashboard'); ?>">
+              <i class="material-icons left">edit</i>Actualizar datos
+            </a>
+          </li>
+        </ul>
+      </li>
+  </div>
+  </li>
+  </ul>
+  <!-- Todo: se puede cambiar con javascript. -->
+ 
+  </div>
+</nav>
 
 <body>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggle = document.getElementById('userDropdownToggle');
+      const menu = document.getElementById('userDropdownMenu');
+
+      toggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+      });
+
+      document.addEventListener('click', function() {
+        menu.style.display = 'none';
+      });
+    });
+  </script>

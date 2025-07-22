@@ -54,9 +54,13 @@
           </a>
         </li>
       <?php endif; ?>
-      
 
-
+      <!-- Reportes -->
+    <!-- <li>
+      <a class="btn-floating cyan  submenu-trigger" data-tooltip="Reportes" data-submenu="submenu-reportes">
+        <i class="material-icons">bar_chart</i>
+      </a>
+    </li> -->
 
 
       <!-- Cerrar sesión -->
