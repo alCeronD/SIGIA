@@ -97,7 +97,6 @@ class usuariosController
         unset($_POST['usu_password']);
     
         $data = $_POST;
-    
         // Validar campos obligatorios (excepto contraseña)
         foreach ($data as $key => $value) {
             if (empty($value)) {

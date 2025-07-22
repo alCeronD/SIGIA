@@ -4,18 +4,17 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <div class="content">
-    <!-- <div class="dashboard-grid"> -->
-
-        <?php if ($rol_id == 2):  ?>
-
-            <div class="option-card z-depth-1">
+    
+    <?php if ($rol_id == 2): ?>
+        <div class="admin">
+            <div class="option-card z-depth-1 div1">
                 <i class="material-icons large green-text text-darken-2 center-align">search</i>
                 <h5>Consultar Elementos</h5>
                 <p>Contiene una consulta de los elementos.</p>
                 <a class="btn green btnGetUrl" href="<?php echo getUrl('elementos', 'elementos', 'mostrarElementos', false, 'dashboard'); ?>">Consultar</a>
             </div>
-
-            <div class="option-card z-depth-1">
+    
+            <div class="option-card z-depth-1 div2">
                 <i class="material-icons large grey-text text-darken-2 center-align">settings</i>
                 <h5>Configuraciones</h5>
                 <p>Configuraciones poco recurrentes.</p>
@@ -23,46 +22,49 @@
                 <a class="btn grey btnGetUrl" href="<?php echo getUrl('configModules', 'configModules', 'renderViewTp', false, 'dashboard'); ?>">Tipo documento</a>
                 <a class="btn green btnGetUrl" href="<?php echo getUrl('roles', 'roles', 'mostrarRoles', false, 'dashboard'); ?>">Roles</a>
             </div>
-
-            <div class="option-card z-depth-1">
+    
+            <div class="option-card z-depth-1 div3">
                 <i class="material-icons large grey-text text-darken-2 center-align">assignment</i>
                 <h5>Préstamos de Elementos</h5>
                 <p>Consulta los préstamos actuales.</p>
                 <a class="btn grey btnGetUrl" href="<?php echo getUrl('reservaPrestamos', 'reserva', 'reservaView', false, 'dashboard'); ?>">Ver préstamos</a>
             </div>
-
-            <div class="option-card z-depth-1">
+    
+            <div class="option-card z-depth-1 div4">
                 <i class="material-icons large green-text text-darken-2 center-align">person</i>
                 <h5>Usuarios</h5>
                 <p>Crea o busca usuarios.</p>
                 <a class="btn green btnGetUrl" href="<?php echo getUrl('usuarios', 'usuarios', 'userView', false, 'dashboard'); ?>">Crear usuario</a>
                 <a class="btn green btnGetUrl" href="<?php echo getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard'); ?>">Consultar usuario</a>
             </div>
-        <?php endif; ?>
+        </div>
+    <?php endif; ?>
 
-        <?php if ($rol_id == 4):  ?>
+    <?php if ($rol_id == 4): ?>
+        <div class="instruc">
+          <div class="instruc-grid">
             <div class="option-card z-depth-1">
-                <i class="material-icons large green-text text-darken-2 center-align">assignment</i>
-                <h5>Solicitar Préstamo</h5>
-                <p>Realiza la solicitud de préstamo de elementos.</p>
-                <a class="btn green btnGetUrl" href="<?php echo getUrl('solicitudPrestamos', 'solicitudPrestamos', 'registrarPrestamosView', false, 'dashboard'); ?>">Solicitar préstamo</a>
+              <i class="material-icons large green-text text-darken-2 center-align">assignment</i>
+              <h5>Solicitar Préstamo</h5>
+              <p>Realiza la solicitud de préstamo de elementos.</p>
+              <a class="btn green btnGetUrl" href="<?php echo getUrl('solicitudPrestamos', 'solicitudPrestamos', 'registrarPrestamosView', false, 'dashboard'); ?>">Solicitar préstamo</a>
             </div>
-
+        
             <div class="option-card z-depth-1">
-                <i class="material-icons large grey-text text-darken-2 center-align">visibility</i>
-                <h5>Ver Préstamos</h5>
-                <p>Consulta el estado de tus préstamos.</p>
-                <a class="btn grey btnGetUrl" href="<?php echo getUrl('solicitudPrestamos', 'solicitudPrestamos', 'consultarPrestamosView', false, 'dashboard'); ?>">Ver préstamos</a>
+              <i class="material-icons large grey-text text-darken-2 center-align">visibility</i>
+              <h5>Ver Préstamos</h5>
+              <p>Consulta el estado de tus préstamos.</p>
+              <a class="btn grey btnGetUrl" href="<?php echo getUrl('solicitudPrestamos', 'solicitudPrestamos', 'consultarPrestamosView', false, 'dashboard'); ?>">Ver préstamos</a>
             </div>
+          </div>
 
-
+    
             <div class="table-content">
                 <div class="section">
-                    
                     <div class="card">
                         <div class="card-content">
                             <span class="card-title">Prestamos solicitados</span>
-
+    
                             <table class="highlight responsive-table">
                                 <thead>
                                     <tr>
@@ -95,14 +97,8 @@
                     </div>
                 </div>
             </div>
-
-
-
-        <?php endif; ?>
-
-
-    <!-- </div> -->
+        </div>
+    <?php endif; ?>
 </div>
+
 <script type="module" src="../public/assets/js/dashboard/dashboard.js"></script>
-
-
