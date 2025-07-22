@@ -58,8 +58,7 @@ VALUES
 
         if ($conn->query($query)) {
             $usu_id = $conn->insert_id;
-            $queryRol = "
-                INSERT INTO usuarios_roles (usr_usu_id, usr_rl_id) 
+            $queryRol = "INSERT INTO usuarios_roles (usr_usu_id, usr_rl_id) 
                 VALUES ($usu_id, $rol_id)
             ";
 
@@ -89,8 +88,6 @@ VALUES
         $cadena = trim($cadena, ",");
         $query = "UPDATE usuarios SET $cadena WHERE usu_id = '$id'";
         $resultado = $conn->query($query);
-
-
 
         if ($resultado) {
             return true;
@@ -156,12 +153,8 @@ VALUES
 
         $query = $isCedula ? "SELECT usu_id FROM usuarios WHERE usu_docum = ?" : "SELECT usu_id, usu_docum, usu_nombres, usu_apellidos, usu_email, usu_direccion, usu_telefono FROM usuarios WHERE usu_id = ?";
 
-
         $stmtUser = $conn->prepare($query);
-
-
         $stmtUser->bind_param("i", $id);
-
         if (!$stmtUser->execute()) {
             return null;
         }
@@ -174,6 +167,25 @@ VALUES
         }
     }
 
+
+    public function validateEmail(string $email = "", int $id = 0)
+    {
+        $conn = $this->conn->getConnect();
+
+        $query = "SELECT usu_email FROM usuarios WHERE usu_email = ? AND usu_id != ?";
+        $stmt = $conn->prepare($query);
+
+        if (!$stmt) {
+            return true; 
+        }
+
+        $stmt->bind_param("si", $email, $id);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        return $result->num_rows > 0;
+    }
     public function actualizarContrasena($id, $hashContrasena)
     {
 
@@ -209,5 +221,7 @@ VALUES
 
             return true;
     }
+
+    
 
 }

@@ -48,9 +48,7 @@ class usuariosController
     public function createUser(array $data = [])
 {
 
-        // Verificar si ya existe un usuario con ese documento
-        $existeUsuario = $this->usuariosModel->searchU((int)$data['usu_docum'], true);
-
+      
 
         $datos = [
             'usu_docum'     => $data['usu_docum'],
@@ -93,7 +91,7 @@ class usuariosController
     {
 
         if ($_SERVER['REQUEST_METHOD'] ==='POST') {
-            
+        
             $id = $_POST['usu_id'];
             unset($_POST['usu_id']);
            
@@ -107,6 +105,11 @@ class usuariosController
         }
 
         $data = $_POST;
+        $email = $this->usuariosModel->validateEmail($data['usu_email'], $id);
+        if ($email) {
+            echo "<script>alert('El correo ya se encuentra en uso por otro usuario.'); window.history.back();</script>";
+            return;
+        }
         // Validar campos obligatorios (excepto contraseña)
         foreach ($data as $key => $value) {
             if (empty($value)) {
@@ -231,7 +234,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         $input = file_get_contents("php://input");
 
         $data = json_decode($input, true);
-        dd($data);
 
         $action = $data['action'];
         unset($data['action']);
