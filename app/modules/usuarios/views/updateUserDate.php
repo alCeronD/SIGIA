@@ -1,4 +1,3 @@
-  <div class="card">
     <div class="card-content">
       <span class="card-title">Editar información
         <a href="<?php echo getUrl('usuarios', 'usuarios', 'getAll'); ?>" class="btn-flat right" title="Volver al listado">
@@ -49,4 +48,3 @@
         </div>
       </form>
     </div>
-  </div>
