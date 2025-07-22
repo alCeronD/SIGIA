@@ -175,11 +175,41 @@ class usuariosController
         $id = $_SESSION['usuario']['id'];
         $datos = new usuarios();
         $usuarioUpdate = $datos->searchU($id);
-        // dd($usuarioUpdate);
         
         include_once __DIR__ . '/../../usuarios/views/updateUserDate.php';
         
         
+    }
+    
+    public function updateUserInfo()
+    {
+        $id = $_POST['usu_id'];
+        unset($_POST['usu_id']);
+        $rol_id = $_POST['rol_id'];
+        unset($_POST['rol_id']);
+        $contrasena = $_POST['usu_password'];
+        unset($_POST['usu_password']);
+    
+        $data = $_POST;
+        foreach ($data as $key => $value) {
+            if (empty($value)) {
+                echo "<script>alert('El campo \"$key\" debe ser diligenciado.'); window.history.back();</script>";
+                return;
+            }
+        }
+    
+        $dato = new usuarios();
+        $dato->update($data, $id);
+    
+        if (!empty($contrasena)) {
+            $hash = password_hash($contrasena, PASSWORD_DEFAULT);
+            $dato->actualizarContrasena($id, $hash);
+        }
+    
+        $modeloUsuarios = new usuarios();
+        $usuarios = $modeloUsuarios->search();
+    
+        echo "<script>alert('Usuario actualizado exitosamente'); window.location.href = '" . getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard') . "';</script>";
     }
     
     public function userPermView(){
@@ -216,4 +246,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 break;
         }
     }
+    
+    
 }

@@ -332,71 +332,28 @@ textarea {
 
 /* ///////////UpdateDatosUsuarios desde el Header////////////////// */
 
-  .content {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    font-family: "Roboto", sans-serif;
-  }
+ .form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto;
+  gap: 1rem;
+}
 
-  .editUserContainer {
-    width: 100%;
-  }
+.formField {
+  display: flex;
+  flex-direction: column;
+}
 
-  .menuTitle {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+.formButton {
+  grid-column: span 2;
+  text-align: center;
+}
 
-  #textTitle {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
   }
-
-  .close-btn {
-    text-decoration: none;
-    font-size: 20px;
-    color: #999;
-    transition: color 0.3s ease;
-  }
-
-  .close-btn:hover {
-    color: #000;
-  }
-
-  .inputForm {
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-
   .formButton {
-    grid-column: span 2;
-    text-align: center;
+    grid-column: span 1;
   }
-
-  .formButton button {
-    background-color: #26a69a;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: background-color 0.3s ease;
-  }
-
-  .formButton button:hover {
-    background-color: #2bbbad;
-  }
-
-  @media (max-width: 600px) {
-    form#formUpdateUserView {
-      grid-template-columns: 1fr;
-    }
-
-    .formButton {
-      grid-column: span 1;
-    }
-  }
+}

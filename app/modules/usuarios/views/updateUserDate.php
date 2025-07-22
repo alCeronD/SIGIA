@@ -1,55 +1,52 @@
-<div class="content">
-    <div class="editUserContainer">
-        <div class="menuTitle">
-            <span id="textTitle">Editar información</span>
-            <a href="<?php echo getUrl('usuarios', 'usuarios', 'getAll'); ?>" class="close-btn" title="Volver al listado">&times;</a>
+  <div class="card">
+    <div class="card-content">
+      <span class="card-title">Editar información
+        <a href="<?php echo getUrl('usuarios', 'usuarios', 'getAll'); ?>" class="btn-flat right" title="Volver al listado">
+          <i class="material-icons">close</i>
+        </a>
+      </span>
+
+      <form method="POST" action="<?= getUrl('usuarios', 'usuarios', 'updateUserInfo', false, 'dashboard') ?>" id="formUpdateUserView">
+        <input type="hidden" name="usu_id" value="<?= htmlspecialchars($usuarioUpdate['usu_id']) ?>">
+
+        <div class="row">
+          <div class="input-field col s12 m6">
+            <input id="usu_docum" type="text" name="usu_docum" value="<?= htmlspecialchars($usuarioUpdate['usu_docum']) ?>" disabled>
+            <label for="usu_docum" class="active">Documento</label>
+          </div>
+
+          <div class="input-field col s12 m6">
+            <input id="usu_nombres" type="text" name="usu_nombres" value="<?= htmlspecialchars($usuarioUpdate['usu_nombres']) ?>" required>
+            <label for="usu_nombres" class="active">Nombres</label>
+          </div>
+
+          <div class="input-field col s12 m6">
+            <input id="usu_apellidos" type="text" name="usu_apellidos" value="<?= htmlspecialchars($usuarioUpdate['usu_apellidos']) ?>" required>
+            <label for="usu_apellidos" class="active">Apellidos</label>
+          </div>
+
+          <div class="input-field col s12 m6">
+            <input id="usu_email" type="email" name="usu_email" value="<?= htmlspecialchars($usuarioUpdate['usu_email']) ?>" required>
+            <label for="usu_email" class="active">Correo electrónico</label>
+          </div>
+
+          <div class="input-field col s12 m6">
+            <input id="usu_direccion" type="text" name="usu_direccion" value="<?= htmlspecialchars($usuarioUpdate['usu_direccion']) ?>" required>
+            <label for="usu_direccion" class="active">Dirección</label>
+          </div>
+
+          <div class="input-field col s12 m6">
+            <input id="usu_telefono" type="text" name="usu_telefono" value="<?= htmlspecialchars($usuarioUpdate['usu_telefono']) ?>" required>
+            <label for="usu_telefono" class="active">Teléfono</label>
+          </div>
         </div>
 
-        <form method="POST" action="<?= getUrl('usuarios', 'usuarios','updateUser', false, 'dashboard') ?>"
-            id="formUpdateUserView">
-
-            <input type="hidden" name="usu_id" value="<?= htmlspecialchars($usuarioUpdate['usu_id']) ?>">
-
-            <div class="formField docum">
-                <label class="labelForm" for="usu_docum">Documento:</label>
-                <input type="text" name="usu_docum" id="usu_docum" class="inputForm"
-                    value="<?= htmlspecialchars($usuarioUpdate['usu_docum']) ?>" disabled>
-            </div>
-
-            <div class="formField nombres">
-                <label class="labelForm" for="usu_nombres">Nombres:</label>
-                <input type="text" name="usu_nombres" id="usu_nombres" class="inputForm"
-                    value="<?= htmlspecialchars($usuarioUpdate['usu_nombres']) ?>" required>
-            </div>
-
-            <div class="formField apellidos">
-                <label class="labelForm" for="usu_apellidos">Apellidos:</label>
-                <input type="text" name="usu_apellidos" id="usu_apellidos" class="inputForm"
-                    value="<?= htmlspecialchars($usuarioUpdate['usu_apellidos']) ?>" required>
-            </div>
-
-            <div class="formField email">
-                <label class="labelForm" for="usu_email">Correo electrónico:</label>
-                <input type="email" name="usu_email" id="usu_email" class="inputForm"
-                    value="<?= htmlspecialchars($usuarioUpdate['usu_email']) ?>" required>
-            </div>
-
-            <div class="formField direccion">
-                <label class="labelForm" for="usu_direccion">Dirección:</label>
-                <input type="text" name="usu_direccion" id="usu_direccion" class="inputForm"
-                    value="<?= htmlspecialchars($usuarioUpdate['usu_direccion']) ?>" required>
-            </div>
-
-            <div class="formField telefono">
-                <label class="labelForm" for="usu_telefono">Teléfono:</label>
-                <input type="text" name="usu_telefono" id="usu_telefono" class="inputForm"
-                    value="<?= htmlspecialchars($usuarioUpdate['usu_telefono']) ?>" required>
-            </div>
-
-            <div class="formButton">
-                <button type="submit">Actualizar Usuario</button>
-            </div>
-        </form>
+        <div class="center-align">
+          <button type="submit" class="btn waves-effect waves-light">
+            Actualizar Usuario
+            <i class="material-icons right">save</i>
+          </button>
+        </div>
+      </form>
     </div>
-
-</div>
+  </div>
