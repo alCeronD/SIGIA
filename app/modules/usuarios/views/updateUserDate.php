@@ -1,13 +1,4 @@
-<<<<<<< HEAD
-    <div class="card-content">
-      <span class="card-title">Editar información
-        <a href="<?php echo getUrl('usuarios', 'usuarios', 'getAll'); ?>" class="btn-flat right" title="Volver al listado">
-          <i class="material-icons">close</i>
-        </a>
-      </span>
-=======
 <?php 
->>>>>>> developer-code
 
 require_once __DIR__ ."/../../../helpers/helpers.php";
 
