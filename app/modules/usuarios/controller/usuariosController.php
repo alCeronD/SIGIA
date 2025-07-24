@@ -55,8 +55,7 @@ class usuariosController
     http_response_code(409); // CONFLICT
     echo json_encode(["message" => "El correo ya está registrado."]);
     exit;
-}
-
+    }
     $datos = [
             'usu_docum'     => $data['usu_docum'],
             'usu_nombres'   => $data['usu_nombres'],
