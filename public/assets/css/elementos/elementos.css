@@ -197,12 +197,10 @@
     grid-template-rows: auto 1fr;
     background-color: var(--white);
     margin: 3% auto;
-    /* 15% from the top and centered */
-    /* padding: 20px; */
     width: 50%;
     height: fit-content;
     max-height: 80vh;
-  /* overflow-y: auto; */
+  overflow-y: auto;
 }
 
 .modalContentTitle{
@@ -239,11 +237,13 @@
 /* Todo lo relacionado al contenedor de la placa */
 .placa {
   grid-area: placa;
-
+  
   .radioPlaca{
     display: flex;
-    flex-wrap: wrap;
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
   }
 }
 
