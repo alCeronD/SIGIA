@@ -78,8 +78,6 @@ class usuariosController
         }
         success('usuario creado exitosamente');
 }
-
-
     public function consultUser()
     {
 
@@ -167,6 +165,7 @@ class usuariosController
         include_once '../proyecto_sigia/app/modules/usuarios/views/deleteView.php';
     }
 
+
     public function cambiarEstadoUsuario()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -174,11 +173,10 @@ class usuariosController
 
             $result = $this->usuariosModel->inhabilitarUsuario($usu_id);
 
-            if ($result) {
-                echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard') . "';</script>";
+            if($result['status']){
+echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard') . "';</script>";
             }
 
-           
         } else {
             echo "Método no permitido";
         }
@@ -200,8 +198,6 @@ class usuariosController
         $id = $_POST['usu_id'];
         unset($_POST['usu_id']);
 
-        // dd($usuario = $_SESSION['usuario']);
-
         $data = $_POST;
         foreach ($data as $key => $value) {
             if (empty($value)) {
@@ -218,7 +214,6 @@ class usuariosController
 
         $loginObj = new loginController($this->conn);
 
-        
         echo "<script>alert('Usuario actualizado exitosamente, vuelve a iniciar la sesión.'); window.location.href = '" . getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard') . "';</script>";
         $loginObj->logout();
         

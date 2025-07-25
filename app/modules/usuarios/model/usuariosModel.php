@@ -23,7 +23,6 @@ class usuarios
     {
 
         $objConn= new Conection();
-        // $this->conn = $objConn->getConnect();
         $this->conn = $objConn;
     }
 
@@ -142,31 +141,6 @@ VALUES
         return $usuarios;
     }
 
-    //Busca un registro específico. basado en su id.
-    public function searchU(int $id = 0, $isCedula = false)
-    {
-        $conn = $this->conn->getConnect();
-
-        if (!is_int($id)) {
-            exit();
-        }
-
-        $query = $isCedula ? "SELECT usu_id FROM usuarios WHERE usu_docum = ?" : "SELECT usu_id, usu_docum, usu_nombres, usu_apellidos, usu_email, usu_direccion, usu_telefono FROM usuarios WHERE usu_id = ?";
-
-        $stmtUser = $conn->prepare($query);
-        $stmtUser->bind_param("i", $id);
-        if (!$stmtUser->execute()) {
-            return null;
-        }
-
-        $result = $stmtUser->get_result();
-
-        if ($result && $result->num_rows > 0) {
-
-            return $result->fetch_assoc();
-        }
-    }
-
 public function validateEmail(string $email = "", $identifier = 0, bool $isId = true): bool
 {
     $conn = $this->conn->getConnect();
@@ -206,27 +180,100 @@ public function validateEmail(string $email = "", $identifier = 0, bool $isId = 
         }
     }
 
-    public function inhabilitarUsuario(int $usu_id = 0){
-
-
+    public function searchU(int $id = 0, $isCedula = false)
+    {
         $conn = $this->conn->getConnect();
 
-         $query = "UPDATE usuarios 
-                      SET usu_id_estado = CASE 
-                        WHEN usu_id_estado = 1 THEN 2 
-                        ELSE 1 END 
-                      WHERE usu_id = ?";
+        if (!is_int($id)) {
+            return [
+                'message'=> "id no definido",
+                'status'=> false
+            ];
+        }
 
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("i", $usu_id);
 
-            if (!$stmt->execute()) {
-                return null;  
-            } 
+        $query = $isCedula ? "SELECT usu_id FROM usuarios WHERE usu_docum = ?" : "SELECT usu_id, usu_docum, usu_nombres, usu_apellidos, usu_email, usu_direccion, usu_telefono FROM usuarios WHERE usu_id = ?";
 
-            return true;
+        $stmtUser = $conn->prepare($query);
+        $stmtUser->bind_param("i", $id);
+        if (!$stmtUser->execute()) {
+            return 
+            [
+                'message'=> 'error al ejecutar la consulta',
+                'status'=> false
+            ];
+        }
+
+        $result = $stmtUser->get_result();
+
+        if ($result && $result->num_rows > 0) {
+
+            return [
+                'data'=> $result->fetch_assoc(),
+                'message'=> 'registro encontrado',
+                'status'=> true
+            ];
+        }else{
+            return [
+                'data'=> [],
+                'message'=> "no hay registro",
+                'status'=> false
+            ];
+        }
     }
 
-    
+
+        public function inhabilitarUsuario(int $usu_id = 0)
+    {
+
+        try {
+            $conn = $this->conn->getConnect();
+
+            if ($usu_id <= 0) {
+                return [
+                    'status'=> false,
+                    'message'=> "El id no debe ser negativo"
+                ];
+            }
+
+            $validateId = $this->searchU($usu_id);
+            $data = $validateId['data'];
+            if (empty($data)) {
+                return [
+                    'message' => "Id no encontrado en la base de datos",
+                    'status' => false
+                ];
+            }
+
+            $usuId = (int) $data['usu_id'];
+
+            $query = "UPDATE usuarios 
+                        SET usu_id_estado = CASE 
+                            WHEN usu_id_estado = 1 THEN 2 
+                            ELSE 1 END 
+                        WHERE usu_id = ?";
+
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("i", $usuId);
+
+            if (!$stmt->execute()) {
+                return [
+                    'message' => "error al ejecutar la consulta " . $stmt->error,
+                    'status' => false
+                ];
+            }
+
+            return [
+                'message' => "registro inhabilitado con exito",
+                'status' => true
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'message' => "error $th",
+                'status' => false
+            ];
+        }
+    }
+
 
 }
