@@ -278,10 +278,10 @@ areaUpdateForm.addEventListener("submit", (e) => {
       //Cerrar el modal
       closeModal(instanceMyModal);
       initAlert('Registro actualizado','warning', toastOptions);
-
       //Renderizo nuevamente la data.
       fetchData();
-      // instanceMyModal.close();
+    }else{
+      initAlert("El nombre del item ya esta registrado en la base de datos", "info", toastOptions);
     }
   };
   objAjax.request.send(data);

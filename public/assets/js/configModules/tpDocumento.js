@@ -219,11 +219,13 @@ tpUpdateForm.addEventListener("submit", (e) => {
     //Transformo en un json la respuesta.
     dataStatus = JSON.parse(dataStatus);
     if (dataStatus.status) {
-      alert("registro actualizado");
+      initAlert("Registro actualizado","info", toastOptions);
       //Renderizo nuevamente la data.
       fetchData();
       //Cerrar el modal
       modal.close();
+    }else{
+      initAlert("La sigla ya está registrada en la base de datos", "info", toastOptions);
     }
   };
   objAjax2.request.send(data);

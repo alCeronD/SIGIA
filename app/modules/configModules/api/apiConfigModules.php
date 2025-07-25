@@ -111,15 +111,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         ]
     ];
 
+    $responseUpdate = $configController->updateRow($values);
     //Ejecuto la función, debe devolver un true, si es así devolver como respuesta a ajax.
-    if ($configController->updateRow($values)) {
+    if (is_array($responseUpdate) && $responseUpdate['status']) {
         http_response_code(200);
 
-        echo json_encode([
-            'status' => true,
-            'message' => 'Registro actualizado'
-        ]);
+        success('Registro actualizado', $responseUpdate);
+    }else{
+        fail('Entrada duplicada', $responseUpdate);
     }
+
+    
 }
 
 //DELETE

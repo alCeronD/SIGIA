@@ -1,9 +1,8 @@
 <?php
 
-// require_once __DIR__ . '/../../../helpers/session.php';
+require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../../../helpers/const.php';
 include_once __DIR__ . '/../../../config/conn.php';
-
 
 class usuarios
 {
@@ -25,7 +24,6 @@ class usuarios
         $objConn= new Conection();
         $this->conn = $objConn;
     }
-
     public function create(array $data = [])
     {
 
@@ -70,7 +68,6 @@ VALUES
             return "Error al registrar el usuario: " . $conn->error;
         }
     }
-
     public function update(array $datos = [], int $id = 0)
     {
 
@@ -95,7 +92,6 @@ VALUES
             return "Error al actualizar: " . $conn->error;
         }
     }
-
     public function organization($datos)
     {
 
@@ -104,7 +100,6 @@ VALUES
             # code...
         }
     }
-
     public function search()
     {
 
@@ -140,7 +135,6 @@ VALUES
 
         return $usuarios;
     }
-
 public function validateEmail(string $email = "", $identifier = 0, bool $isId = true): bool
 {
     $conn = $this->conn->getConnect();
@@ -179,7 +173,6 @@ public function validateEmail(string $email = "", $identifier = 0, bool $isId = 
             return false;
         }
     }
-
     public function searchU(int $id = 0, $isCedula = false)
     {
         $conn = $this->conn->getConnect();
@@ -221,8 +214,6 @@ public function validateEmail(string $email = "", $identifier = 0, bool $isId = 
             ];
         }
     }
-
-
         public function inhabilitarUsuario(int $usu_id = 0)
     {
 
@@ -274,6 +265,4 @@ public function validateEmail(string $email = "", $identifier = 0, bool $isId = 
             ];
         }
     }
-
-
 }

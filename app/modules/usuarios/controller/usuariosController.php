@@ -6,7 +6,6 @@ include_once __DIR__ . '/../../../config/conn.php';
 require_once __DIR__ . "/../../../helpers/response.php";
 require_once __DIR__ . "/../../../helpers/session.php";
 require_once __DIR__ . "/../../login/controller/loginController.php";
-
 class usuariosController
 {
 
@@ -31,7 +30,6 @@ class usuariosController
         $this->configModules = new ConfigModulesModel();
         $this->usuariosModel = new usuarios();
     }
-
     public function userView()
     {
 
@@ -44,7 +42,6 @@ class usuariosController
         $_SESSION['css'] = 'usuarios/usuarios.css';
         return include __DIR__ . '/../views/usuariosView.php';
     }
-
     public function createUser(array $data = [])
 {
 
@@ -91,7 +88,6 @@ class usuariosController
         $_SESSION['css'] = 'usuarios/usuarios.css';
         return include $path;
     }
-
     public function updateUser()
     {
 
@@ -145,11 +141,7 @@ class usuariosController
         echo "<script>alert('Usuario actualizado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard') . "';</script>";
         return include_once __DIR__ . '/../views/consultView.php';
     }
-
-
     public function offUser() {}
-
-    //
     public function updateUserView()
     {
         $id = $_GET['usu_id'];
@@ -159,13 +151,10 @@ class usuariosController
         
         include_once __DIR__ . '/../../usuarios/views/updateView.php';
     }
-
     public function deleteUserView()
     {
         include_once '../proyecto_sigia/app/modules/usuarios/views/deleteView.php';
     }
-
-
     public function cambiarEstadoUsuario()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -181,18 +170,16 @@ echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" .
             echo "Método no permitido";
         }
     }
-    
     public function actualizarDatosView(){
         $_SESSION['css'] = 'usuarios/usuarios.css';
         $id = $_SESSION['usuario']['id'];
         $datos = new usuarios();
-        $usuarioUpdate = $datos->searchU($id);
+        $data = $datos->searchU($id);
+        // Este valor es usado en la vista para dar visualizar su información.
+        $usuarioUpdate = $data['data'];
         
         include_once __DIR__ . '/../../usuarios/views/updateUserDate.php';
-        
-        
     }
-    
     public function updateUserInfo()
     {
         $id = $_POST['usu_id'];
@@ -218,19 +205,11 @@ echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" .
         $loginObj->logout();
         
     }
-    
     public function userPermView(){
     }
-    
-    
-    
-    
-    
-    
 }
 
 $objUsuarios = new usuariosController();
-
 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $input = file_get_contents("php://input");
@@ -245,7 +224,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             $objUsuarios->createUser($newData);
                 break;
 
-            case 'updatEuSER':
+            case 'updateUser':
                 # code...
                 break;
 

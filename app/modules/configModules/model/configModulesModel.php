@@ -132,45 +132,101 @@ class ConfigModulesModel
 
             call_user_func_array([$stmt, 'bind_param'], $val);
             if (!$stmt->execute()) {
-                return false;
+                return [
+                    'status'=> false,
+                    'message'=> 'error al procesar la actualización',
+                    'data'=> []
+                ];
             }
         } catch (PDOException $th) {
-            return $th->getMessage();
+            return [
+                'status'=> false,
+                'message'=> $th->getMessage(),
+                'data'=> []
+            ];
         }
 
         //Cerrar conexión.
         $stmt->close();
 
-        return true;
+        return [
+            'status'=> true,
+            'message'=> 'registro actualizado con exito',
+            'data'=> []
+        ];
     }
 
-    public function validateUnique(String $nameColum, String $tableName, String $nameValueColum)
-    {
-        $conn = $this->mysqli->getConnect();
-        $sqlUnique = "SELECT `$nameColum` FROM `$tableName` WHERE `$nameColum` = ?";
-        $stmtUnique = $conn->prepare($sqlUnique);
 
-        $stmtUnique->bind_param('s',$nameValueColum);
+        /**
+     * Valida si un valor en una columna específica de una tabla ya existe (para evitar duplicados).
+     *
+     * Esta función realiza una consulta SELECT sobre la columna `$nameColum` de la tabla `$tableName`,
+     * y verifica si el valor `$nameValueColum` ya está registrado. Se utiliza típicamente para validaciones
+     * de unicidad antes de insertar registros.
+     *
+     * @param string $nameColum        Nombre de la columna a validar.
+     * @param string $tableName        Nombre de la tabla donde se hará la validación.
+     * @param string $nameValueColum   Valor a verificar si ya existe en la columna.
+     *
+     * @return array {
+     *     @type string $message  Mensaje indicando si el valor está disponible o es duplicado.
+     *     @type bool   $status   Estado de la validación: true si es único, false si ya existe.
+     *     @type array  $data     Datos adicionales (vacío si es duplicado, [1] si está disponible).
+     * }
+     */
+    public function validateUnique(
+    string $column,
+    string $table,
+    string $value,
+    ?int $excludeId = null,
+    string $pkColumn = 'id'
+) {
+    $conn = $this->mysqli->getConnect();
 
-        $stmtUnique->execute();
-        $valueResult = $stmtUnique->get_result();
-        //Si es null, significa que no hay coincidencias, lo que signficia que no es único.
-        if ($valueResult->num_rows>0) {
-            return [
-                'message'=> 'Entrada duplicada',
-                'status'=> false,
-                'data'=> []
-            ];
-        }
+    $sql = "SELECT `$column` FROM `$table` WHERE `$column` = ?";
+    $types = 's';
+    $params = [$value];
 
-         return [
-                'message'=> 'item disponible para registro',
-                'status'=> true,
-                'data'=> [1]
-            ];
-
-        
+    if ($excludeId !== null) {
+        $sql .= " AND `$pkColumn` != ?";
+        $types .= 'i';
+        $params[] = $excludeId;
     }
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        return [
+            'message' => 'Error en prepare: ' . $conn->error,
+            'status' => false,
+            'data' => []
+        ];
+    }
+
+    $refs = [];
+    foreach ($params as $k => $v) {
+        $refs[$k] = &$params[$k];
+    }
+
+    array_unshift($refs, $types);
+    call_user_func_array([$stmt, 'bind_param'], $refs);
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        return [
+            'message' => 'Entrada duplicada',
+            'status' => false,
+            'data' => []
+        ];
+    }
+
+    return [
+        'message' => 'Item disponible para registro',
+        'status' => true,
+        'data' => [1]
+    ];
+}
 }
 
 
