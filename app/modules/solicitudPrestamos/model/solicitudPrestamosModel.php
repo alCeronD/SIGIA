@@ -167,7 +167,6 @@ class solicitudPrestamos
 
                 // Cambiar estado del elemento a disponible
                 $elementoModel->actualizarEstadoElemento($elemento_id, 1); // 1 = Disponible
-
                 // Sumar cantidad de vuelta a elm_existencia
                 $sumarQuery = "UPDATE elementos SET elm_existencia = elm_existencia + ? WHERE elm_cod = ?";
                 $sumarStmt = $this->conn->prepare($sumarQuery);

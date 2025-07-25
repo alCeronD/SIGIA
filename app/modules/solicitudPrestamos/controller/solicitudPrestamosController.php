@@ -21,10 +21,8 @@ class solicitudPrestamosController {
         $idUsuario = $_SESSION['usuario']['id'];
         $rol_nombre = $_SESSION['usuario']['rol_nombre'];
         $obj = new usuarios();
-        $datosU = $obj->searchU($idUsuario);
-        
-        // dd($datosU);
-        
+        $result = $obj->searchU($idUsuario);
+        $datosU = $result['data'];        
         $nombre = $datosU['usu_nombres'];
         $apellido =  $datosU['usu_apellidos'];
         $telefono = $datosU['usu_telefono'];
@@ -50,7 +48,6 @@ class solicitudPrestamosController {
         $prestamoModel = new solicitudPrestamos($this->conn);
         $prestamos = $prestamoModel->search($id);
 
-        
         $objetoEstados = new ConfigModulesModel();
         $estados = $objetoEstados->select("SELECT * FROM estados_prestamos");
 
@@ -69,9 +66,7 @@ class solicitudPrestamosController {
         unset($_POST['elementos_seleccionados'],
         $_POST['elementos_devolutivos_seleccionados']);
 
-
         $data = $_POST;
-        // dd($data);
 
         $datos = new solicitudPrestamos($this->conn);
         $lastId = $datos->create($data, $rol_id);
@@ -93,8 +88,6 @@ class solicitudPrestamosController {
                 // Cambiar estado
                 $elementoModel->actualizarEstadoElemento($elemento_id, 5); 
             }
-
-
             // Registrar consumibles seleccionados
             foreach ($cantidades_consumibles as $elm_cod => $cantidad) {
                 if (is_numeric($elm_cod) && is_numeric($cantidad) && $cantidad > 0) {
@@ -151,8 +144,10 @@ class solicitudPrestamosController {
     public function obtenerElementosPorPrestamo($presCod) {
 
         $query = " SELECT 
+        e.elm_cod,
             e.elm_nombre,
             e.elm_placa,
+            e.elm_cod_tp_elemento,
             pe.pres_el_cantidad AS cantidad
         FROM 
             elementos e 
@@ -197,7 +192,6 @@ class solicitudPrestamosController {
         return $res ? $res['tp_nombre'] : 'Desconocido';
     }
 
-
     private function obtenerRolNombre($id) {
         $stmt = $this->conn->prepare("SELECT rl_nombre FROM roles WHERE rl_id = ?");
         $stmt->bind_param('i', $id);
@@ -211,7 +205,7 @@ class solicitudPrestamosController {
         header('Content-Type: application/json');
     
         $presCod = isset($_POST['pres_cod']) ? (int) $_POST['pres_cod'] : null;
-    
+
         if (!$presCod) {
             die(json_encode([
                 'success' => false,
@@ -223,19 +217,14 @@ class solicitudPrestamosController {
         $resultado = $modelo->cancelarPrestamo($presCod);
         echo json_encode($resultado);
         exit;
-        
-        //Realizar accion de entrada_Salidas al momento de cancelar Prestamo
- 
     }
-
-
-
 }
 
 
 $conexion = new Conection();
 $getConect = $conexion->getConnect();
 $solicitudObj = new solicitudPrestamosController($getConect);
+// $solicitudObj->cancelarPrestamo(530);
 
 if (isset($_GET['pres_cod']) && isset($_GET['idCod'])) {
     $pres_cod = (int) $_GET['pres_cod'];

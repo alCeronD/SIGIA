@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../../helpers/session.php';
+// require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../../../helpers/const.php';
 include_once __DIR__ . '/../../../config/conn.php';
 
