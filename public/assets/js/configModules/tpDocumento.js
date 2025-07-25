@@ -239,6 +239,11 @@ formulario.addEventListener("submit", (event) => {
   let form = new FormData(formulario);
   let dt = Object.fromEntries(form);
 
+  if (dt.tp_sigla == "") {
+    initAlert("El nombre del item debe ser obligatorio", "info", toastOptions);
+    return;
+  }
+
   let data = JSON.stringify({
     tp_sigla: dt.tp_sigla,
     tp_nombre: dt.tp_nombre,

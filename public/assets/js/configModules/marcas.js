@@ -186,6 +186,11 @@ formMarca.addEventListener("submit", (f) => {
     tableName: table,
   });
 
+  if (dta.ma_nombre == "") {
+    initAlert("El nombre de la marca debe ser obligatorio", "info", toastOptions);
+    return;
+  }
+
   objAjax.request.open(
     "POST",
     "modules/configModules/api/apiConfigModules.php",

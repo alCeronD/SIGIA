@@ -211,11 +211,18 @@ formulario.addEventListener("submit", (event) => {
   let form = new FormData(formulario);
   let dt = Object.fromEntries(form);
 
+  if (dt.ar_nombre === "") {
+    initAlert("El nombre del item debe ser obligatorio", "info", toastOptions);
+    return;
+  }
+
   let data = JSON.stringify({
     ar_nombre: dt.ar_nombre,
     ar_descripcion: dt.ar_descripcion,
     tableName: table
   });
+
+  
 
   // Ajax POST
   objAjax.request.open('POST', "modules/configModules/api/apiConfigModules.php", true);
