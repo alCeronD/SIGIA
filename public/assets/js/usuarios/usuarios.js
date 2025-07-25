@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const paginacion = document.getElementById('paginacion-usuarios');
   const filas = Array.from(document.querySelectorAll('#tableConfig tbody tr'));
   let filasFiltradas = [...filas];
-  const itemsPorPagina = 5;
+  const itemsPorPagina = 4;
 
   if (paginacion && filas.length > 0) {
     function mostrarPagina(pagina) {

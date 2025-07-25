@@ -10,7 +10,7 @@
   grid-template-columns: 1fr;
     grid-template-rows: auto auto 1fr;
   gap: 0.3rem;
-  padding: 1rem;
+  /* padding: 1rem; */
 }
 
 .titleUsuarios {
@@ -235,9 +235,7 @@ textarea {
   padding: 2rem;
   border-radius: 10px;
   width: 35vw;
-  /* Más pequeño, proporcional */
   max-width: 550px;
-  /* Evita que se expanda demasiado */
   min-width: 320px;
   position: relative;
   animation: fadeIn 0.3s ease-in-out;

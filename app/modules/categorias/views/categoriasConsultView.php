@@ -71,8 +71,10 @@
           <?php endif; ?>
         </tbody>
       </table>
+      <div id="paginacionCategoria" class="center-align" style="margin-top: 20px;"></div>
     </div>
-  
+    <!-- Controles de paginación -->
+
 </div>
 
 <!-- Modal Personalizado -->

@@ -6,11 +6,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const documInput = document.getElementById('docum');
     const passInput = document.getElementById('pass');
 
-    documInput.addEventListener('change', (e)=>{
+    documInput.addEventListener('change', (e) => {
         const docum = e.target.value.trim();
         e.stopPropagation();
         if (!validationRules.documento.regex.test(docum)) {
-            initAlert(validationRules.documento.message,"info", toastOptions);
+            initAlert(validationRules.documento.message, "info", toastOptions);
             loginForm.reset();
             documInput.focus();
             return;
@@ -48,16 +48,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success && data.url) {
-                window.location.href = data.url;
-            } else {
-                initAlert("Usuario y contraseña incorrectos", "error", toastOptions);
-            }
-        })
-        .catch(error => {
-            console.error('Error en la petición', error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.url) {
+                    window.location.href = data.url;
+                } else {
+                    initAlert("Usuario y contraseña incorrectos", "error", toastOptions);
+                }
+            })
+            .catch(error => {
+                console.error('Error en la petición', error);
+            });
     });
 });

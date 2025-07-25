@@ -13,7 +13,7 @@ class categorias {
 
     public function create(array $data = []) {
         if (!is_array($data)) {
-            exit();
+            return "Datos inválidos";
         }
     
         $ca_nombre = $this->conn->real_escape_string($data['ca_nombre']);
@@ -26,11 +26,21 @@ class categorias {
         ";
     
         if ($this->conn->query($query)) {
-            return true;
+            $insertedId = $this->conn->insert_id;
+    
+            return [
+                'ca_id' => $insertedId,
+                'ca_nombre' => $data['ca_nombre'],
+                'ca_descripcion' => $data['ca_descripcion'],
+                'ca_status' => $ca_status
+            ];
         } else {
             return "Error al registrar la categoría: " . $this->conn->error;
         }
     }
+
+
+
 
     public function update($datos,$id) {
         

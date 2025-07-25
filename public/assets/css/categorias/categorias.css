@@ -32,14 +32,12 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* Estilo para los labels */
 .formCategoria .labelForm {
   margin-top: 0.3rem;
   border-radius: 10px;
   height: 2rem;
 }
 
-/* Estilo para los inputs */
 .formCategoria .inputForm {
   font-size: 1rem;
   padding: 0.5rem;
@@ -59,7 +57,6 @@
   background-color: #0056b3;
 }
 
-/* Estilo para tabla */
 .tablaCategoria {
   overflow-x: auto;
 }
@@ -102,8 +99,12 @@
   font-size: 1.5rem;
   cursor: pointer;
 }
-/* se reemplazo, lo puede hacer el materialize */
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
 }
+
+.pagination li.active a {
+  color: white;
+}
+
