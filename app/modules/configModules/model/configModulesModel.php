@@ -34,23 +34,36 @@ class ConfigModulesModel
     public function insert(String $sql = '', String $types = '', array $values = [], String $tableName = '')
     {
 
-        $conn = $this->mysqli->getConnect();
+        try {
+            $conn = $this->mysqli->getConnect();
             //Consulta insert sql.
             $stmt = $conn->prepare($sql);
             if (!$stmt) {
-                die("Prepare failed: " . $conn->error);
+                throw new \RuntimeException("Error al preparar la consulta " . $conn->error);
             }
             $bindParams = [];
             foreach ($values as $key => $value) {
+                if (($key == 0 && trim($value) === '')) {
+                    $conn->close();
+                    return [
+                        'status'=> false,
+                        'message'=> "El valor en la posición $key está vacío o contiene solo espacios.",
+                        'data'=> []
+                    ];
+                }
                 $bindParams[] = &$values[$key];
             }
-
             array_unshift($bindParams, $types);
             call_user_func_array([$stmt, 'bind_param'], $bindParams);
 
 
         if (!$stmt->execute()) {
-            die("Execute failed: " . $stmt->error);
+            $conn->close();
+            return [
+                'status' => false,
+                'message' => "Error al ejecutar la consulta: " . $stmt->error,
+                'data'=> []
+            ];
         }
 
         $insertedId = $conn->insert_id;
@@ -58,7 +71,20 @@ class ConfigModulesModel
         // Cerrar la conexión
         $conn->close();
 
-        return true;
+        return [
+            'status'=> true,
+            'message'=> 'Recurso creado con exito',
+            'data'=> [$insertedId]
+        ];
+        } catch (\Throwable $th) {
+            return [
+                'status'=> false,
+                'message'=> $th->getMessage(),
+                'data'=> []
+            ];
+        }
+
+        
     }
 
     public function delete(String $sql, String $types, array $values)
@@ -128,13 +154,23 @@ class ConfigModulesModel
 
         $stmtUnique->execute();
         $valueResult = $stmtUnique->get_result();
-        $valueCompare = $valueResult->fetch_assoc();
         //Si es null, significa que no hay coincidencias, lo que signficia que no es único.
-        if ($valueCompare == null) {
-            return false;
+        if ($valueResult->num_rows>0) {
+            return [
+                'message'=> 'Entrada duplicada',
+                'status'=> false,
+                'data'=> []
+            ];
         }
 
-        return true;
+         return [
+                'message'=> 'item disponible para registro',
+                'status'=> true,
+                'data'=> [1]
+            ];
+
         
     }
 }
+
+

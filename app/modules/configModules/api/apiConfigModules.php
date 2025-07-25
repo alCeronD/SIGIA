@@ -14,7 +14,7 @@ $statusCols = [
     'roles' => ['status' => 'rl_status', 'pk' => 'rl_cod'],
     'categorias' => ['status' => 'ca_status', 'pk' => 'ca_cod'],
     'marcas' => ['status' => 'ma_status', 'pk' => 'ma_id'],
-    'tipo_documento' => ['status' => 'tp_status' , 'pk' => 'tp_id']
+    'tipo_documento' => ['status' => 'tp_status', 'pk' => 'tp_id']
 ];
 
 //Variable para comparar que existan las tablas.
@@ -31,9 +31,9 @@ $schema = [
         'filas' => ['tp_sigla', 'tp_nombre'],
         'status' => 'tp_status',
     ],
-    'marcas' =>[
+    'marcas' => [
         'pk' => 'ma_id',
-        'filas' => ['ma_nombre','ma_descripcion'],
+        'filas' => ['ma_nombre', 'ma_descripcion'],
         'status' => 'ma_status'
     ]
 ];
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     //creo el objeto del controlador.
 
     //Creo arreglo para validar que el valor enviado es igual al que voy a solicitar en la base de datos.
-    $tableName = $_GET['tableName']??  null;
+    $tableName = $_GET['tableName'] ??  null;
     $status = $_GET['status'] ?? null;
 
     if (!in_array($tableName, $tables)) {
@@ -63,8 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     //aca se ejecuta todo.
     $data = $configController->getData($tableName, $status);
 
-    success('registros',$data);
-
+    success('registros', $data);
 }
 
 //UPDATE
@@ -79,7 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $data = [];
     foreach ($tableDef['filas'] as $field) {
         $data[$field] = $input[$field] ?? null;
-
     }
 
     if ($tableName == 'areas') {
@@ -91,18 +89,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     if ($tableName == 'tipo_documento') {
         $nombreField = $data['tp_sigla'];
         $descripcionField = $data['tp_nombre'];
-        $codField = $input['tp_id'];   
+        $codField = $input['tp_id'];
     }
 
     if ($tableName == 'marcas') {
         $nombreField = $data['ma_nombre'];
         $descripcionField = $data['ma_descripcion'];
-        $codField = $input['ma_id'];  
+        $codField = $input['ma_id'];
     }
 
-    $values=[];
+    $values = [];
 
-        $values = [
+    $values = [
         'values' => [
             $schema[$tableName]['filas'][0] => $nombreField,
             $schema[$tableName]['filas'][1] => $descripcionField
@@ -118,12 +116,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         http_response_code(200);
 
         echo json_encode([
-            'status'=>true,
-            'message'=>'Registro actualizado'
+            'status' => true,
+            'message' => 'Registro actualizado'
         ]);
-
     }
-
 }
 
 //DELETE
@@ -136,8 +132,8 @@ if ($method === 'DELETE') {
     $tableName = $input['tableName'] ?? null;
 
     //Si el nombre de la tabla no está en el arreglo de tablas, este debe detener el script.
-    if (!in_array($tableName,$tables)) {
-       exit();
+    if (!in_array($tableName, $tables)) {
+        exit();
     }
 
     $tableDef = $schema[$tableName];
@@ -171,15 +167,14 @@ if ($method === 'DELETE') {
         http_response_code(200);
 
         echo json_encode([
-            'status'=>true,
-            'message'=>'Registro actualizado'
+            'status' => true,
+            'message' => 'Registro actualizado'
         ]);
-
-    }else{
+    } else {
         http_response_code(500);
         echo json_encode([
-            'status'=>false,
-            'message'=>'Error al actualizar el registro.'
+            'status' => false,
+            'message' => 'Error al actualizar el registro.'
         ]);
     }
 }
@@ -206,53 +201,33 @@ if ($method === 'POST') {
     if ($tableName == 'marcas') {
         $nameColum = 'ma_nombre';
     }
-
-
     $valueNameColum = $input[$nameColum];
-
-
-
     if (in_array($tableName, $tables)) {
         $statusField = $schemaTable['status'];
-        $datas[$statusField] = 1; 
+        $datas[$statusField] = 1;
     }
 
-    if (!in_array($tableName,$tables)) {
-       exit();
+    if (!in_array($tableName, $tables)) {
+        exit();
     }
 
     $data = [
-    'tableName' => $tableName,
-    'values' => $datas,
+        'tableName' => $tableName,
+        'values' => $datas,
     ];
 
-    if ($configController->validate($nameColum,$tableName,$valueNameColum)) {
-        fail('Entrada duplicada');
+    $dataValidate = $configController->validate($nameColum, $tableName, $valueNameColum);
+
+
+    if (!$dataValidate['status']) {
+        fail('Entrada duplicada', $dataValidate);
+        return;
     }
-        if ($data = $configController->addRow($data)) {
+    $dataResult = $configController->addRow($data);
 
-        http_response_code(200);
-            echo json_encode([
-                'status'=>true,
-                'message'=>'Registro agregado exitosamente',
-                'data' => $data
-            ]);
-        }
+    if (!$dataResult['status']) {
+        fail('fallo al registrar el recurso', $dataResult);
+    }
 
-
-
-    // if ($data = $configController->addRow($data)) {
-
-    //     http_response_code(200);
-
-    //     echo json_encode([
-    //         'status'=>true,
-    //         'message'=>'Registro agregado exitosamente',
-    //         'data' => $data
-    //     ]);
-
-
-
-
-
+    success('registro adicionado con exito', $dataResult);
 }

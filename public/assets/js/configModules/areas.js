@@ -224,6 +224,7 @@ formulario.addEventListener("submit", (event) => {
 
   objAjax.request.onload = () => {
       const response = JSON.parse(objAjax.request.responseText);
+      console.log(response);
       if (response.status) {
         const lastRow = response.data;
         initAlert('Registro adicionado con exito','success',toastOptions);
@@ -232,7 +233,7 @@ formulario.addEventListener("submit", (event) => {
         //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
         fetchData();
       } else {
-        alert(response.message);
+        initAlert(response.data.message, "error", toastOptions);
       }
   };
 

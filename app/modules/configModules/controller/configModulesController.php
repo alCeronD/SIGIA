@@ -223,7 +223,6 @@ class ConfigModulesController{
         $sql .= $set2;
         $model = new ConfigModulesModel();
         $data = $model->insert($sql,$types,$val,$tableName);
-        
         return $data;
     }
     

@@ -1,5 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import {closeModal, options, instanceModal} from "../utils/cases.js";
+import {closeModal, options, instanceModal, initAlert, toastOptions} from "../utils/cases.js";
 
 const formulario = document.querySelector("#formTp");
 const objAjax2 = new Ajax();
@@ -252,16 +252,17 @@ formulario.addEventListener("submit", (event) => {
 
   objAjax2.request.onload = () => {
       const response = JSON.parse(objAjax2.request.responseText);
+      console.log(response)
       if (response.status) {
         const lastRow = response.data;
-        console.log(lastRow);
+        initAlert('Registro adicionado con exito','success',toastOptions);
         // Reiniciar el formulario
         formulario.reset();
         //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
         fetchData();
-        alert(response.message);
+
       } else {
-        alert(response.message);
+        initAlert(response.message, "error", toastOptions);
       }
   };
 

@@ -1,6 +1,6 @@
 import { Ajax } from "../utils/ajax.js";
 //Cases no está dentro de las llaves xq estoy importando otras cosas por defecto.
-import { closeModal, createI, instanceModal, openModal, options } from "../utils/cases.js";
+import { closeModal, createI, initAlert, instanceModal, openModal, options, toastOptions } from "../utils/cases.js";
 
 const tableBody = document.querySelector("#marcaTblBody");
 const formMarca = document.querySelector("#marcaForm");
@@ -196,12 +196,11 @@ formMarca.addEventListener("submit", (f) => {
   objAjax.request.onload = () => {
     let response = JSON.parse(objAjax.request.responseText);
     if (response.status) {
-      alert(response.message);
-
+      initAlert(response.message, "succes", toastOptions);
       formMarca.reset();
       fetchData();
     } else {
-      alert(response.message);
+      initAlert(response.message, "error", toastOptions);
     }
   };
 
@@ -234,7 +233,7 @@ marcaUpdateForm.addEventListener("submit", (e) => {
     let dataResponse = JSON.parse(response);
 
     if (dataResponse.status) {
-      alert("registro actualizado.");
+      initAlert("Registro actualizado", "success", toastOptions);
       fetchData();
       //Si requiero cerrar el modal de manera automatica, debo de usar el método close, propio de materialize. En caso de que requiera presionar el botón, uso la función que se creó.
       instanModal.close();
