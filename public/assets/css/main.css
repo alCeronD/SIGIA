@@ -181,6 +181,7 @@ input[type="number"] {
     position: absolute !important;
     right: .5em;
     bottom: 0;
+    z-index: -33333;
 }
 .toast{
   background-color: var(--white);

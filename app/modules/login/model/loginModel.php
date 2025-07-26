@@ -37,10 +37,10 @@ class login {
 
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
-            return ['success' => true, 'usuario' => $result->fetch_assoc()];
+            return ['status' => true, 'usuario' => $result->fetch_assoc()];
         }
 
-        return ['success' => false, 'message' => 'Usuario no encontrado'];
+        return ['status' => false, 'message' => 'Usuario no encontrado'];
     }
 
     public function verificarPassword($passwordPlano, $passwordEncriptado) {

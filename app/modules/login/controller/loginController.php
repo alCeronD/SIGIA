@@ -38,15 +38,15 @@ class loginController {
         $modeloLogin = new login($this->conn);
         $usuarioResult = $modeloLogin->buscarUsuarioPorDocumento($documento);
 
-        if (!$usuarioResult['success']) {
-            echo json_encode(['success' => false, 'message' => $usuarioResult['message']]);
+        if (!$usuarioResult['status']) {
+            echo json_encode(['status' => false, 'message' => $usuarioResult['message']]);
             exit();
         }
 
         $usuario = $usuarioResult['usuario'];
 
         if (!$modeloLogin->verificarPassword($password, $usuario['usu_password'])) {
-            echo json_encode(['success' => false, 'message' => 'Contraseña incorrecta']);
+            echo json_encode(['status' => false, 'message' => 'Contraseña incorrecta']);
             exit();
         }
 

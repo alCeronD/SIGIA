@@ -24,7 +24,7 @@
 
       <form id="loginForm" action="<?php echo getUrl("login","login","login"); ?>" method="POST">
         <div class="input-field">
-          <input id="docum" name="docum" type="number" min="0" class="validate" required>
+          <input id="docum" name="docum" type="number" min="0" class="validate" >
           <label for="docum">No. Documento</label>
         </div>
 

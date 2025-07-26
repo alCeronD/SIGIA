@@ -106,7 +106,8 @@ class usuariosController
         }
 
         $data = $_POST;
-        $email = $this->usuariosModel->validateEmail($data['usu_email'], $id, false);
+
+        $email = $this->usuariosModel->validateEmail($data['usu_email'], $id, true);
         if ($email) {
             echo "<script>alert('El correo ya se encuentra en uso por otro usuario.'); window.history.back();</script>";
             return;
