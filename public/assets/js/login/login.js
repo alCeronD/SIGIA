@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.success && data.url) {
                 window.location.href = data.url;
             } else {
-                initAlert("Usuario y contraseña incorrectos", "error", toastOptions);
+                initAlert("Usuario y contraseña incorrectos", "info", toastOptions);
             }
         })
         .catch(error => {

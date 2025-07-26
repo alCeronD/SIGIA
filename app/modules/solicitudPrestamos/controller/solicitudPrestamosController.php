@@ -67,6 +67,7 @@ class solicitudPrestamosController {
         $_POST['elementos_devolutivos_seleccionados']);
 
         $data = $_POST;
+        // dd($data);
 
         $datos = new solicitudPrestamos($this->conn);
         $lastId = $datos->create($data, $rol_id);
