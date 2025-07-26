@@ -43,38 +43,83 @@ class usuariosController
         return include __DIR__ . '/../views/usuariosView.php';
     }
     public function createUser(array $data = [])
-{
+    {
+        header('Content-Type: application/json; charset=utf-8');
 
-    $emailExists = $this->usuariosModel->validateEmail($data['usu_email'], $data['usu_docum'], false);
+        if (!isset($data['usu_email']) || !isset($data['usu_docum'])) {
+            http_response_code(200);
+            echo json_encode([
+                "status" => "error",
+                "message" => "No se recibieron datos válidos para crear el usuario."
+            ]);
+            exit;
+        }
 
-    if ($emailExists) {
-        // TODO: modificar los response.php con mensajes personalizados y captura de data.
-    http_response_code(409); // CONFLICT
-    echo json_encode(["message" => "El correo ya está registrado."]);
-    exit;
-}
 
-    $datos = [
-            'usu_docum'     => $data['usu_docum'],
-            'usu_nombres'   => $data['usu_nombres'],
-            'usu_apellidos' => $data['usu_apellidos'],
-            'usu_password'  => $data['usu_password'],
-            'usu_email'     => $data['usu_email'],
-            'usu_direccion' => $data['usu_direccion'],
-            'usu_telefono'  => $data['usu_telefono'],
-            'usu_id_estado' => 1,
-            'usu_tp_id'     => $data['usu_tp_id'],
-            'rol_id'        => $data['rol_id'],
+        $emailExists = $this->usuariosModel->validateEmail($data['usu_email'], $data['usu_docum'], false);
+
+        if ($emailExists) {
+            http_response_code(409);
+            echo json_encode([
+                "status" => "error",
+                "message" => "El correo ya está registrado."
+            ]);
+            // return;
+            exit;
+        }
+         $documentExists = $this->usuariosModel->validateDocumento($data['usu_docum']);
+            if ($documentExists) {
+                http_response_code(409);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "El número de documento ya está registrado."
+                ]);
+                exit;
+            }
+
+        $datos = [
+            'usu_docum'       => $data['usu_docum'],
+            'usu_nombres'     => $data['usu_nombres'],
+            'usu_apellidos'   => $data['usu_apellidos'],
+            'usu_password'    => $data['usu_password'],
+            'usu_email'       => $data['usu_email'],
+            'usu_direccion'   => $data['usu_direccion'],
+            'usu_telefono'    => $data['usu_telefono'],
+            'usu_id_estado'   => 1,
+            'usu_tp_id'       => $data['usu_tp_id'],
+            'rol_id'          => $data['rol_id'],
             'usu_observacion' => $data['usu_observacion']
         ];
 
         $resultado = $this->usuariosModel->create($datos);
 
         if (!$resultado) {
-            fail('error al crear el recurso');
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al crear el usuario."
+            ]);
+            exit;
         }
+<<<<<<< HEAD
         success('usuario creado exitosamente');
 }
+=======
+
+        http_response_code(200);
+        echo json_encode([
+            "status" => "success",
+            "message" => "Usuario creado exitosamente.",
+            "data" => $datos
+        ]);
+        exit;
+    }
+
+
+
+
+
+>>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
     public function consultUser()
     {
 
@@ -90,28 +135,39 @@ class usuariosController
     }
     public function updateUser()
     {
-
-        if ($_SERVER['REQUEST_METHOD'] ==='POST') {
-        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['usu_id'];
             unset($_POST['usu_id']);
-           
-        
+
+
             $rol_id = $_POST['rol_id'];
             unset($_POST['rol_id']);
-        
+
             $contrasena = $_POST['usu_password'];
             unset($_POST['usu_password']);
-        
         }
 
         $data = $_POST;
+<<<<<<< HEAD
 
         $email = $this->usuariosModel->validateEmail($data['usu_email'], $id, true);
         if ($email) {
             echo "<script>alert('El correo ya se encuentra en uso por otro usuario.'); window.history.back();</script>";
             return;
+=======
+        $userData = $this->usuariosModel->searchU($id); //traigo la informacion del usuario
+        $correoActual = $userData['data']['usu_email']; //guardo el correo que ya tiene registrado en BD para compararlo
+        
+        if ($correoActual != $data['usu_email']) {
+            $email = $this->usuariosModel->validateEmail($data['usu_email'], $id, false);
+            if ($email) {
+                echo "<script>alert('El correo ya se encuentra en uso por otro usuario.'); window.history.back();</script>";
+                return;
+            }
+>>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
         }
+        
+        // dd($correoActual);
         // Validar campos obligatorios (excepto contraseña)
         foreach ($data as $key => $value) {
             if (empty($value)) {
@@ -119,26 +175,24 @@ class usuariosController
                 return;
             }
         }
-    
+
         $dato = new usuarios();
-    
         // Actualizar datos generales
         $dato->update($data, $id);
-    
+
         // Si la contraseña fue diligenciada, actualizarla
         if (!empty($contrasena)) {
             $hash = password_hash($contrasena, PASSWORD_DEFAULT);
             $dato->actualizarContrasena($id, $hash);
         }
-    
         // Actualizar rol del usuario
         $rolesModel = new RolModelo();
-        $rolesModel->actRolUser($id,$rol_id);
+        $rolesModel->actRolUser($id, $rol_id);
 
         // Mostrar usuarios actualizados
         $modeloUsuarios = new usuarios();
         $usuarios = $modeloUsuarios->search();
-    
+
         echo "<script>alert('Usuario actualizado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard') . "';</script>";
         return include_once __DIR__ . '/../views/consultView.php';
     }
@@ -149,7 +203,7 @@ class usuariosController
         $_SESSION['css'] = 'usuarios/usuarios.css';
         $datos = new usuarios();
         $usuarioUpdate = $datos->searchU($id);
-        
+
         include_once __DIR__ . '/../../usuarios/views/updateView.php';
     }
     public function deleteUserView()
@@ -166,11 +220,15 @@ class usuariosController
             if($result['status']){
 echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard') . "';</script>";
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
         } else {
             echo "Método no permitido";
         }
     }
+<<<<<<< HEAD
     public function actualizarDatosView(){
         $_SESSION['css'] = 'usuarios/usuarios.css';
         $id = $_SESSION['usuario']['id'];
@@ -181,6 +239,19 @@ echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" .
         
         include_once __DIR__ . '/../../usuarios/views/updateUserDate.php';
     }
+=======
+
+    public function actualizarDatosView()
+    {
+        $_SESSION['css'] = 'usuarios/usuarios.css';
+        $id = $_SESSION['usuario']['id'];
+        $datos = new usuarios();
+        $usuarioUpdate = $datos->searchU($id);
+
+        include_once __DIR__ . '/../../usuarios/views/updateUserDate.php';
+    }
+
+>>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
     public function updateUserInfo()
     {
         $id = $_POST['usu_id'];
@@ -193,19 +264,23 @@ echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" .
                 return;
             }
         }
-    
+
         $dato = new usuarios();
         $dato->update($data, $id);
-    
+
         $modeloUsuarios = new usuarios();
         $usuarios = $modeloUsuarios->search();
 
         $loginObj = new loginController($this->conn);
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
         echo "<script>alert('Usuario actualizado exitosamente, vuelve a iniciar la sesión.'); window.location.href = '" . getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard') . "';</script>";
         $loginObj->logout();
-        
     }
+<<<<<<< HEAD
     public function userPermView(){
     }
 }
@@ -216,26 +291,49 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         $input = file_get_contents("php://input");
 
         $data = json_decode($input, true);
+=======
 
+    public function userPermView() {}
+}
+
+$objUsuarios = new usuariosController();
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $input = file_get_contents("php://input");
+    $data = json_decode($input, true);
+>>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
+
+    if (is_array($data) && isset($data['action'])) {
         $action = $data['action'];
         unset($data['action']);
-        $newData = $data;
+
         switch ($action) {
-            case 'addUser';
-            $objUsuarios->createUser($newData);
+            case 'addUser':
+                $objUsuarios->createUser($data);
                 break;
 
+<<<<<<< HEAD
             case 'updateUser':
                 # code...
+=======
+            case 'updatEuSER':
+                // Logica para actualizar
+>>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
                 break;
 
-                
-            
             default:
-                # code...
+                http_response_code(400);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Acción no válida"
+                ]);
                 break;
         }
+    } else {
+        http_response_code(400);
+        echo json_encode([
+            "status" => "error",
+            "message" => "No se recibió una acción válida"
+        ]);
     }
-    
-    
 }

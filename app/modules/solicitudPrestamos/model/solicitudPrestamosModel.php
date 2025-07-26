@@ -34,7 +34,7 @@ class solicitudPrestamos
         $pres_destino      = $this->conn->real_escape_string($data['pres_destino']);
         $pres_hor_inicio = $this->conn->real_escape_string($data['pres_hor_inicio']);
         $pres_hor_fin = $this->conn->real_escape_string($data['pres_hor_fin']);
-        
+
         $pres_estado       = 3;
         $tp_pres           = 2;
         $pres_rol          = $rol_usuario;
@@ -179,31 +179,25 @@ class solicitudPrestamos
             return ['success' => false, 'message' => 'No se pudo cancelar el préstamo'];
         }
     }
-
-
     public function registrarElem($pres_cod, $usuario_id, $elm_cod)
     {
-        $pres_cod = (int) $pres_cod;
-        $elm_cod = (int) $elm_cod;
-        $usua_id = (int) $usuario_id;
+        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad) 
+                  VALUES (?, ?, ?, ?)";
+    
+        $stmt = $this->conn->prepare($query);
         $cantidad = 1;
-
-        $query = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES ($pres_cod, $usua_id, $elm_cod, $cantidad)";
-
-        return $this->conn->query($query);
+        $stmt->bind_param("iiii", $pres_cod, $usuario_id, $elm_cod, $cantidad);
+        return $stmt->execute();
     }
-
     public function registrarElemConsumible($pres_cod, $usuario_id, $elm_cod, $cantidad)
     {
-        $pres_cod = (int) $pres_cod;
-        $elm_cod = (int) $elm_cod;
-        $usua_id = (int) $usuario_id;
-        $cantidadElemento = (int) $cantidad;
-
-        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod,pres_el_cantidad) VALUES ($pres_cod, $usua_id, $elm_cod,$cantidadElemento)";
-
-        return $this->conn->query($query);
+        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad) 
+                  VALUES (?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("iiii", $pres_cod, $usuario_id, $elm_cod, $cantidad);
+        return $stmt->execute();
     }
+
 
 
     public function registrarSalida($cantidades_consumibles, $fecha_registro, $usuario_id, $lastId, $elementos_devolutivos)
@@ -271,16 +265,16 @@ class solicitudPrestamos
                 return false;
             }
 
-            $cantidad = 1; 
+            $cantidad = 1;
 
             $stmt->bind_param(
                 "isiiii",
-                $cantidad,          
-                $observacion,       
-                $tipo_movimiento,   
-                $usuario,           
-                $elementoCod,       
-                $id_prestamo        
+                $cantidad,
+                $observacion,
+                $tipo_movimiento,
+                $usuario,
+                $elementoCod,
+                $id_prestamo
             );
 
             if (!$stmt->execute()) {

@@ -21,7 +21,8 @@ class usuarios
     public function __construct()
     {
 
-        $objConn= new Conection();
+        $objConn = new Conection();
+        // $this->conn = $objConn->getConnect();
         $this->conn = $objConn;
     }
     public function create(array $data = [])
@@ -100,65 +101,26 @@ VALUES
             # code...
         }
     }
-    public function search()
+
+    public function validateEmail(string $email = "", $identifier = 0, bool $isId = true): bool
     {
-
         $conn = $this->conn->getConnect();
-        $usuarios = [];
-        $query = "SELECT
-            u.usu_id,
-            u.usu_docum,
-            u.usu_nombres,
-            u.usu_apellidos,
-            u.usu_email,
-            u.usu_telefono,
-            u.usu_direccion,
-            r.rl_nombre,
-            ur.usr_rl_id AS 'rolIdUser',
-            eu.est_nombre AS estado_usuario
-        FROM
-            usuarios u
-        JOIN usuarios_roles ur ON
-            u.usu_id = ur.usr_usu_id
-        JOIN roles r ON
-            ur.usr_rl_id = r.rl_id
-        JOIN estados_usuarios eu ON
-            u.usu_id_estado = eu.est_id;
-        ";
+        $query = $isId
+            ? "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_id != ?"
+            : "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_docum != ?";
 
-        $resultado = $conn->query($query);
-        if ($resultado && $resultado->num_rows > 0) {
-            while ($fila = $resultado->fetch_assoc()) {
-                $usuarios[] = $fila;
-            }
+            
+        $stmt = $conn->prepare($query);
+        $paramType = $isId ? "si" : "ss";
+        $stmt->bind_param($paramType, $email, $identifier);
+
+        if (!$stmt->execute()) {
+            return false;
         }
-
-        return $usuarios;
+        $result = $stmt->get_result();
+       
+        return $result->num_rows > 0;
     }
-public function validateEmail(string $email = "", $identifier = 0, bool $isId = true): bool
-{
-    $conn = $this->conn->getConnect();
-    $query = $isId
-        ? "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_id != ?"
-        : "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_docum != ?";
-
-    $stmt = $conn->prepare($query);
-    if (!$stmt) {
-        // Lanza una excepción, o registra el error según tu estructura
-        return false;
-    }
-
-    // Bind según tipo
-    $paramType = $isId ? "si" : "ss";
-    $stmt->bind_param($paramType, $email, $identifier);
-
-    if (!$stmt->execute()) {
-        return false;
-    }
-
-    $result = $stmt->get_result();
-    return $result->num_rows > 0;
-}
     public function actualizarContrasena($id, $hashContrasena)
     {
 
@@ -174,46 +136,46 @@ public function validateEmail(string $email = "", $identifier = 0, bool $isId = 
         }
     }
     public function searchU(int $id = 0, $isCedula = false)
-    {
-        $conn = $this->conn->getConnect();
+{
+    $conn = $this->conn->getConnect();
 
-        if (!is_int($id)) {
-            return [
-                'message'=> "id no definido",
-                'status'=> false
-            ];
-        }
-
-
-        $query = $isCedula ? "SELECT usu_id FROM usuarios WHERE usu_docum = ?" : "SELECT usu_id, usu_docum, usu_nombres, usu_apellidos, usu_email, usu_direccion, usu_telefono FROM usuarios WHERE usu_id = ?";
-
-        $stmtUser = $conn->prepare($query);
-        $stmtUser->bind_param("i", $id);
-        if (!$stmtUser->execute()) {
-            return 
-            [
-                'message'=> 'error al ejecutar la consulta',
-                'status'=> false
-            ];
-        }
-
-        $result = $stmtUser->get_result();
-
-        if ($result && $result->num_rows > 0) {
-
-            return [
-                'data'=> $result->fetch_assoc(),
-                'message'=> 'registro encontrado',
-                'status'=> true
-            ];
-        }else{
-            return [
-                'data'=> [],
-                'message'=> "no hay registro",
-                'status'=> false
-            ];
-        }
+    if (!is_int($id)) {
+        return [
+            'message'=> "id no definido",
+            'status'=> false
+        ];
     }
+
+    $query = $isCedula
+        ? "SELECT usu_id FROM usuarios WHERE usu_docum = ?"
+        : "SELECT usu_id, usu_docum, usu_nombres, usu_apellidos, usu_email, usu_direccion, usu_telefono FROM usuarios WHERE usu_id = ?";
+
+    $stmtUser = $conn->prepare($query);
+    $stmtUser->bind_param("i", $id);
+    if (!$stmtUser->execute()) {
+        return [
+            'message'=> 'error al ejecutar la consulta',
+            'status'=> false
+        ];
+    }
+
+    $result = $stmtUser->get_result();
+
+    if ($result && $result->num_rows > 0) {
+        return [
+            'data'=> $result->fetch_assoc(),
+            'message'=> 'registro encontrado',
+            'status'=> true
+        ];
+    } else {
+        return [
+            'data'=> [],
+            'message'=> "no hay registro",
+            'status'=> false
+        ];
+    }
+}
+
         public function inhabilitarUsuario(int $usu_id = 0)
     {
 
