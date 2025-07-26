@@ -113,14 +113,80 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Capturar elementos devolutivos seleccionados antes de enviar el formulario
-  document.getElementById('formSolicitudPrestamo').addEventListener('submit', function (e) {
+   document.getElementById('formSolicitudPrestamo').addEventListener('submit', async function (e) {
+    e.preventDefault();
+  
     const seleccionados = Array.from(
       document.querySelectorAll('input[name="elementos_seleccionados[]"]:checked')
     ).map(input => input.value);
-
-    // Insertar los valores en el campo oculto como una lista separada por comas
-    document.getElementById('elementos_devolutivos_seleccionados').value = seleccionados.join(',');
+    const form = e.target;
+    const formData = new FormData(form);
+    
+    // Añade los elementos seleccionados manualmente como string separados por coma
+    formData.set('elementos_devolutivos_seleccionados', seleccionados.join(','));
+    
+    // Convertir a objeto plano
+    const data = Object.fromEntries(formData.entries());
+    
+    // Añadir la acción como se hace en el registro de usuario
+    data.action = "registrarPrestamo";
+    // console.log(data);
+    
+    try {
+      const response = await fetch(
+        "modules/solicitudPrestamos/controller/solicitudPrestamosController.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        }
+      );
+  
+      const result = await response.json();
+  
+      if (result.status === "success") {
+        M.toast({ html: result.message, classes: 'green' });
+      
+        form.reset();
+      
+        // Reiniciar selects y textareas con Materialize
+        M.FormSelect.init(document.querySelectorAll('select'));
+        M.textareaAutoResize(document.querySelector('#pres_observacion'));
+      
+        // Reiniciar contador observación
+        const contador = document.getElementById("contador-observacion");
+        if (contador) {
+          contador.textContent = '0 / 50';
+        }
+      
+        // Limpiar inputs de cantidad de consumibles
+        document.querySelectorAll('.cantConsu').forEach(input => {
+          input.value = '';
+          input.disabled = true;
+        });
+      
+        // Desmarcar todos los checkboxes
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+          checkbox.checked = false;
+        });
+      
+        // Limpiar campos de fecha si existen
+        const fechaEntrega = document.getElementById('pres_fch_entrega');
+        const fechaReserva = document.getElementById('pres_fch_reserva');
+        if (fechaEntrega) fechaEntrega.value = '';
+        if (fechaReserva) fechaReserva.value = '';
+      }
+ else {
+        M.toast({ html: result.message || "Error al registrar el préstamo", classes: 'red' });
+      }
+  
+    } catch (error) {
+      console.error(error);
+      M.toast({ html: "Error inesperado al enviar el formulario", classes: 'red' });
+    }
   });
+
+
 
 
 
@@ -256,3 +322,4 @@ document.querySelectorAll('#tabla-elementos-consumibles-modal tr').forEach(fila 
     }
   });
 });
+

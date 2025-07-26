@@ -22,7 +22,7 @@ class usuarios
     public function __construct()
     {
 
-        $objConn= new Conection();
+        $objConn = new Conection();
         // $this->conn = $objConn->getConnect();
         $this->conn = $objConn;
     }
@@ -156,41 +156,49 @@ VALUES
         $stmtUser = $conn->prepare($query);
         $stmtUser->bind_param("i", $id);
         if (!$stmtUser->execute()) {
-            return null;
+            return [
+                'message'=>'error al ejecutar la consulta',
+                'status'=> true
+            ];
         }
 
         $result = $stmtUser->get_result();
 
         if ($result && $result->num_rows > 0) {
 
-            return $result->fetch_assoc();
+            return [
+                'data'=>$result->fetch_assoc(),
+                'message'=>'Registro encontrado',
+                'status'=>true
+            ];
+        }else {
+            return [
+                'data'=>[],
+                'message'=>'No hay registros',
+                'status'=>false
+            ];
         }
     }
 
-public function validateEmail(string $email = "", $identifier = 0, bool $isId = true): bool
-{
-    $conn = $this->conn->getConnect();
-    $query = $isId
-        ? "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_id != ?"
-        : "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_docum != ?";
+    public function validateEmail(string $email = "", $identifier = 0, bool $isId = true): bool
+    {
+        $conn = $this->conn->getConnect();
+        $query = $isId
+            ? "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_id != ?"
+            : "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_docum != ?";
 
-    $stmt = $conn->prepare($query);
-    if (!$stmt) {
-        // Lanza una excepción, o registra el error según tu estructura
-        return false;
+            
+        $stmt = $conn->prepare($query);
+        $paramType = $isId ? "si" : "ss";
+        $stmt->bind_param($paramType, $email, $identifier);
+
+        if (!$stmt->execute()) {
+            return false;
+        }
+        $result = $stmt->get_result();
+       
+        return $result->num_rows > 0;
     }
-
-    // Bind según tipo
-    $paramType = $isId ? "si" : "ss";
-    $stmt->bind_param($paramType, $email, $identifier);
-
-    if (!$stmt->execute()) {
-        return false;
-    }
-
-    $result = $stmt->get_result();
-    return $result->num_rows > 0;
-}
     public function actualizarContrasena($id, $hashContrasena)
     {
 
@@ -206,27 +214,40 @@ public function validateEmail(string $email = "", $identifier = 0, bool $isId = 
         }
     }
 
-    public function inhabilitarUsuario(int $usu_id = 0){
+    public function inhabilitarUsuario(int $usu_id = 0)
+    {
 
 
         $conn = $this->conn->getConnect();
 
-         $query = "UPDATE usuarios 
+        $query = "UPDATE usuarios 
                       SET usu_id_estado = CASE 
                         WHEN usu_id_estado = 1 THEN 2 
                         ELSE 1 END 
                       WHERE usu_id = ?";
 
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("i", $usu_id);
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $usu_id);
 
-            if (!$stmt->execute()) {
-                return null;  
-            } 
+        if (!$stmt->execute()) {
+            return null;
+        }
 
-            return true;
+        return true;
+    }
+    
+   public function validateDocumento($documento)
+    {
+        $documento = trim($documento);
+        $conn = $this->conn->getConnect();
+        $sql = "SELECT 1 FROM usuarios WHERE TRIM(usu_docum) = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$documento]);
+        
+        $result = $stmt->fetch();
+        return is_array($result); 
     }
 
-    
+
 
 }

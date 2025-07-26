@@ -588,20 +588,25 @@ class ElementoModelo
         ];
     }
 
-    public function getElementByType(int $id = 1)
+    public function getElementByType(int $id = 1): ?int
     {
-        $sqlType = "SELECT elm_cod_tp_elemento  FROM elementos e WHERE elm_cod = ?";
-
-        $stmtType = $this->conn->prepare($sqlType);
-        $stmtType->bind_param('i', $id);
-
-        if (!$stmtType->execute()) {
+        $sql = "SELECT elm_cod_tp_elemento FROM elementos WHERE elm_cod = ?";
+    
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('i', $id);
+    
+        if (!$stmt->execute()) {
             return null;
         }
-
-        $result = $stmtType->get_result();
-
-        return (int) $result->fetch_assoc()['elm_cod_tp_elemento'];
+    
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+    
+        if (!$row) {
+            return null;
+        }
+    
+        return (int) $row['elm_cod_tp_elemento'];
     }
 
 
