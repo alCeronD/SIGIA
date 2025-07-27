@@ -101,10 +101,6 @@ class usuariosController
             ]);
             exit;
         }
-<<<<<<< HEAD
-        success('usuario creado exitosamente');
-}
-=======
 
         http_response_code(200);
         echo json_encode([
@@ -114,12 +110,6 @@ class usuariosController
         ]);
         exit;
     }
-
-
-
-
-
->>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
     public function consultUser()
     {
 
@@ -148,13 +138,6 @@ class usuariosController
         }
 
         $data = $_POST;
-<<<<<<< HEAD
-
-        $email = $this->usuariosModel->validateEmail($data['usu_email'], $id, true);
-        if ($email) {
-            echo "<script>alert('El correo ya se encuentra en uso por otro usuario.'); window.history.back();</script>";
-            return;
-=======
         $userData = $this->usuariosModel->searchU($id); //traigo la informacion del usuario
         $correoActual = $userData['data']['usu_email']; //guardo el correo que ya tiene registrado en BD para compararlo
         
@@ -164,7 +147,6 @@ class usuariosController
                 echo "<script>alert('El correo ya se encuentra en uso por otro usuario.'); window.history.back();</script>";
                 return;
             }
->>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
         }
         
         // dd($correoActual);
@@ -220,15 +202,10 @@ class usuariosController
             if($result['status']){
 echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard') . "';</script>";
             }
-<<<<<<< HEAD
-
-=======
->>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
         } else {
             echo "Método no permitido";
         }
     }
-<<<<<<< HEAD
     public function actualizarDatosView(){
         $_SESSION['css'] = 'usuarios/usuarios.css';
         $id = $_SESSION['usuario']['id'];
@@ -239,19 +216,6 @@ echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" .
         
         include_once __DIR__ . '/../../usuarios/views/updateUserDate.php';
     }
-=======
-
-    public function actualizarDatosView()
-    {
-        $_SESSION['css'] = 'usuarios/usuarios.css';
-        $id = $_SESSION['usuario']['id'];
-        $datos = new usuarios();
-        $usuarioUpdate = $datos->searchU($id);
-
-        include_once __DIR__ . '/../../usuarios/views/updateUserDate.php';
-    }
-
->>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
     public function updateUserInfo()
     {
         $id = $_POST['usu_id'];
@@ -273,25 +237,9 @@ echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" .
 
         $loginObj = new loginController($this->conn);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
         echo "<script>alert('Usuario actualizado exitosamente, vuelve a iniciar la sesión.'); window.location.href = '" . getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard') . "';</script>";
         $loginObj->logout();
     }
-<<<<<<< HEAD
-    public function userPermView(){
-    }
-}
-
-$objUsuarios = new usuariosController();
-if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $input = file_get_contents("php://input");
-
-        $data = json_decode($input, true);
-=======
 
     public function userPermView() {}
 }
@@ -301,7 +249,6 @@ $objUsuarios = new usuariosController();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $input = file_get_contents("php://input");
     $data = json_decode($input, true);
->>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
 
     if (is_array($data) && isset($data['action'])) {
         $action = $data['action'];
@@ -312,13 +259,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $objUsuarios->createUser($data);
                 break;
 
-<<<<<<< HEAD
             case 'updateUser':
                 # code...
-=======
-            case 'updatEuSER':
-                // Logica para actualizar
->>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
                 break;
 
             default:
