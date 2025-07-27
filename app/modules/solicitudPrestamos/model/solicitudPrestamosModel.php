@@ -31,8 +31,11 @@ class solicitudPrestamos
         $pres_fch_entrega  = $this->conn->real_escape_string($data['pres_fch_entrega']);
         $pres_observacion  = $this->conn->real_escape_string($data['pres_observacion']);
         $pres_destino      = $this->conn->real_escape_string($data['pres_destino']);
-        $pres_hor_inicio = $this->conn->real_escape_string($data['pres_hor_inicio']);
-        $pres_hor_fin = $this->conn->real_escape_string($data['pres_hor_fin']);
+        // Producto de cambios, se descarta el hora inicio y hora fin, no se elimina de las tablas de la base de datos, sin embargo, se comentan  y se declaran nullas.
+        // $pres_hor_inicio = $this->conn->real_escape_string($data['pres_hor_inicio'])?? null;
+        // $pres_hor_fin = $this->conn->real_escape_string($data['pres_hor_fin'])?? null;
+        $pres_hor_inicio =  null;
+        $pres_hor_fin = null;
 
         $pres_estado       = 3;
         $tp_pres           = 2;

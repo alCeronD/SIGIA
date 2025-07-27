@@ -50,8 +50,8 @@
       </div>
 
       <div class="input-field horaInicio">
-        <input type="time" id="pres_hor_inicio" name="pres_hor_inicio" required>
-        <label for="pres_hor_inicio" class="active">Hora de Inicio *</label>
+        <!-- <input type="time" id="pres_hor_inicio" name="pres_hor_inicio" required> -->
+        <!-- <label for="pres_hor_inicio" class="active">Hora de Inicio *</label> -->
       </div>
 
       <div class="input-field fechaEntrega">
@@ -60,8 +60,8 @@
       </div>
 
       <div class="input-field horaFin">
-        <input type="time" id="pres_hor_fin" name="pres_hor_fin" required>
-        <label for="pres_hor_fin" class="active">Hora de Fin *</label>
+        <!-- <input type="time" id="pres_hor_fin" name="pres_hor_fin" required> -->
+        <!-- <label for="pres_hor_fin" class="active">Hora de Fin *</label> -->
       </div>
 
       <div class="input-field destino">
