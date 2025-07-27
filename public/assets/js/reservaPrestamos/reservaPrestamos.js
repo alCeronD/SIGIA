@@ -1,7 +1,6 @@
 import { addClassItem } from "../utils/cases.js";
 import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,timePickerOptions,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, sendData, inputsForm, iDom, objDataConsumibles, objDataUsers } from "./index.js";
 const objAjax = new Ajax();
-
 btnDoom.btnModalPreviewElements.append(iDom.iCreatePreview);
 btnDoom.btnAddElements.classList.add("btnClick");
 btnDoom.btnAddElements.append(iDom.iAddElement);
@@ -14,37 +13,9 @@ const valuePage = document.querySelector("#valuePage");
 //Creo una instancia del modal
 const instanPreview = instanceModal("#modalPreviewElements", options);
 const formSolicitudPrestamo = document.querySelector("#formSolicitudPrestamo");
-inputsForm.horaInicio.style.visibility = "hidden";
-inputsForm.horaInicio.style.opacity = "0";
-inputsForm.horaFin.style.visibility = "hidden";
-inputsForm.horaFin.style.opacity = "0";
-inputsForm.horaInicioFin.style.visibility = "hidden";
-inputsForm.horaInicioFin.style.opacity = "0";
+
 tablesDoom.tblBodyUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
 
-inputsForm.areaDestino.addEventListener("change", () => {
-  let value = areaDestino.options[areaDestino.selectedIndex];
-  //console.log(value);
-  if (value.value === "centro") {
-    //TODO: Mejorar a función para mostrar los elementos
-    //TODO: Cambiar los input de tipo type, en vez de que esten ocultos, implementarlos en el html cuando su valor sea centro.
-    inputsForm.horaInicio.style.visibility = "visible";
-    inputsForm.horaInicio.style.opacity = "1";
-    inputsForm.horaFin.style.visibility = "visible";
-    inputsForm.horaFin.style.opacity = "1";
-    inputsForm.horaInicioFin.style.visibility = "visible";
-    inputsForm.horaInicioFin.style.opacity = "1";
-  }
-  if (value.value === "externo" || value.value === "---") {
-    //TODO: mejorar a función para ocultar los elementos.
-    inputsForm.horaInicio.style.visibility = "hidden";
-    inputsForm.horaInicio.style.opacity = "0";
-    inputsForm.horaFin.style.visibility = "hidden";
-    inputsForm.horaFin.style.opacity = "0";
-    inputsForm.horaInicioFin.style.visibility = "hidden";
-    inputsForm.horaInicioFin.style.opacity = "0";
-  }
-});
 // variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
 let pagesUsers;
 let pagesElements;
@@ -673,34 +644,11 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   //Agrego los códigos de los elementos al data.
   data.codigosElementos = codigosElementos;
 
-  if (!data["areaDestino"]) {
-    initAlert("El área de destino es obligatoria.", "error", toastOptions);
-    return;
-  }
-
   objAjax.request.open(
     "POST",
     "modules/reservaPrestamos/controller/reservaController.php"
   );
   objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
-  //Si el area destino es mayor, es decir, si su valor es igual a centro, valida si contiene valores en las horas.
-  //TODO: Mejorar logica antes de validar todo.
-  if (data["areaDestino"] === "centro") {
-    if (!data["inicio"] || !data["fin"]) {
-      // alert("La hora de inicio y fin son obligatorias para el centro.");
-      initAlert(
-        "La hora de inicio y fin son obligatorias para el centro.",
-        "warning",
-        toastOptions
-      );
-      return;
-    }
-  } else if (data["areaDestino"] === "externo") {
-    // Eliminar las horas si no aplican
-    data["inicio"] = null;
-    data["fin"] = null;
-  }
 
   let dataJson = JSON.stringify({
     data: data,
@@ -712,10 +660,9 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
       "error",
       toastOptions
     );
-    // ESTO NO LO PUEDO HACER PORQUE SI LO HAGO LOS ELEMENTOS NO VAN A ESTAR VISIBLES, la unica forma que sirva es que la petición se haga cuando se aplique el DOOMCONTENTLOADER.
-    // modalAddDevolutivos.open();
+
     btnDoom.btnAddElements.classList.remove("shake");
-    //Obligo al doom a que vuelva a re ejecutar este elemento.
+    //Obligo al dom a que vuelva a re ejecutar este elemento.
     void btnDoom.btnAddElements.offsetWidth;
     btnDoom.btnAddElements.classList.add("shake");
     return;
@@ -762,13 +709,7 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
         inputsForm.inputTelefono.textContent = "";
         tablesDoom.tblBodyPreviewElements.innerHTML = "";
 
-        //Oculto inputs de tipo time.
-        inputsForm.horaInicio.style.visibility = "hidden";
-        inputsForm.horaInicio.style.opacity = "0";
-        inputsForm.horaFin.style.visibility = "hidden";
-        inputsForm.horaFin.style.opacity = "0";
-        inputsForm.horaInicioFin.style.visibility = "hidden";
-        inputsForm.horaInicioFin.style.opacity = "0";
+
       }
     };
 

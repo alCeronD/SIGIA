@@ -32,27 +32,16 @@
                 <label for="email" class="labelForm">Email: <span id="email" name="email"></span></label>
             </div>
             <div class="input-field inputContent areaDestino">
-                <select id="areaDestino" name="areaDestino">
-                    <option value="" disabled selected>Seleccione una opción</option>
-                    <option value="centro">Centro</option>
-                    <!-- <option value="externo">Externo</option> -->
-                </select>
-                <label for="areaDestino">Área de destino: *</label>
+                <input id="areaDestino" name="areaDestino" type="text" class="validate">
+                <label for="areaDestino">Dirección del destino *</label>
             </div>
             <div class="input-field inputContent fechaReserva">
-                <input type="text" class="datepicker" name="fechaReserva" id="fechaReserva" placeholder="Fecha reserva *">
-            </div>
-
-            <div class=" inputContent ">
-                <div class="horaInicioFin horaInicio horaFin">
-                    <input type="text" class="inputForm timepicker" id="inicio" name="inicio">
-                    <label for="inicio" class="labelForm">Hora inicio:</label>
-                    <input type="text" class="inputForm timepicker" id="fin" name="fin">
-                    <label for="fin" class="labelForm">Hora fin:</label>
-                </div>
+                <input type="text" class="datepicker" name="fechaReserva" id="fechaReserva" placeholder="Fecha de reserva *">
+                <label for="fechaReserva">Fecha de reserva*</label>
             </div>
             <div class="input-field inputContent fechaDevolucion">
                 <input type="text" class="datepicker" name="fechaDevolucion" id="fechaDevolucion" placeholder="Fecha Devolución *">
+                <label for="fechaDevolucion">Fecha Devolución *</label>
             </div>
 
             <div class="input-field inputContent inputObservaciones">

@@ -102,7 +102,7 @@ VALUES
         }
     }
 
-     public function search()
+    public function search()
     {
 
         $conn = $this->conn->getConnect();
@@ -137,9 +137,6 @@ VALUES
 
         return $usuarios;
     }
-
-
-
     public function validateEmail(string $email = "", $identifier = 0, bool $isId = true): bool
     {
         $conn = $this->conn->getConnect();
@@ -147,7 +144,7 @@ VALUES
             ? "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_id != ?"
             : "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_docum != ?";
 
-            
+
         $stmt = $conn->prepare($query);
         $paramType = $isId ? "si" : "ss";
         $stmt->bind_param($paramType, $email, $identifier);
@@ -156,7 +153,7 @@ VALUES
             return false;
         }
         $result = $stmt->get_result();
-       
+
         return $result->num_rows > 0;
     }
     public function actualizarContrasena($id, $hashContrasena)
@@ -174,47 +171,57 @@ VALUES
         }
     }
     public function searchU(int $id = 0, $isCedula = false)
-{
-    $conn = $this->conn->getConnect();
+    {
+        $conn = $this->conn->getConnect();
 
-    if (!is_int($id)) {
-        return [
-            'message'=> "id no definido",
-            'status'=> false
-        ];
+        if (!is_int($id)) {
+            return [
+                'message' => "id no definido",
+                'status' => false
+            ];
+        }
+
+        $query = $isCedula
+            ? "SELECT usu_id FROM usuarios WHERE usu_docum = ?"
+            : "SELECT usu_id, usu_docum, usu_nombres, usu_apellidos, usu_email, usu_direccion, usu_telefono FROM usuarios WHERE usu_id = ?";
+
+        $stmtUser = $conn->prepare($query);
+        $stmtUser->bind_param("i", $id);
+        if (!$stmtUser->execute()) {
+            return [
+                'message' => 'error al ejecutar la consulta',
+                'status' => false
+            ];
+        }
+
+        $result = $stmtUser->get_result();
+
+        if ($result && $result->num_rows > 0) {
+            return [
+                'data' => $result->fetch_assoc(),
+                'message' => 'registro encontrado',
+                'status' => true
+            ];
+        } else {
+            return [
+                'data' => [],
+                'message' => "no hay registro",
+                'status' => false
+            ];
+        }
     }
+    public function validateDocumento($documento)
+    {
+        $documento = trim($documento);
+        $conn = $this->conn->getConnect();
+        $sql = "SELECT 1 FROM usuarios WHERE TRIM(usu_docum) = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$documento]);
 
-    $query = $isCedula
-        ? "SELECT usu_id FROM usuarios WHERE usu_docum = ?"
-        : "SELECT usu_id, usu_docum, usu_nombres, usu_apellidos, usu_email, usu_direccion, usu_telefono FROM usuarios WHERE usu_id = ?";
-
-    $stmtUser = $conn->prepare($query);
-    $stmtUser->bind_param("i", $id);
-    if (!$stmtUser->execute()) {
-        return [
-            'message'=> 'error al ejecutar la consulta',
-            'status'=> false
-        ];
+        $result = $stmt->fetch();
+        return is_array($result);
     }
-
-    $result = $stmtUser->get_result();
-
-    if ($result && $result->num_rows > 0) {
-        return [
-            'data'=> $result->fetch_assoc(),
-            'message'=> 'registro encontrado',
-            'status'=> true
-        ];
-    } else {
-        return [
-            'data'=> [],
-            'message'=> "no hay registro",
-            'status'=> false
-        ];
-    }
-}
-
-        public function inhabilitarUsuario(int $usu_id = 0)
+    public function inhabilitarUsuario(int $usu_id = 0)
     {
 
         try {
@@ -222,8 +229,8 @@ VALUES
 
             if ($usu_id <= 0) {
                 return [
-                    'status'=> false,
-                    'message'=> "El id no debe ser negativo"
+                    'status' => false,
+                    'message' => "El id no debe ser negativo"
                 ];
             }
 

@@ -52,23 +52,6 @@ class ReservaController
             success('Usuarios activos', $data);
         }
 
-
-        // $data = [
-        //     'dataReserva'=> [],
-        //     'elementos'=> [
-        //         'devolutivos'=> [
-        //             'codigoElemento'=> 423,
-        //             'cantidadElemento'=> 1
-        //         ],
-        //         'consumibles'=> [
-        //             [
-        //                 'codigoElemento'=> 54324,
-        //                 'cantidadElemento'=> 43
-        //             ]
-        //         ]
-        //     ]
-        // ];
-
         $elementos = $data['elementos'];
         $devolutivos = $elementos['devolutivos'];
         $consumibles = $elementos['consumibles'];
@@ -132,12 +115,6 @@ class ReservaController
         $data['pres_fch_reserva'] = $data['fechaReserva'];
         unset($data['fechaReserva']);
 
-        $data['pres_hor_inicio'] = $data['inicio'];
-        unset($data['inicio']);
-
-        $data['pres_hor_fin'] = $data['fin'];
-        unset($data['fin']);
-
         $data['pres_fch_entrega'] = $data['fechaDevolucion'];
         unset($data['fechaDevolucion']);
 
@@ -160,13 +137,6 @@ class ReservaController
     }
 
 
-    
-
-
-
-
-
-    
     //Función para validar la solicitud del aprendiz/instructor y cambiar su estado a validado
     public function setSolicitud(array $data = [])
     {
