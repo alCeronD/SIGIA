@@ -58,6 +58,8 @@ class usuariosController
 
         $emailExists = $this->usuariosModel->validateEmail($data['usu_email'], $data['usu_docum'], false);
 
+        
+
         if ($emailExists) {
             http_response_code(409);
             echo json_encode([

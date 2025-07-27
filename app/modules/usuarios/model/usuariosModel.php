@@ -102,6 +102,44 @@ VALUES
         }
     }
 
+     public function search()
+    {
+
+        $conn = $this->conn->getConnect();
+        $usuarios = [];
+        $query = "SELECT
+            u.usu_id,
+            u.usu_docum,
+            u.usu_nombres,
+            u.usu_apellidos,
+            u.usu_email,
+            u.usu_telefono,
+            u.usu_direccion,
+            r.rl_nombre,
+            ur.usr_rl_id AS 'rolIdUser',
+            eu.est_nombre AS estado_usuario
+        FROM
+            usuarios u
+        JOIN usuarios_roles ur ON
+            u.usu_id = ur.usr_usu_id
+        JOIN roles r ON
+            ur.usr_rl_id = r.rl_id
+        JOIN estados_usuarios eu ON
+            u.usu_id_estado = eu.est_id;
+        ";
+
+        $resultado = $conn->query($query);
+        if ($resultado && $resultado->num_rows > 0) {
+            while ($fila = $resultado->fetch_assoc()) {
+                $usuarios[] = $fila;
+            }
+        }
+
+        return $usuarios;
+    }
+
+
+
     public function validateEmail(string $email = "", $identifier = 0, bool $isId = true): bool
     {
         $conn = $this->conn->getConnect();
