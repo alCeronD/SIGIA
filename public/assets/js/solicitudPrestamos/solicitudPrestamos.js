@@ -1,7 +1,10 @@
-///////////////////////////////// 
-//MODAL ELEMENTOS DEVOLUTIVOS 
-///////////////////////////////// 
-document.addEventListener('DOMContentLoaded', function () {
+/////////////////////////////////
+//MODAL ELEMENTOS DEVOLUTIVOS
+
+import { initAlert, toastOptions } from "../utils/cases.js";
+
+/////////////////////////////////
+document.addEventListener("DOMContentLoaded", function () {
   M.Modal.init(document.querySelectorAll(".modal"));
   M.FormSelect.init(document.querySelectorAll("select"));
   const presFchReserva = document.getElementById("pres_fch_reserva");
@@ -121,32 +124,31 @@ document.addEventListener('DOMContentLoaded', function () {
   let devolutivos = [];
   let consumibles = [];
 
-/**
- * Agrega elementos a los arreglos correspondientes siendo devolutivos o consumibles, estos adicionan su cantidad y su código.
- *
- * @function
- * @param {Object} [params={}] - Parámetros para gestionar el elemento.
- * @param {string|null} params.typeElement - Tipo del elemento: "1" para devolutivo, "2" para consumible.
- * @param {number|string} params.cantidad - Cantidad del elemento (puede ser número o string desde input).
- * @param {string|null} params.codigoElemento - Código único del elemento.
- * @param {HTMLInputElement|null} params.input - Elemento checkbox HTML asociado.
- *
- * @returns {void}
- */
+  /**
+   * Agrega elementos a los arreglos correspondientes siendo devolutivos o consumibles, estos adicionan su cantidad y su código.
+   *
+   * @function
+   * @param {Object} [params={}] - Parámetros para gestionar el elemento.
+   * @param {string|null} params.typeElement - Tipo del elemento: "1" para devolutivo, "2" para consumible.
+   * @param {number|string} params.cantidad - Cantidad del elemento (puede ser número o string desde input).
+   * @param {string|null} params.codigoElemento - Código único del elemento.
+   * @param {HTMLInputElement|null} params.input - Elemento checkbox HTML asociado.
+   *
+   * @returns {void}
+   */
   function addElementos({
     typeElement = null,
     cantidad = 0,
     codigoElemento = null,
     input = null,
   } = {}) {
-
     // TODO: se puede re factorizar.
     if (input.checked && typeElement === "1") {
       devolutivos.push({
         codigo: codigoElemento,
         cantidad: cantidad,
       });
-      console.log(devolutivos);
+      // console.log(devolutivos);
     } else if (!input.checked && typeElement === "1") {
       devolutivos = devolutivos.filter(
         (devolutivo) => devolutivo.codigo !== codigoElemento
@@ -164,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
       );
     }
 
+    console.log(consumibles);
   }
 
   // Agregar elementos devolutivos al arreglo.
@@ -179,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const codigoElemento = input.value;
       const tipoElemento = input.dataset.tpelementodev;
       const cantidad = input.dataset.cantidaddev;
-      console.log(input);
+      // console.log(input);
       addElementos({
         typeElement: tipoElemento,
         cantidad,
@@ -189,125 +192,47 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-
   //Agregar elementos consumibles con su cantidad al arreglo.
-  document.querySelectorAll('#tabla-elementos-consumibles-modal tr').forEach(fila => {
-  const checkbox = fila.querySelector('input[type="checkbox"]');
-  const inputCantidad = fila.querySelector('.cantConsu');
+  document
+    .querySelectorAll("#tabla-elementos-consumibles-modal tr")
+    .forEach((fila) => {
+      const checkbox = fila.querySelector('input[type="checkbox"]');
+      const inputCantidad = fila.querySelector(".cantConsu");
 
-  // Desactivar el input de cantidad inicialmente
-  inputCantidad.disabled = true;
+      // Desactivar el input de cantidad inicialmente
+      inputCantidad.disabled = true;
 
-  // Listener para habilitar/deshabilitar el input cuando se marque el checkbox
-  checkbox.addEventListener('change', (e) => {
-    inputCantidad.disabled = !checkbox.checked;
+      // Listener para habilitar/deshabilitar el input cuando se marque el checkbox
+      checkbox.addEventListener("change", (e) => {
+        inputCantidad.disabled = !checkbox.checked;
 
-    if (!checkbox.checked) {
-      inputCantidad.value = '';
+        if (!checkbox.checked) {
+          inputCantidad.value = "";
 
-      // Eliminar del arreglo si desmarca el checkbox
-      const codigoElemento = checkbox.value;
-      consumibles = consumibles.filter(item => item.codigo !== codigoElemento);
-    }
-  });
-
-  // Listener para capturar el input cuando el usuario escribe la cantidad
-  inputCantidad.addEventListener('input', () => {
-    // Solo ejecutar si el checkbox está marcado
-    if (checkbox.checked) {
-      const codigoElemento = checkbox.value;
-      const cantidad = inputCantidad.value;
-      const tipoElemento = checkbox.dataset.tpelementocons;
-
-      addElementos({
-        typeElement: tipoElemento,
-        cantidad: cantidad,
-        codigoElemento: codigoElemento,
-        input: checkbox
+          // Eliminar del arreglo si desmarca el checkbox
+          const codigoElemento = checkbox.value;
+          consumibles = consumibles.filter(
+            (item) => item.codigo !== codigoElemento
+          );
+        }
       });
-    }
-  });
-});
 
-    // Capturar elementos devolutivos seleccionados antes de enviar el formulario
-     document.getElementById('formSolicitudPrestamo').addEventListener('submit', async function (e) {
-      e.preventDefault();
+      // Listener para capturar el input cuando el usuario escribe la cantidad
+      inputCantidad.addEventListener("input", () => {
+        // Solo ejecutar si el checkbox está marcado
+        if (checkbox.checked) {
+          const codigoElemento = checkbox.value;
+          const cantidad = inputCantidad.value;
+          const tipoElemento = checkbox.dataset.tpelementocons;
 
-      const form = e.target;
-      const formData = new FormData(form);
-      formData.delete("elementosDevolutivos");
-
-      // Añade los elementos seleccionados manualmente como string separados por coma
-      const getDataformulario = Object.fromEntries(formData.entries());
-
-       // Añadir la acción como se hace en el registro de usuario
-      getDataformulario.action = "registrarPrestamo";
-
-      console.log("Consumibles:", consumibles);
-      console.log("Devolutivos:", devolutivos)
-
-      // Agregar los arreglos de elementos al objeto de datos
-      let data = {
-        ...getDataformulario,
-        elementos_consumibles: consumibles,
-        elementos_devolutivos: devolutivos
-      };
-
-      
-
-      console.log(data);
-  //     try {
-  //       const response = await fetch(
-  //         "modules/solicitudPrestamos/controller/solicitudPrestamosController.php",
-  //         {
-  //           method: "POST",
-  //           headers: { "Content-Type": "application/json" },
-  //           body: JSON.stringify(data)
-  //         }
-  //       );
-
-  //       const result = await response.json();
-
-  //       if (result.status === "success") {
-  //         M.toast({ html: result.message, classes: 'green' });
-
-  //         form.reset();
-
-  //         // Reiniciar selects y textareas con Materialize
-  //         M.FormSelect.init(document.querySelectorAll('select'));
-  //         M.textareaAutoResize(document.querySelector('#pres_observacion'));
-
-  //         // Reiniciar contador observación
-  //         const contador = document.getElementById("contador-observacion");
-  //         if (contador) {
-  //           contador.textContent = '0 / 50';
-  //         }
-
-  //         // Limpiar inputs de cantidad de consumibles
-  //         document.querySelectorAll('.cantConsu').forEach(input => {
-  //           input.value = '';
-  //           input.disabled = true;
-  //         });
-
-  //         // Desmarcar todos los checkboxes
-  //         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-  //           checkbox.checked = false;
-  //         });
-
-  //         // Limpiar campos de fecha si existen
-  //         const fechaEntrega = document.getElementById('pres_fch_entrega');
-  //         const fechaReserva = document.getElementById('pres_fch_reserva');
-  //         if (fechaEntrega) fechaEntrega.value = '';
-  //         if (fechaReserva) fechaReserva.value = '';
-  //       }
-  //  else {
-  //         M.toast({ html: result.message || "Error al registrar el préstamo", classes: 'red' });
-  //       }
-
-  //     } catch (error) {
-  //       console.error(error);
-  //       M.toast({ html: "Error inesperado al enviar el formulario", classes: 'red' });
-  //     }
+          addElementos({
+            typeElement: tipoElemento,
+            cantidad: cantidad,
+            codigoElemento: codigoElemento,
+            input: checkbox,
+          });
+        }
+      });
     });
 
   const textareaObs = document.getElementById("pres_observacion");
@@ -319,61 +244,168 @@ document.addEventListener('DOMContentLoaded', function () {
       contador.textContent = `${longitud} / 50`;
     });
   }
+
+// Capturar elementos devolutivos seleccionados antes de enviar el formulario
+document
+  .getElementById("formSolicitudPrestamo")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+    formData.delete("elementosDevolutivos");
+
+    const getDataformulario = Object.fromEntries(formData.entries());
+
+    getDataformulario.action = "registrarPrestamo";
+
+    console.log(consumibles);
+    console.log(devolutivos);
+
+    let data = {
+      ...getDataformulario,
+      elementos_consumibles: consumibles,
+      elementos_devolutivos: devolutivos,
+    };
+
+    try {
+      const response = await fetch(
+        "modules/solicitudPrestamos/controller/solicitudPrestamosController.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        }
+      );
+      const result = await response.json();
+
+      if (result.status === "success") {
+        initAlert(result.message, "succes", toastOptions);
+
+        form.reset();
+
+        // Reiniciar selects y textareas con Materialize
+        M.FormSelect.init(document.querySelectorAll('select'));
+        M.textareaAutoResize(document.querySelector('#pres_observacion'));
+
+        // Reiniciar contador observación
+        const contador = document.getElementById("contador-observacion");
+        if (contador) {
+          contador.textContent = '0 / 50';
+        }
+
+        // Limpiar inputs de cantidad de consumibles
+        document.querySelectorAll('.cantConsu').forEach(input => {
+          input.value = '';
+          input.disabled = true;
+        });
+
+        // Desmarcar todos los checkboxes
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+          checkbox.checked = false;
+        });
+
+        // Limpiar campos de fecha si existen
+        const fechaEntrega = document.getElementById('pres_fch_entrega');
+        const fechaReserva = document.getElementById('pres_fch_reserva');
+        if (fechaEntrega) fechaEntrega.value = '';
+        if (fechaReserva) fechaReserva.value = '';
+
+        // Recargar la página después de 1.5 segundos para resetear todo
+        setTimeout(() => {
+          location.reload();
+        }, 15000);
+
+      } else {
+        M.toast({ html: result.message || "Error al registrar el préstamo", classes: 'red' });
+      }
+
+    } catch (error) {
+      console.error(error);
+      M.toast({ html: "Error inesperado al enviar el formulario", classes: 'red' });
+    }
+  });
+
+
 });
 
 
-///////////////////////////////// 
-//MODAL ELEMENTOS CONSUMIBLES 
-///////////////////////////////// 
+
+const textareaObs = document.getElementById("pres_observacion");
+const contador = document.getElementById("contadorObservacion");
+
+if (textareaObs && contador) {
+  textareaObs.addEventListener("input", () => {
+    const longitud = textareaObs.value.length;
+    contador.textContent = `${longitud} / 50`;
+  });
+}
+// });
+
+/////////////////////////////////
+//MODAL ELEMENTOS CONSUMIBLES
+/////////////////////////////////
 //Informacion para modal de elementos consumibles
-const filtroAreaConsumibles = document.getElementById('filtro_area_modal_consumibles');
-const paginacionConsumibles = document.getElementById('paginacion_consumibles');
-const filasConsumiblesOriginales = Array.from(document.querySelectorAll('#tabla-elementos-consumibles-modal tr'));
+const filtroAreaConsumibles = document.getElementById(
+  "filtro_area_modal_consumibles"
+);
+const paginacionConsumibles = document.getElementById("paginacion_consumibles");
+const filasConsumiblesOriginales = Array.from(
+  document.querySelectorAll("#tabla-elementos-consumibles-modal tr")
+);
 let filasConsumiblesFiltradas = [...filasConsumiblesOriginales];
 const itemsPorPagina = 5;
 
-filtroAreaConsumibles.addEventListener('change', () => {
+filtroAreaConsumibles.addEventListener("change", () => {
   const selectedArea = filtroAreaConsumibles.value;
-  filasConsumiblesFiltradas = filasConsumiblesOriginales.filter(fila => {
-    const area = fila.getAttribute('data-area');
+  filasConsumiblesFiltradas = filasConsumiblesOriginales.filter((fila) => {
+    const area = fila.getAttribute("data-area");
     return selectedArea === "" || area === selectedArea;
   });
   generarPaginacionConsumibles();
 });
 
 function actualizarTablaConsumibles(pagina) {
-  filasConsumiblesOriginales.forEach(fila => fila.style.display = 'none');
+  filasConsumiblesOriginales.forEach((fila) => (fila.style.display = "none"));
   const inicio = (pagina - 1) * itemsPorPagina;
   const fin = inicio + itemsPorPagina;
-  filasConsumiblesFiltradas.slice(inicio, fin).forEach(fila => fila.style.display = 'table-row');
+  filasConsumiblesFiltradas
+    .slice(inicio, fin)
+    .forEach((fila) => (fila.style.display = "table-row"));
 }
 
 function generarPaginacionConsumibles() {
-  paginacionConsumibles.innerHTML = '';
-  const totalPaginas = Math.ceil(filasConsumiblesFiltradas.length / itemsPorPagina);
+  paginacionConsumibles.innerHTML = "";
+  const totalPaginas = Math.ceil(
+    filasConsumiblesFiltradas.length / itemsPorPagina
+  );
 
   for (let i = 1; i <= totalPaginas; i++) {
-    const li = document.createElement('li');
-    li.classList.add('waves-effect');
+    const li = document.createElement("li");
+    li.classList.add("waves-effect");
     li.innerHTML = `<a href="#!">${i}</a>`;
-    li.addEventListener('click', (e) => {
+    li.addEventListener("click", (e) => {
       e.preventDefault();
       actualizarTablaConsumibles(i);
-      document.querySelectorAll('#paginacion_consumibles li').forEach(el => el.classList.remove('active'));
-      li.classList.add('active');
+      document
+        .querySelectorAll("#paginacion_consumibles li")
+        .forEach((el) => el.classList.remove("active"));
+      li.classList.add("active");
     });
     paginacionConsumibles.appendChild(li);
   }
 
   if (totalPaginas > 0) {
-    paginacionConsumibles.firstChild.classList.add('active');
+    paginacionConsumibles.firstChild.classList.add("active");
     actualizarTablaConsumibles(1);
   }
 }
 // Inicializar cuando se abre el modal de consumibles
-const modalTriggerConsumibles = document.querySelector('a[href="#modalSeleccionConsumibles"]');
+const modalTriggerConsumibles = document.querySelector(
+  'a[href="#modalSeleccionConsumibles"]'
+);
 if (modalTriggerConsumibles) {
-  modalTriggerConsumibles.addEventListener('click', () => {
+  modalTriggerConsumibles.addEventListener("click", () => {
     setTimeout(() => {
       filasConsumiblesFiltradas = [...filasConsumiblesOriginales];
       generarPaginacionConsumibles();
@@ -382,14 +414,14 @@ if (modalTriggerConsumibles) {
 }
 
 //Validador paara no permitir letras o caracteres especiales en el input
-document.querySelectorAll('.cantConsu').forEach(input => {
-  input.addEventListener('input', function () {
-    const max = parseInt(this.getAttribute('max'), 10);
+document.querySelectorAll(".cantConsu").forEach((input) => {
+  input.addEventListener("input", function () {
+    const max = parseInt(this.getAttribute("max"), 10);
     let valor = this.value;
 
     // vacia el campo si contiene letras
     if (!/^\d*$/.test(valor)) {
-      this.value = '';
+      this.value = "";
       return;
     }
 
@@ -404,16 +436,17 @@ document.querySelectorAll('.cantConsu').forEach(input => {
   });
 
   // Previene el ingreso de caracteres no numéricos
-  input.addEventListener('keydown', function (e) {
+  input.addEventListener("keydown", function (e) {
     const teclasPermitidas = [
-      'Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'
+      "Backspace",
+      "Tab",
+      "ArrowLeft",
+      "ArrowRight",
+      "Delete",
     ];
 
     // Permitir solo números y teclas útiles
-    if (
-      !teclasPermitidas.includes(e.key) &&
-      (e.key < '0' || e.key > '9')
-    ) {
+    if (!teclasPermitidas.includes(e.key) && (e.key < "0" || e.key > "9")) {
       e.preventDefault();
     }
   });

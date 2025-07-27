@@ -27,7 +27,6 @@ class solicitudPrestamos
         if (!is_array($data)) {
             exit();
         }
-
         $pres_fch_reserva  = $this->conn->real_escape_string($data['pres_fch_reserva']);
         $pres_fch_entrega  = $this->conn->real_escape_string($data['pres_fch_entrega']);
         $pres_observacion  = $this->conn->real_escape_string($data['pres_observacion']);
@@ -183,7 +182,7 @@ class solicitudPrestamos
     {
         $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad) 
                   VALUES (?, ?, ?, ?)";
-    
+
         $stmt = $this->conn->prepare($query);
         $cantidad = 1;
         $stmt->bind_param("iiii", $pres_cod, $usuario_id, $elm_cod, $cantidad);
@@ -245,19 +244,32 @@ class solicitudPrestamos
             $elementos_devolutivos = explode(',', $elementos_devolutivos);
         }
 
-        $elementos_devolutivos = array_filter(array_unique($elementos_devolutivos));
+        // Extraer solo los códigos si vienen como array de objetos
+        $codigos_devolutivos = [];
+
+        foreach ($elementos_devolutivos as $item) {
+            if (is_array($item) && isset($item['codigo'])) {
+                $codigos_devolutivos[] = (int) $item['codigo'];
+            } elseif (is_numeric($item)) {
+                $codigos_devolutivos[] = (int) $item;
+            }
+        }
+
+        // Limpiar, eliminar duplicados y vacíos
+        $elementos_devolutivos = array_filter(array_unique($codigos_devolutivos));
+
 
         // 2. Procesar los elementos devolutivos (una unidad defecto)
         foreach ($elementos_devolutivos as $elementoCod) {
             $sqlSalida = "INSERT INTO entradas_salidas (
-        ent_sal_cantidad,
-        ent_fech_registro,
-        ent_sal_observacion,
-        entr_tp_movmnt,
-        ent_id_usu,
-        ent_sal_cod_elemtn,
-        ent_sal_cod_prestamo
-    ) VALUES (?, NOW(), ?, ?, ?, ?, ?)";
+            ent_sal_cantidad,
+            ent_fech_registro,
+            ent_sal_observacion,
+            entr_tp_movmnt,
+            ent_id_usu,
+            ent_sal_cod_elemtn,
+            ent_sal_cod_prestamo
+            ) VALUES (?, NOW(), ?, ?, ?, ?, ?)";
 
             $stmt = $this->conn->prepare($sqlSalida);
 
@@ -281,5 +293,6 @@ class solicitudPrestamos
                 return false;
             }
         }
+        return true;
     }
 }
