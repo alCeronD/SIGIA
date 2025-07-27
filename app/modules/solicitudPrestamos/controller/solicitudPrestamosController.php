@@ -186,7 +186,6 @@ class solicitudPrestamosController
             $elementosConsumibles = $data['elementos_consumibles'] ?? [];
             $elementosDevolutivos = $data['elementos_devolutivos'] ?? [];
             
-            // Aquí tu lógica principal para guardar el préstamo
             $objSolicitud = new solicitudPrestamos($this->conn);
             $lastId = $objSolicitud->create($data, $rol_id);
             
@@ -206,24 +205,21 @@ class solicitudPrestamosController
                 if (isset($item['codigo'])) {
                     $elemento_id = (int) $item['codigo'];
                     $typeElement = $elementoModel->getElementByType($elemento_id);
-                 
+            
+                    // Registrar elemento en la solicitud
                     $objSolicitud->registrarElem($lastId, $usuario_id, $elemento_id);
-                    
-                    
+            
+                    // Disminuir existencia si el tipo de elemento es 2 (consumible)
+                    if ($typeElement = 1) {
+                        $resultado = $elementoModel->disminuirExistenciaElemento($elemento_id, 1);
+                       
+                    }
+            
+                    // Actualizar estado del elemento
                     $elementoModel->actualizarEstadoElemento($elemento_id, 5);
                 }
             }
 
-            
-            
-            
-            // if ($typeElement == 2) {
-                    //     $resultado = $elementoModel->disminuirExistenciaElemento($elemento_id, 1);
-                    //     if (!$resultado) {
-                    //     error_log(" No se pudo disminuir existencia del elemento ID: $elemento_id (¿existencia < 1?)");
-                    //     }
-                    // }
-            
         
             // Convertir array de objetos a array asociativo
             $cantidades_consumibles = [];
@@ -240,7 +236,12 @@ class solicitudPrestamosController
             // Registrar consumibles
             foreach ($cantidades_consumibles as $elm_cod => $cantidad) {
                 $objSolicitud->registrarElemConsumible($lastId, $usuario_id, $elm_cod, $cantidad);
+            
+                
+                $elementoModel->disminuirExistenciaElemento($elm_cod, $cantidad);
+               
             }
+
     
             $objSolicitud->registrarSalida($cantidades_consumibles, $data['pres_fch_reserva'], $usuario_id, $lastId, $elementosDevolutivos);
     
@@ -418,7 +419,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && stripos($_SERVER["CONTENT_TYPE"], "
         http_response_code(400);
         echo json_encode([
             "status" => "error",
-            "message" => "No se recibió una acción válida"
+            "message" => "No se recibió informacion válida en los datos"
         ]);
         exit;
     }
