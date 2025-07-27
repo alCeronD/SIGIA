@@ -2,7 +2,7 @@
 <div id="addElementModal" class="modal">
     <div id="modalContentElements">
         <div class="modalContentTitle">
-            <span class="" id="titleModal">Registrar Nuevo Elemento</span>
+            <span class="" id="titleModal">Nuevo Elemento</span>
             <button type="button" class="closeModalBtn" id="cerrarModalRegistrar">
                 <span class="close-modal">&times;</span>
             </button>
@@ -75,7 +75,7 @@
                     <input id="elm_nombre" name="elm_nombre" type="text" placeholder="">
                 </div>
                 <div class="area">
-                    <label for="elm_area_cod">Área * </label>
+                    <label for="elm_area_cod">Departamento * </label>
                     <select id="selectAreas" class="select_area" name="elm_area_cod">
                     </select>
                 </div>

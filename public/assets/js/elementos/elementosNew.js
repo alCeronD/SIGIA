@@ -1,6 +1,6 @@
 // TODO: Depurar, este bloque del proyecto puede ser transladado a un archivo barril.
 import { addClassItem, closeModal, createBtn, createCheckbox, createI, createSpan, initAlert, initTooltip, instanceModal, options, replaceln, toastOptions, tooltipOptions } from "../utils/cases.js";
-import { validarCantidad, validatePlaca, validationRules } from "../utils/regex.js";
+import { validarCantidad, validarSerie, validatePlaca, validationRules } from "../utils/regex.js";
 import { getData, sendData } from "../utils/fetch.js";
 
 const typeElements = {
@@ -83,6 +83,8 @@ function viewPlacaInputs(status = false) {
         serialPlacaAssoc.removeAttribute('name');
         elm_placa.setAttribute('name', 'elm_placa');
         elm_serie.setAttribute('name','elm_serie');
+        elm_placa.value = "";
+        elm_serie.value = "";
     } else {
         // Asociar placa
         contentPlaca.style.display = 'none'; 
@@ -97,6 +99,8 @@ function viewPlacaInputs(status = false) {
         serialPlacaAssoc.setAttribute('name', 'elm_serie');
         elm_placa.removeAttribute('name');
         elm_serie.removeAttribute('name');
+        elm_placa.value = "";
+        elm_serie.value = "";
     }
 }
 
@@ -172,7 +176,6 @@ function renderResultPlacas({ resultado = {}, status = false } = {}){
     let tdCodigo = document.createElement('td');
     let tdAcciones = document.createElement('td');
     let tdSerial = document.createElement('td');
-    console.log(createCheckbox());
     let checkbox = createCheckbox(seriales,placa);
     
     tdAcciones.appendChild(checkbox);
@@ -279,13 +282,11 @@ function resetForm(form) {
     
 
 }
-
 // modal ver detalle
 const modalVerMas = instanceModal('#modalVerMas', options);
 // Modal edit.
 const modalEditarElemento = instanceModal('#modalEditarElemento', options);
 // modal agregarExistencia
-// const modalAddExistencia = document.querySelector('#modalAddExistencia');
 
 // modal de confirmación
 const modalConfirmacion = document.querySelector('#modalConfirmacion');
@@ -741,16 +742,14 @@ filtroTipo.addEventListener('change', (e) => {
     }
     renderElements({ type: currentType, page: pageElement }).then (()=>{
         if (currentType != typeElements.all) {
-            renderWithFilter();  
-            
+            renderWithFilter();     
         }
-
     });
-
 });
 
 // todo: Esta funcion debo moverla dentro de renderelements para que se ejecute y validarla con si su tipo es diferente de todos, esto para evitar buffer de desincronización.
 function renderWithFilter() {
+    // CREO QUE SE PUEDE SOLUCIONAR APLICANDO UN DATATYPE AL TH DE DICIENDOLE EL TIPO.
   // Si veo que requiero esto en más funciones, transformarlo en función generica.
   const ths = tblElements.querySelectorAll("thead tr th");
   const filas = tbodyElements.querySelectorAll(
@@ -766,13 +765,11 @@ function renderWithFilter() {
   filas.forEach((fila) => {
     
     if ((currentType === typeElements.consu) ) {
-        console.log({"primer if":currentType});
         fila.style.display = "none";
     }// }else{
     //     fila.style.display = "table-cell";
     // } 
     if (currentType === typeElements.dev || currentType === typeElements.all) {
-        console.log({"segundo if":currentType});
       fila.style.display = "table-cell";
     }
   });
@@ -799,10 +796,8 @@ inputBusqueda.addEventListener('keyup', function (e) {
         // timer = setTimeout(()=>{
         //     renderElement({action: 'onlyElement', value:filtro});
 
-        // }, 400);
-        
+        // }, 400); 
 });
-
 
 // span en donde se visualizara la respuesta de la placa si es correcta o no.
 const respuestaPlaca = document.querySelector('#respuestaPlaca');
@@ -810,7 +805,6 @@ const respuestaPlaca = document.querySelector('#respuestaPlaca');
 searchPlaca.addEventListener('keyup', async (e) => {
     e.stopPropagation();
     const filtro = e.target.value.trim();
-
     if (filtro.length > 2) {
         if (!validatePlaca(filtro)) {
             respuestaPlaca.style.display = 'block';
@@ -849,6 +843,17 @@ inputCantidad.addEventListener('change', (e)=>{
         return;
     }
 });
+
+elm_serie.addEventListener('change', (e)=>{
+    e.stopPropagation();
+    let serie = e.target.value;
+
+    if (!validarSerie(serie)) {
+        initAlert("Solo esta permitido el - en este campo", "warning", toastOptions);
+        elm_serie.value = "";
+        return;
+    }
+})
 
 // Validad numero de placa
 elm_placa.addEventListener('change', (e)=>{
@@ -920,6 +925,14 @@ function validateValueChecked(inputRadio){
 
 }
 
+//Abrir modal Registrar elemento
+btnAddModalElements.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    e.preventDefault();
+
+    addElementModal.open();
+});
+
 // Enviar datos del formulario.
 addElementForm.addEventListener('submit', (e)=>{
     e.preventDefault();
@@ -936,20 +949,21 @@ addElementForm.addEventListener('submit', (e)=>{
     }
 
     // valido que los campos del formulario obligatorios esten validados.
-    checkObject(dataObj,fieldLabels);
+    if (!checkObject(dataObj,fieldLabels)) {
+        return;
+    }
 
     if (!validateValueChecked(checkboxTp)) {
         initAlert("El tipo de elemento debe ser seleccionado", "warning",toastOptions);
         return;
     }
 
-    mostrarConfirmacion("Registrar elemento", "¿Estás seguro de eliminar este elemento?", function (respuesta){
-    try {
+    mostrarConfirmacion("Registrar elemento", "¿Estás seguro de registrar este elemento?", function (respuesta){
+     try {
         
         if (!respuesta) {
         addElementModal.close();
         addElementForm.reset();
-        // Ejecutar acción
         } 
         //La respuesta puedo tranformarla en una función generica.
         sendData("modules/elementos/controller/elementosController.php","POST","registrar",data).then((result)=>{
@@ -970,16 +984,10 @@ addElementForm.addEventListener('submit', (e)=>{
     
 });
 
+
+
     // Hacer una validación antes del envio, si el tipo de elemento seleccionado es consumible y en las opciones del select sea diferente de la primera y su cantidad sea mayor a 1.
 
-});
-
-//Abrir modal Registrar elemento
-btnAddModalElements.addEventListener('click', (e)=>{
-    e.stopPropagation();
-    e.preventDefault();
-
-    addElementModal.open();
 });
 
 // Formulario del modal editarElemento

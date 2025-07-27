@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col s12">
         <h5 id="modalTitle" class="teal-text text-darken-3"></h5>
-        <a class="btn-flat right closeModalBtn" type="button" title="Cerrar">&times;</a>
+        <a class="btn-flat right closeModalBtn red" type="button" title="Cerrar">&times;</a>
       </div>
     </div>
 

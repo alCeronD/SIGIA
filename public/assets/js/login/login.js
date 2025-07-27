@@ -17,17 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    passInput.addEventListener('blur', (e) => {
-        e.stopPropagation();
-        const password = e.target.value.trim();
-
-        if (password.length === 0) {
-            initAlert("La contraseña no debe estar vacía", "info", toastOptions);
-            passInput.focus();
-            return;
-        }
-    });
-
     loginForm.addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -35,6 +24,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const pass = passInput.value.trim();
 
         if (pass.length === 0) {
+            initAlert("La contraseña es obligatoria", "info", toastOptions);
+            return;
+        }
+
+        if (docum.length === 0) {
+            initAlert("El nro de documento es obligatorio", "info", toastOptions);
             return;
         }
 
@@ -48,16 +43,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success && data.url) {
-                    window.location.href = data.url;
-                } else {
-                    initAlert("Usuario y contraseña incorrectos", "error", toastOptions);
-                }
-            })
-            .catch(error => {
-                console.error('Error en la petición', error);
-            });
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.url) {
+                window.location.href = data.url;
+            } else {
+                initAlert("Usuario y contraseña incorrectos", "info", toastOptions);
+            }
+        })
+        .catch(error => {
+            console.error('Error en la petición', error);
+        });
     });
 });

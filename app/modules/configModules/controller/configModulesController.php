@@ -2,7 +2,6 @@
 
 // incluyo la clase para usar el renderizado de la vista.
 require_once __DIR__ . '/../model/configModulesModel.php';
-// require_once __DIR__ . '/../../../helpers/renderView.php';
 
 
 class ConfigModulesController{
@@ -15,9 +14,6 @@ class ConfigModulesController{
 
     public function __construct(){
 
-        // $this->module = $module;
-        // $this->file= $file;
-        // $this->render = new RenderView($module,$file);
     
     }
 
@@ -73,75 +69,67 @@ class ConfigModulesController{
     }
 
     //Función para actualizar la información de un registro en base a la tabla.
-    public function updateRow(array $data=[]){
-        //Ciclar la consulta.
-        $values = $data['values'];
-        //Este es un arreglo en donde tiene las llaves del arreglo de los valores.
-        $keysValues = array_keys($values);
-        //arreglo en donde están las llaves.
-        $pk = $data['pk'];
-        //Acceso específicamente al nombre de la tabla.
-        $tableName = $data['tableName'][0];
-        //Tipos de datos para preparar la consulta
+    public function updateRow(array $data = [])
+{
+    $values = $data['values'];         
+    $keysValues = array_keys($values);
+    $pk = $data['pk'];                 
+    $tableName = $data['tableName'][0]; 
 
-        //Valores para bind_param
-        $prepareValues = [];
-        $types=[];
-        $sql = "UPDATE `$tableName` SET ";
-        $set =[];
+    $prepareValues = [];
+    $types = [];
+    $set = [];
 
 
+    $valueToCheck = reset($values);        
+    $columnName = array_key_first($values); 
 
-        //Recorro los valores para validar su tipo, creo el tipo de valor al cual voy a asignar y guardo los datos en un arreglo específico
-        foreach ($keysValues as $keys) {
-            $set[] = "`$keys` = ?";
-            //extraigo el valor expecífico para validar su tipo
-            $val = $values[$keys];
-            if (is_int($val)) {
-                $types []= 'i';
-            }elseif (is_float($val) || is_double($val)){
-                $types []= 'd';
+    // Construcción del SET para la consulta UPDATE
+    foreach ($keysValues as $key) {
+        $set[] = "`$key` = ?";
+        $val = $values[$key];
 
-            }else{
-                $types []='s';
-            }
-
-            //Guardo el valor en el arreglo para enviar los datos a actualizar
-            $prepareValues[] = $val;
-
+        // Detectar tipo de dato
+        if (is_int($val)) {
+            $types[] = 'i';
+        } elseif (is_float($val) || is_double($val)) {
+            $types[] = 'd';
+        } else {
+            $types[] = 's';
         }
 
-        //Creo un string en donde cada posición del arreglo está separada por una coma (,) para concatenar.
-        $set2 = implode(',',$set);
-        //concateno el arreglo set con la consulta sql.
-        $sql .= $set2;
-
-
-        // //Extraigo el valor de la clave primaria, estaba usando array_keys y values pero me devolvía los valores en arreglos.
-        $pkValue = reset($pk);
-        $pkRow = key($pk);
-        $sql .= " WHERE $pkRow = ?";
-
-        //Agregar la pk.
-        $types []="i";
-
-        //Envio la primary key
-        $prepareValues [] = $pkValue;
-
-
-        $model = new ConfigModulesModel();
-
-        //Por ahora devuelve un true.
-        /**
-         * @var $sql - consulta concatenada
-         * @var $prepareValues - los valores para actualizar
-         * @var $types - los tipos de datos según $prepareValues.
-         */
-        $data = $model->update($sql,$prepareValues,$types);
-
-
-        return $data;
+        $prepareValues[] = $val;
     }
+
+    $setClause = implode(', ', $set);
+
+
+    $pkValue = reset($pk);    
+    $pkColumn = key($pk);     
+    $types[] = 'i';
+    $prepareValues[] = $pkValue;
+
+    // Armar SQL final
+    $sql = "UPDATE `$tableName` SET $setClause WHERE `$pkColumn` = ?";
+
+    // Validar si el valor ya existe (evitar duplicados en campos únicos)
+    $model = new ConfigModulesModel();
+    $validateResult = $model->validateUnique(
+        $columnName,
+        $tableName,
+        $valueToCheck,
+        $pkValue,
+        $pkColumn
+    );
+
+    if (!$validateResult['status']) {
+        return $validateResult;
+    }
+
+    // Ejecutar el update
+    $result = $model->update($sql, $prepareValues, $types);
+    return $result;
+}
 
     //Creo la consulta sql.
     public function deleteRow(array $data=[]){
@@ -223,7 +211,6 @@ class ConfigModulesController{
         $sql .= $set2;
         $model = new ConfigModulesModel();
         $data = $model->insert($sql,$types,$val,$tableName);
-        
         return $data;
     }
     

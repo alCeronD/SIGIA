@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../../helpers/session.php';
+// require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../../../helpers/const.php';
 include_once __DIR__ . '/../../../config/conn.php';
 class ElementoModelo
@@ -482,15 +482,25 @@ class ElementoModelo
     // Esta función sirve para disminuir la existencia del elemento cuando da salida.
     public function disminuirExistenciaElemento($id, $cantidad)
     {
+
         $sql = "UPDATE elementos 
                 SET elm_existencia = elm_existencia - ? 
                 WHERE elm_cod = ? AND elm_existencia >= ?";
-
+    
         $stmt = $this->conn->prepare($sql);
-        $stmt->reset();
+        if (!$stmt) {
+            return false;
+        }
         $stmt->bind_param("iii", $cantidad, $id, $cantidad);
-        return $stmt->execute();
+        $stmt->execute();
+    
+        if ($stmt->affected_rows > 0) {
+            return true; // Se actualizó correctamente
+        } else {
+            return false; // No se actualizó (posible existencia insuficiente o id inválido)
+        }
     }
+
 
 
     /**
@@ -588,20 +598,25 @@ class ElementoModelo
         ];
     }
 
-    public function getElementByType(int $id = 1)
+    public function getElementByType(int $id = 1): ?int
     {
-        $sqlType = "SELECT elm_cod_tp_elemento  FROM elementos e WHERE elm_cod = ?";
-
-        $stmtType = $this->conn->prepare($sqlType);
-        $stmtType->bind_param('i', $id);
-
-        if (!$stmtType->execute()) {
+        $sql = "SELECT elm_cod_tp_elemento FROM elementos WHERE elm_cod = ?";
+    
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('i', $id);
+    
+        if (!$stmt->execute()) {
             return null;
         }
-
-        $result = $stmtType->get_result();
-
-        return (int) $result->fetch_assoc()['elm_cod_tp_elemento'];
+    
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+    
+        if (!$row) {
+            return null;
+        }
+    
+        return (int) $row['elm_cod_tp_elemento'];
     }
 
 

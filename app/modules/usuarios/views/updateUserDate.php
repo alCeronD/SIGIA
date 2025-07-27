@@ -1,6 +1,7 @@
 <?php 
 
 require_once __DIR__ ."/../../../helpers/helpers.php";
+// require_once __DIR__ ."/../../../helpers/session.php";
 
 ?>
 
@@ -46,8 +47,6 @@ require_once __DIR__ ."/../../../helpers/helpers.php";
         <label for="usu_telefono" class="active">Teléfono</label>
       </div>
     </div>
-<<<<<<< HEAD
-=======
 
     <div class="center-align">
       <button type="submit" class="btn waves-effect waves-light">
@@ -57,4 +56,3 @@ require_once __DIR__ ."/../../../helpers/helpers.php";
     </div>
   </form>
 </div>
->>>>>>> developer-code

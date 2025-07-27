@@ -158,7 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-    // Botones Editar
     document.querySelectorAll(".btnEditarUsuario").forEach(btn => {
       btn.addEventListener("click", e => {
         e.preventDefault();
@@ -221,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       const data = Object.fromEntries(formData.entries());
-      console.log(data);
+      // const data = formData;
       let valid = true;
 
       if (!tipoDocumento.value) {
@@ -235,7 +234,9 @@ document.addEventListener("DOMContentLoaded", () => {
         rol.classList.add("invalid");
         valid = false;
       }
-
+      console.log(data);
+      
+      
         try {
           const result = await sendData(
             "modules/usuarios/controller/usuariosController.php",
@@ -249,7 +250,6 @@ document.addEventListener("DOMContentLoaded", () => {
           formUsuario.reset();
         } catch (error) {
           console.error(error);
-          // Mostrar mensaje del backend si existe
           const message =
             error.message ||
             error.data?.message ||

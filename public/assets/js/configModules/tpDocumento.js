@@ -1,5 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import {closeModal, options, instanceModal} from "../utils/cases.js";
+import {closeModal, options, instanceModal, initAlert, toastOptions} from "../utils/cases.js";
 
 const formulario = document.querySelector("#formTp");
 const objAjax2 = new Ajax();
@@ -219,11 +219,13 @@ tpUpdateForm.addEventListener("submit", (e) => {
     //Transformo en un json la respuesta.
     dataStatus = JSON.parse(dataStatus);
     if (dataStatus.status) {
-      alert("registro actualizado");
+      initAlert("Registro actualizado","info", toastOptions);
       //Renderizo nuevamente la data.
       fetchData();
       //Cerrar el modal
       modal.close();
+    }else{
+      initAlert("La sigla ya está registrada en la base de datos", "info", toastOptions);
     }
   };
   objAjax2.request.send(data);
@@ -239,6 +241,11 @@ formulario.addEventListener("submit", (event) => {
   let form = new FormData(formulario);
   let dt = Object.fromEntries(form);
 
+  if (dt.tp_sigla == "") {
+    initAlert("El nombre del item debe ser obligatorio", "info", toastOptions);
+    return;
+  }
+
   let data = JSON.stringify({
     tp_sigla: dt.tp_sigla,
     tp_nombre: dt.tp_nombre,
@@ -252,16 +259,17 @@ formulario.addEventListener("submit", (event) => {
 
   objAjax2.request.onload = () => {
       const response = JSON.parse(objAjax2.request.responseText);
+      console.log(response)
       if (response.status) {
         const lastRow = response.data;
-        console.log(lastRow);
+        initAlert('Registro adicionado con exito','success',toastOptions);
         // Reiniciar el formulario
         formulario.reset();
         //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
         fetchData();
-        alert(response.message);
+
       } else {
-        alert(response.message);
+        initAlert(response.message, "error", toastOptions);
       }
   };
 

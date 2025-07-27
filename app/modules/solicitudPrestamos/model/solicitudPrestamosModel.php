@@ -27,14 +27,16 @@ class solicitudPrestamos
         if (!is_array($data)) {
             exit();
         }
-
         $pres_fch_reserva  = $this->conn->real_escape_string($data['pres_fch_reserva']);
         $pres_fch_entrega  = $this->conn->real_escape_string($data['pres_fch_entrega']);
         $pres_observacion  = $this->conn->real_escape_string($data['pres_observacion']);
         $pres_destino      = $this->conn->real_escape_string($data['pres_destino']);
-        $pres_hor_inicio = $this->conn->real_escape_string($data['pres_hor_inicio']);
-        $pres_hor_fin = $this->conn->real_escape_string($data['pres_hor_fin']);
-        
+        // Producto de cambios, se descarta el hora inicio y hora fin, no se elimina de las tablas de la base de datos, sin embargo, se comentan  y se declaran nullas.
+        // $pres_hor_inicio = $this->conn->real_escape_string($data['pres_hor_inicio'])?? null;
+        // $pres_hor_fin = $this->conn->real_escape_string($data['pres_hor_fin'])?? null;
+        $pres_hor_inicio =  null;
+        $pres_hor_fin = null;
+
         $pres_estado       = 3;
         $tp_pres           = 2;
         $pres_rol          = $rol_usuario;
@@ -167,7 +169,6 @@ class solicitudPrestamos
 
                 // Cambiar estado del elemento a disponible
                 $elementoModel->actualizarEstadoElemento($elemento_id, 1); // 1 = Disponible
-
                 // Sumar cantidad de vuelta a elm_existencia
                 $sumarQuery = "UPDATE elementos SET elm_existencia = elm_existencia + ? WHERE elm_cod = ?";
                 $sumarStmt = $this->conn->prepare($sumarQuery);
@@ -180,31 +181,25 @@ class solicitudPrestamos
             return ['success' => false, 'message' => 'No se pudo cancelar el préstamo'];
         }
     }
-
-
     public function registrarElem($pres_cod, $usuario_id, $elm_cod)
     {
-        $pres_cod = (int) $pres_cod;
-        $elm_cod = (int) $elm_cod;
-        $usua_id = (int) $usuario_id;
+        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad) 
+                  VALUES (?, ?, ?, ?)";
+
+        $stmt = $this->conn->prepare($query);
         $cantidad = 1;
-
-        $query = "INSERT INTO prestamos_elementos (pres_cod,pres_el_usu_id,pres_el_elem_cod,pres_el_cantidad) VALUES ($pres_cod, $usua_id, $elm_cod, $cantidad)";
-
-        return $this->conn->query($query);
+        $stmt->bind_param("iiii", $pres_cod, $usuario_id, $elm_cod, $cantidad);
+        return $stmt->execute();
     }
-
     public function registrarElemConsumible($pres_cod, $usuario_id, $elm_cod, $cantidad)
     {
-        $pres_cod = (int) $pres_cod;
-        $elm_cod = (int) $elm_cod;
-        $usua_id = (int) $usuario_id;
-        $cantidadElemento = (int) $cantidad;
-
-        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod,pres_el_cantidad) VALUES ($pres_cod, $usua_id, $elm_cod,$cantidadElemento)";
-
-        return $this->conn->query($query);
+        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad) 
+                  VALUES (?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("iiii", $pres_cod, $usuario_id, $elm_cod, $cantidad);
+        return $stmt->execute();
     }
+
 
 
     public function registrarSalida($cantidades_consumibles, $fecha_registro, $usuario_id, $lastId, $elementos_devolutivos)
@@ -252,19 +247,32 @@ class solicitudPrestamos
             $elementos_devolutivos = explode(',', $elementos_devolutivos);
         }
 
-        $elementos_devolutivos = array_filter(array_unique($elementos_devolutivos));
+        // Extraer solo los códigos si vienen como array de objetos
+        $codigos_devolutivos = [];
+
+        foreach ($elementos_devolutivos as $item) {
+            if (is_array($item) && isset($item['codigo'])) {
+                $codigos_devolutivos[] = (int) $item['codigo'];
+            } elseif (is_numeric($item)) {
+                $codigos_devolutivos[] = (int) $item;
+            }
+        }
+
+        // Limpiar, eliminar duplicados y vacíos
+        $elementos_devolutivos = array_filter(array_unique($codigos_devolutivos));
+
 
         // 2. Procesar los elementos devolutivos (una unidad defecto)
         foreach ($elementos_devolutivos as $elementoCod) {
             $sqlSalida = "INSERT INTO entradas_salidas (
-        ent_sal_cantidad,
-        ent_fech_registro,
-        ent_sal_observacion,
-        entr_tp_movmnt,
-        ent_id_usu,
-        ent_sal_cod_elemtn,
-        ent_sal_cod_prestamo
-    ) VALUES (?, NOW(), ?, ?, ?, ?, ?)";
+            ent_sal_cantidad,
+            ent_fech_registro,
+            ent_sal_observacion,
+            entr_tp_movmnt,
+            ent_id_usu,
+            ent_sal_cod_elemtn,
+            ent_sal_cod_prestamo
+            ) VALUES (?, NOW(), ?, ?, ?, ?, ?)";
 
             $stmt = $this->conn->prepare($sqlSalida);
 
@@ -272,21 +280,22 @@ class solicitudPrestamos
                 return false;
             }
 
-            $cantidad = 1; 
+            $cantidad = 1;
 
             $stmt->bind_param(
                 "isiiii",
-                $cantidad,          
-                $observacion,       
-                $tipo_movimiento,   
-                $usuario,           
-                $elementoCod,       
-                $id_prestamo        
+                $cantidad,
+                $observacion,
+                $tipo_movimiento,
+                $usuario,
+                $elementoCod,
+                $id_prestamo
             );
 
             if (!$stmt->execute()) {
                 return false;
             }
         }
+        return true;
     }
 }

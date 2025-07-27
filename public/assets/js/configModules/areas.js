@@ -211,11 +211,18 @@ formulario.addEventListener("submit", (event) => {
   let form = new FormData(formulario);
   let dt = Object.fromEntries(form);
 
+  if (dt.ar_nombre === "") {
+    initAlert("El nombre del item debe ser obligatorio", "info", toastOptions);
+    return;
+  }
+
   let data = JSON.stringify({
     ar_nombre: dt.ar_nombre,
     ar_descripcion: dt.ar_descripcion,
     tableName: table
   });
+
+  
 
   // Ajax POST
   objAjax.request.open('POST', "modules/configModules/api/apiConfigModules.php", true);
@@ -224,6 +231,7 @@ formulario.addEventListener("submit", (event) => {
 
   objAjax.request.onload = () => {
       const response = JSON.parse(objAjax.request.responseText);
+      console.log(response);
       if (response.status) {
         const lastRow = response.data;
         initAlert('Registro adicionado con exito','success',toastOptions);
@@ -232,7 +240,7 @@ formulario.addEventListener("submit", (event) => {
         //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
         fetchData();
       } else {
-        alert(response.message);
+        initAlert(response.data.message, "error", toastOptions);
       }
   };
 
@@ -270,10 +278,10 @@ areaUpdateForm.addEventListener("submit", (e) => {
       //Cerrar el modal
       closeModal(instanceMyModal);
       initAlert('Registro actualizado','warning', toastOptions);
-
       //Renderizo nuevamente la data.
       fetchData();
-      // instanceMyModal.close();
+    }else{
+      initAlert("El nombre del item ya esta registrado en la base de datos", "info", toastOptions);
     }
   };
   objAjax.request.send(data);

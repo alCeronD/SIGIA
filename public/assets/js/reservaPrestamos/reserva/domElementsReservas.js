@@ -41,9 +41,6 @@ export const iDom = {
 // inputsForm
 export const inputsForm = {
     areaDestino: getSelector("#areaDestino"),
-    horaInicio: getSelector('.horaInicio'),
-    horaFin: getSelector('.horaFin'),
-    horaInicioFin: getSelector('.horaInicioFin'),
     inputNombre : getSelector("#nombre"),
     inputNroDocumento: getSelector("#cedula"),
     inputApellido: getSelector("#apellido"),

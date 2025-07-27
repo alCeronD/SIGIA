@@ -1,6 +1,6 @@
 <div class="contentArea contentLayout">
     <div class="titleArea menuTitle">
-        <span id="textTitleAreas" class="textTitleSpan">Areas</span>
+        <span id="textTitleAreas" class="textTitleSpan">Departamentos</span>
         <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
@@ -8,15 +8,15 @@
     <div class="formAr">
         <div class="card z-depth-2">
             <div class="card-content">
-                <p class="flow-text card-title">Registrar Area</p>
+                <p class="flow-text card-title">Registrar departamento</p>
                 <form id="formArea" class="formLayout">
                     <div class="input-field contentAreaNem">
                         <input type="text" name="ar_nombre" id="ar_nombre" class="validate">
-                        <label for="ar_nombre">Área</label>
+                        <label for="ar_nombre">Nombre del departamento *</label>
                     </div>
                     <div class="input-field contentDescript">
                         <textarea name="ar_descripcion" id="ar_descripcion" class="materialize-textarea"></textarea>
-                        <label for="ar_descripcion">Descripción del área</label>
+                        <label for="ar_descripcion">Descripción del departamento</label>
                     </div>
 
                     <div class="contentSubmit">

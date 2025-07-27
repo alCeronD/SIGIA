@@ -37,14 +37,16 @@ const bodyDetailValidate = document.querySelector("#bodyDetailValidate");
 const btnCloseValidte = document.querySelector("#modalValidate .close-modal");
 const btnCloseElements = document.querySelector("#modalDetail .close-modal");
 const formDetail = document.querySelector("#formDetail");
-// El contenido de la tabla.
+// El contenido de la tabla del modal validatePrestamo
 const tableContainerDetail = document.querySelector(
   ".tableContainerDetail table"
 );
+// Contenedor principal de modalValidate
+const containerDetail = document.querySelector('.tableContainerDetail');
 let consumibles = [];
 let devolutivos = [];
 // Contenedor del formulario
-const formValidateContainer = document.querySelector(".formValidateContainer");
+// const formValidateContainer = document.querySelector(".formValidateContainer");
 //TODO: mejorarlo.
 let data;
 //variable para guardar los elementos
@@ -58,14 +60,11 @@ let pages;
 let validateReserva;
 //Página actual.
 let pagesReserva = 1;
+// Checkbox para validar TODOS LOS ELEMENTOS
 const checkBoxValidate = document.querySelector("#allValidateItems");
 // capturo el input de la tabla para seleccionarlos todos.
 const inputValidate = document.querySelectorAll(".inputValidate");
-// const nextBtnValidate = document.querySelector(  ".nextBtnValidate #btnNextValidate");
 const nextBtnValidate = document.querySelector("#btnNextValidate");
-
-const btnNextValidate = document.querySelector('#btnNextValidate');
-
 //Variable para mostrar la información en el modal.
 let elementosDetalle = [];
 
@@ -258,7 +257,8 @@ function addElementsToArray(input, cantidadPersonalizada = null) {
     }
 
     if (tipo === "Consumible") {
-      consumibles = consumibles.filter(consu => consu.cod !== cod); // Reemplazar si ya existe
+      // Reemplazo el elemento si ya existe.
+      consumibles = consumibles.filter(consu => consu.cod !== cod); 
       consumibles.push({ tipo, cod, nombre, cantidadSalida: cantidad });
     }
   } else {
@@ -280,26 +280,53 @@ function addElementsToArray(input, cantidadPersonalizada = null) {
  * @param {boolean} [status=false] - Define el modo del modal:
  *   - `true`: Muestra la vista previa de los elementos seleccionados (tabla).
  *   - `false`: Muestra el formulario para validar elementos.
- *
- * Esta función ajusta la visibilidad de los contenedores del formulario y la tabla,
- * así como los botones de navegación (`previewBtnValidate` y `nextBtnValidate`),
- * con el fin de cambiar entre los pasos del proceso de validación.
+ * Esta función restaura a su estado por defecto los inputs requeridos de modalValidate
  */
-function resetModalValidate(status = false) {
-  if (status) {
-    tableContainerDetail.style.display = "flex";
-    tableContainerDetail.style.flexDirection = "column";
-    formValidateContainer.style.display = "none";
+function resetModalValidate(showTable = false) {
+  // Estas variables se estan re definiendo pese a que estan definidas de manera global, es para reiniciar el formulario ANTES de prestionare el botón de salida del elemento, no después.
+  const table = document.querySelector("#modalValidate table");
+  const formContainer = document.querySelector("#modalValidate .formValidateContainer");
+  const radioInputs = document.querySelectorAll('#modalValidate input[name="radioValidate"]');
+  const textareaObservacion = document.querySelector('#inputObservacion');
+  const checkboxSelectAll = document.querySelector('#checkBoxValidate');
+  const allValidateItems = document.querySelector('#allValidateItems');
+  const btnNextValidate = document.querySelector('#btnNextValidate');
 
+  // 1. Mostrar tabla o formulario
+  if (showTable) {
+    table.style.display = "table";
+    formContainer.style.display = "none";
     previewBtnValidate.style.display = "none";
     nextBtnValidate.style.display = "inline-flex";
   } else {
-    tableContainerDetail.style.display = "none";
-    formValidateContainer.style.display = "flex";
-
+    table.style.display = "none";
+    formContainer.style.display = "flex";
     previewBtnValidate.style.display = "inline-flex";
     nextBtnValidate.style.display = "none";
   }
+
+  // Desmarcar todos los radio buttons del formulario
+  radioInputs.forEach(radio => {
+    radio.checked = false;
+  });
+
+  // 3. eliminar texto del textArea
+  textareaObservacion.value = '';
+  textareaObservacion.disabled = true;
+
+  // Paso 4 cambiar estado del checked de los elementos a false
+  if (checkboxSelectAll) {
+    checkboxSelectAll.checked = false;
+  }
+
+  // Paso 5 cambiar estado del checked general de los elementos a false
+  allValidateItems.checked = false;
+
+  // Paso 6 ocultar el botón de next
+  btnNextValidate.style.display = "none";
+
+  // Paso 6 Limpiar tabla de detalles
+  BodydetailReserva.innerHTML = '';
 }
 
 /**
@@ -352,7 +379,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     //TODO: refactorizarlo y transformarlo en una sola función.
     const reserva = data.find((item) => item.codigo === codigo);
     let action = "reservaDetailElements";
-
     //Petición para dibujar los elementos en la tabla del detail.
     //TODO: Mejorar, en la variable elementos encuentro toda la información, no necesito hacer otra petición.
     objAjax.request.open(
@@ -483,15 +509,13 @@ tbodyReservaConsult.addEventListener("click", (event) => {
   const btnSalida = event.target.closest("button[data-validate]");
   //Dar salida a los prestamos, cambiar el estado de la solicitudes a validada e implementar su salida.
   if (btnSalida) {
+    resetModalValidate(true);
     modalValidate.open();
     //Capturo los datos para transformarlo en json.
     validateReserva = setReserva("data-validate", data, elementos, btnSalida);
-
     let action = "validateLoan";
     validateReserva["action"] = action;
-
     let previewElements = validateReserva.elementos;
-
     bodyDetailValidate.innerHTML = "";
     //Los elementos pertenecientes al prestamo, los agrego en la tabla para validar su salida.
     previewElements.forEach((el) => {
@@ -557,9 +581,11 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       consumibles = [];
 
       inputValidate.forEach((inV) => {
+
+
         inV.checked = e.target.checked;
         if (inV.checked) {
-          addElementsToArray(inV);
+          addElementsToArray(inV); 
         }
       });
 
@@ -671,7 +697,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     previewBtnValidate.addEventListener("click", (e) => {
       e.stopPropagation();
       e.preventDefault();
-
       resetModalValidate(true);
     });
 
@@ -748,6 +773,8 @@ tbodyReservaConsult.addEventListener("click", (event) => {
               `button[data-validate='${validateReserva.codigoReserva}']`
             );
             if (btnValidate) {
+              // Renderizo nuevamente basada en la pagína y el tipo.
+              renderReservas({page:currentPage, type: valueSelect});
               initAlert(
                 `Prestamo validado ${validateReserva.codigoReserva}`,
                 "success",
@@ -798,19 +825,30 @@ tbodyReservaConsult.addEventListener("click", (event) => {
  * aplico la función callback porque requiero de ocultar ambos botones dependiendo del contexto de cerrar el modal desde la ventana.
  */
 closeModal(modalValidate, btnCloseValidte, () => {
-  //Limpiar la tabla apenas se cierre el modal.
-  BodydetailReserva.innerHTML = "";
-  let falseChecked = false;
-  checkBoxValidate.checked = falseChecked;
-  if (checkBoxValidate.checked) {
-    previewBtnValidate.style.display = "none";
-    nextBtnValidate.style.display = "none";
-  }
+  instanceModal('#modalValidate', {
+    ...options,
+    onCloseEnd: () => {
+      resetDataModal();
+      resetModalValidate(true); 
 
-  resetDataModal();
-  resetModalValidate(true);
+      // Limpiar radios
+      document.querySelectorAll('#modalValidate input[name="radioValidate"]').forEach(radio => {
+        radio.checked = false;
+      });
+
+      // Limpiar textarea y deshabilitar
+      const observacion = document.querySelector('#inputObservacion');
+      observacion.value = '';
+      observacion.disabled = true;
+
+      // Desmarcar checkbox de "seleccionar todo"
+      checkBoxValidate.checked = false;
+
+      // Limpiar la tabla
+      BodydetailReserva.innerHTML = "";
+    }
+  });
 });
-
 /**
  * Paginación de los prestamos.
  *

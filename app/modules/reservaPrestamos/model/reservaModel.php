@@ -684,13 +684,13 @@ class ReservaModel
             $elmConsumiblesCon = $data['elementosSalida']['elmConsumibles'];
             $elmDevolutivosDev = $data['elementosSalida']['elmDevolutivos'];
 
-
             if (!isset($data['elementosSalida']) && !in_array($data['elementosSalida'], $data['elmentosSalida']['elmConsumibles'])) {
                 return ['message' => 'valores no enviados correctamente', 'status' => false];
             }
 
-            $idUsario = $this->usuario->searchU($cedula, true);
-            $id = $idUsario['usu_id'];
+            $responseIdUsuario = $this->usuario->searchU($cedula, true);
+            $idUsuario = $responseIdUsuario['data'];
+            $id = $idUsuario['usu_id'];
 
             $codigoPrestamo = $data['codigoReserva']; // Es un solo ID, no array
             $observacionSalida = $data['observacionSalida'];

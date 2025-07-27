@@ -37,7 +37,7 @@
       </thead>
       <tbody id="tabla-prestamos">
         <?php if (!empty($prestamos)): ?>
-          <?php foreach ($prestamos as $prestamo): ?>
+          <?php  foreach ($prestamos as $prestamo): ?>
             <tr>
               <td><?= htmlspecialchars($prestamo['codigoSolicitud']) ?></td>
               <td><?= htmlspecialchars($nombre) ?></td>
@@ -51,7 +51,7 @@
                     title="Ver detalle del préstamo">
                     <i class="material-icons">visibility</i>
                   </button>
-                  <?php if (strtolower($prestamo['estadoNombre']) !== 'cancelado'): ?>
+                  <?php if ((strtolower($prestamo['estadoNombre']) !== 'cancelado') && strtolower($prestamo['estadoNombre']) !== 'finalizado'): ?>
                     <button type="button"
                       class="btn btn-cancelar-prestamo btn-small red lighten-1 white-text waves-effect"
                       data-id="<?= $prestamo['codigoSolicitud'] ?>"

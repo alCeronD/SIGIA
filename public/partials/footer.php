@@ -8,7 +8,7 @@
     <ul>
       <!-- Inicio -->
       <li>
-        <a href="/proyecto_sigia/app/dashboard.php" class="btn-floating blue " data-tooltip="Inicio">
+        <a href="/proyecto_sigia/app/dashboard.php" class="btn-floating blue "  data-tooltip="Inicio">
           <i class="material-icons">home</i>
         </a>
       </li>
@@ -16,7 +16,7 @@
       <?php if ($rol == 2): ?>
         <!-- Admin: Usuarios -->
         <li>
-          <a class="btn-floating green  submenu-trigger" data-tooltip="Usuarios" data-submenu="submenu-usuarios">
+          <a class="btn-floating green submenu-trigger" data-tooltip="Usuarios" data-position="top" data-submenu="submenu-usuarios">
             <i class="material-icons">person</i>
           </a>
         </li>
@@ -146,7 +146,6 @@
       direction: 'top',
       hoverEnabled: false
     });
-    // M.Tooltip.init(document.querySelectorAll('.tooltipped'));
 
     const triggers = document.querySelectorAll('.submenu-trigger');
     triggers.forEach(trigger => {
@@ -157,7 +156,8 @@
         document.querySelectorAll('.submenu').forEach(el => el.classList.remove('visible'));
 
         const rect = trigger.getBoundingClientRect();
-        submenu.style.top = `${rect.top + window.scrollY}px`;
+        const submenuHeight = submenu.offsetHeight || 150;
+        submenu.style.top = `${rect.top + window.scrollY  }px`;
         submenu.style.left = `${rect.left - submenu.offsetWidth - 190}px`; //Ajusto menu <<
         submenu.classList.add('visible');
       });

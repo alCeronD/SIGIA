@@ -15,24 +15,26 @@ export const validationRules = {
     regex: /^\d+$/,
     message: "Cantidad no permitida",
   },
-};
-
-export const validarGenero = (genero) => {
-  let regex = /[a-zA-Z]+/g;
-  let regexNumber = /[0-1]+/g;
-  generoValue.innerHTML = "valor digitado: " + genero;
-  return regex.test(genero);
+  serie: {
+    regex : /^(?!.*-.*-)[0-9-]+$/,
+    message : "Solo se permite el uso de guión."
+  }
 };
 
 export const validatePlaca = (placa) => {
-  regex = validationRules.placa.regex;
+  const regex = validationRules.placa.regex;
   return regex.test(placa);
 };
 
 export const validarCantidad = (valor) => {
-  regex = validationRules.cantidad.regex;
+  const regex = validationRules.cantidad.regex;
   return regex.test(valor);
 };
+
+export const validarSerie = (valor)=>{
+  const regex = validationRules.serie.regex;
+  return regex.test(valor);
+}
 
 // Validar que solo se puedan escribir No#.
 export const soloNumeros = (input) => {
