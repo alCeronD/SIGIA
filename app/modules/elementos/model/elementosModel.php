@@ -482,15 +482,25 @@ class ElementoModelo
     // Esta función sirve para disminuir la existencia del elemento cuando da salida.
     public function disminuirExistenciaElemento($id, $cantidad)
     {
+
         $sql = "UPDATE elementos 
                 SET elm_existencia = elm_existencia - ? 
                 WHERE elm_cod = ? AND elm_existencia >= ?";
-
+    
         $stmt = $this->conn->prepare($sql);
-        $stmt->reset();
+        if (!$stmt) {
+            return false;
+        }
         $stmt->bind_param("iii", $cantidad, $id, $cantidad);
-        return $stmt->execute();
+        $stmt->execute();
+    
+        if ($stmt->affected_rows > 0) {
+            return true; // Se actualizó correctamente
+        } else {
+            return false; // No se actualizó (posible existencia insuficiente o id inválido)
+        }
     }
+
 
 
     /**

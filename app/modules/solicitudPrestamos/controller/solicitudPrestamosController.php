@@ -1,5 +1,7 @@
 <?php
 
+use SebastianBergmann\Environment\Console;
+
 include_once __DIR__ . '/../model/solicitudPrestamosModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
@@ -52,58 +54,52 @@ class solicitudPrestamosController
         $prestamoModel = new solicitudPrestamos($this->conn);
         $prestamos = $prestamoModel->search($id);
 
-
         $objetoEstados = new ConfigModulesModel();
         $estados = $objetoEstados->select("SELECT * FROM estados_prestamos");
 
         return include_once __DIR__ . '/../views/consultarPrestamosView.php';
     }
 
-    public function registrarPrestamo(array $data = [])
-    {
-        // header('Content-Type: application/json; charset=utf-8');
+    // public function registrarPrestamo(array $data = [])
+    // {
+    //     // header('Content-Type: application/json; charset=utf-8');
         
-        try {
-            if (!$data) {
-            http_response_code(405); // Método no permitido
-            echo json_encode([
-                "status" => "error",
-                "message" => "Método no permitido. Usar POST."
-            ]);
-            exit;
-            }
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
+    //     try {
+    //         if (!$data) {
+    //         http_response_code(405);
+    //         echo json_encode([
+    //             "status" => "error",
+    //             "message" => "Método no permitido. Usar POST."
+    //         ]);
+    //         exit;
+    //         }
+    //         if (session_status() == PHP_SESSION_NONE) {
+    //             session_start();
+    //         }
     
-            // dd($_POST);
-            // Validar que la sesión exista
-            if (!isset($_SESSION['usuario'])) {
-                http_response_code(401);
-                echo json_encode([
-                    "status" => "error",
-                    "message" => "Sesión no válida. Debe iniciar sesión."
-                ]);
-                exit;
-            }
+    //         // dd($_POST);
+    //         // Validar que la sesión exista
+    //         if (!isset($_SESSION['usuario'])) {
+    //             http_response_code(401);
+    //             echo json_encode([
+    //                 "status" => "error",
+    //                 "message" => "Sesión no válida. Debe iniciar sesión."
+    //             ]);
+    //             exit;
+    //         }
             
-            $usuario_id = $_SESSION['usuario']['id'];
-            $rol_id = $_SESSION['usuario']['rol_id'];
-            
-            // $devolutivosElements = $_POST['elementos_devolutivos_seleccionados'] ?? [];
-            var_dump($data);
+    //         $usuario_id = $_SESSION['usuario']['id'];
+    //         $rol_id = $_SESSION['usuario']['rol_id'];
             
             
-            $elementos_seleccionados = $data['elementos_seleccionados'] ?? [];
-            $cantidades_consumibles = $data['cantidades_consumibles'] ?? [];
-            var_dump($cantidades_consumibles);
-            // $cantidadaes_consumibles = $data["cantidades_consumibles[$elementos_seleccionados]"] ?? [];
+    //         $elementosConsumibles = $data['elementos_consumibles'];
+    //         $elementosDevolutivos = $data['elementos_devolutivos'];
             
-            // var_dump($elementos_seleccionados);
-            // var_dump($cantidades_consumibles);
-            // $objSolicitud = new solicitudPrestamos($this->conn);
-            // $lastId = $objSolicitud->create($data, $rol_id);
             
+    //         $objSolicitud = new solicitudPrestamos($this->conn);
+    //         $lastId = $objSolicitud->create($data, $rol_id);
+            
+            // var_dump($lastId);
             // if (!is_numeric($lastId)) {
             //     http_response_code(500);
             //     echo json_encode([
@@ -143,19 +139,129 @@ class solicitudPrestamosController
             //     "prestamo_id" => $lastId
             // ]);
             // exit;
-        } catch (\Throwable $th) {
-            http_response_code(505);
-            json_encode([
-                "status" => false,
-                "message" => "$th"
-            ]);
+    //     } catch (\Throwable $th) {
+    //         http_response_code(505);
+    //         json_encode([
+    //             "status" => false,
+    //             "message" => "$th"
+    //         ]);
             
+    //     }
+        
+        
+    // }
+
+
+    public function registrarPrestamo(array $data = [])
+    {
+        header('Content-Type: application/json; charset=utf-8');
+    
+        try {
+            if (!$data) {
+                http_response_code(405);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Método no permitido. Usar POST."
+                ]);
+                exit;
+            }
+    
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+    
+            // Validar que la sesión exista
+            if (!isset($_SESSION['usuario'])) {
+                http_response_code(401);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Sesión no válida. Debe iniciar sesión."
+                ]);
+                exit;
+            }
+    
+            $usuario_id = $_SESSION['usuario']['id'];
+            $rol_id = $_SESSION['usuario']['rol_id'];
+    
+            $elementosConsumibles = $data['elementos_consumibles'] ?? [];
+            $elementosDevolutivos = $data['elementos_devolutivos'] ?? [];
+            
+            // Aquí tu lógica principal para guardar el préstamo
+            $objSolicitud = new solicitudPrestamos($this->conn);
+            $lastId = $objSolicitud->create($data, $rol_id);
+            
+            if (!is_numeric($lastId)) {
+                http_response_code(500);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "No se pudo registrar el préstamo."
+                ]);
+                exit;
+            }
+            
+            // Procesar elementos devolutivos
+            $elementoModel = new ElementoModelo();
+            
+            foreach ($elementosDevolutivos as $item) {
+                if (isset($item['codigo'])) {
+                    $elemento_id = (int) $item['codigo'];
+                    $typeElement = $elementoModel->getElementByType($elemento_id);
+                 
+                    $objSolicitud->registrarElem($lastId, $usuario_id, $elemento_id);
+                    
+                    
+                    $elementoModel->actualizarEstadoElemento($elemento_id, 5);
+                }
+            }
+
+            
+            
+            
+            // if ($typeElement == 2) {
+                    //     $resultado = $elementoModel->disminuirExistenciaElemento($elemento_id, 1);
+                    //     if (!$resultado) {
+                    //     error_log(" No se pudo disminuir existencia del elemento ID: $elemento_id (¿existencia < 1?)");
+                    //     }
+                    // }
+            
+        
+            // Convertir array de objetos a array asociativo
+            $cantidades_consumibles = [];
+            foreach ($elementosConsumibles as $item) {
+                if (isset($item['codigo'], $item['cantidad'])) {
+                    $codigo = (int)$item['codigo'];
+                    $cantidad = (int)$item['cantidad'];
+                    if ($codigo > 0 && $cantidad > 0) {
+                        $cantidades_consumibles[$codigo] = $cantidad;
+                    }
+                }
+            }
+            
+            // Registrar consumibles
+            foreach ($cantidades_consumibles as $elm_cod => $cantidad) {
+                $objSolicitud->registrarElemConsumible($lastId, $usuario_id, $elm_cod, $cantidad);
+            }
+    
+            $objSolicitud->registrarSalida($cantidades_consumibles, $data['pres_fch_reserva'], $usuario_id, $lastId, $elementosDevolutivos);
+    
+            // Respuesta éxito
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "message" => "Préstamo registrado correctamente.",
+                "prestamo_id" => $lastId
+            ]);
+            exit;
+    
+        } catch (\Throwable $th) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error interno: " . $th->getMessage()
+            ]);
+            exit;
         }
-        
-        
     }
-
-
 
 
 
@@ -189,8 +295,10 @@ class solicitudPrestamosController
     {
 
         $query = " SELECT 
+        e.elm_cod,
             e.elm_nombre,
             e.elm_placa,
+            e.elm_cod_tp_elemento,
             pe.pres_el_cantidad AS cantidad
         FROM 
             elementos e 
@@ -237,9 +345,7 @@ class solicitudPrestamosController
         return $res ? $res['tp_nombre'] : 'Desconocido';
     }
 
-
-    private function obtenerRolNombre($id)
-    {
+    private function obtenerRolNombre($id) {
         $stmt = $this->conn->prepare("SELECT rl_nombre FROM roles WHERE rl_id = ?");
         $stmt->bind_param('i', $id);
         $stmt->execute();
@@ -265,8 +371,6 @@ class solicitudPrestamosController
         $resultado = $modelo->cancelarPrestamo($presCod);
         echo json_encode($resultado);
         exit;
-
-
     }
 }
 
@@ -274,6 +378,7 @@ class solicitudPrestamosController
 $conexion = new Conection();
 $getConect = $conexion->getConnect();
 $solicitudObj = new solicitudPrestamosController($getConect);
+// $solicitudObj->cancelarPrestamo(530);
 
 // NUEVO: Manejo de solicitudes tipo JSON (por fetch con application/json)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && stripos($_SERVER["CONTENT_TYPE"], "application/json") !== false) {
@@ -295,9 +400,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && stripos($_SERVER["CONTENT_TYPE"], "
         switch ($data['action']) {
             case 'registrarPrestamo':
                 // Convertir los datos como si vinieran por $_POST para mantener compatibilidad
+                
                 unset($data['action']);
                 $newData = $data;
-                // var_dump($newData);
                 $solicitudObj->registrarPrestamo($newData);
                 break;
 

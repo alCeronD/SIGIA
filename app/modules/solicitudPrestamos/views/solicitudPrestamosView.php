@@ -6,11 +6,7 @@
 
   <div class="solicPrestamos">
     <!-- Vista ajustada con data-redirect -->
-    <form id="formSolicitudPrestamo"
-          method="POST"
-          action="<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'registrarPrestamo'); ?>"
-          class="row"
-          data-redirect="<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'getForm'); ?>">
+    <form id="formSolicitudPrestamo">
 
       <!-- Mensaje de respuesta opcional -->
       <div class="response-message"></div>
@@ -91,7 +87,7 @@
           <h5>Seleccionar Elementos Devolutivos</h5>
 
           <div class="input-field">
-            <select id="filtro_area_modal" name="filtro_area_modal" class="textSolicitud">
+            <select id="filtro_area_modal" name="" class="textSolicitud">
               <option value="" selected>Todas las áreas</option>
               <?php foreach ($areas as $area): ?>
                 <option value="<?= $area['ar_cod']; ?>"><?= htmlspecialchars($area['ar_nombre']); ?></option>
@@ -111,14 +107,15 @@
                 </tr>
               </thead>
               <tbody id="tabla-elementos-devolutivos-modal">
-                <?php foreach ($elementos as $elemento): ?>
+                <?php  
+                foreach ($elementos as $elemento): ?>
                   <tr data-area="<?= $elemento['ar_cod']; ?>">
                     <td><?= htmlspecialchars($elemento['elm_placa']); ?></td>
                     <td><?= htmlspecialchars($elemento['elm_nombre']); ?></td>
                     <td><?= htmlspecialchars($elemento['elm_existencia']); ?></td>
                     <td>
                       <label>
-                        <input type="checkbox" class="filled-in" name="elementos_seleccionados" value="<?= $elemento['elm_cod']; ?>">
+                        <input type="checkbox" class="filled-in" data-tpelementoDev="<?php echo $elemento['elm_cod_tp_elemento']; ?>" name="elementosDevolutivos" data-cantidadDev="<?php echo $elemento['elm_existencia']; ?>"  value="<?= $elemento['elm_cod']; ?>">
                         <span></span>
                       </label>
                     </td>
@@ -140,7 +137,7 @@
           <h5>Seleccionar Elementos Consumibles</h5>
 
           <div class="input-field">
-            <select id="filtro_area_modal_consumibles" name="filtro_area_modal_consumibles">
+            <select id="filtro_area_modal_consumibles" name="">
               <option value="" selected>Todas las áreas</option>
               <?php foreach ($areas as $area): ?>
                 <option value="<?= $area['ar_cod']; ?>"><?= htmlspecialchars($area['ar_nombre']); ?></option>
@@ -168,12 +165,12 @@
                     <td><?= htmlspecialchars($elemento['elm_existencia']); ?></td>
                     <td>
                       <label>
-                        <input type="checkbox" class="filled-in" name="elementos_consumibles_seleccionados" value="<?= $elemento['elm_cod']; ?>">
+                        <input type="checkbox" class="filled-in" data-cantidadCons="<?php echo $elemento['elm_existencia']; ?>" data-tpelementoCons="2" value="<?= $elemento['elm_cod']; ?>">
                         <span></span>
                       </label>
                     </td>
                     <td>
-                      <input type="number" min="1" max="<?= $elemento['elm_existencia']; ?>" class="cantConsu" name="cantidades_consumibles[<?= $elemento['elm_cod']; ?>]">
+                      <input type="number" min="1" max="<?= $elemento['elm_existencia']; ?>" class="cantConsu">
                     </td>
                   </tr>
                 <?php endforeach; ?>
