@@ -200,11 +200,7 @@
     width: 50%;
     height: fit-content;
     max-height: 80vh;
-<<<<<<< HEAD
-  overflow-y: auto;
-=======
     overflow-y: auto;
->>>>>>> 4415075e3db942873294eaa615e68e617de6e7c2
 }
 
 .modalContentTitle{
