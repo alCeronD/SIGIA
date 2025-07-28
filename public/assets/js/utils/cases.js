@@ -429,3 +429,22 @@ export const validateFormData = ({formData, campos, mapForm}={}) =>{
   }
   return true;
 }
+
+export const mostrarConfirmacion = (titulo, mensaje, callback)=>{
+// Rellenar el contenido
+  document.getElementById("modalConfirmacionTitulo").textContent = titulo;
+  document.getElementById("modalConfirmacionMensaje").innerHTML = mensaje;
+
+  // Obtener instancia y abrir el modal
+  const modalElem = document.getElementById("modalConfirmacion");
+  const instance = M.Modal.getInstance(modalElem);
+  instance.open();
+
+  // Manejo de botones
+  const btnAceptar = document.getElementById("btnAceptar");
+  const btnCancelar = document.getElementById("btnCancelar");
+
+  // Limpiar cualquier listener anterior
+  btnAceptar.onclick = () => callback(true);
+  btnCancelar.onclick = () => callback(false);
+}

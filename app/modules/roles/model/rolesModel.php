@@ -106,18 +106,44 @@ class RolModelo {
         }
     }
 
-    public function eliminarRol($rl_id, $status) {
-        $conn = (new Conection())->getConnect();
-        $sql = "UPDATE roles SET rl_status = $status WHERE rl_id = $rl_id";
-        $resultado = $conn->query($sql);
+    public function eliminarRol($rl_id, $status)
+    {
 
-        if ($resultado) {
-            $conn->close();
-            return true;
-        } else {
-            echo "Error al eliminar rol: " . $conn->error;
-            $conn->close();
-            return false;
+        try {
+            $conn = (new Conection())->getConnect();
+            $sql = "UPDATE roles SET rl_status = ? WHERE rl_id = ?";
+            $stmtRol = $conn->prepare($sql);
+            if (!$stmtRol) {
+                $conn->close();
+                return
+                    [
+                        'status' => false,
+                        'message' => "error al preparar consulta" . $conn->error,
+                        'data' => []
+                    ];
+            }
+
+            $stmtRol->bind_param('ii', $status, $rl_id);
+
+            if (!$stmtRol->execute()) {
+                $conn->close();
+                return [
+                    'message' => "error al ejecutar la consulta",
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+            return [
+                'message' => 'recurso actualizado',
+                'status' => true,
+                'data' => []
+            ];
+        } catch (\Throwable $e) {
+            return [
+                'message' => "errror al ejecutar el procedimiento" . $e->getMessage(),
+                'status' => false,
+                'data' => []
+            ];
         }
     }
 

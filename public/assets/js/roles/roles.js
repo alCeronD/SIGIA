@@ -4,6 +4,7 @@ import {
   getData,
   initAlert,
   instanceModal,
+  mostrarConfirmacion,
   openModal,
   options,
   sendData,
@@ -17,6 +18,7 @@ const modalEditar = instanceModal("#modalEditar", options);
 const tableBodyRoles = document.querySelector("#tableBodyRoles");
 const formEditarRol = document.querySelector("#formEditarRol");
 console.log(formEditarRol);
+const modalConfirmacion = instanceModal('#modalConfirmacion', options);
 
 const renderRoles = async () => {
   const responseRoles = await getData(
@@ -43,6 +45,8 @@ const renderRoles = async () => {
     btnEditar.setAttribute("data-nombre", `${rl.rl_nombre}`);
     btnEditar.setAttribute("data-desc", `${rl.rl_descripcion}`);
     btnStatus.setAttribute("type", "button");
+    btnStatus.setAttribute("data-id", `${rl.rl_id}`);
+    btnStatus.setAttribute("data-status", `${rl.rl_status}`);
     btnAsig.setAttribute("type", "button");
     let iconEditar = createI("border_color");
     let iconStatus = createI("delete_sweep");
@@ -63,7 +67,7 @@ const renderRoles = async () => {
 
     trRoles.append(tdID, tdNombre, tdDescript, tdStatus, tdActions);
 
-    // Boton de editar.
+    // Botón de editar.
     btnEditar.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -89,6 +93,36 @@ const renderRoles = async () => {
 
       modalEditar.open();
     });
+
+    // Botón de inactivar
+    btnStatus.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      e.preventDefault();
+      const id = e.target.getAttribute('data-id');
+      const status = e.target.getAttribute('data-status');
+      console.log({status, id});
+      modalConfirmacion.open();
+      const dataStatus = {
+        idRol: id, 
+        statusRol: status
+      };
+      let titulo = status === '1'? "Inhabilitar rol": "Habilitar rol";
+      mostrarConfirmacion(titulo,"¿Desea continuar con el proceso?", async (respuesta)=>{
+        if (!respuesta) {
+          initAlert("Proceso cancelado", "info", toastOptions);
+          modalConfirmacion.close();
+          return;
+        }
+        try {
+          const response = await sendData('Modules/Roles/Controller/RolesController.php', "PUT", "statusRol", dataStatus);
+          initAlert("Estatus del rol actualizado correctamente", "success", toastOptions);
+          renderRoles();
+        } catch (error) {
+          initAlert(`Error al inhabilitar el rol ${error}`, "error", toastOptions);
+          modalConfirmacion.close();
+        }
+      });
+    });
   });
 };
 
@@ -98,7 +132,6 @@ const mapObj = {
   rol_id: "ID del Rol"
 };
 
-console.log({"mapOjb": mapObj});
 
 const optionals = ['rol_descripcion'];
 

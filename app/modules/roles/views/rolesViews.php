@@ -63,4 +63,7 @@
     </div>
 </div>
 
+<!-- modal de confirmación -->
+<?php require_once __DIR__ .'/../../../helpers/modalConfirmation.php'; ?>
+
 <script type="module" src="../public/assets/js/roles/roles.js"></script>

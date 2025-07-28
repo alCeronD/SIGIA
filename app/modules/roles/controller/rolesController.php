@@ -50,35 +50,18 @@ class RolesController {
         }
         success('Recurso actualizado', $responseRol);
     }
-    public function eliminarRol() {
-        //dd($_GET);
-        if (isset($_GET['rl_id'])) {
-            $rl_id = $_GET['rl_id'];
-            $status = ($_GET['rl_status'] == 0) ? 1 : 0;
-            $exito = $this->modeloRol->eliminarRol($rl_id,$status);
-            if ($exito) {
+    public function statusRoles(array $data = [])
+    {
 
-                if ($status == 0) {
-                    $textValue = "habilitado";
-                }else{
-                    $textValue = "inhabilitado";
-                }
+        $idRol = (int) $data['idRol'];
+        $status = (int) $data['statusRol'] == 1 ? 0 : 1;
 
-                $this->mostrarRoles();
-                echo "<script>alert('Rol $textValue exitosamente'); window.location.href = '" . getUrl('roles','roles','mostrarRoles',false,'dashboard') . "';</script>";
-                return;
-            } else {
-                echo "<script>alert('Error al inhabilitar el rol.');</script>";
-                $this->mostrarRoles();
-                return;
-
-            }
-        } else {
-            echo "<div class='alert alert-warning text-center'>ID de rol no especificado.</div>";
+        $exito = $this->modeloRol->eliminarRol($idRol, $status);
+        if (!$exito['status']) {
+            fail('error al actualizar el estado del elemento');
         }
-
-        exit();
-
+        success('recurso actualizado', $exito);
+        
     }
     public function getRoles(){
         $roles = $this->modeloRol->obtenerRoles();
@@ -127,6 +110,12 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                     $objRolesController->editarRol($data);
                 }
 
+                break;
+
+            case 'statusRol':
+                if (method_exists($objRolesController, 'statusRoles')) {
+                    $objRolesController->statusRoles($data);
+                }
                 break;
             
             default:
