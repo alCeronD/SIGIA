@@ -12,8 +12,6 @@ if (ajaxGeneral()) {
     exit;
 }
 
-
-
 if ($css) {
     $_SESSION['css'] = $css;
 } else {

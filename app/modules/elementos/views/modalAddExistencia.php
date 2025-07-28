@@ -16,7 +16,7 @@
                 <label for="co_cantidad">Cantidad elemento * </label>
             </div>
 
-            <div class="input-field tp_movimiento">
+            <div class="input-field tp_movimiento col s12">
                 <span class="tooltipped" data-position="left" data-tooltip="Ingrese la cantidad disponible del elemento." id="infoTpMvnto"><i class="material-icons">help_outline</i></span>
                 <select name="tipo_movimiento" id="tipo_movimiento">
                     <option value="" selected>Seleccione una opción</option>

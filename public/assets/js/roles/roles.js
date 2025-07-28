@@ -1,25 +1,5 @@
 import { closeModal, instanceModal, openModal, options } from "../utils/cases.js";
 
-// function abrirModal(id, nombre, descripcion) {
-//     document.getElementById('modal_rol_id').value = id;
-//     document.getElementById('modal_rol_nombre').value = nombre;
-//     document.getElementById('modal_rol_descripcion').value = descripcion;
-//     document.getElementById('modalEditar').classList.remove('hidden');
-// }
-
-// function cerrarModal() {
-//     document.getElementById('modalEditar').classList.add('hidden');
-// }
-
-// Opcional: cerrar modal si se hace clic fuera del contenido
-// document.getElementById('modalEditar').addEventListener('click', function(e) {
-//     if (e.target === this) {
-//         // cerrarModal();
-// closeModal(instanModal,closeModalBtn);
-
-//     }
-// });
-
 const btnEditar = document.querySelectorAll('.btnEditar');
 const modalEditar = document.querySelector('#modalEditar');
 const closeModalBtn = document.querySelector('.closeModalBtn');
