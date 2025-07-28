@@ -1097,7 +1097,11 @@ editarElementForm.addEventListener("submit", (e) => {
             initAlert("recurso actualizado con exito", "success", toastOptions);
             modalEditarElemento.close();
             // renderizo los elementos en base a la página en la que se encuentra.
-            renderElements({ page: pageElement });
+            renderElements({ page: pageElement, type: currentType }).then(
+              () => {
+                renderWithFilter();
+              }
+            );
           });
         } catch (error) {
           throw new Error("Error al actualizar el recurso.");
@@ -1176,7 +1180,10 @@ formAddExistencia.addEventListener("submit", (e) => {
           // Esto se puede mejorar.
           if (status) {
             // Renderizo la página nuevamente dependiendo del tipo y la página actual.
-            renderElements({ type: currentType, page: pageElement });
+            renderElements({ type: currentType, page: pageElement }).then(()=>{
+              renderWithFilter();
+            });
+            
             initAlert(responseMessage, "success", toastOptions);
             modalAddExistencia.close();
             formAddExistencia.reset();
