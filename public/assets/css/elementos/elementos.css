@@ -16,15 +16,59 @@
 }
 
 /* ----------------- Contenedor General ----------------- */
-.container-fluid.px-4 {
+.contentElements {
     display: grid;
     grid-template-rows: auto auto 1fr;
-    gap: 20px;
-    box-sizing: border-box;
-    padding: 20px;
+    grid-template-areas: "headerElementsModal"
+    "contentTableElements"
+    "footerElements";
     width: 100%;
-    
 }
+
+.headerElementsModal{
+    grid-area: headerElementsModal;
+    /* background-color: yellow; */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+
+    .tituloHeaderElement{
+        flex: 3;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        font-size: 25pt;
+    }
+
+    .btnAddHeaderElement{
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+    }
+    .filtroHeaderElement{
+        flex: 1;
+        display: flex;
+        align-items: center;
+    }
+    .buscarHeaderElement{
+        flex: 3;
+        display: flex;
+    }
+
+}
+
+.contentTableElements{
+    grid-area: contentTableElements;
+}
+
+.footerElements{
+    grid-area: footerElements;
+    background-color: aqua;
+}
+
 
 /* ----------------- Título ----------------- */
 .container-fluid h2 {

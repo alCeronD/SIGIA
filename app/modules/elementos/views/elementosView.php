@@ -1,38 +1,34 @@
-<div class="container-fluid px-4">
-    <div class="row valign-wrapper" style="margin-bottom: 20px;">
+<div class="contentElements">
+    <!-- <div class=" row valign-wrapper" style="margin-bottom: 20px;"> -->
+    <div class="headerElementsModal">
         <!-- Título -->
-        <div class="col s12 m7">
-            <h5 style="margin: 0;">Gestión de elementos</h5>
+        <div class="tituloHeaderElement">
+            <span>Gestión de elementos</span>
         </div>
 
         <!-- Botón de registro -->
-        <div class="col s12 m6 center">
+        <div class="btnAddHeaderElement">
             <button type="button" class="waves-effect waves-light btn" id="btnAddModalElements"></button>
         </div>
 
         <!-- El filtro -->
-        <div class="col s12 m2">
-            <div class="input-field" style="margin: 0;">
+        <div class="filtroHeaderElement">
+            <div class="input-field">
                 <select id="filtroTipo">
                     <option value="all" selected>Todos</option>
                     <option value="devolutivo">Devolutivo</option>
                     <option value="consumible">Consumible</option>
                 </select>
+                <label>Filtro</label>
             </div>
         </div>
-
         <!-- Input de búsqueda -->
-        <div class="col s12 m2">
-            <input id="inputBusqueda" type="text" placeholder="Buscar...">
-        </div>
-
-        <!-- Botón de buscar -->
-        <div class="col s12 m2">
-            <a id="btnBuscar" class="waves-effect waves-light btn">Buscar</a>
+        <div class="buscarHeaderElement">
+            <input id="inputBusqueda" type="text" placeholder="Buscar elementos">
         </div>
     </div>
-    <div class="table table-responsive-fixed">
-        <table class="table table-striped table-bordered text-center align-middle" id="tblElements">
+    <div class="contentTableElements">
+        <table class="table table-striped table-bordered table-responsive-fixed text-center align-middle" id="tblElements">
             <thead class="table-light">
                 <tr>
                     <th>Placa</th>
@@ -50,7 +46,7 @@
             <!-- FILA DE PAGINACION DENTRO DE LA TABLA -->
         </table>
     </div>
-    <tfoot>
+    <tfoot class="footerElements">
         <tr>
             <td colspan="9">
                 <ul class="pagination center-align" style="margin-top: 20px;">
@@ -74,12 +70,12 @@
     </tfoot>
 </div>
 
-<?php 
-require_once 'modalElementos.php'; 
+<?php
+require_once 'modalElementos.php';
 require_once 'modalEditarElemento.php';
 require_once 'modalVerMas.php';
 require_once 'modalConfirmacion.php';
 require_once 'modalAddExistencia.php';
 ?>
 
-<script type="module" src="../public/assets/js/elementos/elementosNew.js"></script>
+<script type="module" src="../public/assets/js/elementos/elementos.js"></script>

@@ -8,7 +8,6 @@
             </button>
         </div>
         <form id="formAddExistencia" class="addExistenciaForm">
-
             <input type="hidden" class="validate" name="elm_cod" id="codAddExistencia">
 
             <div class="input-field cantidad">
