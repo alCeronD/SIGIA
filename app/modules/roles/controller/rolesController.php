@@ -37,41 +37,18 @@ class RolesController {
             return include __DIR__ .  './../views/rolesRegistrar.php';
         }
     }
-    public function editarRol() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $rol_id = $_POST['rol_id'];
-            $rol_nombre = $_POST['rol_nombre'];
-            $rol_descripcion = $_POST['rol_descripcion'];
-            $exito = $this->modeloRol->actualizarRol($rol_id, $rol_nombre,$rol_descripcion);
+    public function editarRol(array $data = [])
+    {
+        $rol_id = (int) $data['rol_id'];
+        $rol_nombre = $data['modal_rol_nombre'];
+        $rol_descripcion = $data['rol_descripcion'];
+        $responseRol = $this->modeloRol->actualizarRol($rol_id, $rol_nombre, $rol_descripcion);
 
-            if ($exito) {
 
-                $this->mostrarRoles();
-                echo "<script>alert('Rol actualizado exitosamente'); window.location.href = '" . getUrl('roles','roles','mostrarRoles',false,'dashboard') . "';</script>";
-                return;
-
-            } else {
-                $this->mostrarRoles();
-                echo "<script>alert('Rol actualizado exitosamente'); window.location.href = '" . getUrl('roles','roles','mostrarRoles',false,'dashboard') . "';</script>";
-                return;
-            }
-        } else {
-            // Mostrar formulario con datos actuales del rol
-            $rol_id = $_GET['id'];
-            $roles = $this->modeloRol->obtenerRoles();
-            $rol_actual = null;
-            foreach ($roles as $rol) {
-                if ($rol['rl_id'] == $rol_id) {
-                    $rol_actual = $rol;
-                    break;
-                }
-            }
-            if ($rol_actual) {
-                return include __DIR__ . './../views/rolesEditar.php';
-            } else {
-                echo "<div class='alert alert-danger text-center'>Rol no encontrado.</div>";
-            }
+        if (!$responseRol['status']) {
+            fail('Error al actualizar el recurso', $responseRol);
         }
+        success('Recurso actualizado', $responseRol);
     }
     public function eliminarRol() {
         //dd($_GET);
@@ -133,6 +110,27 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             
             default:
                 
+                break;
+        }
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
+        $input = file_get_contents("php://input");
+        $data = json_decode($input, true);
+
+        $action = $data['action'];
+        unset($data['action']);
+
+        switch ($action) {
+            case 'updateRol':
+                if (method_exists($objRolesController, 'editarRol')) {
+                    $objRolesController->editarRol($data);
+                }
+
+                break;
+            
+            default:
+
                 break;
         }
     }

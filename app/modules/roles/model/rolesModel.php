@@ -3,6 +3,7 @@ include_once __DIR__ . '/../../../config/conn.php';
 
 class RolModelo {
 
+
     public function __construct() {
         // Ya no se necesita guardar la conexión en $this->conn
     }
@@ -60,19 +61,48 @@ class RolModelo {
         }
     }
 
-    public function actualizarRol($rol_id, $rol_nombre, $rol_descripcion) {
-        $conn = (new Conection())->getConnect();
-        $sql = "UPDATE roles SET rl_nombre = '$rol_nombre', rl_descripcion = '$rol_descripcion' 
-                WHERE rl_id = $rol_id";
-        $resultado = $conn->query($sql);
+    public function actualizarRol($rol_id, $rol_nombre, $rol_descripcion)
+    {
 
-        if ($resultado) {
-            $conn->close();
-            return true;
-        } else {
-            echo "Error al actualizar rol: " . $conn->error;
-            $conn->close();
-            return false;
+        try {
+            $conn = (new Conection())->getConnect();
+
+            $sql = "UPDATE roles SET rl_nombre = ?, rl_descripcion = ?
+                    WHERE rl_id = ?";
+
+            $stmtSql = $conn->prepare($sql);
+            if (!$stmtSql) {
+                $conn->close();
+                return [
+                    'message' => "Error al preparar la consulta" . $conn->error,
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+
+            $stmtSql->bind_param('ssi', $rol_nombre, $rol_descripcion, $rol_id);
+
+            if (!$stmtSql->execute()) {
+                $conn->close();
+                return [
+                    'message'=> "error al ejecutar la consulta".$conn->error,
+                    'status'=> false,
+                    'data'=> []
+                ];
+            }
+
+            return [
+                'message'=> "recurso actualizado",
+                'status'=> true,
+                'data'=> [1]
+            ];
+
+        } catch (\Throwable $th) {
+            return [
+                'status' => false,
+                'message' => $th,
+                'data'=> []
+            ];
         }
     }
 

@@ -412,13 +412,11 @@ export const getSelector = (selector) =>{
   return el;
 }
 
-
 // Función para validar campos el dormulario.
 export const validateFormData = ({formData, campos, mapForm}={}) =>{
   for (const [key, value] of formData.entries()) {
     const isEmpty = !value || value.toString().trim() === "";
-    console.log(mapForm);
-    // Evitamos validar campos opcionales como 'observaciones'
+    // pasamos por referencia los valores opcionales.
     const camposOpcionales = campos;
     if (isEmpty && !camposOpcionales.includes(key)) {
       initAlert(
