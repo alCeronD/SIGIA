@@ -13,29 +13,23 @@ class RolesController {
     }
 
     public function mostrarRoles() {
-        // $roles = $this->modeloRol->obtenerRoles();
         return include_once __DIR__ . '../../views/rolesViews.php';
     }
-    
-    
-    public function registrarRol(){
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $rol_nombre = $_POST['rol_nombre'];
-            $rol_descripcion = $_POST['rol_descripcion'];
-            $exito = $this->modeloRol->insertarRoles($rol_nombre,$rol_descripcion);
+    public function registrarRol(array $data = [])
+    {
 
-            if ($exito) {
-
-                $this->mostrarRoles();
-                echo "<script>alert('Rol registrado exitosamente'); window.location.href = '" . getUrl('roles','roles','mostrarRoles',false,'dashboard') . "';</script>";
-                return;
-
-            } else {
-                echo "<div class='alert alert-danger text-center'>Error al registrar el Rol.</div>";
-            }
-        } else {
-            return include __DIR__ .  './../views/rolesRegistrar.php';
+        $rol_nombre = $data['rol_nombre'];
+        $rol_descripcion = $data['rol_descripcion'];
+        $exito = $this->modeloRol->insertarRoles($rol_nombre, $rol_descripcion);
+        if (!$exito['status']) {
+            fail('Error al registrar rol', $exito);
         }
+        success('Proceso Ejecutado con exito', $exito);
+
+        // $this->mostrarRoles();
+        // echo "<script>alert('Rol registrado exitosamente'); window.location.href = '" . getUrl('roles', 'roles', 'mostrarRoles', false, 'dashboard') . "';</script>";
+        // return;
+    
     }
     public function editarRol(array $data = [])
     {
@@ -120,6 +114,24 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             
             default:
 
+                break;
+        }
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $input = file_get_contents("php://input");
+        $dataAdd = json_decode($input, true);
+        $action = $dataAdd['action'];
+        unset($dataAdd['action']);
+        $newData = $dataAdd;
+        switch ($action) {
+            case 'addRol':
+                if (method_exists($objRolesController, 'registrarRol')) {
+                   $objRolesController->registrarRol($newData);
+                }
+                break;
+            default:
+                # code...
                 break;
         }
     }

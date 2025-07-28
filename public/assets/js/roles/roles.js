@@ -62,11 +62,8 @@ const renderRoles = async () => {
     tdDescript.innerText = rl.rl_descripcion;
     let valueStatus = rl.rl_status === "1" ? "Activo" : "Inactivo";
     tdStatus.innerText = valueStatus;
-
     tableBodyRoles.appendChild(trRoles);
-
     trRoles.append(tdID, tdNombre, tdDescript, tdStatus, tdActions);
-
     // Botón de editar.
     btnEditar.addEventListener("click", (e) => {
       e.preventDefault();
@@ -132,9 +129,12 @@ const mapObj = {
   rol_id: "ID del Rol"
 };
 
+const mapObjAdd = {
+  rol_nombre: "Nombre del Rol",
+  rol_descripcion: "Descripción del Rol"
+};
 
 const optionals = ['rol_descripcion'];
-
 formEditarRol.addEventListener("submit",async (e) => {
   e.preventDefault();
   e.stopPropagation();
@@ -147,13 +147,35 @@ formEditarRol.addEventListener("submit",async (e) => {
     console.log(updateInfo);
     if (updateInfo.status) {
         renderRoles();
-        initAlert("Recurso actualizado", "succes", toastOptions);
+        initAlert("Recurso actualizado", "success", toastOptions);
         modalEditar.close();
     }
   } catch (error) {
     initAlert("Error al realizar la actualización", "error", `${error}`);
   }
 
+});
+
+const formRol = document.querySelector('#formRol');
+formRol.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  e.stopPropagation();
+  const formAdd = new FormData(e.target);
+  const data = Object.fromEntries(formAdd);
+  if(!validateFormData({formData: formAdd, campos: optionals, mapForm: mapObjAdd})) return;
+
+  try {
+    const responseAdd = await sendData('Modules/Roles/Controller/RolesController.php', 'POST', 'addRol', data);
+    console.log(responseAdd);
+
+    if (responseAdd.status) {
+      initAlert("Rol agregado a la base de datos con exito","success", toastOptions );
+      renderRoles();
+      formRol.reset();
+    }
+  } catch (error) {
+    initAlert(`error al registrar el rol ${error}`, "error", toastOptions);
+  }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
