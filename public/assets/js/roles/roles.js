@@ -1,18 +1,56 @@
-import { closeModal, instanceModal, openModal, options } from "../utils/cases.js";
-
-const btnEditar = document.querySelectorAll('.btnEditar');
+import { closeModal, createI, getData, instanceModal, openModal, options } from "./barrelRoles.js";
 const modalEditar = document.querySelector('#modalEditar');
 const closeModalBtn = document.querySelector('.closeModalBtn');
 
-options.outDuration
-options.opacity
-const instanModal = instanceModal('#modalEditar',{"inDuration":options.inDuration,"outDuration":options.outDuration,"opactity":options.opacity});
 
-console.log(btnEditar);
+const instanModal = instanceModal('#modalEditar',options);
+const tableBodyRoles = document.querySelector('#tableBodyRoles');
 
 
-btnEditar.forEach((btnEdit)=>{
-    btnEdit.addEventListener('click',(e)=>{
+
+const renderRoles = async ()=>{
+    const responseRoles = await getData("Modules/Roles/Controller/RolesController.php", "GET", {action: "getRoles"});
+
+    const dataRoles = responseRoles.data;
+    tableBodyRoles.innerHTML = "";
+    dataRoles.forEach(rl => {
+        let trRoles = document.createElement('tr');
+        let tdActions = document.createElement('td');
+        let tdID = document.createElement('td');
+        let tdNombre = document.createElement('td');
+        let tdDescript = document.createElement('td');
+        let tdStatus = document.createElement('td');
+        let btnEditar = document.createElement('button');
+        let btnStatus = document.createElement('button');
+        let btnAsig = document.createElement('button');
+        btnEditar.setAttribute('type', 'button');
+        btnEditar.setAttribute('class', 'btnEdit');
+        btnEditar.setAttribute('data-id',`${rl.rl_id}`);
+        btnEditar.setAttribute('data-nombre', `${rl.rl_nombre}`);
+        btnEditar.setAttribute('data-desc', `${rl.rl_descripcion}`);
+        btnStatus.setAttribute('type', 'button');
+        btnAsig.setAttribute('type', 'button');
+        let iconEditar = createI('border_color');
+        let iconStatus = createI('delete_sweep');
+        let iconAsig = createI('build');
+        btnEditar.appendChild(iconEditar);
+        btnAsig.appendChild(iconAsig);
+        btnStatus.appendChild(iconStatus);
+        tdActions.appendChild(btnAsig);
+        tdActions.appendChild(btnEditar);
+        tdActions.appendChild(btnStatus);
+        tdID.innerText = rl.rl_id;
+        tdNombre.innerText = rl.rl_nombre;
+        tdDescript.innerText = rl.rl_descripcion;
+        let valueStatus = rl.rl_status === '1' ? 'Activo' : 'Inactivo';
+        tdStatus.innerText = valueStatus;
+
+        tableBodyRoles.appendChild(trRoles);
+
+        trRoles.append(tdID, tdNombre, tdDescript, tdStatus, tdActions);
+
+        // Boton de editar.
+        btnEditar.addEventListener('click',(e)=>{
         e.preventDefault();
         e.stopPropagation();
 
@@ -29,12 +67,29 @@ btnEditar.forEach((btnEdit)=>{
         inputNombre.value = nombre;
         inputDescript.value = descripcion;
 
+
         //Como cambiamos el valor del formulario, necesitamos volver a reiniciar los input del formulario
         M.updateTextFields();
         
         instanModal.open();
     });
 
+    });
+}
+
+let btnEditar = document.querySelectorAll('.btnEdit');
+console.log(btnEditar);
+
+btnEditar.forEach((btnEdit)=>{
+    
+
 });
 
-closeModal(instanModal,closeModalBtn);
+
+
+
+
+document.addEventListener("DOMContentLoaded", ()=>{
+    renderRoles();
+    closeModal(instanModal,closeModalBtn);
+});

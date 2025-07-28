@@ -1,18 +1,19 @@
 <?php
 include_once __DIR__ . '/../model/rolesModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
+require_once __DIR__ . '/../../../helpers/response.php';
 
-class rolesController {
+class RolesController {
     private $modeloRol;
     private $conn;
 
-    public function __construct($conexion) {
+    public function __construct() {
         $this->conn = new Conection();
-        $this->modeloRol = new RolModelo($conexion);
+        $this->modeloRol = new RolModelo();
     }
 
     public function mostrarRoles() {
-        $roles = $this->modeloRol->obtenerRoles();
+        // $roles = $this->modeloRol->obtenerRoles();
         return include_once __DIR__ . '../../views/rolesViews.php';
     }
     
@@ -36,8 +37,6 @@ class rolesController {
             return include __DIR__ .  './../views/rolesRegistrar.php';
         }
     }
-
-
     public function editarRol() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $rol_id = $_POST['rol_id'];
@@ -74,7 +73,6 @@ class rolesController {
             }
         }
     }
-
     public function eliminarRol() {
         //dd($_GET);
         if (isset($_GET['rl_id'])) {
@@ -105,8 +103,38 @@ class rolesController {
         exit();
 
     }
+    public function getRoles(){
+        $roles = $this->modeloRol->obtenerRoles();
 
-    
+        success('roles', $roles);
+
+    }
+
 }
 
+$objRolesController = new RolesController();
+
+
+
+if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+        $case = $_GET['action'] ?? '';
+        $pages = $_GET['pages'] ?? 1;
+
+        $codigo = $_GET['codigo'] ?? 0;
+        $codigo = (int) $codigo;
+
+        switch ($case) {
+            case 'getRoles':
+                if (method_exists($objRolesController, 'getRoles')) {
+                    $objRolesController->getRoles();
+                }
+                break;
+            
+            default:
+                
+                break;
+        }
+    }
+}
 ?>

@@ -90,7 +90,7 @@
       <a href="<?php echo getUrl('configModules','configModules','renderViewArea',false,'dashboard'); ?>">Áreas</a>
       <a href="<?php echo getUrl('configModules','configModules','renderViewTp',false,'dashboard'); ?>">Tipo documento</a>
       <a href="<?php echo getUrl('configModules','configModules','renderViewMarca',false,'dashboard'); ?>">Marcas</a>
-      <a href="<?php echo getUrl('roles','roles','mostrarRoles',false,'dashboard'); ?>">Roles</a>
+      <a href="<?php echo getUrl('Roles','Roles','mostrarRoles',false,'dashboard'); ?>">Roles</a>
       <a href="<?php echo getUrl('categorias','categorias','consultCategoriasView',false,'dashboard'); ?>">Categorías</a>
     </div>
     <div id="submenu-reportes" class="submenu hidden">

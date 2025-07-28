@@ -21,6 +21,7 @@ class ScanFiles{
         if (!is_string($module)) {
             return;
         }
+        // $moduleNew = ucfirst($module);
 
         $relativePathAssets = __DIR__ . "/../../public/assets/css/$module";
         $fileAssets = glob($relativePathAssets. '*',GLOB_MARK);

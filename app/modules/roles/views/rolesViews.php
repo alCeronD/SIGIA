@@ -24,35 +24,7 @@
                 </tr>
             </thead>
             <tbody id="tableBodyRoles">
-                <?php if (!empty($roles)) : ?>
-                    <?php foreach ($roles as $rol) : ?>
-                        <tr>
-                            <td><?php echo $rol['rl_id']; ?></td>
-                            <td><?php echo htmlspecialchars($rol['rl_nombre']); ?></td>
-                            <td><?php echo htmlspecialchars($rol['rl_descripcion']); ?></td>
-                            <td>
-                                <?php
-                                $value = ($rol['rl_status'] == 1) ? 'Activo' : 'Inactivo';
-                                echo htmlspecialchars($value);
-                                ?>
-                            </td>
-                            <td>
-                                <button type="button" id="btnEditar" data-desc="<?php echo $rol['rl_descripcion']; ?>" data-nombre = "<?php echo $rol['rl_nombre']; ?>" data-id="<?php echo $rol['rl_id']; ?>" class="waves-effect waves-light btn btnEditar">
-                                    <i class="material-icons">edit</i>
-                                </button>
-                                <a href="<?= getUrl('roles', 'roles', 'eliminarRol', ['rl_id' => $rol['rl_id'], 'rl_status' => $rol['rl_status']], 'dashboard') ?>"
-                                    class="waves-effect waves-light btn red"
-                                    onclick="return confirm('¿Está seguro de inactivar este registro?');">
-                                    <i class="material-icons">delete</i>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
-                    <tr>
-                        <td colspan="5" class="text-center">No hay roles registrados</td>
-                    </tr>
-                <?php endif; ?>
+                <!-- Renderizado con javascript -->
             </tbody>
         </table>
     </div>
