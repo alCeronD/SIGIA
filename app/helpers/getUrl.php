@@ -46,7 +46,6 @@
             $funcion = $_GET['funcion'];
         }
 
-        // dd("$modulo $controlador $funcion");
 
         $controllerPath = __DIR__ . "/../modules/$modulo/controller/{$controlador}Controller.php";
         if (is_dir(__DIR__ . "/../modules/$modulo")){
