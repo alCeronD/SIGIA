@@ -23,7 +23,7 @@ function validatePermisos(String $modulo, String $funcion)
      * traer el id de la función basadao en su nombre de la función y ID De la función.
      */
     $idFuncion = $objPermisos->getIdFuncion($funcion, $modulo, $idNombreModulo);
-
+    // var_dump($idFuncion);
     /**
      * Tercera consulta
      * Validar que el ROL DEL USUARIO TENGA EL PERMISO ADECUADO PARA ACCEDER A ESA FUNCIÓN, BASADO EN ESA FUNCIÓN PODEMOS USAR EL MODULO.
@@ -44,8 +44,6 @@ function validatePermisos(String $modulo, String $funcion)
         $rolId = $_SESSION['usuario']['rol_id'];
         $isValidate = $objPermisos->validateRolFuncion($rolId, $idFuncion);
     }
-
-
     return $isValidate;
 
     // // En caso de que el usuario no tenga el acceso, este debe de redireccionar.

@@ -2,6 +2,11 @@
 include_once __DIR__ . '/../model/rolesModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 require_once __DIR__ . '/../../../helpers/response.php';
+// Para validar el permiso de cada función debemos de usar, la variable de session que esta en session.php, validatePermisos.php y getUrl.php
+require_once __DIR__ . "/../../../helpers/session.php";
+require_once __DIR__ . "/../../../helpers/validatePermisos.php";
+require_once __DIR__ . "/../../../helpers/getUrl.php";
+
 
 class RolesController {
     private $modeloRol;
@@ -18,21 +23,39 @@ class RolesController {
     public function registrarRol(array $data = [])
     {
 
+        $result = validatePermisos('Roles', 'registrarRol');
+        if (!$result) {
+            $result = [
+                'status' => false,
+                'message' => "No tienes permisos para realizar esta operación",
+                'data' => []
+            ];
+            fail('No tienes permisos para realizar esta acción', $result);
+            return;
+        }
+
         $rol_nombre = $data['rol_nombre'];
         $rol_descripcion = $data['rol_descripcion'];
         $exito = $this->modeloRol->insertarRoles($rol_nombre, $rol_descripcion);
         if (!$exito['status']) {
             fail('Error al registrar rol', $exito);
         }
-        success('Proceso Ejecutado con exito', $exito);
-
-        // $this->mostrarRoles();
-        // echo "<script>alert('Rol registrado exitosamente'); window.location.href = '" . getUrl('roles', 'roles', 'mostrarRoles', false, 'dashboard') . "';</script>";
-        // return;
-    
+        success('Proceso Ejecutado con exito', $exito);    
     }
     public function editarRol(array $data = [])
     {
+
+        $result = validatePermisos('Roles', 'editarRol');
+        if (!$result) {
+            $result = [
+                'status' => false,
+                'message' => "No tienes permisos para realizar esta operación",
+                'data' => []
+            ];
+            fail('No tienes permisos para realizar esta acción', $result);
+            return;
+        }
+
         $rol_id = (int) $data['rol_id'];
         $rol_nombre = $data['modal_rol_nombre'];
         $rol_descripcion = $data['rol_descripcion'];
@@ -58,6 +81,18 @@ class RolesController {
         
     }
     public function getRoles(){
+
+        $result = validatePermisos('Roles', 'getRoles');
+        if (!$result) {
+            $result = [
+                'status' => false,
+                'message' => "No tienes permisos para realizar esta operación",
+                'data' => []
+            ];
+            fail('No tienes permisos para realizar esta acción', $result);
+            return;
+        }
+
         $roles = $this->modeloRol->obtenerRoles();
 
         success('roles', $roles);

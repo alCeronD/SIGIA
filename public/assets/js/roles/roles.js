@@ -151,7 +151,8 @@ formEditarRol.addEventListener("submit",async (e) => {
         modalEditar.close();
     }
   } catch (error) {
-    initAlert("Error al realizar la actualización", "error", `${error}`);
+    console.log(error);
+    initAlert(`${error.message}`, "error", `${error}`);
   }
 
 });
@@ -174,7 +175,7 @@ formRol.addEventListener('submit', async (e)=>{
       formRol.reset();
     }
   } catch (error) {
-    initAlert(`error al registrar el rol ${error}`, "error", toastOptions);
+    initAlert(`${error.message}`, "error", toastOptions);
   }
 });
 
