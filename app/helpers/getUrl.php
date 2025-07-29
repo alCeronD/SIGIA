@@ -98,11 +98,11 @@ function resolve($modulo = 'dashboard', $controlador = 'dashboard', $funcion = '
             // dd($isValidate);
 
             // // En caso de que el usuario no tenga el acceso, este debe de redireccionar.
-            // if (!$isValidate) {
-            //     // Si la sesión está activa, pero no tiene permisos
-            //     redirect(getUrl('Login', 'login', 'logout', false, 'index'));
-            //     exit();
-            // }
+            if (!$isValidate) {
+                // Si la sesión está activa, pero no tiene permisos
+                redirect(getUrl('Login', 'login', 'logout', false, 'index'));
+                exit();
+            }
 
             $objeto = new $nombreClase($conexion);
 
