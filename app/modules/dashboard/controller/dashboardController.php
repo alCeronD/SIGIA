@@ -1,13 +1,11 @@
 
 <?php 
-// include_once __DIR__ . '/../../solicitudPrestamos/model/solicitudPrestamosModel.php';
 include_once __DIR__ . '/../../dashboard/model/dashboardModel.php';
-
 include_once __DIR__ . '/../../../config/conn.php';
+
 
 class DashboardController{
 
-    
     private $conn;
 
     public function __construct($conexion) {

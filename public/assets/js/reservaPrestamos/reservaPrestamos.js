@@ -37,6 +37,11 @@ const renderUsers = async ({action = "users", pages = 1, resetToFirstPage = fals
   try {
     const response = await getData("modules/reservaPrestamos/controller/reservaController.php","GET", {action: action, pages});
 
+    // if (!response.status) {
+    //   initAlert(`${response.message}`, "warning", toastOptions);
+    //   return;
+    // }
+
     let data = response.data.data;
     let allPages = response.data.pages;
 
@@ -94,7 +99,9 @@ const renderUsers = async ({action = "users", pages = 1, resetToFirstPage = fals
       });
 
   } catch (error) {
-    throw new Error(`Error de procesado ${error}`);
+    console.log(error);
+    initAlert(`${error.message}`, "warning", toastOptions);
+    // throw new Error(`Error de procesado ${error}`);
   }
 };
 
@@ -128,6 +135,7 @@ const getElements = async ({ action = "", pages = 1 } = {}) => {
 
     throw new Error("Acción no reconocida.");
   } catch (error) {
+    initAlert(`${error.message}`, "warning", toastOptions);
     throw new Error(`Error al procesar la solicitud: ${error}`);
   }
 };
@@ -464,7 +472,6 @@ const nextElement = document.querySelector("#nextElement");
 previewElement.addEventListener("click",async  (e) => {
   e.stopPropagation();
   pgElementsDevolutivos = pgElementsDevolutivos === 1 ? 1 : pgElementsDevolutivos - 1;
-
   let {objDataDevolutivos, pagesElementsDevolutivos} = await getElements({action: "elementsDevolutivos", pages: pgElementsDevolutivos});
 
   renderDevolutivos({objDataDevolutivos: objDataDevolutivos, pagesElementsDevolutivos: pgElementsDevolutivos});
@@ -691,30 +698,39 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
       .join("\n")}\n`;
   }
 
-  //TODO: transformar en sweet alert.
+  //TODO: transformar await fetch.
   if (
     confirm(`¿Deseas realizar el siguiente prestamo?\n${textConfirmReserva}`)
   ) {
-    objAjax.request.onload = () => {
-      let response = JSON.parse(objAjax.request.responseText);
-      // Si el registro se realizó correctamente.
-      if (response.status) {
-        initAlert("Reserva realizada con exito", "success", toastOptions);
-        //Limpio el formulario, tabla y campos de span.
-        formSolicitudPrestamo.reset();
-        inputsForm.inputNroDocumento.textContent = "";
-        inputsForm.inputNombre.textContent = "";
-        inputsForm.inputApellido.textContent = "";
-        inputsForm.inputEmail.textContent = "";
-        inputsForm.inputTelefono.textContent = "";
-        tablesDoom.tblBodyPreviewElements.innerHTML = "";
 
+    try {
+        objAjax.request.onload = () => {
+        let response = JSON.parse(objAjax.request.responseText);
+        // Si el registro se realizó correctamente.
+        if (response.status) {
+          initAlert("Reserva realizada con exito", "success", toastOptions);
+          //Limpio el formulario, tabla y campos de span.
+          formSolicitudPrestamo.reset();
+          inputsForm.inputNroDocumento.textContent = "";
+          inputsForm.inputNombre.textContent = "";
+          inputsForm.inputApellido.textContent = "";
+          inputsForm.inputEmail.textContent = "";
+          inputsForm.inputTelefono.textContent = "";
+          tablesDoom.tblBodyPreviewElements.innerHTML = "";
+        }
+        if (!response.status) {
+          initAlert(`${response.message}`, "warning", toastOptions);
+          return;
+        }
+      };
 
-      }
-    };
-
-    objAjax.request.setRequestHeader("accept", "application/json");
-    objAjax.request.send(dataJson);
+      objAjax.request.setRequestHeader("accept", "application/json");
+      objAjax.request.send(dataJson);
+    } catch (error) {
+      initAlert(`${error.message}`, "warning", toastOptions);
+      return;
+    }
+    
   }
 });
 

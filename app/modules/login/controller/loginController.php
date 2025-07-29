@@ -51,6 +51,8 @@ class loginController {
             exit();
         }
 
+        
+
         $_SESSION['usuario'] = [
             'id' => $usuario['usu_id'],
             'nombre' => $usuario['usu_nombres'],

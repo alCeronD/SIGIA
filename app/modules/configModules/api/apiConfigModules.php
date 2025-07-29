@@ -218,7 +218,7 @@ if ($method === 'POST') {
         'values' => $datas,
     ];
 
-    $dataValidate = $configController->validate($nameColum, $tableName, $valueNameColum);
+    $dataValidate = $configController->validateUniqueItem($nameColum, $tableName, $valueNameColum);
 
 
     if (!$dataValidate['status']) {

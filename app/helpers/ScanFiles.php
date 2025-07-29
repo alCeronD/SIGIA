@@ -21,6 +21,7 @@ class ScanFiles{
         if (!is_string($module)) {
             return;
         }
+        // $moduleNew = ucfirst($module);
 
         $relativePathAssets = __DIR__ . "/../../public/assets/css/$module";
         $fileAssets = glob($relativePathAssets. '*',GLOB_MARK);
@@ -28,7 +29,6 @@ class ScanFiles{
         foreach ($fileAssets as $key => $value) {
             $filesAssets = basename($value);
 
-            //var_dump($filesAssets);
 
             if (!str_contains($filesAssets,'.css')) {
 

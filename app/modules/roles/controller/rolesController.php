@@ -1,112 +1,146 @@
 <?php
 include_once __DIR__ . '/../model/rolesModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
-
-class rolesController {
+/**
+ * En este documento está adjunto la variable de sessión, getUrl y response que me permite mandar el json al front como respuesta.
+ */
+require_once __DIR__ . "/../../../helpers/validatePermisos.php";
+class RolesController {
     private $modeloRol;
     private $conn;
 
-    public function __construct($conexion) {
+    public function __construct() {
         $this->conn = new Conection();
-        $this->modeloRol = new RolModelo($conexion);
+        $this->modeloRol = new RolModelo();
     }
 
     public function mostrarRoles() {
-        $roles = $this->modeloRol->obtenerRoles();
         return include_once __DIR__ . '../../views/rolesViews.php';
     }
-    
-    
-    public function registrarRol(){
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $rol_nombre = $_POST['rol_nombre'];
-            $rol_descripcion = $_POST['rol_descripcion'];
-            $exito = $this->modeloRol->insertarRoles($rol_nombre,$rol_descripcion);
+    public function registrarRol(array $data = [])
+    {
 
-            if ($exito) {
+        validatePermisos('Roles', 'registrarRol');
 
-                $this->mostrarRoles();
-                echo "<script>alert('Rol registrado exitosamente'); window.location.href = '" . getUrl('roles','roles','mostrarRoles',false,'dashboard') . "';</script>";
-                return;
-
-            } else {
-                echo "<div class='alert alert-danger text-center'>Error al registrar el Rol.</div>";
-            }
-        } else {
-            return include __DIR__ .  './../views/rolesRegistrar.php';
+        $rol_nombre = $data['rol_nombre'];
+        $rol_descripcion = $data['rol_descripcion'];
+        $exito = $this->modeloRol->insertarRoles($rol_nombre, $rol_descripcion);
+        if (!$exito['status']) {
+            fail('Error al registrar rol', $exito);
         }
+        success('Proceso Ejecutado con exito', $exito);    
     }
+    public function editarRol(array $data = [])
+    {
+
+        validatePermisos('Roles','editarRol');
+
+        $rol_id = (int) $data['rol_id'];
+        $rol_nombre = $data['modal_rol_nombre'];
+        $rol_descripcion = $data['rol_descripcion'];
+        $responseRol = $this->modeloRol->actualizarRol($rol_id, $rol_nombre, $rol_descripcion);
 
 
-    public function editarRol() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $rol_id = $_POST['rol_id'];
-            $rol_nombre = $_POST['rol_nombre'];
-            $rol_descripcion = $_POST['rol_descripcion'];
-            $exito = $this->modeloRol->actualizarRol($rol_id, $rol_nombre,$rol_descripcion);
-
-            if ($exito) {
-
-                $this->mostrarRoles();
-                echo "<script>alert('Rol actualizado exitosamente'); window.location.href = '" . getUrl('roles','roles','mostrarRoles',false,'dashboard') . "';</script>";
-                return;
-
-            } else {
-                $this->mostrarRoles();
-                echo "<script>alert('Rol actualizado exitosamente'); window.location.href = '" . getUrl('roles','roles','mostrarRoles',false,'dashboard') . "';</script>";
-                return;
-            }
-        } else {
-            // Mostrar formulario con datos actuales del rol
-            $rol_id = $_GET['id'];
-            $roles = $this->modeloRol->obtenerRoles();
-            $rol_actual = null;
-            foreach ($roles as $rol) {
-                if ($rol['rl_id'] == $rol_id) {
-                    $rol_actual = $rol;
-                    break;
-                }
-            }
-            if ($rol_actual) {
-                return include __DIR__ . './../views/rolesEditar.php';
-            } else {
-                echo "<div class='alert alert-danger text-center'>Rol no encontrado.</div>";
-            }
+        if (!$responseRol['status']) {
+            fail('Error al actualizar el recurso', $responseRol);
         }
+        success('Recurso actualizado', $responseRol);
     }
+    public function statusRoles(array $data = [])
+    {
+        validatePermisos('Roles', 'statusRoles');
+        $idRol = (int) $data['idRol'];
+        $status = (int) $data['statusRol'] == 1 ? 0 : 1;
 
-    public function eliminarRol() {
-        //dd($_GET);
-        if (isset($_GET['rl_id'])) {
-            $rl_id = $_GET['rl_id'];
-            $status = ($_GET['rl_status'] == 0) ? 1 : 0;
-            $exito = $this->modeloRol->eliminarRol($rl_id,$status);
-            if ($exito) {
-
-                if ($status == 0) {
-                    $textValue = "habilitado";
-                }else{
-                    $textValue = "inhabilitado";
-                }
-
-                $this->mostrarRoles();
-                echo "<script>alert('Rol $textValue exitosamente'); window.location.href = '" . getUrl('roles','roles','mostrarRoles',false,'dashboard') . "';</script>";
-                return;
-            } else {
-                echo "<script>alert('Error al inhabilitar el rol.');</script>";
-                $this->mostrarRoles();
-                return;
-
-            }
-        } else {
-            echo "<div class='alert alert-warning text-center'>ID de rol no especificado.</div>";
+        $exito = $this->modeloRol->eliminarRol($idRol, $status);
+        if (!$exito['status']) {
+            fail('error al actualizar el estado del elemento');
         }
+        success('recurso actualizado', $exito);
+        
+    }
+    public function getRoles(){
+        validatePermisos('Roles', 'getRoles');
 
-        exit();
+        $roles = $this->modeloRol->obtenerRoles();
+
+        success('roles', $roles);
 
     }
+    public function assingRoles(){
+        
+    }
 
-    
 }
 
+$objRolesController = new RolesController();
+
+
+
+if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+        $case = $_GET['action'] ?? '';
+        $pages = $_GET['pages'] ?? 1;
+
+        $codigo = $_GET['codigo'] ?? 0;
+        $codigo = (int) $codigo;
+
+        switch ($case) {
+            case 'getRoles':
+                if (method_exists($objRolesController, 'getRoles')) {
+                    $objRolesController->getRoles();
+                }
+                break;
+            
+            default:
+                
+                break;
+        }
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
+        $input = file_get_contents("php://input");
+        $data = json_decode($input, true);
+
+        $action = $data['action'];
+        unset($data['action']);
+
+        switch ($action) {
+            case 'updateRol':
+                if (method_exists($objRolesController, 'editarRol')) {
+                    $objRolesController->editarRol($data);
+                }
+
+                break;
+
+            case 'statusRol':
+                if (method_exists($objRolesController, 'statusRoles')) {
+                    $objRolesController->statusRoles($data);
+                }
+                break;
+            
+            default:
+
+                break;
+        }
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $input = file_get_contents("php://input");
+        $dataAdd = json_decode($input, true);
+        $action = $dataAdd['action'];
+        unset($dataAdd['action']);
+        $newData = $dataAdd;
+        switch ($action) {
+            case 'addRol':
+                if (method_exists($objRolesController, 'registrarRol')) {
+                   $objRolesController->registrarRol($newData);
+                }
+                break;
+            default:
+                # code...
+                break;
+        }
+    }
+}
 ?>

@@ -1,11 +1,13 @@
 <?php
-require_once __DIR__ . "/../model/usuariosModel.php";
-include_once __DIR__ . '/../../roles/model/rolesModel.php';
-include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
+include_once __DIR__ . '/../../roles/model/rolesModel.php';
+require_once __DIR__ . "/../model/usuariosModel.php";
+include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
+require_once __DIR__ . "/../../login/controller/loginController.php";
+require_once __DIR__ . "/../../../helpers/validatePermisos.php";
 require_once __DIR__ . "/../../../helpers/response.php";
 require_once __DIR__ . "/../../../helpers/session.php";
-require_once __DIR__ . "/../../login/controller/loginController.php";
+require_once __DIR__ . "/../../../helpers/getUrl.php";
 class usuariosController
 {
 
@@ -44,6 +46,8 @@ class usuariosController
     }
     public function createUser(array $data = [])
     {
+        validatePermisos('Usuarios', 'createUser');
+
         header('Content-Type: application/json; charset=utf-8');
 
         if (!isset($data['usu_email']) || !isset($data['usu_docum'])) {
@@ -58,7 +62,7 @@ class usuariosController
 
         $emailExists = $this->usuariosModel->validateEmail($data['usu_email'], $data['usu_docum'], false);
 
-        
+
 
         if ($emailExists) {
             http_response_code(409);
@@ -69,15 +73,15 @@ class usuariosController
             // return;
             exit;
         }
-         $documentExists = $this->usuariosModel->validateDocumento($data['usu_docum']);
-            if ($documentExists) {
-                http_response_code(409);
-                echo json_encode([
-                    "status" => "error",
-                    "message" => "El número de documento ya está registrado."
-                ]);
-                exit;
-            }
+        $documentExists = $this->usuariosModel->validateDocumento($data['usu_docum']);
+        if ($documentExists) {
+            http_response_code(409);
+            echo json_encode([
+                "status" => "error",
+                "message" => "El número de documento ya está registrado."
+            ]);
+            exit;
+        }
 
         $datos = [
             'usu_docum'       => $data['usu_docum'],
@@ -242,7 +246,6 @@ echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" .
         echo "<script>alert('Usuario actualizado exitosamente, vuelve a iniciar la sesión.'); window.location.href = '" . getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard') . "';</script>";
         $loginObj->logout();
     }
-
     public function userPermView() {}
 }
 

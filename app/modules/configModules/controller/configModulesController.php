@@ -2,7 +2,7 @@
 
 // incluyo la clase para usar el renderizado de la vista.
 require_once __DIR__ . '/../model/configModulesModel.php';
-
+require_once __DIR__ . '/../../../helpers/validatePermisos.php';
 
 class ConfigModulesController{
     private $configModel;
@@ -12,19 +12,14 @@ class ConfigModulesController{
     private $module;
     private $file;
 
-    public function __construct(){
-
-    
-    }
+    public function __construct(){}
 
     //Me devuelve la ruta de la vista del modulo de areas.
     public function renderViewArea(){
-        //return $this->render->renderView($this->module, $this->file);
         return include_once  __DIR__ . '/../areas/views/areaView.php';
     }
     public function renderViewTp(){
 
-        //return $this->render->renderView($this->module, $this->file);
         return include_once  __DIR__ . '/../tipoDocumento/views/tpDocumentoView.php';
     }
     
@@ -35,7 +30,7 @@ class ConfigModulesController{
 
     // Traer la información de una tabla en especifico.
     public function getData(String $tableName, String $status){
-        
+        validatePermisos('configModules', 'getData');
         $model = new ConfigModulesModel();
         //las tablas, las voy a comparar segun el area crear la consulta.
         $statusTables = ['areas','tipo_documento','roles','categorias','marcas'];
@@ -71,6 +66,7 @@ class ConfigModulesController{
     //Función para actualizar la información de un registro en base a la tabla.
     public function updateRow(array $data = [])
 {
+    validatePermisos('configModules', 'updateRow');
     $values = $data['values'];         
     $keysValues = array_keys($values);
     $pk = $data['pk'];                 
@@ -134,6 +130,7 @@ class ConfigModulesController{
     //Creo la consulta sql.
     public function deleteRow(array $data=[]){
 
+        validatePermisos('configModules', 'deleteRow');
         //Validar en el arreglo si el dato enviado corresponde a uno de los status.
         $status = [0, 1];
         //validar si está definido.
@@ -214,7 +211,7 @@ class ConfigModulesController{
         return $data;
     }
     
-    public function validate(String $nameColum, String $tableName, String $nameValueColum){
+    public function validateUniqueItem(String $nameColum, String $tableName, String $nameValueColum){
         $model = new ConfigModulesModel();
         $result = $model->validateUnique($nameColum,$tableName, $nameValueColum);
         return $result;

@@ -205,7 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
   usu_observacion: "Notas adicionales al usuario"
 };
 
-  
   //Validaciones formulario registro usuarios.
   const formUsuario = document.getElementById("formSolicitudPrestamo");
   if (formUsuario) {
@@ -234,9 +233,6 @@ document.addEventListener("DOMContentLoaded", () => {
         rol.classList.add("invalid");
         valid = false;
       }
-      console.log(data);
-      
-      
         try {
           const result = await sendData(
             "modules/usuarios/controller/usuariosController.php",
@@ -249,7 +245,6 @@ document.addEventListener("DOMContentLoaded", () => {
           initAlert("Usuario creado exitosamente", "success", toastOptions);
           formUsuario.reset();
         } catch (error) {
-          console.error(error);
           const message =
             error.message ||
             error.data?.message ||

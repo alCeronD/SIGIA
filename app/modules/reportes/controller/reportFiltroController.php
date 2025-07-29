@@ -1,5 +1,3 @@
-
-
 <?php
 $conexion    = new Conection();
 $ctrl        = new ReportesController($conexion->getConnect());

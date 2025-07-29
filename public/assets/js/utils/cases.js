@@ -412,13 +412,11 @@ export const getSelector = (selector) =>{
   return el;
 }
 
-
 // Función para validar campos el dormulario.
 export const validateFormData = ({formData, campos, mapForm}={}) =>{
   for (const [key, value] of formData.entries()) {
     const isEmpty = !value || value.toString().trim() === "";
-    console.log(mapForm);
-    // Evitamos validar campos opcionales como 'observaciones'
+    // pasamos por referencia los valores opcionales.
     const camposOpcionales = campos;
     if (isEmpty && !camposOpcionales.includes(key)) {
       initAlert(
@@ -430,4 +428,23 @@ export const validateFormData = ({formData, campos, mapForm}={}) =>{
     }
   }
   return true;
+}
+
+export const mostrarConfirmacion = (titulo, mensaje, callback)=>{
+// Rellenar el contenido
+  document.getElementById("modalConfirmacionTitulo").textContent = titulo;
+  document.getElementById("modalConfirmacionMensaje").innerHTML = mensaje;
+
+  // Obtener instancia y abrir el modal
+  const modalElem = document.getElementById("modalConfirmacion");
+  const instance = M.Modal.getInstance(modalElem);
+  instance.open();
+
+  // Manejo de botones
+  const btnAceptar = document.getElementById("btnAceptar");
+  const btnCancelar = document.getElementById("btnCancelar");
+
+  // Limpiar cualquier listener anterior
+  btnAceptar.onclick = () => callback(true);
+  btnCancelar.onclick = () => callback(false);
 }

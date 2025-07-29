@@ -1,14 +1,18 @@
 <?php
 include_once __DIR__ . '/../../../config/conn.php';
 
-class RolModelo {
+class RolModelo
+{
 
-    public function __construct() {
+
+    public function __construct()
+    {
         // Ya no se necesita guardar la conexión en $this->conn
     }
 
     // Método para obtener todos los roles
-    public function obtenerRoles() {
+    public function obtenerRoles()
+    {
         $roles = [];
 
         $conn = (new Conection())->getConnect();
@@ -25,7 +29,8 @@ class RolModelo {
         return $roles;
     }
 
-    public function obtenerRol(int $id = 0) {
+    public function obtenerRol(int $id = 0)
+    {
         if (!is_int($id) || !$id) {
             return null;
         }
@@ -43,56 +48,143 @@ class RolModelo {
         return $rol;
     }
 
-    public function insertarRoles($rol_nombre, $rol_descripcion) {
-        $conn = (new Conection())->getConnect();
-        $rol_status = 1;
-        $sql = "INSERT INTO roles (rl_nombre, rl_descripcion, rl_status) 
-                VALUES ('$rol_nombre', '$rol_descripcion', '$rol_status')";
-        $resultado = $conn->query($sql);
+    public function insertarRoles($rol_nombre, $rol_descripcion)
+    {
+        try {
+            $conn = (new Conection())->getConnect();
+            $rol_status = 1;
 
-        if ($resultado) {
+            $sql = "INSERT INTO roles (rl_nombre, rl_descripcion, rl_status) 
+                VALUES (?, ?, ?)";
+
+            $stmtAddRol = $conn->prepare($sql);
+            if (!$stmtAddRol) {
+                $conn->close();
+                return [
+                    'message' => "Error al preparar la consulta: " . $conn->error,
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+
+            // 'ssi': string, string, integer
+            $stmtAddRol->bind_param('ssi', $rol_nombre, $rol_descripcion, $rol_status);
+
+            if (!$stmtAddRol->execute()) {
+                $conn->close();
+                return [
+                    'message' => "Error al ejecutar la consulta: " . $stmtAddRol->error,
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+
+            // Opcional: obtener el ID insertado si lo necesitas
+            $insertId = $stmtAddRol->insert_id;
+
             $conn->close();
-            return true;
-        } else {
-            echo "Error al insertar rol: " . $conn->error;
-            $conn->close();
-            return false;
+            return [
+                'message' => "Rol insertado correctamente",
+                'status' => true,
+                'data' => [$insertId]
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'status' => false,
+                'message' => $th,
+                'data' => []
+            ];
         }
     }
 
-    public function actualizarRol($rol_id, $rol_nombre, $rol_descripcion) {
-        $conn = (new Conection())->getConnect();
-        $sql = "UPDATE roles SET rl_nombre = '$rol_nombre', rl_descripcion = '$rol_descripcion' 
-                WHERE rl_id = $rol_id";
-        $resultado = $conn->query($sql);
+    public function actualizarRol($rol_id, $rol_nombre, $rol_descripcion)
+    {
 
-        if ($resultado) {
-            $conn->close();
-            return true;
-        } else {
-            echo "Error al actualizar rol: " . $conn->error;
-            $conn->close();
-            return false;
+        try {
+            $conn = (new Conection())->getConnect();
+
+            $sql = "UPDATE roles SET rl_nombre = ?, rl_descripcion = ?
+                    WHERE rl_id = ?";
+
+            $stmtSql = $conn->prepare($sql);
+            if (!$stmtSql) {
+                $conn->close();
+                return [
+                    'message' => "Error al preparar la consulta" . $conn->error,
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+
+            $stmtSql->bind_param('ssi', $rol_nombre, $rol_descripcion, $rol_id);
+
+            if (!$stmtSql->execute()) {
+                $conn->close();
+                return [
+                    'message' => "error al ejecutar la consulta" . $conn->error,
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+
+            return [
+                'message' => "recurso actualizado",
+                'status' => true,
+                'data' => [1]
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'status' => false,
+                'message' => $th,
+                'data' => []
+            ];
         }
     }
 
-    public function eliminarRol($rl_id, $status) {
-        $conn = (new Conection())->getConnect();
-        $sql = "UPDATE roles SET rl_status = $status WHERE rl_id = $rl_id";
-        $resultado = $conn->query($sql);
+    public function eliminarRol($rl_id, $status)
+    {
 
-        if ($resultado) {
-            $conn->close();
-            return true;
-        } else {
-            echo "Error al eliminar rol: " . $conn->error;
-            $conn->close();
-            return false;
+        try {
+            $conn = (new Conection())->getConnect();
+            $sql = "UPDATE roles SET rl_status = ? WHERE rl_id = ?";
+            $stmtRol = $conn->prepare($sql);
+            if (!$stmtRol) {
+                $conn->close();
+                return
+                    [
+                        'status' => false,
+                        'message' => "error al preparar consulta" . $conn->error,
+                        'data' => []
+                    ];
+            }
+
+            $stmtRol->bind_param('ii', $status, $rl_id);
+
+            if (!$stmtRol->execute()) {
+                $conn->close();
+                return [
+                    'message' => "error al ejecutar la consulta",
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+            return [
+                'message' => 'recurso actualizado',
+                'status' => true,
+                'data' => []
+            ];
+        } catch (\Throwable $e) {
+            return [
+                'message' => "errror al ejecutar el procedimiento" . $e->getMessage(),
+                'status' => false,
+                'data' => []
+            ];
         }
     }
 
     // Actualizo rol del usuario
-    public function actRolUser($id_user, $rol_id) {
+    public function actRolUser($id_user, $rol_id)
+    {
         $conn = (new Conection())->getConnect();
         $query = "UPDATE usuarios_roles SET usr_rl_id = '$rol_id' WHERE usr_usu_id = '$id_user'";
         $resultado = $conn->query($query);
@@ -107,5 +199,3 @@ class RolModelo {
         }
     }
 }
-
-?>

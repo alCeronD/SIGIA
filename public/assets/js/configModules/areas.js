@@ -176,18 +176,21 @@ function fetchData() {
             objAjax.request.onload = () => {
               let dta = JSON.parse(objAjax.request.responseText);
 
-              if (dta.status === false) {
-                alert("Error al actualizar el registro.");
-              } else {
-                initAlert('Registro actualizado','warning',toastOptions);
-                fetchData(); // Refrescar tabla
-              }
+              if (!dta.status) {
+                initAlert(`Respuesta del servidor: \n ${dta.message}`, "error", toastOptions);
+                return;
+              } 
+              initAlert(dta.message,"success",toastOptions);
+              fetchData(); // Refrescar tabla
             };
-
+            
             objAjax.request.send(data);
           }
         });
       });
+    }else{
+      initAlert(`${error.message}`, "warning", toastOptions);
+      return;
     }
   };
 
@@ -274,15 +277,21 @@ areaUpdateForm.addEventListener("submit", (e) => {
     let dataStatus = objAjax.request.responseText;
     //Transformo en un json la respuesta.
     dataStatus = JSON.parse(dataStatus);
-    if (dataStatus.status) {
-      //Cerrar el modal
-      closeModal(instanceMyModal);
-      initAlert('Registro actualizado','warning', toastOptions);
-      //Renderizo nuevamente la data.
-      fetchData();
-    }else{
-      initAlert("El nombre del item ya esta registrado en la base de datos", "info", toastOptions);
+    try {
+      if (dataStatus.status) {
+        //Cerrar el modal
+        closeModal(instanceMyModal);
+        initAlert('Registro actualizado','warning', toastOptions);
+        //Renderizo nuevamente la data.
+        fetchData();
+      }else{
+        initAlert(`${dataStatus.message}`, "info", toastOptions);
+      }
+    } catch (error) {
+      initAlert(`${error.message}`, "warning", toastOptions);
+      return;
     }
+
   };
   objAjax.request.send(data);
 });
