@@ -11,7 +11,7 @@ Class PermisosController{
     public function gidIdModulo(String $nameModule = ""){
         $result = $this->modelPermisos->getModuleName($nameModule);
         $idNombreModulo = $result['data']['id_m'];
-        return $idNombreModulo;
+        return $idNombreModulo = empty($idNombreModulo) ? null : $idNombreModulo;
     }
 
     public function getIdFuncion(String $functionName = "", String $modelName = "", Int $idModulo = 0){
@@ -23,9 +23,12 @@ Class PermisosController{
 
     public function validateRolFuncion(int $rolId,int $idFuncion){
         $result = $this->modelPermisos->getPermisoFuncion($rolId, $idFuncion);
-        // dd($result);
-        $idPermisoFuncion = $result['data']['id_funcion'];
-        return !empty($idPermisoFuncion);
+        if ($result['data'] == null) {
+            return false;
+        }else{
+            $idPermisoFuncion = $result['data']['id_funcion'];
+        }
+        return $idPermisoFuncion;
     }
 
     public function renderMenu(){

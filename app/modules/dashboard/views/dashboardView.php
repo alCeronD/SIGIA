@@ -19,7 +19,7 @@
                 <p>Configuraciones poco recurrentes.</p>
                 <a class="btn grey btnGetUrl" href="<?php echo getUrl('configModules', 'configModules', 'renderViewArea', false, 'dashboard'); ?>">Áreas</a>
                 <a class="btn grey btnGetUrl" href="<?php echo getUrl('configModules', 'configModules', 'renderViewTp', false, 'dashboard'); ?>">Tipo documento</a>
-                <a class="btn green btnGetUrl" href="<?php echo getUrl('roles', 'roles', 'mostrarRoles', false, 'dashboard'); ?>">Roles</a>
+                <a class="btn green btnGetUrl" href="<?php echo getUrl('Roles', 'roles', 'mostrarRoles', false, 'dashboard'); ?>">Roles</a>
             </div>
             <div class="option-card z-depth-1 div3">
                 <i class="material-icons large grey-text text-darken-2 center-align">assignment</i>

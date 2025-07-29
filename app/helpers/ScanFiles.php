@@ -29,7 +29,6 @@ class ScanFiles{
         foreach ($fileAssets as $key => $value) {
             $filesAssets = basename($value);
 
-            //var_dump($filesAssets);
 
             if (!str_contains($filesAssets,'.css')) {
 
