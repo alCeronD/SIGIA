@@ -1,19 +1,19 @@
 <?php 
 include_once '../proyecto_sigia/app/helpers/getUrl.php';
 
-if (ajaxGeneral() || esPostman()) {
+
+if (ajaxGeneral()) {
     resolve();
     exit;
+}else {
+    echo "<div class='container'>";
+    if (isset($_GET['modulo'])){
+        resolve();
+    }else{
+        // dd(getUrl('login','loginController','index',false,'login'));
+        redirect(getUrl('login','login','index',false,false));
+    }
 }
-
-if (isset($_GET['modulo']) && isset($_GET['controlador']) && isset($_GET['funcion'])) {
-    resolve();
-    exit;
-}
-
-// Solo redirigir si no es una llamada AJAX/POSTMAN y no hay ruta
-header("Location: " . getUrl('login', 'login', 'index', false, false));
-exit;
 
 
 

@@ -44,7 +44,6 @@ class usuarios
         $usu_direccion = $conn->real_escape_string($data['usu_direccion']);
         $usu_telefono  = $conn->real_escape_string($data['usu_telefono']);
         $rol_id        = (int)$data['rol_id'];
-        //1 activo = 2 inactivo.
         $usu_id_estado = 1;
         $usu_tp_id = (int)$data['usu_tp_id'];
         $usu_observacion = $conn->real_escape_string($data['usu_observacion']);

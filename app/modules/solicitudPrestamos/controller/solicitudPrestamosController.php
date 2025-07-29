@@ -86,7 +86,6 @@ class solicitudPrestamosController
                 ]);
                 exit;
             }
-    
             $usuario_id = $_SESSION['usuario']['id'];
             $rol_id = $_SESSION['usuario']['rol_id'];
     
