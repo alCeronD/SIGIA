@@ -756,7 +756,6 @@ nextElements.addEventListener("click", async (e) => {
   e.preventDefault();
   if (pageElement >= pageGlobal) return;
   pageElement++;
-  console.log({ "pageElement en nextElements": pageElement });
   if (currentType === typeElements.all) {
     await renderElements({ type: currentType, page: pageElement });
   } else {
@@ -813,7 +812,6 @@ function renderWithFilter() {
     if (currentType === typeElements.consu) {
       fila.style.display = "none";
     }
-    console.log(currentType);
     if (currentType === typeElements.dev || currentType === typeElements.all) {
       fila.style.display = "table-cell";
     }
@@ -1167,37 +1165,40 @@ formAddExistencia.addEventListener("submit", (e) => {
   } else {
     mostrarConfirmacion(title, message, async (result) => {
       if (result) {
-        console.log("hello world");
-        const response = await sendData(
-          "modules/elementos/controller/elementosController.php",
-          "PUT",
-          "ChangeExistencia",
-          data
-        );
+        try {
+          const response = await sendData(
+            "modules/elementos/controller/elementosController.php",
+            "PUT",
+            "ChangeExistencia",
+            data
+          );
 
-        console.log(response);
+          if (!response.status) {
+            initAlert("Error al realizar el proceso", "info", toastOptions);
+            return;
+          }
 
-        response.then((rs) => {
-          let responseMessage = rs.data.message;
-          let status = rs.data.status;
-
-          // Esto se puede mejorar.
-          if (status) {
+          if (response.status) {
             // Renderizo la página nuevamente dependiendo del tipo y la página actual.
             renderElements({ type: currentType, page: pageElement }).then(()=>{
               renderWithFilter();
             });
             
-            initAlert(responseMessage, "success", toastOptions);
+            initAlert(response.message, "success", toastOptions);
             modalAddExistencia.close();
             formAddExistencia.reset();
             return;
           } else {
-            initAlert(responseMessage, "success", toastOptions);
+            initAlert(response.message, "success", toastOptions);
             modalAddExistencia.close();
             return;
           }
-        });
+          
+        } catch (error) {
+          console.log(error);
+          initAlert(`${error.message}`, "error", toastOptions);
+        }
+
       } else {
         co_cantidad.value = "";
         tipo_movimiento.value = "";
@@ -1235,12 +1236,12 @@ co_cantidad.addEventListener("change", (e) => {
   // cantidadExistencia
 });
 
+// Validar la cantidad del limite de los input.
 descripcion_movimiento.addEventListener("input", (e) => {
   e.stopPropagation();
 
   const value = e.target.value;
   const maxLegth = parseInt(e.target.dataset.length, 10);
-  console.log(value);
 
   if (value.length > maxLegth) {
     initAlert("Cantidad máxima de caracteres alcanzada", "info", toastOptions);

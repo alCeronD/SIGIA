@@ -114,7 +114,6 @@ class ElementosController
     public function editarElemento(array $data = [])
     {
         validatePermisos('elementos', 'editarElemento');
-        // var_dump($data);
         // Llamar al modelo para actualizar
         $exito = $this->modeloElemento->actualizarElemento($data);
         if (!$exito) {
