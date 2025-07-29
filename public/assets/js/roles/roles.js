@@ -115,7 +115,7 @@ const renderRoles = async () => {
           initAlert("Estatus del rol actualizado correctamente", "success", toastOptions);
           renderRoles();
         } catch (error) {
-          initAlert(`Error al inhabilitar el rol ${error}`, "error", toastOptions);
+          initAlert(`Error al inhabilitar el rol, \n ${error.message}`, "error", toastOptions);
           modalConfirmacion.close();
         }
       });

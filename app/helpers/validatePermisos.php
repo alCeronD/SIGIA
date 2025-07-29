@@ -2,8 +2,11 @@
 
 /**
  * Archivo para validar cada función ejecutada en los archivos.
+ * Necesito traer la sessión, el getUrl y el response del para enviar la respuesta al front.
  */
-
+require_once __DIR__ . "/session.php";
+require_once __DIR__ . "/getUrl.php";
+require_once __DIR__ . '/response.php';
 require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
 
 function validatePermisos(String $modulo, String $funcion)
@@ -44,12 +47,14 @@ function validatePermisos(String $modulo, String $funcion)
         $rolId = $_SESSION['usuario']['rol_id'];
         $isValidate = $objPermisos->validateRolFuncion($rolId, $idFuncion);
     }
-    return $isValidate;
 
-    // // En caso de que el usuario no tenga el acceso, este debe de redireccionar.
-    // if (!$isValidate) {
-    //     // Si la sesión está activa, pero no tiene permisos
-    //     redirect(getUrl('Login', 'login', 'logout', false, 'index'));
-    //     exit();
-    // }
+    if (!$isValidate) {
+        $result = [
+            'status' => false,
+            'message' => "No tienes permisos para realizar esta operación",
+            'data' => []
+        ];
+        fail('No tienes permisos para realizar esta acción', $result);
+        return;
+    }
 }

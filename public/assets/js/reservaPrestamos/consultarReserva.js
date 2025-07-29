@@ -471,7 +471,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       objEndReserva.request.onload = () => {
         try {
           let response = JSON.parse(objEndReserva.request.responseText);
-          // console.log(response.data.pages);
           console.log(response);
           if (response.status) {
             initAlert(
@@ -487,13 +486,11 @@ tbodyReservaConsult.addEventListener("click", (event) => {
             let tr = [...document.querySelectorAll("#tbodyReservaConsult tr")];
 
           } else {
+            initAlert(`Respuesta del servidor: \n ${response.message}`, "warning", toastOptions);
             console.warn("Respuesta negativa del servidor:", response.message);
           }
         } catch (error) {
-          console.error(
-            "Error al procesar la respuesta o actualizar la vista:",
-            error
-          );
+          initAlert(`${error.message}`, "warning", toastOptions);
         }
       };
       objEndReserva.request.setRequestHeader("accept", "application/json");
@@ -503,7 +500,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         "No se encontraron elementos asociados aún. Espera a que cargue la información."
       );
     }
-    // }
   }
 
   const btnSalida = event.target.closest("button[data-validate]");
@@ -722,7 +718,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     });
 
     const formValidate = document.querySelector("#formValidate");
-    formValidate.addEventListener("submit", (e) => {
+    formValidate.addEventListener("submit", async (e) => {
       e.stopPropagation();
       e.preventDefault();
 
@@ -759,13 +755,14 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
       if (confirm(`¿Deseas dar salida a estos elementos? \n${textConfirm}`)) {
         try {
-          sendData(
+          const responseValidate = await sendData(
             "modules/reservaPrestamos/controller/reservaController.php",
             "POST",
             "validateLoan",
             validateReserva
-          ).then((response) => {
-            // tdAcciones.innerHTML = "";
+          );
+
+          if (responseValidate.status) {
             estadoNew.textContent = "Validado";
             estadoNew.style.color = "green";
 
@@ -798,9 +795,10 @@ tbodyReservaConsult.addEventListener("click", (event) => {
             btnEnd.append(iFinalizar);
             btnEnd.setAttribute("data-end", `${validateReserva.codigoReserva}`);
             tdAcciones.appendChild(btnEnd);
-          });
+          }
+
         } catch (error) {
-          console.warn("error al realizar el proceso" + error);
+          initAlert(`${error.message}`, "error", toastOptions);
         }
       } else {
         initAlert("Proceso cancelado", "warning", tooltipOptions);

@@ -1,13 +1,10 @@
 <?php
 include_once __DIR__ . '/../model/rolesModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
-require_once __DIR__ . '/../../../helpers/response.php';
-// Para validar el permiso de cada función debemos de usar, la variable de session que esta en session.php, validatePermisos.php y getUrl.php
-require_once __DIR__ . "/../../../helpers/session.php";
+/**
+ * En este documento está adjunto la variable de sessión, getUrl y response que me permite mandar el json al front como respuesta.
+ */
 require_once __DIR__ . "/../../../helpers/validatePermisos.php";
-require_once __DIR__ . "/../../../helpers/getUrl.php";
-
-
 class RolesController {
     private $modeloRol;
     private $conn;
@@ -23,16 +20,7 @@ class RolesController {
     public function registrarRol(array $data = [])
     {
 
-        $result = validatePermisos('Roles', 'registrarRol');
-        if (!$result) {
-            $result = [
-                'status' => false,
-                'message' => "No tienes permisos para realizar esta operación",
-                'data' => []
-            ];
-            fail('No tienes permisos para realizar esta acción', $result);
-            return;
-        }
+        validatePermisos('Roles', 'registrarRol');
 
         $rol_nombre = $data['rol_nombre'];
         $rol_descripcion = $data['rol_descripcion'];
@@ -45,16 +33,7 @@ class RolesController {
     public function editarRol(array $data = [])
     {
 
-        $result = validatePermisos('Roles', 'editarRol');
-        if (!$result) {
-            $result = [
-                'status' => false,
-                'message' => "No tienes permisos para realizar esta operación",
-                'data' => []
-            ];
-            fail('No tienes permisos para realizar esta acción', $result);
-            return;
-        }
+        validatePermisos('Roles','editarRol');
 
         $rol_id = (int) $data['rol_id'];
         $rol_nombre = $data['modal_rol_nombre'];
@@ -69,7 +48,7 @@ class RolesController {
     }
     public function statusRoles(array $data = [])
     {
-
+        validatePermisos('Roles', 'statusRoles');
         $idRol = (int) $data['idRol'];
         $status = (int) $data['statusRol'] == 1 ? 0 : 1;
 
@@ -81,22 +60,15 @@ class RolesController {
         
     }
     public function getRoles(){
-
-        $result = validatePermisos('Roles', 'getRoles');
-        if (!$result) {
-            $result = [
-                'status' => false,
-                'message' => "No tienes permisos para realizar esta operación",
-                'data' => []
-            ];
-            fail('No tienes permisos para realizar esta acción', $result);
-            return;
-        }
+        validatePermisos('Roles', 'getRoles');
 
         $roles = $this->modeloRol->obtenerRoles();
 
         success('roles', $roles);
 
+    }
+    public function assingRoles(){
+        
     }
 
 }

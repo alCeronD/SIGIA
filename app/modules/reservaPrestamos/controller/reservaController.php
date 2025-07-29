@@ -1,8 +1,9 @@
 <?php
-require_once __DIR__ . '/../../../helpers/session.php';
+// require_once __DIR__ . '/../../../helpers/session.php';
+// require_once __DIR__ . '/../../../helpers/getUrl.php';
 require_once __DIR__ . '/../model/reservaModel.php';
 require_once __DIR__ . '/../../usuarios/model/usuariosModel.php';
-require_once __DIR__ . '/../../../helpers/getUrl.php';
+require_once __DIR__ . '/../../../helpers/validatePermisos.php';
 
 
 // Recibir la respuesta de la solicitud.
@@ -34,28 +35,26 @@ class ReservaController
 
     public function getElementosDevolutivos(int $pages)
     {
+        validatePermisos('reservaPrestamos', 'getElementosDevolutivos');
         $data = $this->model->selectElements($pages);
         success('Registros', $data);
     }
-
+    
     public function getElementosConsumibles(int $pages = 1, int $type = 2)
     {
+        validatePermisos('reservaPrestamos', 'getElementosConsumibles');
         $data = $this->model->selectElements($pages, $type);
         success('elementos consumibles', $data);
     }
-
+    
     public function getUsers($page)
     {
+        validatePermisos('reservaPrestamos', 'getUsers');
         $data = $this->model->selectUsers($page);
 
         if ($data != null) {
             success('Usuarios activos', $data);
         }
-
-        $elementos = $data['elementos'];
-        $devolutivos = $elementos['devolutivos'];
-        $consumibles = $elementos['consumibles'];
-
     }
 
     /**
@@ -84,6 +83,7 @@ class ReservaController
      */
     public function setReserva(array $data = [])
     {
+        validatePermisos('reservaPrestamos', 'setReserva');
         //Validar usuario. para guardar su rol. y su tipo de prestamo, reserva o solicitud.
         if (($_SESSION['usuario']['rol_id'] == 2) || ($_SESSION['usuario']['rol_id'] == 1)) {
             $pres_rol = $_SESSION['usuario']['rol_id'];
@@ -135,11 +135,11 @@ class ReservaController
             success($result['message']);
         }
     }
-
-
     //Función para validar la solicitud del aprendiz/instructor y cambiar su estado a validado
     public function setSolicitud(array $data = [])
     {
+
+        validatePermisos('reservaPrestamos', 'setSolicitud');
         $cedula = $data['dataUsuario']['nroIdentidad'];
 
         $result = $this->model->validateSolicitud($data, $cedula);
@@ -152,16 +152,19 @@ class ReservaController
     //Finalizar la reserva, es decir, cuando el usuario devuelve los elementos.
     public function setEndReserva(array $elementos = [], int $codigo = 0)
     {
-        // $data = $this->model->endReserva($elementos,$codigo);
+        validatePermisos('reservaPrestamos', 'setEndReserva');
         $data = $this->model->endReserva($elementos, $codigo);
         if ($data['status']) {
-            success('Prestamo exitoso');
+            success(value: 'Prestamo exitoso');
         }
     }
 
     //Función para traer las reservas
     public function getReservas(int $pages = 0, String $type = '')
     {
+
+        validatePermisos('reservaPrestamos', 'getReservas');
+
         if (!$pages) {
             fail('pagina no definida');
         }
@@ -197,6 +200,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         $codigo = $_GET['codigo'] ?? 0;
         $codigo = (int) $codigo;
         switch ($case) {
+            // TODO: Revisar, ya que estos 2 cases traen la info pero uno trae la pagina y su tipo, el otro no.
             case 'elements':
                 if (method_exists($controller, 'getElementosDevolutivos')) {
                     $controller->getElementosDevolutivos($pages);
@@ -208,7 +212,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 if (method_exists($controller, 'getElementosConsumibles')) {
                     $controller->getElementosConsumibles($pages, $type);
                 }
-
 
                 break;
 
@@ -226,7 +229,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
 
                 break;
-
 
             case 'reservas':
 

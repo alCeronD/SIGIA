@@ -57,7 +57,6 @@ export const validarCorreo = (input) => {
     if (input.value && !correoValido.test(input.value)) {
       M.toast({
         html: "Correo electrónico no válido",
-        classes: "red darken-1",
       });
       input.classList.add("invalid");
     } else {

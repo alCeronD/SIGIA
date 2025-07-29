@@ -46,17 +46,7 @@ class usuariosController
     }
     public function createUser(array $data = [])
     {
-
-        $result = validatePermisos('Usuarios', 'createUser');
-        if (!$result) {
-            $result = [
-                'status' => false,
-                'message' => "No tienes permisos para realizar esta operación",
-                'data' => []
-            ];
-            fail('No tienes permisos para realizar esta acción', $result);
-            return;
-        }
+        validatePermisos('Usuarios', 'createUser');
 
         header('Content-Type: application/json; charset=utf-8');
 
@@ -256,7 +246,6 @@ echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" .
         echo "<script>alert('Usuario actualizado exitosamente, vuelve a iniciar la sesión.'); window.location.href = '" . getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard') . "';</script>";
         $loginObj->logout();
     }
-
     public function userPermView() {}
 }
 
