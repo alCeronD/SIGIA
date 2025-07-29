@@ -20,18 +20,16 @@ function validatePermisos(String $modulo, String $funcion)
      * traer el id del modulo usando el nombre del modulo.
      */
     $idNombreModulo = $objPermisos->gidIdModulo($modulo);
-
     /**
      * Segunda consulta
      * traer el id de la función basadao en su nombre de la función y ID De la función.
      */
+
     $idFuncion = $objPermisos->getIdFuncion($funcion, $modulo, $idNombreModulo);
-    // var_dump($idFuncion);
     /**
      * Tercera consulta
      * Validar que el ROL DEL USUARIO TENGA EL PERMISO ADECUADO PARA ACCEDER A ESA FUNCIÓN, BASADO EN ESA FUNCIÓN PODEMOS USAR EL MODULO.
      */
-
     if (session_status() === PHP_SESSION_NONE) {
         $rolId = 0;
         $isValidate = false;

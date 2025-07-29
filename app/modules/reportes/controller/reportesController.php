@@ -1,4 +1,3 @@
-
 <?php
 
 require_once __DIR__ . '/../../../../vendor/autoload.php';
@@ -7,12 +6,11 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 // Este paquete lo uso para conocer la cantidad de celdas y así hacer el filtrado de manera dinámica.
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-
-include_once __DIR__ . '/../../elementos/model/elementosModel.php';
 include_once __DIR__ . '/../model/reportesModel.php';
-include_once __DIR__ . '/../../../helpers/response.php';
+include_once __DIR__ . '/../../elementos/model/elementosModel.php';
+
 include_once __DIR__ . '/../../../config/conn.php';
-include_once __DIR__ . '/../../../helpers/session.php';
+require_once __DIR__ . '/../../../helpers/validatePermisos.php';
 
 class ReportesController {
 
@@ -26,8 +24,10 @@ class ReportesController {
      * VISTA PRINCIPAL
      * ----------------------------------------------------------------*/
     public function genReporteView() {
-        $_SESSION['css'] = 'reportes/reportes.css';
 
+        validatePermisos('reportes', 'genReporteView');
+
+        $_SESSION['css'] = 'reportes/reportes.css';
         $objElm    = new ElementoModelo();
         $reportMdl = new ReportesModel();
 
@@ -60,6 +60,7 @@ class ReportesController {
      * AJAX ELEMENTOS
      * ----------------------------------------------------------------*/
     public function filtrarElementosAjax() {
+        validatePermisos('reportes', 'filtrarElementosAjax');
         if (!ajaxGeneral()) {
             http_response_code(403);
             echo json_encode(['error' => 'Acceso no permitido']);
@@ -83,6 +84,8 @@ class ReportesController {
      * AJAX TRAZABILIDAD (Entradas / Salidas)
      * ----------------------------------------------------------------*/
     public function filtrarTrazabilidadAjax() {
+        validatePermisos('reportes', 'filtrarTrazabilidadAjax');
+
         if (!ajaxGeneral()) {
             http_response_code(403);
             echo json_encode(['error' => 'Acceso no permitido']);
@@ -108,6 +111,8 @@ class ReportesController {
      * AJAX MOVIMIENTOS POR PLACA
      * ----------------------------------------------------------------*/
     public function filtrarPorPlacaAjax() {
+        validatePermisos('reportes', 'filtrarPorPlacaAjax');
+
         if (!ajaxGeneral()) {
             http_response_code(403);
             echo json_encode(['error' => 'Acceso no permitido']);
@@ -126,6 +131,7 @@ class ReportesController {
 
     // generar filtro automático
     public function setAutoFiltro($sh, array $filtros = []) {
+        validatePermisos('reportes', 'setAutoFiltro');
         $sh->fromArray($filtros, null, 'A1');
 
         // Traigo la longitud del arreglo.
@@ -141,6 +147,7 @@ class ReportesController {
      * REPORTE EXCEL – ELEMENTOS
      * ----------------------------------------------------------------*/
     public function generarReporteExcel() {
+        validatePermisos('reportes', 'generarReporteExcel');
         $estado = $_GET['estadoElemento'] ?? '';
         $tipo   = $_GET['tipoElemento']   ?? '';
 
@@ -178,6 +185,7 @@ class ReportesController {
      * REPORTE EXCEL – TRAZABILIDAD
      * ----------------------------------------------------------------*/
     public function generarReporteTrazabilidad() {
+        validatePermisos('reportes','generarReporteTrazabilidad');
         $tipo        = $_GET['tipoElemento'] ?? '';
         $fechaInicio = $_GET['fi'] ?? '';
         $fechaFin    = $_GET['ff'] ?? '';
@@ -216,6 +224,7 @@ class ReportesController {
      * REPORTE EXCEL – PLACa
      * ----------------------------------------------------------------*/
     public function generarReportePorPlaca() {
+        validatePermisos('reportes', 'generarReportePorPlaca');
         $placa = $_GET['placaElemento'] ?? '';
     
         if (empty($placa)) {

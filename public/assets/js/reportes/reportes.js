@@ -4,6 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
   
   M.FormSelect.init(document.querySelectorAll("select"));
   const R = window.RUTAS_REPORTE;
+  console.log(R);
+
+  const rutesReportes = {
+    filtrarElementos: "modules/reportes/controller/reportesController.php",
+  };
 
   /* --------- REFERENCIAS DOM --------- */
   const selectTipo    = document.getElementById("tipoElemento");
@@ -73,9 +78,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  const fetchJSON = (url, fd) =>
-    fetch(url, { method: "POST", body: fd, headers: { "X-Requested-With": "XMLHttpRequest" } })
-      .then(r => { if (!r.ok) throw r.status; return r.json(); });
+  // const fetchJSON = (url, fd) =>
+  //   fetch(url, {
+  //     method: "POST",
+  //     body: fd,
+  //     headers: { "X-Requested-With": "XMLHttpRequest" },
+  //   }).then((r) => {
+  //     console.log(r);
+  //     if (!r.ok) throw r.status;
+  //     return r.json();
+  //   });
 
   /* --------- CARGAS --------- */
   const cargarElementos = () => {
@@ -90,9 +102,35 @@ document.addEventListener("DOMContentLoaded", () => {
         data = res; page = 1; pintar(); paginar();
         btnExcelElem.href =
           `${R.reporteExcel}&tipoElemento=${encodeURIComponent(selectTipo.value)}&estadoElemento=${encodeURIComponent(selectEstado.value)}`;
+
       })
       .catch(() => initAlert("Error al cargar elementos", "error", toastOptions));
   };
+
+
+  const fetchJSON = (url, fd) =>
+  fetch(url, {
+    method: "POST",
+    body: fd,
+    headers: {
+      "X-Requested-With": "XMLHttpRequest"
+    }
+  })
+  .then(r => {
+    console.log(" Status:", r.status);
+    return r.text(); // <-- cambia temporalmente a text para ver la respuesta real
+  })
+  .then(txt => {
+    console.log(" Respuesta cruda:", txt);
+    try {
+      return JSON.parse(txt); // intenta convertir
+    } catch {
+      throw new Error("Respuesta no es JSON");
+    }
+  });
+
+
+
 
   const cargarMovimientos = () => {
     if (!trzFechaInicio.value || !trzFechaFin.value) {

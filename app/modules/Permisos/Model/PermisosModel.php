@@ -57,10 +57,11 @@ class PermisosModel
                 ];
             }
             $result = $stmtFuncion->get_result();
+            $row = $result->fetch_assoc();
             return [
                 'message' => "id encontrado",
                 'status' => true,
-                'data' => $result->fetch_assoc()
+                'data' => $row
             ];
         } catch (\Throwable $th) {
             return [
@@ -105,11 +106,12 @@ class PermisosModel
             }
 
             $result = $stmtGetPermisoFuncion->get_result();
+            $row = $result->fetch_assoc();
 
             return [
                 'status' => true,
                 'message' => "función y rol asociado",
-                'data' => $result->num_rows > 0 ? $result->fetch_assoc() : null
+                'data' => $row
             ];
         } catch (\Throwable $th) {
             return [
