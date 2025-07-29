@@ -550,11 +550,12 @@ const renderElements = async ({
           title = `Inhabilitar elemento - Placa #${dta.placa}`;
         }
 
-        mostrarConfirmacion(title, message, (response) => {
+        mostrarConfirmacion(title, message, async (response) => {
           if (!response) {
             initAlert("Proceso cancelado", "info", toastOptions);
             return;
-          } else {
+          }
+           
             try {
               const dataCod = parseInt(btn.dataset.cod) || null;
               const dataStatus = parseInt(btn.dataset.status) || null;
@@ -573,17 +574,22 @@ const renderElements = async ({
                 elm_cod_estado: dataStatus,
               };
 
-              let responseStatus = sendData(
+              let responseInhabilitar = await sendData(
                 "modules/elementos/controller/elementosController.php",
                 "PUT",
                 "statusElement",
                 data
               );
 
-              responseStatus.then((resultUpdate) => {
-                let messageData = resultUpdate.data.message;
-                let status = resultUpdate.data.status;
-                if (status) {
+              console.log(responseInhabilitar);
+
+              if (!responseInhabilitar.status) {
+                initAlert("Ha ocurrido un error al actualizar el estado del elemento", "error", toastOptions);
+                return;
+              }
+
+              let messageData = responseInhabilitar.data.message;
+                // if (status) {
                   const icon = btn.querySelector("i");
                   if (icon) {
                     icon.innerText = "compare_arrows";
@@ -596,12 +602,14 @@ const renderElements = async ({
                       renderWithFilter();
                     }
                   );
-                }
-              });
+                // }
             } catch (error) {
+              console.log(error);
+              initAlert(`${error.message}`, "error", toastOptions);
               throw new Error("Error al ejecutar proceso" + error);
+
             }
-          }
+          
         });
       });
 

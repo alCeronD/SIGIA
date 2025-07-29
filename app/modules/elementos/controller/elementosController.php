@@ -124,6 +124,7 @@ class ElementosController
 
     public function cambiarEstadoElemento(array $data = [])
     {
+        validatePermisos('elementos', 'cambiarEstadoElemento');
         if (isset($data['elm_cod']) && isset($data['elm_cod_estado'])) {
             $cod = (int) $data['elm_cod'];
             $id = (int) $data['elm_cod_estado'];
