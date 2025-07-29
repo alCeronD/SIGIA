@@ -1,0 +1,127 @@
+<?php
+
+require_once __DIR__ . "/../../../Config/conn.php";
+
+class PermisosModel
+{
+
+    public function getModuleName(String $nombreModulo)
+    {
+        try {
+            $conn = (new Conection())->getConnect();
+            $sql = "SELECT id_m FROM modulos WHERE cod_nombre_m = ? ";
+            $stmtModulo = $conn->prepare($sql);
+
+            $stmtModulo->bind_param('s', $nombreModulo);
+
+            if (!$stmtModulo->execute()) {
+                return [
+                    'message' => "error al ejecutar la consulta",
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+
+            $result = $stmtModulo->get_result();
+            return [
+                'message' => "id modulo encontrado",
+                'data' => $result->fetch_assoc(),
+                'status' => true
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'message' => "Error al ejecutar el proceso $th",
+                'status' => false,
+                'data' => []
+            ];
+        }
+    }
+
+    public function getIdFuncion(String $functionName = "", String $modelName = "", int $idModulo = 0)
+    {
+        try {
+            $conn = (new Conection())->getConnect();
+            $sqlFuncion = "SELECT id_funcion
+                FROM funciones f 
+                INNER JOIN modulos mo ON
+                mo.id_m = f.id_modulo WHERE mo.cod_nombre_m = ? AND mo.id_m = ?";
+
+            $stmtFuncion = $conn->prepare($sqlFuncion);
+            $stmtFuncion->bind_param('si', $modelName, $idModulo);
+
+            if (!$stmtFuncion->execute()) {
+                return [
+                    'message' => "error al ejecutar la consulta" . $conn->error,
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+            $result = $stmtFuncion->get_result();
+            return [
+                'message' => "id encontrado",
+                'status' => true,
+                'data' => $result->fetch_assoc()
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'message' => "Error al ejecutar el proceso $th",
+                'status' => false,
+                'data' => []
+            ];
+        }
+    }
+
+    public function getPermisoFuncion(int $rolId = 0)
+    {
+        try {
+             $conn = (new Conection())->getConnect();
+        // Con esta función valido que el ROL PUEDA ACCEDER A ESA FUNCIÓN, que hace parte del modulo.
+        $sql = "SELECT * FROM funciones fu 
+            INNER JOIN roles_funciones rf ON 
+            fu.id_funcion = rf.rlp_id_funcion 
+            INNER JOIN roles ro ON
+            ro.rl_id = rf.rlp_id_rl 
+            INNER JOIN modulos mo ON
+            mo.id_m = fu.id_modulo
+            WHERE ro.rl_id = ?";
+
+        $stmtGetPermisoFuncion = $conn->prepare($sql);
+
+        if (!$stmtGetPermisoFuncion) {
+            return [
+                'message'=> 'error al preparar la consulta',
+                'status'=> false,
+                'data'=> []
+            ];
+        }
+
+        $stmtGetPermisoFuncion->bind_param('i', $rolId);
+        if (!$stmtGetPermisoFuncion->execute()) {
+            return [
+                'message'=> "error al preparar la consulta", 
+                'status'=> false,
+                'data'=> []
+            ];
+        }
+
+        $result = $stmtGetPermisoFuncion->get_result();
+
+        return [
+            'status'=> true,
+            'message'=> "función y rol asociado", 
+            'data'=> $result->num_rows > 0 ? $result->fetch_assoc() : []
+        ];
+
+        } catch (\Throwable $th) {
+            return [
+                'message'=> 'error al ejecutar el procedimiento'.$th->getMessage(),
+                'status'=> false,
+                'data'=> []
+            ];
+        }
+       
+
+
+            
+    }
+}
