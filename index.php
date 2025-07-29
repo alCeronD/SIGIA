@@ -10,7 +10,6 @@ if (ajaxGeneral()) {
     if (isset($_GET['modulo'])){
         resolve();
     }else{
-        // dd(getUrl('login','loginController','index',false,'login'));
         redirect(getUrl('login','login','index',false,false));
     }
 }

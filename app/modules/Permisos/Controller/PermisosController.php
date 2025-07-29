@@ -16,18 +16,20 @@ Class PermisosController{
 
     public function getIdFuncion(String $functionName = "", String $modelName = "", Int $idModulo = 0){
         $result = $this->modelPermisos->getIdFuncion($functionName, $modelName, $idModulo);
+        // dd($result);
         $idNombreFuncion = $result['data']['id_funcion'];
         return $idNombreFuncion;
     }
 
-    public function validateRolFuncion(int $rolId){
-        $result = $this->modelPermisos->getPermisoFuncion($rolId);
+    public function validateRolFuncion(int $rolId,int $idFuncion){
+        $result = $this->modelPermisos->getPermisoFuncion($rolId, $idFuncion);
+        // dd($result);
         $idPermisoFuncion = $result['data']['id_funcion'];
-        return $idPermisoFuncion;
+        return !empty($idPermisoFuncion);
     }
 
     public function renderMenu(){
-        
+
     }
 }
 ?>

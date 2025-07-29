@@ -214,7 +214,7 @@ class ConfigModulesController{
         return $data;
     }
     
-    public function validate(String $nameColum, String $tableName, String $nameValueColum){
+    public function validateUniqueItem(String $nameColum, String $tableName, String $nameValueColum){
         $model = new ConfigModulesModel();
         $result = $model->validateUnique($nameColum,$tableName, $nameValueColum);
         return $result;

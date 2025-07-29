@@ -27,6 +27,10 @@ function getUrl(String $modulo, String $controlador, String $funcion, $parametro
         $pagina = "index";
     }
 
+    if (session_status() == PHP_SESSION_NONE && $modulo != "login" && $funcion == "index"){
+        $url = "$pagina.php?modulo=index&controlador=$controlador&funcion=$funcion";
+    }
+
     $url = "$pagina.php?modulo=$modulo&controlador=$controlador&funcion=$funcion";
     if ($parametros) {
         foreach ($parametros as $key => $value) {
@@ -68,20 +72,47 @@ function resolve($modulo = 'dashboard', $controlador = 'dashboard', $funcion = '
              * traer el id de la función basadao en su nombre de la función y ID De la función.
              */
             $idFuncion = $objPermisos->getIdFuncion($funcion,$modulo, $idNombreModulo);
+            // dd($idFuncion);
 
             /**
              * Tercera consulta
-             * valido que el ROL DEL USUARIO TENGA EL PERMISO ADECUADO PARA ACCEDER A ESA FUNCIÓN, BASADO EN ESA FUNCIÓN PODEMOS USAR EL MODULO.
+             * Validar que el ROL DEL USUARIO TENGA EL PERMISO ADECUADO PARA ACCEDER A ESA FUNCIÓN, BASADO EN ESA FUNCIÓN PODEMOS USAR EL MODULO.
              */
-            $rolId = $_SESSION['usuario']['rol_id'];
-            // para validar que la función si a ejecutar este asociada al ROL.
-            $isValidate = $objPermisos->validateRolFuncion($rolId);
+
+            // dd($idFuncion);
+            if (session_status() === PHP_SESSION_NONE) {
+                $rolId = 0;
+                $isValidate = false;
+                if ($modulo === 'login') {
+                        $rolId = 0;
+                        $isValidate = true;
+                    } else {
+                        redirect(getUrl('login', 'login', 'index', false, 'index'));
+                        exit();
+                    }
+            }else{
+                // TODO, con esto en caso de que el rol no este asociado a la función, re dirigir a lógin.
+                $rolId = $_SESSION['usuario']['rol_id'];
+                $isValidate = $objPermisos->validateRolFuncion($rolId, $idFuncion);
+            }
+            // dd($isValidate);
+
+            // // En caso de que el usuario no tenga el acceso, este debe de redireccionar.
+            // if (!$isValidate) {
+            //     // Si la sesión está activa, pero no tiene permisos
+            //     redirect(getUrl('Login', 'login', 'logout', false, 'index'));
+            //     exit();
+            // }
+
             $objeto = new $nombreClase($conexion);
+
             if (method_exists($objeto, $funcion)) {
                 $objeto->$funcion();
             } else {
                 echo "La función no existe";
             }
+            
+            
         } else {
             throw new Exception("El controlador $controllerPath no existe.");
         }
