@@ -991,7 +991,7 @@ btnAddModalElements.addEventListener("click", (e) => {
 });
 
 // Enviar datos del formulario.
-addElementForm.addEventListener("submit", (e) => {
+addElementForm.addEventListener("submit",  (e) => {
   e.preventDefault();
   e.stopPropagation();
 
@@ -1026,31 +1026,36 @@ addElementForm.addEventListener("submit", (e) => {
   mostrarConfirmacion(
     "Registrar elemento",
     "¿Estás seguro de registrar este elemento?",
-    function (respuesta) {
+    async (respuesta) => {
       try {
         if (!respuesta) {
           addElementModal.close();
           addElementForm.reset();
         }
         //La respuesta puedo tranformarla en una función generica.
-        sendData(
+        const responseAddElement = await sendData(
           "modules/elementos/controller/elementosController.php",
           "POST",
           "registrar",
           data
-        ).then((result) => {
-          if (result) {
-            // initAlert('Elemento agreado exitosamente','succes',{toastOptions});
-            initAlert("Elemento agreado exitosamente", "succes", {
-              toastOptions,
-            });
-            addElementModal.close();
-            addElementForm.reset();
-            renderSelectPlacas("placas");
-            renderElements({ type: currentType, page: 1 });
-          }
+        );
+
+        if (!responseAddElement.status) {
+          initAlert(`${result.message}`, "error", toastOptions);
+          return;
+        }
+
+        initAlert("Elemento agreado exitosamente", "succes", {
+          toastOptions,
         });
-      } catch (error) {}
+        addElementModal.close();
+        addElementForm.reset();
+        renderSelectPlacas("placas");
+        renderElements({ type: currentType, page: 1 });
+      } catch (error) {
+        console.log(error);
+        initAlert(`${error.message}`, "error", toastOptions);
+      }
     }
   );
 
@@ -1076,34 +1081,31 @@ editarElementForm.addEventListener("submit", (e) => {
   mostrarConfirmacion(
     "Guardar cambios",
     "¿Está seguro de continuar con el proceso?",
-    (respuesta) => {
+    async (respuesta) => {
       if (respuesta) {
         try {
-          let response = sendData(
+          let response = await sendData(
             "modules/elementos/controller/elementosController.php",
             "PUT",
             "updateElement",
             data
           );
-
-          response.then((result) => {
-            if (!result) {
-              initAlert(
-                "error al actualizar el recuros",
-                "warning",
-                toastOptions
-              );
-            }
-            initAlert("recurso actualizado con exito", "success", toastOptions);
+          
+          if (!response.status) {
+            console.log(response);
+            initAlert('Error al ejecutar el proceso', "error", toastOptions);
+            return;
+          }
+          initAlert("recurso actualizado con exito", "success", toastOptions);
             modalEditarElemento.close();
             // renderizo los elementos en base a la página en la que se encuentra.
             renderElements({ page: pageElement, type: currentType }).then(
               () => {
                 renderWithFilter();
               }
-            );
-          });
+          );
         } catch (error) {
+          initAlert(`${error.message}`, "error", toastOptions);
           throw new Error("Error al actualizar el recurso.");
         }
       } else {
@@ -1163,15 +1165,17 @@ formAddExistencia.addEventListener("submit", (e) => {
     );
     return;
   } else {
-    mostrarConfirmacion(title, message, (result) => {
+    mostrarConfirmacion(title, message, async (result) => {
       if (result) {
         console.log("hello world");
-        const response = sendData(
+        const response = await sendData(
           "modules/elementos/controller/elementosController.php",
           "PUT",
           "ChangeExistencia",
           data
         );
+
+        console.log(response);
 
         response.then((rs) => {
           let responseMessage = rs.data.message;

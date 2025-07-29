@@ -1,8 +1,9 @@
 <?php
 include_once __DIR__ . '/../model/elementosModel.php';
 require_once __DIR__ . '/../../configModules/model/configModulesModel.php';
-require_once __DIR__ . '/../../../helpers/response.php';
+// require_once __DIR__ . '/../../../helpers/response.php';
 require_once __DIR__ . '/../../../helpers/const.php';
+require_once __DIR__ . '/../../../helpers/validatePermisos.php';
 
 class ElementosController
 {
@@ -19,9 +20,11 @@ class ElementosController
 
         return require_once __DIR__ . '/../views/elementosView.php';
     }
-
+    // Traer todos los elementos.
     public function getElements(int $pages = 1, String $type = 'all')
     {
+
+        validatePermisos('elementos', 'getElements');
         // Parámetros de paginación
         $pagina = isset($pages) ? max(1, intval($pages)) : 1;
         $limite = LIMIT;
@@ -48,6 +51,7 @@ class ElementosController
         success('elementos', $elementos);
     }
 
+    // Traer el elemento por medio de busqueda
     public function getElement(String $value = '')
     {
         if (!$resultRow = $this->modeloElemento->getElementLike($value)) {
@@ -56,7 +60,10 @@ class ElementosController
         success('', $resultRow);
     }
 
-    public function getPlacas(String $value = ''){
+
+    public function getPlacas(String $value = '')
+    {
+        validatePermisos('elementos', 'getPlacas');
         $data = $this->modeloElemento->getAllPlacas();
         if (!$data) {
             fail('no hay registros', $data);
@@ -65,8 +72,9 @@ class ElementosController
     }
 
     //agregar elemento a la bd.
-    public function addElement(array $data =[]){
-
+    public function addElement(array $data = [])
+    {
+        validatePermisos('elementos', 'addElement');
 
         foreach ($data as $key => $value) {
 
@@ -80,7 +88,8 @@ class ElementosController
         success('registro adicionado con exito', $result);
     }
 
-    public function getItems(String $action = ''){
+    public function getItems(String $action = '')
+    {
         // Obtener las áreas
         $modeloGenerico = new ConfigModulesModel();
         //Areas que esten activas.
@@ -100,20 +109,18 @@ class ElementosController
             }
         }
         success("registros de: $action", $newData);
-        
     }
 
     public function editarElemento(array $data = [])
     {
+        validatePermisos('elementos', 'editarElemento');
         // var_dump($data);
         // Llamar al modelo para actualizar
         $exito = $this->modeloElemento->actualizarElemento($data);
         if (!$exito) {
-        fail('error al procesar actualización', $exito);
-
+            fail('error al procesar actualización', $exito);
         }
         success('recurso actualizado con exito', $exito);
-        
     }
 
     public function cambiarEstadoElemento(array $data = [])
@@ -124,17 +131,18 @@ class ElementosController
             $exito = $this->modeloElemento->toggleEstadoElemento($cod, $id);
 
             if (!$exito) {
-               fail('Error al actualizar el elemento', $exito);
+                fail('Error al actualizar el elemento', $exito);
             }
-            success('recurso actualizado',$exito);
-        }else{
+            success('recurso actualizado', $exito);
+        } else {
             // en caso de quie no se mande ningun elemento, devolver respuesta.
             return;
         }
     }
 
-    public function editarExistencia(array $data=[]){
-        
+    public function editarExistencia(array $data = [])
+    {
+        validatePermisos('elementos', 'editarExistencia');
         $result = $this->modeloElemento->cambiarExistencia($data);
         if (!$result) {
             fail($result['message']);
@@ -142,7 +150,6 @@ class ElementosController
 
         success($result['message'], $result);
     }
-
 }
 
 $elementosController = new ElementosController();
@@ -172,32 +179,32 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
             case 'areas':
 
-                if (method_exists($elementosController,'getItems')) {
+                if (method_exists($elementosController, 'getItems')) {
                     $elementosController->getItems($case);
                 }
 
                 break;
             case 'categoria':
-                
-                if (method_exists($elementosController,'getItems')) {
+
+                if (method_exists($elementosController, 'getItems')) {
                     $elementosController->getItems($case);
                 }
-                
+
                 break;
 
             case 'marcas':
-                if (method_exists($elementosController,'getItems')) {
+                if (method_exists($elementosController, 'getItems')) {
                     $elementosController->getItems($case);
                 }
                 break;
 
             case 'placas':
-                if (method_exists($elementosController,'getPlacas')) {
+                if (method_exists($elementosController, 'getPlacas')) {
                     $elementosController->getPlacas($case);
                 }
 
                 break;
-            
+
 
             default:
                 fail('error de acción.');
@@ -218,15 +225,14 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
             case 'registrar':
                 $elemento = $data;
-                if (method_exists($elementosController,'addElement')) {
+                if (method_exists($elementosController, 'addElement')) {
                     $elementosController->addElement($elemento);
                 }
                 break;
-  
+
             default:
                 break;
         }
-
     }
 
     if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
@@ -261,7 +267,5 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 break;
         }
     }
-
-
     exit();
 }
