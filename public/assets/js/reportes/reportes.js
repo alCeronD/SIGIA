@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   M.FormSelect.init(document.querySelectorAll("select"));
   const R = window.RUTAS_REPORTE;
-  console.log(R);
+  // console.log(R);
 
   const rutesReportes = {
     filtrarElementos: "modules/reportes/controller/reportesController.php",
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fd.append("estadoElemento", selectEstado.value);
 
     fetchJSON(R.filtrarElementos, fd)
-      .then(res => {
+    .then(res => {
         rbElem.checked = true;
         tablaHead.innerHTML = header(false);
         data = res; page = 1; pintar(); paginar();
@@ -117,11 +117,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
   .then(r => {
-    console.log(" Status:", r.status);
+    // console.log(" Status:", r.status);
     return r.text(); // <-- cambia temporalmente a text para ver la respuesta real
   })
   .then(txt => {
-    console.log(" Respuesta cruda:", txt);
+    // console.log(" Respuesta cruda:", txt);
     try {
       return JSON.parse(txt); // intenta convertir
     } catch {
