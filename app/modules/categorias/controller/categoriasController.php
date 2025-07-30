@@ -39,16 +39,10 @@ private $conn;
         }
     }
     
-    public function createCategoria() {
-        header('Content-Type: application/json');
-    
+    public function createCategoria(){
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($this->conn->connect_error) {
-                echo json_encode([
-                    'success' => false,
-                    'mensaje' => 'Error de conexión: ' . $this->conn->connect_error
-                ]);
-                return;
+                die("Error de conexión: " . $this->conn->connect_error);
             }
     
             $modeloCategoria = new categorias($this->conn);
@@ -56,38 +50,18 @@ private $conn;
             $datos = [
                 'ca_nombre' => $_POST['ca_nombre'],
                 'ca_descripcion' => $_POST['ca_descripcion'],
-                'ca_status' => 1
+                'ca_status' => 1  
             ];
     
             $resultado = $modeloCategoria->create($datos);
     
-            if (is_array($resultado) && isset($resultado['ca_id'])) {
-                $inserted_id = $this->conn->insert_id;
-                $datos['ca_id'] = $inserted_id;
-    
-                echo json_encode([
-                    'success' => true,
-                    'categoria' => $datos
-                ]);
+            if ($resultado === true) {
+                echo "<script>alert('Categoría registrada exitosamente'); window.location.href = '" . getUrl('categorias','categorias','categoriaView',false,'dashboard') . "';</script>";
             } else {
-                echo json_encode([
-                    'success' => false,
-                    'mensaje' => $resultado
-                ]);
+                echo $resultado;
             }
-        } else {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'Método no permitido'
-            ]);
         }
     }
-
-
-
-
-
-
 
     public function updateCategoria(){
         

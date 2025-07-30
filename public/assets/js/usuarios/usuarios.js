@@ -357,6 +357,3 @@ document.querySelectorAll(".toggleEstadoBtn").forEach(button => {
     }
   });
 });
-
-
-

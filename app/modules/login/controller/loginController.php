@@ -18,7 +18,6 @@ class loginController {
         header('Content-Type: application/json');
         session_start();
 
-
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'message' => 'Método no permitido']);
             exit();
@@ -62,24 +61,10 @@ class loginController {
             'email' => $usuario['usu_email']
         ];
 
-        // echo json_encode([
-        //     'success' => true,
-        //     'message' => 'Conectado',
-        //     'url' => '/proyecto_sigia/app/dashboard.php'
-        // ]);
-        
         echo json_encode([
             'success' => true,
             'message' => 'Conectado',
-            'url' => '/proyecto_sigia/app/dashboard.php',
-            'usuario' => [
-                'id' => $usuario['usu_id'],
-                'nombre' => $usuario['usu_nombres'],
-                'apellido' => $usuario['usu_apellidos'],
-                'rol_id' => $usuario['rl_id'],
-                'rol_nombre' => $usuario['rl_nombre'],
-                'email' => $usuario['usu_email']
-            ]
+            'url' => '/proyecto_sigia/app/dashboard.php'
         ]);
     }
 
