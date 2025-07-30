@@ -118,19 +118,15 @@ document.addEventListener("DOMContentLoaded", () => {
   })
   .then(r => {
     console.log(" Status:", r.status);
-    return r.text(); // <-- cambia temporalmente a text para ver la respuesta real
+    return r.text(); 
   })
   .then(txt => {
-    console.log(" Respuesta cruda:", txt);
     try {
       return JSON.parse(txt); // intenta convertir
     } catch {
       throw new Error("Respuesta no es JSON");
     }
   });
-
-
-
 
   const cargarMovimientos = () => {
     if (!trzFechaInicio.value || !trzFechaFin.value) {

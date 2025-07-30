@@ -1,6 +1,7 @@
 <?php
 include_once __DIR__ . '/../model/rolesModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
+require_once __DIR__ . '/../../../helpers/response.php';
 /**
  * En este documento está adjunto la variable de sessión, getUrl y response que me permite mandar el json al front como respuesta.
  */
@@ -68,14 +69,18 @@ class RolesController {
 
     }
     public function assingRoles(){
-        
+        $dataResult = $this->modeloRol->getRolesPermisos();
+
+        if (!$dataResult['status']) {
+            fail('error al procesar la data', $dataResult);
+        }
+
+        success('roles y permisos encontrados', $dataResult);
     }
 
 }
 
 $objRolesController = new RolesController();
-
-
 
 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
@@ -91,6 +96,12 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                     $objRolesController->getRoles();
                 }
                 break;
+
+                // Obtengo todos las funciones y modulos a las cuales pertenecen
+            case 'getRolesPermisos':
+                if (method_exists($objRolesController, 'assingRoles')) {
+                    $objRolesController->assingRoles();
+                }
             
             default:
                 

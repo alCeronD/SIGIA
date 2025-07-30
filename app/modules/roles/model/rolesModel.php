@@ -96,7 +96,6 @@ class RolModelo
             ];
         }
     }
-
     public function actualizarRol($rol_id, $rol_nombre, $rol_descripcion)
     {
 
@@ -140,7 +139,6 @@ class RolModelo
             ];
         }
     }
-
     public function eliminarRol($rl_id, $status)
     {
 
@@ -196,6 +194,140 @@ class RolModelo
             echo "Error al actualizar el rol del usuario: " . $conn->error;
             $conn->close();
             return false;
+        }
+    }
+
+    // Función para capturar los modulos y a su ves las funciones a las cuales pertenecen
+    public function getRolesPermisos()
+    {
+        try {
+            $conn = (new Conection())->getConnect();
+            $conn->begin_transaction();
+
+            $sqlModulos = "SELECT id_m AS 'idModulo',cod_nombre_m AS 'nombreModulo' FROM modulos AS modulos";
+            $stmtModulos = $conn->prepare($sqlModulos);
+
+            if (!$stmtModulos) {
+                $conn->rollback();
+                $conn->close();
+                return [
+                    'message' => "error al preparar la consulta" . $conn->error,
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+            if (!$stmtModulos->execute()) {
+                $conn->rollback();
+                $conn->close();
+                return [
+                    'message' => "error al ejecutar la consulta" . $conn->error,
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+
+            $result = $stmtModulos->get_result();
+            $modulos = [];
+            while ($rowModulos = $result->fetch_assoc()) {
+                $modulos[] = $rowModulos;
+            }
+
+            // mapModulos
+            $mapModulos = [];
+
+            // Creo el mapa de los modulos basados en el id del modulo.
+            foreach ($modulos as $modulo) {
+                // var_dump($key);
+                // var_dump($value);
+                $mapModulos[$modulo['idModulo']] = $modulo['nombreModulo'];
+            }
+
+            // var_dump($mapModulos);
+
+            $sqlFuncionesName = "SELECT id_funcion AS 'idFuncion', nombre_funcion AS 'nmFuncion', id_modulo AS 'idModulo' FROM funciones WHERE id_modulo = ?";
+
+            $stmtFuncionesModulos = $conn->prepare($sqlFuncionesName);
+
+            if (!$stmtFuncionesModulos) {
+                $conn->rollback();
+                $conn->close();
+                return [
+                    'message' => "Error al preparar la consulta" . $conn->error,
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+
+            $resultModulosPermisos = [];
+            foreach ($mapModulos as $id => $nombre) {
+                $resultModulosPermisos[$nombre] = [];
+            }
+
+            // var_dump($resultModulosPermisos);
+
+            $funcionesModulos = [];
+            foreach ($modulos as $value) {
+                $idModule = $value['idModulo'];
+                $nameModule = $value['nombreModulo'];
+                // var_dump($idModule);
+                // var_dump($nameModule);
+
+                $stmtFuncionesModulos->bind_param('i', $idModule);
+
+                if (!$stmtFuncionesModulos->execute()) {
+                    $conn->rollback();
+                    $conn->close();
+                    return [
+                        'status' => false,
+                        'message' => "error ejecutar la consulta" . $conn->error,
+                        'data' => []
+                    ];
+                }
+
+                $result = $stmtFuncionesModulos->get_result();
+
+
+                $funcionesModulos[$nameModule] = [];
+
+                while ($row = $result->fetch_assoc()) {
+                    $resultModulosPermisos[$nameModule][] = [
+                        'idFuncion' => $row['idFuncion'],
+                        'nmFuncion' => $row['nmFuncion'],
+                        'idModulo'  => $row['idModulo']
+                    ];
+                }
+
+                // while($row = $result->fetch_assoc()){
+                //     if ($nameModule) {
+                //         // $resultadoFinal[$resultModulosPermisos[$nameModule]][] = [
+                //         //     'id'=> $idModule,
+                //         //     'nameModule'=> $nameModule,
+                //         //     'funcionName'=> $row['nmFuncion']
+                //         // ];
+                //         $resultModulosPermisos[$nameModule][] = [
+                //             'id'=> $idModule,
+                //             'nameModule'=> $nameModule,
+                //             'funcionName'=> $row['nmFuncion']
+                //         ];
+                //     }
+                // }
+            }
+
+
+            $conn->commit();
+            // var_dump($funcionesModulos);
+            return [
+                'message' => "Modulos y permisos",
+                'data' => $resultModulosPermisos,
+                'status' => true
+            ];
+        } catch (\Throwable $th) {
+            echo $th->getMessage();
+            return [
+                'message' => "error al ejecutar el proceso" . $th->getMessage(),
+                'status' => false,
+                'data' => []
+            ];
         }
     }
 }

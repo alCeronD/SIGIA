@@ -129,7 +129,7 @@ class usuariosController
         $_SESSION['css'] = 'usuarios/usuarios.css';
         return include $path;
     }
-    public function updateUser()
+    public function updateUserJSON()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['usu_id'];

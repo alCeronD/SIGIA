@@ -15,10 +15,50 @@ import {
 const closeModalBtn = document.querySelector(".closeModalBtn");
 
 const modalEditar = instanceModal("#modalEditar", options);
+const modalAsing = instanceModal("#modalAsingPermisos", options);
+// Div contenedor en donde se va a renderizar toda la información.
+const asigPermisosContent = document.querySelector('#asigPermisosContent');
 const tableBodyRoles = document.querySelector("#tableBodyRoles");
 const formEditarRol = document.querySelector("#formEditarRol");
-console.log(formEditarRol);
+// console.log(formEditarRol);
 const modalConfirmacion = instanceModal('#modalConfirmacion', options);
+
+// Función para traer los roles y las funciones junto a su modulo.
+const renderRolesFunciones = async ()=>{
+  const getRlFunciones = await getData(
+    "Modules/Roles/Controller/rolesController.php",
+    "GET",
+    { action: "getRolesPermisos" }
+  );
+  const rolesYFunciones = getRlFunciones.data.data;
+  console.log(rolesYFunciones);
+
+  // Itinerar sobre los keys y la valor
+  Object.entries(rolesYFunciones).forEach(([nombreModulo, funcionesModulo]) => {
+    // Contenedor del modulo, Acá va toda la estructura, la de la las funciones y el modulo.
+  const contenedorModulo = document.createElement("div");
+  contenedorModulo.classList.add("modulo");
+
+  const spanNombreModulo = document.createElement("span");
+  spanNombreModulo.innerText = nombreModulo;
+
+  // Contenedor de funciones
+  const divFunciones = document.createElement("div");
+  divFunciones.classList.add("funciones");
+
+  // Funciones de cada modlo.
+  funcionesModulo.forEach((funcion) => {
+    const pFuncion = document.createElement("p");
+    pFuncion.innerText = `${funcion.nmFuncion} (ID: ${funcion.idFuncion})`;
+    divFunciones.appendChild(pFuncion);
+  });
+
+  // Estructura de los contenedores.
+  contenedorModulo.appendChild(spanNombreModulo);
+  contenedorModulo.appendChild(divFunciones);
+  asigPermisosContent.appendChild(contenedorModulo);
+});
+};
 
 const renderRoles = async () => {
   const responseRoles = await getData(
@@ -120,6 +160,16 @@ const renderRoles = async () => {
         }
       });
     });
+
+    // Botón de asignar
+    btnAsig.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      e.preventDefault();
+      let Btn = e.target;
+      modalAsing.open();
+      // modalConfirmacion.open();
+
+    });
   });
 };
 
@@ -181,6 +231,7 @@ formRol.addEventListener('submit', async (e)=>{
 
 document.addEventListener("DOMContentLoaded", () => {
   renderRoles();
+  renderRolesFunciones();
   closeModal(modalEditar, closeModalBtn);
   
 });
