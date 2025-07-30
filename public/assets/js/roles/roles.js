@@ -1,5 +1,6 @@
 import {
   closeModal,
+  createCheckboxGeneric,
   createI,
   getData,
   initAlert,
@@ -37,28 +38,48 @@ const renderRolesFunciones = async ()=>{
   Object.entries(rolesYFunciones).forEach(([nombreModulo, funcionesModulo]) => {
     // Contenedor del modulo, Acá va toda la estructura, la de la las funciones y el modulo.
   const contenedorModulo = document.createElement("div");
+  // Clase base de contenedor para cada elemento.
   contenedorModulo.classList.add("modulo");
+  const contendorSpanModulo = document.createElement('div');
+  contendorSpanModulo.classList.add('spanNameModule');
 
   const spanNombreModulo = document.createElement("span");
   spanNombreModulo.innerText = nombreModulo;
+
+  // Función para crear un checkbox generico, esta función la cree y la deje en el archivo cases.js
+  const pCheckbox = createCheckboxGeneric();
+
+  // agrego el contenedor del titulo al contenedor principal.
+  contenedorModulo.appendChild(contendorSpanModulo);
+  // Al contenedor del titulo del modulo le agrego su texto y su checkbox.
+  contendorSpanModulo.appendChild(spanNombreModulo);
+  contendorSpanModulo.appendChild(pCheckbox);
 
   // Contenedor de funciones
   const divFunciones = document.createElement("div");
   divFunciones.classList.add("funciones");
 
-  // Funciones de cada modlo.
-  funcionesModulo.forEach((funcion) => {
-    const pFuncion = document.createElement("p");
-    pFuncion.innerText = `${funcion.nmFuncion} (ID: ${funcion.idFuncion})`;
-    divFunciones.appendChild(pFuncion);
-  });
+    funcionesModulo.forEach((funcion) => {
+    // Contenedor de cada función con checkbox
+    const contenedor = document.createElement("div");
+    contenedor.classList.add("funcionNameCheckbox");
 
-  // Estructura de los contenedores.
-  contenedorModulo.appendChild(spanNombreModulo);
-  contenedorModulo.appendChild(divFunciones);
-  asigPermisosContent.appendChild(contenedorModulo);
-});
+    const checkBoxNmGeneric = createCheckboxGeneric({text: funcion.nmFuncion, value: funcion.idFuncion});
+
+    // Agregar al contenedor
+    contenedor.appendChild(checkBoxNmGeneric);
+    // contenedor.appendChild(checkbox);
+
+    // Agregar al contenedor general
+    divFunciones.appendChild(contenedor);
+    });
+
+    // Estructura de los contenedores.
+    contenedorModulo.appendChild(divFunciones);
+    asigPermisosContent.appendChild(contenedorModulo);
+  });
 };
+
 
 const renderRoles = async () => {
   const responseRoles = await getData(
