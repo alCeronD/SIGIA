@@ -129,62 +129,60 @@ class usuariosController
         $_SESSION['css'] = 'usuarios/usuarios.css';
         return include $path;
     }
-    public function updateUser()
+
+
+    public function updateUserJSON(array $data)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['usu_id'];
-            unset($_POST['usu_id']);
+        header('Content-Type: application/json; charset=utf-8');
 
-
-            $rol_id = $_POST['rol_id'];
-            unset($_POST['rol_id']);
-
-            $contrasena = $_POST['usu_password'];
-            unset($_POST['usu_password']);
+        if (!isset($data['usu_id']) || empty($data['usu_id'])) {
+            http_response_code(400);
+            echo json_encode(["status" => "error", "message" => "ID de usuario requerido."]);
+            exit;
         }
 
-        $data = $_POST;
-        $userData = $this->usuariosModel->searchU($id); //traigo la informacion del usuario
-        $correoActual = $userData['data']['usu_email']; //guardo el correo que ya tiene registrado en BD para compararlo
-        
-        if ($correoActual != $data['usu_email']) {
+        $id = $data['usu_id'];
+        $rol_id = $data['rol_id'];
+        $contrasena = $data['usu_password'] ?? null;
+
+        unset($data['usu_id'], $data['rol_id'], $data['usu_password']);
+
+        $userData = $this->usuariosModel->searchU($id);
+        $correoActual = $userData['data']['usu_email'];
+
+        if ($correoActual !== $data['usu_email']) {
             $email = $this->usuariosModel->validateEmail($data['usu_email'], $id, false);
             if ($email) {
-                echo "<script>alert('El correo ya se encuentra en uso por otro usuario.'); window.history.back();</script>";
-                return;
+                http_response_code(409);
+                echo json_encode(["status" => "error", "message" => "El correo ya está en uso."]);
+                exit;
             }
         }
-        
-        // dd($correoActual);
-        // Validar campos obligatorios (excepto contraseña)
+
         foreach ($data as $key => $value) {
             if (empty($value)) {
-                echo "<script>alert('El campo \"$key\" debe ser diligenciado.'); window.history.back();</script>";
-                return;
+                http_response_code(422);
+                echo json_encode(["status" => "error", "message" => "El campo \"$key\" es obligatorio."]);
+                exit;
             }
         }
 
-        $dato = new usuarios();
-        // Actualizar datos generales
-        $dato->update($data, $id);
+        $this->usuariosModel->update($data, $id);
 
-        // Si la contraseña fue diligenciada, actualizarla
         if (!empty($contrasena)) {
             $hash = password_hash($contrasena, PASSWORD_DEFAULT);
-            $dato->actualizarContrasena($id, $hash);
+            $this->usuariosModel->actualizarContrasena($id, $hash);
         }
-        // Actualizar rol del usuario
-        $rolesModel = new RolModelo();
-        $rolesModel->actRolUser($id, $rol_id);
 
-        // Mostrar usuarios actualizados
-        $modeloUsuarios = new usuarios();
-        $usuarios = $modeloUsuarios->search();
+        $this->rolesModel->actRolUser($id, $rol_id);
 
-        echo "<script>alert('Usuario actualizado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard') . "';</script>";
-        return include_once __DIR__ . '/../views/consultView.php';
+        http_response_code(200);
+        echo json_encode(["status" => "success", "message" => "Usuario actualizado exitosamente."]);
+        exit;
     }
-    public function offUser() {}
+
+
+
     public function updateUserView()
     {
         $id = $_GET['usu_id'];
@@ -198,28 +196,65 @@ class usuariosController
     {
         include_once '../proyecto_sigia/app/modules/usuarios/views/deleteView.php';
     }
-    public function cambiarEstadoUsuario()
+
+
+    // public function cambiarEstadoUsuario()
+    // {
+    //     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    //         $usu_id = (int) $_GET['usu_id'];
+
+    //         $result = $this->usuariosModel->inhabilitarUsuario($usu_id);
+
+    //         if ($result['status']) {
+    //             echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard') . "';</script>";
+    //         }
+    //     } else {
+    //         echo "Método no permitido";
+    //     }
+    // }
+
+    public function cambiarEstadoUsuarioJSON($data)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            $usu_id = (int) $_GET['usu_id'];
+        if (!isset($data['usu_id'])) {
+            http_response_code(400);
+            echo json_encode([
+                "status" => "error",
+                "message" => "ID de usuario no proporcionado"
+            ]);
+            return;
+        }
 
-            $result = $this->usuariosModel->inhabilitarUsuario($usu_id);
+        $usu_id = (int)$data['usu_id'];
 
-            if($result['status']){
-echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard') . "';</script>";
-            }
+        // Llamamos al modelo que ya tienes
+        $resultado = $this->usuariosModel->inhabilitarUsuario($usu_id);
+
+        if ($resultado['status']) {
+            echo json_encode([
+                "status" => "success",
+                "message" => $resultado['message']
+            ]);
         } else {
-            echo "Método no permitido";
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => $resultado['message']
+            ]);
         }
     }
-    public function actualizarDatosView(){
+
+
+
+
+    public function actualizarDatosView()
+    {
         $_SESSION['css'] = 'usuarios/usuarios.css';
         $id = $_SESSION['usuario']['id'];
         $datos = new usuarios();
         $data = $datos->searchU($id);
         // Este valor es usado en la vista para dar visualizar su información.
         $usuarioUpdate = $data['data'];
-        
+
         include_once __DIR__ . '/../../usuarios/views/updateUserDate.php';
     }
     public function updateUserInfo()
@@ -265,8 +300,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 break;
 
             case 'updateUser':
-                # code...
+                $objUsuarios->updateUserJSON($data); // método nuevo que creamos abajo
                 break;
+
+            case 'cambiarEstado':
+                $objUsuarios->cambiarEstadoUsuarioJSON($data);
+                break;
+
 
             default:
                 http_response_code(400);

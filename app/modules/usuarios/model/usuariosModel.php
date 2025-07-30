@@ -222,53 +222,54 @@ VALUES
     }
     public function inhabilitarUsuario(int $usu_id = 0)
     {
-
         try {
             $conn = $this->conn->getConnect();
-
+    
             if ($usu_id <= 0) {
                 return [
                     'status' => false,
-                    'message' => "El id no debe ser negativo"
+                    'message' => "El ID no debe ser negativo."
                 ];
             }
-
+    
             $validateId = $this->searchU($usu_id);
-            $data = $validateId['data'];
+            $data = $validateId['data'] ?? [];
+    
             if (empty($data)) {
                 return [
-                    'message' => "Id no encontrado en la base de datos",
-                    'status' => false
+                    'status' => false,
+                    'message' => "ID no encontrado en la base de datos."
                 ];
             }
-
+    
             $usuId = (int) $data['usu_id'];
-
+    
             $query = "UPDATE usuarios 
-                        SET usu_id_estado = CASE 
-                            WHEN usu_id_estado = 1 THEN 2 
-                            ELSE 1 END 
-                        WHERE usu_id = ?";
-
+                      SET usu_id_estado = CASE 
+                          WHEN usu_id_estado = 1 THEN 2 
+                          ELSE 1 END 
+                      WHERE usu_id = ?";
+    
             $stmt = $conn->prepare($query);
             $stmt->bind_param("i", $usuId);
-
+    
             if (!$stmt->execute()) {
                 return [
-                    'message' => "error al ejecutar la consulta " . $stmt->error,
-                    'status' => false
+                    'status' => false,
+                    'message' => "Error al ejecutar la consulta: " . $stmt->error
                 ];
             }
-
+    
             return [
-                'message' => "registro inhabilitado con exito",
-                'status' => true
+                'status' => true,
+                'message' => "Estado del usuario cambiado correctamente."
             ];
         } catch (\Throwable $th) {
             return [
-                'message' => "error $th",
-                'status' => false
+                'status' => false,
+                'message' => "Error: " . $th->getMessage()
             ];
         }
     }
+
 }
