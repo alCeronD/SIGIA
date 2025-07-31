@@ -78,6 +78,15 @@ class RolesController {
         success('roles y permisos encontrados', $dataResult);
     }
 
+    public function getPermisosRolAsig(int $rolId = 0){
+        $rolesResult = $this->modeloRol->getPermisosFuncion($rolId);
+
+        if (!$rolesResult['status']) {
+            fail('No hay permisos asociadas a este rol',$rolesResult);
+        }
+        success('roles asociados', $rolesResult);
+    }
+
 }
 
 $objRolesController = new RolesController();
@@ -89,6 +98,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
         $codigo = $_GET['codigo'] ?? 0;
         $codigo = (int) $codigo;
+        $dataIdRol = $_GET['idRol'] ?? null;
 
         switch ($case) {
             case 'getRoles':
@@ -102,6 +112,13 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 if (method_exists($objRolesController, 'assingRoles')) {
                     $objRolesController->assingRoles();
                 }
+
+            case 'getPermisosRolAsig':
+                if (method_exists($objRolesController, 'getPermisosRolAsig')) {
+                    $objRolesController->getPermisosRolAsig($dataIdRol);
+                }
+                
+                break;
             
             default:
                 

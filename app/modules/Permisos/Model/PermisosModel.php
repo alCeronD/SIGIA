@@ -85,7 +85,7 @@ class PermisosModel
                 INNER JOIN modulos mo ON
                 mo.id_m = fu.id_modulo
                 WHERE ro.rl_id = ? AND rf.rlp_id_funcion = ?";
-
+           
             $stmtGetPermisoFuncion = $conn->prepare($sql);
 
             if (!$stmtGetPermisoFuncion) {

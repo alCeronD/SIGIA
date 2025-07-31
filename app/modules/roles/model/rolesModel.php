@@ -197,14 +197,17 @@ class RolModelo
         }
     }
 
-    // Función para capturar los modulos y a su ves las funciones a las cuales pertenecen
+    // Función para capturar los modulos y las funciones que pertenecen al modulo
     public function getRolesPermisos()
     {
         try {
             $conn = (new Conection())->getConnect();
             $conn->begin_transaction();
 
-            $sqlModulos = "SELECT id_m AS 'idModulo',cod_nombre_m AS 'nombreModulo' FROM modulos AS modulos";
+            /**
+             * Primera consulta: traer los modulos
+             */
+            $sqlModulos = "SELECT id_m AS 'idModulo',cod_nombre_m AS 'nombre_Modulo' FROM modulos";
             $stmtModulos = $conn->prepare($sqlModulos);
 
             if (!$stmtModulos) {
@@ -237,13 +240,13 @@ class RolModelo
 
             // Creo el mapa de los modulos basados en el id del modulo.
             foreach ($modulos as $modulo) {
-                // var_dump($key);
-                // var_dump($value);
-                $mapModulos[$modulo['idModulo']] = $modulo['nombreModulo'];
+                $mapModulos[$modulo['idModulo']] = $modulo['nombre_Modulo'];
             }
 
-            // var_dump($mapModulos);
-
+            /**
+             * Summary 
+             * String $sqlFuncionesName - Traer las funciones basadas en los modulos asignados.
+             */
             $sqlFuncionesName = "SELECT id_funcion AS 'idFuncion', nombre_funcion AS 'nmFuncion', id_modulo AS 'idModulo' FROM funciones WHERE id_modulo = ?";
 
             $stmtFuncionesModulos = $conn->prepare($sqlFuncionesName);
@@ -263,14 +266,10 @@ class RolModelo
                 $resultModulosPermisos[$nombre] = [];
             }
 
-            // var_dump($resultModulosPermisos);
-
             $funcionesModulos = [];
             foreach ($modulos as $value) {
                 $idModule = $value['idModulo'];
-                $nameModule = $value['nombreModulo'];
-                // var_dump($idModule);
-                // var_dump($nameModule);
+                $nameModule = $value['nombre_Modulo'];
 
                 $stmtFuncionesModulos->bind_param('i', $idModule);
 
@@ -296,35 +295,86 @@ class RolModelo
                         'idModulo'  => $row['idModulo']
                     ];
                 }
-
-                // while($row = $result->fetch_assoc()){
-                //     if ($nameModule) {
-                //         // $resultadoFinal[$resultModulosPermisos[$nameModule]][] = [
-                //         //     'id'=> $idModule,
-                //         //     'nameModule'=> $nameModule,
-                //         //     'funcionName'=> $row['nmFuncion']
-                //         // ];
-                //         $resultModulosPermisos[$nameModule][] = [
-                //             'id'=> $idModule,
-                //             'nameModule'=> $nameModule,
-                //             'funcionName'=> $row['nmFuncion']
-                //         ];
-                //     }
-                // }
             }
 
 
             $conn->commit();
-            // var_dump($funcionesModulos);
             return [
                 'message' => "Modulos y permisos",
-                'data' => $resultModulosPermisos,
+                'data' => [
+                    'funciones'=> $resultModulosPermisos,
+                    'modulos'=> $modulos
+                ],
                 'status' => true
             ];
+            // return [
+            //     'message' => "Modulos y permisos",
+            //     'data' => $resultModulosPermisos,
+            //     'status' => true
+            // ];
         } catch (\Throwable $th) {
             echo $th->getMessage();
             return [
                 'message' => "error al ejecutar el proceso" . $th->getMessage(),
+                'status' => false,
+                'data' => []
+            ];
+        }
+    }
+
+    // Función para capturar las funciones que están asociadas al rol.
+    public function getPermisosFuncion(int $rolId = 0)
+    {
+        try {
+            $conn = (new Conection())->getConnect();
+            // Con esta función valido que el ROL PUEDA ACCEDER A ESA FUNCIÓN, que hace parte del modulo.
+            $sql = "SELECT 
+                fu.id_funcion as 'idFuncion',
+fu.nombre_funcion as 'nombreFunción'
+            FROM funciones fu 
+                INNER JOIN roles_funciones rf ON 
+                fu.id_funcion = rf.rlp_id_funcion 
+                INNER JOIN roles ro ON
+                ro.rl_id = rf.rlp_id_rl 
+                INNER JOIN modulos mo ON
+                mo.id_m = fu.id_modulo
+                WHERE ro.rl_id = ?";
+
+            $stmtGetPermisoFuncion = $conn->prepare($sql);
+
+            if (!$stmtGetPermisoFuncion) {
+                return [
+                    'message' => 'error al preparar la consulta',
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+
+            $stmtGetPermisoFuncion->bind_param('i', $rolId);
+            if (!$stmtGetPermisoFuncion->execute()) {
+                return [
+                    'message' => "error al preparar la consulta",
+                    'status' => false,
+                    'data' => []
+                ];
+            }
+
+            $result = $stmtGetPermisoFuncion->get_result();
+            // Funciones asociadas al rol
+            $funcionAssoc = [];
+            while($row = $result->fetch_assoc()){
+                $funcionAssoc[]= $row;
+            }
+
+
+            return [
+                'status' => true,
+                'message' => "función y rol asociado",
+                'data' => $funcionAssoc
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'message' => 'error al ejecutar el procedimiento' . $th->getMessage(),
                 'status' => false,
                 'data' => []
             ];

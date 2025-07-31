@@ -446,6 +446,8 @@ export const createCheckboxGeneric = ({ text = '', id = '', name = '', value = '
   if (name) inputCheckbox.name = name;
   if (value) inputCheckbox.value = value;
 
+  // console.log(value);
+
   const span = document.createElement('span'); // Materialize uses this
 
   labelCheckbox.appendChild(inputCheckbox);

@@ -1,76 +1,80 @@
 //Headers para usar para configurar la petición fetch.
 const headers = {
-     "Content-Type": "application/json",
-     "X-Requested-With": "XMLHttpRequest"
+  "Content-Type": "application/json",
+  "X-Requested-With": "XMLHttpRequest",
 };
 
 //Función para enviar el fetch
-export const sendData = async (url, method = 'POST', parameters = {}, data = {})=>{
-    try {
+export const sendData = async (
+  url,
+  method = "POST",
+  parameters = {},
+  data = {}
+) => {
+  try {
+    const setParameter = new URLSearchParams();
+    setParameter.append("action", parameters);
 
-        const setParameter = new URLSearchParams();
-        setParameter.append('action', parameters);
+    let newUrl = parameters ? `${url}?${setParameter}` : url;
+    const optionsFetch = setFetch(method, parameters, data);
+    // console.log(optionsFetch);
+    const response = await fetch(newUrl, optionsFetch);
+    // console.log(response);
+    const json = await response.json();
 
-        let newUrl = parameters ? `${url}?${setParameter}` : url;
-        const optionsFetch = setFetch(method,parameters,data);
-        // console.log(optionsFetch);
-        const response = await fetch(newUrl,optionsFetch);
-        // console.log(response);
-        const json = await response.json();
+    if (!response.ok) {
+      throw { status: response.status, ...json };
+    }
+    return json;
+  } catch (error) {
+    throw error;
+  }
+};
 
-        if (!response.ok) {
-            throw { status: response.status, ...json };
-        }
-        return json;
-
-    } catch (error) {
-        throw error;
-        
+//Función para solicitar data.
+export const getData = async (
+  url,
+  method = "GET",
+  parameters = {},
+  data = {}
+) => {
+  try {
+    let newUrl = "";
+    //Aca creo los parámetros si necesito enviarlos.
+    if (parameters) {
+      const setParameters = new URLSearchParams();
+      Object.entries(parameters).forEach(([key, value]) => {
+        setParameters.append(key, value);
+      });
+      newUrl = parameters ? `${url}?${setParameters.toString()}` : url;
     }
 
+    const bodyData = setFetch(method, parameters, data);
+    const execute = await fetch(newUrl, bodyData);
+
+    const getResponse = await execute.json();
+    return getResponse;
+  } catch (error) {
+    throw new Error(`Error de procedimiento ${error}`);
+  }
 };
 
 //Función para establecer el fetch.
-const setFetch = (method = 'GET',action = '', data = {})=>{
-    if (method === 'GET' || method === 'POST' || method === 'PUT') {
-        data['action'] =action;
-    }
-    let returnPrueba = {
-        method,
-        body: method != 'GET' ? JSON.stringify(data) : undefined,
-        headers
-    };
-    return returnPrueba; 
+const setFetch = (method = "GET", action = "", data = {}) => {
+  if (method === "GET" || method === "POST" || method === "PUT") {
+    data["action"] = action;
+  }
 
-}
+  let returnPrueba = {
+    method,
+    body: method != "GET" ? JSON.stringify(data) : undefined,
+    headers,
+  };
 
-//Función para solicitar data.
-export const getData = async(url, method = 'GET', parameters = {}, data ={})=>{
-    try {
-        let newUrl = '';
-        //Aca creo los parámetros si necesito enviarlos.
-        if (parameters) {
-            const setParameters = new URLSearchParams();
-            Object.entries(parameters).forEach(([key,value])=>{
-                setParameters.append(key,value);
-            });
-            
-            newUrl = parameters ? `${url}?${setParameters.toString()}` : url;
-        }
-        const bodyData = setFetch(method,parameters,data);
-        const execute = await fetch(newUrl,bodyData);
-          
-        const getResponse = await execute.json(); 
-        return getResponse;
+  return returnPrueba;
+};
 
-} catch (error) {
-        throw new Error(`Error de procedimiento ${error}`);
-        
-    }
-    
-}
-
-export default{
-    sendData,
-    getData
-}
+export default {
+  sendData,
+  getData,
+};
