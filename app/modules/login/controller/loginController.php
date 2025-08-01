@@ -64,7 +64,7 @@ class loginController {
         echo json_encode([
             'success' => true,
             'message' => 'Conectado',
-            'url' => '/proyecto_sigia/app/dashboard.php'
+            'url' => '/proyecto_sigia/app/dashboard.php?modulo=dashboard&controlador=dashboard&funcion=dashboard'
         ]);
     }
 

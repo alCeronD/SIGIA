@@ -44,85 +44,61 @@ function getUrl(String $modulo, String $controlador, String $funcion, $parametro
     return $url;
 }
 
-function resolve($modulo = 'dashboard', $controlador = 'dashboard', $funcion = 'dashboard')
+function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
 {
-
     if (isset($_GET['modulo'])) {
         $modulo = $_GET['modulo'];
         $controlador = $_GET['controlador'];
         $funcion = $_GET['funcion'];
     }
 
+    // Rutas públicas que no necesitan sesión
+    $publicRoutes = [
+        'login' => ['index', 'login', 'logout']
+    ];
+
+    // Validamos que las rutas que el usuario ha seleccionado sean públicas para evitar su navegación.
+    $isPublic = isset($publicRoutes[$modulo]) && in_array($funcion, $publicRoutes[$modulo]);
 
     $controllerPath = __DIR__ . "/../modules/$modulo/controller/{$controlador}Controller.php";
-    if (is_dir(__DIR__ . "/../modules/$modulo")) {
-        if (is_file($controllerPath)) {
 
-            include_once $controllerPath;
-            $nombreClase = $controlador . "Controller";
+    if (!is_file($controllerPath)) {
+        echo "El controlador no existe.";
+        return;
+    }
 
-            include_once __DIR__ . '/../config/conn.php';
-            $conexion = (new Conection())->getConnect();
+    include_once $controllerPath;
+    include_once __DIR__ . '/../config/conn.php';
+    $conexion = (new Conection())->getConnect();
+    $nombreClase = $controlador . "Controller";
 
-            require_once __DIR__ ."/../Modules/Permisos/Controller/PermisosController.php";
-            $objPermisos = new PermisosController();
-            /**
-             * Primera consulta
-             * traer el id del modulo usando el nombre del modulo.
-             */
-            $idNombreModulo = $objPermisos->gidIdModulo($modulo);
+    require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
+    $objPermisos = new PermisosController();
 
-            /**
-             * Segunda consulta
-             * traer el id de la función basadao en su nombre de la función y ID De la función.
-             */
-            $idFuncion = $objPermisos->getIdFuncion($funcion,$modulo, $idNombreModulo);
-            
-            /**
-             * Tercera consulta
-             * Validar que el ROL DEL USUARIO TENGA EL PERMISO ADECUADO PARA ACCEDER A ESA FUNCIÓN, BASADO EN ESA FUNCIÓN PODEMOS USAR EL MODULO.
-             */
-
-            if (session_status() === PHP_SESSION_NONE) {
-                $rolId = 0;
-                $isValidate = false;
-                if ($modulo === 'login') {
-                        $rolId = 0;
-                        $isValidate = true;
-                    } else {
-                        redirect(getUrl('login', 'login', 'index', false, 'index'));
-                        exit();
-                    }
-            }else{
-                // TODO, con esto en caso de que el rol no este asociado a la función, re dirigir a lógin.
-                $rolId = $_SESSION['usuario']['rol_id'];
-                $isValidate = $objPermisos->validateRolFuncion($rolId, $idFuncion);
-            }
-
-            // // En caso de que el usuario no tenga el acceso, este debe de redireccionar.
-            if (!$isValidate) {
-                echo "<script>alert('No tienes permisos para visualizar esta información..'); window.history.back();</script>";
-                return;
-            }
-            // if (!$isValidate) {
-            //     fail('No tienes permisos para realizar esta acción',[]);
-            //     return;
-            // }
-
-            $objeto = new $nombreClase($conexion);
-
-            if (method_exists($objeto, $funcion)) {
-                $objeto->$funcion();
-            } else {
-                echo "La función no existe";
-            }
-            
-            
-        } else {
-            throw new Exception("El controlador $controllerPath no existe.");
+    // Si no es pública, validamos la sesión y permisos
+    if (!$isPublic) {
+        if (!isset($_SESSION['usuario'])) {
+            redirect(getUrl('login', 'login', 'index'));
         }
+
+        $rolId = $_SESSION['usuario']['rol_id'] ?? 0;
+
+        $idModulo = $objPermisos->gidIdModulo($modulo);
+        $idFuncion = $objPermisos->getIdFuncion($funcion, $modulo, $idModulo);
+
+        if (!$idFuncion || !$objPermisos->validateRolFuncion($rolId, $idFuncion)) {
+            echo "<script>alert('No tienes permisos para acceder.'); window.history.back();</script>";
+            return;
+        }
+    }
+
+    // Llamamos al controlador y la función
+    $objeto = new $nombreClase($conexion);
+
+    if (method_exists($objeto, $funcion)) {
+        $objeto->$funcion();
     } else {
-        echo "El módulo no existe";
+        echo "La función '$funcion' no existe.";
     }
 }
 
