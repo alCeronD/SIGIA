@@ -55,12 +55,6 @@
                     data-rol="<?= htmlspecialchars($usuario['rolIdUser']) ?>">
                     <i class="material-icons">edit</i>
                   </a>
-                  <!-- <a href=""
-                    class="btn btnInvalida white-text waves-effect waves-dark"
-                    onclick="return confirm('¿Estás seguro de que deseas cambiar el estado del usuario?');">
-                    <i class="material-icons">autorenew</i>
-                  </a> -->
-
                   <button 
                     class="btn toggleEstadoBtn white-text waves-effect waves-dark"
                     data-id="<?= $usuario['usu_id'] ?>"

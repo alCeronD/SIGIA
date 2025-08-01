@@ -32,7 +32,6 @@
   </div>
 
   <!-- Tabla -->
-  <!-- Agrega un div con el atributo data-url -->
   <div id="tabla-categorias" data-url="<?= getUrl('categorias', 'categorias', 'listarCategoriasAjax', false, 'ajax') ?>"></div>
   <div class="tablaCategoria highlight striped responsive-table">
     <table class="tblConfigModules">
