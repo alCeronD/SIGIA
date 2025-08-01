@@ -302,8 +302,8 @@ class RolModelo
             return [
                 'message' => "Modulos y permisos",
                 'data' => [
-                    'funciones'=> $resultModulosPermisos,
-                    'modulos'=> $modulos
+                    'funciones' => $resultModulosPermisos,
+                    'modulos' => $modulos
                 ],
                 'status' => true
             ];
@@ -362,8 +362,8 @@ fu.nombre_funcion as 'nombreFunción'
             $result = $stmtGetPermisoFuncion->get_result();
             // Funciones asociadas al rol
             $funcionAssoc = [];
-            while($row = $result->fetch_assoc()){
-                $funcionAssoc[]= $row;
+            while ($row = $result->fetch_assoc()) {
+                $funcionAssoc[] = $row;
             }
 
 
@@ -377,6 +377,105 @@ fu.nombre_funcion as 'nombreFunción'
                 'message' => 'error al ejecutar el procedimiento' . $th->getMessage(),
                 'status' => false,
                 'data' => []
+            ];
+        }
+    }
+    /**
+     * Summary of assocPermisos - Esta función agrega los permisos al rol específico.
+     * @param array $data
+     * @return array{data: array, message: string, status: bool}
+     */
+    public function assocPermisos(array $data = [])
+    {
+
+        try {
+                $conn = (new Conection())->getConnect();
+                $conn->begin_transaction();
+                $rolId = (int) $data['rolId'];
+                $funciones = $data['rolesPorAsociar'];
+            // Primera transacción, permisos ya registrados en la bd.
+            $sqlPermisosAssoc = "SELECT rlp_id_funcion AS 'funcionesRegistradas' FROM roles_funciones WHERE rlp_id_rl = ?";
+            $stmtPermisosAssoc = $conn->prepare($sqlPermisosAssoc);
+
+            if (!$stmtPermisosAssoc) {
+                $conn->rollback();
+                $conn->close();
+                return [
+                    'status' => false,
+                    'message' => "Error al preparar la consulta",
+                    'data' => []
+                ];
+            }
+
+            $stmtPermisosAssoc->bind_param('i', $rolId);
+            if (!$stmtPermisosAssoc->execute()) {
+                $conn->close();
+                $conn->rollback();
+                return [
+                    'status' => false,
+                    'message' => "Error al ejecutar la consulta",
+                    'data' => []
+                ];
+            }
+
+            $resultPermisosAssoc = $stmtPermisosAssoc->get_result();
+            $funcionesRegistradas = [];
+            // Guardo los ids de manera limpia para después insertar los nuevos permisos.
+            while ($row = $resultPermisosAssoc->fetch_assoc()) {
+                $funcionesRegistradas[] = (int) $row['funcionesRegistradas'];
+            }
+
+            // Comparo los permisos que ya existen con los que se han seleccionado desde el lado del cliente para evitar duplicados
+            $funcionesAAgregar = [];
+            foreach ($funciones as $key => $value) {
+
+                if (!in_array($value, $funcionesRegistradas)) {
+
+                    $funcionesAAgregar []= $value;
+                }
+                continue;
+            }
+
+            $sqlAddPermisos = "INSERT INTO roles_funciones (rlp_id_rl,rlp_id_funcion) VALUES (?,?)";
+            $stmtAddPermisos = $conn->prepare($sqlAddPermisos);
+            if (!$stmtAddPermisos) {
+                $conn->close();
+                $conn->rollback();
+                return [
+                    'status' => false,
+                    'message' => "Error al preparar la consulta",
+                    'data' => []
+                ];
+            }
+
+            foreach ($funcionesAAgregar as $key => $value) {
+                $stmtAddPermisos->bind_param('ii',$rolId,$value);
+                if (!$stmtAddPermisos->execute()) {
+                    $conn->close();
+                    $conn->rollback();
+                    return [
+                        'status' => false,
+                        'message' => "Error al ejecutar la consulta",
+                        'data' => []
+                    ];
+                }
+            }
+
+            $conn->commit();
+            $conn->close();
+            return [
+                'status'=> true,
+                'data'=> [],
+                'message'=> 'Permisos asociados correctamente'
+            ];
+
+        } catch (\Throwable $th) {
+            $conn->rollback();
+            $conn->close();
+            return [
+                'status'=> false,
+                'message'=> $th->getMessage(),
+                'data'=> []
             ];
         }
     }

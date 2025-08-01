@@ -6,16 +6,19 @@ require_once __DIR__ . '/../../../helpers/response.php';
  * En este documento está adjunto la variable de sessión, getUrl y response que me permite mandar el json al front como respuesta.
  */
 require_once __DIR__ . "/../../../helpers/validatePermisos.php";
-class RolesController {
+class RolesController
+{
     private $modeloRol;
     private $conn;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->conn = new Conection();
         $this->modeloRol = new RolModelo();
     }
 
-    public function mostrarRoles() {
+    public function mostrarRoles()
+    {
         return include_once __DIR__ . '../../views/rolesViews.php';
     }
     public function registrarRol(array $data = [])
@@ -29,12 +32,12 @@ class RolesController {
         if (!$exito['status']) {
             fail('Error al registrar rol', $exito);
         }
-        success('Proceso Ejecutado con exito', $exito);    
+        success('Proceso Ejecutado con exito', $exito);
     }
     public function editarRol(array $data = [])
     {
 
-        validatePermisos('Roles','editarRol');
+        validatePermisos('Roles', 'editarRol');
 
         $rol_id = (int) $data['rol_id'];
         $rol_nombre = $data['modal_rol_nombre'];
@@ -58,17 +61,17 @@ class RolesController {
             fail('error al actualizar el estado del elemento');
         }
         success('recurso actualizado', $exito);
-        
     }
-    public function getRoles(){
+    public function getRoles()
+    {
         validatePermisos('Roles', 'getRoles');
 
         $roles = $this->modeloRol->obtenerRoles();
 
         success('roles', $roles);
-
     }
-    public function assingRoles(){
+    public function assingRoles()
+    {
         $dataResult = $this->modeloRol->getRolesPermisos();
 
         if (!$dataResult['status']) {
@@ -78,15 +81,24 @@ class RolesController {
         success('roles y permisos encontrados', $dataResult);
     }
 
-    public function getPermisosRolAsig(int $rolId = 0){
+    public function getPermisosRolAsig(int $rolId = 0)
+    {
         $rolesResult = $this->modeloRol->getPermisosFuncion($rolId);
 
         if (!$rolesResult['status']) {
-            fail('No hay permisos asociadas a este rol',$rolesResult);
+            fail('No hay permisos asociadas a este rol', $rolesResult);
         }
         success('roles asociados', $rolesResult);
     }
 
+    public function setPermisos(array $data = []){
+        $responsePermisos = $this->modeloRol->assocPermisos($data);
+
+        if (!$responsePermisos['status']) {
+           fail('error al ejecutar el proceso', $responsePermisos);
+        }
+        success('Rol agregado con exito', $responsePermisos);
+    }
 }
 
 $objRolesController = new RolesController();
@@ -107,7 +119,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 }
                 break;
 
-                // Obtengo todos las funciones y modulos a las cuales pertenecen
+            // Obtengo todos las funciones y modulos a las cuales pertenecen
             case 'getRolesPermisos':
                 if (method_exists($objRolesController, 'assingRoles')) {
                     $objRolesController->assingRoles();
@@ -117,11 +129,11 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 if (method_exists($objRolesController, 'getPermisosRolAsig')) {
                     $objRolesController->getPermisosRolAsig($dataIdRol);
                 }
-                
+
                 break;
-            
+
             default:
-                
+
                 break;
         }
     }
@@ -146,7 +158,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                     $objRolesController->statusRoles($data);
                 }
                 break;
-            
+
             default:
 
                 break;
@@ -162,13 +174,19 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         switch ($action) {
             case 'addRol':
                 if (method_exists($objRolesController, 'registrarRol')) {
-                   $objRolesController->registrarRol($newData);
+                    $objRolesController->registrarRol($newData);
                 }
                 break;
+
+            case 'setPermisos':
+                if (method_exists($objRolesController, 'setPermisos')) {
+                    $objRolesController->setPermisos($newData);
+                }
+                break;
+
             default:
                 # code...
                 break;
         }
     }
 }
-?>
