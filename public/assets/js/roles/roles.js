@@ -12,7 +12,8 @@ import {
   toastOptions,
   validateFormData,
 } from "./barrelRoles.js";
-const closeModalBtn = document.querySelector("#closeModalBtnAsing");
+const closeModalBtnAsing = document.querySelector("#closeModalBtnAsing");
+const closeModalBtnEdit = document.querySelector("#closeModalBtnEdit");
 const modalEditar = instanceModal("#modalEditar", options);
 const modalAsing = instanceModal("#modalAsingPermisos", options);
 // Div contenedor en donde se va a renderizar toda la información.
@@ -35,6 +36,8 @@ const getPermisosRolAsig = async ({ data = null } = {}) => {
 };
 
 let functionIdsAssoc = new Set();
+// Funciones descartadas para enviar a eliminar.
+let functionDesc = new Set();
 // let functionIdsAssoc = [];
 /**
  * Agregar id de la función al arreglo para enviar a guardar cambios.
@@ -49,8 +52,12 @@ const updateFunctionSelection = (idFuncion = null, isAdd = true) => {
     functionIdsAssoc.add(idFuncion);
   } else {
     functionIdsAssoc.delete(idFuncion);
+    functionDesc.add(idFuncion);
     // functionIdsAssoc = functionIdsAssoc.filter((fuId) => fuId != idFuncion);
   }
+
+  console.log(functionIdsAssoc);
+  console.log(functionDesc);
 };
 
 // Función para traer los roles y las funciones junto a su modulo.
@@ -108,6 +115,7 @@ const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
       let check = funcionesAsignadas.has(funcion.idFuncion);
       if (check) {
         updateFunctionSelection(funcion.idFuncion, true);
+
       }
       const checkBoxNmGeneric = createCheckboxGeneric({
         text: funcion.nmFuncion,
@@ -140,6 +148,7 @@ asigPermisosContent.addEventListener("change", (e) => {
       updateFunctionSelection(parseInt(valueCheckbox), true);
     } else {
       updateFunctionSelection(parseInt(valueCheckbox), false);
+
     }
   }
 
@@ -182,7 +191,13 @@ preconfirmButton.addEventListener("click", (e) => {
       }
       try {
         const rolesPorAsociar = Array.from(functionIdsAssoc).sort();
-        const responsePost = await sendData('Modules/Roles/Controller/rolesController.php', "POST", "setPermisos", {rolesPorAsociar, rolId});
+        const rolesDesleccionados = Array.from(functionDesc).sort();
+        const responsePost = await sendData(
+          "Modules/Roles/Controller/rolesController.php",
+          "POST",
+          "setPermisos",
+          { rolesPorAsociar, rolesDesleccionados, rolId }
+        );
 
         if (!responsePost.status) {
           initAlert(error.message, "error", toastOptions);
@@ -190,9 +205,8 @@ preconfirmButton.addEventListener("click", (e) => {
         }
         modalConfirmacion.close();
         modalAsing.close();
-        initAlert(responsePost.message,"success", toastOptions);
+        initAlert(responsePost.message, "success", toastOptions);
         return;
-
       } catch (error) {
         initAlert(error.message, "info", toastOptions);
         return;
@@ -403,7 +417,6 @@ formRol.addEventListener("submit", async (e) => {
       "addRol",
       data
     );
-    console.log(responseAdd);
 
     if (responseAdd.status) {
       initAlert(
@@ -421,7 +434,9 @@ formRol.addEventListener("submit", async (e) => {
 document.addEventListener("DOMContentLoaded", () => {
   renderRoles();
   // renderRolesFunciones();
-  closeModal(modalAsing, closeModalBtn, () => {
+  closeModal(modalAsing, closeModalBtnAsing, () => {
     rolId = null;
   });
+
+  closeModal(modalEditar, closeModalBtnEdit);
 });

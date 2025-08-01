@@ -85,7 +85,7 @@ class PermisosModel
                 INNER JOIN modulos mo ON
                 mo.id_m = fu.id_modulo
                 WHERE ro.rl_id = ? AND rf.rlp_id_funcion = ?";
-           
+
             $stmtGetPermisoFuncion = $conn->prepare($sql);
 
             if (!$stmtGetPermisoFuncion) {
@@ -127,5 +127,16 @@ class PermisosModel
     {
         $modulesRender = [];
         $coon = (new Conection)->getConnect();
+
+        $sqlMenu = "SELECT DISTINCT
+            mo.id_m AS 'idModulo',
+            mo.cod_nombre_m AS 'nombreModulo'
+            FROM modulos mo 
+            INNER JOIN funciones fu ON
+            fu.id_modulo = mo.id_m 
+            INNER JOIN roles_funciones rof ON
+            rof.rlp_id_funcion = fu.id_funcion 
+            INNER JOIN roles r ON
+            r.rl_id = rof.rlp_id_rl WHERE r.rl_id = ?";
     }
 }

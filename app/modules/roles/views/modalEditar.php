@@ -4,7 +4,7 @@
         <div class="titleSection">
             <span>Editar rol</span>
 
-            <button type="button" class="closeModalBtn">
+            <button type="button" class="closeModalBtn" id="closeModalBtnEdit">
                 <span class="close-modal">&times;</span>
             </button>
         </div>

@@ -77,7 +77,7 @@
     <div id="submenu-usuarios" class="submenu hidden">
       <a href="<?php echo getUrl('usuarios','usuarios','consultUser',false,'dashboard'); ?>">Consultar usuario</a>
       <a href="<?php echo getUrl('usuarios','usuarios','userView',false,'dashboard'); ?>">Crear usuario</a>
-      <a href="<?php echo getUrl('usuarios','usuarios','userPermView',false,'dashboard'); ?>">Permisos roles</a>
+      <a href="<?php echo getUrl('Roles','roles','mostrarRoles',false,'dashboard'); ?>">Permisos roles</a>
     </div>
     <div id="submenu-prestamos" class="submenu hidden">
       <a href="<?php echo getUrl('reservaPrestamos','reserva','reservaView',false,'dashboard'); ?>">Reserva</a>

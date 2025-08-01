@@ -393,6 +393,7 @@ fu.nombre_funcion as 'nombreFunción'
                 $conn->begin_transaction();
                 $rolId = (int) $data['rolId'];
                 $funciones = $data['rolesPorAsociar'];
+                $funcionesDesseleccionadas = $data['rolesDesleccionados'];
             // Primera transacción, permisos ya registrados en la bd.
             $sqlPermisosAssoc = "SELECT rlp_id_funcion AS 'funcionesRegistradas' FROM roles_funciones WHERE rlp_id_rl = ?";
             $stmtPermisosAssoc = $conn->prepare($sqlPermisosAssoc);
@@ -436,6 +437,25 @@ fu.nombre_funcion as 'nombreFunción'
                 continue;
             }
 
+            // Segunda transacción eliminar las funciones que el usuario ha desmarcado.
+            $sqlDeleteFuncions = "DELETE FROM roles_funciones WHERE rlp_id_rl = ? AND rlp_id_funcion = ?";
+            $stmtDeleteFuncions = $conn->prepare($sqlDeleteFuncions);
+
+            foreach ($funcionesDesseleccionadas as $key => $value) {
+                $stmtDeleteFuncions->bind_param('ii', $rolId, $value);
+
+                if (!$stmtDeleteFuncions->execute()) {
+                   $conn->rollback();
+                   $conn->close();
+                   return [
+                    'status'=> false,
+                    'message'=> "error al eliminar la función".$conn->close(),
+                    'data'=>[]
+                   ];
+                }
+            }
+
+            // Tercera transacción insertar las funciones que se van asociar al rol.
             $sqlAddPermisos = "INSERT INTO roles_funciones (rlp_id_rl,rlp_id_funcion) VALUES (?,?)";
             $stmtAddPermisos = $conn->prepare($sqlAddPermisos);
             if (!$stmtAddPermisos) {

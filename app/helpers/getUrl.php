@@ -1,4 +1,8 @@
 <?php
+
+require_once __DIR__ . "/response.php";
+
+
 function redirect($url)
 {
     echo "<script type='text/javascript'>"
@@ -48,6 +52,7 @@ function resolve($modulo = 'dashboard', $controlador = 'dashboard', $funcion = '
         $controlador = $_GET['controlador'];
         $funcion = $_GET['funcion'];
     }
+
 
     $controllerPath = __DIR__ . "/../modules/$modulo/controller/{$controlador}Controller.php";
     if (is_dir(__DIR__ . "/../modules/$modulo")) {
@@ -99,6 +104,10 @@ function resolve($modulo = 'dashboard', $controlador = 'dashboard', $funcion = '
                 echo "<script>alert('No tienes permisos para visualizar esta información..'); window.history.back();</script>";
                 return;
             }
+            // if (!$isValidate) {
+            //     fail('No tienes permisos para realizar esta acción',[]);
+            //     return;
+            // }
 
             $objeto = new $nombreClase($conexion);
 
@@ -120,4 +129,5 @@ function resolve($modulo = 'dashboard', $controlador = 'dashboard', $funcion = '
 function ajaxGeneral()
 {
     return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
 }

@@ -97,7 +97,7 @@ class RolesController
         if (!$responsePermisos['status']) {
            fail('error al ejecutar el proceso', $responsePermisos);
         }
-        success('Rol agregado con exito', $responsePermisos);
+        success('Permisos Asociados correctamente', $responsePermisos);
     }
 }
 

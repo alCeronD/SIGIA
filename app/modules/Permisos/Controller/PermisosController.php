@@ -10,10 +10,6 @@ Class PermisosController{
 
     public function gidIdModulo(String $nameModule = ""){
         $result = $this->modelPermisos->getModuleName($nameModule);
-        // var_dump($result);
-        // if ($result['data']) {
-        //     # code...
-        // }
         $idNombreModulo = $result['data']['id_m'];
         return $idNombreModulo = empty($idNombreModulo) ? null : (int) $idNombreModulo;
     }
