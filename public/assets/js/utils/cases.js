@@ -432,9 +432,10 @@ export const getSelector = (selector) =>{
 
 // };
 
-export const createCheckboxGeneric = ({ text = '', id = '', name = '', value = '' } = {}) => {
+export const createCheckboxGeneric = ({ text = '', id = '', name = '', value = '', checkedValue = false} = {}) => {
   const div = document.createElement('div');
   div.classList.add('checkbox-container');
+
 
   const labelText = document.createElement('span');
   labelText.innerText = text;
@@ -445,6 +446,7 @@ export const createCheckboxGeneric = ({ text = '', id = '', name = '', value = '
   if (id) inputCheckbox.id = id;
   if (name) inputCheckbox.name = name;
   if (value) inputCheckbox.value = value;
+  if (checkedValue) inputCheckbox.checked = checkedValue;
 
   // console.log(value);
 
