@@ -14,29 +14,14 @@ private $conn;
     public function __construct($conexion) {
         $this->conn = $conexion;
     }
-    
-    public function categoriaView() {
-        $this->consultCategoriasView();
-    }
-    
+
+
     public function consultCategoriasView(){
         $modeloCategorias = new categorias($this->conn);
         $_SESSION['css'] = 'categorias/categorias.css';
         $categorias = $modeloCategorias->search();
         $path = __DIR__ . '/../views/categoriasConsultview.php';
-        // var_dump($path);
         return include $path;
-    }
-    
-    public function updateCategoriaView(){
-        $categoria = $_GET['ca_id'];
-        $_SESSION['css'] = 'categorias/categorias.css';
-        
-        $dato = new categorias($this->conn);
-        $resultado = $dato->searchU($categoria);
-        if ($resultado) {
-            return include_once __DIR__ . '/../views/categoriasEditView.php';
-        }
     }
     
     public function createCategoria(){

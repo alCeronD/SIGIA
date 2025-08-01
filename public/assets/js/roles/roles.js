@@ -68,9 +68,14 @@ const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
     { action: "getRolesPermisos" }
   );
 
+  // Obtener los nombres amigables para el usuario
+  // const getNombresModulos = await getData("Modules/Roles/Controller/rolesController.php", "GET", {action : "getRolesPermisos"});
+
+  
   const rolesYFunciones = getRlFunciones.data.data.funciones;
   const modulos = getRlFunciones.data.data.modulos;
   asigPermisosContent.innerHTML = "";
+  console.log(rolesYFunciones);
   // Itinerar sobre los keys y la valor
   Object.entries(rolesYFunciones).forEach(([nombreModulo, funcionesModulo]) => {
     // Contenedor del modulo, Acá va toda la estructura, la de la las funciones y el modulo.
@@ -118,7 +123,7 @@ const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
 
       }
       const checkBoxNmGeneric = createCheckboxGeneric({
-        text: funcion.nmFuncion,
+        text: funcion.nmFuncionUser,
         value: funcion.idFuncion,
         checkedValue: check,
         classItem: "checkboxFunciones",

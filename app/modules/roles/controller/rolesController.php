@@ -64,14 +64,15 @@ class RolesController
     }
     public function getRoles()
     {
-        validatePermisos('Roles', 'getRoles');
-
+        
         $roles = $this->modeloRol->obtenerRoles();
-
+        
         success('roles', $roles);
     }
+
     public function assingRoles()
     {
+        validatePermisos('Roles', 'assingRoles');
         $dataResult = $this->modeloRol->getRolesPermisos();
 
         if (!$dataResult['status']) {
@@ -90,7 +91,7 @@ class RolesController
         }
         success('roles asociados', $rolesResult);
     }
-
+    
     public function setPermisos(array $data = []){
         $responsePermisos = $this->modeloRol->assocPermisos($data);
 

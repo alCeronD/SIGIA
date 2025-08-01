@@ -131,6 +131,7 @@ class usuariosController
     }
     public function updateUserJSON()
     {
+        validatePermisos('Usuarios', 'updateUserJSON');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['usu_id'];
             unset($_POST['usu_id']);

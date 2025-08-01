@@ -83,7 +83,7 @@
     <span class="close-modal btn-flat red-text right" onclick="cerrarModalUsuario()" title="Cerrar" style="font-size: 1.5rem;">&times;</span>
     <h5 class="teal-text text-darken-3">Editar Informacion Usuario</h5>
 
-    <form method="POST" action="<?= getUrl('usuarios', 'usuarios', 'updateUser', false, 'dashboard') ?>" id="formUpdateUser">
+    <form method="POST" action="<?= getUrl('usuarios', 'usuarios', 'updateUserJSON', false, 'dashboard') ?>" id="formUpdateUser">
       <input type="hidden" name="usu_id" id="usu_id">
 
       <div class="input-field docum">

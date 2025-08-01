@@ -54,14 +54,11 @@
                     <a class="btn grey btnGetUrl" href="<?php echo getUrl('solicitudPrestamos', 'solicitudPrestamos', 'consultarPrestamosView', false, 'dashboard'); ?>">Ver préstamos</a>
                 </div>
             </div>
-
-
             <div class="table-content">
                 <div class="section">
                     <div class="card">
                         <div class="card-content">
                             <span class="card-title">Prestamos solicitados</span>
-
                             <table class="highlight responsive-table">
                                 <thead>
                                     <tr>

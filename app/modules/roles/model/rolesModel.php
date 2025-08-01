@@ -247,7 +247,7 @@ class RolModelo
              * Summary 
              * String $sqlFuncionesName - Traer las funciones basadas en los modulos asignados.
              */
-            $sqlFuncionesName = "SELECT id_funcion AS 'idFuncion', nombre_funcion AS 'nmFuncion', id_modulo AS 'idModulo' FROM funciones WHERE id_modulo = ?";
+            $sqlFuncionesName = "SELECT id_funcion AS 'idFuncion', nombre_funcion AS 'nmFuncion', id_modulo AS 'idModulo', nombre_funcion_user AS 'nmFuncionUser' FROM funciones WHERE id_modulo = ?";
 
             $stmtFuncionesModulos = $conn->prepare($sqlFuncionesName);
 
@@ -284,17 +284,19 @@ class RolModelo
                 }
 
                 $result = $stmtFuncionesModulos->get_result();
-
-
                 $funcionesModulos[$nameModule] = [];
 
                 while ($row = $result->fetch_assoc()) {
+                    // var_dump($row);
                     $resultModulosPermisos[$nameModule][] = [
                         'idFuncion' => $row['idFuncion'],
                         'nmFuncion' => $row['nmFuncion'],
-                        'idModulo'  => $row['idModulo']
+                        'idModulo'  => $row['idModulo'],
+                        'nmFuncionUser'=> $row['nmFuncionUser']
                     ];
                 }
+
+
             }
 
 
@@ -389,11 +391,11 @@ fu.nombre_funcion as 'nombreFunción'
     {
 
         try {
-                $conn = (new Conection())->getConnect();
-                $conn->begin_transaction();
-                $rolId = (int) $data['rolId'];
-                $funciones = $data['rolesPorAsociar'];
-                $funcionesDesseleccionadas = $data['rolesDesleccionados'];
+            $conn = (new Conection())->getConnect();
+            $conn->begin_transaction();
+            $rolId = (int) $data['rolId'];
+            $funciones = $data['rolesPorAsociar'];
+            $funcionesDesseleccionadas = $data['rolesDesleccionados'];
             // Primera transacción, permisos ya registrados en la bd.
             $sqlPermisosAssoc = "SELECT rlp_id_funcion AS 'funcionesRegistradas' FROM roles_funciones WHERE rlp_id_rl = ?";
             $stmtPermisosAssoc = $conn->prepare($sqlPermisosAssoc);
@@ -432,7 +434,7 @@ fu.nombre_funcion as 'nombreFunción'
 
                 if (!in_array($value, $funcionesRegistradas)) {
 
-                    $funcionesAAgregar []= $value;
+                    $funcionesAAgregar[] = $value;
                 }
                 continue;
             }
@@ -445,13 +447,13 @@ fu.nombre_funcion as 'nombreFunción'
                 $stmtDeleteFuncions->bind_param('ii', $rolId, $value);
 
                 if (!$stmtDeleteFuncions->execute()) {
-                   $conn->rollback();
-                   $conn->close();
-                   return [
-                    'status'=> false,
-                    'message'=> "error al eliminar la función".$conn->close(),
-                    'data'=>[]
-                   ];
+                    $conn->rollback();
+                    $conn->close();
+                    return [
+                        'status' => false,
+                        'message' => "error al eliminar la función" . $conn->close(),
+                        'data' => []
+                    ];
                 }
             }
 
@@ -469,7 +471,7 @@ fu.nombre_funcion as 'nombreFunción'
             }
 
             foreach ($funcionesAAgregar as $key => $value) {
-                $stmtAddPermisos->bind_param('ii',$rolId,$value);
+                $stmtAddPermisos->bind_param('ii', $rolId, $value);
                 if (!$stmtAddPermisos->execute()) {
                     $conn->close();
                     $conn->rollback();
@@ -484,18 +486,17 @@ fu.nombre_funcion as 'nombreFunción'
             $conn->commit();
             $conn->close();
             return [
-                'status'=> true,
-                'data'=> [],
-                'message'=> 'Permisos asociados correctamente'
+                'status' => true,
+                'data' => [],
+                'message' => 'Permisos asociados correctamente'
             ];
-
         } catch (\Throwable $th) {
             $conn->rollback();
             $conn->close();
             return [
-                'status'=> false,
-                'message'=> $th->getMessage(),
-                'data'=> []
+                'status' => false,
+                'message' => $th->getMessage(),
+                'data' => []
             ];
         }
     }
