@@ -14,6 +14,7 @@
 
     </div>
     <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        <a href="#!" id="preconfirmButton" class="waves-effect waves-green btn-flat">Agree</a>
+        <!-- <button type="button" class="waves-effect waves-green btn-flat"></button> -->
     </div>
 </div>

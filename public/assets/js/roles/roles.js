@@ -20,6 +20,37 @@ const asigPermisosContent = document.querySelector("#asigPermisosContent");
 const tableBodyRoles = document.querySelector("#tableBodyRoles");
 const formEditarRol = document.querySelector("#formEditarRol");
 const modalConfirmacion = instanceModal("#modalConfirmacion", options);
+// Botón de pre confirmación del elemento.
+const preconfirmButton = document.querySelector('#preconfirmButton');
+// Función para traer las funciones que tiene asociadas el ROL, esta función sirve para verificar que si el permiso está asociado, seleccionar el checkbox automaticamente.
+const getPermisosRolAsig = async ({ data = null } = {}) => {
+  const responseData = await getData(
+    "Modules/Roles/Controller/RolesController.php",
+    "GET",
+    { action: "getPermisosRolAsig", idRol: data }
+  );
+  return responseData;
+};
+
+let functionIdsAssoc = new Set();
+// let functionIdsAssoc = [];
+/**
+ * Agregar id de la función al arreglo para enviar a guardar cambios.
+ * Para esta función, estaba antes con un arreglo básico usando push, ahora se usan set.
+ */
+const updateFunctionSelection = (idFuncion = null, isAdd = true) => {
+  // IDS DE las funciones asociadas al rol que se selecciono.
+  if (isAdd) {
+    // if (!functionIdsAssoc.includes(idFuncion)) {
+    //   functionIdsAssoc.push(idFuncion);
+    // }
+    functionIdsAssoc.add(idFuncion);
+  } else {
+    functionIdsAssoc.delete(idFuncion);
+    // functionIdsAssoc = functionIdsAssoc.filter((fuId) => fuId != idFuncion);
+
+  }
+};
 
 // Función para traer los roles y las funciones junto a su modulo.
 const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
@@ -28,12 +59,10 @@ const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
     "GET",
     { action: "getRolesPermisos" }
   );
+
   const rolesYFunciones = getRlFunciones.data.data.funciones;
   const modulos = getRlFunciones.data.data.modulos;
-  // console.log(rolesYFunciones);
-  // console.log(modulos);
-  // console.log(rolesPermisos);
-
+  console.log(rolesYFunciones);
   asigPermisosContent.innerHTML = "";
   // Itinerar sobre los keys y la valor
   Object.entries(rolesYFunciones).forEach(([nombreModulo, funcionesModulo]) => {
@@ -59,14 +88,11 @@ const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
      * Esto lo puedo cambiar usando map.
      */
     modulos.forEach((element) => {
-      // console.log(element);
       if (element.nombre_Modulo === nombreModulo) {
-        const pCheckbox = createCheckboxGeneric({ value: element.idModulo });
+        const pCheckbox = createCheckboxGeneric({ value: element.idModulo, classItem: "checkboxModule" });
         contendorSpanModulo.appendChild(pCheckbox);
       }
     });
-
-
     /**
      * Creamos un set para implementar los ids de las funciones asociadas al rol, esto para hacer búsquedas rápidas del y así aplicar el valor checked al input, buscar para que sirve IntersectionObserver (api de javascript).
      */
@@ -75,15 +101,19 @@ const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
       // Contenedor de cada función con checkbox
       const contenedor = document.createElement("div");
       contenedor.classList.add("funcionNameCheckbox");
-
       // usamos el método has para validar si el id de la función presente lo tiene el set de las funciones asignadas, así si existe, validamos su true or false para que el checkbox quede seleccionado.
       let check = funcionesAsignadas.has(funcion.idFuncion);
-
+      if (check) {
+        updateFunctionSelection(funcion.idFuncion, true);
+      }
       const checkBoxNmGeneric = createCheckboxGeneric({
         text: funcion.nmFuncion,
         value: funcion.idFuncion,
-        checkedValue : check
+        checkedValue : check,
+        classItem: "checkboxFunciones",
+        data: funcion.idModulo
       });
+      // checkBoxNmGeneric.setAttribute('data-IdModulo',`${funcion.idModulo}`);
 
       // Agregar al contenedor
       contenedor.appendChild(checkBoxNmGeneric);
@@ -97,15 +127,54 @@ const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
   });
 };
 
-// Función para traer las funciones que tiene asociadas el ROL, esta función sirve para verificar que si el permiso está asociado, seleccionar el checkbox automaticamente.
-const getPermisosRolAsig = async ({ data = null } = {}) => {
-  const responseData = await getData(
-    "Modules/Roles/Controller/RolesController.php",
-    "GET",
-    { action: "getPermisosRolAsig", idRol: data }
-  );
-  return responseData;
-};
+
+  // Delegación de responsabilidad a las funciones asociados al rol.
+  asigPermisosContent.addEventListener('change', (e)=>{
+    const evento = e.target;
+    // Ejecutar la el proceso basado en las funciones del checkbox
+    if (evento.classList.contains('checkboxFunciones')) {
+      const valueCheckbox = parseInt(evento.value);
+      if (evento.checked) {
+        updateFunctionSelection(valueCheckbox, true) 
+      }else{
+        updateFunctionSelection(valueCheckbox, false);
+      }
+    }
+
+    // Ejecutar el proceso basado en el checkbox del modulo.
+    if (evento.classList.contains('checkboxModule')) {
+      console.log(evento);
+      const idModulo = evento.value;
+      console.log(idModulo);
+
+      // Todos los checkbox asociados al modulo
+      const checkboxesFuncion = Array.from(document.querySelectorAll('.checkboxFunciones')).filter((cbFuncion)=> cbFuncion.getAttribute('data-idModulo') === idModulo);
+      console.log(checkboxesFuncion);
+      checkboxesFuncion.forEach((check)=>{
+        if (evento.checked) {
+          check.checked = true;
+          
+        }else{
+          check.checked = false
+        }
+
+      })
+
+
+    }
+  });
+
+  // Evento de pre confirmación de eventos.
+  preconfirmButton.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    e.preventDefault();
+
+    modalConfirmacion.open();
+    mostrarConfirmacion("Roles y permisos", "Estas seguro de asignar estos permisos al usuario", (responseModal)=>{
+      console.log(responseModal);
+    });
+
+  });
 
 // Vista de roles.
 const renderRoles = async () => {

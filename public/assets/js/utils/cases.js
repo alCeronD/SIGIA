@@ -412,30 +412,10 @@ export const getSelector = (selector) =>{
   return el;
 }
 
-// export const createCheckboxGeneric = ({ text = '', id = '', name = '', value = '' } = {})=>{
-//   const pCheckbox = document.createElement('p');
-//   const labelCheckbox = document.createElement('label');
-//   const inputCheckbox = document.createElement('input');
-//   inputCheckbox.setAttribute('type', 'checkbox');
-
-//   if (id) inputCheckbox.id = id;
-//   if (name) inputCheckbox.name = name;
-//   if (value) inputCheckbox.value = value;
-
-//   const spanCheckbox = document.createElement('span');
-//   spanCheckbox.innerText = text;
-//   pCheckbox.appendChild(labelCheckbox);
-//   labelCheckbox.appendChild(inputCheckbox);
-//   labelCheckbox.appendChild(spanCheckbox);
-
-//   return pCheckbox;
-
-// };
-
-export const createCheckboxGeneric = ({ text = '', id = '', name = '', value = '', checkedValue = false} = {}) => {
+// Función para crear un checkbox generico con materialize, esta función debo implementar un ciclo en caso de que se requiera adicionar más clases o más data-*
+export const createCheckboxGeneric = ({ text = '', id = '', name = '', value = '', checkedValue = false, classItem, data = ''} = {}) => {
   const div = document.createElement('div');
   div.classList.add('checkbox-container');
-
 
   const labelText = document.createElement('span');
   labelText.innerText = text;
@@ -447,8 +427,8 @@ export const createCheckboxGeneric = ({ text = '', id = '', name = '', value = '
   if (name) inputCheckbox.name = name;
   if (value) inputCheckbox.value = value;
   if (checkedValue) inputCheckbox.checked = checkedValue;
-
-  // console.log(value);
+  if (classItem) inputCheckbox.classList.add(classItem);
+  if(data) inputCheckbox.setAttribute('data-idModulo', data);
 
   const span = document.createElement('span'); // Materialize uses this
 
