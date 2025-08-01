@@ -133,6 +133,7 @@ class usuariosController
 
     public function updateUserJSON(array $data)
     {
+        // validatePermisos('usuarios','updateUserJSON');
         header('Content-Type: application/json; charset=utf-8');
 
         if (!isset($data['usu_id']) || empty($data['usu_id'])) {
@@ -215,6 +216,7 @@ class usuariosController
 
     public function cambiarEstadoUsuarioJSON($data)
     {
+        validatePermisos('usuarios','cambiarEstadoUsuarioJSON');
         if (!isset($data['usu_id'])) {
             http_response_code(400);
             echo json_encode([
