@@ -94,7 +94,7 @@
       <a href="<?php echo getUrl('categorias','categorias','consultCategoriasView',false,'dashboard'); ?>">Categorías</a>
     </div>
     <div id="submenu-reportes" class="submenu hidden">
-      <a href="<?php echo getUrl('reportes', 'reportes', 'genReporteView', false, 'dashboard'); ?>">Reporte general</a>
+      <a href="<?php echo getUrl('reportes', 'Reportes', 'genReporteView', false, 'dashboard'); ?>">Reporte general</a>
     </div>
 
   <?php endif; ?>

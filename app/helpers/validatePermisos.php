@@ -11,7 +11,6 @@ require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
 
 function validatePermisos(String $modulo, String $funcion)
 {
-    $objPermisosController = new PermisosController();
 
     require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
     $objPermisos = new PermisosController();

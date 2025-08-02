@@ -1,7 +1,6 @@
 <?php 
 include_once '../proyecto_sigia/app/helpers/getUrl.php';
 
-
 if (ajaxGeneral()) {
     resolve();
     exit;
@@ -13,6 +12,3 @@ if (ajaxGeneral()) {
         redirect(getUrl('login','login','index',false,false));
     }
 }
-
-
-

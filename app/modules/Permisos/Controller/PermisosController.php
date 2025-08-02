@@ -14,18 +14,18 @@ Class PermisosController{
         return $idNombreModulo = empty($idNombreModulo) ? null : (int) $idNombreModulo;
     }
 
-
     public function getIdFuncion(String $functionName = "", String $modelName = "", Int $idModulo = 0){
         $result = $this->modelPermisos->getIdFuncion($functionName, $modelName, $idModulo);
-        // dd($result);
         $idNombreFuncion = $result['data']['id_funcion'];
-        // var_dump($idNombreFuncion);
-        return $idNombreFuncion;
+
+                if (empty($result['data']['id_funcion'])) {
+            return null;
+        }
+        return $result['data']['id_funcion'];
     }
 
     public function validateRolFuncion(int $rolId,int $idFuncion){
-        // var_dump($rolId);
-        // var_dump($idFuncion);
+
         $result = $this->modelPermisos->getPermisoFuncion($rolId, $idFuncion);
         if ($result['data'] == null) {
             return false;

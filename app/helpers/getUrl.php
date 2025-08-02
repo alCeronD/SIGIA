@@ -1,7 +1,5 @@
 <?php
-
 require_once __DIR__ . "/response.php";
-
 
 function redirect($url)
 {
@@ -84,6 +82,9 @@ function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
         $rolId = $_SESSION['usuario']['rol_id'] ?? 0;
 
         $idModulo = $objPermisos->gidIdModulo($modulo);
+        // var_dump($idModulo);
+        // var_dump($funcion, $modulo, $idModulo);
+
         $idFuncion = $objPermisos->getIdFuncion($funcion, $modulo, $idModulo);
 
         if (!$idFuncion || !$objPermisos->validateRolFuncion($rolId, $idFuncion)) {
