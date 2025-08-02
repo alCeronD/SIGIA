@@ -1,6 +1,7 @@
 <?php 
 
 include_once __DIR__ . '/../model/loginModel.php';
+require_once __DIR__ . '/../../Permisos/Model/PermisosModel.php';
 include_once __DIR__ . '/../../../helpers/response.php';
 
 class loginController {
@@ -15,6 +16,7 @@ class loginController {
     }
 
     public function login() {
+        $permisosModel = new PermisosModel();
         header('Content-Type: application/json');
         session_start();
 
@@ -50,7 +52,7 @@ class loginController {
             exit();
         }
 
-        
+        $result = $permisosModel->renderMenu((int) $usuario['rl_id']);
 
         $_SESSION['usuario'] = [
             'id' => $usuario['usu_id'],
@@ -60,6 +62,8 @@ class loginController {
             'rol_nombre' => $usuario['rl_nombre'],
             'email' => $usuario['usu_email']
         ];
+
+        $_SESSION['renderMenu']= $result['data'];
 
         echo json_encode([
             'success' => true,

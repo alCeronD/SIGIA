@@ -123,10 +123,11 @@ class PermisosModel
     }
 
     // Esta función sirve para traer los modulos basados en los roles del usuario, con el fin de poder renderizar la información de la vista.
-    public function renderMenu()
+    public function renderMenu(int $idRol)
     {
         $modulesRender = [];
         $coon = (new Conection)->getConnect();
+
 
         $sqlMenu = "SELECT DISTINCT
             mo.id_m AS 'idModulo',
@@ -138,5 +139,64 @@ class PermisosModel
             rof.rlp_id_funcion = fu.id_funcion 
             INNER JOIN roles r ON
             r.rl_id = rof.rlp_id_rl WHERE r.rl_id = ?";
+
+        $stmtMenu = $coon->prepare($sqlMenu);
+
+        $stmtMenu->bind_param('i', $idRol);
+
+        $stmtMenu->execute();
+
+        $result = $stmtMenu->get_result();
+
+        $modulosMenu = [];
+        while ($row = $result->fetch_assoc()) {
+            $modulosMenu[] = $row;
+        }
+
+        $sqlOptionsMenu = "SELECT DISTINCT 
+            fu.nombre_funcion_user AS 'nombreFuncionUser',
+            fu.id_funcion AS 'idFunción'
+            FROM funciones fu
+            INNER JOIN tipo_funcion tpf ON
+            tpf.id_tp_funcion = fu.tp_funcion 
+            INNER JOIN roles_funciones rof ON 
+            rof.rlp_id_funcion = fu.id_funcion
+            INNER JOIN roles r ON 
+            r.rl_id = rof.rlp_id_rl 
+            INNER JOIN modulos mo ON
+            mo.id_m = fu.id_modulo
+            WHERE tpf.id_tp_funcion = 1 AND r.rl_id = ? AND mo.id_m = ?";
+
+        $stmtOptionsMenu = $coon->prepare($sqlOptionsMenu);
+
+        $optionsMenu = [];
+        foreach ($modulosMenu as $key => $value) {
+            $modulo = $value['idModulo'];
+
+            $stmtOptionsMenu->bind_param('ii', $idRol, $modulo);
+
+            $stmtOptionsMenu->execute();
+
+            $resultOptions = $stmtOptionsMenu->get_result();
+            $row = $resultOptions->fetch_assoc();
+            $optionsMenu[] = $row;
+        }
+
+        $data = [
+            'modulos'=> $modulosMenu,
+            'vistas'=> $optionsMenu
+        ];
+
+        return [
+            'status'=>true,
+            'message'=> 'Vistas y modulos encontrados',
+            'data'=> $data
+        ];
+
+
     }
 }
+
+// $objPermisosModel = new PermisosModel();
+// $result = $objPermisosModel->renderMenu(16);
+// var_dump($result['data']);
