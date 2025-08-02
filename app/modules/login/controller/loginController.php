@@ -65,6 +65,7 @@ class loginController {
 
         $_SESSION['renderMenu']= $result['data'];
 
+
         echo json_encode([
             'success' => true,
             'message' => 'Conectado',

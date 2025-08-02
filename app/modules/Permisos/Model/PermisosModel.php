@@ -155,7 +155,9 @@ class PermisosModel
 
         $sqlOptionsMenu = "SELECT DISTINCT 
             fu.nombre_funcion_user AS 'nombreFuncionUser',
-            fu.id_funcion AS 'idFunción'
+            fu.id_funcion AS 'idFunción',
+            fu.nombre_funcion AS 'nombreFuncionController',
+            mo.cod_nombre_m AS 'nombreModulo'
             FROM funciones fu
             INNER JOIN tipo_funcion tpf ON
             tpf.id_tp_funcion = fu.tp_funcion 
@@ -197,6 +199,6 @@ class PermisosModel
     }
 }
 
-// $objPermisosModel = new PermisosModel();
-// $result = $objPermisosModel->renderMenu(16);
+$objPermisosModel = new PermisosModel();
+$result = $objPermisosModel->renderMenu(16);
 // var_dump($result['data']);
