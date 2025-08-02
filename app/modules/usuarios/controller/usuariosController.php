@@ -130,7 +130,6 @@ class usuariosController
         return include $path;
     }
 
-
     public function updateUserJSON(array $data)
     {
         // validatePermisos('usuarios','updateUserJSON');
@@ -198,22 +197,6 @@ class usuariosController
         include_once '../proyecto_sigia/app/modules/usuarios/views/deleteView.php';
     }
 
-
-    // public function cambiarEstadoUsuario()
-    // {
-    //     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    //         $usu_id = (int) $_GET['usu_id'];
-
-    //         $result = $this->usuariosModel->inhabilitarUsuario($usu_id);
-
-    //         if ($result['status']) {
-    //             echo "<script>alert('Estado cambiado exitosamente'); window.location.href = '" . getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard') . "';</script>";
-    //         }
-    //     } else {
-    //         echo "Método no permitido";
-    //     }
-    // }
-
     public function cambiarEstadoUsuarioJSON($data)
     {
         validatePermisos('usuarios','cambiarEstadoUsuarioJSON');
@@ -244,9 +227,6 @@ class usuariosController
             ]);
         }
     }
-
-
-
 
     public function actualizarDatosView()
     {

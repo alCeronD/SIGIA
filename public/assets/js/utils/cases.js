@@ -412,6 +412,35 @@ export const getSelector = (selector) =>{
   return el;
 }
 
+// Función para crear un checkbox generico con materialize, esta función debo implementar un ciclo en caso de que se requiera adicionar más clases o más data-*
+export const createCheckboxGeneric = ({ text = '', id = '', name = '', value = '', checkedValue = false, classItem, data = ''} = {}) => {
+  const div = document.createElement('div');
+  div.classList.add('checkbox-container');
+
+  const labelText = document.createElement('span');
+  labelText.innerText = text;
+
+  const labelCheckbox = document.createElement('label');
+  const inputCheckbox = document.createElement('input');
+  inputCheckbox.setAttribute('type', 'checkbox');
+  if (id) inputCheckbox.id = id;
+  if (name) inputCheckbox.name = name;
+  if (value) inputCheckbox.value = value;
+  if (checkedValue) inputCheckbox.checked = checkedValue;
+  if (classItem) inputCheckbox.classList.add(classItem);
+  if(data) inputCheckbox.setAttribute('data-idModulo', data);
+
+  const span = document.createElement('span'); // Materialize uses this
+
+  labelCheckbox.appendChild(inputCheckbox);
+  labelCheckbox.appendChild(span);
+
+  div.appendChild(labelText);     // Texto a la izquierda
+  div.appendChild(labelCheckbox); // Checkbox a la derecha
+
+  return div;
+};
+
 // Función para validar campos el dormulario.
 export const validateFormData = ({formData, campos, mapForm}={}) =>{
   for (const [key, value] of formData.entries()) {

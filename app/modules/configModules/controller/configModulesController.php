@@ -178,7 +178,7 @@ class ConfigModulesController{
     }
 
     public function addRow(array $data=[]){
-
+        validatePermisos('ConfigModules', 'addRow');
         if (!$data) {
             exit();
         }

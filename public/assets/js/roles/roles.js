@@ -1,5 +1,6 @@
 import {
   closeModal,
+  createCheckboxGeneric,
   createI,
   getData,
   initAlert,
@@ -11,22 +12,221 @@ import {
   toastOptions,
   validateFormData,
 } from "./barrelRoles.js";
-// const modalEditar = document.querySelector("#modalEditar");
-const closeModalBtn = document.querySelector(".closeModalBtn");
-
+const closeModalBtnAsing = document.querySelector("#closeModalBtnAsing");
+const closeModalBtnEdit = document.querySelector("#closeModalBtnEdit");
 const modalEditar = instanceModal("#modalEditar", options);
+const modalAsing = instanceModal("#modalAsingPermisos", options);
+// Div contenedor en donde se va a renderizar toda la información.
+const asigPermisosContent = document.querySelector("#asigPermisosContent");
 const tableBodyRoles = document.querySelector("#tableBodyRoles");
 const formEditarRol = document.querySelector("#formEditarRol");
-console.log(formEditarRol);
-const modalConfirmacion = instanceModal('#modalConfirmacion', options);
+const modalConfirmacion = instanceModal("#modalConfirmacion", options);
+const formRol = document.querySelector("#formRol");
+let rolId = null;
+// Botón de pre confirmación del elemento.
+const preconfirmButton = document.querySelector("#preconfirmButton");
+// Función para traer las funciones que tiene asociadas el ROL, esta función sirve para verificar que si el permiso está asociado, seleccionar el checkbox automaticamente.
+const getPermisosRolAsig = async ({ data = null } = {}) => {
+  const responseData = await getData(
+    "Modules/Roles/Controller/RolesController.php",
+    "GET",
+    { action: "getPermisosRolAsig", idRol: data }
+  );
+  return responseData;
+};
 
+let functionIdsAssoc = new Set();
+// Funciones descartadas para enviar a eliminar.
+let functionDesc = new Set();
+// let functionIdsAssoc = [];
+/**
+ * Agregar id de la función al arreglo para enviar a guardar cambios.
+ * Para esta función, estaba antes con un arreglo básico usando push, ahora se usan set.
+ */
+const updateFunctionSelection = (idFuncion = null, isAdd = true) => {
+  // IDS DE las funciones asociadas al rol que se selecciono.
+  if (isAdd) {
+    // if (!functionIdsAssoc.includes(idFuncion)) {
+    //   functionIdsAssoc.push(idFuncion);
+    // }
+    functionIdsAssoc.add(idFuncion);
+  } else {
+    functionIdsAssoc.delete(idFuncion);
+    functionDesc.add(idFuncion);
+    // functionIdsAssoc = functionIdsAssoc.filter((fuId) => fuId != idFuncion);
+  }
+
+  console.log(functionIdsAssoc);
+  console.log(functionDesc);
+};
+
+// Función para traer los roles y las funciones junto a su modulo.
+const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
+  const getRlFunciones = await getData(
+    "Modules/Roles/Controller/rolesController.php",
+    "GET",
+    { action: "getRolesPermisos" }
+  );
+
+  // Obtener los nombres amigables para el usuario
+  // const getNombresModulos = await getData("Modules/Roles/Controller/rolesController.php", "GET", {action : "getRolesPermisos"});
+
+  
+  const rolesYFunciones = getRlFunciones.data.data.funciones;
+  const modulos = getRlFunciones.data.data.modulos;
+  asigPermisosContent.innerHTML = "";
+  console.log(rolesYFunciones);
+  // Itinerar sobre los keys y la valor
+  Object.entries(rolesYFunciones).forEach(([nombreModulo, funcionesModulo]) => {
+    // Contenedor del modulo, Acá va toda la estructura, la de la las funciones y el modulo.
+    const contenedorModulo = document.createElement("div");
+    // Clase base de contenedor para cada elemento.
+    contenedorModulo.classList.add("modulo");
+    const contendorSpanModulo = document.createElement("div");
+    contendorSpanModulo.classList.add("spanNameModule");
+    const spanNombreModulo = document.createElement("span");
+    spanNombreModulo.innerText = nombreModulo;
+
+    // Contenedor de funciones
+    const divFunciones = document.createElement("div");
+    divFunciones.classList.add("funciones");
+    // agrego el contenedor del titulo al contenedor principal.
+    contenedorModulo.appendChild(contendorSpanModulo);
+    // Al contenedor del título del modulo le agrego su texto y su checkbox.
+    contendorSpanModulo.appendChild(spanNombreModulo);
+
+    /**
+     * ciclar los modulos traidos desde el get data para agregarle su id.
+     * Esto lo puedo cambiar usando map.
+     */
+    modulos.forEach((element) => {
+      if (element.nombre_Modulo === nombreModulo) {
+        const pCheckbox = createCheckboxGeneric({
+          value: element.idModulo,
+          classItem: "checkboxModule",
+        });
+        contendorSpanModulo.appendChild(pCheckbox);
+      }
+    });
+    /**
+     * Creamos un set para implementar los ids de las funciones asociadas al rol, esto para hacer búsquedas rápidas del y así aplicar el valor checked al input, buscar para que sirve IntersectionObserver (api de javascript).
+     */
+    const funcionesAsignadas = new Set(rolesPermisos.map((rp) => rp.idFuncion));
+    funcionesModulo.forEach((funcion) => {
+      // Contenedor de cada función con checkbox
+      const contenedor = document.createElement("div");
+      contenedor.classList.add("funcionNameCheckbox");
+      // usamos el método has para validar si el id de la función presente lo tiene el set de las funciones asignadas, así si existe, validamos su true or false para que el checkbox quede seleccionado.
+      let check = funcionesAsignadas.has(funcion.idFuncion);
+      if (check) {
+        updateFunctionSelection(funcion.idFuncion, true);
+
+      }
+      const checkBoxNmGeneric = createCheckboxGeneric({
+        text: funcion.nmFuncionUser,
+        value: funcion.idFuncion,
+        checkedValue: check,
+        classItem: "checkboxFunciones",
+        data: funcion.idModulo,
+      });
+      // checkBoxNmGeneric.setAttribute('data-IdModulo',`${funcion.idModulo}`);
+
+      // Agregar al contenedor
+      contenedor.appendChild(checkBoxNmGeneric);
+      // Agregar al contenedor general
+      divFunciones.appendChild(contenedor);
+    });
+
+    // Estructura de los contenedores.
+    contenedorModulo.appendChild(divFunciones);
+    asigPermisosContent.appendChild(contenedorModulo);
+  });
+};
+
+// Delegación de responsabilidad a las funciones asociados al rol.
+asigPermisosContent.addEventListener("change", (e) => {
+  const evento = e.target;
+  // Ejecutar la el proceso basado en las funciones del checkbox
+  if (evento.classList.contains("checkboxFunciones")) {
+    const valueCheckbox = parseInt(evento.value);
+    if (evento.checked) {
+      updateFunctionSelection(parseInt(valueCheckbox), true);
+    } else {
+      updateFunctionSelection(parseInt(valueCheckbox), false);
+
+    }
+  }
+
+  // Ejecutar el proceso basado en el checkbox del modulo.
+  if (evento.classList.contains("checkboxModule")) {
+    const idModulo = evento.value;
+
+    // Todos los checkbox asociados al modulo, otra forma es también leer la data usando dataset.
+    const checkboxesFuncion = Array.from(
+      document.querySelectorAll(".checkboxFunciones")
+    ).filter(
+      (cbFuncion) => cbFuncion.getAttribute("data-idModulo") === idModulo
+    );
+    checkboxesFuncion.forEach((check) => {
+      if (evento.checked) {
+        check.checked = true;
+        updateFunctionSelection(parseInt(check.value), true);
+      } else {
+        check.checked = false;
+        updateFunctionSelection(parseInt(check.value), false);
+      }
+    });
+  }
+});
+
+// Evento de pre confirmación de eventos.
+preconfirmButton.addEventListener("click", (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+
+  modalConfirmacion.open();
+  // Evento de confirmación para enviar la data o no.
+  mostrarConfirmacion(
+    "Roles y permisos",
+    "Estas seguro de asignar estos permisos al usuario",
+    async (responseModal) => {
+      if (!responseModal) {
+        modalConfirmacion.close();
+        return;
+      }
+      try {
+        const rolesPorAsociar = Array.from(functionIdsAssoc).sort();
+        const rolesDesleccionados = Array.from(functionDesc).sort();
+        const responsePost = await sendData(
+          "Modules/Roles/Controller/rolesController.php",
+          "POST",
+          "setPermisos",
+          { rolesPorAsociar, rolesDesleccionados, rolId }
+        );
+
+        if (!responsePost.status) {
+          initAlert(error.message, "error", toastOptions);
+          modalConfirmacion.close();
+        }
+        modalConfirmacion.close();
+        modalAsing.close();
+        initAlert(responsePost.message, "success", toastOptions);
+        return;
+      } catch (error) {
+        initAlert(error.message, "info", toastOptions);
+        return;
+      }
+    }
+  );
+});
+
+// Renderizar la vista de la tabla roles.
 const renderRoles = async () => {
   const responseRoles = await getData(
     "Modules/Roles/Controller/RolesController.php",
     "GET",
     { action: "getRoles" }
   );
-
   const dataRoles = responseRoles.data;
   tableBodyRoles.innerHTML = "";
   dataRoles.forEach((rl) => {
@@ -48,6 +248,7 @@ const renderRoles = async () => {
     btnStatus.setAttribute("data-id", `${rl.rl_id}`);
     btnStatus.setAttribute("data-status", `${rl.rl_status}`);
     btnAsig.setAttribute("type", "button");
+    btnAsig.setAttribute("data-rol", `${rl.rl_id}`);
     let iconEditar = createI("border_color");
     let iconStatus = createI("delete_sweep");
     let iconAsig = createI("build");
@@ -92,33 +293,65 @@ const renderRoles = async () => {
     });
 
     // Botón de inactivar
-    btnStatus.addEventListener("click", (e)=>{
+    btnStatus.addEventListener("click", (e) => {
       e.stopPropagation();
       e.preventDefault();
-      const id = e.target.getAttribute('data-id');
-      const status = e.target.getAttribute('data-status');
-      console.log({status, id});
+      const id = e.target.getAttribute("data-id");
+      const status = e.target.getAttribute("data-status");
+      console.log({ status, id });
       modalConfirmacion.open();
       const dataStatus = {
-        idRol: id, 
-        statusRol: status
+        idRol: id,
+        statusRol: status,
       };
-      let titulo = status === '1'? "Inhabilitar rol": "Habilitar rol";
-      mostrarConfirmacion(titulo,"¿Desea continuar con el proceso?", async (respuesta)=>{
-        if (!respuesta) {
-          initAlert("Proceso cancelado", "info", toastOptions);
-          modalConfirmacion.close();
-          return;
+      let titulo = status === "1" ? "Inhabilitar rol" : "Habilitar rol";
+      mostrarConfirmacion(
+        titulo,
+        "¿Desea continuar con el proceso?",
+        async (respuesta) => {
+          if (!respuesta) {
+            initAlert("Proceso cancelado", "info", toastOptions);
+            modalConfirmacion.close();
+            return;
+          }
+          try {
+            const response = await sendData(
+              "Modules/Roles/Controller/RolesController.php",
+              "PUT",
+              "statusRol",
+              dataStatus
+            );
+            initAlert(
+              "Estatus del rol actualizado correctamente",
+              "success",
+              toastOptions
+            );
+            renderRoles();
+          } catch (error) {
+            initAlert(
+              `Error al inhabilitar el rol, \n ${error.message}`,
+              "error",
+              toastOptions
+            );
+            modalConfirmacion.close();
+          }
         }
-        try {
-          const response = await sendData('Modules/Roles/Controller/RolesController.php', "PUT", "statusRol", dataStatus);
-          initAlert("Estatus del rol actualizado correctamente", "success", toastOptions);
-          renderRoles();
-        } catch (error) {
-          initAlert(`Error al inhabilitar el rol, \n ${error.message}`, "error", toastOptions);
-          modalConfirmacion.close();
-        }
-      });
+      );
+    });
+
+    // Botón de asignar
+    btnAsig.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      let Btn = e.target;
+      let permisosAsignados = null;
+      let idDataRol = Btn.getAttribute("data-rol");
+      // Asigno el valor a la variable global para enviarla al back.
+      rolId = idDataRol;
+      const response = await getPermisosRolAsig({ data: idDataRol });
+      permisosAsignados = response.data.data;
+      renderRolesFunciones({ rolesPermisos: permisosAsignados });
+      modalAsing.open();
     });
   });
 };
@@ -126,51 +359,76 @@ const renderRoles = async () => {
 const mapObj = {
   modal_rol_nombre: "Nombre del Rol",
   rol_descripcion: "Descripción del Rol",
-  rol_id: "ID del Rol"
+  rol_id: "ID del Rol",
 };
 
 const mapObjAdd = {
   rol_nombre: "Nombre del Rol",
-  rol_descripcion: "Descripción del Rol"
+  rol_descripcion: "Descripción del Rol",
 };
 
-const optionals = ['rol_descripcion'];
-formEditarRol.addEventListener("submit",async (e) => {
+const optionals = ["rol_descripcion"];
+formEditarRol.addEventListener("submit", async (e) => {
   e.preventDefault();
   e.stopPropagation();
   const formEdit = new FormData(e.target);
   const objData = Object.fromEntries(formEdit);
-  if (!validateFormData({formData: formEdit, campos: optionals, mapForm: mapObj})) return;
+  if (
+    !validateFormData({
+      formData: formEdit,
+      campos: optionals,
+      mapForm: mapObj,
+    })
+  )
+    return;
 
   try {
-    const updateInfo = await sendData('Modules/Roles/Controller/RolesController.php', "PUT", "updateRol",objData);
+    const updateInfo = await sendData(
+      "Modules/Roles/Controller/RolesController.php",
+      "PUT",
+      "updateRol",
+      objData
+    );
     console.log(updateInfo);
     if (updateInfo.status) {
-        renderRoles();
-        initAlert("Recurso actualizado", "success", toastOptions);
-        modalEditar.close();
+      renderRoles();
+      initAlert("Recurso actualizado", "success", toastOptions);
+      modalEditar.close();
     }
   } catch (error) {
     console.log(error);
     initAlert(`${error.message}`, "error", `${error}`);
   }
-
 });
 
-const formRol = document.querySelector('#formRol');
-formRol.addEventListener('submit', async (e)=>{
+formRol.addEventListener("submit", async (e) => {
   e.preventDefault();
   e.stopPropagation();
   const formAdd = new FormData(e.target);
   const data = Object.fromEntries(formAdd);
-  if(!validateFormData({formData: formAdd, campos: optionals, mapForm: mapObjAdd})) return;
+  if (
+    !validateFormData({
+      formData: formAdd,
+      campos: optionals,
+      mapForm: mapObjAdd,
+    })
+  )
+    return;
 
   try {
-    const responseAdd = await sendData('Modules/Roles/Controller/RolesController.php', 'POST', 'addRol', data);
-    console.log(responseAdd);
+    const responseAdd = await sendData(
+      "Modules/Roles/Controller/RolesController.php",
+      "POST",
+      "addRol",
+      data
+    );
 
     if (responseAdd.status) {
-      initAlert("Rol agregado a la base de datos con exito","success", toastOptions );
+      initAlert(
+        "Rol agregado a la base de datos con exito",
+        "success",
+        toastOptions
+      );
       renderRoles();
       formRol.reset();
     }
@@ -178,9 +436,12 @@ formRol.addEventListener('submit', async (e)=>{
     initAlert(`${error.message}`, "error", toastOptions);
   }
 });
-
 document.addEventListener("DOMContentLoaded", () => {
   renderRoles();
-  closeModal(modalEditar, closeModalBtn);
-  
+  // renderRolesFunciones();
+  closeModal(modalAsing, closeModalBtnAsing, () => {
+    rolId = null;
+  });
+
+  closeModal(modalEditar, closeModalBtnEdit);
 });

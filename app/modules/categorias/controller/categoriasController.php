@@ -29,7 +29,6 @@ class categoriasController
         $_SESSION['css'] = 'categorias/categorias.css';
         $categorias = $modeloCategorias->search();
         $path = __DIR__ . '/../views/categoriasConsultview.php';
-        // var_dump($path);
         return include $path;
     }
 
@@ -44,46 +43,6 @@ class categoriasController
     //     $resultado = $dato->searchU($categoria);
     //     if ($resultado) {
     //         return include_once __DIR__ . '/../views/categoriasEditView.php';
-    //     }
-    // }
-
-
-    // public function updateCategoria() {
-    //     validatePermisos('categorias', 'updateCategoria');
-
-    //     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    //         header('Content-Type: application/json');
-
-    //         // ✅ Leer los datos desde JSON (no desde $_POST)
-    //         $info = $_POST;
-
-
-    //         $categoriaModel = new categorias($this->conn);
-    //         $actualizado = $categoriaModel->update($info, $info['ca_id']);
-
-    //         if ($actualizado) {
-    //             $categoriaActualizada = $categoriaModel->findById($info['ca_id']);
-
-    //             echo json_encode([
-    //                 'success' => true,
-    //                 'mensaje' => 'Registro actualizado correctamente.',
-    //                 'categoria' => $categoriaActualizada
-    //             ]);
-    //         } else {
-    //             echo json_encode([
-    //                 'success' => false,
-    //                 'mensaje' => 'No se pudo actualizar el registro.'
-    //             ]);
-    //         }
-
-    //         exit;
-    //     } else {
-    //         header('HTTP/1.1 405 Method Not Allowed');
-    //         echo json_encode([
-    //             'success' => false,
-    //             'mensaje' => 'Método no permitido.'
-    //         ]);
-    //         exit;
     //     }
     // }
 

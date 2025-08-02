@@ -7,8 +7,10 @@ include_once __DIR__ . '/../../../config/conn.php';
 include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
 include_once __DIR__ . '/../../elementos/model/elementosModel.php';
 include_once __DIR__ . '/../../usuarios/model/usuariosModel.php';
-include_once __DIR__ . '/../../../helpers/session.php';
+// include_once __DIR__ . '/../../../helpers/session.php';
 include_once __DIR__ . '/../../../helpers/response.php';
+include_once __DIR__ . '/../../../helpers/validatePermisos.php';
+
 
 class solicitudPrestamosController
 {
@@ -61,6 +63,7 @@ class solicitudPrestamosController
     }
     public function registrarPrestamo(array $data = [])
     {
+        validatePermisos('solicitudPrestamos', 'registrarPrestamo');
         header('Content-Type: application/json; charset=utf-8');
     
         try {
@@ -170,8 +173,6 @@ class solicitudPrestamosController
             exit;
         }
     }
-
-
 
     public function verDetallePrestamo(int $presCod)
     {

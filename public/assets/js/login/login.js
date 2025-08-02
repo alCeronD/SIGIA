@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.success && data.url) {
                 window.location.href = data.url;
             } else {
-                initAlert("Usuario y contraseña incorrectos", "info", toastOptions);
+                initAlert("Usuario y contraseña incorrectos, Contactarse con el administrador.", "info", toastOptions);
             }
         })
         .catch(error => {

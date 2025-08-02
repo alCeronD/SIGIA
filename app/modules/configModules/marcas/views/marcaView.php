@@ -19,7 +19,7 @@
                 <label for="descripcionMarca">Descripción:</label>
             </div>
             <div class="contentSubmitMa">
-                <button type="submit" class="btnSubmit waves-effect waves-light btn" id="btnAreaUpdate"><i class="material-icons">send</i><button></button>
+                <button type="submit" class="btnSubmit btnPermiso waves-effect waves-light btn" id="btnAreaUpdate" data-url="<?php echo getUrl('ConfigModules', 'configModules', 'addRow', false, 'dashboard'); ?>"><i class="material-icons">send</i><button></button>
             </div>
         </form>
         </div>

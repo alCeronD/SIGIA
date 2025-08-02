@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-07-2025 a las 03:36:02
+-- Tiempo de generación: 02-08-2025 a las 02:11:26
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,32 +28,22 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `areas` (
-  `ar_cod` int(11) NOT NULL,
-  `ar_nombre` varchar(30) NOT NULL,
-  `ar_descripcion` varchar(300) DEFAULT NULL,
-  `ar_status` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `ar_cod` int(11) NOT NULL COMMENT 'Código primario del area',
+  `ar_nombre` varchar(30) NOT NULL COMMENT 'Nombre del area',
+  `ar_descripcion` varchar(300) DEFAULT NULL COMMENT 'Descripción del area',
+  `ar_status` tinyint(1) NOT NULL COMMENT 'Estado del area, activo 1, Inactivo 0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla que almacena los distintos departamentos asociados a los elementos de la central didáctica';
 
 --
 -- Volcado de datos para la tabla `areas`
 --
 
 INSERT INTO `areas` (`ar_cod`, `ar_nombre`, `ar_descripcion`, `ar_status`) VALUES
-(1, 'Sonido', 'Elemens', 1),
-(2, 'Luz y Cámaras', 'Elementos asociados al departamento de luz y cámaras.', 1),
-(3, 'General', 'media información', 1),
-(81, 'Fotografia', 'Departamento en donde se clasifican todos los elementos pertenecientes a la fotografía de la central didáctica.', 1),
-(82, 'Iluminación', '', 1);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `bitacora`
---
-
-CREATE TABLE `bitacora` (
-  `btr_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+(1, 'Sonidos', 'Elementos pertenecientes al area de sonido.', 1),
+(2, 'Luz', 'Elementos asociados al departamento de Luces', 1),
+(3, 'General', 'Elementos que pueden ser utilizados por los diferentes departamentos', 1),
+(4, 'Fotografia', 'Elementos pertenecientes al área de fotografía de la central didactica.', 1),
+(120, 'Iluminación', 'Elementos pertenecientes al área de iluminación de la central didáctica.', 1);
 
 -- --------------------------------------------------------
 
@@ -62,11 +52,11 @@ CREATE TABLE `bitacora` (
 --
 
 CREATE TABLE `categoria` (
-  `ca_id` int(11) NOT NULL,
-  `ca_nombre` varchar(50) NOT NULL,
-  `ca_descripcion` varchar(200) NOT NULL,
-  `ca_status` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `ca_id` int(11) NOT NULL COMMENT 'codigo de identificador de la categoria',
+  `ca_nombre` varchar(50) NOT NULL COMMENT 'nombre de la categoria',
+  `ca_descripcion` varchar(200) NOT NULL COMMENT 'descripción de la categoria',
+  `ca_status` tinyint(1) NOT NULL COMMENT 'estado de la categoria, 1 activo, 0 inactivo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla que clasifica los elementos de la central didactica en diferentes categorías para su organización y control.';
 
 --
 -- Volcado de datos para la tabla `categoria`
@@ -75,7 +65,56 @@ CREATE TABLE `categoria` (
 INSERT INTO `categoria` (`ca_id`, `ca_nombre`, `ca_descripcion`, `ca_status`) VALUES
 (3, 'Camaras', ' ', 0),
 (4, 'Computadoras', '', 0),
-(6, 'Computadoras AIO', ' ', 1);
+(6, 'Computadoras AIO', ' ', 1),
+(13, 'informacion adicional de la categoria', 'información.', 1),
+(14, 'Elemento', 'fff', 1),
+(15, 'Elementos Audio Visuales', 'Clasificación de elementos que corresponden al area de visuales.', 1),
+(16, 'Elementos Audio', 'dddd', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `compras`
+--
+
+CREATE TABLE `compras` (
+  `cod_compra` int(11) NOT NULL COMMENT 'codigo autoincrementable identificador de la existencia',
+  `co_cod_elm` int(11) DEFAULT NULL COMMENT 'codigo del elemento asociado a la existencia modificada',
+  `co_cantidad` int(12) DEFAULT NULL COMMENT 'cantidad registrada adicional',
+  `co_tp_movimiento` int(11) DEFAULT NULL COMMENT 'tipo de movimiento, si es compra o reembolzo',
+  `co_descripcion` varchar(300) DEFAULT NULL COMMENT 'descripción en caso de ser necesaria',
+  `co_fecha_compra` datetime DEFAULT NULL COMMENT 'fecha de registro del proceso.'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Registra las compras y/o reembolsos de elementos, incluyendo cantidad, fecha y tipo de movimiento relacionado y código del elemento identificador';
+
+--
+-- Volcado de datos para la tabla `compras`
+--
+
+INSERT INTO `compras` (`cod_compra`, `co_cod_elm`, `co_cantidad`, `co_tp_movimiento`, `co_descripcion`, `co_fecha_compra`) VALUES
+(16, 170, 9, 1, 'OPCIONAL.', '2025-07-22 21:45:10'),
+(17, 182, 1, 5, '', '2025-07-23 19:01:59'),
+(18, 170, 2, 1, 'calculadora', '2025-07-23 19:10:17'),
+(19, 178, 10, 1, 'Sobres carta', '2025-07-23 19:13:49'),
+(20, 174, 1, 5, 'Tijeras', '2025-07-23 19:14:48'),
+(21, 189, 32, 1, '', '2025-07-27 00:10:26'),
+(22, 165, 2, 1, '', '2025-07-27 00:10:50'),
+(23, 180, 5, 1, '', '2025-07-27 00:12:49'),
+(24, 180, 5, 5, '', '2025-07-27 00:13:12'),
+(25, 189, 3, 1, 'información adicional.', '2025-07-27 21:55:44'),
+(26, 159, 3, 1, '', '2025-07-27 21:58:01'),
+(27, 227, 23, 1, '', '2025-07-27 22:01:06'),
+(28, 174, 23, 1, 'adjunto estos nuevos elementos.', '2025-07-27 23:07:14'),
+(29, 167, 21, 1, 'dd', '2025-07-27 23:07:35'),
+(30, 170, 33, 1, 'adiciono estos elementos.', '2025-07-28 18:00:34'),
+(31, 155, 3, 1, '', '2025-07-28 18:01:51'),
+(32, 168, 3, 5, '', '2025-07-28 18:04:39'),
+(33, 162, 2, 5, '', '2025-07-28 18:15:11'),
+(34, 162, 32, 1, '', '2025-07-28 18:15:22'),
+(35, 156, 8, 1, 'Adiciono 8 elementos de más.', '2025-07-29 18:32:06'),
+(36, 157, 3, 1, 'dd', '2025-07-29 18:33:18'),
+(37, 227, 12, 1, '', '2025-07-29 18:33:45'),
+(38, 160, 8, 1, 'Información', '2025-07-29 18:34:41'),
+(39, 157, 12, 1, '', '2025-07-29 18:34:55');
 
 -- --------------------------------------------------------
 
@@ -84,74 +123,82 @@ INSERT INTO `categoria` (`ca_id`, `ca_nombre`, `ca_descripcion`, `ca_status`) VA
 --
 
 CREATE TABLE `elementos` (
-  `elm_cod` int(11) NOT NULL,
-  `elm_placa` int(11) DEFAULT NULL,
-  `elm_serie` varchar(40) DEFAULT NULL,
-  `elm_nombre` varchar(100) NOT NULL,
-  `elm_existencia` int(11) DEFAULT NULL,
-  `elm_fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
-  `elm_sugerencia` varchar(100) DEFAULT NULL,
-  `elm_observacion` varchar(100) DEFAULT NULL,
-  `elm_uni_medida` int(11) DEFAULT NULL,
-  `elm_cod_tp_elemento` int(11) NOT NULL,
-  `elm_cod_estado` int(11) NOT NULL,
-  `elm_area_cod` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `elm_cod` int(11) NOT NULL COMMENT 'codigo primario autoincrementable',
+  `elm_placa` int(11) DEFAULT NULL COMMENT 'placa identificadora del elemento',
+  `elm_serie` varchar(40) DEFAULT NULL COMMENT 'serial interno identificador',
+  `elm_nombre` varchar(100) NOT NULL COMMENT 'nombre del elemento',
+  `elm_existencia` int(11) DEFAULT NULL COMMENT 'cantidad actual en el almacen',
+  `elm_fecha_registro` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'fecha en la cual se registro el elemento en la base de datos',
+  `elm_sugerencia` varchar(100) DEFAULT NULL COMMENT 'campo de sugerencia en caso de que elemento requiera una anotación de su uso u algún otro elemento.',
+  `elm_observacion` varchar(100) DEFAULT NULL COMMENT 'campo de observación en caso de ser necesraio su observación.',
+  `elm_uni_medida` int(11) DEFAULT NULL COMMENT 'unidad de medida del elemento, galon, caja, unidad, entre otros.',
+  `elm_cod_tp_elemento` int(11) NOT NULL COMMENT 'tipo de elemento, devolutivo o consumible',
+  `elm_cod_estado` int(11) NOT NULL COMMENT 'estado actual del elemento, dependiendo de su id se define, los valores estan en la tabla estados_elementos',
+  `elm_area_cod` int(11) NOT NULL COMMENT 'area del elemento, sus valores relacionados con tabla areas.',
+  `elm_ma_cod` int(11) DEFAULT NULL COMMENT 'marca del elemento, su valor relacional esta en la tabla marcas.'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla que almacena los elementos físicos, su identificación, estado, departamento e información relevante.';
 
 --
 -- Volcado de datos para la tabla `elementos`
 --
 
-INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_serie`, `elm_nombre`, `elm_existencia`, `elm_fecha_registro`, `elm_sugerencia`, `elm_observacion`, `elm_uni_medida`, `elm_cod_tp_elemento`, `elm_cod_estado`, `elm_area_cod`) VALUES
-(125, 1001, '1001-1', 'Computadora portátil HP', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 3, 1),
-(126, 1001, '1001-2', 'Proyector Epson', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2),
-(129, 1002, '1002-1', 'Ratón inalámbrico', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 3, 1),
-(130, 1001, '1001-3', 'Impresora laser Brother', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 3, 2),
-(133, 1009, NULL, 'Parlantes Bose', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1),
-(134, 1010, NULL, 'Auriculares Sony', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 3, 2),
-(137, 1013, NULL, 'Estabilizador APC 1000VA', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 3, 1),
-(138, 1014, NULL, 'Unidad USB 64GB', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 3, 2),
-(141, 1017, NULL, 'Disco duro externo 1TB', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 3, 1),
-(142, 1018, NULL, 'Proyector portátil LG', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2),
-(145, 1021, NULL, 'Soporte para monitor', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1),
-(146, 1022, NULL, 'Teclado inalámbrico Microsoft', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2),
-(149, 1025, NULL, 'Pantalla táctil Dell', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 5, 1),
-(150, 1026, NULL, 'Cámara de seguridad IP', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2),
-(153, 1029, NULL, 'Router inalámbrico Netgear', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1),
-(154, 1030, NULL, 'Micrófono inalámbrico Shure', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2),
-(155, 3001, NULL, 'Papel A4 paquete', 36, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(156, 3002, NULL, 'Tinta para impresora negra', 7, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(157, 3003, NULL, 'Tinta para impresora color', 1, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(158, 3004, NULL, 'Marcadores permanentes', 2, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(159, 3005, NULL, 'Bolígrafos azules', 394, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(160, 3006, NULL, 'Resaltadores fluorescentes', 60, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(161, 3007, NULL, 'Cinta adhesiva', 1, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(162, 3008, NULL, 'Grapas para engrampadora', 79, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(163, 3009, NULL, 'Hojas para notas adhesivas', 70, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(164, 3010, NULL, 'Cartuchos de tinta HP', 0, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(165, 3011, NULL, 'Papel bond blanco', 40, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(166, 3012, NULL, 'Papel bond color', 40, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(167, 3013, NULL, 'Toners para impresora', 16, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(168, 3014, NULL, 'Papel carbón', 27, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(169, 3015, NULL, 'Papel fotográfico', 20, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(170, 3016, NULL, 'Borradores para pizarras', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(171, 3017, NULL, 'Cintas correctoras', 1, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(172, 3018, NULL, 'Clips metálicos', 274, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(173, 3019, NULL, 'Cintas para embalaje', 0, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(174, 3020, NULL, 'Tijeras', 19, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(175, 3021, NULL, 'Gomas de borrar', 37, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(176, 3022, NULL, 'Perforadoras de papel', 10, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(177, 3023, NULL, 'Agendas para anotaciones', 2, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(178, 3024, NULL, 'Sobres tamaño carta', 83, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(179, 3025, NULL, 'Carpetas plásticas', 1, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(180, 3026, NULL, 'Papel reciclado', 67, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(181, 3027, NULL, 'Marcadores de pizarra blanca', 41, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(182, 3028, NULL, 'Clips plásticos', 37, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(183, 3029, NULL, 'Cinta doble faz', 1, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3),
-(184, 3030, NULL, 'Sellos de goma', 25, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(187, 46575467, NULL, 'Cargador hp 107', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2),
-(189, 333, NULL, 'cinca adeciva', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3),
-(190, 3534543, NULL, 'Información de elementos', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2);
+INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_serie`, `elm_nombre`, `elm_existencia`, `elm_fecha_registro`, `elm_sugerencia`, `elm_observacion`, `elm_uni_medida`, `elm_cod_tp_elemento`, `elm_cod_estado`, `elm_area_cod`, `elm_ma_cod`) VALUES
+(125, 1001, '1001-1', 'Computadora portátil HP', 2, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1, NULL),
+(126, 1001, '1001-2', 'Proyector Epson', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
+(129, 1002, '1002-1', 'Ratón inalámbrico', 2, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1, NULL),
+(130, 1001, '1001-3', 'Impresora laser Brother', 0, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
+(133, 1009, NULL, 'Parlantes Bose', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1, NULL),
+(134, 1010, NULL, 'Auriculares Sony', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
+(137, 1013, NULL, 'Estabilizador APC 1000VA', 0, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1, NULL),
+(138, 1014, NULL, 'Unidad USB 64GB', 8, '2025-07-05 16:06:08', '', '', 1, 2, 1, 2, NULL),
+(141, 1017, NULL, 'Disco duro externo 1TB', 1, '2025-07-05 16:06:08', '', '', 1, 1, 1, 1, NULL),
+(142, 1018, NULL, 'Proyector portátil LG', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
+(145, 1021, NULL, 'Soporte para monitor', 2, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1, NULL),
+(146, 1022, NULL, 'Teclado inalámbrico Microsoft', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
+(149, 1025, NULL, 'Pantalla táctil Dell', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1, NULL),
+(150, 1026, NULL, 'Cámara de seguridad IP', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
+(153, 1029, NULL, 'Router inalámbrico Netgear', 2, '2025-07-05 16:06:08', '', '', 1, 1, 1, 2, NULL),
+(154, 1030, NULL, 'Micrófono inalámbrico Shure X2', 2, '2025-07-05 16:06:08', '', '', 1, 1, 1, 2, NULL),
+(155, 3001, NULL, 'Papel A4', 3, '2025-07-05 16:06:08', '', '', 2, 2, 1, 3, NULL),
+(156, 3002, NULL, 'Tinta para impresora negra', 8, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
+(157, 3003, NULL, 'Tinta para impresora color', 10, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
+(158, 3004, NULL, 'Marcadores permanentes Nuevos.', 8, '2025-07-05 16:06:08', '', '', 1, 2, 1, 3, NULL),
+(159, 3005, '3005-1', 'Bolígrafos azules', 5, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
+(160, 3006, NULL, 'Resaltadores fluorescentes', 8, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
+(161, 3007, NULL, 'Cinta adhesiva', 1, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
+(162, 3008, NULL, 'Grapas para engrampadora de telas', 34, '2025-07-05 16:06:08', '', '', 2, 2, 1, 3, NULL),
+(163, 3009, NULL, 'Hojas para notas ', 3, '2025-07-05 16:06:08', '', '', 2, 2, 1, 3, NULL),
+(164, 3010, NULL, 'Cartuchos de tinta HP', 2, '2025-07-05 16:06:08', '', '', 1, 2, 1, 3, NULL),
+(165, 3011, NULL, 'Papel bond blanco', 8, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
+(166, 3012, NULL, 'Papel bond color', 9, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
+(167, 3013, NULL, 'Toners para impresora', 30, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
+(168, 3014, NULL, 'Papel carbón', 5, '2025-07-05 16:06:08', '', '', 2, 2, 1, 3, 22),
+(169, 3015, NULL, 'Papel fotográfico', 6, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
+(170, 3016, NULL, 'Borradores para pizarras', 28, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
+(171, 3017, NULL, 'Cintas correctoras', 8, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
+(172, 3018, NULL, 'Clips metálicos', 8, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
+(173, 3019, NULL, 'Cintas para nuevos', 8, '2025-07-05 16:06:08', '', '', 2, 2, 1, 3, NULL),
+(174, 3020, NULL, 'Tijeras', 31, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
+(175, 3021, NULL, 'Gomas de borrar', 3, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
+(176, 3022, NULL, 'Perforadoras de papel', 4, '2025-07-05 16:06:08', '', '', 1, 1, 1, 3, NULL),
+(177, 3023, NULL, 'Agendas para anotaciones', 1, '2025-07-05 16:06:08', '', '', 1, 2, 1, 3, NULL),
+(178, 3024, NULL, 'Sobres tamaño carta', 16, '2025-07-05 16:06:08', '', '', 2, 2, 1, 3, 22),
+(179, 3025, NULL, 'Carpetas plásticas', 5, '2025-07-05 16:06:08', '', '', 2, 1, 1, 3, NULL),
+(180, 3026, NULL, 'Papel reciclado', 8, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
+(181, 3027, NULL, 'Marcadores de pizarra blanca', 8, '2025-07-05 16:06:08', '', '', 1, 2, 1, 3, 22),
+(182, 3028, NULL, 'Clips plásticos', 7, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
+(183, 3029, NULL, 'Cinta doble faz', 4, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
+(184, 3030, NULL, 'Sellos de goma', 7, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
+(187, 46575467, NULL, 'Cargador hp 107', 2, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
+(189, 333, NULL, 'cinca adeciva', 27, '2025-07-05 16:06:08', '', '', 1, 2, 1, 3, NULL),
+(190, 3534543, NULL, 'Información de elementos', 0, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 5, 2, NULL),
+(209, 922919589, '922919589-1', 'CARRY LIGHT', 1, '2025-07-15 15:41:20', 'Implemento este elemento de prueba', 'Adiciono sugerencia', 1, 1, 1, 4, NULL),
+(212, 922919589, '9229-2', 'Escáner de códigos Honeywell', 0, '2025-07-17 01:47:24', 'Verificar funcionamiento antes de ingresar al sistema.', 'Registro asociado para validación de productos.', 1, 1, 5, 4, NULL),
+(225, 4000, '4000-1', 'Sony LG 532', 1, '2025-07-24 04:03:03', 'se recomienda usar este elemento con un tripode.', 'Este elemento requiere de mantenimiento', 1, 1, 1, 1, 23),
+(226, 922919589, '9229-2', 'Tripode de cabeza Fluida adicionada.', 0, '2025-07-27 05:05:13', 'Este elemento requiere de un tipo elemento previo.', 'Este elemento se encuentra disponible', 1, 1, 1, 4, NULL),
+(227, 68494, '68494-1', 'Scroup fluorecente nuevo', 36, '2025-07-27 05:08:20', 'selecciono esta instancia.', 'adiciono una nueva observación', 1, 2, 1, 120, NULL),
+(228, 92297898, '92297898-1', 'Camara video panasonic', 1, '2025-07-29 23:05:11', 'hola mundo.', 'información de prueba', 1, 1, 1, 1, NULL),
+(229, 92297899, '92297899-1', 'Camara de video sonic', 1, '2025-07-29 23:06:19', 'prueba nueva.', 'Adiciono información', 1, 1, 1, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -160,53 +207,31 @@ INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_serie`, `elm_nombre`, `elm
 --
 
 CREATE TABLE `entradas_salidas` (
-  `ent_sal_cod` int(11) NOT NULL,
-  `ent_sal_cantidad` int(11) DEFAULT NULL,
-  `ent_fech_registro` timestamp NULL DEFAULT NULL,
-  `ent_sal_observacion` text DEFAULT NULL,
-  `entr_tp_movmnt` int(11) DEFAULT NULL,
-  `ent_id_usu` int(11) DEFAULT NULL,
-  `ent_sal_cod_elemtn` int(11) DEFAULT NULL,
-  `ent_sal_cod_prestamo` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `ent_sal_cod` int(11) NOT NULL COMMENT 'Código único de la entrada o salida',
+  `ent_sal_cantidad` int(11) DEFAULT NULL COMMENT 'Cantidad de elementos en la transacción',
+  `ent_fech_registro` timestamp NULL DEFAULT NULL COMMENT 'Fecha y hora de registro de la transacción',
+  `ent_sal_observacion` text DEFAULT NULL COMMENT 'Observaciones adicionales sobre la entrada o salida',
+  `entr_tp_movmnt` int(11) DEFAULT NULL COMMENT 'Tipo de movimiento (entrada o salida), clave foránea a tipo_movimiento',
+  `ent_id_usu` int(11) DEFAULT NULL COMMENT 'ID del usuario que realizó el movimiento, clave foránea a usuarios',
+  `ent_sal_cod_elemtn` int(11) DEFAULT NULL COMMENT 'Código del elemento involucrado, clave foránea a elementos',
+  `ent_sal_cod_prestamo` int(11) DEFAULT NULL COMMENT 'Código del préstamo asociado, si aplica, clave foránea a prestamos'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Registra los movimientos de entrada y salida de elementos relacionados a los prestamos en la central didáctica';
 
 --
 -- Volcado de datos para la tabla `entradas_salidas`
 --
 
 INSERT INTO `entradas_salidas` (`ent_sal_cod`, `ent_sal_cantidad`, `ent_fech_registro`, `ent_sal_observacion`, `entr_tp_movmnt`, `ent_id_usu`, `ent_sal_cod_elemtn`, `ent_sal_cod_prestamo`) VALUES
-(486, 15, '2025-07-06 19:19:39', '', 2, 108, 159, 429),
-(487, 1, '2025-07-06 19:19:39', '', 2, 108, 133, 429),
-(488, 1, '2025-07-06 19:19:39', '', 2, 108, 137, 429),
-(489, 3, '2025-07-06 19:21:09', 'solicitud de salida', 3, 148, 156, 430),
-(490, 1, '2025-07-06 19:21:09', 'solicitud de salida', 3, 148, 138, 430),
-(491, 8, '2025-07-06 19:24:44', 'solicitud de salida', 3, 148, 156, 431),
-(492, 1, '2025-07-06 19:24:44', 'solicitud de salida', 3, 148, 141, 431),
-(493, 1, '2025-07-06 19:33:21', 'valido la salida de los elementos', 2, 148, 141, 431),
-(494, 8, '2025-07-06 19:33:21', 'valido la salida de los elementos', 2, 148, 156, 431),
-(495, 1, '2025-07-06 21:05:37', 'valido esto', 2, 148, 138, 430),
-(496, 12, '2025-07-06 21:08:59', 'solicitud de salida', 3, 148, 156, 432),
-(497, 1, '2025-07-06 21:08:59', 'solicitud de salida', 3, 148, 125, 432),
-(498, 1, '2025-07-06 21:08:59', 'solicitud de salida', 3, 148, 138, 432),
-(499, 5, '2025-07-06 21:41:33', 'jyuabdfasydasdasd', 2, 107, 159, 433),
-(500, 1, '2025-07-06 21:41:33', 'jyuabdfasydasdasd', 2, 107, 137, 433),
-(501, 1, '2025-07-06 21:41:33', 'jyuabdfasydasdasd', 2, 107, 146, 433),
-(502, 3, '2025-07-06 21:46:01', '', 2, 107, 159, 434),
-(503, 1, '2025-07-06 21:46:01', '', 2, 107, 141, 434),
-(504, 1, '2025-07-06 21:46:29', 'valido 3 elementos', 2, 148, 125, 432),
-(505, 1, '2025-07-06 21:46:29', 'valido 3 elementos', 2, 148, 138, 432),
-(506, 12, '2025-07-06 21:46:29', 'valido 3 elementos', 2, 148, 156, 432),
-(507, 3, '2025-07-07 03:25:38', 'informacion de prueba', 2, 107, 159, 435),
-(508, 1, '2025-07-07 03:25:38', 'informacion de prueba', 2, 107, 126, 435),
-(509, 1, '2025-07-07 03:25:38', 'informacion de prueba', 2, 107, 146, 435),
-(510, 3, '2025-07-07 04:06:40', 'solicitud de salida', 3, 148, 156, 436),
-(511, 1, '2025-07-07 04:06:40', 'solicitud de salida', 3, 148, 137, 436),
-(512, 1, '2025-07-07 04:07:24', 'valido esta información', 2, 148, 137, 436),
-(513, 3, '2025-07-07 04:07:24', 'valido esta información', 2, 148, 156, 436),
-(514, 6, '2025-07-07 14:43:22', 'solicitud de salida', 3, 148, 155, 437),
-(515, 1, '2025-07-07 14:43:22', 'solicitud de salida', 3, 148, 133, 437),
-(516, 8, '2025-07-08 21:41:03', 'solicitud de salida', 3, 148, 168, 438),
-(517, 1, '2025-07-08 21:41:03', 'solicitud de salida', 3, 148, 149, 438);
+(884, 3, '2025-07-29 20:12:45', 'Adiciono nuevos elementos', 2, 138, 170, 552),
+(885, 1, '2025-07-29 20:12:45', 'Adiciono nuevos elementos', 2, 138, 126, 552),
+(886, 1, '2025-07-29 20:12:45', 'Adiciono nuevos elementos', 2, 138, 133, 552),
+(887, 3, '2025-07-29 23:51:50', 'Adicional prueba.', 2, 119, 189, 553),
+(888, 1, '2025-07-29 23:51:50', 'Adicional prueba.', 2, 119, 134, 553),
+(889, 1, '2025-07-29 23:51:50', 'Adicional prueba.', 2, 119, 145, 553),
+(890, 1, '2025-07-29 23:51:50', 'Adicional prueba.', 2, 119, 154, 553),
+(891, 5, '2025-08-01 22:49:09', 'solicitud de salida', 3, 148, 157, 554),
+(892, 1, '2025-08-01 22:49:09', 'solicitud de salida', 3, 148, 212, 554),
+(893, 1, '2025-08-01 22:49:09', 'solicitud de salida', 3, 148, 190, 554);
 
 -- --------------------------------------------------------
 
@@ -215,10 +240,10 @@ INSERT INTO `entradas_salidas` (`ent_sal_cod`, `ent_sal_cantidad`, `ent_fech_reg
 --
 
 CREATE TABLE `estados_elementos` (
-  `est_el_cod` int(11) NOT NULL,
-  `est_nombre` varchar(30) NOT NULL,
-  `est_descripcion` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `est_el_cod` int(11) NOT NULL COMMENT 'Código único del estado del elemento',
+  `est_nombre` varchar(30) NOT NULL COMMENT 'Nombre del estado del elemento (ej. Disponible, Mantenimiento, Prestado, Reservado).',
+  `est_descripcion` varchar(100) DEFAULT NULL COMMENT 'Descripción detallada del estado del elemento'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla que almacena los diferentes estados posibles de los elementos del inventario';
 
 --
 -- Volcado de datos para la tabla `estados_elementos`
@@ -238,10 +263,10 @@ INSERT INTO `estados_elementos` (`est_el_cod`, `est_nombre`, `est_descripcion`) 
 --
 
 CREATE TABLE `estados_prestamos` (
-  `es_pr_cod` int(11) NOT NULL,
-  `es_pr_nombre` varchar(30) NOT NULL,
-  `es_pr_descripcion` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `es_pr_cod` int(11) NOT NULL COMMENT 'Código único del estado del préstamo',
+  `es_pr_nombre` varchar(30) NOT NULL COMMENT 'Nombre del estado del préstamo (ej. Por validar, Cancelado, Finalizado, Validado)',
+  `es_pr_descripcion` varchar(100) DEFAULT NULL COMMENT 'Descripción detallada del estado (ej. Préstamo aprobado y en curso, pendiente de validación, etc.)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla que almacena los diferentes estados posibles de un préstamo (ej. Por validar, Cancelado, Finalizado, Validado)';
 
 --
 -- Volcado de datos para la tabla `estados_prestamos`
@@ -261,9 +286,9 @@ INSERT INTO `estados_prestamos` (`es_pr_cod`, `es_pr_nombre`, `es_pr_descripcion
 --
 
 CREATE TABLE `estados_usuarios` (
-  `est_id` int(11) NOT NULL,
-  `est_nombre` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `est_id` int(11) NOT NULL COMMENT 'Código único del estado del usuario',
+  `est_nombre` varchar(50) DEFAULT NULL COMMENT 'Nombre del estado del usuario (ej. Activo, Inactivo)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla que define los posibles estados que puede tener un usuario dentro del sistema';
 
 --
 -- Volcado de datos para la tabla `estados_usuarios`
@@ -276,25 +301,114 @@ INSERT INTO `estados_usuarios` (`est_id`, `est_nombre`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `funciones`
+--
+
+CREATE TABLE `funciones` (
+  `id_funcion` int(11) NOT NULL COMMENT 'id representativo primario de la tabla funciones',
+  `nombre_funcion` varchar(50) DEFAULT NULL COMMENT 'Nombre de la función del controlador.',
+  `nombre_funcion_user` varchar(32) DEFAULT NULL COMMENT 'Nombre de la función amigable para el usuario.',
+  `id_modulo` int(11) DEFAULT NULL COMMENT 'Modulo al que pertenece la función.',
+  `tp_funcion` int(11) DEFAULT NULL COMMENT 'Tipo de la función siendo render para visualizar vistas o logic de solo lógica.'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `funciones`
+--
+
+INSERT INTO `funciones` (`id_funcion`, `nombre_funcion`, `nombre_funcion_user`, `id_modulo`, `tp_funcion`) VALUES
+(22, 'dashboard', 'Vista Principal', 8, 1),
+(23, 'renderViewArea', 'Consultar Departamentos', 2, 1),
+(24, 'renderViewTp', 'Consultar Tipos documento', 2, 1),
+(25, 'renderViewMarca', 'Consultar Marcas', 2, 1),
+(27, 'updateRow', 'Actualizar ', 2, 2),
+(28, 'deleteRow', 'Inhabilitar', 2, 2),
+(29, 'addRow', 'Insertar', 2, 2),
+(31, 'consultCategoriasView', 'Ver', 10, 1),
+(34, 'createCategoria', 'Insertar', 10, 2),
+(35, 'updateCategoria', 'Actualizar', 10, 2),
+(36, 'deleteCategoria', 'Inhabilitar', 10, 2),
+(46, 'renderViewElements', 'Consultar', 3, 1),
+(50, 'addElement', 'Insertar', 3, 2),
+(52, 'editarElemento', 'Actualizar', 3, 2),
+(53, 'cambiarEstadoElemento', 'Inhabilitar', 3, 2),
+(54, 'editarExistencia', 'Actualizar Existencia', 3, 2),
+(59, 'genReporteView', 'Ver Reportes', 4, 1),
+(64, 'generarReporteExcel', 'Generar Reporte Individual', 4, 2),
+(65, 'generarReporteTrazabilidad', 'Generar Reporte Entrada Salida', 4, 2),
+(66, 'generarReportePorPlaca', 'Generar Reporte Elementos', 4, 2),
+(67, 'reservaView', 'Registrar Reservas (Vista)', 5, 1),
+(68, 'consultaReservaView', 'Consultar Reservas (Vista)', 5, 1),
+(72, 'setReserva', 'Registrar (Acción)', 5, 2),
+(73, 'setSolicitud', 'Validar Solicitudes(Acción)', 5, 2),
+(74, 'setEndReserva', 'Validar Devoluciones(Acción)', 5, 2),
+(77, 'mostrarRoles', 'Ver Roles', 7, 1),
+(78, 'registrarRol', 'Registrar', 7, 2),
+(79, 'editarRol', 'Actualizar', 7, 2),
+(80, 'statusRoles', 'Inhabilitar', 7, 2),
+(82, 'registrarPrestamosView', 'Registrar Solicitudes', 6, 1),
+(83, 'consultarPrestamosView', 'Consultar Solicitudes', 6, 1),
+(84, 'registrarPrestamo', 'Registrar', 6, 2),
+(85, 'verDetallePrestamo', 'Ver Detalle', 6, 2),
+(87, 'cancelarPrestamo', 'Inhabilitar', 6, 2),
+(88, 'userView', 'Vista Crear Usuario', 1, 1),
+(89, 'createUser', 'Agregar Usuarios', 1, 2),
+(90, 'consultUser', 'Consultar Usuarios', 1, 1),
+(91, 'updateUserJSON', 'Actualizar Usuarios', 1, 2),
+(94, 'cambiarEstadoUsuarioJSON', 'Inhabilitar Usuario', 1, 2),
+(95, 'actualizarDatosView', 'Visualizar Datos Personales', 1, 1),
+(96, 'updateUserInfo', 'Actualizar Datos Personales', 1, 2),
+(97, 'assingRoles', 'Asignar Roles', 7, 2),
+(98, 'setPermisos', 'Establecer Permisos', 7, 2);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `marcas`
 --
 
 CREATE TABLE `marcas` (
-  `ma_id` int(11) NOT NULL,
-  `ma_nombre` varchar(50) NOT NULL,
-  `ma_descripcion` varchar(200) NOT NULL,
-  `ma_status` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `ma_id` int(11) NOT NULL COMMENT 'Identificador único de la marca',
+  `ma_nombre` varchar(50) NOT NULL COMMENT 'Nombre de la marca',
+  `ma_descripcion` varchar(200) NOT NULL COMMENT 'Descripción detallada de la marca',
+  `ma_status` tinyint(1) NOT NULL COMMENT 'Estado de la marca, 1 activo, 0 inactivo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla que almacena las marcas asociadas a los elementos de la central didáctica';
 
 --
 -- Volcado de datos para la tabla `marcas`
 --
 
 INSERT INTO `marcas` (`ma_id`, `ma_nombre`, `ma_descripcion`, `ma_status`) VALUES
-(13, 'Canon', 'Marca de impresoras y todo lo relacionado a la fotografía.\n', 1),
-(15, 'Sony', '', 1),
-(16, 'Hp', 'Marca de equipos de computo\n', 1),
-(17, 'No aplica', 'Elemento no clasificado por marca.', 1);
+(22, 'Canon', 'es el proveedor líder de soluciones de elementos digitales.', 1),
+(23, 'Sony', 'Marca mundialmente por su amplia gama de productos electrónicos,', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `modulos`
+--
+
+CREATE TABLE `modulos` (
+  `id_m` int(11) NOT NULL,
+  `cod_nombre_m` varchar(30) NOT NULL,
+  `cod_descript` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `modulos`
+--
+
+INSERT INTO `modulos` (`id_m`, `cod_nombre_m`, `cod_descript`) VALUES
+(1, 'Usuarios', ''),
+(2, 'ConfigModules', ''),
+(3, 'Elementos', ''),
+(4, 'reportes', ''),
+(5, 'reservaPrestamos', ''),
+(6, 'solicitudPrestamos', ''),
+(7, 'Roles', ''),
+(8, 'dashboard', ''),
+(10, 'Categorias', ''),
+(12, 'login', '');
 
 -- --------------------------------------------------------
 
@@ -303,21 +417,20 @@ INSERT INTO `marcas` (`ma_id`, `ma_nombre`, `ma_descripcion`, `ma_status`) VALUE
 --
 
 CREATE TABLE `permisos` (
-  `per_id` int(11) NOT NULL,
-  `per_funcion` varchar(22) DEFAULT NULL,
-  `per_nmrbr_permiso` varchar(50) DEFAULT NULL,
-  `per_modulo` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `per_id` int(11) NOT NULL COMMENT 'Identificador único del permiso',
+  `per_funcion` varchar(22) DEFAULT NULL COMMENT 'Nombre de la función específica del permiso',
+  `per_nmrbr_permiso` varchar(50) DEFAULT NULL COMMENT 'Nombre completo o descriptivo del permiso'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Define los permisos disponibles en el sistema según funciones y módulos';
 
 --
 -- Volcado de datos para la tabla `permisos`
 --
 
-INSERT INTO `permisos` (`per_id`, `per_funcion`, `per_nmrbr_permiso`, `per_modulo`) VALUES
-(1, 'SELECT', 'Ver información', 'USUARIOS'),
-(2, 'UPDATE', 'Actualizar información', 'ELEMENTOS'),
-(3, 'DELETE', 'Eliminar información', 'PRESTAMOS'),
-(4, 'CREATE', 'Agregar información', 'CARGA MASIVA');
+INSERT INTO `permisos` (`per_id`, `per_funcion`, `per_nmrbr_permiso`) VALUES
+(1, 'SELECT', 'Ver información'),
+(2, 'UPDATE', 'Actualizar información'),
+(3, 'DELETE', 'Eliminar información'),
+(4, 'CREATE', 'Agregar información');
 
 -- --------------------------------------------------------
 
@@ -326,34 +439,27 @@ INSERT INTO `permisos` (`per_id`, `per_funcion`, `per_nmrbr_permiso`, `per_modul
 --
 
 CREATE TABLE `prestamos` (
-  `pres_cod` int(11) NOT NULL,
-  `pres_fch_slcitud` datetime DEFAULT NULL,
-  `pres_fch_reserva` date DEFAULT NULL,
-  `pres_hor_inicio` time DEFAULT NULL,
-  `pres_hor_fin` time DEFAULT NULL,
-  `pres_fch_entrega` date DEFAULT NULL,
-  `pres_observacion` text DEFAULT NULL,
-  `pres_destino` varchar(30) DEFAULT NULL,
-  `pres_estado` int(11) DEFAULT NULL,
-  `tp_pres` int(11) DEFAULT NULL,
-  `pres_rol` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `pres_cod` int(11) NOT NULL COMMENT 'Código identificador del préstamo',
+  `pres_fch_slcitud` datetime DEFAULT NULL COMMENT 'Fecha y hora en que se registra la reserva',
+  `pres_fch_reserva` date DEFAULT NULL COMMENT 'Fecha programada para la reserva',
+  `pres_hor_inicio` time DEFAULT NULL COMMENT 'Hora de inicio de la reserva',
+  `pres_hor_fin` time DEFAULT NULL COMMENT 'Hora de finalización de la reserva',
+  `pres_fch_entrega` date DEFAULT NULL COMMENT 'Fecha de entrega devolución de los elementos',
+  `pres_observacion` text DEFAULT NULL COMMENT 'Observaciones asociadas al préstamo',
+  `pres_destino` varchar(30) DEFAULT NULL COMMENT 'Destino o propósito del préstamo',
+  `pres_estado` int(11) DEFAULT NULL COMMENT 'Estado actual del préstamo, clave foránea a estados_prestamos',
+  `tp_pres` int(11) DEFAULT NULL COMMENT 'Tipo de préstamo, clave foránea a tipo_prestamo',
+  `pres_rol` int(11) DEFAULT NULL COMMENT 'Rol del usuario que realiza la solicitud'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Registra las reservas previas e inmediatas de préstamo de elementos';
 
 --
 -- Volcado de datos para la tabla `prestamos`
 --
 
 INSERT INTO `prestamos` (`pres_cod`, `pres_fch_slcitud`, `pres_fch_reserva`, `pres_hor_inicio`, `pres_hor_fin`, `pres_fch_entrega`, `pres_observacion`, `pres_destino`, `pres_estado`, `tp_pres`, `pres_rol`) VALUES
-(429, '2025-07-06 14:19:39', '2025-07-06', '10:29:00', '07:19:00', '2025-07-07', '', 'centro', 4, 1, 2),
-(430, '2025-07-06 14:21:09', '2025-07-06', NULL, NULL, '2025-07-07', 'nueva solicitud.', 'centro', 4, 2, 4),
-(431, '2025-07-06 14:24:44', '2025-07-06', NULL, NULL, '2025-07-07', 'nueva prueba a ver si me repite el elemento.', 'centro', 4, 2, 4),
-(432, '2025-07-06 16:08:59', '2025-07-06', NULL, NULL, '2025-07-07', 'prueba de información', 'centro', 1, 2, 4),
-(433, '2025-07-06 16:41:33', '2025-07-06', '10:29:00', '08:29:00', '2025-07-07', 'jyuabdfasydasdasd', 'centro', 4, 1, 2),
-(434, '2025-07-06 16:46:01', '2025-07-06', '05:44:00', '09:44:00', '2025-07-08', '', 'centro', 1, 1, 2),
-(435, '2025-07-06 22:25:38', '2025-07-06', '10:25:00', '12:25:00', '2025-07-08', 'informacion de prueba', 'centro', 4, 1, 2),
-(436, '2025-07-06 23:06:40', '2025-07-06', NULL, NULL, '2025-07-07', 'solicito estos datos.', 'centro', 1, 2, 4),
-(437, '2025-07-07 09:43:22', '2025-07-10', NULL, NULL, '2025-07-08', 'prueba con fechas', 'centro', 5, 2, 4),
-(438, '2025-07-08 16:41:03', '2025-07-08', NULL, NULL, '2025-07-09', 'Solicito estos elementos para su respectivo uso en ese rango de fechas estipulado.', 'centro', 3, 2, 4);
+(552, '2025-07-29 15:12:45', '2025-07-29', NULL, NULL, '2025-07-29', 'Adiciono nuevos elementos', 'Calle 9 #23 -35 ', 4, 1, 2),
+(553, '2025-07-29 18:51:50', '2025-07-29', NULL, NULL, '2025-07-30', 'Adicional prueba.', 'Calle 32 # 12 - 3 E F', 4, 1, 2),
+(554, '2025-08-01 17:49:09', '2025-08-01', '00:00:00', '00:00:00', '2025-08-02', 'Información adicional.', 'Calle 2 de oeste # 73 - 032', 3, 2, 4);
 
 -- --------------------------------------------------------
 
@@ -362,42 +468,28 @@ INSERT INTO `prestamos` (`pres_cod`, `pres_fch_slcitud`, `pres_fch_reserva`, `pr
 --
 
 CREATE TABLE `prestamos_elementos` (
-  `pres_el_cod` int(11) NOT NULL,
-  `pres_cod` int(11) DEFAULT NULL,
-  `pres_el_usu_id` int(11) NOT NULL,
-  `pres_el_elem_cod` int(11) DEFAULT NULL,
-  `pres_el_cantidad` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `pres_el_cod` int(11) NOT NULL COMMENT 'Código único del registro de préstamo de elemento',
+  `pres_cod` int(11) DEFAULT NULL COMMENT 'Código de reserva asociada',
+  `pres_el_usu_id` int(11) NOT NULL COMMENT 'ID del usuario que registra la reserva del elemento',
+  `pres_el_elem_cod` int(11) DEFAULT NULL COMMENT 'Código de reserva asociada',
+  `pres_el_cantidad` int(11) NOT NULL COMMENT 'Cantidad de elementos reservados'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Relaciona los elementos involucrados en cada reserva y sus cantidades';
 
 --
 -- Volcado de datos para la tabla `prestamos_elementos`
 --
 
 INSERT INTO `prestamos_elementos` (`pres_el_cod`, `pres_cod`, `pres_el_usu_id`, `pres_el_elem_cod`, `pres_el_cantidad`) VALUES
-(1285, 429, 108, 133, 1),
-(1286, 429, 108, 137, 1),
-(1287, 429, 108, 159, 15),
-(1288, 430, 148, 138, 1),
-(1289, 430, 148, 156, 0),
-(1290, 431, 148, 141, 1),
-(1291, 431, 148, 156, 8),
-(1292, 432, 148, 125, 1),
-(1293, 432, 148, 138, 1),
-(1294, 432, 148, 156, 12),
-(1295, 433, 107, 137, 1),
-(1296, 433, 107, 146, 1),
-(1297, 433, 107, 159, 5),
-(1298, 434, 107, 141, 1),
-(1299, 434, 107, 159, 3),
-(1300, 435, 107, 126, 1),
-(1301, 435, 107, 146, 1),
-(1302, 435, 107, 159, 3),
-(1303, 436, 148, 137, 1),
-(1304, 436, 148, 156, 3),
-(1305, 437, 148, 133, 0),
-(1306, 437, 148, 155, 0),
-(1307, 438, 148, 149, 0),
-(1308, 438, 148, 168, 0);
+(1606, 552, 138, 126, 1),
+(1607, 552, 138, 133, 1),
+(1608, 552, 138, 170, 3),
+(1609, 553, 119, 134, 1),
+(1610, 553, 119, 145, 1),
+(1611, 553, 119, 154, 1),
+(1612, 553, 119, 189, 3),
+(1613, 554, 148, 212, 1),
+(1614, 554, 148, 190, 1),
+(1615, 554, 148, 157, 5);
 
 -- --------------------------------------------------------
 
@@ -406,42 +498,64 @@ INSERT INTO `prestamos_elementos` (`pres_el_cod`, `pres_cod`, `pres_el_usu_id`, 
 --
 
 CREATE TABLE `roles` (
-  `rl_id` int(11) NOT NULL,
-  `rl_nombre` varchar(100) NOT NULL,
-  `rl_descripcion` text DEFAULT NULL,
-  `rl_status` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `rl_id` int(11) NOT NULL COMMENT 'Identificador único del rol',
+  `rl_nombre` varchar(100) NOT NULL COMMENT 'Nombre del rol',
+  `rl_descripcion` text DEFAULT NULL COMMENT 'Descripción del rol',
+  `rl_status` tinyint(1) NOT NULL COMMENT 'Estado del rol, 1 activo, 0 inactivo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla que define los roles de usuario dentro del sistema';
 
 --
 -- Volcado de datos para la tabla `roles`
 --
 
 INSERT INTO `roles` (`rl_id`, `rl_nombre`, `rl_descripcion`, `rl_status`) VALUES
-(1, 'Almacenista', ' ', 1),
-(2, 'Administrador', ' ', 1),
-(3, 'SubDirector', ' ', 1),
-(4, 'Instructor', ' ', 1);
+(1, 'Almacenista', 'Almacenista', 1),
+(2, 'Administrador', 'Nuevo administrador .', 1),
+(3, 'SubDirector', 'Nuevo rol', 1),
+(4, 'Instructor', '', 1),
+(12, 'Aprendiz', 'Solo puede acceder a este bloque.', 1),
+(16, 'Coordinador', '', 1);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `roles_permisos`
+-- Estructura de tabla para la tabla `roles_funciones`
 --
 
-CREATE TABLE `roles_permisos` (
-  `rlp_id` int(11) NOT NULL,
-  `rlp_id_permiso` int(11) DEFAULT NULL,
-  `rlp_id_rl` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `roles_funciones` (
+  `rlp_id` int(11) NOT NULL COMMENT 'Identificador único de la relación rol-permiso',
+  `rlp_id_rl` int(11) DEFAULT NULL COMMENT 'ID identificador del rol',
+  `rlp_id_funcion` int(11) DEFAULT NULL COMMENT 'ID identificador de la función.'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Relaciona roles del sistema con los permisos que les corresponden';
 
 --
--- Volcado de datos para la tabla `roles_permisos`
+-- Volcado de datos para la tabla `roles_funciones`
 --
 
-INSERT INTO `roles_permisos` (`rlp_id`, `rlp_id_permiso`, `rlp_id_rl`) VALUES
-(1, 1, 2),
-(2, 3, 4),
-(4, 2, 2);
+INSERT INTO `roles_funciones` (`rlp_id`, `rlp_id_rl`, `rlp_id_funcion`) VALUES
+(145, 2, 22),
+(146, 4, 22),
+(147, 2, 77),
+(149, 2, 31),
+(150, 4, 82),
+(152, 4, 84),
+(153, 4, 85),
+(154, 4, 87),
+(155, 4, 83),
+(156, 4, 95),
+(157, 4, 96),
+(165, 16, 22),
+(166, 2, 88),
+(167, 2, 89),
+(168, 2, 90),
+(169, 2, 91),
+(170, 2, 94),
+(171, 2, 95),
+(172, 2, 96),
+(173, 2, 97),
+(174, 2, 34),
+(175, 2, 35),
+(176, 2, 36);
 
 -- --------------------------------------------------------
 
@@ -450,19 +564,19 @@ INSERT INTO `roles_permisos` (`rlp_id`, `rlp_id_permiso`, `rlp_id_rl`) VALUES
 --
 
 CREATE TABLE `tipo_documento` (
-  `tp_id` int(11) NOT NULL,
-  `tp_sigla` varchar(15) NOT NULL,
-  `tp_nombre` varchar(100) DEFAULT NULL,
-  `tp_status` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `tp_id` int(11) NOT NULL COMMENT 'Identificador único del tipo de documento',
+  `tp_sigla` varchar(15) NOT NULL COMMENT 'Sigla del tipo de documento (ej. CC, TI, CE)',
+  `tp_nombre` varchar(100) DEFAULT NULL COMMENT 'Nombre completo del tipo de documento',
+  `tp_status` tinyint(1) NOT NULL COMMENT 'Estado del tipo de documento, 1 activo, 0 inactivo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Define los tipos de documentos válidos para los usuarios';
 
 --
 -- Volcado de datos para la tabla `tipo_documento`
 --
 
 INSERT INTO `tipo_documento` (`tp_id`, `tp_sigla`, `tp_nombre`, `tp_status`) VALUES
-(1, 'CC', 'Cédula de Ciuda', 1),
-(2, 'CE', 'Cédula', 1),
+(1, 'CC', 'Cédula de Ciudania', 1),
+(2, 'CE', 'Cédulas', 1),
 (3, 'TI', 'Tarjeta de Iden', 1),
 (4, 'PAS', 'Pasaporte', 1),
 (5, 'RC', 'Registro Civil', 1),
@@ -476,10 +590,10 @@ INSERT INTO `tipo_documento` (`tp_id`, `tp_sigla`, `tp_nombre`, `tp_status`) VAL
 --
 
 CREATE TABLE `tipo_elemento` (
-  `tp_el_cod` int(11) NOT NULL,
-  `tp_el_nombre` varchar(30) NOT NULL,
-  `tp_el_descripcion` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `tp_el_cod` int(11) NOT NULL COMMENT 'Identificador único del tipo de elemento',
+  `tp_el_nombre` varchar(30) NOT NULL COMMENT 'Nombre del tipo de elemento',
+  `tp_el_descripcion` varchar(100) DEFAULT NULL COMMENT 'Descripción del tipo de elemento'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Contiene los diferentes tipos de elementos del inventario (devolutivo, consumible)';
 
 --
 -- Volcado de datos para la tabla `tipo_elemento`
@@ -492,22 +606,45 @@ INSERT INTO `tipo_elemento` (`tp_el_cod`, `tp_el_nombre`, `tp_el_descripcion`) V
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `tipo_funcion`
+--
+
+CREATE TABLE `tipo_funcion` (
+  `id_tp_funcion` int(11) NOT NULL COMMENT 'Valor auto increment del tipo de función',
+  `nombre_tp_funcion` varchar(50) DEFAULT NULL COMMENT 'Nombre de la función para su clasificación.',
+  `desc_tp_funcion` varchar(50) DEFAULT NULL COMMENT 'Tipo de la función para clasificar cual función que hace, una siendo lógica y otra de render vista.'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_funcion`
+--
+
+INSERT INTO `tipo_funcion` (`id_tp_funcion`, `nombre_tp_funcion`, `desc_tp_funcion`) VALUES
+(1, 'Render', 'Funcion de tipo renderizado que permite renderizar'),
+(2, 'Logica', 'Función de tipo lógica, no muestra ninguna vista.');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tipo_movimiento`
 --
 
 CREATE TABLE `tipo_movimiento` (
-  `cod_tp` int(11) NOT NULL,
-  `cod_tp_nombre` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `cod_tp` int(11) NOT NULL COMMENT 'Identificador único del tipo de movimiento',
+  `cod_tp_nombre` varchar(20) DEFAULT NULL COMMENT 'Nombre del tipo de movimiento (ej. Entrada, Salida, Compra)',
+  `cod_tp_descrip` varchar(200) DEFAULT NULL COMMENT 'Descripción detallada del tipo de movimiento'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Contiene los diferentes tipos de movimientos que pueden realizarse sobre los elementos, como entrada, salida, deposito, por validar salida, entre otros';
 
 --
 -- Volcado de datos para la tabla `tipo_movimiento`
 --
 
-INSERT INTO `tipo_movimiento` (`cod_tp`, `cod_tp_nombre`) VALUES
-(1, 'Entrada'),
-(2, 'Salida'),
-(3, 'Por validar salida');
+INSERT INTO `tipo_movimiento` (`cod_tp`, `cod_tp_nombre`, `cod_tp_descrip`) VALUES
+(1, 'Deposito', 'Tipo de movimiento en el cual se agrega una existencia adicional al elemento'),
+(2, 'Salida', NULL),
+(3, 'Por validar salida', NULL),
+(4, 'Entrada', NULL),
+(5, 'Regresión', 'tipo de movimiento que permite devolver aquellas existencias.');
 
 -- --------------------------------------------------------
 
@@ -516,9 +653,9 @@ INSERT INTO `tipo_movimiento` (`cod_tp`, `cod_tp_nombre`) VALUES
 --
 
 CREATE TABLE `tipo_prestamo` (
-  `tp_pre` int(11) NOT NULL,
-  `tp_nombre` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `tp_pre` int(11) NOT NULL COMMENT 'Identificador único del tipo de prestamo',
+  `tp_nombre` varchar(30) NOT NULL COMMENT 'Nombre del tipo de préstamo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Define las diferentes modalidades de préstamo (reserva inmediata, reserva previa)';
 
 --
 -- Volcado de datos para la tabla `tipo_prestamo`
@@ -535,10 +672,10 @@ INSERT INTO `tipo_prestamo` (`tp_pre`, `tp_nombre`) VALUES
 --
 
 CREATE TABLE `tipo_unidad` (
-  `cod_tp_uni` int(11) NOT NULL,
-  `nombre_tp_uni` varchar(20) NOT NULL,
-  `descrip_tp_uni` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `cod_tp_uni` int(11) NOT NULL COMMENT 'Código único de la unidad de medida',
+  `nombre_tp_uni` varchar(20) NOT NULL COMMENT 'Nombre de la unidad de medida',
+  `descrip_tp_uni` varchar(100) NOT NULL COMMENT 'Descripción de la unidad de medida'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Define las unidades de medida para los elementos (unidad, caja, galón, etc.)';
 
 --
 -- Volcado de datos para la tabla `tipo_unidad`
@@ -556,66 +693,93 @@ INSERT INTO `tipo_unidad` (`cod_tp_uni`, `nombre_tp_uni`, `descrip_tp_uni`) VALU
 --
 
 CREATE TABLE `usuarios` (
-  `usu_id` int(11) NOT NULL,
-  `usu_docum` int(11) NOT NULL,
-  `usu_nombres` varchar(50) DEFAULT NULL,
-  `usu_apellidos` varchar(50) DEFAULT NULL,
-  `usu_password` varchar(200) DEFAULT NULL,
-  `usu_email` varchar(50) DEFAULT NULL,
-  `usu_direccion` varchar(100) DEFAULT NULL,
-  `usu_telefono` varchar(50) DEFAULT NULL,
-  `usu_id_estado` int(11) DEFAULT NULL,
-  `usu_tp_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `usu_id` int(11) NOT NULL COMMENT 'Identificador único del usuario',
+  `usu_docum` int(11) NOT NULL COMMENT 'Número de documento de identidad del usuario',
+  `usu_nombres` varchar(50) DEFAULT NULL COMMENT 'Nombres del usuario',
+  `usu_apellidos` varchar(50) DEFAULT NULL COMMENT 'Apellidos del usuario',
+  `usu_password` varchar(200) DEFAULT NULL COMMENT 'Contraseña encriptada del usuario',
+  `usu_email` varchar(50) DEFAULT NULL COMMENT 'Correo electrónico del usuario',
+  `usu_direccion` varchar(100) DEFAULT NULL COMMENT 'Dirección de residencia del usuario',
+  `usu_telefono` varchar(50) DEFAULT NULL COMMENT 'Número de teléfono del usuario',
+  `usu_observacion` varchar(100) DEFAULT NULL COMMENT 'Observación del usuario en caso de ser requerido.',
+  `usu_id_estado` int(11) DEFAULT NULL COMMENT 'Estado del usuario, clave foránea a estados_usuarios',
+  `usu_tp_id` int(11) DEFAULT NULL COMMENT 'Tipo de documento del usuario, clave foránea a tipo_documento'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Contiene la información personal y de contacto de los usuarios del sistema';
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `usu_password`, `usu_email`, `usu_direccion`, `usu_telefono`, `usu_id_estado`, `usu_tp_id`) VALUES
-(106, 123, 'Jhon', 'doe', '$2y$10$AHMDSF3OgELz.5iF5KdhJ.trlu0aRFLhXYVuZpbKcj9NIYo1RuKzi', 'jhondoe@gmail.com', '', '123465', 1, 1),
-(107, 100001, 'Juan', 'Pérez', '1234', 'juan.perez@example.com', 'Calle 1', '3000000001', 1, 1),
-(108, 100002, 'María', 'López', 'abcd', 'maria.lopez@example.com', 'Calle 2', '3000000002', 1, 2),
-(109, 100003, 'Alejandro', 'Cruz', 'pass123', 'pedro.gomez@example.com', 'Calle 3', '3000000003', 1, 1),
-(110, 100004, 'Laura', 'Martínez', 'qwerty', 'laura.martinez@example.com', 'Calle 4', '3000000004', 1, 3),
-(111, 100005, 'Carlos', 'Ruiz', '123456', 'carlos.ruiz@example.com', 'Calle 5', '3000000005', 1, 1),
-(112, 100006, 'Ana', 'Fernández', 'hello', 'ana.fernandez@example.com', 'Calle 6', '3000000006', 2, 2),
-(113, 100007, 'Luis', 'Sánchez', 'testpass', 'luis.sanchez@example.com', 'Calle 7', '3000000007', 1, 1),
-(114, 100008, 'Sofía', 'Ramírez', '2024', 'sofia.ramirez@example.com', 'Calle 8', '3000000008', 1, 3),
-(115, 100009, 'Miguel', 'Torres', 'contraseña', 'miguel.torres@example.com', 'Calle 9', '3000000009', 2, 1),
-(116, 100010, 'Lucía', 'González', 'password', 'lucia.gonzalez@example.com', 'Calle 10', '3000000010', 1, 2),
-(117, 100011, 'Jorge', 'Morales', 'letmein', 'jorge.morales@example.com', 'Calle 11', '3000000011', 1, 1),
-(118, 100012, 'Elena', 'Castro', 'admin123', 'elena.castro@example.com', 'Calle 12', '3000000012', 2, 2),
-(119, 100013, 'Andrés', 'Rojas', 'keypass', 'andres.rojas@example.com', 'Calle 13', '3000000013', 1, 3),
-(120, 100014, 'Paula', 'Vega', '9999', 'paula.vega@example.com', 'Calle 14', '3000000014', 1, 1),
-(121, 100015, 'Fernando', 'Silva', 'access', 'fernando.silva@example.com', 'Calle 15', '3000000015', 2, 1),
-(122, 100016, 'Camila', 'Navarro', 'camila', 'camila.navarro@example.com', 'Calle 16', '3000000016', 1, 2),
-(123, 100017, 'Ricardo', 'Mendoza', 'test123', 'ricardo.mendoza@example.com', 'Calle 17', '3000000017', 1, 3),
-(124, 100018, 'Valentina', 'Cortés', 'mypwd', 'valentina.cortes@example.com', 'Calle 18', '3000000018', 1, 1),
-(125, 100019, 'Daniel', 'Ortega', 'danielpass', 'daniel.ortega@example.com', 'Calle 19', '3000000019', 1, 2),
-(126, 100020, 'Juliana', 'Herrera', 'juliana1', 'juliana.herrera@example.com', 'Calle 20', '3000000020', 1, 3),
-(127, 100021, 'Alberto', 'García', 'abc123', 'alberto.garcia@example.com', 'Calle 21', '3000000021', 2, 1),
-(128, 100022, 'Beatriz', 'Molina', 'passw0rd', 'beatriz.molina@example.com', 'Calle 22', '3000000022', 1, 2),
-(129, 100023, 'Carlos', 'Paredes', 'letmein123', 'carlos.paredes@example.com', 'Calle 23', '3000000023', 1, 3),
-(130, 100024, 'Diana', 'Ríos', 'mypassword', 'diana.rios@example.com', 'Calle 24', '3000000024', 1, 1),
-(131, 100025, 'Esteban', 'Cruz', 'test2025', 'esteban.cruz@example.com', 'Calle 25', '3000000025', 1, 2),
-(132, 100026, 'Florencia', 'Soto', 'florencia1', 'florencia.soto@example.com', 'Calle 26', '3000000026', 1, 3),
-(133, 100027, 'Gabriel', 'Vargas', 'gabriel!', 'gabriel.vargas@example.com', 'Calle 27', '3000000027', 1, 1),
-(134, 100028, 'Helena', 'Navarro', 'helena2025', 'helena.navarro@example.com', 'Calle 28', '3000000028', 1, 2),
-(135, 100029, 'Ignacio', 'Mendoza', 'ignacio', 'ignacio.mendoza@example.com', 'Calle 29', '3000000029', 1, 3),
-(136, 100030, 'Jimena', 'Lopez', 'jimena123', 'jimena.lopez@example.com', 'Calle 30', '3000000030', 1, 1),
-(137, 555, 'alejandro', 'ceron', '$2y$10$zZDMorvOwpCJH5D6VvMb6ORv6IePjNCom6D3Prsq9pF57bR9eqr5i', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3),
-(138, 100000, 'alejandro', 'Pérez', '$2y$10$Kbs/gKo1R2DqeI/HL8N5Du8qIrcJYfkTdPiHrJK8iA8ZMsCP0SaoS', 'juan.perez@example.com', 'calle 2 d oeste # 74 e 02', '3000000001', 1, 3),
-(147, 500000, 'dasdasd', 'ceron', '$2y$10$xo.C3p25NfRxVyEf.HUbleet/pF.3R23vX0X9KVLBiiXgaAUUemoK', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3),
-(148, 29114652, 'alejandro', 'ceron', '$2y$10$GO3TlYxTUJgVnIXNYDqTiu.Homl29S7YcuErpTKlIeU1z53W17RBG', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 1, 3),
-(149, 1107528994, 'Paul', 'Carlson', '$2y$10$bIQddMZHOJu4sNQ0RlArg.3KxrLkngGv5G57pg6Q8MdJreCuYsS9S', 'paul32@gmail.com', 'calle 2 d oeste # 74 e 02', '3226859715', 1, 3),
-(150, 1193439741, 'Edward', 'Fernandez', '$2y$10$bEz.KQOG6EW/0TtYrgEIsOmHLjULeaEivyZ8FMf2gkNf6y/Z3C6JO', 'edwardFer@gmail.com', 'Calle 93 B # 13-03', '5536735', 1, 3),
-(151, 55555555, 'Faker', 'Human', '$2y$10$HnjmFwEfXqtQZaC3vzBo3..vTN73qtuvLi.WFvj.DMRV9UKwYAPXS', 'lalejandrocd1@gmail.com', 'calle 2 d oeste # 74 e 02', '44345345', 1, 3),
-(152, 658234, 'Eric', 'Carman', '$2y$10$FCZPGmrhUeb2z5CmCfP5fO0vcwFJPzrx5OmUTZsz3zpK4M2suviFu', 'carman@gmail.com', 'Calle 93 B # 13-03', '53455432452', 1, 3),
-(153, 523434, 'patricia', 'gonzales', '$2y$10$YaMgoRG8a59lMgSYmhUwde8Dj5gKf.58RjMnGGPoI3geuy4H/CHEC', 'patric@gmail.com', 'Calle 93 B # 13-03', '53455432452', 1, 3),
-(154, 23582394, 'Alexander', 'gonzales', '$2y$10$WLJU12ALtQbJGFxirSNGaOJqCMew9wyCROomd2DHoHfLgVnv4copG', 'alex_g@gmail.com', 'Calle 93 B # 13-03', '53455432452', 1, 3),
-(155, 4234234, 'Fernando', 'uticaria', '$2y$10$QksEBkNcAK15ktSZSdMnSuvHHsLaINCRwGaRiMuhRQfwHxde2fcUK', 'fernandoutil@gmail.com', 'Calle 93 B # 13-03', '5234234', 1, 3),
-(156, 436634, 'Diana marcela', 'Gutierrez', '$2y$10$ySel.GVOu2vEbiqYu13.BeCAZXt64QluXfXPKtwbvMTrYY4EoTqqO', 'marceD@gmail.com', 'Calle #4 - 32 -23', '34056738', 1, 3);
+INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `usu_password`, `usu_email`, `usu_direccion`, `usu_telefono`, `usu_observacion`, `usu_id_estado`, `usu_tp_id`) VALUES
+(106, 123, 'Jhon', 'doe nuevo', '$2y$10$lqtlzfSwmgBii6QKERQjk.Q0pDEZ3E47UehNQQiacUJKHOkRMle0q', 'jhondoe@gmail.com', 'Calle 2', '4444122', NULL, 2, 1),
+(107, 100001, 'Juan', 'Pérez', '1234', 'juan.perez@example.com', 'Calle 1', '3000000001', NULL, 1, 1),
+(108, 100002, 'María', 'López', '$2y$10$T.fGRHivXg7ytOibxiSMyOGvB3rvQ6Nq4z2IiWuilXYFZCJSe6Fwm', 'maria.lopez@example.com', 'Calle 2', '3000000002', NULL, 1, 2),
+(109, 100003, 'Alejandro', 'Rojas', 'pass123', 'rjAlejandrocd@gmail.com', 'Av 32 N # 83 - 103', '3000000003', NULL, 1, 1),
+(110, 100004, 'Laura', 'Martínez', 'qwerty', 'laura.martinez@example.com', 'Calle 4', '3000000004', NULL, 1, 3),
+(111, 100005, 'Carlos', 'Ruiz', '123456', 'carlos.ruiz@example.com', 'Calle 5', '3000000005', NULL, 1, 1),
+(112, 100006, 'Ana', 'Fernández', 'hello', 'ana.Isa@gmail.com', 'Calle 6', '3000000006', NULL, 1, 2),
+(113, 100007, 'Luis', 'Sánchez', 'testpass', 'luis.sanchez@example.com', 'Calle 7', '3000000007', NULL, 1, 1),
+(114, 100008, 'Sofía', 'Ramírez', '2024', 'sofia.ramirez@example.com', 'Calle 8', '3000000008', NULL, 1, 3),
+(115, 100009, 'Miguel', 'Torres', 'contraseña', 'miguel.torres@example.com', 'Calle 9', '3000000009', NULL, 2, 1),
+(116, 100010, 'Lucía', 'González', 'password', 'lucia.gonzalez@example.com', 'Calle 10', '3000000010', NULL, 1, 2),
+(117, 100011, 'Jorge', 'Morales', 'letmein', 'jorge.morales@example.com', 'Calle 11', '3000000011', NULL, 1, 1),
+(118, 100012, 'Elena', 'Castro', 'admin123', 'elena.castro@example.com', 'Calle 12', '3000000012', NULL, 2, 2),
+(119, 100013, 'Andrés', 'Rojas', 'keypass', '2_8@gmail.com', 'Calle 13', '3000000013', NULL, 1, 3),
+(120, 100014, 'Paula', 'Vega', '9999', 'paula.vega@example.com', 'Calle 14', '3000000014', NULL, 1, 1),
+(121, 100015, 'Fernando', 'Silva', 'access', 'fernando.silva@example.com', 'Calle 15', '3000000015', NULL, 2, 1),
+(122, 100016, 'Camila', 'Navarro', 'camila', 'camila.navarro@example.com', 'Calle 16', '3000000016', NULL, 1, 2),
+(123, 100017, 'Ricardo', 'Mendoza', 'test123', 'ricardo.mendoza@example.com', 'Calle 17', '3000000017', NULL, 2, 3),
+(124, 100018, 'Valentina', 'Cortés', '$2y$10$tlqIP2iHW4mtaddKPm9z/OwnJwTF.rWSkVbvejn0IAjtdzPgisENa', 'valentina.cortes@example.com', 'Calle 18', '3000000018', NULL, 1, 1),
+(125, 100019, 'Daniel', 'Ortega', 'danielpass', 'daniel.ortega@example.com', 'Calle 19', '3000000019', NULL, 1, 2),
+(126, 100020, 'Juliana', 'Herrera', 'juliana1', 'juliana.herrera@example.com', 'Calle 20', '3000000020', NULL, 1, 3),
+(127, 100021, 'Alberto', 'García', 'abc123', 'alberto.garcia@example.com', 'Calle 21', '3000000021', NULL, 2, 1),
+(128, 100022, 'Beatriz', 'Molina', 'passw0rd', 'beatriz.molina@example.com', 'Calle 22', '3000000022', NULL, 1, 2),
+(129, 100023, 'Carlos', 'Paredes', 'letmein123', 'carlos.paredes@example.com', 'Calle 23', '3000000023', NULL, 1, 3),
+(130, 100024, 'Diana', 'Ríos', 'mypassword', 'diana.rios@example.com', 'Calle 24', '3000000024', NULL, 2, 1),
+(131, 100025, 'Esteban', 'Cruz', 'test2025', 'esteban.cruz@example.com', 'Calle 25', '3000000025', NULL, 1, 2),
+(132, 100026, 'Florencia', 'Soto', 'florencia1', 'florencia.soto@example.com', 'Calle 26', '3000000026', NULL, 1, 3),
+(133, 100027, 'Gabriel', 'Vargas', '$2y$10$5m.3UyunBWwdvQqz.0ZMIODhGfyNzz9M0qHGCG3LF3NWHIpt1ulUe', 'gabriel.vargas@example.com', 'Calle 27', '3000000027', NULL, 1, 1),
+(134, 100028, 'Helena', 'Navarro', 'helena2025', 'helena.navarro@example.com', 'Calle 28', '3000000028', NULL, 1, 2),
+(135, 100029, 'Ignacio', 'Mendoza', 'ignacio', 'ignacio.mendoza@example.com', 'Calle 29', '3000000029', NULL, 1, 3),
+(136, 100030, 'Jimena', 'Lopez Pumarejo', 'jimena123', 'jimena.lopez@gmail.com', 'Calle 93 B # 13-03', '3000005230', NULL, 1, 1),
+(137, 555, 'alejandro', 'ceron', '$2y$10$zZDMorvOwpCJH5D6VvMb6ORv6IePjNCom6D3Prsq9pF57bR9eqr5i', '2_1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', NULL, 1, 3),
+(138, 100000, 'alejandro', 'Pérez', '$2y$10$Kbs/gKo1R2DqeI/HL8N5Du8qIrcJYfkTdPiHrJK8iA8ZMsCP0SaoS', 'juan.perez@example.com', 'calle 2 d oeste # 74 e 02', '3000000001', NULL, 1, 3),
+(147, 500000, 'dasdasd', 'ceron', '$2y$10$xo.C3p25NfRxVyEf.HUbleet/pF.3R23vX0X9KVLBiiXgaAUUemoK', '3_2@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', NULL, 1, 3),
+(148, 29114652, 'alejandro', 'ceron', '$2y$10$GO3TlYxTUJgVnIXNYDqTiu.Homl29S7YcuErpTKlIeU1z53W17RBG', '2_3@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', NULL, 1, 3),
+(149, 1107528994, 'Luis Alberto', 'Gutierrez', '$2y$10$bIQddMZHOJu4sNQ0RlArg.3KxrLkngGv5G57pg6Q8MdJreCuYsS9S', 'luisAl.gz@gmail.com', 'calle 73 #32 -321', '3226855437', NULL, 1, 3),
+(150, 1193439741, 'Edward', 'Fernandez', '$2y$10$/tXlxO3K4WQieMTze0gcAuQXfFsSBSs89JOuAtAVzwCfFN7T8Qese', 'edwardFer@gmail.com', 'Calle 93 B # 13-03', '5536735', NULL, 1, 3),
+(151, 55555555, 'Faker', 'Human', '$2y$10$HnjmFwEfXqtQZaC3vzBo3..vTN73qtuvLi.WFvj.DMRV9UKwYAPXS', '5_4@gmail.com', 'calle 2 d oeste # 74 e 02', '44345345', NULL, 1, 3),
+(152, 658234, 'Eric', 'Carman', '$2y$10$FCZPGmrhUeb2z5CmCfP5fO0vcwFJPzrx5OmUTZsz3zpK4M2suviFu', 'carman@gmail.com', 'Calle 93 B # 13-03', '53455432452', NULL, 1, 3),
+(153, 523434, 'patricia', 'gonzales', '$2y$10$YaMgoRG8a59lMgSYmhUwde8Dj5gKf.58RjMnGGPoI3geuy4H/CHEC', 'patric@gmail.com', 'Calle 93 B # 13-03', '53455432452', NULL, 1, 3),
+(154, 23582394, 'Alexander', 'gonzales', '$2y$10$WLJU12ALtQbJGFxirSNGaOJqCMew9wyCROomd2DHoHfLgVnv4copG', 'alex_g@gmail.com', 'Calle 93 B # 13-03', '53455432452', NULL, 1, 3),
+(155, 4234234, 'Fernando', 'uticaria', '$2y$10$QksEBkNcAK15ktSZSdMnSuvHHsLaINCRwGaRiMuhRQfwHxde2fcUK', 'fernandoutil@gmail.com', 'Calle 93 B # 13-03', '5234234', NULL, 1, 3),
+(156, 436634, 'Diana marcela', 'Gutierrez', '$2y$10$ySel.GVOu2vEbiqYu13.BeCAZXt64QluXfXPKtwbvMTrYY4EoTqqO', 'marceD@gmail.com', 'Calle #4 - 32 -23', '34056738', NULL, 1, 3),
+(157, 45234324, 'María', 'López', '$2y$10$lZt9RZ5uHp3Gd1LN00TOHeZ2nI02zoNbASYywFI37lkHSk4JfOo.e', 'hello@gmail.com', 'Calle 2', '3000000002', NULL, 1, 3),
+(158, 565464645, 'María', 'López', '$2y$10$a3t1Scz9gQCMxTfxAWo2fu./YV1QvUzcIyEaKAL9QDpjSQq5kqgH2', 'hello@gmail.com', 'Calle 2', '3000000002', '', 1, 4),
+(159, 2147483647, 'María', 'López', '$2y$10$QS92GIOg4MIi2c8649SDPeALoKcL0pjK8agxV0Wv3mdB.yQ5qKXju', 'hello@gmail.com', 'Calle 2', '3000000002', '', 1, 4),
+(160, 2147483647, 'María', 'López', '$2y$10$XXqBDZ/eti1NqtBnIoy7QuM.5Pu8ZJw0JQFPQiPMW0nLhdEaeWvjC', 'hello@gmail.com', 'Calle 2', '3000000002', 'sdfsdf', 1, 3),
+(161, 2147483647, 'María', 'López', '$2y$10$Nuos/m5VHOaP4rT7wVDQ1uoP2icgUgjIkESoE7I6uc28wdVRgDVim', 'helloWorldPrueba@gmail.com', 'Calle 2', '3000000002', ' prueba nueva enviando el usuariio.', 1, 2),
+(162, 9999999, 'María', 'López', '$2y$10$HQeEWgvHLL2gEdkPf0eJoOWqn7DXwLRQctnRZjg3cl4/OgovU3irW', 'helloMaria@gmail.com', 'Calle 2', '3000000002', 'aaaa', 1, 1),
+(163, 4545454, 'Mariana', 'Rivera', '$2y$10$/0KLxditmTvNfI1RtAYrW.CcsLf0v6pNSWdaGPwb.NteaxzlZllbq', 'hello@gmail.com', 'Calle 2', '3000000002', ' prueba nueva enviando el usuariio.', 1, 20),
+(164, 658585, 'Isabella', 'Rivera', '$2y$10$Fk4gp8DJSzRwtP7xMNLtD.9Q2yDuMJEV50Bd/98xT/bnjJC9iOLl2', 'hello@gmail.com', 'Calle 2', '3000000002', 'Solicito nuevo usuario.', 1, 4),
+(165, 65858533, 'Isabella', 'Rivera', '$2y$10$g8zveEh4fHUpE60A46YrO.nzVsc.0jcIJeDAGuySjBwLv3Zq6YMmy', 'hello@gmail.com', 'Calle 2', '3000000002', 'Prueba de integración adicional.', 1, 5),
+(166, 10001922, 'alejandro', 'ceron', '$2y$10$6N3vmSHd7fgub1YBdHLk6urmGfjK4EsIr0iZQ5IQkgE8BmPtk8GFq', '4_5@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 'hola mundo', 1, 2),
+(167, 10002922, 'alejandro', 'ceron', '$2y$10$94XiXQaiJnh753Rw.IwIfOB5llWPRxdYLbtWNh6mQlbtQ9sS3NURW', '4_6@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', '', 1, 5),
+(168, 10002923, 'alejandro', 'ceron', '$2y$10$7bNsFRSivJgEVGv7pOFwuejdP/XQDj7CVxxQRAv6Lu4TJVNZMAT36', '4_7@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', '', 1, 4),
+(169, 100003, 'alejandro', 'ceron d', '$2y$10$K0XKfn2Lc/lKNP7R4NcOSOmCvDxfu7yRj205Bou4/dUTvdBGmvsOy', 'lalejandrcd1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322443', 'dd', 2, 1),
+(170, 100011, 'alejandro', 'ceron', '$2y$10$L0u4YSSLqaLF/4./yuBznOFIS.UjtCtjeqWYRpWAd1GYMuS3vM.la', '2_9@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', '', 1, 2),
+(171, 2147483647, 'alejandro', 'ceron', '$2y$10$hPtw.4P20KAWdwBwPQzrGuOElrYBVfz3dSliIaQjOC0X/GDpSdVAK', '1_10@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 'asdasdasd', 1, 2),
+(172, 10344, 'alejandro', 'ceron', '$2y$10$1IVNZDufxJoTBITCyZundO5vE/If0TTA2ZN8rqzP4sJ1Rt7IW5bvS', '1_11@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', '', 1, 4),
+(173, 100666, 'alejandro', 'ceron ocoro', '$2y$10$HPHJ9MUV9GCaAxuMzm5qAuVqg0hnJf4cgZjHnzSPIhJBrsRP3c/ni', '4_12@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 'asddd', 1, 3),
+(174, 100667, 'alejandro', 'ceron', '$2y$10$xdqXglY9B85CBc6ah43PaOfDLoGFmOUe.1CFCfpPrzKRpQm3uTtni', '3_13@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 'ddd', 1, 2),
+(175, 100667, 'jhon doe', 'pro', '$2y$10$fZr14Dw3Q3Hfii/1yRZkVO9p.QakhNbOkb7NV3WWp6GtsahvXArKG', '1_14@gmail.com', 'Calle 5', '3000000005', '', 1, 5),
+(176, 14664, 'paola', 'gris', '$2y$10$mD7tGTXzVZpOGwgvttjlv.lO33nmpFqUjgr47QeOfp31y8Hgtuiry', 'paola.gris@gmail.com', 'Calle 9 # 32 - 12', '3000000005', 'ddd', 1, 5),
+(177, 16810948, 'Diana Patricia', 'Gonzales P', '$2y$10$JObXt4vaTkGWX2b0cnF90u.TusZNOLAb0PJ6yGBC.142/L0XerA9i', 'diana.Patricia@soysena.edu.co', 'Calle 9 # 32 - 12', '3646743918', '', 1, 1),
+(178, 53243333, 'Alejandro', 'Rojas', '$2y$10$ZJulVCW8adsxSLKWkA7FxOtO5e9OmEY85VaOFK8fnSi0RQYcAF4im', 'rjdddd@gmail.com', 'Av 32 N # 83 - 103', '3000000003', 'hola mundo', 1, 1),
+(179, 2147483647, 'Alejandro', 'Rojas', '$2y$10$aQ1cnxj15GKRy58vZrP5B.tIvTmeARXLSVbqPP0ti/BCuE1gA1kB2', 'rjAocd@gmail.com', 'Av 32 N # 83 - 103', '3000000003', 'información adicional', 1, 3),
+(180, 26432544, 'Alejandro', 'Rojas', '$2y$10$1b1u8jpkG5TvArDRykIF8u9EbNoQ6pAVbyTZBlCJgNvH2EMWTa1ni', 'rjrojasaprendiz@gmail.com', 'Av 32 N # 83 - 103', '3000000003', 'hola mundo.', 1, 2),
+(181, 2147483647, 'Ana Liliana', 'Fernández', '$2y$10$0WFTjjeeOkPN07QeoX.U3eP42tG20BUMuNKbwv4ACqALRbO7KpMGm', 'ALANA@gmail.com', 'Calle 6 # 344 - 32', '3000000006', 'DDDDD', 2, 1),
+(182, 5534032, 'Fernando ', 'Oliveria', '$2y$10$m9rm/rHBXkIGNMljTahnD.6cH0/gl6TE1ErjhSCrpJ7sT5FLwO2Xq', 'fernandoOlv@gmail.com', 'Av 32 N # 83 - 103', '4123123213', 'Es el usuario coordinador de la central didáctica.', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -624,10 +788,10 @@ INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `
 --
 
 CREATE TABLE `usuarios_roles` (
-  `usr_id` int(11) NOT NULL,
+  `usr_id` int(11) NOT NULL COMMENT 'Código único de la relación usuario-rol ​:contentReference[oaicite:0]{index=0}​',
   `usr_usu_id` int(11) DEFAULT NULL,
   `usr_rl_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Relaciona usuarios con los roles que tienen asignados dentro del sistema';
 
 --
 -- Volcado de datos para la tabla `usuarios_roles`
@@ -637,7 +801,7 @@ INSERT INTO `usuarios_roles` (`usr_id`, `usr_usu_id`, `usr_rl_id`) VALUES
 (1, 106, 2),
 (1126, 107, 3),
 (1127, 108, 4),
-(1128, 109, 1),
+(1128, 109, 4),
 (1129, 110, 3),
 (1130, 111, 4),
 (1131, 112, 1),
@@ -647,25 +811,25 @@ INSERT INTO `usuarios_roles` (`usr_id`, `usr_usu_id`, `usr_rl_id`) VALUES
 (1135, 116, 3),
 (1136, 117, 4),
 (1137, 118, 1),
-(1138, 119, 3),
+(1138, 119, 12),
 (1139, 120, 4),
 (1140, 121, 1),
 (1141, 122, 3),
 (1142, 123, 4),
-(1143, 124, 1),
+(1143, 124, 4),
 (1144, 125, 3),
 (1145, 126, 4),
 (1146, 127, 1),
 (1147, 128, 3),
-(1148, 129, 4),
+(1148, 129, 3),
 (1149, 130, 1),
 (1150, 131, 3),
 (1151, 132, 4),
-(1152, 133, 1),
+(1152, 133, 4),
 (1153, 134, 3),
 (1154, 135, 4),
-(1155, 136, 1),
-(1158, 138, 1),
+(1155, 136, 12),
+(1158, 138, 4),
 (1168, 148, 4),
 (1169, 149, 2),
 (1170, 150, 4),
@@ -674,7 +838,33 @@ INSERT INTO `usuarios_roles` (`usr_id`, `usr_usu_id`, `usr_rl_id`) VALUES
 (1173, 153, 4),
 (1174, 154, 4),
 (1175, 155, 4),
-(1176, 156, 4);
+(1176, 156, 4),
+(1177, 157, 2),
+(1178, 158, 3),
+(1179, 159, 3),
+(1180, 160, 4),
+(1181, 161, 4),
+(1182, 162, 4),
+(1183, 163, 2),
+(1184, 164, 2),
+(1185, 165, 2),
+(1186, 166, 3),
+(1187, 167, 3),
+(1188, 168, 2),
+(1189, 169, 1),
+(1190, 170, 4),
+(1191, 171, 3),
+(1192, 172, 12),
+(1193, 173, 4),
+(1194, 174, 3),
+(1195, 175, 4),
+(1196, 176, 4),
+(1197, 177, 4),
+(1198, 178, 12),
+(1199, 179, 12),
+(1200, 180, 12),
+(1201, 181, 1),
+(1202, 182, 16);
 
 --
 -- Índices para tablas volcadas
@@ -688,16 +878,18 @@ ALTER TABLE `areas`
   ADD UNIQUE KEY `ar_nombre` (`ar_nombre`);
 
 --
--- Indices de la tabla `bitacora`
---
-ALTER TABLE `bitacora`
-  ADD PRIMARY KEY (`btr_id`);
-
---
 -- Indices de la tabla `categoria`
 --
 ALTER TABLE `categoria`
   ADD PRIMARY KEY (`ca_id`);
+
+--
+-- Indices de la tabla `compras`
+--
+ALTER TABLE `compras`
+  ADD PRIMARY KEY (`cod_compra`),
+  ADD KEY `fk_tp_mvmnto` (`co_tp_movimiento`),
+  ADD KEY `fk_cod_elemnt` (`co_cod_elm`);
 
 --
 -- Indices de la tabla `elementos`
@@ -709,7 +901,8 @@ ALTER TABLE `elementos`
   ADD KEY `fk_ar_cod` (`elm_area_cod`),
   ADD KEY `elm_uni_medida` (`elm_uni_medida`),
   ADD KEY `elm_placa` (`elm_placa`),
-  ADD KEY `elm_serie` (`elm_serie`);
+  ADD KEY `elm_serie` (`elm_serie`),
+  ADD KEY `fk_elm_ma_cod` (`elm_ma_cod`);
 
 --
 -- Indices de la tabla `entradas_salidas`
@@ -740,10 +933,24 @@ ALTER TABLE `estados_usuarios`
   ADD PRIMARY KEY (`est_id`);
 
 --
+-- Indices de la tabla `funciones`
+--
+ALTER TABLE `funciones`
+  ADD PRIMARY KEY (`id_funcion`),
+  ADD KEY `id_modulo` (`id_modulo`),
+  ADD KEY `tp_funcion` (`tp_funcion`);
+
+--
 -- Indices de la tabla `marcas`
 --
 ALTER TABLE `marcas`
   ADD PRIMARY KEY (`ma_id`);
+
+--
+-- Indices de la tabla `modulos`
+--
+ALTER TABLE `modulos`
+  ADD PRIMARY KEY (`id_m`);
 
 --
 -- Indices de la tabla `permisos`
@@ -776,12 +983,12 @@ ALTER TABLE `roles`
   ADD PRIMARY KEY (`rl_id`);
 
 --
--- Indices de la tabla `roles_permisos`
+-- Indices de la tabla `roles_funciones`
 --
-ALTER TABLE `roles_permisos`
+ALTER TABLE `roles_funciones`
   ADD PRIMARY KEY (`rlp_id`),
-  ADD KEY `fk_id_permiso` (`rlp_id_permiso`),
-  ADD KEY `fk_id_rol` (`rlp_id_rl`);
+  ADD KEY `rlp_id_rl` (`rlp_id_rl`),
+  ADD KEY `rlp_id_funcion` (`rlp_id_funcion`);
 
 --
 -- Indices de la tabla `tipo_documento`
@@ -794,6 +1001,12 @@ ALTER TABLE `tipo_documento`
 --
 ALTER TABLE `tipo_elemento`
   ADD PRIMARY KEY (`tp_el_cod`);
+
+--
+-- Indices de la tabla `tipo_funcion`
+--
+ALTER TABLE `tipo_funcion`
+  ADD PRIMARY KEY (`id_tp_funcion`);
 
 --
 -- Indices de la tabla `tipo_movimiento`
@@ -838,125 +1051,150 @@ ALTER TABLE `usuarios_roles`
 -- AUTO_INCREMENT de la tabla `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
-
---
--- AUTO_INCREMENT de la tabla `bitacora`
---
-ALTER TABLE `bitacora`
-  MODIFY `btr_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código primario del area', AUTO_INCREMENT=123;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `ca_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `ca_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo de identificador de la categoria', AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT de la tabla `compras`
+--
+ALTER TABLE `compras`
+  MODIFY `cod_compra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo autoincrementable identificador de la existencia', AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT de la tabla `elementos`
 --
 ALTER TABLE `elementos`
-  MODIFY `elm_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=202;
+  MODIFY `elm_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo primario autoincrementable', AUTO_INCREMENT=230;
 
 --
 -- AUTO_INCREMENT de la tabla `entradas_salidas`
 --
 ALTER TABLE `entradas_salidas`
-  MODIFY `ent_sal_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=518;
+  MODIFY `ent_sal_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único de la entrada o salida', AUTO_INCREMENT=894;
 
 --
 -- AUTO_INCREMENT de la tabla `estados_elementos`
 --
 ALTER TABLE `estados_elementos`
-  MODIFY `est_el_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `est_el_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único del estado del elemento', AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `estados_prestamos`
 --
 ALTER TABLE `estados_prestamos`
-  MODIFY `es_pr_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `es_pr_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único del estado del préstamo', AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `estados_usuarios`
 --
 ALTER TABLE `estados_usuarios`
-  MODIFY `est_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `est_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único del estado del usuario', AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `funciones`
+--
+ALTER TABLE `funciones`
+  MODIFY `id_funcion` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id representativo primario de la tabla funciones', AUTO_INCREMENT=99;
 
 --
 -- AUTO_INCREMENT de la tabla `marcas`
 --
 ALTER TABLE `marcas`
-  MODIFY `ma_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `ma_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la marca', AUTO_INCREMENT=26;
+
+--
+-- AUTO_INCREMENT de la tabla `modulos`
+--
+ALTER TABLE `modulos`
+  MODIFY `id_m` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `permisos`
 --
 ALTER TABLE `permisos`
-  MODIFY `per_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `per_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del permiso', AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
-  MODIFY `pres_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=439;
+  MODIFY `pres_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código identificador del préstamo', AUTO_INCREMENT=555;
 
 --
 -- AUTO_INCREMENT de la tabla `prestamos_elementos`
 --
 ALTER TABLE `prestamos_elementos`
-  MODIFY `pres_el_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1309;
+  MODIFY `pres_el_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único del registro de préstamo de elemento', AUTO_INCREMENT=1616;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `rl_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `rl_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del rol', AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT de la tabla `roles_permisos`
+-- AUTO_INCREMENT de la tabla `roles_funciones`
 --
-ALTER TABLE `roles_permisos`
-  MODIFY `rlp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+ALTER TABLE `roles_funciones`
+  MODIFY `rlp_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la relación rol-permiso', AUTO_INCREMENT=177;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_documento`
 --
 ALTER TABLE `tipo_documento`
-  MODIFY `tp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `tp_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del tipo de documento', AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_elemento`
 --
 ALTER TABLE `tipo_elemento`
-  MODIFY `tp_el_cod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `tp_el_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del tipo de elemento', AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_funcion`
+--
+ALTER TABLE `tipo_funcion`
+  MODIFY `id_tp_funcion` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Valor auto increment del tipo de función', AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_prestamo`
 --
 ALTER TABLE `tipo_prestamo`
-  MODIFY `tp_pre` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `tp_pre` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del tipo de prestamo', AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_unidad`
 --
 ALTER TABLE `tipo_unidad`
-  MODIFY `cod_tp_uni` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `cod_tp_uni` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único de la unidad de medida', AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `usu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=157;
+  MODIFY `usu_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del usuario', AUTO_INCREMENT=183;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_roles`
 --
 ALTER TABLE `usuarios_roles`
-  MODIFY `usr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1177;
+  MODIFY `usr_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único de la relación usuario-rol ​:contentReference[oaicite:0]{index=0}​', AUTO_INCREMENT=1203;
 
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `compras`
+--
+ALTER TABLE `compras`
+  ADD CONSTRAINT `fk_cod_elemnt` FOREIGN KEY (`co_cod_elm`) REFERENCES `elementos` (`elm_cod`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_tp_mvmnto` FOREIGN KEY (`co_tp_movimiento`) REFERENCES `tipo_movimiento` (`cod_tp`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `elementos`
@@ -965,6 +1203,7 @@ ALTER TABLE `elementos`
   ADD CONSTRAINT `fk_ar_cod` FOREIGN KEY (`elm_area_cod`) REFERENCES `areas` (`ar_cod`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_elm_cod_estado` FOREIGN KEY (`elm_cod_estado`) REFERENCES `estados_elementos` (`est_el_cod`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_elm_cod_tp_elemento` FOREIGN KEY (`elm_cod_tp_elemento`) REFERENCES `tipo_elemento` (`tp_el_cod`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_elm_ma_cod` FOREIGN KEY (`elm_ma_cod`) REFERENCES `marcas` (`ma_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_tp_uno` FOREIGN KEY (`elm_uni_medida`) REFERENCES `tipo_unidad` (`cod_tp_uni`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
@@ -975,6 +1214,13 @@ ALTER TABLE `entradas_salidas`
   ADD CONSTRAINT `fk_ent_sal_cod_pres` FOREIGN KEY (`ent_sal_cod_prestamo`) REFERENCES `prestamos` (`pres_cod`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_tp_mvto` FOREIGN KEY (`entr_tp_movmnt`) REFERENCES `tipo_movimiento` (`cod_tp`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_tp_mvto_usuId` FOREIGN KEY (`ent_id_usu`) REFERENCES `usuarios` (`usu_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `funciones`
+--
+ALTER TABLE `funciones`
+  ADD CONSTRAINT `fk_id_modulo` FOREIGN KEY (`id_modulo`) REFERENCES `modulos` (`id_m`),
+  ADD CONSTRAINT `fk_tp_funcion` FOREIGN KEY (`tp_funcion`) REFERENCES `tipo_funcion` (`id_tp_funcion`);
 
 --
 -- Filtros para la tabla `prestamos`
@@ -993,11 +1239,11 @@ ALTER TABLE `prestamos_elementos`
   ADD CONSTRAINT `prestamos_elementos_ibfk_1` FOREIGN KEY (`pres_cod`) REFERENCES `prestamos` (`pres_cod`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `roles_permisos`
+-- Filtros para la tabla `roles_funciones`
 --
-ALTER TABLE `roles_permisos`
-  ADD CONSTRAINT `fk_id_permiso` FOREIGN KEY (`rlp_id_permiso`) REFERENCES `permisos` (`per_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_id_rol` FOREIGN KEY (`rlp_id_rl`) REFERENCES `roles` (`rl_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `roles_funciones`
+  ADD CONSTRAINT `fk_function` FOREIGN KEY (`rlp_id_funcion`) REFERENCES `funciones` (`id_funcion`),
+  ADD CONSTRAINT `fk_rol` FOREIGN KEY (`rlp_id_rl`) REFERENCES `roles` (`rl_id`);
 
 --
 -- Filtros para la tabla `usuarios`

@@ -663,7 +663,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     let elementosPreviewConsu = [];
     let elementosPreviewDev = [];
     let dataTr = event.target.closest("tr");
-    // //Estado por validar
+    //Estado por validar
     let estadoNew = dataTr.children[2];
     let tdAcciones = dataTr.children[4];
 

@@ -1,6 +1,6 @@
 <script src="/proyecto_sigia/public/assets/libraries/materialize/js/materialize.min.js"></script>
 
-<?php if ($rol == 2 || $rol == 4): ?>
+<?php if ($rol == 2 || $rol == 4 || $rol == 16): ?>
   <div class="fixed-action-btn direction-top">
     <a class="btn-floating btn-large teal darken-2 tooltipped" data-position="left" data-tooltip="Menú principal">
       <i class="material-icons">menu</i>
@@ -13,7 +13,7 @@
         </a>
       </li>
 
-      <?php if ($rol == 2): ?>
+<?php if ($rol == 2 || $rol == 16): ?>
         <!-- Admin: Usuarios -->
         <li>
           <a class="btn-floating green submenu-trigger" data-tooltip="Usuarios" data-position="top" data-submenu="submenu-usuarios">

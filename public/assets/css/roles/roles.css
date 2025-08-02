@@ -3,8 +3,8 @@
   --secundary: #004034;
   --other: #ccc;
   --white: #f0f0f0;
-  --btnEdit: #007D78;
-  --teal :#4db6ac;
+  --btnEdit: #007d78;
+  --teal: #4db6ac;
   --blue: #42a5f5;
   --red: #ef5350;
 }
@@ -14,18 +14,18 @@
   cursor: pointer;
 }
 
-.contentRoles{
+.contentRoles {
   grid-template-areas:
     "titleRoles titleRoles"
     "formRl tblRoles";
 }
 
-.titleRoles{
-    grid-area: titleRoles;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+.titleRoles {
+  grid-area: titleRoles;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /* .titleRoles{
@@ -41,64 +41,66 @@
     color: var(--white);
 } */
 
-.formRl{
-    grid-area: formRl;
+.formRl {
+  grid-area: formRl;
 }
 
-.formRl #rol_descripcionInput{
-    width: 100%;
-    resize: none;
-    height: 10rem;
+.formRl #rol_descripcionInput {
+  width: 100%;
+  resize: none;
+  height: 10rem;
 }
 
-#formRol{
-    grid-template-areas: "contentRlNombre"
+#formRol {
+  grid-template-areas:
+    "contentRlNombre"
     "contentRlDescript"
     "contentRlBtn";
 }
 
-.contentRlDescript{
-    grid-area: contentRlDescript;
+.contentRlDescript {
+  grid-area: contentRlDescript;
 }
 
-.contentRlNombre{
-    grid-area: contentRlNombre;
+.contentRlNombre {
+  grid-area: contentRlNombre;
 }
 
-.contentRlBtn{
-    grid-area: contentRlBtn;
-    text-align: center;
+.contentRlBtn {
+  grid-area: contentRlBtn;
+  text-align: center;
 }
 
-#formRol div > :nth-child(1), #formRol div > :nth-child(2){
-    gap: 0.5rem;
+#formRol div > :nth-child(1),
+#formRol div > :nth-child(2) {
+  gap: 0.5rem;
 }
 
-#formRol div > :nth-child(3){
-    text-align: center;
+#formRol div > :nth-child(3) {
+  text-align: center;
 }
 
-.tblRoles{
-    grid-area: tblRoles;
-}
-
-.tblRoles table{
-    width: 100%;
+.tblRoles {
+  grid-area: tblRoles;
 }
 
 .tblRoles table {
-    width: 100%;
+  width: 100%;
+}
+
+.tblRoles table {
+  width: 100%;
 }
 
 /* Ajustar los botones de acciones */
 .tblRoles table td:last-child {
-    display: flex;
-    flex-direction: row;
-    gap: 0.3rem;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  gap: 0.3rem;
+  justify-content: center;
 }
 
-#modalEditar{
+#modalEditar {
   background-color: rgba(0, 0, 0, 0.4);
   display: none;
   position: fixed;
@@ -119,85 +121,139 @@
 }
 
 .modal.hidden {
-    display: none !important;
+  display: none !important;
 }
 
 .modal-contenido {
-    background-color: var(--white);
-    margin: 10% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 30%;
-    height: fit-content;
-    display: grid;
-    grid-template-areas:
-        "titleSection"
-        "formRol";
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
+  background-color: var(--white);
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 30%;
+  height: fit-content;
+  display: grid;
+  grid-template-areas:
+    "titleSection"
+    "formRol";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
 }
 
-.titleSection{
-    width: 100%;
-    grid-area: titleSection;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    background-color: var(--secundary);
-    padding: 1rem 1.5rem;
-    border-radius: 8px 8px 0 0;
-    align-items: center;
-    color: var(--white);
+.titleSection {
+  width: 100%;
+  grid-area: titleSection;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: var(--secundary);
+  padding: 1rem 1.5rem;
+  border-radius: 8px 8px 0 0;
+  align-items: center;
+  color: var(--white);
 }
 
-.formRol{
-    grid-area: formRol;
+.formRol {
+  grid-area: formRol;
 }
 
-#formEditarRol > div:last-child{
-    display: flex;
-    justify-content: center;
+#formEditarRol > div:last-child {
+  display: flex;
+  justify-content: center;
 }
 
 .cerrar {
-    justify-self: end;
-    cursor: pointer;
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #333;
-    user-select: none;
-    transition: color 0.3s ease;
+  justify-self: end;
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #333;
+  user-select: none;
+  transition: color 0.3s ease;
 }
 
-.closeModalBtn{
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 2rem;
-    color: var(--white);
-    padding: 0.3rem;
-    line-height: 1;
+.closeModalBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2rem;
+  color: var(--white);
+  padding: 0.3rem;
+  line-height: 1;
 }
 
 /* Botón del formulario de actualización */
 .btnSubmit {
-    background-color: var(--blue);
-    color: var(--secundary);
+  background-color: var(--blue);
+  color: var(--secundary);
 }
 
-
 .cerrar:hover {
-    color: #e74c3c;
+  color: #e74c3c;
 }
 
 .btnEditar {
-    background-color: var(--blue);
-    color: var(--white);
+  background-color: var(--blue);
+  color: var(--white);
 }
 
-.btnSubmitRol{
-    color: var(--secundary);
-    background-color: var(--blue);
-    
+.btnSubmitRol {
+  color: var(--secundary);
+  background-color: var(--blue);
 }
 
+#asigPermisosContent {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+
+  .spanNameModule{
+    display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 0.3rem;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid black;
+        width: 100%;
+        height: auto;
+
+    p{
+        text-align: center;
+
+    }
+  }
+
+  .modulo {
+    border: 1px solid black;
+    display: flex;
+    flex-wrap: wrap;
+    /* padding: 0.3rem; */
+    border-radius: 8px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .funciones{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    /* gap: 0.3rem; */
+  }
+
+  .funcionNameCheckbox{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  /* Este css lo genere desde el cases.js agregando la clase. */
+    .checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%; /* o auto si lo prefieres */
+    gap: 8px;
+    }
+}

@@ -205,10 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
   usu_observacion: "Notas adicionales al usuario"
   
   
-  
-  
-  
-  
 };
 
   //Validaciones formulario registro usuarios.
@@ -279,7 +275,6 @@ function cerrarModalUsuario() {
 }
 window.cerrarModalUsuario = cerrarModalUsuario;
 
-
 ///////////Update usuarios con JS///////////
 const formUpdateUser = document.getElementById("formUpdateUser");
 
@@ -299,7 +294,6 @@ if (formUpdateUser) {
     }
 
     try {
-      // const result = await sendData("modules/usuarios/controller/usuariosController.php", "POST", data);
       const result = await sendData(
      "modules/usuarios/controller/usuariosController.php",
       "POST",
@@ -348,7 +342,7 @@ document.querySelectorAll(".toggleEstadoBtn").forEach(button => {
 
       if (result.status === "success") {
         initAlert(result.message, "success", toastOptions);
-        setTimeout(() => location.reload(), 1500); // Recargar para reflejar cambios
+        setTimeout(() => location.reload(), 150); // Recargar para reflejar cambios
       } else {
         initAlert(result.message || "Error al cambiar el estado", "error", toastOptions);
       }

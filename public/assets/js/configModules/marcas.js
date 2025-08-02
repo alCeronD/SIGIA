@@ -174,6 +174,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 });
 
+
+
 //Formulario de registro.
 formMarca.addEventListener("submit", (f) => {
   f.stopPropagation();
@@ -196,6 +198,7 @@ formMarca.addEventListener("submit", (f) => {
     "modules/configModules/api/apiConfigModules.php",
     true
   );
+  
   objAjax.request.setRequestHeader("Content-Type", "application/json");
   objAjax.request.setRequestHeader("Accept", "application/json");
   objAjax.request.onload = () => {

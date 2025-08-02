@@ -4,9 +4,14 @@
 
 class ScanFiles{
 
-    private array $nameAssetsFiles;
+    // private array $nameAssetsFiles;
 
-    private array $nameFilesCss;
+    // private array $nameFilesCss;
+
+    
+    private array $nameAssetsFiles = []; 
+    private array $nameFilesCss = [];    
+
 
     private $modulo;
     private $file;
