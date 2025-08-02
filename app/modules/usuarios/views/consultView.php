@@ -1,3 +1,4 @@
+
 <div class="contentUsuarios">
   <div class="titleUsuarios">
     <span id="textTitle">Consultar Usuarios</span>
@@ -54,11 +55,16 @@
                     data-rol="<?= htmlspecialchars($usuario['rolIdUser']) ?>">
                     <i class="material-icons">edit</i>
                   </a>
-                  <a href="<?= getUrl('usuarios', 'usuarios', 'cambiarEstadoUsuario', ['usu_id' => $usuario['usu_id']], 'dashboard') ?>"
-                    class="btn btnInvalida white-text waves-effect waves-dark"
-                    onclick="return confirm('¿Estás seguro de que deseas cambiar el estado del usuario?');">
+                  <button 
+                    class="btn toggleEstadoBtn white-text waves-effect waves-dark"
+                    data-id="<?= $usuario['usu_id'] ?>"
+                    onclick="cambiarEstadoUsuario(this)">
                     <i class="material-icons">autorenew</i>
-                  </a>
+                  </button>
+
+
+
+
                 </div>
               </td>
             </tr>
@@ -83,7 +89,7 @@
     <span class="close-modal btn-flat red-text right" onclick="cerrarModalUsuario()" title="Cerrar" style="font-size: 1.5rem;">&times;</span>
     <h5 class="teal-text text-darken-3">Editar Informacion Usuario</h5>
 
-    <form method="POST" action="<?= getUrl('usuarios', 'usuarios', 'updateUserJSON', false, 'dashboard') ?>" id="formUpdateUser">
+    <form id="formUpdateUser">
       <input type="hidden" name="usu_id" id="usu_id">
 
       <div class="input-field docum">

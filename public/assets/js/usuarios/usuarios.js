@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const paginacion = document.getElementById('paginacion-usuarios');
   const filas = Array.from(document.querySelectorAll('#tableConfig tbody tr'));
   let filasFiltradas = [...filas];
-  const itemsPorPagina = 5;
+  const itemsPorPagina = 4;
 
   if (paginacion && filas.length > 0) {
     function mostrarPagina(pagina) {
@@ -203,6 +203,8 @@ document.addEventListener("DOMContentLoaded", () => {
   usu_email: "Correo electrónico",
   usu_direccion: "Dirección",
   usu_observacion: "Notas adicionales al usuario"
+  
+  
 };
 
   //Validaciones formulario registro usuarios.
@@ -272,3 +274,80 @@ function cerrarModalUsuario() {
   if (modal) modal.style.display = "none";
 }
 window.cerrarModalUsuario = cerrarModalUsuario;
+
+///////////Update usuarios con JS///////////
+const formUpdateUser = document.getElementById("formUpdateUser");
+
+if (formUpdateUser) {
+  formUpdateUser.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(formUpdateUser);
+    const data = Object.fromEntries(formData.entries());
+    // data.action = "updateUser";
+    
+
+    // Validaciones mínimas (puedes usar validateFormData si gustas)
+    if (!data.usu_nombres || !data.usu_apellidos || !data.usu_email || !data.usu_telefono || !data.usu_direccion || !data.rol_id) {
+      initAlert("Por favor complete todos los campos obligatorios", "error", toastOptions);
+      return;
+    }
+
+    try {
+      const result = await sendData(
+     "modules/usuarios/controller/usuariosController.php",
+      "POST",
+      "updateUser",
+      data
+    );
+
+      if (result.status === "success") {
+        initAlert(result.message, "success", toastOptions);
+        cerrarModalUsuario();
+        setTimeout(() => {
+          location.reload(); // Recargar para ver cambios
+        }, 1500);
+      } else {
+        initAlert(result.message || "Error al actualizar", "error", toastOptions);
+      }
+    } catch (error) {
+      initAlert(error.message || "Error en la solicitud", "error", toastOptions);
+    }
+  });
+}
+
+//Cambiar estado de inactivar el usuario
+document.querySelectorAll(".toggleEstadoBtn").forEach(button => {
+  button.addEventListener("click", async () => {
+    const id = button.dataset.id;
+
+    const confirmacion = confirm("¿Estás seguro de que deseas cambiar el estado del usuario?");
+    if (!confirmacion) return;
+
+    try {
+      const payload = {
+        action: "cambiarEstado",
+        usu_id: id
+      };
+
+      const response = await fetch("modules/usuarios/controller/usuariosController.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        initAlert(result.message, "success", toastOptions);
+        setTimeout(() => location.reload(), 150); // Recargar para reflejar cambios
+      } else {
+        initAlert(result.message || "Error al cambiar el estado", "error", toastOptions);
+      }
+    } catch (error) {
+      initAlert(error.message || "Error en la solicitud", "error", toastOptions);
+    }
+  });
+});
