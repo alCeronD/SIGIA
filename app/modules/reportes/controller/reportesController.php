@@ -60,6 +60,7 @@ class ReportesController {
      * AJAX ELEMENTOS
      * ----------------------------------------------------------------*/
     public function filtrarElementosAjax() {
+        validatePermisos('reportes','filtrarElementosAjax');
         if (!ajaxGeneral()) {
             http_response_code(403);
             echo json_encode(['error' => 'Acceso no permitido']);
@@ -83,7 +84,7 @@ class ReportesController {
      * AJAX TRAZABILIDAD (Entradas / Salidas)
      * ----------------------------------------------------------------*/
     public function filtrarTrazabilidadAjax() {
-
+        validatePermisos('reportes', 'filtrarTrazabilidadAjax');
         if (!ajaxGeneral()) {
             http_response_code(403);
             echo json_encode(['error' => 'Acceso no permitido']);
@@ -109,7 +110,7 @@ class ReportesController {
      * AJAX MOVIMIENTOS POR PLACA
      * ----------------------------------------------------------------*/
     public function filtrarPorPlacaAjax() {
-
+        validatePermisos('reportes', 'filtrarPorPlacaAjax');
         if (!ajaxGeneral()) {
             http_response_code(403);
             echo json_encode(['error' => 'Acceso no permitido']);

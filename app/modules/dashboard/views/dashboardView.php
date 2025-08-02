@@ -93,6 +93,19 @@
             </div>
         </div>
     <?php endif; ?>
+
+    <?php  if ($rol_id == 16): ?>
+        <div class="coordinador">
+            <div class="option-card z-depth-1">
+                <i class="material-icons large green-text text-darken-2 center-align">assignment</i>
+                <h5>Reportes</h5>
+                <p>Generar reportes</p>
+                <a class="btn green btnGetUrl" href="<?php echo getUrl('reportes', 'reportes', 'genReporteView', false, 'dashboard'); ?>">Reportes</a>
+            </div>
+
+        </div>
+    <?php endif; ?>
+
 </div>
 
 <script type="module" src="../public/assets/js/dashboard/dashboard.js"></script>

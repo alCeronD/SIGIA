@@ -8,7 +8,7 @@
     <ul>
       <!-- Inicio -->
       <li>
-        <a href="/proyecto_sigia/app/dashboard.php" class="btn-floating blue "  data-tooltip="Inicio">
+        <a href="<?php echo getUrl('dashboard', 'dashboard','dashboard', false, 'dashboard'); ?>" class="btn-floating blue "  data-tooltip="Inicio">
           <i class="material-icons">home</i>
         </a>
       </li>
