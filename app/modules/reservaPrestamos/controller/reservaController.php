@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../../helpers/validatePermisos.php';
 // Recibir la respuesta de la solicitud.
 $method = $_SERVER['REQUEST_METHOD'];
 
-class ReservaController
+class ReservaPrestamosController
 {
     private $model;
 
@@ -187,7 +187,7 @@ class ReservaController
     }
 }
 
-$controller = new ReservaController();
+$controller = new ReservaPrestamosController();
 //Valido si lo que se solicita es una petición ajax.
 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 

@@ -48,6 +48,7 @@ function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
         $modulo = $_GET['modulo'];
         $controlador = $_GET['controlador'];
         $funcion = $_GET['funcion'];
+
     }
 
     // Rutas públicas que no necesitan sesión
@@ -69,6 +70,7 @@ function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
     include_once __DIR__ . '/../config/conn.php';
     $conexion = (new Conection())->getConnect();
     $nombreClase = $controlador . "Controller";
+
 
     require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
     $objPermisos = new PermisosController();

@@ -309,11 +309,7 @@ class RolModelo
                 ],
                 'status' => true
             ];
-            // return [
-            //     'message' => "Modulos y permisos",
-            //     'data' => $resultModulosPermisos,
-            //     'status' => true
-            // ];
+
         } catch (\Throwable $th) {
             echo $th->getMessage();
             return [
@@ -482,6 +478,8 @@ fu.nombre_funcion as 'nombreFunción'
                     ];
                 }
             }
+
+            
 
             $conn->commit();
             $conn->close();

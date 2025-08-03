@@ -131,7 +131,8 @@ class PermisosModel
 
         $sqlMenu = "SELECT DISTINCT
             mo.id_m AS 'idModulo',
-            mo.cod_nombre_m AS 'nombreModulo'
+            mo.cod_nombre_m AS 'nombreModulo',
+            mo.icono AS 'iconModulo'
             FROM modulos mo 
             INNER JOIN funciones fu ON
             fu.id_modulo = mo.id_m 
@@ -152,6 +153,21 @@ class PermisosModel
         while ($row = $result->fetch_assoc()) {
             $modulosMenu[] = $row;
         }
+
+        // var_dump($modulosMenu);
+
+        $newModulosMenu = [];
+        foreach ($modulosMenu as $key => $value) {
+            // var_dump($value);
+            $nombreModulo = $value['nombreModulo'] === 'dashboard' ?? $value['nombreModulo'];
+
+            if ($nombreModulo === 'dashboard') {
+                $newModulosMenu[$key] = $value;
+            }
+            $newModulosMenu [$key]= $value;
+        }
+
+        // var_dump($newModulosMenu);
 
         $sqlOptionsMenu = "SELECT DISTINCT 
             fu.nombre_funcion_user AS 'nombreFuncionUser',
@@ -174,14 +190,17 @@ class PermisosModel
         $optionsMenu = [];
         foreach ($modulosMenu as $key => $value) {
             $modulo = $value['idModulo'];
+            $moduloNombre = $value['nombreModulo'];
 
             $stmtOptionsMenu->bind_param('ii', $idRol, $modulo);
 
             $stmtOptionsMenu->execute();
 
             $resultOptions = $stmtOptionsMenu->get_result();
-            $row = $resultOptions->fetch_assoc();
-            $optionsMenu[] = $row;
+            
+            while($row = $resultOptions->fetch_assoc()){
+                $optionsMenu[] = $row;
+            }
         }
 
         $data = [
@@ -199,6 +218,6 @@ class PermisosModel
     }
 }
 
-// $objPermisosModel = new PermisosModel();
-// $result = $objPermisosModel->renderMenu(16);
-// var_dump($result['data']);
+$obj = new PermisosModel();
+
+$obj->renderMenu(16);

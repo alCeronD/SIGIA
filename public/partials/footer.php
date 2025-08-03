@@ -6,8 +6,6 @@ $modulos = $_SESSION['renderMenu']['modulos'];
 $vistasModulos = $_SESSION['renderMenu']['vistas'];
 
 ?>
-<?php //if ($rol == 2 || $rol == 4 || $rol == 16): 
-?>
 
 <div class="fixed-action-btn direction-top">
   <!-- Botón flotante principal del menú -->
@@ -16,12 +14,14 @@ $vistasModulos = $_SESSION['renderMenu']['vistas'];
   </a>
   <ul>
 
-    <?php foreach ($vistasModulos as $key => $value) :
+    <?php foreach ($modulos as $value) :
       $nombreModulo = $value['nombreModulo'];
-      $funcionModulo = $value['nombreFuncionController']; ?>
+      $icon = $value['iconModulo'];
+      ?>
       <li>
-        <a href="<?php echo getUrl($nombreModulo, $nombreModulo, $funcionModulo, false, 'dashboard'); ?>" class="btn-floating red submenu-trigger" data-tooltip="" data-submenu="submenu-<?php echo $nombreModulo ?>" id="">
-          <i class="material-icons">exit_to_app</i>
+        <a class="btn-floating red submenu-trigger" data-tooltip="" data-submenu="submenu-<?php echo $nombreModulo ?>" id="">
+          <!-- El nombre del icono se trae desde php. -->
+          <i class="material-icons"><?php echo $icon; ?></i>
         </a>
       </li>
 
@@ -88,9 +88,6 @@ $vistasModulos = $_SESSION['renderMenu']['vistas'];
         direction: 'top',
         hoverEnabled: false
       });
-
-
-
       const triggers = document.querySelectorAll('.submenu-trigger');
       triggers.forEach(trigger => {
         const submenuId = trigger.dataset.submenu;

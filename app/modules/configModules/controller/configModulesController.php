@@ -30,7 +30,7 @@ class ConfigModulesController{
 
     // Traer la información de una tabla en especifico.
     public function getData(String $tableName, String $status){
-        validatePermisos('configModules', 'getData');
+        // validatePermisos('configModules', 'getData');
         $model = new ConfigModulesModel();
         //las tablas, las voy a comparar segun el area crear la consulta.
         $statusTables = ['areas','tipo_documento','roles','categorias','marcas'];
@@ -182,8 +182,6 @@ class ConfigModulesController{
         if (!$data) {
             exit();
         }
-
-
         //Nombres de las columnas de la tabla
         $keysValues = array_keys($data['values']);
 

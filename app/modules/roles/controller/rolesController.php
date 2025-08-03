@@ -1,5 +1,6 @@
 <?php
 include_once __DIR__ . '/../model/rolesModel.php';
+include_once __DIR__ . '/../../Permisos/Model/PermisosModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 require_once __DIR__ . '/../../../helpers/response.php';
 /**
@@ -25,6 +26,7 @@ class RolesController
     {
 
         validatePermisos('Roles', 'registrarRol');
+        $objPermisosModel = new PermisosModel();
 
         $rol_nombre = $data['rol_nombre'];
         $rol_descripcion = $data['rol_descripcion'];
@@ -33,6 +35,8 @@ class RolesController
             fail('Error al registrar rol', $exito);
         }
         success('Proceso Ejecutado con exito', $exito);
+        // Cuando se ejecute el proceso de asignacion de permisos, debo si o si llamar nuevamente a la función de render menu
+        // $objPermisosModel->renderMenu($_SESSION['usuario']['rl_id']);
     }
     public function editarRol(array $data = [])
     {
@@ -99,6 +103,7 @@ class RolesController
            fail('error al ejecutar el proceso', $responsePermisos);
         }
         success('Permisos Asociados correctamente', $responsePermisos);
+
     }
 }
 
