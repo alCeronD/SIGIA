@@ -60,7 +60,9 @@ function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
     $isPublic = isset($publicRoutes[$modulo]) && in_array($funcion, $publicRoutes[$modulo]);
 
     $controllerPath = __DIR__ . "/../modules/$modulo/controller/{$controlador}Controller.php";
-
+    // dd($controllerPath);
+    // var_dump($funcion); //Esto esta bien
+    // var_dump($controlador);
     if (!is_file($controllerPath)) {
         echo "El controlador no existe.";
         return;
@@ -70,7 +72,7 @@ function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
     include_once __DIR__ . '/../config/conn.php';
     $conexion = (new Conection())->getConnect();
     $nombreClase = $controlador . "Controller";
-
+    // var_dump($nombreClase);
 
     require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
     $objPermisos = new PermisosController();
@@ -94,7 +96,6 @@ function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
             return;
         }
     }
-
     // Llamamos al controlador y la función
     $objeto = new $nombreClase($conexion);
 
