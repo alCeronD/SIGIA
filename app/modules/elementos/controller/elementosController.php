@@ -24,7 +24,6 @@ class ElementosController
     public function getElements(int $pages = 1, String $type = 'all')
     {
 
-        validatePermisos('elementos', 'getElements');
         // Parámetros de paginación
         $pagina = isset($pages) ? max(1, intval($pages)) : 1;
         $limite = LIMIT;

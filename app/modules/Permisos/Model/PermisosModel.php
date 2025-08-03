@@ -199,6 +199,6 @@ class PermisosModel
     }
 }
 
-$objPermisosModel = new PermisosModel();
-$result = $objPermisosModel->renderMenu(16);
+// $objPermisosModel = new PermisosModel();
+// $result = $objPermisosModel->renderMenu(16);
 // var_dump($result['data']);
