@@ -32,19 +32,19 @@ class categoriasController
         return include $path;
     }
 
-    // public function updateCategoriaView()
-    // {
-    //     validatePermisos('categorias', 'updateCategoriaView');
+    public function updateCategoriaView()
+    {
+        validatePermisos('categorias', 'updateCategoriaView');
 
-    //     $categoria = $_GET['ca_id'];
-    //     $_SESSION['css'] = 'categorias/categorias.css';
+        $categoria = $_GET['ca_id'];
+        $_SESSION['css'] = 'categorias/categorias.css';
 
-    //     $dato = new categorias($this->conn);
-    //     $resultado = $dato->searchU($categoria);
-    //     if ($resultado) {
-    //         return include_once __DIR__ . '/../views/categoriasEditView.php';
-    //     }
-    // }
+        $dato = new categorias($this->conn);
+        $resultado = $dato->searchU($categoria);
+        if ($resultado) {
+            return include_once __DIR__ . '/../views/categoriasEditView.php';
+        }
+    }
 
     public function updateCategoria()
     {
@@ -142,16 +142,16 @@ class categoriasController
         }
     }
 
-    // public function deleteCategoria()
-    // {
-    //     $id = $_GET['ca_id'];
-    //     $categorias = new categorias($this->conn);
-    //     $dato = $categorias->delete($id);
+    public function deleteCategoria()
+    {
+        $id = $_GET['ca_id'];
+        $categorias = new categorias($this->conn);
+        $dato = $categorias->delete($id);
 
-    //     if ($dato) {
-    //         $this->consultCategoriasView();
-    //     }
-    // }
+        if ($dato) {
+            $this->consultCategoriasView();
+        }
+    }
     
     public function listarCategoriasAjax()
     {
