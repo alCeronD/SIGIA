@@ -231,8 +231,11 @@ formulario.addEventListener("submit", (event) => {
   objAjax.request.open('POST', "modules/configModules/api/apiConfigModules.php", true);
   objAjax.request.setRequestHeader("Content-Type", "application/json");
   objAjax.request.setRequestHeader("Accept", "application/json");
+  objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
   objAjax.request.onload = () => {
+      const response2 = objAjax.request.responseText;
+      console.log(response2);
       const response = JSON.parse(objAjax.request.responseText);
       console.log(response);
       if (response.status) {

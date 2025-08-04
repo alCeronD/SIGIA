@@ -12,46 +12,51 @@ require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
 function validatePermisos(String $modulo, String $funcion)
 {
 
+    if (session_status() === PHP_SESSION_NONE || !isset($_SESSION['usuario'])) {
+        if ($modulo === 'login') return;
+
+        if (isAjaxRequest()) {
+            header("Content-Type: application/json");
+            fail("Sesión no iniciada o expirada.");
+        } else {
+            echo json_encode(['error'], JSON_PRETTY_PRINT);
+            header("Location: " . getUrl('login', 'login', 'index', false, 'index'));
+        }
+        exit();
+    }
+    
+    
     require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
     $objPermisos = new PermisosController();
-    /**
-     * Primera consulta
-     * traer el id del modulo usando el nombre del modulo.
-     */
-    $idNombreModulo = $objPermisos->gidIdModulo($modulo);
-    /**
-     * Segunda consulta
-     * traer el id de la función basadao en su nombre de la función y ID De la función.
-     */
 
+    $idNombreModulo = $objPermisos->gidIdModulo($modulo);
     $idFuncion = $objPermisos->getIdFuncion($funcion, $modulo, $idNombreModulo);
-    /**
-     * Tercera consulta
-     * Validar que el ROL DEL USUARIO TENGA EL PERMISO ADECUADO PARA ACCEDER A ESA FUNCIÓN, BASADO EN ESA FUNCIÓN PODEMOS USAR EL MODULO.
-     */
-    if (session_status() === PHP_SESSION_NONE) {
-        $rolId = 0;
-        $isValidate = false;
-        if ($modulo === 'login') {
-            $rolId = 0;
-            $isValidate = true;
+
+    if (session_status() === PHP_SESSION_NONE || !isset($_SESSION['usuario'])) {
+        if ($modulo === 'login') return;
+
+        if (isAjaxRequest()) {
+            fail("Sesión no iniciada o expirada.");
         } else {
             redirect(getUrl('login', 'login', 'index', false, 'index'));
-            exit();
         }
-    } else {
-        // TODO, con esto en caso de que el rol no este asociado a la función, re dirigir a lógin.
-        $rolId = $_SESSION['usuario']['rol_id'];
-        $isValidate = $objPermisos->validateRolFuncion($rolId, $idFuncion);
+        exit();
     }
 
+    $rolId = $_SESSION['usuario']['rol_id'];
+    $isValidate = $objPermisos->validateRolFuncion($rolId, $idFuncion);
+
     if (!$isValidate) {
-        $result = [
-            'status' => false,
-            'message' => "No tienes permisos para realizar esta operación",
-            'data' => []
-        ];
-        fail('No tienes permisos para realizar esta acción', $result);
-        return;
+        if (isAjaxRequest()) {
+            fail("No tienes permisos para esta acción.");
+        } else {
+            redirect(getUrl('login', 'login', 'index', false, 'index'));
+        }
+        exit();
     }
+}
+
+function isAjaxRequest() {
+    return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+           strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 }

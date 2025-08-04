@@ -1,9 +1,9 @@
 <?php
-// require_once __DIR__ . '/../../../helpers/session.php';
-// require_once __DIR__ . '/../../../helpers/getUrl.php';
+require_once __DIR__ . '/../../../helpers/session.php';
+require_once __DIR__ . '/../../../helpers/validatePermisos.php';
+require_once __DIR__ . '/../../../helpers/getUrl.php';
 require_once __DIR__ . '/../model/reservaModel.php';
 require_once __DIR__ . '/../../usuarios/model/usuariosModel.php';
-require_once __DIR__ . '/../../../helpers/validatePermisos.php';
 
 
 // Recibir la respuesta de la solicitud.
@@ -23,7 +23,6 @@ class reservaPrestamosController
     //Muestra la vista de reserva formulario.
     public function reservaView()
     {
-
         return include_once __DIR__ . '/../views/reservaView.php';
     }
 
@@ -35,34 +34,32 @@ class reservaPrestamosController
 
     public function getElementosDevolutivos(int $pages)
     {
-        validatePermisos('reservaPrestamos', 'getElementosDevolutivos');
+        // validatePermisos('reservaPrestamos', 'getElementosDevolutivos');
         $data = $this->model->selectElements($pages);
         success('Registros', $data);
     }
     
     public function getElementosConsumibles(int $pages = 1, int $type = 2)
     {
-        validatePermisos('reservaPrestamos', 'getElementosConsumibles');
+        // validatePermisos('reservaPrestamos', 'getElementosConsumibles');
         $data = $this->model->selectElements($pages, $type);
         success('elementos consumibles', $data);
     }
     
     public function getUsers($page)
     {
-        validatePermisos('reservaPrestamos', 'getUsers');
+        // validatePermisos('reservaPrestamos', 'getUsers');
         $data = $this->model->selectUsers($page);
 
         if ($data != null) {
             success('Usuarios activos', $data);
         }
     }
-
-    
     //Función para traer las reservas
     public function getReservas(int $pages = 0, String $type = '')
     {
 
-        validatePermisos('reservaPrestamos', 'getReservas');
+        // validatePermisos('reservaPrestamos', 'getReservas');
 
         if (!$pages) {
             fail('pagina no definida');
@@ -80,7 +77,7 @@ class reservaPrestamosController
     }
     public function getElementsReserva($codigo)
     {
-        validatePermisos('reservaPrestamos','getElementsReserva');
+        // validatePermisos('reservaPrestamos','getElementsReserva');
         $codigoInt = (int) $codigo;
         $dataDetail = $this->model->selectElementsReserva($codigoInt);
         success('Elementos relacionados al codigo', $dataDetail);
@@ -197,6 +194,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         $case = $_GET['action'] ?? '';
+        // var_dump($case);
         //valor de la página, por defecto, es la página #1.
         $pages = $_GET['pages'] ?? 1;
 

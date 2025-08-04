@@ -58,11 +58,7 @@ function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
 
     // Validamos que las rutas que el usuario ha seleccionado sean públicas para evitar su navegación.
     $isPublic = isset($publicRoutes[$modulo]) && in_array($funcion, $publicRoutes[$modulo]);
-
     $controllerPath = __DIR__ . "/../modules/$modulo/controller/{$controlador}Controller.php";
-    // dd($controllerPath);
-    // var_dump($funcion); //Esto esta bien
-    // var_dump($controlador);
     if (!is_file($controllerPath)) {
         echo "El controlador no existe.";
         return;
@@ -72,11 +68,9 @@ function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
     include_once __DIR__ . '/../config/conn.php';
     $conexion = (new Conection())->getConnect();
     $nombreClase = $controlador . "Controller";
-    // var_dump($nombreClase);
 
     require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
     $objPermisos = new PermisosController();
-
     // Si no es pública, validamos la sesión y permisos
     if (!$isPublic) {
         if (!isset($_SESSION['usuario'])) {
@@ -86,8 +80,6 @@ function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
         $rolId = $_SESSION['usuario']['rol_id'] ?? 0;
 
         $idModulo = $objPermisos->gidIdModulo($modulo);
-        // var_dump($idModulo);
-        // var_dump($funcion, $modulo, $idModulo);
 
         $idFuncion = $objPermisos->getIdFuncion($funcion, $modulo, $idModulo);
 
@@ -111,4 +103,3 @@ function ajaxGeneral()
     return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
 }
-

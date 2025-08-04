@@ -59,10 +59,8 @@ class ElementosController
         success('', $resultRow);
     }
 
-
     public function getPlacas(String $value = '')
     {
-        validatePermisos('elementos', 'getPlacas');
         $data = $this->modeloElemento->getAllPlacas();
         if (!$data) {
             fail('no hay registros', $data);

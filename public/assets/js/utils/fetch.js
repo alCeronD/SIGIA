@@ -1,7 +1,22 @@
 //Headers para usar para configurar la petición fetch.
 const headers = {
-  "Content-Type": "application/json",
-  "X-Requested-With": "XMLHttpRequest",
+  'Content-Type': 'application/json',
+  'X-Requested-With': 'XMLHttpRequest',
+};
+
+//Función para establecer el fetch.
+const setFetch = (method = "GET", action = "", data = {}) => {
+  if (method === "GET" || method === "POST" || method === "PUT") {
+    data["action"] = action;
+  }
+
+  let returnPrueba = {
+    method,
+    body: method != "GET" ? JSON.stringify(data) : undefined,
+    headers
+  };
+
+  return returnPrueba;
 };
 
 //Función para enviar el fetch
@@ -36,6 +51,7 @@ export const getData = async (
   url,
   method = "GET",
   parameters = {},
+  asText = false,
   data = {}
 ) => {
   try {
@@ -52,27 +68,17 @@ export const getData = async (
     const bodyData = setFetch(method, parameters, data);
     const execute = await fetch(newUrl, bodyData);
 
-    const getResponse = await execute.json();
+
+    const getResponse = asText
+      ? await execute.text()
+      : await execute.json();
     return getResponse;
   } catch (error) {
     throw new Error(`Error de procedimiento ${error}`);
   }
 };
 
-//Función para establecer el fetch.
-const setFetch = (method = "GET", action = "", data = {}) => {
-  if (method === "GET" || method === "POST" || method === "PUT") {
-    data["action"] = action;
-  }
 
-  let returnPrueba = {
-    method,
-    body: method != "GET" ? JSON.stringify(data) : undefined,
-    headers,
-  };
-
-  return returnPrueba;
-};
 
 export default {
   sendData,

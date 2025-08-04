@@ -74,10 +74,12 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
   try {
     //Traigo la data por medio de fetch.
   const result = await getData(
-    "modules/reservaPrestamos/controller/reservaController.php",
+    "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
     "GET",
-    { action: "reservas", pages: page, type }
+    { action: "reservas", pages: page, type },false
   );
+
+  console.log(result);
   let status = result.status;
   data = result.data.data;
   pages = result.data.pages;
@@ -199,7 +201,7 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     const reserva = data.find((item) => item.codigo === codigo);
     if (reserva) {
       let getReservaElementos =  getData(
-        "modules/reservaPrestamos/controller/reservaController.php",
+        "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
         "GET",
         { action: "reservaDetailElements" , codigo: dta.codigo}
       ).then((result)=>{
@@ -218,8 +220,8 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
   } catch (error) {
     console.warn(`Error al procesar la solicitud, intente más tarde ${error}`);
     tbodyReservaConsult.innerHTML = "Error al realizar la solicitud, intente nuevamente";
-
   }
+  
 
   
 };
@@ -383,7 +385,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     //TODO: Mejorar, en la variable elementos encuentro toda la información, no necesito hacer otra petición.
     objAjax.request.open(
       "GET",
-      `modules/reservaPrestamos/controller/reservaController.php?codigo=${encodeURIComponent(
+      `Modules/reservaPrestamos/controller/reservaPrestamosController.php?codigo=${encodeURIComponent(
         codigo
       )}&action=${encodeURIComponent(action)}`,
       true
@@ -452,7 +454,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     ) {
       objEndReserva.request.open(
         "POST",
-        "modules/reservaPrestamos/controller/reservaController.php"
+        "Modules/reservaPrestamos/controller/reservaPrestamosController.php"
       );
       objEndReserva.request.setRequestHeader(
         "X-Requested-With",
@@ -756,7 +758,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       if (confirm(`¿Deseas dar salida a estos elementos? \n${textConfirm}`)) {
         try {
           const responseValidate = await sendData(
-            "modules/reservaPrestamos/controller/reservaController.php",
+            "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
             "POST",
             "validateLoan",
             validateReserva
