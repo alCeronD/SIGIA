@@ -20,9 +20,9 @@ export function asignarEventosBotonesEditar() {
       document.getElementById("modal_ca_id").value = btn.dataset.id;
       document.getElementById("modal_ca_nombre").value = btn.dataset.nombre;
       document.getElementById("modal_ca_descripcion").value = btn.dataset.descripcion;
-      document.getElementById("modal_ca_status").value = btn.dataset.status;
+      // document.getElementById("modal_ca_status").value = btn.dataset.status;
 
-      M.FormSelect.init(document.querySelectorAll("#modal_ca_status"));
+      // M.FormSelect.init(document.querySelectorAll("#modal_ca_status"));
       modalCategoria.open();
       M.updateTextFields();
     });

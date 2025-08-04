@@ -51,6 +51,7 @@
               <td><?= htmlspecialchars($categoria['ca_descripcion']) ?></td>
               <td data-statusTd="<?= $categoria['ca_status'] ?>"><?= $categoria['ca_status'] == '1' ? 'Activo' : 'Inactivo' ?></td>
               <td class="accionesUsuarios">
+                <!-- Botón Editar -->
                 <button type="button"
                   class="btnEditarCategoria waves-effect waves-light btn"
                   data-id="<?= $categoria['ca_id'] ?>"
@@ -59,7 +60,19 @@
                   data-status="<?= $categoria['ca_status'] ?>">
                   <i class="material-icons">edit</i>
                 </button>
+
+                <!-- Botón Inhabilitar / Activar -->
+                <button type="button"
+                  class="btn toggleEstadoBtn white-text waves-effect waves-dark"
+                  data-id="<?= $categoria['ca_id'] ?>"
+                  data-status="<?= $categoria['ca_status'] ?>"
+                  title="<?= $categoria['ca_status'] == '1' ? 'Inhabilitar' : 'Activar' ?>">
+                  <i class="material-icons">
+                    <?= $categoria['ca_status'] == '1' ? 'block' : 'check_circle' ?>
+                  </i>
+                </button>
               </td>
+
             </tr>
           <?php endforeach; ?>
         <?php else: ?>
@@ -76,7 +89,7 @@
   </div>
 </div>
 
-<!-- Modal Editar Categoría -->
+<!-- MODAL Editar Categoría -->
 <div id="modalEditarCategoria" class="modal">
   <div class="modal-content">
     <span id="modalTitle" class="textTitleSpan">Editar Categoría</span>
@@ -97,13 +110,13 @@
         <label for="modal_ca_descripcion" class="active">Descripción</label>
       </div>
 
-      <div class="input-field">
+      <!-- <div class="input-field">
         <select id="modal_ca_status" name="ca_status" required>
           <option value="1">Activo</option>
           <option value="0">Inactivo</option>
         </select>
         <label for="modal_ca_status">Estado</label>
-      </div>
+      </div> -->
 
       <div class="modal-footer">
         <button type="submit" class="btn waves-effect waves-light">
@@ -116,7 +129,7 @@
   </div>
 </div>
 
-<!-- Scripts JS -->
+
 <script type="module" src="../public/assets/js/categorias/categoriasUpdateModal.js"></script>
 <script type="module" src="../public/assets/js/categorias/categoriasRegistrar.js"></script>
 
@@ -125,3 +138,4 @@
   const categoriasUrl = "<?= getUrl('categorias', 'categorias', 'listarCategoriasAjax') ?>";
 </script>
 <script type="module" src="../public/assets/js/categorias/categoriaPaginado.js"></script>
+<script type="module" src="../public/assets/js/categorias/categoriasDesactivar.js"></script>

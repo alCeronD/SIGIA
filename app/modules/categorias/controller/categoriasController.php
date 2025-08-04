@@ -143,17 +143,17 @@ class categoriasController
         }
     }
 
-    public function deleteCategoria()
-    {
-        $id = $_GET['ca_id'];
-        $categorias = new categorias($this->conn);
-        $dato = $categorias->delete($id);
+    // public function deleteCategoria()
+    // {
+    //     $id = $_GET['ca_id'];
+    //     $categorias = new categorias($this->conn);
+    //     $dato = $categorias->delete($id);
 
-        if ($dato) {
-            $this->consultCategoriasView();
-        }
-    }
-    
+    //     if ($dato) {
+    //         $this->consultCategoriasView();
+    //     }
+    // }
+
     public function listarCategoriasAjax()
     {
         validatePermisos('categorias', 'listarCategoriasAjax');
@@ -180,6 +180,75 @@ class categoriasController
                 'paginaActual' => $pagina,
                 'porPagina' => $porPagina
             ]
+        ]);
+    }
+
+
+    public function cambiarEstadoJSON($data)
+    {
+        validatePermisos('categorias', 'cambiarEstadoJSON');
+
+        header('Content-Type: application/json');
+
+        $id = $data['ca_id'] ?? null;
+        $nuevoEstado = $data['ca_status'] ?? null;
+
+        if (!$id || !in_array($nuevoEstado, ['0', '1'], true)) {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'Datos inválidos o incompletos.'
+            ]);
+            return;
+        }
+
+        $modelo = new categorias($this->conn);
+        $resultado = $modelo->actualizarEstado((int)$id, (int)$nuevoEstado);
+
+        if ($resultado === true) {
+            echo json_encode([
+                'success' => true,
+                'mensaje' => 'Estado actualizado correctamente.'
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'Error al actualizar estado. ' . $resultado
+            ]);
+        }
+    }
+}
+
+include_once __DIR__ . '/../../../config/conn.php';
+$conn = new Conection();
+$conexion = $conn->getConnect();
+$objCategorias = new categoriasController($conexion);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = file_get_contents("php://input");
+    $data = json_decode($input, true);
+
+    if (is_array($data) && isset($data['action'])) {
+        $action = $data['action'];
+        unset($data['action']);
+
+        switch ($action) {
+            case 'cambiarEstado':
+                $objCategorias->cambiarEstadoJSON($data);
+                break;
+
+            default:
+                http_response_code(400);
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Acción no válida."
+                ]);
+                break;
+        }
+    } else {
+        http_response_code(400);
+        echo json_encode([
+            "success" => false,
+            "message" => "No se recibió una acción válida."
         ]);
     }
 }

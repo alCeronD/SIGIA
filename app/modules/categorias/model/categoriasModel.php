@@ -164,4 +164,17 @@ class categorias
 
         return $categorias;
     }
+
+    public function actualizarEstado(int $id, int $estado)
+    {
+        $query = "UPDATE categoria SET ca_status = ? WHERE ca_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ii", $estado, $id);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return "Error: " . $this->conn->error;
+        }
+    }
 }
