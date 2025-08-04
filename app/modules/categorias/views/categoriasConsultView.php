@@ -21,7 +21,7 @@
 
         <div class="input-field center-align">
           <button type="submit" class="waves-effect waves-light btn" id="btnSubmit">
-            <i class="material-icons left">send</i> Crear
+            <i class="material-icons left">send</i>
           </button>
         </div>
       </form>
