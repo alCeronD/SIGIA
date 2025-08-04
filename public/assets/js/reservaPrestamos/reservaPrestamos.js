@@ -35,12 +35,7 @@ let addElements;
  */
 const renderUsers = async ({action = "users", pages = 1, resetToFirstPage = false} = {})=>{
   try {
-    const response = await getData("modules/reservaPrestamos/controller/reservaController.php","GET", {action: action, pages});
-
-    // if (!response.status) {
-    //   initAlert(`${response.message}`, "warning", toastOptions);
-    //   return;
-    // }
+    const response = await getData("Modules/reservaPrestamos/controller/reservaPrestamosController.php","GET", {action: action, pages});
 
     let data = response.data.data;
     let allPages = response.data.pages;
@@ -108,7 +103,7 @@ const renderUsers = async ({action = "users", pages = 1, resetToFirstPage = fals
 const getElements = async ({ action = "", pages = 1 } = {}) => {
   try {
     const response = await getData(
-      "modules/reservaPrestamos/controller/reservaController.php",
+      "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
       "GET",
       { action, pages }
     );
@@ -653,7 +648,7 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
 
   objAjax.request.open(
     "POST",
-    "modules/reservaPrestamos/controller/reservaController.php"
+    "Modules/reservaPrestamos/controller/reservaPrestamosController.php"
   );
   objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 

@@ -7,7 +7,7 @@
 
   <!-- Materialize CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  
+    <link rel="icon" type="image/x-icon" href="/public/assets/image/sSigia.ico">
   <!-- Estilos personalizados -->
   <link rel="stylesheet" href="/proyecto_sigia/public/assets/css/login/login.css">
 </head>
