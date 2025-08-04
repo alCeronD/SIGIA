@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../../helpers/validatePermisos.php';
 // Recibir la respuesta de la solicitud.
 $method = $_SERVER['REQUEST_METHOD'];
 
-class ReservaController
+class reservaPrestamosController
 {
     private $model;
 
@@ -55,6 +55,35 @@ class ReservaController
         if ($data != null) {
             success('Usuarios activos', $data);
         }
+    }
+
+    
+    //Función para traer las reservas
+    public function getReservas(int $pages = 0, String $type = '')
+    {
+
+        validatePermisos('reservaPrestamos', 'getReservas');
+
+        if (!$pages) {
+            fail('pagina no definida');
+        }
+
+        // Puedo guardar los estados en un arreglo y validarlo con la clave del arreglo que me recibe.
+        $estadoPrestamo =
+            $type === 'all'       ? 0 : ($type === 'validate'   ? 1 : ($type === 'Rechazado'  ? 2 : ($type === 'toValidate' ? 3 : ($type === 'done' ? 4 : ($type === 'cancelado'  ? 5 : null)))));
+
+        $data = $this->model->selectDetailReserva($pages, $estadoPrestamo);
+        if (!$data['status'] && empty($data['data'])) {
+            success('No hay registros.', $data);
+        }
+        success('Registros', $data);
+    }
+    public function getElementsReserva($codigo)
+    {
+        validatePermisos('reservaPrestamos','getElementsReserva');
+        $codigoInt = (int) $codigo;
+        $dataDetail = $this->model->selectElementsReserva($codigoInt);
+        success('Elementos relacionados al codigo', $dataDetail);
     }
 
     /**
@@ -159,35 +188,9 @@ class ReservaController
         }
     }
 
-    //Función para traer las reservas
-    public function getReservas(int $pages = 0, String $type = '')
-    {
-
-        validatePermisos('reservaPrestamos', 'getReservas');
-
-        if (!$pages) {
-            fail('pagina no definida');
-        }
-
-        // Puedo guardar los estados en un arreglo y validarlo con la clave del arreglo que me recibe.
-        $estadoPrestamo =
-            $type === 'all'       ? 0 : ($type === 'validate'   ? 1 : ($type === 'Rechazado'  ? 2 : ($type === 'toValidate' ? 3 : ($type === 'done' ? 4 : ($type === 'cancelado'  ? 5 : null)))));
-
-        $data = $this->model->selectDetailReserva($pages, $estadoPrestamo);
-        if (!$data['status'] && empty($data['data'])) {
-            success('No hay registros.', $data);
-        }
-        success('Registros', $data);
-    }
-    public function getElementsReserva($codigo)
-    {
-        $codigoInt = (int) $codigo;
-        $dataDetail = $this->model->selectElementsReserva($codigoInt);
-        success('Elementos relacionados al codigo', $dataDetail);
-    }
 }
 
-$controller = new ReservaController();
+$controller = new reservaPrestamosController();
 //Valido si lo que se solicita es una petición ajax.
 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 

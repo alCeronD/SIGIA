@@ -25,7 +25,7 @@
                 <i class="material-icons large grey-text text-darken-2 center-align">assignment</i>
                 <h5>Préstamos de Elementos</h5>
                 <p>Consulta los préstamos actuales.</p>
-                <a class="btn grey btnGetUrl" href="<?php echo getUrl('reservaPrestamos', 'reserva', 'consultaReservaView', false, 'dashboard'); ?>">Ver reservas</a>
+                <a class="btn grey btnGetUrl" href="<?php echo getUrl('reservaPrestamos', 'reservaPrestamos', 'consultaReservaView', false, 'dashboard'); ?>">Ver reservas</a>
             </div>
             <div class="option-card z-depth-1 div4">
                 <i class="material-icons large green-text text-darken-2 center-align">person</i>

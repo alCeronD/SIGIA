@@ -4,7 +4,7 @@
 // Variables para validar el menú del usuario.
 $modulos = $_SESSION['renderMenu']['modulos'];
 $vistasModulos = $_SESSION['renderMenu']['vistas'];
-
+$subItems = $_SESSION['renderMenu']['subMenus'];
 ?>
 
 <div class="fixed-action-btn direction-top">
@@ -17,9 +17,9 @@ $vistasModulos = $_SESSION['renderMenu']['vistas'];
     <?php foreach ($modulos as $value) :
       $nombreModulo = $value['nombreModulo'];
       $icon = $value['iconModulo'];
-      ?>
+    ?>
       <li>
-        <a class="btn-floating red submenu-trigger" data-tooltip="" data-submenu="submenu-<?php echo $nombreModulo ?>" id="">
+        <a class="btn-floating text-darken-2 submenu-trigger" data-tooltip="" data-submenu="submenu-<?php echo $nombreModulo ?>" id="">
           <!-- El nombre del icono se trae desde php. -->
           <i class="material-icons"><?php echo $icon; ?></i>
         </a>
@@ -36,96 +36,97 @@ $vistasModulos = $_SESSION['renderMenu']['vistas'];
 </div>
 
 <!-- Subitems -->
-<?php foreach ($vistasModulos as $key => $value):
-  $nombreModulo = $value['nombreModulo'];
-  $funcionModulo = $value['nombreFuncionController'];
-  $nombreModuloUser = $value['nombreFuncionUser'];
-?>
-  <div id="submenu-<?php echo $nombreModulo; ?>" class="submenu hidden">
-    <a href="<?php echo getUrl($nombreModulo, $nombreModulo, $funcionModulo, false, 'dashboard'); ?>"><?php echo $nombreModuloUser; ?></a>
+<?php foreach ($subItems as $modulo => $funciones): ?>
+  <div id="submenu-<?php echo $modulo; ?>" class="submenu hidden">
+    <?php foreach ($funciones as $item):
+      $nombreFuncionUser = $item['nombreFuncionUser'];
+      $nombreModulo = $item['nombreModulo'];
+      $funcionController = $item['nombreFuncionController'];
+    ?>
+      <a href="<?php echo getUrl($nombreModulo, $nombreModulo, $funcionController, false, 'dashboard'); ?>">
+        <?php echo $nombreFuncionUser; ?>
+      </a>
+    <?php endforeach; ?>
   </div>
 <?php endforeach; ?>
 
+<style>
+  .submenu {
+    position: absolute;
+    background: white;
+    padding: 12px 16px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: none;
+    flex-direction: column;
+    z-index: 999;
+    min-width: 180px;
+    max-height: 190px;
+    overflow-y: auto;
+  }
 
-  <style>
-    .submenu {
-      position: absolute;
-      background: white;
-      padding: 12px 16px;
-      border-radius: 6px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      display: none;
-      flex-direction: column;
-      z-index: 999;
-      min-width: 180px;
-      max-height: 190px;
-      overflow-y: auto;
-    }
+  .submenu a {
+    padding: 6px 10px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+  }
 
-    .submenu a {
-      padding: 6px 10px;
-      color: #333;
-      text-decoration: none;
-      border-radius: 4px;
-    }
+  .submenu a:hover {
+    background: #f2f2f2;
+  }
 
-    .submenu a:hover {
-      background: #f2f2f2;
-    }
+  .submenu.visible {
+    display: flex;
+  }
 
-    .submenu.visible {
-      display: flex;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const menu = document.querySelectorAll('.fixed-action-btn');
-      M.FloatingActionButton.init(menu, {
-        direction: 'top',
-        hoverEnabled: false
-      });
-      const triggers = document.querySelectorAll('.submenu-trigger');
-      triggers.forEach(trigger => {
-        const submenuId = trigger.dataset.submenu;
-        console.log(submenuId);
-        const submenu = document.getElementById(submenuId);
-        console.log(submenu);
-
-        trigger.addEventListener('mouseenter', () => {
-          document.querySelectorAll('.submenu').forEach(el => el.classList.remove('visible'));
-
-          const rect = trigger.getBoundingClientRect();
-          const submenuHeight = submenu.offsetHeight || 150;
-          submenu.style.top = `${rect.top + window.scrollY  }px`;
-          submenu.style.left = `${rect.left - submenu.offsetWidth - 190}px`; //Ajusto menu <<
-          submenu.classList.add('visible');
-        });
-
-        trigger.addEventListener('mouseleave', () => {
-          setTimeout(() => {
-            if (!submenu.matches(':hover') && !trigger.matches(':hover')) {
-              submenu.classList.remove('visible');
-            }
-          }, 200);
-        });
-
-
-        submenu.addEventListener('mouseleave', () => submenu.classList.remove('visible'));
-      });
-
-      document.addEventListener('click', e => {
-        if (!e.target.closest('.fixed-action-btn') && !e.target.closest('.submenu')) {
-          document.querySelectorAll('.submenu').forEach(el => el.classList.remove('visible'));
-        }
-      });
+  .hidden {
+    display: none;
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const menu = document.querySelectorAll('.fixed-action-btn');
+    M.FloatingActionButton.init(menu, {
+      direction: 'top',
+      hoverEnabled: false
     });
-  </script>
+    const triggers = document.querySelectorAll('.submenu-trigger');
+    triggers.forEach(trigger => {
+      const submenuId = trigger.dataset.submenu;
+      const submenu = document.getElementById(submenuId);
+
+      trigger.addEventListener('mouseenter', () => {
+        document.querySelectorAll('.submenu').forEach(el => el.classList.remove('visible'));
+
+        const rect = trigger.getBoundingClientRect();
+        const submenuHeight = submenu.offsetHeight || 150;
+        submenu.style.top = `${rect.top + window.scrollY  }px`;
+        submenu.style.left = `${rect.left - submenu.offsetWidth - 190}px`; //Ajusto menu <<
+        submenu.classList.add('visible');
+      });
+
+      trigger.addEventListener('mouseleave', () => {
+        setTimeout(() => {
+          if (!submenu.matches(':hover') && !trigger.matches(':hover')) {
+            submenu.classList.remove('visible');
+          }
+        }, 200);
+      });
 
 
-  </body>
+      submenu.addEventListener('mouseleave', () => submenu.classList.remove('visible'));
+    });
 
-  </html>
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.fixed-action-btn') && !e.target.closest('.submenu')) {
+        document.querySelectorAll('.submenu').forEach(el => el.classList.remove('visible'));
+      }
+    });
+  });
+</script>
+
+
+</body>
+
+</html>

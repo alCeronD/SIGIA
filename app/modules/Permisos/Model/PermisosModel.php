@@ -154,11 +154,8 @@ class PermisosModel
             $modulosMenu[] = $row;
         }
 
-        // var_dump($modulosMenu);
-
         $newModulosMenu = [];
         foreach ($modulosMenu as $key => $value) {
-            // var_dump($value);
             $nombreModulo = $value['nombreModulo'] === 'dashboard' ?? $value['nombreModulo'];
 
             if ($nombreModulo === 'dashboard') {
@@ -188,6 +185,7 @@ class PermisosModel
         $stmtOptionsMenu = $coon->prepare($sqlOptionsMenu);
 
         $optionsMenu = [];
+        $optionsMenuClasificado = [];
         foreach ($modulosMenu as $key => $value) {
             $modulo = $value['idModulo'];
             $moduloNombre = $value['nombreModulo'];
@@ -200,12 +198,14 @@ class PermisosModel
             
             while($row = $resultOptions->fetch_assoc()){
                 $optionsMenu[] = $row;
+                $optionsMenuClasificado[$moduloNombre][]=$row;
             }
         }
 
         $data = [
             'modulos'=> $modulosMenu,
-            'vistas'=> $optionsMenu
+            'vistas'=> $optionsMenu,
+            'subMenus'=>$optionsMenuClasificado
         ];
 
         return [
@@ -220,4 +220,4 @@ class PermisosModel
 
 $obj = new PermisosModel();
 
-$obj->renderMenu(16);
+$obj->renderMenu(2);
