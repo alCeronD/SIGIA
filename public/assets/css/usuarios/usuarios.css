@@ -82,7 +82,7 @@
   cursor: pointer;
   font-size: 1.5rem;
   text-decoration: none;
-  color: red;
+  color: #039be5 !important;
 }
 
 /* ///////////CCS REGISTRAR USUARIOS///////////// */

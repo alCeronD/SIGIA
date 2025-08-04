@@ -3,7 +3,7 @@
   <div class="solicitudTitle">
     <h2 class="center-align" id= "tituloConsult">Préstamos Registrados</h2>
     <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
-      class="close-btn btn red lighten-1 white-text waves-effect waves-light"
+      class="close-btn"
       title="Volver al dashboard">
       &times;
     </a>

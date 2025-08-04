@@ -8,7 +8,7 @@ require_once __DIR__ ."/../../../helpers/helpers.php";
 <div class="content">
 
   <span class="card-title">Gestión de información personal.
-    <a href="<?php echo getUrl('dashboard', 'Dashboard', 'dashboard', false,'dashboard'); ?>" class="btn-flat right" title="Volver al listado">
+    <a href="<?php echo getUrl('dashboard', 'Dashboard', 'dashboard', false,'dashboard'); ?>" class="close btn-flat right" title="Volver al listado">
       <i class="material-icons">close</i>
     </a>
   </span>
