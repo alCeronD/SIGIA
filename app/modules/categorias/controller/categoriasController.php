@@ -109,6 +109,7 @@ class categoriasController
 
     public function createCategoria()
     {
+        
         validatePermisos('categorias', 'createCategoria');
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -165,7 +166,6 @@ class categoriasController
 
         // Instanciar el modelo
         $modelo = new categorias($this->conn);
-
         // Obtener total y datos paginados
         $total = $modelo->contarTotal();
         $categorias = $modelo->listarPaginadas($offset, $porPagina);
@@ -224,6 +224,13 @@ $conexion = $conn->getConnect();
 $objCategorias = new categoriasController($conexion);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Procesar formulario de registro (FormData)
+    if (!empty($_POST) && isset($_POST['ca_nombre'])) {
+        $objCategorias->createCategoria();
+        exit();
+    }
+
+    // Procesar peticiones AJAX con JSON
     $input = file_get_contents("php://input");
     $data = json_decode($input, true);
 
@@ -252,3 +259,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
     }
 }
+

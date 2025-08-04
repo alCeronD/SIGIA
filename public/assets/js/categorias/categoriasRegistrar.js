@@ -28,7 +28,7 @@ form.addEventListener("submit", async (e) => {
 
       setTimeout(() => {
         window.location.reload();
-      }, 100);
+      }, 500);
 
     } else {
       initAlert(data.mensaje || "Ocurrió un error al registrar.", "error", toastOptions);
