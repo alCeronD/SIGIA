@@ -126,3 +126,4 @@ function renderizarTabla(categorias) {
     </tr>
   `).join("");
 }
+  

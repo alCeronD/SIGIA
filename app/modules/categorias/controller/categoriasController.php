@@ -28,6 +28,7 @@ class categoriasController
         $modeloCategorias = new categorias($this->conn);
         $_SESSION['css'] = 'categorias/categorias.css';
         $categorias = $modeloCategorias->search();
+        // $path = __DIR__ . '/../views/categoriasConsultview.php';
         $path = __DIR__ . '/../views/categoriasConsultview.php';
         return include $path;
     }
