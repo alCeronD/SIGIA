@@ -27,7 +27,7 @@
 }
 
 #textTitle {
-  font-size: 20pt;
+  font-size: 2rem !important;
 }
 
 .solicPrestamos {
@@ -130,7 +130,7 @@ th {
   height: 35px;
   margin: 0;
   margin-top: 10px;
-  font-size: 16px;
+  font-size: 2rem;
   line-height: 1.4;
 }
 
@@ -170,7 +170,7 @@ textarea.inputForm {
 }
 
 .input-field>.fontInfo {
-  font-size: 20pt !important;
+  font-size: 1.5rem !important;
 }
 
 
@@ -358,7 +358,12 @@ textarea.inputForm {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  
+}
 
+#tituloConsult{
+  font-size: 2rem !important;
+  /* font-weight: bold !important; */
 }
 
 /* Tabla de consultar solicitud */

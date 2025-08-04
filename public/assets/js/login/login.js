@@ -22,14 +22,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const docum = documInput.value.trim();
         const pass = passInput.value.trim();
-
-        if (pass.length === 0) {
+        
+        if (pass.length === 0 && docum.length === 0)  {
+            initAlert("Por favor llene todos los campos", "info", toastOptions);
+            return;
+        }
+        
+        if (pass.length === 0 && docum.length > 0) {
             initAlert("La contraseña es obligatoria", "info", toastOptions);
             return;
         }
 
-        if (docum.length === 0) {
-            initAlert("El nro de documento es obligatorio", "info", toastOptions);
+        if (docum.length === 0 && pass.length > 0) {
+            initAlert("El No de documento es obligatorio", "info", toastOptions);
             return;
         }
 
