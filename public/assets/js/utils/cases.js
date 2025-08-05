@@ -206,7 +206,7 @@ export const opcionesDatepicker = {
     return date < today;
   },
 
-  // Idioma (traducciones)
+  // Idioma Español.
   i18n: {
     cancel: "Cancelar",
     clear: "Limpiar",
@@ -271,46 +271,31 @@ export const opcionesDatepicker = {
   onDraw: function () {},
 };
 
-export const timePickerOptions = {
-  //False para formato de 24 horas, true para formato de 12 horas.
-  twelveHour: false,
-  // Cerrar automáticamente cuando selecciono la hora.
-  autoClose: true,
-  // Hora por defecto al abrir el input
-  defaultTime: "now",
-  i18n: {
-    cancel: "Cancelar",
-    clear: "Limpiar",
-    done: "Aceptar",
-  },
-};
-
-export const dateISOFormat = (fecha) => {
+export const dateISOFormat = (fecha, isNewDate = false) => {
   if (!fecha) {
     return null;
   }
 
   const [year, day, month] = fecha.split(" ");
-
   const months = {
-    Jan: "01",
-    Feb: "02",
-    Mar: "03",
-    Apr: "04",
-    May: "05",
-    Jun: "06",
-    Jul: "07",
-    Aug: "08",
-    Sep: "09",
-    Oct: "10",
-    Nov: "11",
-    Dec: "12",
-  };
+  Ene: "01",
+  Feb: "02",
+  Mar: "03",
+  Abr: "04",
+  May: "05",
+  Jun: "06",
+  Jul: "07",
+  Ago: "08",
+  Sep: "09",
+  Oct: "10",
+  Nov: "11",
+  Dic: "12",
+};
 
   const monthFormate = months[month];
-
+  const newDate = `${year}-${monthFormate}-${day.padStart(2, "0")}`;
   //Con padStart se rellena el valor en caso de que no hayan dos digitos, si hay 1 solo el le coloca un 0, si hay un valor de 10 en adelante, no hace nada y devuelve el nro 10.
-  return `${year}-${monthFormate}-${day.padStart(2, "0")}`;
+  return isNewDate ? new Date(newDate) : newDate;
 };
 
 export const toastOptions = {

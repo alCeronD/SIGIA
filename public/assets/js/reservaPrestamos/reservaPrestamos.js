@@ -1,5 +1,5 @@
 import { addClassItem } from "../utils/cases.js";
-import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,timePickerOptions,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, sendData, inputsForm, iDom, objDataConsumibles, objDataUsers } from "./index.js";
+import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, sendData, inputsForm, iDom, objDataConsumibles, objDataUsers } from "./index.js";
 const objAjax = new Ajax();
 btnDoom.btnModalPreviewElements.append(iDom.iCreatePreview);
 btnDoom.btnAddElements.classList.add("btnClick");
@@ -343,7 +343,6 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", (event) => {
       //Valido, si el arreglo no contiene el valueInput, entonces que implemente el valor ahí.
       if (!ids.includes(valueInput)) {
         ids.push(valueInput);
-        console.log(ids);
         tablesDoom.tblBodyPreviewElements.appendChild(trTablePreview);
         tdCodigo.textContent = codigo;
         tdNombre.textContent = nombre;
@@ -442,7 +441,6 @@ btnDoom.btnPreviewUsers.addEventListener("click", (event) => {
   pgUsers = pgUsers === 1 ? 1 : pgUsers - 1;
 
   //Decrementa la página por el valor del pages.
-  // resetTableUsers("users");
   renderUsers({action:"users", pages:pgUsers});
 });
 
@@ -579,6 +577,18 @@ function validateFormData(formData) {
   return true;
 }
 
+function validateDate(date1,date2){
+  let timeDate1 = date1.getTime();
+  let timeDate2 = date2.getTime();
+
+  if (timeDate1 > timeDate2) {
+  return false;
+  }else{
+    return true;
+  }
+
+}
+
 /**
  * Submit al formulario.
  */
@@ -596,13 +606,21 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
   let data = Object.fromEntries(info);
-  if (!validateFormData(info)) {
-    return; // Detener si hay campos vacíos
+  if (!validateFormData(info)) return; 
+   
+
+  let fechaReservaParse = dateISOFormat(data.fechaReserva, true);
+  let fechaDevolucionParse = dateISOFormat(data.fechaDevolucion, true);
+  
+  if (!validateDate(fechaReservaParse,fechaDevolucionParse)) {
+    initAlert("La fecha de reserva no debe ser mayor a la fecha de devolución.", "info", toastOptions);
+    return;
   }
 
   //Transformo la fecha en formato iso 8601
   let fechaReservaFormat = dateISOFormat(data.fechaReserva);
   let fechaDevolucionFormat = dateISOFormat(data.fechaDevolucion);
+
   data.fechaReserva = fechaReservaFormat;
   data.fechaDevolucion = fechaDevolucionFormat;
 
@@ -616,8 +634,7 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let filas = document.querySelectorAll(
     ".tableElements .previewElements #tblBodyPreviewElements tr"
   );
-  //Capturo el codigo del elemento y lo guardo.
-  //TODO: Validar que cuando el usuario presione el botón de enviar aplique un return cuando no se ha diligenciado ningún campo.
+  // //Capturo el codigo del elemento y lo guardo.
   filas.forEach((fl) => {
     let tds = fl.querySelectorAll("td");
     //4 Por la cantidad de columnas que hay
@@ -762,10 +779,6 @@ document.addEventListener("DOMContentLoaded", () => {
   //Hago la instancia de los input tipo date
   instanceDate("#fechaReserva", opcionesDatepicker);
   instanceDate("#fechaDevolucion", opcionesDatepicker);
-
-  //Instancia de los input de tipo datetime.
-  instanceDateTime("#fin", timePickerOptions);
-  instanceDateTime("#inicio", timePickerOptions);
 
   closeModal(modalDoom.modalUsers, btnDoom.btnCloseUsers);
   closeModal(instanPreview, btnDoom.btnClosePreviewElements);

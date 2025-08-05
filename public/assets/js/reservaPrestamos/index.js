@@ -9,7 +9,6 @@ export {
   options,
   opcionesDatepicker,
   instanceDateTime,
-  timePickerOptions,
   dateISOFormat,
   initTooltip,
   tooltipOptions,
