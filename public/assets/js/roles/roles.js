@@ -202,6 +202,10 @@ preconfirmButton.addEventListener("click", (e) => {
         modalConfirmacion.close();
         modalAsing.close();
         initAlert(responsePost.message, "success", toastOptions);
+        // Esto lo hago para recargar la página y así ver los últimos cambios de la página del menú, buscar como hacerlo de una mejor manera.
+        setTimeout(() => {
+          location.reload();
+        }, 400);
         return;
       } catch (error) {
         initAlert(error.message, "info", toastOptions);
@@ -434,7 +438,6 @@ formRol.addEventListener("submit", async (e) => {
 });
 document.addEventListener("DOMContentLoaded", () => {
   renderRoles();
-  // renderRolesFunciones();
   closeModal(modalAsing, closeModalBtnAsing, () => {
     rolId = null;
   });

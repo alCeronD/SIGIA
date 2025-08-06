@@ -3,6 +3,7 @@ include_once __DIR__ . '/../model/rolesModel.php';
 include_once __DIR__ . '/../../Permisos/Model/PermisosModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 require_once __DIR__ . '/../../../helpers/response.php';
+require_once __DIR__ . '/../../../helpers/session.php';
 /**
  * En este documento está adjunto la variable de sessión, getUrl y response que me permite mandar el json al front como respuesta.
  */
@@ -10,12 +11,15 @@ require_once __DIR__ . "/../../../helpers/validatePermisos.php";
 class RolesController
 {
     private $modeloRol;
+    private $permisosModel;
     private $conn;
 
     public function __construct()
     {
+        // Debo de cambiar esto, si voy a usar varios modales en un controlador, implementar una interfaz.
         $this->conn = new Conection();
         $this->modeloRol = new RolModelo();
+        $this->permisosModel = new PermisosModel();
     }
 
     public function mostrarRoles()
@@ -82,7 +86,6 @@ class RolesController
         if (!$dataResult['status']) {
             fail('error al procesar la data', $dataResult);
         }
-
         success('roles y permisos encontrados', $dataResult);
     }
 
@@ -97,11 +100,22 @@ class RolesController
     }
     
     public function setPermisos(array $data = []){
+
+        $rolId = $_SESSION['usuario']['rol_id'];
+        // var_dump($_SESSION);
+        // $renderMenu = $_SESSION['renderMenu'];
+
+        // para reemplazar el menú.
+        // $_SESSION['renderMenu']= $result['data'];
+
         $responsePermisos = $this->modeloRol->assocPermisos($data);
 
         if (!$responsePermisos['status']) {
            fail('error al ejecutar el proceso', $responsePermisos);
         }
+
+        $result = $this->permisosModel->renderMenu($rolId);
+        $_SESSION['renderMenu'] = $result['data'];
         success('Permisos Asociados correctamente', $responsePermisos);
 
     }

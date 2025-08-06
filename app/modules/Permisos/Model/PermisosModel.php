@@ -127,8 +127,6 @@ class PermisosModel
     {
         $modulesRender = [];
         $coon = (new Conection)->getConnect();
-
-
         $sqlMenu = "SELECT DISTINCT
             mo.id_m AS 'idModulo',
             mo.cod_nombre_m AS 'nombreModulo',
@@ -164,7 +162,6 @@ class PermisosModel
             $newModulosMenu [$key]= $value;
         }
 
-        // var_dump($newModulosMenu);
 
         $sqlOptionsMenu = "SELECT DISTINCT 
             fu.nombre_funcion_user AS 'nombreFuncionUser',
@@ -218,6 +215,3 @@ class PermisosModel
     }
 }
 
-$obj = new PermisosModel();
-
-$obj->renderMenu(2);
