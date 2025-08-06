@@ -15,7 +15,7 @@ class ElementoModelo
     }
 
     /**
-     * Obtiene todos los elementos con información relacionada (área, tipo, estado).
+     * Obtiene todos los elementos con información relacionada (departamento, tipo, estado).
      *
      * @return array Lista de elementos con sus respectivos datos.
      */

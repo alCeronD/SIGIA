@@ -16,11 +16,8 @@
   --error2: #e57373;
 }
 
-
 /* 
-
 -- MODULO RESERVA PRESTAMOS - reservar Prestamo.
-
 */
 
 /* Diseño base en resolusión 1366px por 766 */
@@ -486,12 +483,12 @@ th {
   grid-template-columns: repeat(2,1fr);
   grid-template-rows: auto;
   grid-template-areas: 
-  "nroIdentidad nombreCompleto"
-  "fechaReserva fechaSolicitud"
-  "fechaDevolucion ."
-  "observaciones ."
+  "nombreCompleto nombreCompleto"
+  "nroIdentidad fechaReserva"
+  "fechaDevolucion fechaSolicitud"
+  "observaciones observaciones"
   ;
-  gap: 0.3rem;
+  gap: 0.6rem;
 }
 
 #formDetail .nroIdentidad {
@@ -500,6 +497,9 @@ th {
 
 #formDetail .nombreCompleto {
   grid-area: nombreCompleto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
 #formDetail .fechaReserva {
@@ -520,6 +520,11 @@ th {
 
 #formDetail .labelFormDetail{
   font-size: 12pt;
+  display: flex;
+  flex-wrap: wrap;
+  height: auto;
+  justify-content: space-between;
+  flex-direction: row;
 }
 
 
@@ -567,14 +572,6 @@ table td .actionsElements {
   border: 1px solid #ccc;
 }
 
-/* #tblBodyConsumibles th,td:last-child{
-  background-color: yellow;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-    padding: 4px 8px;
-  border: 1px solid #ccc;
-} */
 
 .idAccionesPreviewElements{
   display: flex;
@@ -695,10 +692,6 @@ color: var(--secundary);
 #submitValidate{
   gap: 0.3rem;
 }
-
-/* #inputObservacion:focus{
-  border: 1px solid #b2dfdb;
-} */
 
 /* Resolusiones mayores a 1440 */
 @media screen and (min-width: 1440px) { 

@@ -79,10 +79,10 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     { action: "reservas", pages: page, type },false
   );
 
-  console.log(result);
   let status = result.status;
   data = result.data.data;
   pages = result.data.pages;
+  console.log(data);
   if (status && data.length === 0) {
     tbodyReservaConsult.innerHTML = "";
     tbodyReservaConsult.innerHTML = "No hay prestamos para el estado del prestamo seleccionado.";
@@ -107,8 +107,6 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
 
     btnDetail.setAttribute("class", "btnDetail btnClick");
     btnDetail.setAttribute("data-id", `${dta.codigo}`);
-    //TODO: Esto lo debo si o si cambiar, puedo crear una funcion para implementar las clases.
-
     btnAdd.setAttribute("class", "addElements");
     btnAdd.setAttribute("data-add", `${dta.codigo}`);
     btnEnd.setAttribute("data-end", `${dta.codigo}`);
@@ -162,17 +160,14 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     if (tdEstado.textContent === "Finalizado") {
       btnEnd.style.display = "none";
       tdEstado.style.color = "gray";
-      // tdEstado.style.fontWeight = "bold";
     }
 
     if (tdEstado.textContent === "Rechazado") {
       tdEstado.style.color = "red";
-      // tdEstado.style.fontWeight = "bold";
     }
 
     if (tdEstado.textContent === "Validado") {
       tdEstado.style.color = "green";
-      // tdEstado.style.fontWeight = "bold";
     }
 
     tdAcciones.appendChild(btnDetail);
@@ -221,9 +216,6 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     console.warn(`Error al procesar la solicitud, intente más tarde ${error}`);
     tbodyReservaConsult.innerHTML = "Error al realizar la solicitud, intente nuevamente";
   }
-  
-
-  
 };
 
 //Estas variables las uso para guardar los elementos que no han sido validados.

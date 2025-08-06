@@ -16,16 +16,19 @@
           <label for="nombreCompleto" class="labelForm labelFormDetail">Nombre: <span class="inputFormDetail" name="nombreCompleto" id="nombreCompleto"></span></label>
         </div>
         <div class="inputContent inputContentDetail fechaReserva">
-          <label for="fechaReserva" class="labelForm labelFormDetail">Fecha reserva: <span class="inputFormDetail" name="fechaReserva" id="fechaReserva"></span></label>
+          <label for="fechaReserva" class="labelForm labelFormDetail">Fecha Registro: <span class="inputFormDetail" name="fechaReserva" id="fechaReserva"></span></label>
         </div>
         <div class="inputContent inputContentDetail fechaSolicitud">
-          <label for="fechaSolicitud" class="labelForm labelFormDetail">Fecha solicitud: <span class="inputFormDetail" name="fechaSolicitud" id="fechaSolicitud"></span></label>
+          <label for="fechaSolicitud" class="labelForm labelFormDetail">Fecha Entrega: <span class="inputFormDetail" name="fechaSolicitud" id="fechaSolicitud"></span></label>
         </div>
         <div class="inputContent inputContentDetail fechaDevolucion">
-          <label for="fechaDevolucion" class="labelForm labelFormDetail">Fecha devolución: <span class="inputFormDetail" name="fechaDevolucion" id="fechaDevolucion"></span></label>
+          <label for="fechaDevolucion" class="labelForm labelFormDetail">Fecha Devolución: <span class="inputFormDetail" name="fechaDevolucion" id="fechaDevolucion"></span></label>
         </div>
-        <div class="inputContent inputContentDetail observaciones">
-          <label for="observaciones" class="labelForm labelFormDetail">Observaciones: <p class="inputFormDetail" id="observaciones" name="observaciones"></p></label>
+        <div class=" inputContentDetail observaciones">
+          <label for="observaciones" class="labelForm labelFormDetail">Observaciones:
+            <p class="inputFormDetail" id="observaciones" name="observaciones"></p>
+          </label>
+           
         </div>
       </form>
     </div>
@@ -40,7 +43,7 @@
           </tr>
         </thead>
         <tbody id="BodydetailReserva">
-          <!-- Datos se insertarán aquí -->
+          <!-- Renderizado con javascript. -->
         </tbody>
       </table>
     </div>
