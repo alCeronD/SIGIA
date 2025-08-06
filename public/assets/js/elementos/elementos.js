@@ -318,13 +318,23 @@ const renderElements = async ({
   type = "all",
   action = "elements",
   page = 1,
+  isBusqueda = false,
+  value = ""
 } = {}) => {
-  try {
+  try { 
+    let parameters = {};
+    if (!isBusqueda && value === "") {
+      console.log("valor de if");
+      parameters = {action, pages: page, type}
+    }else{
+      console.log("valor de else");
+      parameters = {action, pages: page, type, isBusqueda, value}
+    }
     const dataElements = await getData(
-      "modules/elementos/controller/elementosController.php",
-      "GET",
-      { action, pages: page, type }
-    );
+        "modules/elementos/controller/elementosController.php",
+        "GET",
+        parameters
+      );
     let data = dataElements.data.data;
     pageGlobal = dataElements.data.cantidadPaginas;
     if (page > pageGlobal) {
@@ -517,10 +527,8 @@ const renderElements = async ({
       btnDelete.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log(e.target);
         const btn = e.currentTarget;
 
-        console.log(btn.dataset.status);
         // Validar que el estado del elemento sea prestado para evitar inhabilitar el elemento
         if (parseInt(btn.dataset.status) === 3) {
           initAlert(
@@ -792,7 +800,6 @@ filtroTipo.addEventListener("change", (e) => {
   } else {
     currentType = typeElements.all;
   }
-
   renderElements({ type: currentType, page: pageElement }).then(() => {
     renderWithFilter();
   });
@@ -835,20 +842,22 @@ inputBusqueda.addEventListener("keyup", function (e) {
   e.stopPropagation();
   const filtro = e.target.value.toLowerCase().trim();
 
-  console.log(filtro);
   // console.log({"valor": filtro});
   // console.log({"cantidadCaracteres": filtro.length});
   // console.log(filtro);
 
-  // if (filtro.length === 0) {
-  //     renderElements({type : typeElements.all, type: currentType});
-  //     return
-  // }
+  if (filtro.length === 0) {
+      renderElements({type : typeElements.all, type: currentType});
+      return;
+  }else{
 
-  // timer = setTimeout(()=>{
-  //     renderElement({action: 'onlyElement', value:filtro});
+        setTimeout(()=>{
+        renderElements({action: 'elements', value:filtro, type: currentType, page: 1, isBusqueda: true});
 
-  // }, 400);
+    }, 400);
+  }
+
+
 });
 
 // span en donde se visualizara la respuesta de la placa si es correcta o no.
