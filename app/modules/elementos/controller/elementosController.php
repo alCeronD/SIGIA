@@ -38,11 +38,8 @@ class ElementosController
         $totalElementos = $resultElements['total'];
         $totalPaginas = ceil($totalElementos / $limite);
 
-
-
         // Obtener elementos paginados
         $elementos = $this->modeloElemento->obtenerElementoPaginado($limite, $offset, $type, $isBusqueda, $value);
-
 
         if (!$elementos) {
             fail('error al traer los elementos');

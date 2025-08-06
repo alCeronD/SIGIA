@@ -324,10 +324,8 @@ const renderElements = async ({
   try { 
     let parameters = {};
     if (!isBusqueda && value === "") {
-      console.log("valor de if");
       parameters = {action, pages: page, type}
     }else{
-      console.log("valor de else");
       parameters = {action, pages: page, type, isBusqueda, value}
     }
     const dataElements = await getData(
@@ -337,11 +335,17 @@ const renderElements = async ({
       );
     let data = dataElements.data.data;
     pageGlobal = dataElements.data.cantidadPaginas;
+    tbodyElements.innerHTML = "";
+    
+    if (pageGlobal === 0) {
+      tbodyElements.innerHTML = "Sin resultados";
+      return;
+    }
+    
     if (page > pageGlobal) {
       return;
     }
-    //Puedo hacer que si el tipo del elemento es consumible o no, se renderice solo unas columnas, no otras.
-    tbodyElements.innerHTML = "";
+    const fragmentElements = document.createDocumentFragment();
     data.forEach((dta) => {
       let tr = document.createElement("tr");
       let tdPlaca = document.createElement("td");
@@ -391,11 +395,6 @@ const renderElements = async ({
       btnDelete.setAttribute("data-Cod", dta.codigoElemento);
       btnDelete.setAttribute("data-Status", dta.codEstadoElemento);
 
-      //TODO: esto se puede mejorar implementando la información de manera dinámica.
-      /**
-       * buscar como funciona document.createDocumentFragment
-       */
-
       tdPlaca.innerText = dta.placa;
       tdCantidad.innerText = dta.cantidad;
       tdCodigoElemento.innerText = dta.codigoElemento;
@@ -431,7 +430,7 @@ const renderElements = async ({
       if (dta.tipoElemento === "Devolutivo")
         tdAcciones.append(btnInfo, btnEdit, btnDelete);
 
-      tbodyElements.appendChild(tr);
+
       tr.append(
         tdPlaca,
         tdNombreElemento,
@@ -442,6 +441,10 @@ const renderElements = async ({
         tdAreaElemento,
         tdAcciones
       );
+
+      fragmentElements.appendChild(tr);
+
+      
 
       // Boton de información.
       btnInfo.addEventListener("click", (e) => {
@@ -635,6 +638,9 @@ const renderElements = async ({
         cantidadExistencia = cell[2].textContent.trim();
       });
     });
+
+    tbodyElements.appendChild(fragmentElements);
+
   } catch (error) {
     throw new Error(`Error al consultar los elementos ${error}`);
   }
@@ -800,64 +806,83 @@ filtroTipo.addEventListener("change", (e) => {
   } else {
     currentType = typeElements.all;
   }
-  renderElements({ type: currentType, page: pageElement }).then(() => {
-    renderWithFilter();
-  });
+
+  let valueInput = document.querySelector('#inputBusqueda');
+
+  if (valueInput.value === "") {
+    renderElements({ type: currentType, page: pageElement }).then(() => {
+      renderWithFilter();
+    });
+  } else {
+    renderElements({
+      action: "elements",
+      value: valueInput.value,
+      type: currentType,
+      page: 1,
+      isBusqueda: true,
+    }).then(() => {
+      renderWithFilter();
+    });
+  }
+
+
 });
 
-// todo: Esta funcion debo moverla dentro de renderelements para que se ejecute y validarla con si su tipo es diferente de todos, esto para evitar buffer de desincronización.
 function renderWithFilter() {
   // CREO QUE SE PUEDE SOLUCIONAR APLICANDO UN DATATYPE AL TH DE DICIENDOLE EL TIPO.
   // Si veo que requiero esto en más funciones, transformarlo en función generica.
   const ths = tblElements.querySelectorAll("thead tr th");
+
   const filas = tbodyElements.querySelectorAll(
-    `tbody tr [data-type=${typeElements.consu}]`
+    `tbody tr`
   );
 
   // El numero 4 corresponde a la columna del tipo de elemento.
-  if (currentType === typeElements.consu) {
-    // console.log(currentType);
+  if (currentType === typeElements.consu || currentType === typeElements.dev) {
     ths[4].style.display = "none";
   } else {
-    //   console.log(currentType);
     ths[4].style.display = "table-cell";
   }
 
   filas.forEach((fila) => {
-    if (currentType === typeElements.consu) {
-      fila.style.display = "none";
-    }
-    if (currentType === typeElements.dev || currentType === typeElements.all) {
-      fila.style.display = "table-cell";
+    const tdTipo = fila.querySelector("[data-type]");
+    if (!tdTipo) return;
+
+    const tipo = tdTipo.getAttribute("data-type");
+    if (
+      currentType === tipo
+    ) {
+
+      tdTipo.style.display = "none";
+    } else {
+      tdTipo.style.display = "";
     }
   });
 }
 
-/**
- * Búsqueda de elementos TODO: por implementar, la consulta ya esta hecha.
- */
-// let timer;
+let timer;
 // También puedes buscar al escribir directamente
 inputBusqueda.addEventListener("keyup", function (e) {
   e.stopPropagation();
   const filtro = e.target.value.toLowerCase().trim();
-
-  // console.log({"valor": filtro});
-  // console.log({"cantidadCaracteres": filtro.length});
-  // console.log(filtro);
+  // Reemplazamos el valor de time out para crear un debounce a la búsqueda, esto con el fin de realizar multiples peticiones.
+  clearTimeout(timer);
 
   if (filtro.length === 0) {
-      renderElements({type : typeElements.all, type: currentType});
+    renderElements({type : typeElements.all, type: currentType}).then(()=>{
+      renderWithFilter();
+    });
       return;
-  }else{
-
-        setTimeout(()=>{
-        renderElements({action: 'elements', value:filtro, type: currentType, page: 1, isBusqueda: true});
-
-    }, 400);
   }
 
+  if(filtro.length >= 3){
+        timer = setTimeout(()=>{
+        renderElements({action: 'elements', value:filtro, type: currentType, page: 1, isBusqueda: true}).then(()=>{
+          renderWithFilter();
+        });
 
+    }, 300);
+  }
 });
 
 // span en donde se visualizara la respuesta de la placa si es correcta o no.
@@ -976,7 +1001,6 @@ function checkObject(object, campos) {
       }
 
       if (element === "") {
-        console.log(key);
         initAlert(
           `el campo ${campos[key]} debe ser obligatorio`,
           "info",
@@ -1199,6 +1223,7 @@ formAddExistencia.addEventListener("submit", (e) => {
             // Renderizo la página nuevamente dependiendo del tipo y la página actual.
             renderElements({ type: currentType, page: pageElement }).then(()=>{
               renderWithFilter();
+              inputBusqueda.value = "";
             });
             
             initAlert(response.message, "success", toastOptions);

@@ -151,7 +151,7 @@ class ElementoModelo
     {
         $elementos = [];
 
-        $newValue = $this->expg->validarNumeros($value) ? (int) $value : (String) $value;
+        $newValue = $this->expg->validarNumeros($value) ? (int) $value : (string) $value;
         if (!in_array($type, ['consumible', 'devolutivo', 'all'])) {
             return [
                 'message' => 'Tipo de elemento no definido',
@@ -179,11 +179,11 @@ class ElementoModelo
         es_e.est_nombre AS estadoElemento,
         tpU.nombre_tp_uni AS nombreUnidad,
         tpU.cod_tp_uni AS codUnidadMedida
-    FROM elementos e
-    INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
-    INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
-    INNER JOIN tipo_unidad tpU ON e.elm_uni_medida = tpU.cod_tp_uni
-    INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado";
+        FROM elementos e
+        INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
+        INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
+        INNER JOIN tipo_unidad tpU ON e.elm_uni_medida = tpU.cod_tp_uni
+        INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado";
 
         if ($isBusqueda) {
             if ($type === 'all') {
@@ -197,26 +197,24 @@ class ElementoModelo
                 $stmt = $this->conn->prepare($sql);
 
                 if ($this->expg->validarNumeros($value)) {
-                        $stmt->bind_param("iiiii", $newValue, $newValue, $newValue, $limite, $offset);
-                    } else {
-                        $stmt->bind_param("sssii", $newValue, $newValue, $newValue, $limite, $offset);
-                    }
-            }else{
+                    $stmt->bind_param("iiiii", $newValue, $newValue, $newValue, $limite, $offset);
+                } else {
+                    $stmt->bind_param("sssii", $newValue, $newValue, $newValue, $limite, $offset);
+                }
+            } else {
                 $codType = ($type === 'consumible') ? 2 : 1;
-                $sql = "$baseSql WHERE e.elm_nombre LIKE CONCAT('%', ?, '%') AND LENGTH(e.elm_nombre) <= 100 OR e.elm_placa LIKE CONCAT('%',?,'%') OR e.elm_serie LIKE CONCAT('%',?,'%') AND tpE.tp_el_cod = ? ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
-                $stmt = $this->conn->prepare($sql);
 
                 if ($this->expg->validarNumeros($value)) {
-                $stmt->bind_param("iiiiii", $newValue,$newValue,$newValue,$codType, $limite, $offset);
-                
-                }else{
-                    $stmt->bind_param("sssiii", $newValue,$newValue,$newValue,$codType, $limite, $offset);
-                
+                    $sql = "$baseSql WHERE (e.elm_placa LIKE CONCAT('%',?,'%')) AND e.elm_cod_tp_elemento = ? ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
+                    $stmt = $this->conn->prepare($sql);
+                    $stmt->bind_param("iiii", $newValue, $codType, $limite, $offset);
+                } else {
+                    $sql = "$baseSql WHERE (e.elm_nombre LIKE CONCAT('%', ?, '%') AND LENGTH(e.elm_nombre) <= 100 OR e.elm_placa LIKE CONCAT('%',?,'%') OR e.elm_serie LIKE CONCAT('%',?,'%')) AND e.elm_cod_tp_elemento = ? ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
+                    $stmt = $this->conn->prepare($sql);
+
+                    $stmt->bind_param("sssiii", $newValue, $newValue, $newValue, $codType, $limite, $offset);
                 }
             }
-
-            
-
         } else {
 
             if ($type === 'all') {
@@ -312,7 +310,7 @@ class ElementoModelo
 
         $sqlBase = "SELECT COUNT(*) AS total FROM elementos e";
         if ($type === 'all') {
-            
+
             // Valido que en caso de que el valor que se envie no sea un entero, entonces aplique solo 2 condiciones.
             if (!$this->expg->validarNumeros($value)) {
 
@@ -322,36 +320,33 @@ class ElementoModelo
                         )";
 
                 $stmt = $this->conn->prepare($sql);
-                $stmt->bind_param('ss', $value,$value);
-            }else{
+                $stmt->bind_param('ss', $value, $value);
+            } else {
                 // Si es entero, solo la placa.
                 $sql = "$sqlBase WHERE (
                         e.elm_placa LIKE CONCAT('%', ?, '%') 
                 )";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bind_param('i', $value);
-
             }
-
-        }else{
+        } else {
             $newType = ($type === 'consumible') ? 2 : 1;
             if (!$this->expg->validarNumeros($value)) {
 
                 $sql = "$sqlBase WHERE (
                         e.elm_nombre LIKE CONCAT('%', ?, '%') 
                         OR e.elm_serie LIKE CONCAT('%', ?, '%')
-                        )";
+                        ) AND e.elm_cod_tp_elemento = ?";
 
                 $stmt = $this->conn->prepare($sql);
-                $stmt->bind_param('ss', $value,$value);
-            }else{
+                $stmt->bind_param('ssi', $value, $value, $newType);
+            } else {
                 // Si es entero, solo la placa.
                 $sql = "$sqlBase WHERE (
                         e.elm_placa LIKE CONCAT('%', ?, '%') 
-                )";
+                ) AND e.elm_cod_tp_elemento = ?";
                 $stmt = $this->conn->prepare($sql);
-                $stmt->bind_param('i', $value);
-
+                $stmt->bind_param('ii', $value, $newType);
             }
         }
 
@@ -370,8 +365,6 @@ class ElementoModelo
             'total' => (int)$fila['total'],
             'status' => true
         ];
-        
-
     }
 
     // Insertar nuevo elemento
@@ -521,8 +514,8 @@ class ElementoModelo
                 $nuevoEstado = $estadoDisponible;
             } else {
                 return [
-                    "message"=> "estado no definido",
-                    "status"=> false
+                    "message" => "estado no definido",
+                    "status" => false
                 ];
             }
 
@@ -530,7 +523,7 @@ class ElementoModelo
             $stmtUpdate = $this->conn->prepare($sqlUpdate);
             if (!$stmtUpdate) {
                 return [
-                    "message"=>"Error en prepare: " . $this->conn->error,
+                    "message" => "Error en prepare: " . $this->conn->error,
                     "status" => false
                 ];
             }
@@ -593,14 +586,14 @@ class ElementoModelo
         $sql = "UPDATE elementos 
                 SET elm_existencia = elm_existencia - ? 
                 WHERE elm_cod = ? AND elm_existencia >= ?";
-    
+
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
             return false;
         }
         $stmt->bind_param("iii", $cantidad, $id, $cantidad);
         $stmt->execute();
-    
+
         if ($stmt->affected_rows > 0) {
             return true; // Se actualizó correctamente
         } else {
@@ -708,21 +701,21 @@ class ElementoModelo
     public function getElementByType(int $id = 1): ?int
     {
         $sql = "SELECT elm_cod_tp_elemento FROM elementos WHERE elm_cod = ?";
-    
+
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('i', $id);
-    
+
         if (!$stmt->execute()) {
             return null;
         }
-    
+
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
-    
+
         if (!$row) {
             return null;
         }
-    
+
         return (int) $row['elm_cod_tp_elemento'];
     }
 
@@ -807,5 +800,6 @@ class ElementoModelo
 }
 
 // $objElementos = new ElementoModelo();
-// $resultado = $objElementos->contarElementosBusqueda('all',3004);
+// $resultado = $objElementos->contarElementosBusqueda('consumible','papel');
+// $resultado = $objElementos->obtenerElementoPaginado(10,0,'consumible',true,'papel');
 // var_dump($resultado);
