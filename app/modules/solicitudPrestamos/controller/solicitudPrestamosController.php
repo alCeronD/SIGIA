@@ -61,11 +61,13 @@ class solicitudPrestamosController
 
         return include_once __DIR__ . '/../views/consultarPrestamosView.php';
     }
+    
     public function registrarPrestamo(array $data = [])
     {
         validatePermisos('solicitudPrestamos', 'registrarPrestamo');
         header('Content-Type: application/json; charset=utf-8');
-    
+        // var_dump($data);
+        // dd($data);
         try {
             if (!$data) {
                 http_response_code(405);
@@ -120,13 +122,13 @@ class solicitudPrestamosController
                     $objSolicitud->registrarElem($lastId, $usuario_id, $elemento_id);
             
                     // Disminuir existencia si el tipo de elemento es 2 (consumible)
-                    if ($typeElement = 1) {
-                        $resultado = $elementoModel->disminuirExistenciaElemento($elemento_id, 1);
+                    // if ($typeElement = 1) {
+                    //     $resultado = $elementoModel->disminuirExistenciaElemento($elemento_id, 1);
                        
-                    }
+                    // }
             
                     // Actualizar estado del elemento
-                    $elementoModel->actualizarEstadoElemento($elemento_id, 5);
+                    $elementoModel->actualizarEstadoElemento($elemento_id, 1);
                 }
             }
 
@@ -281,18 +283,128 @@ class solicitudPrestamosController
         echo json_encode($resultado);
         exit;
     }
+    
+    public function validarSocPrestamo(array $data = []) {
+        header('Content-Type: application/json; charset=utf-8');
+    
+        try {
+            if (!$data) {
+                http_response_code(405);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Método no permitido. Usar POST."
+                ]);
+                exit;
+            }
+    
+            if (session_status() == PHP_SESSION_NONE) session_start();
+    
+            if (!isset($_SESSION['usuario'])) {
+                http_response_code(401);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Sesión no válida. Debe iniciar sesión."
+                ]);
+                exit;
+            }
+    
+            // Validar que existan las claves necesarias
+            if (!isset($data['pres_fch_reserva'], $data['pres_fch_entrega'], $data['elementos_devolutivos'])) {
+                http_response_code(400);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Datos incompletos. Faltan fechas o elementos devolutivos."
+                ]);
+                exit;
+            }
+    
+            $fechaReserva = $data['pres_fch_reserva'];
+            $fechaEntrega = $data['pres_fch_entrega'];
+            $elementosDevolutivos = $data['elementos_devolutivos'];
+    
+            $model = new solicitudPrestamos($this->conn);
+    
+            foreach ($elementosDevolutivos as $elemento) {
+                $codigo = $elemento['codigo'];
+    
+                if ($model->elementoReservadoEnRango($codigo, $fechaReserva, $fechaEntrega)) {
+                    http_response_code(409); // Conflicto
+                    echo json_encode([
+                        "status" => "error",
+                        "message" => "El elemento con código $codigo ya está reservado entre $fechaReserva y $fechaEntrega."
+                    ]);
+                    exit;
+                }
+            }
+    
+            // Si pasa toda la validación, devolver éxito (opcional)
+            return true;
+    
+        } catch (\Throwable $th) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error interno: " . $th->getMessage()
+            ]);
+            exit;
+        }
+    }
+
+    public function actualizarEstadosPorFecha()
+    {
+        $fechaHoy = date('Y-m-d');
+        // $fechaHoy = '2025-08-08';
+    
+       
+        $sql = "SELECT p.pres_cod
+                FROM prestamos p
+                WHERE p.pres_fch_reserva = ?
+                  AND p.pres_estado = 1"; // Por validar
+    
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('s', $fechaHoy);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $prestamosActualizados = [];
+    
+        while ($row = $result->fetch_assoc()) {
+            $presCod = $row['pres_cod'];
+    
+            // Obtener los elementos asociados al préstamo
+            $sqlElementos = "SELECT pres_el_elem_cod FROM prestamos_elementos WHERE pres_cod = ?";
+            $stmtElems = $this->conn->prepare($sqlElementos);
+            $stmtElems->bind_param('i', $presCod);
+            $stmtElems->execute();
+            $resElems = $stmtElems->get_result();
+    
+            // Cambiar estado de cada elemento a reservado (5)
+            while ($elem = $resElems->fetch_assoc()) {
+                $elm_cod = $elem['pres_el_elem_cod'];
+                $updateElem = $this->conn->prepare("UPDATE elementos SET elm_cod_estado = 5 WHERE elm_cod = ?");
+                $updateElem->bind_param('i', $elm_cod);
+                $updateElem->execute();
+            }
+    
+            $prestamosActualizados[] = $presCod;
+        }
+    
+        return $prestamosActualizados;
+    }
+
+    
+    
+    
 }
 
 
 $conexion = new Conection();
 $getConect = $conexion->getConnect();
 $solicitudObj = new solicitudPrestamosController($getConect);
-// $solicitudObj->cancelarPrestamo(530);
 
 // NUEVO: Manejo de solicitudes tipo JSON (por fetch con application/json)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && stripos($_SERVER["CONTENT_TYPE"], "application/json") !== false) {
-    // $input = file_get_contents("php://input");
-    // $data = json_decode($input, true);
+
     
     $data = json_decode(file_get_contents('php://input'), true);
     header('Content-Type: application/json');
@@ -300,13 +412,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && stripos($_SERVER["CONTENT_TYPE"], "
     if (is_array($data) && isset($data['action'])) {
         switch ($data['action']) {
             case 'registrarPrestamo':
-                // Convertir los datos como si vinieran por $_POST para mantener compatibilidad
-                
                 unset($data['action']);
                 $newData = $data;
-                $solicitudObj->registrarPrestamo($newData);
+            
+                // Valiacion de disponibilidad de reserva en las fechas ingresadas por el usuario
+                $validacion = $solicitudObj->validarSocPrestamo($newData);
+            
+                if ($validacion === true) {
+                    $solicitudObj->registrarPrestamo($newData);
+                }
                 break;
-
             default:
                 http_response_code(400);
                 echo json_encode([

@@ -31,9 +31,7 @@ class solicitudPrestamos
         $pres_fch_entrega  = $this->conn->real_escape_string($data['pres_fch_entrega']);
         $pres_observacion  = $this->conn->real_escape_string($data['pres_observacion']);
         $pres_destino      = $this->conn->real_escape_string($data['pres_destino']);
-        // Producto de cambios, se descarta el hora inicio y hora fin, no se elimina de las tablas de la base de datos, sin embargo, se comentan  y se declaran nullas.
-        // $pres_hor_inicio = $this->conn->real_escape_string($data['pres_hor_inicio'])?? null;
-        // $pres_hor_fin = $this->conn->real_escape_string($data['pres_hor_fin'])?? null;
+   
         $pres_hor_inicio =  null;
         $pres_hor_fin = null;
 
@@ -160,23 +158,23 @@ class solicitudPrestamos
             $elementosStmt->execute();
             $result = $elementosStmt->get_result();
 
-            include_once __DIR__ . '/../../elementos/model/elementosModel.php';
-            $elementoModel = new ElementoModelo();
+            // include_once __DIR__ . '/../../elementos/model/elementosModel.php';
+            // $elementoModel = new ElementoModelo();
 
-            while ($row = $result->fetch_assoc()) {
-                $elemento_id = $row['pres_el_elem_cod'];
-                $cantidad = $row['pres_el_cantidad'];
+            // while ($row = $result->fetch_assoc()) {
+            //     $elemento_id = $row['pres_el_elem_cod'];
+            //     $cantidad = $row['pres_el_cantidad'];
 
-                // Cambiar estado del elemento a disponible
-                $elementoModel->actualizarEstadoElemento($elemento_id, 1); // 1 = Disponible
-                // Sumar cantidad de vuelta a elm_existencia
-                $sumarQuery = "UPDATE elementos SET elm_existencia = elm_existencia + ? WHERE elm_cod = ?";
-                $sumarStmt = $this->conn->prepare($sumarQuery);
-                $sumarStmt->bind_param("ii", $cantidad, $elemento_id);
-                $sumarStmt->execute();
-            }
+            //     // Cambiar estado del elemento a disponible
+            //     $elementoModel->actualizarEstadoElemento($elemento_id, 1); // 1 = Disponible
+            //     // Sumar cantidad de vuelta a elm_existencia
+            //     $sumarQuery = "UPDATE elementos SET elm_existencia = elm_existencia + ? WHERE elm_cod = ?";
+            //     $sumarStmt = $this->conn->prepare($sumarQuery);
+            //     $sumarStmt->bind_param("ii", $cantidad, $elemento_id);
+            //     $sumarStmt->execute();
+            // }
 
-            return ['success' => true, 'message' => 'Préstamo cancelado y cantidades restauradas'];
+            return ['success' => true, 'message' => 'Préstamo cancelado'];
         } else {
             return ['success' => false, 'message' => 'No se pudo cancelar el préstamo'];
         }
@@ -191,6 +189,7 @@ class solicitudPrestamos
         $stmt->bind_param("iiii", $pres_cod, $usuario_id, $elm_cod, $cantidad);
         return $stmt->execute();
     }
+    
     public function registrarElemConsumible($pres_cod, $usuario_id, $elm_cod, $cantidad)
     {
         $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad) 
@@ -298,4 +297,42 @@ class solicitudPrestamos
         }
         return true;
     }
+    
+    public function elementoReservadoEnRango($codigoElemento, $fechaInicio, $fechaFin) {
+        $sql = "SELECT COUNT(*) 
+                FROM prestamos p
+                INNER JOIN prestamos_elementos pe ON p.pres_cod = pe.pres_cod
+                WHERE pe.pres_el_elem_cod = ?
+                  AND p.pres_estado IN (1,3) -- Validado o por valiar
+                  AND p.pres_fch_reserva <= ?
+                  AND p.pres_fch_entrega >= ?";
+    
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Error en prepare: " . $this->conn->error);
+        }
+    
+        $stmt->bind_param('iss', $codigoElemento, $fechaFin, $fechaInicio);
+        $stmt->execute();
+    
+        $count = 0; 
+        $stmt->bind_result($count);
+        if ($stmt->fetch() === null) {
+            $count = 0;
+        }
+    
+        $stmt->close();
+    
+        return $count > 0;
+    }
+
+
+
+
+
+
+
+
+    
+    
 }
