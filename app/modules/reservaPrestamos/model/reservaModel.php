@@ -668,7 +668,6 @@ class ReservaModel
             return $th->getMessage();
         }
     }
-
     /**
      * Función para validar las solicitudes que hacen tanto el usuario instructor como aprendices.
      * @return array
@@ -866,7 +865,6 @@ class ReservaModel
             ];
         }
     }
-
     /**
      * Summary of getCount Con esta función puedo saber el total de cantidad de registros que hay disponibles.
      * @param string $tableName

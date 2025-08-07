@@ -1,5 +1,5 @@
 import { addClassItem } from "../utils/cases.js";
-import { Ajax,closeModal,createI,instanceDate,instanceModal,options,opcionesDatepicker,instanceDateTime,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, sendData, inputsForm, iDom, objDataConsumibles, objDataUsers } from "./index.js";
+import { Ajax,closeModal,createI,instanceDate,opcionesDatepicker,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, inputsForm, iDom, objDataConsumibles } from "./index.js";
 const objAjax = new Ajax();
 btnDoom.btnModalPreviewElements.append(iDom.iCreatePreview);
 btnDoom.btnAddElements.classList.add("btnClick");
@@ -9,9 +9,6 @@ btnDoom.btnSubmit.append(iDom.iSendReserva);
 // Estas variables las uso para re utilizar la información en otros bloques.
 let objDataDevolutivos = {};
 const valuePage = document.querySelector("#valuePage");
-
-//Creo una instancia del modal
-const instanPreview = instanceModal("#modalPreviewElements", options);
 const formSolicitudPrestamo = document.querySelector("#formSolicitudPrestamo");
 
 tablesDoom.tblBodyUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
@@ -334,6 +331,28 @@ tablesDoom.tblBodyUsers.addEventListener("click", (e) => {
   }
 });
 
+function validateDisponibilidad({fecha = "", codigosElementos, isOnly = false}={}){
+  let param = {};
+  if(isOnly){
+    param = {fechaReserva: fecha, elementos: codigosElementos, isOnly};
+  }
+  param= {
+    ...param,
+    action: "validateElement"
+  };
+
+  const responseDisponibilidad = getData('Modules/reservaPrestamos/controller/reservaPrestamosController.php','GET', param);
+
+  console.log(responseDisponibilidad);
+}
+// function validateDisponibilidad({fecha= "", codigosElementos = []}={}){
+//   const responseDisponibilidad = getData('Modules/reservaPrestamos/controller/reservaPrestamosController.php','GET', {action: "validateElement", elementos : codigosElementos});
+  
+//   // console.log(fecha)
+//   // console.log(codigosElementos);
+//   // console.log(responseDisponibilidad);
+// }
+
 //Delegar evento sobre la tabla de elementos devolutivos.
 tablesDoom.tblBodyDevolutivos.addEventListener("click", (event) => {
   event.stopPropagation();
@@ -348,6 +367,17 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", (event) => {
     let area = info.children[2].textContent;
     let valueInput = event.target.getAttribute("data-id");
     if (isChecked) {
+
+      const fechaReserva = document.querySelector('#fechaReserva').value;
+      if (fechaReserva !== "") {
+        let fechaParse = dateISOFormat(fechaReserva,false);
+        validateDisponibilidad({fecha: fechaParse, codigosElementos: valueInput, isOnly: true});
+        
+      }
+
+
+      
+
 
        //Valido, si el arreglo no contiene el valueInput, entonces que implemente el valor ahí.
       if (!ids.includes(valueInput)) {
@@ -502,7 +532,6 @@ btnDoom.btnNextUsers.addEventListener("click", (event) => {
  */
 let pgElementsDevolutivos = 1;
 const previewElement = document.querySelector("#previewElement");
-const modalPreviewElements = instanceModal("#modalPreviewElements", options);
 const nextElement = document.querySelector("#nextElement");
 // Selector = Puede que no lo use. Este selector es para colocar la cantidad de páginas que tengo basado en la cantidad de elementos de la tabla.
 previewElement.addEventListener("click",async  (e) => {
@@ -529,7 +558,7 @@ nextElement.addEventListener("click", async () => {
 
 btnDoom.btnClosePreviewElements.addEventListener("click", (e) => {
   e.stopPropagation();
-  instanPreview.close();
+  modalDoom.modalPreviewElements.close();
 });
 /**
  * Paginación elementos consumibles disponibles.
@@ -604,7 +633,7 @@ btnDoom.btnModalPreviewElements.addEventListener("click", (e) => {
     tableMessage.innerHTML = "No hay elementos seleccionados en la reserva";
   }
 
-  instanPreview.open();
+  modalDoom.modalPreviewElements.open();
 });
 
 //Con esta función valido que los campos del formulario sean diligenciados.
@@ -670,6 +699,7 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let fechaReservaFormat = dateISOFormat(data.fechaReserva);
   let fechaDevolucionFormat = dateISOFormat(data.fechaDevolucion);
 
+
   data.fechaReserva = fechaReservaFormat;
   data.fechaDevolucion = fechaDevolucionFormat;
 
@@ -712,87 +742,89 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   //Agrego los códigos de los elementos al data.
   data.codigosElementos = codigosElementos;
 
-  objAjax.request.open(
-    "POST",
-    "Modules/reservaPrestamos/controller/reservaPrestamosController.php"
-  );
-  objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+  validateDisponibilidad({fecha: fechaDevolucionFormat, codigosElementos: codigosElementos});
 
-  let dataJson = JSON.stringify({
-    data: data,
-    action: "registrar",
-  });
-  if (rows.codigoElementos.devolutivos.length === 0 && rows.codigoElementos.consumibles.length === 0) {
-    initAlert(
-      "Debes agregar al menos un elemento para la solicitud.",
-      "error",
-      toastOptions
-    );
+  // objAjax.request.open(
+  //   "POST",
+  //   "Modules/reservaPrestamos/controller/reservaPrestamosController.php"
+  // );
+  // objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
-    btnDoom.btnAddElements.classList.remove("shake");
-    //Obligo al dom a que vuelva a re ejecutar este elemento.
-    void btnDoom.btnAddElements.offsetWidth;
-    btnDoom.btnAddElements.classList.add("shake");
-    return;
-  }
+  // let dataJson = JSON.stringify({
+  //   data: data,
+  //   action: "registrar",
+  // });
+  // if (rows.codigoElementos.devolutivos.length === 0 && rows.codigoElementos.consumibles.length === 0) {
+  //   initAlert(
+  //     "Debes agregar al menos un elemento para la solicitud.",
+  //     "error",
+  //     toastOptions
+  //   );
 
-  let devolutivosRows = rows.codigoElementos.devolutivos;
-  let consumiblesRows = rows.codigoElementos.consumibles;
-  let textConfirmReserva = "";
-  //Valido si hay elementos seleccionados.
-  if (consumiblesRows.length > 0) {
-    textConfirmReserva += `Consumibles:\n${consumiblesRows
-      .map(
-        (el) =>
-          `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
-      )
-      .join("\n")}\n`;
-  }
+  //   btnDoom.btnAddElements.classList.remove("shake");
+  //   //Obligo al dom a que vuelva a re ejecutar este elemento.
+  //   void btnDoom.btnAddElements.offsetWidth;
+  //   btnDoom.btnAddElements.classList.add("shake");
+  //   return;
+  // }
 
-  //Valido si hay elemento seleccionados.
-  if (devolutivosRows.length > 0) {
-    textConfirmReserva += `Devolutivos:\n${rows.codigoElementos.devolutivos
-      .map(
-        (el) =>
-          `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
-      )
-      .join("\n")}\n`;
-  }
+  // let devolutivosRows = rows.codigoElementos.devolutivos;
+  // let consumiblesRows = rows.codigoElementos.consumibles;
+  // let textConfirmReserva = "";
+  // //Valido si hay elementos seleccionados.
+  // if (consumiblesRows.length > 0) {
+  //   textConfirmReserva += `Consumibles:\n${consumiblesRows
+  //     .map(
+  //       (el) =>
+  //         `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
+  //     )
+  //     .join("\n")}\n`;
+  // }
 
-  //TODO: transformar await fetch.
-  if (
-    confirm(`¿Deseas realizar el siguiente prestamo?\n${textConfirmReserva}`)
-  ) {
+  // //Valido si hay elemento seleccionados.
+  // if (devolutivosRows.length > 0) {
+  //   textConfirmReserva += `Devolutivos:\n${rows.codigoElementos.devolutivos
+  //     .map(
+  //       (el) =>
+  //         `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
+  //     )
+  //     .join("\n")}\n`;
+  // }
 
-    try {
-        objAjax.request.onload = () => {
-        let response = JSON.parse(objAjax.request.responseText);
-        // Si el registro se realizó correctamente.
-        if (response.status) {
-          initAlert("Reserva realizada con exito", "success", toastOptions);
-          //Limpio el formulario, tabla y campos de span.
-          formSolicitudPrestamo.reset();
-          inputsForm.inputNroDocumento.textContent = "";
-          inputsForm.inputNombre.textContent = "";
-          inputsForm.inputApellido.textContent = "";
-          inputsForm.inputEmail.textContent = "";
-          inputsForm.inputTelefono.textContent = "";
-          tablesDoom.tblBodyPreviewElements.innerHTML = "";
-        }
-        if (!response.status) {
-          initAlert(`${response.message}`, "warning", toastOptions);
-          return;
-        }
-      };
+  // //TODO: transformar await fetch.
+  // if (
+  //   confirm(`¿Deseas realizar el siguiente prestamo?\n${textConfirmReserva}`)
+  // ) {
 
-      objAjax.request.setRequestHeader("accept", "application/json");
-      objAjax.request.send(dataJson);
-    } catch (error) {
-      initAlert(`${error.message}`, "warning", toastOptions);
-      return;
-    }
+  //   try {
+  //       objAjax.request.onload = () => {
+  //       let response = JSON.parse(objAjax.request.responseText);
+  //       // Si el registro se realizó correctamente.
+  //       if (response.status) {
+  //         initAlert("Reserva realizada con exito", "success", toastOptions);
+  //         //Limpio el formulario, tabla y campos de span.
+  //         formSolicitudPrestamo.reset();
+  //         inputsForm.inputNroDocumento.textContent = "";
+  //         inputsForm.inputNombre.textContent = "";
+  //         inputsForm.inputApellido.textContent = "";
+  //         inputsForm.inputEmail.textContent = "";
+  //         inputsForm.inputTelefono.textContent = "";
+  //         tablesDoom.tblBodyPreviewElements.innerHTML = "";
+  //       }
+  //       if (!response.status) {
+  //         initAlert(`${response.message}`, "warning", toastOptions);
+  //         return;
+  //       }
+  //     };
+
+  //     objAjax.request.setRequestHeader("accept", "application/json");
+  //     objAjax.request.send(dataJson);
+  //   } catch (error) {
+  //     initAlert(`${error.message}`, "warning", toastOptions);
+  //     return;
+  //   }
     
-  }
+  // }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -830,5 +862,5 @@ document.addEventListener("DOMContentLoaded", () => {
   instanceDate("#fechaDevolucion", opcionesDatepicker);
 
   closeModal(modalDoom.modalUsers, btnDoom.btnCloseUsers);
-  closeModal(instanPreview, btnDoom.btnClosePreviewElements);
+  closeModal(modalDoom.modalPreviewElements, btnDoom.btnClosePreviewElements);
 });

@@ -601,8 +601,6 @@ class ElementoModelo
         }
     }
 
-
-
     /**
      * Cambia la existencia de un elemento en inventario, registrando la operación como una compra o reembolso.
      *
@@ -697,7 +695,6 @@ class ElementoModelo
             "status" => true
         ];
     }
-
     public function getElementByType(int $id = 1): ?int
     {
         $sql = "SELECT elm_cod_tp_elemento FROM elementos WHERE elm_cod = ?";
@@ -718,7 +715,6 @@ class ElementoModelo
 
         return (int) $row['elm_cod_tp_elemento'];
     }
-
 
     public function getAllPlacas()
     {
@@ -796,6 +792,99 @@ class ElementoModelo
             'data' => $placas,
             'status' => true
         ];
+    }
+
+
+    /**
+     * Validar la disponibilidad del elemento antes de realizar su respectiva reserva inmediata.
+     * @param int $codigoElemento
+     * @return array{data: array, message: string, status: bool}
+     */
+    public function validateDisponiblidad($codigoElemento, bool $isOnly = false){
+        try {
+
+            $sql = "SELECT 
+                e.elm_cod As 'codigoElemento',
+                p.pres_fch_reserva AS 'fechaReserva (YYYY-MM-DD)'
+                FROM elementos e
+                INNER JOIN prestamos_elementos pe ON
+                pe.pres_el_elem_cod = e.elm_cod 
+                INNER JOIN prestamos p ON
+                pe.pres_cod = p.pres_cod WHERE e.elm_cod = ?";
+
+
+
+                $stmtFechas = $this->conn->prepare($sql);
+
+                if (!$stmtFechas) {
+                    return [
+                        'status'=>false,
+                        'message'=> 'error al preparar la consulta',
+                        'data'=> []
+                    ];
+                }
+
+            if ($isOnly) {
+                $elemento = (int) $codigoElemento ?? null;
+
+                $stmtFechas->bind_param('i', $codigoElemento);
+
+                if (!$stmtFechas->execute()) {
+                    return [
+                        'status' => false,
+                        'message' => "Error al ejecutar la consulta" . $this->conn->error,
+                        'data' => []
+                    ];
+                }
+
+                $result = $stmtFechas->get_result();
+                $fechas = [];
+                while($row = $result->fetch_assoc()){
+                    $fechas []= $row;
+                }
+            }
+                
+                // else{
+                //     // ciclar la info.
+                //     $elementos = $codigoElemento ?? [];
+                //     foreach ($elementos as $key => $value) {
+                //         $codigoElemento = $value['codigoElemento'];
+                //         $stmtFechas->bind_param('i', $codigoElemento);
+
+
+                //         if (!$stmtFechas->execute()) {
+                //             return [
+                //                 'status'=> false,
+                //                 'message'=> "Error al ejecutar la consulta".$this->conn->error,
+                //                 'data'=> []
+                //             ];
+                //         }
+
+                //     }
+                // }
+
+
+                if (!$stmtFechas->execute()) {
+                    return [
+                        'data'=> [],
+                        'message'=> "error al ejecutar la consulta".$this->conn->error,
+                        'status'=> false
+                    ];
+                }
+                
+                return [
+                    'message'=> $isOnly ? "Fechas de reserva relacionadas a los elementos" : "No hay fechas para este elemento",
+                    'data'=> $fechas,
+                    'status'=> true
+                ];
+
+        } catch (\Throwable $th) {
+            return [
+                'message'=> "error al ejecutar el procedimiento".$th->getMessage(),
+                'status'=> false,
+                'data'=> []
+            ];
+        }
     }
 }
 

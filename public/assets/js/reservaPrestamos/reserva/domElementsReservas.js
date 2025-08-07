@@ -12,6 +12,7 @@ export const modalDoom = {
     modalAddDevolutivos: instanceModal("#modalAddDevolutivos", options),
     modalAddConsumibles: instanceModal("#modalAddConsumible", options),
     modalUsers: instanceModal("#modalUsers", options),
+    modalPreviewElements: instanceModal("#modalPreviewElements", options)
 
 };
 //Buttons

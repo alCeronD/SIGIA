@@ -13,10 +13,13 @@ class reservaPrestamosController
 {
     private $model;
 
+    private $modelElemento;
     public function __construct()
     {
         $reservaModel = new ReservaModel();
         $this->model = $reservaModel;
+        $elementoModel = new ElementoModelo();
+        $this->modelElemento = $elementoModel;
         include_once __DIR__ . '/../../../helpers/response.php';
     }
 
@@ -185,6 +188,16 @@ class reservaPrestamosController
         }
     }
 
+    /**
+     * Summary of validateElemento - Función de controlador para validar el elemento si está disponible para esa fecha.
+     * @return void
+     */
+    public function validateElemento(int $elementos,String $fechaReserva ,$isOnly = false){
+        $result = $this->modelElemento->validateDisponiblidad($elementos, $isOnly);
+        var_dump($result);
+
+    }
+
 }
 
 $controller = new reservaPrestamosController();
@@ -251,6 +264,22 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             case 'users':
                 if (method_exists($controller, 'getUsers')) {
                     $controller->getUsers($pages);
+                }
+                break;
+
+            case 'validateElement':
+                $isOnly = $_GET['isOnly'] === "true" ? true : false;
+                if($isOnly) {
+                    $elementos = (int) $_GET['elementos'] ?? null;
+                }else{
+                    // $elementos = (array) $_GET['elementos'] ?? [];
+                    $elementos = $_GET['elementos'] ?? [];
+                }
+
+                $fecha = empty($_GET['fechaReserva']) ? "" : $_GET['fechaReserva'];
+
+                if (method_exists($controller, 'validateElemento')) {
+                    $controller->validateElemento($elementos, $fecha, $isOnly);
                 }
                 break;
 
