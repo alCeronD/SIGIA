@@ -7,6 +7,7 @@
                     <span class="close-modal">&times;</span>
                 </button>
             </div>
+            <legend id="tableMessage"></legend>
             <table id="">
                 <thead>
                     <tr>
@@ -22,12 +23,6 @@
                 </tbody>
 
             </table>
-            <!-- Si la cantidad de elementos solicitados es mayor, esta debera de ser páginada pero desde el javascript -->
-            <div class="buttons">
-                <button type="button" class="previewBtn" id="previewElements"><i class="material-icons">keyboard_arrow_left</i></button>
-                <button type="button" class="nextBtn" id="nextElements"><i class="material-icons">keyboard_arrow_right</i></button>
-            </div>
-
         </div>
     </div>
 </div>

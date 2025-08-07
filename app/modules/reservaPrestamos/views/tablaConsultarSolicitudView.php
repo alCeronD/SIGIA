@@ -4,6 +4,7 @@
     <thead>
         <tr>
             <th>Código</th>
+            <th>Fecha de registro</th>
             <th>A nombre de</th>
             <th>Estado</th>
             <th>Tipo</th>

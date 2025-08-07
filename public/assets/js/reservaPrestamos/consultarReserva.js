@@ -138,8 +138,7 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     btnEnd.append(iFinalizar);
     let tdCodigo = document.createElement("td");
     let tdNombreCompleto = document.createElement("td");
-    // Capturo el span del modal title 
-
+    let tdFechaRegistro = document.createElement("td");
     let tdCantidad = document.createElement("td");
     let tdEstado = document.createElement("td");
     let tdAcciones = document.createElement("td");
@@ -148,12 +147,15 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     tdNombreCompleto.textContent = dta.nombre + " " + dta.apellido;
     tdEstado.textContent = dta.estadoPrestamo;
     tdTipo.textContent = dta.tipoPrestamo;
+    tdFechaRegistro.textContent = dta.fechaSolicitud;
 
     tbodyReservaConsult.appendChild(tr);
     tr.appendChild(tdCodigo);
+    tr.appendChild(tdFechaRegistro);
     tr.appendChild(tdNombreCompleto);
     tr.appendChild(tdEstado);
     tr.appendChild(tdTipo);
+    
     tdAcciones.innerHTML = "";
     tr.append(tdAcciones);
 
@@ -173,7 +175,6 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     tdAcciones.appendChild(btnDetail);
 
     if (dta.estadoPrestamo === "Finalizado") {
-      // Solo mostrar botón Detalle
       return;
     }
 

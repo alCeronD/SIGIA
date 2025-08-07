@@ -214,7 +214,7 @@ preconfirmButton.addEventListener("click", (e) => {
     }
   );
 });
-
+  
 // Renderizar la vista de la tabla roles.
 const renderRoles = async () => {
   const responseRoles = await getData(

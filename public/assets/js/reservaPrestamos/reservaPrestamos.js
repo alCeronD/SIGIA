@@ -154,6 +154,7 @@ const renderConsumibles = async ({objDataConsumibles = {}, pagesElementsConsumib
     checkBoxSelect.classList.add("filled-in", "checkboxInput");
     checkBoxSelect.setAttribute("type", "checkbox");
     checkBoxSelect.setAttribute("data-id", data.codigo);
+    checkBoxSelect.disabled = true;
     labelCheck.appendChild(checkBoxSelect);
     labelCheck.appendChild(spanCheck);
     cantidadInput.classList.add("browser-default");
@@ -165,6 +166,7 @@ const renderConsumibles = async ({objDataConsumibles = {}, pagesElementsConsumib
     tdCodigo.innerText = data.codigo;
     tdNombre.innerText = data.elemento;
     tdCantidad.innerText = data.cantidad;
+    trConsumbile.setAttribute("data-id", data.codigo);
     tablesDoom.tblBodyConsumibles.appendChild(trConsumbile);
     trConsumbile.appendChild(tdCodigo);
     trConsumbile.appendChild(tdNombre);
@@ -173,7 +175,14 @@ const renderConsumibles = async ({objDataConsumibles = {}, pagesElementsConsumib
     tdOpciones.appendChild(divElements);
 
     let cantidad = data.cantidad;
-    definirCantidad(cantidadInput, cantidad);
+    definirCantidad(cantidadInput, cantidad, checkBoxSelect);
+    let codigoString = data.codigo.toString();
+    if (ids.includes(codigoString)) {
+      checkBoxSelect.disabled = false;
+      checkBoxSelect.checked = true;
+      cantidadInput.disabled = true;
+    }
+
   });
 
   modalDoom.modalAddConsumibles.open();
@@ -182,7 +191,6 @@ const renderConsumibles = async ({objDataConsumibles = {}, pagesElementsConsumib
 const renderDevolutivos = async ({objDataDevolutivos = {}, pagesElementsDevolutivos = 1 ,resetPage = false})=>{
 
   tablesDoom.tblBodyDevolutivos.innerHTML = "";
-
     //Implementar los datos en en la tabla.
     objDataDevolutivos.forEach((dta) => {
       let codigo = dta.codigo;
@@ -210,11 +218,19 @@ const renderDevolutivos = async ({objDataDevolutivos = {}, pagesElementsDevoluti
       tdAccion.append(label);
       label.append(addElements, span);
 
+
+      // Valido si el elemento está en el arreglo para así marcar como checked.
+      let codigoString = codigo.toString();
+      if (ids.includes(codigoString)) {
+        addElements.checked = true;
+      }
+
       tablesDoom.tblBodyDevolutivos.appendChild(trTable);
       trTable.appendChild(tdCodigo);
       trTable.appendChild(tdElemento);
       trTable.appendChild(tdArea);
       trTable.append(tdAccion);
+
     });
 
 
@@ -224,10 +240,11 @@ const renderDevolutivos = async ({objDataDevolutivos = {}, pagesElementsDevoluti
 /**
  * Se valida que la cantidad de los elementos consumibles no sea ni negativa ni mayor a la cantidad disponible.
  * @constructor
- * @param {input} cantidadInput - El input number
+ * @param {input} cantidadInput - El input number.
  * @param {int} cantidad - cantidad Del elemento disponible.
+ * @param {input} checkBoxSelect - El checkbox deshabilitado.
  */
-function definirCantidad(cantidadInput, cantidad) {
+function definirCantidad(cantidadInput, cantidad, checkBoxSelect) {
   cantidadInput.addEventListener("change", (event) => {
     event.stopPropagation();
     event.preventDefault();
@@ -237,7 +254,7 @@ function definirCantidad(cantidadInput, cantidad) {
     if (valor < 0) {
       // alert("Cantidad no disponible");
       initAlert("Cantidad no disponible", "info", toastOptions);
-      event.target.value = valor;
+      event.target.value = "";
       return;
     }
 
@@ -249,6 +266,8 @@ function definirCantidad(cantidadInput, cantidad) {
 
     //El valor insertado en cantidad lo actualizo en el data del input. Si el usuario digita una cantidad menor a la cantidad disponible, el valor se actualiza.
     cantidadInput.dataset.cantidad = event.target.value;
+    // Habilito el checkbox
+    checkBoxSelect.disabled = false;
   });
 }
 
@@ -322,36 +341,36 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", (event) => {
   //Valido si el evento ejecutado corresponde a un input con la clase checkboxInput.
   if (event.target.matches(".checkboxInput")) {
     let isChecked = event.target.checked;
+    let inputChecked = event.target;
+    let info = inputChecked.closest("tr");
+    let codigo = info.children[0].textContent;
+    let nombre = info.children[1].textContent;
+    let area = info.children[2].textContent;
+    let valueInput = event.target.getAttribute("data-id");
     if (isChecked) {
-      let inputChecked = event.target;
-      let info = inputChecked.closest("tr");
 
-      //La idea es hacer un append de estos registros a la tabla. tblPreviewElements.
-      let codigo = info.children[0].textContent;
-      let nombre = info.children[1].textContent;
-      let area = info.children[2].textContent;
-      let trTablePreview = document.createElement("tr");
-      let tdCodigo = document.createElement("td");
-      tdCodigo.setAttribute("class", "codigoElemento");
-      let tdNombre = document.createElement("td");
-      let tdCantidad = document.createElement("td");
-      let tdArea = document.createElement("td");
-      //Capturo el valor del checkbox
-      let valueInput = event.target.getAttribute("data-id");
-      trTablePreview.setAttribute("data-id", valueInput);
-
-      //Valido, si el arreglo no contiene el valueInput, entonces que implemente el valor ahí.
+       //Valido, si el arreglo no contiene el valueInput, entonces que implemente el valor ahí.
       if (!ids.includes(valueInput)) {
         ids.push(valueInput);
-        tablesDoom.tblBodyPreviewElements.appendChild(trTablePreview);
-        tdCodigo.textContent = codigo;
-        tdNombre.textContent = nombre;
-        tdCantidad.textContent = "1";
-        tdArea.textContent = area;
-        trTablePreview.appendChild(tdCodigo);
-        trTablePreview.appendChild(tdNombre);
-        trTablePreview.appendChild(tdArea);
-        trTablePreview.appendChild(tdCantidad);
+          //La idea es hacer un append de estos registros a la tabla. tblPreviewElements.
+          
+          let trTablePreview = document.createElement("tr");
+          let tdCodigo = document.createElement("td");
+          tdCodigo.setAttribute("class", "codigoElemento");
+          let tdNombre = document.createElement("td");
+          let tdCantidad = document.createElement("td");
+          let tdArea = document.createElement("td");
+          tablesDoom.tblBodyPreviewElements.appendChild(trTablePreview);
+          tdCodigo.textContent = codigo;
+          tdNombre.textContent = nombre;
+          tdCantidad.textContent = "1";
+          tdArea.textContent = area;
+          trTablePreview.appendChild(tdCodigo);
+          trTablePreview.appendChild(tdNombre);
+          trTablePreview.appendChild(tdArea);
+          trTablePreview.appendChild(tdCantidad);
+          //Capturo el valor del checkbox
+          trTablePreview.setAttribute("data-id", valueInput);
 
         initAlert(`${nombre} agregado a reserva`, "info", toastOptions);
       } else {
@@ -363,7 +382,19 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", (event) => {
         //Reinicio el evento.
         event.preventDefault();
       }
+    }else{
+      // fila del elemento a eliminar
+      let trTablePreview = document.querySelector(`[data-id="${valueInput}"]`);
+      trTablePreview.remove();
+      
+      if (ids.includes(valueInput) && !isChecked) {
+        ids = ids.filter(id => id !== valueInput);
+      }
+      
+      initAlert(`Elemento ${nombre} Eliminado del prestamo`, "info", toastOptions);
+
     }
+
   }
 });
 
@@ -371,15 +402,14 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", (event) => {
 const tableConsumible = document.querySelector("#tableConsumible");
 tableConsumible.addEventListener("click", (event) => {
   event.stopPropagation();
-  console.log(event.target);
-  //Si se selecciona, debo de guardar el elemento en la tabla.
+  let info = event.target.closest("tr");
+  let inputCantidad = info.querySelector(`[type=number]`);
+  //Proceso para seleccionar el elemento consumible.
   if (
     event.target.tagName === "INPUT" &&
     event.target.type === "checkbox" &&
     event.target.checked
   ) {
-    let info = event.target.closest("tr");
-    let inputCantidad = info.querySelector(`[type=number]`);
     let codigoConsu = info.children[0].textContent;
     let nombreConsu = info.children[1].textContent;
     let cantidadConsu = inputCantidad.value;
@@ -388,6 +418,7 @@ tableConsumible.addEventListener("click", (event) => {
     let tdCodigoConsu = document.createElement("td");
     let tdNombreConsu = document.createElement("td");
     tdCodigoConsu.setAttribute("class", "codigoElemento");
+    trConsu.setAttribute('data-id', codigoConsu);
     let tdAreaConsu = document.createElement("td");
     let tdCantidadConsu = document.createElement("td");
     tdCodigoConsu.textContent = codigoConsu;
@@ -395,7 +426,6 @@ tableConsumible.addEventListener("click", (event) => {
     //Como el elemento es consumible defino su area como general.
     tdAreaConsu.textContent = "General";
     tdCantidadConsu.textContent = cantidadConsu;
-
     if (checkboxChecked && cantidadConsu === "") {
       //Desmarcar el checkbox en caso de que no haya elegido cantidad al elemento.
       event.target.checked = false;
@@ -427,6 +457,19 @@ tableConsumible.addEventListener("click", (event) => {
       }
     }
   }
+  // Proceso para eliminar el elemento consumible del prestamo.
+  if (event.target.type === "checkbox" &&
+    !event.target.checked) {
+      let checkboxId = event.target.getAttribute('data-id');
+      ids = ids.filter(id => id != checkboxId);
+      inputCantidad.disabled = false;
+      event.target.disabled = true;
+      inputCantidad.value = "";
+      const tblBodyPreviewElements = document.querySelector('#tblBodyPreviewElements');
+      let datatype = tblBodyPreviewElements.querySelector(`[data-id="${checkboxId}"]`);
+      datatype.remove();
+      initAlert("Elemento eliminado del prestamo", "info", toastOptions);
+    }
 });
 
 /**
@@ -552,9 +595,15 @@ closeModal(modalDoom.modalAddConsumibles, btnDoom.btnCloseConsumible, ()=>{
 });
 
 //Preview de los elementos en forma de tabla.
+const tableMessage = document.querySelector('#tableMessage');
 btnDoom.btnModalPreviewElements.addEventListener("click", (e) => {
   e.stopPropagation();
   e.preventDefault();
+
+  if (ids.length === 0) {
+    tableMessage.innerHTML = "No hay elementos seleccionados en la reserva";
+  }
+
   instanPreview.open();
 });
 
