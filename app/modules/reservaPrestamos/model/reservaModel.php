@@ -30,12 +30,12 @@ class ReservaModel
     {
 
         $conn = $this->conect->getConnect();
-
         try {
             $conn->begin_transaction();
 
             $cedula = (int) $data["cedula"];
             unset($data["cedula"]);
+            // $tpPrestamo = (int) $data['tpPrestamo'];
 
             //primera id del usuario.
             $sqlIdUser = "SELECT usu_id AS 'id' FROM usuarios WHERE usu_docum = ?";
@@ -59,8 +59,17 @@ class ReservaModel
             }
             $id = (int) $userRow['id'];
             $this->id = $id;
+
+            // if ($data['tp_pres'] === 2) {
+            //     $presSql = "INSERT INTO prestamos (pres_fch_slcitud,pres_fch_reserva,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?,?,?,?)";
+
+            // }else{
+            //     $presSql = "INSERT INTO prestamos (pres_fch_slcitud,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?,?,?)";
+            // }
+
+            $presSql = $data['tp_pres'] === 2 ? "INSERT INTO prestamos (pres_fch_slcitud,pres_fch_reserva,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?,?)" : " INSERT INTO prestamos (pres_fch_slcitud,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?)";
+            
             //segunda transacción, insertar los registros en el prestamo.
-            $presSql = "INSERT INTO prestamos (pres_fch_slcitud,pres_fch_reserva,pres_hor_inicio,pres_hor_fin,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?,?,?,?)";
 
             $stmtPres = $conn->prepare($presSql);
 
@@ -71,20 +80,33 @@ class ReservaModel
                     'status' => false
                 ];
             }
-            // //Debo usar esta por el tema de la versión de php.
+            // Debo usar esta por el tema de la versión de php.
             extract($data, EXTR_PREFIX_ALL, 'p');
-            $stmtPres->bind_param(
-                'ssssssiii',
-                $p_pres_fch_reserva,
-                $p_pres_hor_inicio,
-                $p_pres_hor_fin,
-                $p_pres_fch_entrega,
-                $p_pres_observacion,
-                $p_pres_destino,
-                $p_pres_estado,
-                $p_tp_pres,
-                $p_pres_rol
-            );
+
+            if ($data['tp_pres'] === 2) {
+                $stmtPres->bind_param(
+                    'ssssiii',
+                    $p_pres_fch_reserva,
+                    $p_pres_fch_entrega,
+                    $p_pres_observacion,
+                    $p_pres_destino,
+                    $p_pres_estado,
+                    $p_tp_pres,
+                    $p_pres_rol
+                );
+            }else{
+                $stmtPres->bind_param(
+                    'sssiii',
+                    $p_pres_fch_entrega,
+                    $p_pres_observacion,
+                    $p_pres_destino,
+                    $p_pres_estado,
+                    $p_tp_pres,
+                    $p_pres_rol
+                );
+
+            }
+
             if (!$stmtPres->execute()) {
                 $conn->rollback();
                 return [
@@ -104,10 +126,12 @@ class ReservaModel
                 ];
             }
 
+            $status = $data['tp_pres'] == 1 ? (int) 3 : (int) 1;
+
             //tercera para actualizar el estado de los elementos devolutivos
             $updateStatusElements = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
             $stmtUpdateStatus = $conn->prepare($updateStatusElements);
-            $status = (int) 3;
+            // $status = (int) 3;
             $codigosDevolu = array_column($codDevolu, 'codigo');
             foreach ($codigosDevolu as $elementos) {
                 $stmtUpdateStatus->bind_param('ii', $status, $elementos);

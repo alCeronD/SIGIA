@@ -14,6 +14,8 @@ export {
   tooltipOptions,
   initAlert,
   toastOptions,
+  mostrarConfirmacion,
+  replaceln
 } from "../utils/cases.js";
 
-export { tablesDoom,modalDoom, btnDoom, inputsForm, iDom, objDataConsumibles , objDataUsers} from "./reserva/domElementsReservas.js";
+export { tablesDoom,modalDoom, btnDoom, inputsForm, iDom, objDataConsumibles , objDataUsers, divContainers} from "./reserva/domElementsReservas.js";

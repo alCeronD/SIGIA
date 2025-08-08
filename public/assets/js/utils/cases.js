@@ -115,7 +115,6 @@ export const initTooltip = (
   position = "left"
 ) => {
   if (!btn) return;
-
   //Destruimos el tooltip que existe asignado al boton, esto para evitar que se vuelva a sobre escribir.
   const instanceToltip = M.Tooltip.getInstance(btn);
   //Destruyo la instancia
@@ -146,6 +145,7 @@ export const initTooltip = (
 
 // Reemplazar los saltos de línea de un texto por etiquetas br html.
 export const replaceln = (message) => {
+  // la letra g significa "global", es decir, se debe aplicar a todos.
   return message.replace(/\n/g, "<br>");
 };
 

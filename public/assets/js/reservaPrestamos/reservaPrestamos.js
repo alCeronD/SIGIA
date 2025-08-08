@@ -1,5 +1,6 @@
 import { addClassItem } from "../utils/cases.js";
-import { Ajax,closeModal,createI,instanceDate,opcionesDatepicker,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, inputsForm, iDom, objDataConsumibles } from "./index.js";
+import { Ajax,closeModal,createI,instanceDate,opcionesDatepicker,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, inputsForm, iDom, objDataConsumibles, divContainers, mostrarConfirmacion, sendData,replaceln } from "./index.js";
+
 const objAjax = new Ajax();
 btnDoom.btnModalPreviewElements.append(iDom.iCreatePreview);
 btnDoom.btnAddElements.classList.add("btnClick");
@@ -343,7 +344,6 @@ function validateDisponibilidad({fecha = "", codigosElementos, isOnly = false}={
 
   const responseDisponibilidad = getData('Modules/reservaPrestamos/controller/reservaPrestamosController.php','GET', param);
 
-  console.log(responseDisponibilidad);
 }
 // function validateDisponibilidad({fecha= "", codigosElementos = []}={}){
 //   const responseDisponibilidad = getData('Modules/reservaPrestamos/controller/reservaPrestamosController.php','GET', {action: "validateElement", elementos : codigosElementos});
@@ -637,12 +637,12 @@ btnDoom.btnModalPreviewElements.addEventListener("click", (e) => {
 });
 
 //Con esta función valido que los campos del formulario sean diligenciados.
-function validateFormData(formData) {
+function validateFormData(formData, tipoPrestamo) {
   for (const [key, value] of formData.entries()) {
     const isEmpty = !value || value.toString().trim() === "";
 
-    // Evitamos validar campos opcionales como 'observaciones'
-    const camposOpcionales = ["observaciones"];
+    // Evitamos validar dependiendo del tipo de prestamo, si es 1, omitir la fecha de reserva y si es 2, solo observaciones.
+    const camposOpcionales = tipoPrestamo === "1" ? ["observaciones", "fechaReserva"] : ["observaciones"];
     if (isEmpty && !camposOpcionales.includes(key)) {
       initAlert(
         `El campo "${key}" debe ser diligenciado`,
@@ -667,12 +667,47 @@ function validateDate(date1,date2){
 
 }
 
+// Seleccionar los radiobuttons
+const radioButonTp = document.querySelectorAll('[name="tipoPr"]');
+radioButonTp.forEach((rd)=>{
+  rd.addEventListener('change', (event)=>{
+    event.stopPropagation();
+
+    if (event.target.checked && event.target.value === "1") {
+      formSolicitudPrestamo.style.display = "grid";
+      divContainers.divFechaReserva.style.display = "none";
+    } else {
+      formSolicitudPrestamo.style.display = "grid";
+      divContainers.divFechaReserva.style.display = "flex";
+    }
+
+  });
+});
+
+
+
 /**
  * Submit al formulario.
  */
 formSolicitudPrestamo.addEventListener("submit", (event) => {
   event.preventDefault();
   event.stopPropagation();
+
+  // Seleccionar el radiobutton seleccionado
+  const radioButtonTp = document.querySelector('[name="tipoPr"]:checked');
+  let tpPrestamo = null;
+
+  tpPrestamo = radioButtonTp ? radioButtonTp.value : null;
+  
+  if (!tpPrestamo) {
+    initAlert("Debes Seleccionar la opción Prestamo o Reserva", "warning", toastOptions);
+    return;
+  }
+
+  if (tpPrestamo === "1" && inputsForm.inputFechaReserva) {
+    inputsForm.inputFechaReserva.value = "";
+  }
+
   let rows = {
     codigoElementos: {
       devolutivos: [],
@@ -684,24 +719,37 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
   let data = Object.fromEntries(info);
-  if (!validateFormData(info)) return; 
-   
+  if (!validateFormData(info, tpPrestamo)) return; 
+  let fechaReservaParse= null;
+  let fechaDevolucionParse= null;
+  let fechaReservaFormat= null;
+  let fechaDevolucionFormat= null;
+  if (tpPrestamo === "2") {
+    fechaReservaParse = dateISOFormat(data.fechaReserva, true);
+    fechaDevolucionParse = dateISOFormat(data.fechaDevolucion, true);
 
-  let fechaReservaParse = dateISOFormat(data.fechaReserva, true);
-  let fechaDevolucionParse = dateISOFormat(data.fechaDevolucion, true);
-  
-  if (!validateDate(fechaReservaParse,fechaDevolucionParse)) {
-    initAlert("La fecha de reserva no debe ser mayor a la fecha de devolución.", "info", toastOptions);
-    return;
+    if (!validateDate(fechaReservaParse, fechaDevolucionParse)) {
+      initAlert(
+        "La fecha de reserva no debe ser mayor a la fecha de devolución.",
+        "info",
+        toastOptions
+      );
+      return;
+    }
+
+    //Transformo la fecha en formato iso 8601
+    fechaReservaFormat = dateISOFormat(data.fechaReserva);
+    fechaDevolucionFormat = dateISOFormat(data.fechaDevolucion);
+    
+    data.fechaReserva = fechaReservaFormat;
+    data.fechaDevolucion = fechaDevolucionFormat;
   }
-
-  //Transformo la fecha en formato iso 8601
-  let fechaReservaFormat = dateISOFormat(data.fechaReserva);
-  let fechaDevolucionFormat = dateISOFormat(data.fechaDevolucion);
-
-
-  data.fechaReserva = fechaReservaFormat;
-  data.fechaDevolucion = fechaDevolucionFormat;
+  
+  if (tpPrestamo === "1") {
+    fechaDevolucionFormat = dateISOFormat(data.fechaDevolucion);
+    data.fechaDevolucion = fechaDevolucionFormat;
+    delete data.fechaReserva;
+  }
 
   //Agrego la cedula al objeto data.
   data.cedula = document.getElementById("cedula").textContent.trim();
@@ -741,8 +789,8 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let codigosElementos = rows.codigoElementos;
   //Agrego los códigos de los elementos al data.
   data.codigosElementos = codigosElementos;
-
-  validateDisponibilidad({fecha: fechaDevolucionFormat, codigosElementos: codigosElementos});
+  data.tpPrestamo = tpPrestamo;
+  // validateDisponibilidad({fecha: fechaDevolucionFormat, codigosElementos: codigosElementos});
 
   // objAjax.request.open(
   //   "POST",
@@ -754,77 +802,88 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   //   data: data,
   //   action: "registrar",
   // });
-  // if (rows.codigoElementos.devolutivos.length === 0 && rows.codigoElementos.consumibles.length === 0) {
-  //   initAlert(
-  //     "Debes agregar al menos un elemento para la solicitud.",
-  //     "error",
-  //     toastOptions
-  //   );
+  if (rows.codigoElementos.devolutivos.length === 0 && rows.codigoElementos.consumibles.length === 0) {
+    initAlert(
+      "Debes agregar al menos un elemento para la solicitud.",
+      "error",
+      toastOptions
+    );
 
-  //   btnDoom.btnAddElements.classList.remove("shake");
-  //   //Obligo al dom a que vuelva a re ejecutar este elemento.
-  //   void btnDoom.btnAddElements.offsetWidth;
-  //   btnDoom.btnAddElements.classList.add("shake");
-  //   return;
-  // }
+    btnDoom.btnAddElements.classList.remove("shake");
+    //Obligo al dom a que vuelva a re ejecutar este elemento.
+    void btnDoom.btnAddElements.offsetWidth;
+    btnDoom.btnAddElements.classList.add("shake");
+    return;
+  }
 
-  // let devolutivosRows = rows.codigoElementos.devolutivos;
-  // let consumiblesRows = rows.codigoElementos.consumibles;
-  // let textConfirmReserva = "";
-  // //Valido si hay elementos seleccionados.
-  // if (consumiblesRows.length > 0) {
-  //   textConfirmReserva += `Consumibles:\n${consumiblesRows
-  //     .map(
-  //       (el) =>
-  //         `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
-  //     )
-  //     .join("\n")}\n`;
-  // }
+  let devolutivosRows = rows.codigoElementos.devolutivos;
+  let consumiblesRows = rows.codigoElementos.consumibles;
+  let textConfirmReservaConsumibles = "";
+  let textConfirmReservaDev = "";
+  //Valido si hay elementos seleccionados.
+  if (consumiblesRows.length > 0) {
+    textConfirmReservaConsumibles += `Consumibles:\n${consumiblesRows
+      .map(
+        (el) =>
+          `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
+      )
+      .join("\n")}\n`;
+  }else{
+    textConfirmReservaConsumibles += `Consumibles:\n Sin elementos \n`;
+  }
 
-  // //Valido si hay elemento seleccionados.
-  // if (devolutivosRows.length > 0) {
-  //   textConfirmReserva += `Devolutivos:\n${rows.codigoElementos.devolutivos
-  //     .map(
-  //       (el) =>
-  //         `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
-  //     )
-  //     .join("\n")}\n`;
-  // }
+  //Valido si hay elemento seleccionados.
+  if (devolutivosRows.length > 0) {
+    textConfirmReservaDev += `Devolutivos:\n${rows.codigoElementos.devolutivos
+      .map(
+        (el) =>
+          `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
+      )
+      .join("\n")}\n`;
+  }else{
+    textConfirmReservaConsumibles += `Devolutivos:\n Sin elementos \n`;
+  }
+  console.log(data);
+  let textConfirmReserva = "";
+  textConfirmReserva += `${replaceln(textConfirmReservaConsumibles)}\n`+`\n ${replaceln(textConfirmReservaDev)}`;
+  let title = tpPrestamo === "1" ? "Prestamo" : "Reserva"; 
+  mostrarConfirmacion(`Registrar ${title}`, textConfirmReserva, async (response)=>{
+    if (!response) {
+      initAlert("Proceso cancelado", "info", toastOptions);
+      return;
+    }
 
-  // //TODO: transformar await fetch.
-  // if (
-  //   confirm(`¿Deseas realizar el siguiente prestamo?\n${textConfirmReserva}`)
-  // ) {
+    try {
+      const responseReserva = await sendData('Modules/reservaPrestamos/controller/reservaPrestamosController.php',"POST", "registrar",data);
 
-  //   try {
-  //       objAjax.request.onload = () => {
-  //       let response = JSON.parse(objAjax.request.responseText);
-  //       // Si el registro se realizó correctamente.
-  //       if (response.status) {
-  //         initAlert("Reserva realizada con exito", "success", toastOptions);
-  //         //Limpio el formulario, tabla y campos de span.
-  //         formSolicitudPrestamo.reset();
-  //         inputsForm.inputNroDocumento.textContent = "";
-  //         inputsForm.inputNombre.textContent = "";
-  //         inputsForm.inputApellido.textContent = "";
-  //         inputsForm.inputEmail.textContent = "";
-  //         inputsForm.inputTelefono.textContent = "";
-  //         tablesDoom.tblBodyPreviewElements.innerHTML = "";
-  //       }
-  //       if (!response.status) {
-  //         initAlert(`${response.message}`, "warning", toastOptions);
-  //         return;
-  //       }
-  //     };
+      let status= responseReserva.status;
 
-  //     objAjax.request.setRequestHeader("accept", "application/json");
-  //     objAjax.request.send(dataJson);
-  //   } catch (error) {
-  //     initAlert(`${error.message}`, "warning", toastOptions);
-  //     return;
-  //   }
-    
-  // }
+      if (!status) {
+        initAlert("Error al realizar el proceso", "info", toastOptions);
+        return;
+      }
+
+      initAlert("Reserva realizada con exito", "success", toastOptions);
+      //Limpio el formulario, tabla y campos de span.
+      formSolicitudPrestamo.reset();
+      const radioButtonTp = document.querySelectorAll('[name="tipoPr"]');
+      radioButtonTp.forEach((rd)=>{
+        rd.checked = false;
+      });
+      formSolicitudPrestamo.style.display = "none";
+      inputsForm.inputNroDocumento.textContent = "";
+      inputsForm.inputNombre.textContent = "";
+      inputsForm.inputApellido.textContent = "";
+      inputsForm.inputEmail.textContent = "";
+      inputsForm.inputTelefono.textContent = "";
+      tablesDoom.tblBodyPreviewElements.innerHTML = "";
+
+    } catch (error) {
+      initAlert(error.message, "error", toastOptions);
+    }
+
+  });
+
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -854,8 +913,22 @@ document.addEventListener("DOMContentLoaded", () => {
     "bottom"
   );
 
+  const tipoPrestamo = document.querySelector('#helpPrestamo');
+
+  initTooltip(
+    tipoPrestamo, 
+    tooltipOptions,
+    "Prestamo: Entrega inmediata de elementos. \n Reserva: Entrega de elementos en una fecha específica.",
+    "top"
+  );
+
+  // Inicializar los select
   const selects = document.querySelectorAll("select");
   M.FormSelect.init(selects);
+
+  //Inicializar los modales
+  const modals = document.querySelectorAll('.modal');
+  M.Modal.init(modals);
 
   //Hago la instancia de los input tipo date
   instanceDate("#fechaReserva", opcionesDatepicker);

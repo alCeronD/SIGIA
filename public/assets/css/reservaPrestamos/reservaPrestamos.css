@@ -45,9 +45,28 @@
 
 .searchUser {
   grid-area: searchUser;
+  display: flex;
+  align-items: flex-start;
+  align-content: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  flex-wrap: wrap;
   min-height: 0;
   height: 3rem;
   font-size: 13pt;
+  gap: 5rem;
+    #user{
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .tipoPrestamo{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+  }
 }
 
 /* Botón agregar persona */
@@ -78,8 +97,9 @@
 }
 
 #formSolicitudPrestamo {
-  display: grid;
+  display: none;
   grid-template-areas:
+
     "cedula nombre apellido"
     "telefono email email"
     "fechaReserva fechaDevolucion areaDestino"

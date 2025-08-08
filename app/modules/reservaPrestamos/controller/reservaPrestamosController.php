@@ -87,8 +87,7 @@ class reservaPrestamosController
     }
 
     /**
-     * Procesa y estructura los datos de una solicitud o reserva de préstamo,
-     * transformándolos al formato requerido por la base de datos antes de ser insertados.
+     * Definimos la estructura para guardar el prestamo o la reserva en la base de datos.
      * 
      * Determina el tipo de préstamo y estado según el rol del usuario actual, 
      * organiza y limpia los datos, y luego delega la inserción al método insertReserva().
@@ -113,21 +112,9 @@ class reservaPrestamosController
     public function setReserva(array $data = [])
     {
         validatePermisos('reservaPrestamos', 'setReserva');
-        //Validar usuario. para guardar su rol. y su tipo de prestamo, reserva o solicitud.
-        if (($_SESSION['usuario']['rol_id'] == 2) || ($_SESSION['usuario']['rol_id'] == 1)) {
-            $pres_rol = $_SESSION['usuario']['rol_id'];
-            //Reserva
-            $tp_pres = 1;
-            //Estado
-            $pres_estado = 1;
-        }
-        if (($_SESSION['usuario']['rol_id'] == 4)) {
-            $pres_rol = $_SESSION['usuario']['rol_id'];
-            //Solicitud
-            $tp_pres = 2;
-            //Estado
-            $pres_estado = 3;
-        }
+        $tp_pres = isset($data['tpPrestamo']) ? (int) $data['tpPrestamo'] : null;
+        $pres_estado = null;
+        $pres_rol = $_SESSION['usuario']['rol_id'];
 
         $codConsumibles = $data["codigosElementos"]['consumibles'];
         $codDevolu = $data["codigosElementos"]['devolutivos'];
@@ -138,25 +125,27 @@ class reservaPrestamosController
         array_multisort($codDevolu, SORT_ASC, $ascDevolutivos);
         array_multisort($codConsumibles, SORT_ASC, $ascConsu);
 
+        if ($tp_pres == 2) {
+            //Cambiar nombre de la llave.
+            $data['pres_fch_reserva'] = $data['fechaReserva'];
+            unset($data['fechaReserva']);
+        }
+
+        $pres_estado = $tp_pres == 2 ? 3 : 1;
+
         unset($data["codigosElementos"]);
-
-        //Cambiar nombre de la llave.
-        $data['pres_fch_reserva'] = $data['fechaReserva'];
-        unset($data['fechaReserva']);
-
         $data['pres_fch_entrega'] = $data['fechaDevolucion'];
         unset($data['fechaDevolucion']);
-
         $data['pres_observacion'] = $data['observaciones'];
         unset($data['observaciones']);
-
         $data['pres_destino'] = $data['areaDestino'];
         unset($data['areaDestino']);
-
         $data['pres_estado'] = $pres_estado;
-
         $data['pres_rol'] = $pres_rol;
         $data['tp_pres'] = $tp_pres;
+        unset($data['tpPrestamo']);
+
+
         $result = $this->model->insertReserva($data, $codDevolu, $codConsumibles);
         if (!$result) {
             fail($result['message']);
@@ -194,7 +183,7 @@ class reservaPrestamosController
      */
     public function validateElemento(int $elementos,String $fechaReserva ,$isOnly = false){
         $result = $this->modelElemento->validateDisponiblidad($elementos, $isOnly);
-        var_dump($result);
+        // var_dump($result);
 
     }
 
@@ -296,6 +285,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
         $data = json_decode($input, true);
 
+
         switch ($data['action']) {
             case 'finalizar':
 
@@ -306,7 +296,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 break;
 
             case 'registrar':
-                $elementosPres = $data['data'];
+
+                $elementosPres = $data;
                 $controller->setReserva($elementosPres);
                 break;
             case 'validateLoan':

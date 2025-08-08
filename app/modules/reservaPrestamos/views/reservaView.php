@@ -1,16 +1,34 @@
 <!-- Realizar la reserva -->
 <div class="content">
     <div class="menuTitle">
-        <span id="textTitle">Gestión de reserva</span>
+        <span id="textTitle">Gestión de prestamos</span>
         <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
     </div>
     <div class="searchUser">
-        <label for="">Instructor: </label>
-        <button type="button" id="btnAddUser" class="btnInfo btnClick btn waves-effect waves-light">
-            <i class="material-icons">person_add</i>
-        </button>
+        <div class="user">
+            <label id="labelUser" for="">Instructor: </label>
+            <button type="button" id="btnAddUser" class="btnInfo btnClick btn waves-effect waves-light">
+                <i class="material-icons">person_add</i>
+            </button>
+        </div>
+        <div class="tipoPrestamo">
+            <span>Seleccione el proceso: </span>
+            <span id="helpPrestamo"><i class="material-icons">help_outline</i></span>
+            <p>
+                <label>
+                    <input class="with-gap" name="tipoPr" type="radio" value="1" />
+                    <span>Prestamo</span>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <input class="with-gap" name="tipoPr" type="radio" value="2" />
+                    <span>Reserva</span>
+                </label>
+            </p>
+        </div>
     </div>
     <div class="solicPrestamos">
         <form id="formSolicitudPrestamo">
@@ -81,10 +99,11 @@
 </div>
 
 <!-- Contenedor modal que contiene los registros de los usuarios -->
- <div id="users">
+<div id="users">
     <?php require_once 'modalAddUsers.php'; ?>
- </div>
+</div>
 
-
+<?php require_once __DIR__ . '/../../../helpers/modalConfirmation.php'; 
+?>
 
 <script type="module" src="../public/assets/js/reservaPrestamos/reservaPrestamos.js"></script>
