@@ -305,7 +305,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 $dataNuevo = $data;
                 $controller->setSolicitud($dataNuevo);
 
-                //la validación del data es practicamente el setReserva pero la hare en otra función por cuestión de tiempo.
 
 
                 break;

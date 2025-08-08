@@ -843,7 +843,6 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   }else{
     textConfirmReservaConsumibles += `Devolutivos:\n Sin elementos \n`;
   }
-  console.log(data);
   let textConfirmReserva = "";
   textConfirmReserva += `${replaceln(textConfirmReservaConsumibles)}\n`+`\n ${replaceln(textConfirmReservaDev)}`;
   let title = tpPrestamo === "1" ? "Prestamo" : "Reserva"; 
@@ -864,6 +863,8 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
       }
 
       initAlert("Reserva realizada con exito", "success", toastOptions);
+      // Elimino los ids de los prestamos.
+      ids.length = 0;
       //Limpio el formulario, tabla y campos de span.
       formSolicitudPrestamo.reset();
       const radioButtonTp = document.querySelectorAll('[name="tipoPr"]');

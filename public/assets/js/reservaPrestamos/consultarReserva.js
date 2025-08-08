@@ -82,14 +82,12 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
   let status = result.status;
   data = result.data.data;
   pages = result.data.pages;
-  console.log(data);
   if (status && data.length === 0) {
     tbodyReservaConsult.innerHTML = "";
     tbodyReservaConsult.innerHTML = "No hay prestamos para el estado del prestamo seleccionado.";
     return;
   }
   if (pagesReserva > pages) return;
-
   tbodyReservaConsult.innerHTML = "";
   data.forEach((dta) => {
     codigo = dta.codigo;
@@ -756,15 +754,13 @@ tbodyReservaConsult.addEventListener("click", (event) => {
             "validateLoan",
             validateReserva
           );
-
           if (responseValidate.status) {
             estadoNew.textContent = "Validado";
             estadoNew.style.color = "green";
 
-            let btnValidate = tdAcciones.querySelector(
-              `button[data-validate='${validateReserva.codigoReserva}']`
-            );
+            let btnValidate = document.querySelector(`#tbodyReservaConsult tr td [data-validate='${validateReserva.codigoReserva}']`);
             if (btnValidate) {
+              console.log(btnValidate);
               // Renderizo nuevamente basada en la pagína y el tipo.
               renderReservas({page:currentPage, type: valueSelect});
               initAlert(
