@@ -4,6 +4,7 @@
         <thead>
             <tr>
                 <th>Código</th>
+                <th>Serie</th>
                 <th>Nombre</th>
                 <th>Area</th>
                 <th>Selección</th>

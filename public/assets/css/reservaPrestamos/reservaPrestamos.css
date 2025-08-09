@@ -341,7 +341,7 @@ th {
 
 /* 
 
---- MODULO CONSULT RESERVA SELECT
+--- MODULO CONSULTAR RESERVAS
 
 */
 
@@ -547,7 +547,6 @@ th {
   flex-direction: row;
 }
 
-
 /* estilo de tablas elementos consumibles */
 .actionsElements{
   display: flex;
@@ -592,14 +591,11 @@ table td .actionsElements {
   border: 1px solid #ccc;
 }
 
-
 .idAccionesPreviewElements{
   display: flex;
   flex-direction: row;
   align-items: center;
 }
-
-
 
 /**
 paginación reservas
@@ -607,13 +603,9 @@ paginación reservas
 
 .reservas .pages {
   /* una separación entre la tabla y los botones. */
-  margin-top: 2vh;
+  padding: 2vh;
 }
 
-.pages{
-  display: flex;
-  flex-direction: row;
-}
 .pages > .previewReservas{
   width: 50%;
   display: flex;
@@ -639,6 +631,31 @@ background-color: var(--teal);
 color: var(--secundary);
 }
 
+.footerReservas{
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  width: 100%;
+
+}
+
+
+.pages{
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  align-items: flex-start;
+}
+
+/* Bloque de notas */
+.notes{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+}
 
 
 /* --------------------------------- */

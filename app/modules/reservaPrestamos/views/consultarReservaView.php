@@ -3,7 +3,7 @@
         <div class="searchInput menuTitle">
             <span id="menuTitleConsult" class="">Gestion de Reservas y solicitudes</span>
         </div>
-        
+
         <div class=" filterTipoReserva">
             <span>Filtrar reservas:</span>
             <select id="filtroTipoReserva">
@@ -21,14 +21,21 @@
     </div>
     <div class="reservas">
         <?php require_once 'tablaConsultarSolicitudView.php'; ?>
-        <div class="pages">
-            <div class="previewReservas">
-                <button type="button" id="previewReservas" class="btn-small btn waves-effect waves-light"><i class="material-icons">chevron_left</i></button>
+        <div class="footerReservas">
+            <div class="pages">
+                <div class="previewReservas">
+                    <button type="button" id="previewReservas" class="btn-small btn waves-effect waves-light"><i class="material-icons">chevron_left</i></button>
+                </div>
+                <div class="nextReservas">
+                    <button type="button" id="nextReservas" class="btn-small btn waves-effect waves-light"><i class="material-icons">chevron_right</i></button>
+                </div>
             </div>
-            <div class="nextReservas">
-                <button type="button" id="nextReservas" class="btn-small btn waves-effect waves-light"><i class="material-icons">chevron_right</i></button>
+            <div class="notes">
+                <span id="pagesPrestamos"></span>
+                <span id="rowsPrestamos"></span>
             </div>
         </div>
+
     </div>
 </div>
 

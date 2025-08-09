@@ -5,6 +5,7 @@ import {
   createBtn,
   createI,
   initAlert,
+  initTooltip,
   instanceModal,
   options,
   setReserva,
@@ -37,6 +38,8 @@ const bodyDetailValidate = document.querySelector("#bodyDetailValidate");
 const btnCloseValidte = document.querySelector("#modalValidate .close-modal");
 const btnCloseElements = document.querySelector("#modalDetail .close-modal");
 const formDetail = document.querySelector("#formDetail");
+const pagesPrestamos = document.querySelector('#pagesPrestamos');
+const rowsPrestamos = document.querySelector('#rowsPrestamos');
 // El contenido de la tabla del modal validatePrestamo
 const tableContainerDetail = document.querySelector(
   ".tableContainerDetail table"
@@ -78,6 +81,7 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     "GET",
     { action: "reservas", pages: page, type },false
   );
+
 
   let status = result.status;
   data = result.data.data;
@@ -208,9 +212,11 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
         };
 
       });
-
     }
   });
+  pagesPrestamos.innerText = `Página ${pagesReserva} de ${pages}`;
+  // rowsPrestamos.innerText = `Cantidad prestamos: ${pages}`;
+
   } catch (error) {
     console.warn(`Error al procesar la solicitud, intente más tarde ${error}`);
     tbodyReservaConsult.innerHTML = "Error al realizar la solicitud, intente nuevamente";
@@ -760,7 +766,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
             let btnValidate = document.querySelector(`#tbodyReservaConsult tr td [data-validate='${validateReserva.codigoReserva}']`);
             if (btnValidate) {
-              console.log(btnValidate);
               // Renderizo nuevamente basada en la pagína y el tipo.
               renderReservas({page:currentPage, type: valueSelect});
               initAlert(
@@ -883,4 +888,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderReservas();
   // Inicializar select 
   M.FormSelect.init(filtroTipoReserva);
+  const helpEstados = document.querySelector('#helpEstados');
+  initTooltip(helpEstados,tooltipOptions,`Estados elementos\nValidado: El prestamo ha sido validado y los elementos está en posesión del usuario\nPor validar: Elementos en espera por dar salida y entregar insumos al usuario`,"top");
 });

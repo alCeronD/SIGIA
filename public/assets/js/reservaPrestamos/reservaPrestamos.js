@@ -187,13 +187,13 @@ const renderConsumibles = async ({objDataConsumibles = {}, pagesElementsConsumib
 }
 
 const renderDevolutivos = async ({objDataDevolutivos = {}, pagesElementsDevolutivos = 1 ,resetPage = false})=>{
-
   tablesDoom.tblBodyDevolutivos.innerHTML = "";
     //Implementar los datos en en la tabla.
     objDataDevolutivos.forEach((dta) => {
       let codigo = dta.codigo;
       let elemento = dta.elemento;
       let area = dta.area;
+      let serie = dta.serie;
 
       addElements = document.createElement("input");
       addElements.setAttribute("type", "checkbox");
@@ -205,18 +205,17 @@ const renderDevolutivos = async ({objDataDevolutivos = {}, pagesElementsDevoluti
       let span = document.createElement("span");
       let trTable = document.createElement("tr");
       let tdCodigo = document.createElement("td");
+      let tdSerie = document.createElement("td");
       let tdElemento = document.createElement("td");
       let tdArea = document.createElement("td");
       let tdAccion = document.createElement("td");
 
-      //A los elementos td les implemento su contenido, su contenido es la información de la tabla
       tdCodigo.textContent = codigo;
+      tdSerie.textContent = serie;
       tdElemento.textContent = elemento;
       tdArea.textContent = area;
       tdAccion.append(label);
       label.append(addElements, span);
-
-
       // Valido si el elemento está en el arreglo para así marcar como checked.
       let codigoString = codigo.toString();
       if (ids.includes(codigoString)) {
@@ -225,14 +224,12 @@ const renderDevolutivos = async ({objDataDevolutivos = {}, pagesElementsDevoluti
 
       tablesDoom.tblBodyDevolutivos.appendChild(trTable);
       trTable.appendChild(tdCodigo);
+      trTable.appendChild(tdSerie);
       trTable.appendChild(tdElemento);
       trTable.appendChild(tdArea);
       trTable.append(tdAccion);
 
     });
-
-
-
 }
 
 /**
@@ -374,12 +371,7 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", (event) => {
         validateDisponibilidad({fecha: fechaParse, codigosElementos: valueInput, isOnly: true});
         
       }
-
-
-      
-
-
-       //Valido, si el arreglo no contiene el valueInput, entonces que implemente el valor ahí.
+      //Valido, si el arreglo no contiene el valueInput, entonces que implemente el valor ahí.
       if (!ids.includes(valueInput)) {
         ids.push(valueInput);
           //La idea es hacer un append de estos registros a la tabla. tblPreviewElements.

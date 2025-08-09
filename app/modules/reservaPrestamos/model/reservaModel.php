@@ -386,6 +386,7 @@ class ReservaModel
                 //Sql para devolutivos
                 $sqlDevolutivo = "SELECT
                     el.elm_cod AS codigo,
+                    el.elm_serie AS serie,
                     el.elm_nombre AS elemento,
                     tp.tp_el_nombre AS tipoElemento,
                     ar.ar_nombre AS area
