@@ -18,19 +18,20 @@
 /* ----------------- Contenedor General ----------------- */
 .contentElements {
     display: grid;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto auto;
     grid-template-areas: "headerElementsModal"
     "contentTableElements"
     "footerElements";
     width: 100%;
+    height: auto;
 }
 
 .headerElementsModal{
     grid-area: headerElementsModal;
-    /* background-color: yellow; */
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    align-items: center;
     gap: 0.8rem;
 
     .tituloHeaderElement{
@@ -66,7 +67,24 @@
 
 .footerElements{
     grid-area: footerElements;
-    background-color: aqua;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+
+    .pages{
+        width: 50%;
+        display: flex;
+        justify-content: center;
+        gap: 0.8rem;
+        
+    }
+    .notes{
+        width: 50%;
+
+    }
 }
 
 

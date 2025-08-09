@@ -288,6 +288,7 @@ const modalConfirmacion = document.querySelector("#modalConfirmacion");
 const modalAddExistencia = instanceModal("#modalAddExistencia", options);
 const titleModalExistencia = document.querySelector("#titleModalExistencia");
 const categoriaSelect = document.querySelector("#categoriaSelect");
+const totalPages = document.querySelector('#totalPages');
 /**
  * Renderiza elementos desde el backend utilizando filtros de tipo, acción y paginación.
  * Realiza una petición GET al servidor y construye dinámicamente el contenido de una tabla HTML.
@@ -333,11 +334,12 @@ const renderElements = async ({
         "GET",
         parameters
       );
+    console.log(dataElements);
     let data = dataElements.data.data;
     pageGlobal = dataElements.data.cantidadPaginas;
-    tbodyElements.innerHTML = "";
-    
+    tbodyElements.innerHTML = "";    
     if (pageGlobal === 0) {
+      totalPages.innerText = "";
       tbodyElements.innerHTML = "Sin resultados";
       return;
     }
@@ -345,6 +347,8 @@ const renderElements = async ({
     if (page > pageGlobal) {
       return;
     }
+    // totalPages.innerText = "";
+
     const fragmentElements = document.createDocumentFragment();
     data.forEach((dta) => {
       let tr = document.createElement("tr");
@@ -640,6 +644,8 @@ const renderElements = async ({
     });
 
     tbodyElements.appendChild(fragmentElements);
+    totalPages.innerText = `Página ${pageElement} de ${pageGlobal}`;
+
 
   } catch (error) {
     throw new Error(`Error al consultar los elementos ${error}`);
@@ -754,37 +760,71 @@ function mostrarConfirmacion(titulo, mensaje, callback) {
   btnCancelar.onclick = () => callback(false);
 }
 
-// Los botones preview puedo crear una función para mandar el handlePage.
 /**
- * Paginación de elementos
+ * Realiza el proceso de páginado según los criterios (todos, consumibles o devolutivos) 
+ * y si hay una búsqueda activa.
+ *
+ * Esta función determina qué tipo de renderizado aplicar:
+ *  1. Si el tipo es "all" (todos), renderiza todos los elementos, con o sin búsqueda.
+ *  2. Si el tipo es "consumible" o "devolutivo" y hay búsqueda, renderiza con filtro y activa `renderWithFilter`.
+ *  3. Si el tipo es "consumible" o "devolutivo" sin búsqueda, renderiza normalmente y aplica `renderWithFilter`.
+ *
+ * Utiliza un spread condicional para incluir los parámetros de búsqueda solo cuando es necesario.
+ *
+ * @async
+ * @function executePagination
+ * @returns {Promise<void>} No retorna valor; ejecuta acciones de renderizado asíncronas.
  */
+const executePagination = async ()=>{
+  // Creo una condicional interna dentro de la variable, si el campo de busqueda tiene caracteres, este me guarda true, en caso que no sea así, es false.
+  const isBusqueda = inputBusqueda.value.trim().length > 0;
+
+  // Proceso de páginado según su tipo de renderizado.
+  // 1. Páginar todos los elementos con el renderizado all (todos). o páginar los elementos con el renderizado all y búsqueda.
+  if ( (currentType === typeElements.all && inputBusqueda.value.length != "") || (currentType === typeElements.all) ) {
+    // isBusqueda = true;
+    // usamos condicional spread ...(isBusqueda && {isBusqueda: true, value: inputBusqueda.value}) para validar si es una busqueda, en caso de que sea una busqueda, implementar los parámetros adicionales, en caso contrario, solamente implementar el parámetro type y page.
+    await renderElements({ type: currentType, page: pageElement, ...(isBusqueda && {isBusqueda: true, value: inputBusqueda.value}) });
+    return;
+  }
+  
+  // 2 Páginar todos los elementos con campo de búsqueda y filtro.
+  if ((currentType === typeElements.consu || currentType === typeElements.dev) && (inputBusqueda.value.length != "")) {
+    console.log("condicional2");
+    await renderElements({ type: currentType, page: pageElement, isBusqueda: true, value: inputBusqueda.value}).then(() => {
+      renderWithFilter();
+    });
+    return;
+  }
+
+  //3 páginado de elementos con filtros, sin búsqueda.
+  if (currentType === typeElements.consu || currentType === typeElements.dev) {
+    await renderElements({ type: currentType, page: pageElement }).then(()=>{
+      renderWithFilter();
+    });
+    return;
+  }
+
+}
+
 previewElements.addEventListener("click", async (e) => {
   e.stopPropagation();
   e.preventDefault();
   if (pageElement <= 1) return;
   pageElement--;
 
-  if (currentType === typeElements.all) {
-    await renderElements({ type: currentType, page: pageElement });
-  } else {
-    await renderElements({ type: currentType, page: pageElement }).then(() => {
-      renderWithFilter();
-    });
-  }
+   executePagination();
 });
 
 nextElements.addEventListener("click", async (e) => {
   e.stopPropagation();
   e.preventDefault();
+  let params = {};
   if (pageElement >= pageGlobal) return;
   pageElement++;
-  if (currentType === typeElements.all) {
-    await renderElements({ type: currentType, page: pageElement });
-  } else {
-    await renderElements({ type: currentType, page: pageElement }).then(() => {
-      renderWithFilter();
-    });
-  }
+
+  executePagination();
+  
 });
 
 /**
@@ -818,7 +858,7 @@ filtroTipo.addEventListener("change", (e) => {
       action: "elements",
       value: valueInput.value,
       type: currentType,
-      page: 1,
+      page: pageElement,
       isBusqueda: true,
     }).then(() => {
       renderWithFilter();
