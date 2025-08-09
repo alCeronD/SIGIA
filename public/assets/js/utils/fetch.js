@@ -62,10 +62,13 @@ export const getData = async (
       });
       newUrl = parameters ? `${url}?${setParameters.toString()}` : url;
     }
-
+    
     const bodyData = setFetch(method, parameters, data);
     const execute = await fetch(newUrl, bodyData);
 
+    if (execute.status === 204) {
+      return {status: 204};
+    }
 
     const getResponse = asText
       ? await execute.text()
@@ -75,8 +78,6 @@ export const getData = async (
     throw new Error(`Error de procedimiento ${error}`);
   }
 };
-
-
 
 export default {
   sendData,

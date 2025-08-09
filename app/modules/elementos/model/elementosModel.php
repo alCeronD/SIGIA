@@ -805,14 +805,12 @@ class ElementoModelo
 
             $sql = "SELECT 
                 e.elm_cod As 'codigoElemento',
-                p.pres_fch_reserva AS 'fechaReserva (YYYY-MM-DD)'
+                p.pres_fch_reserva AS 'fechaReserva'
                 FROM elementos e
                 INNER JOIN prestamos_elementos pe ON
                 pe.pres_el_elem_cod = e.elm_cod 
                 INNER JOIN prestamos p ON
                 pe.pres_cod = p.pres_cod WHERE e.elm_cod = ?";
-
-
 
                 $stmtFechas = $this->conn->prepare($sql);
 
@@ -875,7 +873,7 @@ class ElementoModelo
                 return [
                     'message'=> $isOnly ? "Fechas de reserva relacionadas a los elementos" : "No hay fechas para este elemento",
                     'data'=> $fechas,
-                    'status'=> true
+                    'status'=> count($fechas) > 0 ? true : false
                 ];
 
         } catch (\Throwable $th) {

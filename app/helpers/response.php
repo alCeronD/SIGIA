@@ -37,4 +37,9 @@ function fail(String $value = '', array $data = []){
     exit();
 }
 
+function noResponse(){
+    http_response_code(204);
+    exit();
+}
+
 ?>

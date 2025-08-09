@@ -329,8 +329,8 @@ tablesDoom.tblBodyUsers.addEventListener("click", (e) => {
   }
 });
 
-function validateDisponibilidad({fecha = "", codigosElementos, isOnly = false}={}){
-  let param = {};
+const  validateDisponibilidad = async ({fecha = "", codigosElementos, isOnly = false}={})=>{
+let param = {};
   if(isOnly){
     param = {fechaReserva: fecha, elementos: codigosElementos, isOnly};
   }
@@ -339,19 +339,21 @@ function validateDisponibilidad({fecha = "", codigosElementos, isOnly = false}={
     action: "validateElement"
   };
 
-  const responseDisponibilidad = getData('Modules/reservaPrestamos/controller/reservaPrestamosController.php','GET', param);
+  const responseDisponibilidad = await getData('Modules/reservaPrestamos/controller/reservaPrestamosController.php','GET', param);
 
+  if (responseDisponibilidad.status === 204) {
+    return true;
+  }
+
+  if (!responseDisponibilidad.status) {
+    initAlert("Este elemento ya está reservado para la fecha seleccionada", "info", toastOptions);
+    return false;
+  }
+
+  return true;
 }
-// function validateDisponibilidad({fecha= "", codigosElementos = []}={}){
-//   const responseDisponibilidad = getData('Modules/reservaPrestamos/controller/reservaPrestamosController.php','GET', {action: "validateElement", elementos : codigosElementos});
-  
-//   // console.log(fecha)
-//   // console.log(codigosElementos);
-//   // console.log(responseDisponibilidad);
-// }
 
-//Delegar evento sobre la tabla de elementos devolutivos.
-tablesDoom.tblBodyDevolutivos.addEventListener("click", (event) => {
+tablesDoom.tblBodyDevolutivos.addEventListener("click", async (event) => {
   event.stopPropagation();
 
   //Valido si el evento ejecutado corresponde a un input con la clase checkboxInput.
@@ -368,9 +370,15 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", (event) => {
       const fechaReserva = document.querySelector('#fechaReserva').value;
       if (fechaReserva !== "") {
         let fechaParse = dateISOFormat(fechaReserva,false);
-        validateDisponibilidad({fecha: fechaParse, codigosElementos: valueInput, isOnly: true});
-        
+        const responseValide = await validateDisponibilidad({fecha: fechaParse, codigosElementos: valueInput, isOnly: true});
+
+        if (!responseValide) {
+        event.target.checked = false;
+        return;
+        }
       }
+
+      
       //Valido, si el arreglo no contiene el valueInput, entonces que implemente el valor ahí.
       if (!ids.includes(valueInput)) {
         ids.push(valueInput);
@@ -782,18 +790,10 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   //Agrego los códigos de los elementos al data.
   data.codigosElementos = codigosElementos;
   data.tpPrestamo = tpPrestamo;
+
+
   // validateDisponibilidad({fecha: fechaDevolucionFormat, codigosElementos: codigosElementos});
-
-  // objAjax.request.open(
-  //   "POST",
-  //   "Modules/reservaPrestamos/controller/reservaPrestamosController.php"
-  // );
-  // objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
-  // let dataJson = JSON.stringify({
-  //   data: data,
-  //   action: "registrar",
-  // });
+  
   if (rows.codigoElementos.devolutivos.length === 0 && rows.codigoElementos.consumibles.length === 0) {
     initAlert(
       "Debes agregar al menos un elemento para la solicitud.",

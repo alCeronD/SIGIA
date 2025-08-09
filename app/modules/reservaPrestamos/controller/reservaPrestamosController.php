@@ -1,6 +1,8 @@
 <?php
+
 require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../../../helpers/validatePermisos.php';
+require_once __DIR__ . '/../../../helpers/validateFecha.php';
 require_once __DIR__ . '/../../../helpers/getUrl.php';
 require_once __DIR__ . '/../model/reservaModel.php';
 require_once __DIR__ . '/../../usuarios/model/usuariosModel.php';
@@ -183,10 +185,18 @@ class reservaPrestamosController
      */
     public function validateElemento(int $elementos,String $fechaReserva ,$isOnly = false){
         $result = $this->modelElemento->validateDisponiblidad($elementos, $isOnly);
-        // var_dump($result);
-
+        $data = $result['data'];
+        // Validamos si hay resultados para ejecutar la operación y devolver la respuesta.
+        if (count($result['data']) > 0) {
+            // 0 Porque está en la primera posición del resultado data.
+            $fechaResult = $data[0]['fechaReserva'];
+            if (validateFecha($fechaReserva, $fechaResult, true)) {
+                fail("El elemento $elementos está reservado para la fecha $fechaResult",$result);
+            }
+        }else{
+            noResponse();
+        }
     }
-
 }
 
 $controller = new reservaPrestamosController();
@@ -196,7 +206,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         $case = $_GET['action'] ?? '';
-        // var_dump($case);
         //valor de la página, por defecto, es la página #1.
         $pages = $_GET['pages'] ?? 1;
 
@@ -261,7 +270,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 if($isOnly) {
                     $elementos = (int) $_GET['elementos'] ?? null;
                 }else{
-                    // $elementos = (array) $_GET['elementos'] ?? [];
                     $elementos = $_GET['elementos'] ?? [];
                 }
 
