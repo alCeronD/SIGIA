@@ -1,5 +1,27 @@
 import { addClassItem } from "../utils/cases.js";
-import { Ajax,closeModal,createI,instanceDate,opcionesDatepicker,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom, modalDoom, btnDoom, getData, inputsForm, iDom, objDataConsumibles, divContainers, mostrarConfirmacion, sendData,replaceln } from "./index.js";
+import {
+  Ajax,
+  closeModal,
+  createI,
+  instanceDate,
+  opcionesDatepicker,
+  dateISOFormat,
+  initTooltip,
+  tooltipOptions,
+  initAlert,
+  toastOptions,
+  tablesDoom,
+  modalDoom,
+  btnDoom,
+  getData,
+  inputsForm,
+  iDom,
+  objDataConsumibles,
+  divContainers,
+  mostrarConfirmacion,
+  sendData,
+  replaceln,
+} from "./index.js";
 
 const objAjax = new Ajax();
 btnDoom.btnModalPreviewElements.append(iDom.iCreatePreview);
@@ -12,7 +34,8 @@ let objDataDevolutivos = {};
 const valuePage = document.querySelector("#valuePage");
 const formSolicitudPrestamo = document.querySelector("#formSolicitudPrestamo");
 
-tablesDoom.tblBodyUsers.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
+tablesDoom.tblBodyUsers.innerHTML =
+  '<tr><td colspan="7">Cargando usuarios...</td></tr>';
 
 // variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
 let pagesUsers;
@@ -25,72 +48,83 @@ let addElements;
 
 /**
  * Renderiza los usuarios en una tabla HTML.
- * 
+ *
  * @param {Object} options - Opciones de configuración.
  * @param {string} options.action - Acción para la consulta (por defecto: "users").
  * @param {number} options.pages - Página actual (por defecto: 1).
  * @param {boolean} options.resetToFirstPage - Si debe reiniciar a la primera página.
  */
-const renderUsers = async ({action = "users", pages = 1, resetToFirstPage = false} = {})=>{
+const renderUsers = async ({
+  action = "users",
+  pages = 1,
+  resetToFirstPage = false,
+} = {}) => {
   try {
-    const response = await getData("Modules/reservaPrestamos/controller/reservaPrestamosController.php","GET", {action: action, pages});
+    const response = await getData(
+      "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
+      "GET",
+      { action: action, pages }
+    );
 
     let data = response.data.data;
     let allPages = response.data.pages;
 
     //Evitar que no se aumente la página más allá del número de páginas.
-      if (pgUsers > allPages) {
-        pgUsers = allPages;
-        return;
-      }
+    if (pgUsers > allPages) {
+      pgUsers = allPages;
+      return;
+    }
 
-      if (resetToFirstPage) {
-        pgUsers = 1;
-      }
-      //Limpio los selects, evito que hayan duplicados.
-      for (let index = 1; index <= allPages; index++) {
-        let pagesOptions = document.createElement("option");
-        pagesOptions.value = index;
-        pagesOptions.innerHTML = index;
-        // valuePage.append(pagesOptions);
-      }
-      //por defecto, lo coloco en 1.
-      // valuePage.value = String(pgUsers);
+    if (resetToFirstPage) {
+      pgUsers = 1;
+    }
+    //Limpio los selects, evito que hayan duplicados.
+    for (let index = 1; index <= allPages; index++) {
+      let pagesOptions = document.createElement("option");
+      pagesOptions.value = index;
+      pagesOptions.innerHTML = index;
+      // valuePage.append(pagesOptions);
+    }
+    //por defecto, lo coloco en 1.
+    // valuePage.value = String(pgUsers);
 
-      tablesDoom.tblBodyUsers.innerHTML = "";
-      data.forEach((us) => {
-        let btnAdd = document.createElement("button");
-        btnAdd.setAttribute("type", "button");
-        addClassItem(btnAdd, {btn: "btn", effect: "waves-effect", light:"waves-light"});
-        // Envio la función a crear, no puedo retornar el nodo, porque sino se reemplaza.
-        btnAdd.appendChild(createI("add"));
-        let trTableUsers = document.createElement("tr");
-        let tdNroDocumento = document.createElement("td");
-        let tdNombre = document.createElement("td");
-        let tdApellido = document.createElement("td");
-        let tdTelefono = document.createElement("td");
-        let tdEmail = document.createElement("td");
-        let tdRol = document.createElement("td");
-        let tdAcciones = document.createElement("td");
-
-        tdNroDocumento.textContent = us.nroDocumento;
-        tdNombre.textContent = us.nombres;
-        tdApellido.textContent = us.apellidos;
-        tdTelefono.textContent = us.telefono;
-        tdEmail.textContent = us.email;
-        tdRol.textContent = us.rol;
-
-        tablesDoom.tblBodyUsers.appendChild(trTableUsers);
-        trTableUsers.appendChild(tdNroDocumento);
-        trTableUsers.appendChild(tdNombre);
-        trTableUsers.appendChild(tdApellido);
-        trTableUsers.appendChild(tdTelefono);
-        trTableUsers.appendChild(tdEmail);
-        trTableUsers.appendChild(tdRol);
-        trTableUsers.appendChild(tdAcciones);
-        tdAcciones.appendChild(btnAdd);
+    tablesDoom.tblBodyUsers.innerHTML = "";
+    data.forEach((us) => {
+      let btnAdd = document.createElement("button");
+      btnAdd.setAttribute("type", "button");
+      addClassItem(btnAdd, {
+        btn: "btn",
+        effect: "waves-effect",
+        light: "waves-light",
       });
+      // Envio la función a crear, no puedo retornar el nodo, porque sino se reemplaza.
+      btnAdd.appendChild(createI("add"));
+      let trTableUsers = document.createElement("tr");
+      let tdNroDocumento = document.createElement("td");
+      let tdNombre = document.createElement("td");
+      let tdApellido = document.createElement("td");
+      let tdTelefono = document.createElement("td");
+      let tdEmail = document.createElement("td");
+      let tdRol = document.createElement("td");
+      let tdAcciones = document.createElement("td");
 
+      tdNroDocumento.textContent = us.nroDocumento;
+      tdNombre.textContent = us.nombres;
+      tdApellido.textContent = us.apellidos;
+      tdTelefono.textContent = us.telefono;
+      tdEmail.textContent = us.email;
+      tdRol.textContent = us.rol;
+
+      tablesDoom.tblBodyUsers.appendChild(trTableUsers);
+      trTableUsers.appendChild(tdNroDocumento);
+      trTableUsers.appendChild(tdNombre);
+      trTableUsers.appendChild(tdApellido);
+      trTableUsers.appendChild(tdTelefono);
+      trTableUsers.appendChild(tdEmail);
+      trTableUsers.appendChild(tdRol);
+      trTableUsers.appendChild(tdAcciones);
+      tdAcciones.appendChild(btnAdd);
+    });
   } catch (error) {
     console.log(error);
     initAlert(`${error.message}`, "warning", toastOptions);
@@ -107,7 +141,7 @@ const getElements = async ({ action = "", pages = 1 } = {}) => {
     );
     const data = response.data.data;
     const pagesResult = response.data.pages;
-    
+
     if (action === "elementsConsumibles") {
       // Limpio el arreglo.
       objDataConsumibles.length = 0;
@@ -115,14 +149,13 @@ const getElements = async ({ action = "", pages = 1 } = {}) => {
       objDataConsumibles.push(...data);
       return {
         objDataConsumibles,
-        pagesElementsConsumibles: pagesResult
+        pagesElementsConsumibles: pagesResult,
       };
     }
     if (action === "elementsDevolutivos") {
-      
       return {
-        objDataDevolutivos:  data,
-        pagesElementsDevolutivos: pagesResult
+        objDataDevolutivos: data,
+        pagesElementsDevolutivos: pagesResult,
       };
     }
 
@@ -133,9 +166,12 @@ const getElements = async ({ action = "", pages = 1 } = {}) => {
   }
 };
 
-const renderConsumibles = async ({objDataConsumibles = {}, pagesElementsConsumibles = 1} = {}) =>{
+const renderConsumibles = async ({
+  objDataConsumibles = {},
+  pagesElementsConsumibles = 1,
+} = {}) => {
   //Si el valor es true pues devuelvo la página al principio.
- tablesDoom.tblBodyConsumibles.innerHTML = "";
+  tablesDoom.tblBodyConsumibles.innerHTML = "";
   objDataConsumibles.forEach((data) => {
     let trConsumbile = document.createElement("tr");
     let tdCodigo = document.createElement("td");
@@ -180,57 +216,59 @@ const renderConsumibles = async ({objDataConsumibles = {}, pagesElementsConsumib
       checkBoxSelect.checked = true;
       cantidadInput.disabled = true;
     }
-
   });
 
   modalDoom.modalAddConsumibles.open();
-}
+};
 
-const renderDevolutivos = async ({objDataDevolutivos = {}, pagesElementsDevolutivos = 1 ,resetPage = false})=>{
+const renderDevolutivos = async ({
+  objDataDevolutivos = {},
+  pagesElementsDevolutivos = 1,
+  resetPage = false,
+}) => {
   tablesDoom.tblBodyDevolutivos.innerHTML = "";
-    //Implementar los datos en en la tabla.
-    objDataDevolutivos.forEach((dta) => {
-      let codigo = dta.codigo;
-      let elemento = dta.elemento;
-      let area = dta.area;
-      let serie = dta.serie;
+  //Implementar los datos en en la tabla.
+  objDataDevolutivos.forEach((dta) => {
+    let codigo = dta.codigo;
+    let elemento = dta.elemento;
+    let area = dta.area;
+    let serie = dta.serie;
 
-      addElements = document.createElement("input");
-      addElements.setAttribute("type", "checkbox");
-      addElements.setAttribute("class", "checkboxInput");
-      addElements.classList.add("filled-in");
-      addElements.setAttribute("data-id", codigo);
-      addElements.setAttribute("id", codigo);
-      let label = document.createElement("label");
-      let span = document.createElement("span");
-      let trTable = document.createElement("tr");
-      let tdCodigo = document.createElement("td");
-      let tdSerie = document.createElement("td");
-      let tdElemento = document.createElement("td");
-      let tdArea = document.createElement("td");
-      let tdAccion = document.createElement("td");
+    addElements = document.createElement("input");
+    addElements.setAttribute("type", "checkbox");
+    addElements.setAttribute("class", "checkboxInput");
+    addElements.classList.add("filled-in");
+    addElements.setAttribute("data-id", codigo);
+    addElements.setAttribute("id", codigo);
+    let label = document.createElement("label");
+    let span = document.createElement("span");
+    let trTable = document.createElement("tr");
+    let tdCodigo = document.createElement("td");
+    let tdSerie = document.createElement("td");
+    let tdElemento = document.createElement("td");
+    let tdArea = document.createElement("td");
+    let tdAccion = document.createElement("td");
 
-      tdCodigo.textContent = codigo;
-      tdSerie.textContent = serie;
-      tdElemento.textContent = elemento;
-      tdArea.textContent = area;
-      tdAccion.append(label);
-      label.append(addElements, span);
-      // Valido si el elemento está en el arreglo para así marcar como checked.
-      let codigoString = codigo.toString();
-      if (ids.includes(codigoString)) {
-        addElements.checked = true;
-      }
+    tdCodigo.textContent = codigo;
+    tdSerie.textContent = serie;
+    tdElemento.textContent = elemento;
+    tdArea.textContent = area;
+    tdAccion.append(label);
+    label.append(addElements, span);
+    // Valido si el elemento está en el arreglo para así marcar como checked.
+    let codigoString = codigo.toString();
+    if (ids.includes(codigoString)) {
+      addElements.checked = true;
+    }
 
-      tablesDoom.tblBodyDevolutivos.appendChild(trTable);
-      trTable.appendChild(tdCodigo);
-      trTable.appendChild(tdSerie);
-      trTable.appendChild(tdElemento);
-      trTable.appendChild(tdArea);
-      trTable.append(tdAccion);
-
-    });
-}
+    tablesDoom.tblBodyDevolutivos.appendChild(trTable);
+    trTable.appendChild(tdCodigo);
+    trTable.appendChild(tdSerie);
+    trTable.appendChild(tdElemento);
+    trTable.appendChild(tdArea);
+    trTable.append(tdAccion);
+  });
+};
 
 /**
  * Se valida que la cantidad de los elementos consumibles no sea ni negativa ni mayor a la cantidad disponible.
@@ -271,9 +309,15 @@ btnDoom.btnAddElements.addEventListener("click", async (btnTarget) => {
   btnTarget.preventDefault();
   btnTarget.stopPropagation();
 
-  let {objDataDevolutivos, pagesElementsDevolutivos} = await getElements({action: "elementsDevolutivos", pages: 1});
+  let { objDataDevolutivos, pagesElementsDevolutivos } = await getElements({
+    action: "elementsDevolutivos",
+    pages: 1,
+  });
 
-  await renderDevolutivos({objDataDevolutivos: objDataDevolutivos, pagesElementsDevolutivos: 1});
+  await renderDevolutivos({
+    objDataDevolutivos: objDataDevolutivos,
+    pagesElementsDevolutivos: 1,
+  });
 
   modalDoom.modalAddDevolutivos.open();
   //Uso esta función para renderizar por defecto los elementos de tipo devolutivo, en la página 1.
@@ -283,8 +327,12 @@ btnDoom.btnAddElements.addEventListener("click", async (btnTarget) => {
 btnDoom.btnAddConsumibles.addEventListener("click", async (event) => {
   event.stopPropagation();
   event.preventDefault();
-  const {objDataConsumibles, pagesElementsConsumibles} = await getElements({action:"elementsConsumibles", pages:1, resetToFirstPage: true});
-  await renderConsumibles({objDataConsumibles, pagesElementsConsumibles});
+  const { objDataConsumibles, pagesElementsConsumibles } = await getElements({
+    action: "elementsConsumibles",
+    pages: 1,
+    resetToFirstPage: true,
+  });
+  await renderConsumibles({ objDataConsumibles, pagesElementsConsumibles });
   modalDoom.modalAddConsumibles.open();
 });
 
@@ -294,7 +342,7 @@ btnAddUser.addEventListener("click", (event) => {
   event.preventDefault();
 
   //Vuelvo a reiniciar la tabla para que inicie en la Página #1.
-  renderUsers({action:"users", pages: 1});
+  renderUsers({ action: "users", pages: 1 });
   modalDoom.modalUsers.open();
 });
 
@@ -329,29 +377,79 @@ tablesDoom.tblBodyUsers.addEventListener("click", (e) => {
   }
 });
 
-const  validateDisponibilidad = async ({fecha = "", codigosElementos, isOnly = false}={})=>{
-let param = {};
-  if(isOnly){
-    param = {fechaReserva: fecha, elementos: codigosElementos, isOnly};
-  }
-  param= {
-    ...param,
-    action: "validateElement"
-  };
+const validateDisponibilidad = async ({
+  fecha = "",
+  codigosElementos,
+  isOnly = false,
+  method = "GET",
+} = {}) => {
+  let param = {};
 
-  const responseDisponibilidad = await getData('Modules/reservaPrestamos/controller/reservaPrestamosController.php','GET', param);
+  let responseDisponibilidadGet = null;
+  let responseDisponibilidadPost = null;
 
-  if (responseDisponibilidad.status === 204) {
-    return true;
-  }
+  if (isOnly)
+    param = { fechaReserva: fecha, elementos: codigosElementos, isOnly };
 
-  if (!responseDisponibilidad.status) {
-    initAlert("Este elemento ya está reservado para la fecha seleccionada", "info", toastOptions);
-    return false;
+  try {
+    if (method === "GET") {
+      param = {
+        ...param,
+        action: "validateElement",
+      };
+      responseDisponibilidadGet = await getData(
+        "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
+        method,
+        param
+      );
+
+      console.log({"get": responseDisponibilidadGet});
+
+      if (responseDisponibilidadGet.status === 204) {
+        return true;
+      }
+
+      if (!responseDisponibilidadGet.status) {
+        initAlert(
+          "Este elemento ya está reservado para la fecha seleccionada",
+          "info",
+          toastOptions
+        );
+        return false;
+      }
+    } else {
+      param = {
+        ...param,
+        action: "validateElements",
+        elementos: codigosElementos,
+        isOnly: false,
+        fechaReserva: fecha,
+      };
+      responseDisponibilidadPost = await sendData(
+        "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
+        method,
+        "validateElements",
+        param
+      );
+
+      console.log({"post": responseDisponibilidadPost});
+
+
+      if (responseDisponibilidadPost.status === 204) {
+        return true;
+      }
+
+      // devuelvo la data en caso de que sea true.
+      if (responseDisponibilidadPost.status) {
+        return responseDisponibilidadPost;
+      }
+    }
+  } catch (error) {
+    console.log(error);
   }
 
   return true;
-}
+};
 
 tablesDoom.tblBodyDevolutivos.addEventListener("click", async (event) => {
   event.stopPropagation();
@@ -366,41 +464,44 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", async (event) => {
     let area = info.children[2].textContent;
     let valueInput = event.target.getAttribute("data-id");
     if (isChecked) {
-
-      const fechaReserva = document.querySelector('#fechaReserva').value;
+      const fechaReserva = document.querySelector("#fechaReserva").value;
       if (fechaReserva !== "") {
-        let fechaParse = dateISOFormat(fechaReserva,false);
-        const responseValide = await validateDisponibilidad({fecha: fechaParse, codigosElementos: valueInput, isOnly: true});
-
+        // event.preventDefault();
+        let fechaParse = dateISOFormat(fechaReserva, false);
+        const responseValide = await validateDisponibilidad({
+          fecha: fechaParse,
+          codigosElementos: valueInput,
+          method: "GET",
+          isOnly: true,
+        });
         if (!responseValide) {
-        event.target.checked = false;
-        return;
+          event.target.checked = false;
+          return;
         }
       }
 
-      
       //Valido, si el arreglo no contiene el valueInput, entonces que implemente el valor ahí.
       if (!ids.includes(valueInput)) {
         ids.push(valueInput);
-          //La idea es hacer un append de estos registros a la tabla. tblPreviewElements.
-          
-          let trTablePreview = document.createElement("tr");
-          let tdCodigo = document.createElement("td");
-          tdCodigo.setAttribute("class", "codigoElemento");
-          let tdNombre = document.createElement("td");
-          let tdCantidad = document.createElement("td");
-          let tdArea = document.createElement("td");
-          tablesDoom.tblBodyPreviewElements.appendChild(trTablePreview);
-          tdCodigo.textContent = codigo;
-          tdNombre.textContent = nombre;
-          tdCantidad.textContent = "1";
-          tdArea.textContent = area;
-          trTablePreview.appendChild(tdCodigo);
-          trTablePreview.appendChild(tdNombre);
-          trTablePreview.appendChild(tdArea);
-          trTablePreview.appendChild(tdCantidad);
-          //Capturo el valor del checkbox
-          trTablePreview.setAttribute("data-id", valueInput);
+        //La idea es hacer un append de estos registros a la tabla. tblPreviewElements.
+
+        let trTablePreview = document.createElement("tr");
+        let tdCodigo = document.createElement("td");
+        tdCodigo.setAttribute("class", "codigoElemento");
+        let tdNombre = document.createElement("td");
+        let tdCantidad = document.createElement("td");
+        let tdArea = document.createElement("td");
+        tablesDoom.tblBodyPreviewElements.appendChild(trTablePreview);
+        tdCodigo.textContent = codigo;
+        tdNombre.textContent = nombre;
+        tdCantidad.textContent = "1";
+        tdArea.textContent = area;
+        trTablePreview.appendChild(tdCodigo);
+        trTablePreview.appendChild(tdNombre);
+        trTablePreview.appendChild(tdArea);
+        trTablePreview.appendChild(tdCantidad);
+        //Capturo el valor del checkbox
+        trTablePreview.setAttribute("data-id", valueInput);
 
         initAlert(`${nombre} agregado a reserva`, "info", toastOptions);
       } else {
@@ -412,19 +513,21 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", async (event) => {
         //Reinicio el evento.
         event.preventDefault();
       }
-    }else{
+    } else {
       // fila del elemento a eliminar
       let trTablePreview = document.querySelector(`[data-id="${valueInput}"]`);
       trTablePreview.remove();
-      
+
       if (ids.includes(valueInput) && !isChecked) {
-        ids = ids.filter(id => id !== valueInput);
+        ids = ids.filter((id) => id !== valueInput);
       }
-      
-      initAlert(`Elemento ${nombre} Eliminado del prestamo`, "info", toastOptions);
 
+      initAlert(
+        `Elemento ${nombre} Eliminado del prestamo`,
+        "info",
+        toastOptions
+      );
     }
-
   }
 });
 
@@ -448,7 +551,7 @@ tableConsumible.addEventListener("click", (event) => {
     let tdCodigoConsu = document.createElement("td");
     let tdNombreConsu = document.createElement("td");
     tdCodigoConsu.setAttribute("class", "codigoElemento");
-    trConsu.setAttribute('data-id', codigoConsu);
+    trConsu.setAttribute("data-id", codigoConsu);
     let tdAreaConsu = document.createElement("td");
     let tdCantidadConsu = document.createElement("td");
     tdCodigoConsu.textContent = codigoConsu;
@@ -488,18 +591,21 @@ tableConsumible.addEventListener("click", (event) => {
     }
   }
   // Proceso para eliminar el elemento consumible del prestamo.
-  if (event.target.type === "checkbox" &&
-    !event.target.checked) {
-      let checkboxId = event.target.getAttribute('data-id');
-      ids = ids.filter(id => id != checkboxId);
-      inputCantidad.disabled = false;
-      event.target.disabled = true;
-      inputCantidad.value = "";
-      const tblBodyPreviewElements = document.querySelector('#tblBodyPreviewElements');
-      let datatype = tblBodyPreviewElements.querySelector(`[data-id="${checkboxId}"]`);
-      datatype.remove();
-      initAlert("Elemento eliminado del prestamo", "info", toastOptions);
-    }
+  if (event.target.type === "checkbox" && !event.target.checked) {
+    let checkboxId = event.target.getAttribute("data-id");
+    ids = ids.filter((id) => id != checkboxId);
+    inputCantidad.disabled = false;
+    event.target.disabled = true;
+    inputCantidad.value = "";
+    const tblBodyPreviewElements = document.querySelector(
+      "#tblBodyPreviewElements"
+    );
+    let datatype = tblBodyPreviewElements.querySelector(
+      `[data-id="${checkboxId}"]`
+    );
+    datatype.remove();
+    initAlert("Elemento eliminado del prestamo", "info", toastOptions);
+  }
 });
 
 /**
@@ -514,7 +620,7 @@ btnDoom.btnPreviewUsers.addEventListener("click", (event) => {
   pgUsers = pgUsers === 1 ? 1 : pgUsers - 1;
 
   //Decrementa la página por el valor del pages.
-  renderUsers({action:"users", pages:pgUsers});
+  renderUsers({ action: "users", pages: pgUsers });
 });
 
 //Botón para marcar el next de la página.
@@ -522,8 +628,7 @@ btnDoom.btnNextUsers.addEventListener("click", (event) => {
   event.stopPropagation();
   event.preventDefault();
   pgUsers++;
-  renderUsers({action:"users", pages:pgUsers});
-
+  renderUsers({ action: "users", pages: pgUsers });
 });
 
 /**
@@ -534,26 +639,37 @@ let pgElementsDevolutivos = 1;
 const previewElement = document.querySelector("#previewElement");
 const nextElement = document.querySelector("#nextElement");
 // Selector = Puede que no lo use. Este selector es para colocar la cantidad de páginas que tengo basado en la cantidad de elementos de la tabla.
-previewElement.addEventListener("click",async  (e) => {
+previewElement.addEventListener("click", async (e) => {
   e.stopPropagation();
-  pgElementsDevolutivos = pgElementsDevolutivos === 1 ? 1 : pgElementsDevolutivos - 1;
-  let {objDataDevolutivos, pagesElementsDevolutivos} = await getElements({action: "elementsDevolutivos", pages: pgElementsDevolutivos});
+  pgElementsDevolutivos =
+    pgElementsDevolutivos === 1 ? 1 : pgElementsDevolutivos - 1;
+  let { objDataDevolutivos, pagesElementsDevolutivos } = await getElements({
+    action: "elementsDevolutivos",
+    pages: pgElementsDevolutivos,
+  });
 
-  renderDevolutivos({objDataDevolutivos: objDataDevolutivos, pagesElementsDevolutivos: pgElementsDevolutivos});
-
+  renderDevolutivos({
+    objDataDevolutivos: objDataDevolutivos,
+    pagesElementsDevolutivos: pgElementsDevolutivos,
+  });
 });
 
 nextElement.addEventListener("click", async () => {
   pgElementsDevolutivos++;
 
-  let {objDataDevolutivos, pagesElementsDevolutivos} = await getElements({action: "elementsDevolutivos", pages: pgElementsDevolutivos});
+  let { objDataDevolutivos, pagesElementsDevolutivos } = await getElements({
+    action: "elementsDevolutivos",
+    pages: pgElementsDevolutivos,
+  });
 
   if (pgElementsDevolutivos > pagesElementsDevolutivos) {
     pgElementsDevolutivos = pagesElementsDevolutivos;
-    return;  
+    return;
   }
-  renderDevolutivos({objDataDevolutivos: objDataDevolutivos, pagesElementsDevolutivos: pgElementsDevolutivos});
-
+  renderDevolutivos({
+    objDataDevolutivos: objDataDevolutivos,
+    pagesElementsDevolutivos: pgElementsDevolutivos,
+  });
 });
 
 btnDoom.btnClosePreviewElements.addEventListener("click", (e) => {
@@ -564,7 +680,8 @@ btnDoom.btnClosePreviewElements.addEventListener("click", (e) => {
  * Paginación elementos consumibles disponibles.
  */
 let pagesConsumibles = 1;
-document.querySelector("#previewElementConsumible")
+document
+  .querySelector("#previewElementConsumible")
   .addEventListener("click", async (event) => {
     event.stopPropagation();
 
@@ -581,12 +698,13 @@ document.querySelector("#previewElementConsumible")
 
       await renderConsumibles({
         objDataConsumibles,
-        pagesElementsConsumibles: totalPages
+        pagesElementsConsumibles: totalPages,
       });
     }
   });
 
-document.querySelector("#nextElementConsumible")
+document
+  .querySelector("#nextElementConsumible")
   .addEventListener("click", async (event) => {
     event.stopPropagation();
 
@@ -598,33 +716,33 @@ document.querySelector("#nextElementConsumible")
 
     // valido que en el objeto hayan resultados para poder renderizar la siguiente página.
     if (objDataConsumibles.length > 0 && nextPage <= totalPages) {
-      pagesConsumibles = nextPage; 
+      pagesConsumibles = nextPage;
       pagesElementsConsumibles = totalPages;
-      
+
       await renderConsumibles({
         objDataConsumibles,
-        pagesElementsConsumibles: totalPages
+        pagesElementsConsumibles: totalPages,
       });
     }
-});
+  });
 
 // Cerrar el modal de los usuarios.
-closeModal(modalDoom.modalUsers, btnDoom.btnCloseUsers, ()=>{
-  renderUsers({action: "users", pages: 1, resetToFirstPage:true});
+closeModal(modalDoom.modalUsers, btnDoom.btnCloseUsers, () => {
+  renderUsers({ action: "users", pages: 1, resetToFirstPage: true });
 });
 
-closeModal(modalDoom.modalAddDevolutivos,btnDoom.btnCloseDevolutivos, ()=>{
+closeModal(modalDoom.modalAddDevolutivos, btnDoom.btnCloseDevolutivos, () => {
   pgElementsDevolutivos = 1;
 });
 
 //Cerrar el modal de elementos consumibles
-closeModal(modalDoom.modalAddConsumibles, btnDoom.btnCloseConsumible, ()=>{
+closeModal(modalDoom.modalAddConsumibles, btnDoom.btnCloseConsumible, () => {
   // Reinicio la página para que cuando vuelva a ingresar este en la página inicial.
   pagesConsumibles = 1;
 });
 
 //Preview de los elementos en forma de tabla.
-const tableMessage = document.querySelector('#tableMessage');
+const tableMessage = document.querySelector("#tableMessage");
 btnDoom.btnModalPreviewElements.addEventListener("click", (e) => {
   e.stopPropagation();
   e.preventDefault();
@@ -642,7 +760,10 @@ function validateFormData(formData, tipoPrestamo) {
     const isEmpty = !value || value.toString().trim() === "";
 
     // Evitamos validar dependiendo del tipo de prestamo, si es 1, omitir la fecha de reserva y si es 2, solo observaciones.
-    const camposOpcionales = tipoPrestamo === "1" ? ["observaciones", "fechaReserva"] : ["observaciones"];
+    const camposOpcionales =
+      tipoPrestamo === "1"
+        ? ["observaciones", "fechaReserva"]
+        : ["observaciones"];
     if (isEmpty && !camposOpcionales.includes(key)) {
       initAlert(
         `El campo "${key}" debe ser diligenciado`,
@@ -655,22 +776,21 @@ function validateFormData(formData, tipoPrestamo) {
   return true;
 }
 
-function validateDate(date1,date2){
+function validateDate(date1, date2) {
   let timeDate1 = date1.getTime();
   let timeDate2 = date2.getTime();
 
   if (timeDate1 > timeDate2) {
-  return false;
-  }else{
+    return false;
+  } else {
     return true;
   }
-
 }
 
 // Seleccionar los radiobuttons
 const radioButonTp = document.querySelectorAll('[name="tipoPr"]');
-radioButonTp.forEach((rd)=>{
-  rd.addEventListener('change', (event)=>{
+radioButonTp.forEach((rd) => {
+  rd.addEventListener("change", (event) => {
     event.stopPropagation();
 
     if (event.target.checked && event.target.value === "1") {
@@ -680,16 +800,78 @@ radioButonTp.forEach((rd)=>{
       formSolicitudPrestamo.style.display = "grid";
       divContainers.divFechaReserva.style.display = "flex";
     }
-
   });
 });
 
 
+/**
+ * Función para unificar los elementos devolutivos y consumibles seleccionados para poder visualizar al usuario
+ *
+ * @param {{}} [rows={}] 
+ * @returns {string} 
+ */
+const createMessageElementos = (rows = {}) => {
+  if (!rows) return "";
+
+  let devolutivosRows = rows.codigoElementos.devolutivos;
+  let consumiblesRows = rows.codigoElementos.consumibles;
+  let textConfirmReservaConsumibles = "";
+  let textConfirmReservaDev = "";
+
+  if (consumiblesRows.length === 0) {
+    textConfirmReservaConsumibles += `Consumibles:\n Sin elementos`;
+  } else {
+    textConfirmReservaConsumibles += `Consumibles:\n${consumiblesRows
+      .map(
+        (el) =>
+          `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
+      )
+      .join("\n")}\n`;
+  }
+
+  if (devolutivosRows.length === 0) {
+    textConfirmReservaDev += `Devolutivos:\n Sin elementos`;
+  } else {
+    // Devolutivos.
+    textConfirmReservaDev += `Devolutivos:\n${devolutivosRows
+      .map(
+        (el) =>
+          `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
+      )
+      .join("\n")}\n`;
+  }
+
+  const textRegistrar = `Elementos seleccionados: \n ${replaceln(textConfirmReservaConsumibles)}\n` +
+    `\n ${replaceln(textConfirmReservaDev)}`;
+
+  return textRegistrar;
+};
+
+const createMessagReservados = (dataValidate = {}) => {
+  if (!dataValidate) {
+    return {};
+  }
+  let textDataReservados = "";
+  let textConfirmReserva = "";
+  
+  textDataReservados += `\n ${dataValidate
+    .map(
+      (el) =>
+        `Serie elemento ${el.seriElemento} Nombre elemento: ${el.nombreElemento} Fecha Reservada: ${el.fechaReserva}`
+    )
+    .join("\n")}\n`;
+
+  textConfirmReserva += `\n Estos elementos ya están reservados para la fecha seleccionada : ${replaceln(
+    textDataReservados
+  )}`;
+
+  return textConfirmReserva;
+};
 
 /**
  * Submit al formulario.
  */
-formSolicitudPrestamo.addEventListener("submit", (event) => {
+formSolicitudPrestamo.addEventListener("submit", async (event) => {
   event.preventDefault();
   event.stopPropagation();
 
@@ -698,9 +880,13 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let tpPrestamo = null;
 
   tpPrestamo = radioButtonTp ? radioButtonTp.value : null;
-  
+
   if (!tpPrestamo) {
-    initAlert("Debes Seleccionar la opción Prestamo o Reserva", "warning", toastOptions);
+    initAlert(
+      "Debes Seleccionar la opción Prestamo o Reserva",
+      "warning",
+      toastOptions
+    );
     return;
   }
 
@@ -719,11 +905,11 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
   let data = Object.fromEntries(info);
-  if (!validateFormData(info, tpPrestamo)) return; 
-  let fechaReservaParse= null;
-  let fechaDevolucionParse= null;
-  let fechaReservaFormat= null;
-  let fechaDevolucionFormat= null;
+  if (!validateFormData(info, tpPrestamo)) return;
+  let fechaReservaParse = null;
+  let fechaDevolucionParse = null;
+  let fechaReservaFormat = null;
+  let fechaDevolucionFormat = null;
   if (tpPrestamo === "2") {
     fechaReservaParse = dateISOFormat(data.fechaReserva, true);
     fechaDevolucionParse = dateISOFormat(data.fechaDevolucion, true);
@@ -740,11 +926,11 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     //Transformo la fecha en formato iso 8601
     fechaReservaFormat = dateISOFormat(data.fechaReserva);
     fechaDevolucionFormat = dateISOFormat(data.fechaDevolucion);
-    
+
     data.fechaReserva = fechaReservaFormat;
     data.fechaDevolucion = fechaDevolucionFormat;
   }
-  
+
   if (tpPrestamo === "1") {
     fechaDevolucionFormat = dateISOFormat(data.fechaDevolucion);
     data.fechaDevolucion = fechaDevolucionFormat;
@@ -769,14 +955,16 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
       let area = tds[2].textContent.trim();
       let codigoElemento = tds[0].textContent.trim();
       let cantidadElemento = tds[3] ? tds[3].textContent.trim() : "";
+      let serieElemento = tds[1].textContent.trim();
       cantidadElemento = cantidadElemento ? parseInt(cantidadElemento, 10) : 1;
-      let nombreElemento = tds[1].textContent.trim();
+      let nombreElemento = tds[2].textContent.trim();
       if (!tdArea.includes(area)) {
         tdArea.push(area);
       }
       const elements = {
         codigo: codigoElemento,
         cantidad: cantidadElemento,
+        serie: serieElemento,
         nombreElemento: nombreElemento,
       };
       if (area === "General") {
@@ -791,10 +979,9 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
   data.codigosElementos = codigosElementos;
   data.tpPrestamo = tpPrestamo;
 
-
-  // validateDisponibilidad({fecha: fechaDevolucionFormat, codigosElementos: codigosElementos});
-  
-  if (rows.codigoElementos.devolutivos.length === 0 && rows.codigoElementos.consumibles.length === 0) {
+  //Validar si hay elementos seleccionados para así continuar con el proceso.
+  if (rows.codigoElementos.devolutivos.length === 0 && rows.codigoElementos.consumibles.length === 0
+  ) {
     initAlert(
       "Debes agregar al menos un elemento para la solicitud.",
       "error",
@@ -808,79 +995,99 @@ formSolicitudPrestamo.addEventListener("submit", (event) => {
     return;
   }
 
-  let devolutivosRows = rows.codigoElementos.devolutivos;
-  let consumiblesRows = rows.codigoElementos.consumibles;
-  let textConfirmReservaConsumibles = "";
-  let textConfirmReservaDev = "";
-  //Valido si hay elementos seleccionados.
-  if (consumiblesRows.length > 0) {
-    textConfirmReservaConsumibles += `Consumibles:\n${consumiblesRows
-      .map(
-        (el) =>
-          `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
-      )
-      .join("\n")}\n`;
-  }else{
-    textConfirmReservaConsumibles += `Consumibles:\n Sin elementos \n`;
-  }
-
+  let messageElements = createMessageElementos(rows);
   //Valido si hay elemento seleccionados.
-  if (devolutivosRows.length > 0) {
-    textConfirmReservaDev += `Devolutivos:\n${rows.codigoElementos.devolutivos
-      .map(
-        (el) =>
-          `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
-      )
-      .join("\n")}\n`;
-  }else{
-    textConfirmReservaConsumibles += `Devolutivos:\n Sin elementos \n`;
-  }
+
+  let title = tpPrestamo === "1" ? "Prestamo" : "Reserva";
+
+  // let responseValidate = null;
+  let messageValidate = "";
+  let dataValidate = {};
+  let textDataReservados = "";
+  let paramModal = {};
   let textConfirmReserva = "";
-  textConfirmReserva += `${replaceln(textConfirmReservaConsumibles)}\n`+`\n ${replaceln(textConfirmReservaDev)}`;
-  let title = tpPrestamo === "1" ? "Prestamo" : "Reserva"; 
-  mostrarConfirmacion(`Registrar ${title}`, textConfirmReserva, async (response)=>{
-    if (!response) {
-      initAlert("Proceso cancelado", "info", toastOptions);
-      return;
+  paramModal = { titulo: `Registrar ${title}`, mensaje: messageElements };
+
+  try {
+    let devolutivosCheck = rows.codigoElementos.devolutivos;
+    const responseValidate = await validateDisponibilidad({
+      fecha: data.fechaReserva,
+      codigosElementos: devolutivosCheck,
+      method: "POST",
+      isOnly: false,
+    });
+
+    console.log(responseValidate);
+
+    let modalMessage = "";
+    //Mostrar mensaje de modal para informar que hay elementos ya reservados para esa fecha y por ende, no se podrán reservar.
+    if (responseValidate.status) {
+      messageValidate = responseValidate.message;
+      dataValidate = responseValidate.data;
+      const messageReservado = createMessagReservados(dataValidate);
+      // Unificamos ambos mensajes, el de los elementos que ya están reservados con los elementos que el usuario ha seleccionado.
+      modalMessage += `\n ${replaceln(
+        messageElements
+      )} \n ${messageReservado} \n Si presiona aceptar, los elementos ya reservados no se asociarán a la reserva, ¿Desea continuar?\n`;
+      console.log(messageReservado);
+      paramModal = {
+        titulo: `Registrar ${title}`,
+        mensaje: modalMessage,
+      };
+      console.log(paramModal);
     }
-
-    try {
-      const responseReserva = await sendData('Modules/reservaPrestamos/controller/reservaPrestamosController.php',"POST", "registrar",data);
-
-      let status= responseReserva.status;
-
-      if (!status) {
-        initAlert("Error al realizar el proceso", "info", toastOptions);
+  } catch (error) {
+    console.error(`${error}`);
+  }
+  console.log(paramModal);
+  mostrarConfirmacion(
+    paramModal.titulo,
+    paramModal.mensaje,
+    async (response) => {
+      if (!response) {
+        initAlert("Proceso cancelado", "info", toastOptions);
         return;
       }
 
-      initAlert("Reserva realizada con exito", "success", toastOptions);
-      // Elimino los ids de los prestamos.
-      ids.length = 0;
-      //Limpio el formulario, tabla y campos de span.
-      formSolicitudPrestamo.reset();
-      const radioButtonTp = document.querySelectorAll('[name="tipoPr"]');
-      radioButtonTp.forEach((rd)=>{
-        rd.checked = false;
-      });
-      formSolicitudPrestamo.style.display = "none";
-      inputsForm.inputNroDocumento.textContent = "";
-      inputsForm.inputNombre.textContent = "";
-      inputsForm.inputApellido.textContent = "";
-      inputsForm.inputEmail.textContent = "";
-      inputsForm.inputTelefono.textContent = "";
-      tablesDoom.tblBodyPreviewElements.innerHTML = "";
+      try {
+        const responseReserva = await sendData(
+          "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
+          "POST",
+          "registrar",
+          data
+        );
 
-    } catch (error) {
-      initAlert(error.message, "error", toastOptions);
+        let status = responseReserva.status;
+
+        if (!status) {
+          initAlert("Error al realizar el proceso", "info", toastOptions);
+          return;
+        }
+
+        initAlert("Reserva realizada con exito", "success", toastOptions);
+        // Elimino los ids de los prestamos.
+        ids.length = 0;
+        //Limpio el formulario, tabla y campos de span.
+        formSolicitudPrestamo.reset();
+        const radioButtonTp = document.querySelectorAll('[name="tipoPr"]');
+        radioButtonTp.forEach((rd) => {
+          rd.checked = false;
+        });
+        formSolicitudPrestamo.style.display = "none";
+        inputsForm.inputNroDocumento.textContent = "";
+        inputsForm.inputNombre.textContent = "";
+        inputsForm.inputApellido.textContent = "";
+        inputsForm.inputEmail.textContent = "";
+        inputsForm.inputTelefono.textContent = "";
+        tablesDoom.tblBodyPreviewElements.innerHTML = "";
+      } catch (error) {
+        initAlert(error.message, "error", toastOptions);
+      }
     }
-
-  });
-
+  );
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-
   initTooltip(
     btnDoom.btnAddUser,
     tooltipOptions,
@@ -906,10 +1113,10 @@ document.addEventListener("DOMContentLoaded", () => {
     "bottom"
   );
 
-  const tipoPrestamo = document.querySelector('#helpPrestamo');
+  const tipoPrestamo = document.querySelector("#helpPrestamo");
 
   initTooltip(
-    tipoPrestamo, 
+    tipoPrestamo,
     tooltipOptions,
     "Prestamo: Entrega inmediata de elementos. \n Reserva: Entrega de elementos en una fecha específica.",
     "top"
@@ -920,7 +1127,7 @@ document.addEventListener("DOMContentLoaded", () => {
   M.FormSelect.init(selects);
 
   //Inicializar los modales
-  const modals = document.querySelectorAll('.modal');
+  const modals = document.querySelectorAll(".modal");
   M.Modal.init(modals);
 
   //Hago la instancia de los input tipo date

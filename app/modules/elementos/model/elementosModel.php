@@ -798,34 +798,37 @@ class ElementoModelo
     /**
      * Validar la disponibilidad del elemento antes de realizar su respectiva reserva inmediata.
      * @param int $codigoElemento
+     * @param array $elementos
      * @return array{data: array, message: string, status: bool}
      */
-    public function validateDisponiblidad($codigoElemento, bool $isOnly = false){
+    public function validateDisponiblidad($codigoElemento = 0, bool $isOnly = false, array $elementos = []){
         try {
 
             $sql = "SELECT 
                 e.elm_cod As 'codigoElemento',
+                e.elm_serie AS 'seriElemento',
+                e.elm_nombre AS 'nombreElemento',
                 p.pres_fch_reserva AS 'fechaReserva'
                 FROM elementos e
                 INNER JOIN prestamos_elementos pe ON
                 pe.pres_el_elem_cod = e.elm_cod 
                 INNER JOIN prestamos p ON
-                pe.pres_cod = p.pres_cod WHERE e.elm_cod = ?";
+                pe.pres_cod = p.pres_cod WHERE e.elm_cod = ? AND p.tp_pres = 2";
 
-                $stmtFechas = $this->conn->prepare($sql);
+            $stmtFechas = $this->conn->prepare($sql);
 
-                if (!$stmtFechas) {
-                    return [
-                        'status'=>false,
-                        'message'=> 'error al preparar la consulta',
-                        'data'=> []
-                    ];
-                }
+            if (!$stmtFechas) {
+                return [
+                    'status' => false,
+                    'message' => 'error al preparar la consulta',
+                    'data' => []
+                ];
+            }
 
             if ($isOnly) {
                 $elemento = (int) $codigoElemento ?? null;
 
-                $stmtFechas->bind_param('i', $codigoElemento);
+                $stmtFechas->bind_param('i', $elemento);
 
                 if (!$stmtFechas->execute()) {
                     return [
@@ -837,45 +840,51 @@ class ElementoModelo
 
                 $result = $stmtFechas->get_result();
                 $fechas = [];
-                while($row = $result->fetch_assoc()){
-                    $fechas []= $row;
+                while ($row = $result->fetch_assoc()) {
+                    $fechas[] = $row;
+                }
+            } else {
+                $elementosYaReservados = [];
+                foreach ($elementos as $key => $value) {
+
+                    $codigoElemento = (int) $value['codigo'];
+                    $stmtFechas->bind_param('i', $codigoElemento);
+
+                    if (!$stmtFechas->execute()) {
+                        return [
+                            'status' => false,
+                            'message' => "Error al ejecutar la consulta" . $this->conn->error,
+                            'data' => []
+                        ];
+                    }
+
+                    $resultElementos = $stmtFechas->get_result();
+
+                    while ($row = $resultElementos->fetch_assoc()) {
+                        $elementosYaReservados[] = $row;
+                    }
                 }
             }
-                
-                // else{
-                //     // ciclar la info.
-                //     $elementos = $codigoElemento ?? [];
-                //     foreach ($elementos as $key => $value) {
-                //         $codigoElemento = $value['codigoElemento'];
-                //         $stmtFechas->bind_param('i', $codigoElemento);
 
-
-                //         if (!$stmtFechas->execute()) {
-                //             return [
-                //                 'status'=> false,
-                //                 'message'=> "Error al ejecutar la consulta".$this->conn->error,
-                //                 'data'=> []
-                //             ];
-                //         }
-
-                //     }
-                // }
-
-
-                if (!$stmtFechas->execute()) {
-                    return [
-                        'data'=> [],
-                        'message'=> "error al ejecutar la consulta".$this->conn->error,
-                        'status'=> false
-                    ];
-                }
-                
+            if (!$stmtFechas->execute()) {
                 return [
-                    'message'=> $isOnly ? "Fechas de reserva relacionadas a los elementos" : "No hay fechas para este elemento",
-                    'data'=> $fechas,
-                    'status'=> count($fechas) > 0 ? true : false
+                    'data' => [],
+                    'message' => "error al ejecutar la consulta" . $this->conn->error,
+                    'status' => false
                 ];
+            }
 
+            $dataReturn = $isOnly ? [
+                'message' => "No hay fechas para este elemento",
+                'data' => $fechas,
+                'status' => count($fechas) > 0 ? true : false
+            ] : [
+                'message' => "Fechas de reserva relacionadas a los elementos",
+                'data' => $elementosYaReservados,
+                'status' => count($elementosYaReservados) > 0 ? true : false
+            ];
+
+            return $dataReturn;
         } catch (\Throwable $th) {
             return [
                 'message'=> "error al ejecutar el procedimiento".$th->getMessage(),

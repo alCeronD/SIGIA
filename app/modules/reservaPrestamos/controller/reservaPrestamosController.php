@@ -183,19 +183,63 @@ class reservaPrestamosController
      * Summary of validateElemento - Función de controlador para validar el elemento si está disponible para esa fecha.
      * @return void
      */
-    public function validateElemento(int $elementos,String $fechaReserva ,$isOnly = false){
-        $result = $this->modelElemento->validateDisponiblidad($elementos, $isOnly);
-        $data = $result['data'];
-        // Validamos si hay resultados para ejecutar la operación y devolver la respuesta.
-        if (count($result['data']) > 0) {
-            // 0 Porque está en la primera posición del resultado data.
-            $fechaResult = $data[0]['fechaReserva'];
-            if (validateFecha($fechaReserva, $fechaResult, true)) {
-                fail("El elemento $elementos está reservado para la fecha $fechaResult",$result);
+    public function validateElemento(int $elemento = 0,String $fechaReserva = "" ,$isOnly = false, array $elementos = []){
+        
+        if ($isOnly) {
+            $result = $this->modelElemento->validateDisponiblidad($elemento, $isOnly);
+            $data = $result['data'];
+            // Validamos si hay resultados para ejecutar la operación y devolver la respuesta.
+            if (count($result['data']) > 0) {
+                // 0 Porque está en la primera posición del resultado data.
+                $fechaResult = $data[0]['fechaReserva'];
+                if (validateFecha($fechaReserva, $fechaResult, true)) {
+                    fail("El elemento $elemento está reservado para la fecha $fechaResult", $result);
+                }
+            } else {
+                noResponse($result);
             }
         }else{
-            noResponse();
+            $resultElementos = $this->modelElemento->validateDisponiblidad(
+                isOnly:$isOnly, 
+                elementos:$elementos
+            );
+            $data = $resultElementos['data'];
+            // var_dump($data);
+
+            $elementosYaSeleccionados = [];
+            foreach ($data as $key => $value) {
+                $fechaReservaElementos = $value['fechaReserva'];
+
+                if (validateFecha($fechaReservaElementos, $fechaReserva)) {
+                    // $elementosYaSeleccionados[]= $codigoElemento;
+                    $elementosYaSeleccionados[]= $value;
+                }
+            }
+
+            $resultado = [
+                'data'=>$elementosYaSeleccionados,
+                'status'=> false,
+                'message'=>'Elementos ya seleccionados'
+            ];
+
+            if (count($elementosYaSeleccionados)=== 0) {
+                noResponse($resultElementos);
+            }else{
+                // fail('Hay elementos seleccionados que están reservados para la fecha seleccionada', $resultElementos);
+                // Puedo implementar la función fail pero por ahora se deja a parte por temas de tiempo.
+                
+                $response = [
+                    'status' => true,
+                    'message' => 'Elementos ya seleccionados',
+                    'data' => $elementosYaSeleccionados
+                ];
+                http_response_code(200);
+                echo json_encode($response, JSON_PRETTY_PRINT);
+                exit();
+            }
         }
+
+        
     }
 }
 
@@ -265,6 +309,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 }
                 break;
 
+                // Valido los elementos por y los mando por get porque se hace 1 por uno.
             case 'validateElement':
                 $isOnly = $_GET['isOnly'] === "true" ? true : false;
                 if($isOnly) {
@@ -276,7 +321,12 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 $fecha = empty($_GET['fechaReserva']) ? "" : $_GET['fechaReserva'];
 
                 if (method_exists($controller, 'validateElemento')) {
-                    $controller->validateElemento($elementos, $fecha, $isOnly);
+                    // $controller->validateElemento($elementos, $fecha, $isOnly);
+                    $controller->validateElemento(
+                        elemento:$elementos,
+                        fechaReserva:$fecha,
+                        isOnly:$isOnly
+                    );
                 }
                 break;
 
@@ -312,10 +362,19 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 unset($data['action']);
                 $dataNuevo = $data;
                 $controller->setSolicitud($dataNuevo);
+                break;
 
+                // Valido el listado de los elementos después de que el usuario haya seleccioando todos sus datos, mediante un arreglo.
+                case 'validateElements':
 
+                    $isOnly = $data['isOnly'];
+                    $fechaReserva = $data['fechaReserva'];
+                    $elementos = $data['elementos'];
+
+                    $controller->validateElemento(isOnly: $isOnly, fechaReserva: $fechaReserva, elementos: $elementos);
 
                 break;
+
             default:
                 break;
         }
