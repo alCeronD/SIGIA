@@ -808,6 +808,7 @@ class ElementoModelo
                 e.elm_cod As 'codigoElemento',
                 e.elm_serie AS 'seriElemento',
                 e.elm_nombre AS 'nombreElemento',
+                e.elm_cod_tp_elemento AS 'tipoElemento',
                 p.pres_fch_reserva AS 'fechaReserva'
                 FROM elementos e
                 INNER JOIN prestamos_elementos pe ON

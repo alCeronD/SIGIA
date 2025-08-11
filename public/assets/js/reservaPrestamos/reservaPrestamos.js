@@ -824,7 +824,7 @@ const createMessageElementos = (rows = {}) => {
     textConfirmReservaConsumibles += `Consumibles:\n${consumiblesRows
       .map(
         (el) =>
-          `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
+          `Código: ${el.codigo}  Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
       )
       .join("\n")}\n`;
   }
@@ -836,7 +836,7 @@ const createMessageElementos = (rows = {}) => {
     textConfirmReservaDev += `Devolutivos:\n${devolutivosRows
       .map(
         (el) =>
-          `Código: ${el.codigo} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
+          `Serie: ${el.serie} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
       )
       .join("\n")}\n`;
   }
@@ -975,8 +975,7 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
     }
   });
   let codigosElementos = rows.codigoElementos;
-  //Agrego los códigos de los elementos al data.
-  data.codigosElementos = codigosElementos;
+  // Agrego el tipo de prestamo al objeto data para envíar a registrar.
   data.tpPrestamo = tpPrestamo;
 
   //Validar si hay elementos seleccionados para así continuar con el proceso.
@@ -999,7 +998,6 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
   //Valido si hay elemento seleccionados.
 
   let title = tpPrestamo === "1" ? "Prestamo" : "Reserva";
-
   // let responseValidate = null;
   let messageValidate = "";
   let dataValidate = {};
@@ -1017,7 +1015,6 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
       isOnly: false,
     });
 
-    console.log(responseValidate);
 
     let modalMessage = "";
     //Mostrar mensaje de modal para informar que hay elementos ya reservados para esa fecha y por ende, no se podrán reservar.
@@ -1026,20 +1023,17 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
       dataValidate = responseValidate.data;
       const messageReservado = createMessagReservados(dataValidate);
       // Unificamos ambos mensajes, el de los elementos que ya están reservados con los elementos que el usuario ha seleccionado.
-      modalMessage += `\n ${replaceln(
+      modalMessage += `${messageReservado} \n Si presiona aceptar, los elementos ya reservados no se asociarán a la reserva, ¿Desea continuar?\n ${replaceln(
         messageElements
-      )} \n ${messageReservado} \n Si presiona aceptar, los elementos ya reservados no se asociarán a la reserva, ¿Desea continuar?\n`;
-      console.log(messageReservado);
+      )} \n `;
       paramModal = {
         titulo: `Registrar ${title}`,
         mensaje: modalMessage,
       };
-      console.log(paramModal);
     }
   } catch (error) {
     console.error(`${error}`);
   }
-  console.log(paramModal);
   mostrarConfirmacion(
     paramModal.titulo,
     paramModal.mensaje,
@@ -1048,6 +1042,19 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
         initAlert("Proceso cancelado", "info", toastOptions);
         return;
       }
+
+      // Transformo el arreglo dataValidate en uno nuevo solamente trayendo LOS CÓDIGOS de los elementos para comparar con los que el usuario ha seleccionado.
+      const codigosElementosReservados = dataValidate.map(
+        (item) => item.codigoElemento
+      );
+      // Uso la función filter para mutar los nuevos elementos que voy a enviar a reservar Y SOLO RETORNO los elementos que NO ESTEN INCLUIDOS EN MI OBJETO ELEMENTO.
+      const newDev = codigosElementos.devolutivos.filter((elemento) => {
+        return !codigosElementosReservados.includes(parseInt(elemento.codigo));
+      });
+
+      codigosElementos.devolutivos = newDev;
+      //Agrego los códigos de los elementos al data.
+      data.codigosElementos = codigosElementos;
 
       try {
         const responseReserva = await sendData(

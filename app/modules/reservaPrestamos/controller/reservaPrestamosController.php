@@ -204,14 +204,11 @@ class reservaPrestamosController
                 elementos:$elementos
             );
             $data = $resultElementos['data'];
-            // var_dump($data);
-
             $elementosYaSeleccionados = [];
             foreach ($data as $key => $value) {
                 $fechaReservaElementos = $value['fechaReserva'];
 
                 if (validateFecha($fechaReservaElementos, $fechaReserva)) {
-                    // $elementosYaSeleccionados[]= $codigoElemento;
                     $elementosYaSeleccionados[]= $value;
                 }
             }
