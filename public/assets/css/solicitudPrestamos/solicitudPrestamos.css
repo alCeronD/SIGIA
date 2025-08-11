@@ -4,12 +4,10 @@
 
 /* ------------------------------------ */
 /* MODULO SOLICITAR PRESTAMOS */
-
 /* ------------------------------------ */
 .content {
   display: grid;
   width: 100%;
-  /* height: 100%; */
   grid-template-rows: auto 1fr;
   grid-template-areas:
     "menuTitle"
@@ -33,15 +31,7 @@
 .solicPrestamos {
   grid-area: solicPrestamos;
   display: flex;
-  /* flex-direction: column;
-    height: 100%;
-    padding: 1rem; */
 }
-
-/* .row{
-    width: none;
-  } */
-
 
 #formSolicitudPrestamo {
   display: grid;
@@ -57,63 +47,25 @@
   width: 100%;
 }
 
-.correo {
-  grid-area: correo;
-}
+.correo { grid-area: correo; }
+.direccion { grid-area: direccion; }
+.telefono { grid-area: telefono; padding: 10px; }
+.horaInicio { grid-area: horaInicio; }
+.horaFin { grid-area: horaFin; }
+.cantConsu { max-width: 50px !important; }
 
-.direccion {
-  grid-area: direccion;
+td, th { text-align: center; }
 
-}
-
-.telefono {
-  grid-area: telefono;
-  padding: 10px;
-
-}
-
-.horaInicio {
-  grid-area: horaInicio;
-}
-
-.horaFin {
-  grid-area: horaFin;
-}
-
-.cantConsu {
-  max-width: 50px !important;
-}
-
-td,
-th {
-  text-align: center;
-}
-
- 
 .input-field {
-    margin-left: 10px !important;
-    width: 90%;
-  }
-  
-.nombre {
-  grid-area: nombre;
+  margin-left: 10px !important;
+  width: 90%;
 }
 
-.inputAddElements {
-  grid-area: inputAddElements;
-}
-
-.fechaReserva {
-  grid-area: fechaReserva;
-}
-
-.fechaEntrega {
-  grid-area: fechaEntrega;
-}
-
-.destino {
-  grid-area: destino;
-}
+.nombre { grid-area: nombre; }
+.inputAddElements { grid-area: inputAddElements; }
+.fechaReserva { grid-area: fechaReserva; }
+.fechaEntrega { grid-area: fechaEntrega; }
+.destino { grid-area: destino; }
 
 .inputObservaciones {
   grid-area: inputObservaciones;
@@ -134,10 +86,7 @@ th {
   line-height: 1.4;
 }
 
-
-.inputBtn {
-  grid-area: inputBtn;
-}
+.inputBtn { grid-area: inputBtn; }
 
 .inputContent {
   display: flex;
@@ -145,9 +94,7 @@ th {
   gap: 0.3rem;
 }
 
-.labelForm {
-  font-size: 13pt;
-}
+.labelForm { font-size: 13pt; }
 
 .inputForm {
   height: 2.2rem;
@@ -169,10 +116,7 @@ textarea.inputForm {
   height: 80px;
 }
 
-.input-field>.fontInfo {
-  font-size: 1.5rem !important;
-}
-
+.input-field > .fontInfo { font-size: 1.5rem !important; }
 
 .btnForm {
   font-size: 10pt;
@@ -183,9 +127,7 @@ textarea.inputForm {
   width: 30%;
 }
 
-.btnForm:hover {
-  background-color: #bbc0be;
-}
+.btnForm:hover { background-color: #bbc0be; }
 
 #btnSubmit {
   padding: 0.75rem 2.5rem;
@@ -198,19 +140,13 @@ textarea.inputForm {
   cursor: pointer;
 }
 
-#btnSubmit:hover {
-  background-color: #0056b3;
-}
+#btnSubmit:hover { background-color: #0056b3; }
 
-.btn-ver-detalle,
-.btn-cancelar-prestamo {
+.btn-ver-detalle, .btn-cancelar-prestamo {
   position: static;
-  /* o static */
   z-index: 1;
-  /* o ninguno */
 }
 
-/* Clase de modal de solicitud de prestamos */
 .tableElements {
   overflow: auto;
   width: 100%;
@@ -219,18 +155,13 @@ textarea.inputForm {
   box-sizing: border-box;
 }
 
-
-.tableElements th,
-.tableElements td {
+.tableElements th, .tableElements td {
   border: 1px solid #ccc;
   padding: 0.5rem;
   text-align: left;
   white-space: nowrap;
 }
 
-
-
-/* Mostrar explícitamente los checkboxes dentro de la tabla modal */
 .check-container {
   width: 100%;
   display: flex;
@@ -238,7 +169,6 @@ textarea.inputForm {
   align-items: center;
   cursor: pointer;
   height: 20px;
-
 }
 
 .checkbox {
@@ -249,19 +179,12 @@ textarea.inputForm {
   opacity: 1 !important;
 }
 
-
-/* //Corresponde al boton seleccionar los elementos// */
 .inputAddElements .btn {
   width: 80%;
   margin-bottom: 10px;
 }
 
-/* /////////////////////////////////////// */
-/* /////////paginacion//////// */
-/* /////////////////////////////////////// */
-
-#paginacion,
-#paginacion-prestamos {
+#paginacion, #paginacion-prestamos {
   list-style: none;
   padding-left: 0;
   margin-top: 10px;
@@ -271,23 +194,16 @@ textarea.inputForm {
   gap: 6px;
 }
 
-#paginacion .page-item,
-#paginacion-prestamos .page-item {
+#paginacion .page-item, #paginacion-prestamos .page-item {
   width: 40px;
   text-align: center;
 }
 
-#paginacion .page-link,
-#paginacion-prestamos .page-link {
+#paginacion .page-link, #paginacion-prestamos .page-link {
   width: 100%;
-  /* padding: 6px 10px; */
 }
 
-/* MODAL PARA SELECCIONAR LOS ELEMENTOS EN LA SOLICITUD PRESTAMOS */
-
 .modal-secElementos {
-  /* visibility: hidden; */
-  /* position: fixed; */
   right: 0;
   left: 0;
   background-color: #fafafa;
@@ -300,20 +216,14 @@ textarea.inputForm {
   will-change: top, opacity;
 }
 
-
 .modal-content {
   background-color: #ffffff;
-  /* margin: 4% auto; */
   border-radius: 10px;
   max-width: 1100px;
   width: 100%;
   max-height: 90vh;
-  /* Se adapta al tamaño de los elementos hijos, no al padre. */
   height: fit-content;
   padding: 0 !important;
-  /* height: max-content; */
-  /* overflow-y: auto; */
-  /* box-shadow: 0 0 15px rgba(0, 0, 0, 0.25); */
 }
 
 .modal-title {
@@ -335,21 +245,17 @@ textarea.inputForm {
   cursor: pointer;
 }
 
-
-
 /* ------------------------------------ */
-/* MODULO CONSULTAR SOLICITUDES. */
-
+/* MODULO CONSULTAR SOLICITUDES */
 /* ------------------------------------ */
-
 .contentSolicitud {
   display: grid;
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr;
-  grid-template-areas: "solicitudTitle"
+  grid-template-areas:
+    "solicitudTitle"
     "tableDetalle";
   width: 100%;
-
 }
 
 .solicitudTitle {
@@ -358,19 +264,15 @@ textarea.inputForm {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  
 }
 
-#tituloConsult{
+#tituloConsult {
   font-size: 2rem !important;
-  /* font-weight: bold !important; */
 }
 
-/* Tabla de consultar solicitud */
 .tableDetalle {
   margin-top: 1.3rem;
   grid-area: tableDetalle;
-  /* background-color: yellowgreen; */
   overflow-x: auto;
 }
 
@@ -378,21 +280,15 @@ textarea.inputForm {
   padding: 0.75rem;
   border-bottom: 1px solid #ddd;
   font-weight: bold;
-  /* background-color: #eaeaea; */
-
 }
 
-.table-responsive {
-  width: 100%;
-}
+.table-responsive { width: 100%; }
 
 td {
   padding: 0.33rem;
   border-bottom: 1px solid #ddd;
   text-align: center;
 }
-
-
 
 .row-pair {
   display: flex;
@@ -401,11 +297,7 @@ td {
   margin-bottom: 12px;
 }
 
-.label {
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 3px;
-}
+.label { font-weight: bold; color: #333; margin-bottom: 3px; }
 
 .value-box {
   background-color: #f7f7f7;
@@ -415,33 +307,19 @@ td {
   color: #444;
 }
 
-.column {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 15px;
-  text-align: center;
-}
+.column { flex: 1; display: flex; flex-direction: column; }
+.title { font-size: 16px; font-weight: bold; margin-bottom: 15px; text-align: center; }
 
 #contenidoDetalle {
-  /* padding: 1.5rem; */
   width: 100%;
   min-width: 0;
   height: 100%;
-
-
 }
 
 #contenidoDetalle .itemsContent .rowDetails {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  /* border: 10px solid black; */
   padding: 0.3rem;
   width: 100%;
 }
@@ -458,68 +336,114 @@ td {
   width: 50%;
   display: flex;
   align-items: flex-start;
-
 }
 
-.itemsContent .rowDetails:nth-child(odd) {
-  background-color: #f0f0f0;
-  /* Gris claro */
-}
+.itemsContent .rowDetails:nth-child(odd) { background-color: #f0f0f0; }
+.itemsContent .rowDetails:nth-child(even) { background-color: #dcdcdc; }
 
-.itemsContent .rowDetails:nth-child(even) {
-  background-color: #dcdcdc;
-  /* Gris más oscuro */
-}
-
-
-
-
-/* 0------------------ */
-/* MODALES SOLICITUD PRESTAMO */
-/* ------------------- */
 /* =============================== */
-/* RESPONSIVE MODALES SELECCIÓN   */
+/* RESPONSIVE GENERAL */
 /* =============================== */
 @media (max-width: 768px) {
-  .modal {
-    width: 95% !important;
-    max-width: 100% !important;
-    height: auto;
+  .content {
+    grid-template-columns: 1fr;
+    text-align: left;
+    padding: 0.5rem;
   }
+  .menuTitle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  #textTitle { font-size: 1.5rem !important; text-align: center; width: 100%; }
+  #formSolicitudPrestamo {
+    grid-template-areas:
+      "nombre"
+      "rol"
+      "telefono"
+      "direccion"
+      "correo"
+      "fechaReserva"
+      "horaInicio"
+      "fechaEntrega"
+      "horaFin"
+      "destino"
+      "inputObservaciones"
+      "inputAddElements"
+      "inputBtn";
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  .input-field { width: 100% !important; margin-left: 0 !important; }
+  .btn, .btn.blue { width: 100%; font-size: 14px; }
+  .inputObservaciones textarea { height: auto !important; min-height: 60px; }
+  .table-responsive, table { display: block; overflow-x: auto; white-space: nowrap; }
+  table th, table td { font-size: 12px; padding: 6px; }
+  .modal, .modal-secElementos { width: 95% !important; max-width: 100% !important; height: auto; }
+  .modal-content { padding: 1rem !important; overflow-x: auto; max-height: 80vh; }
+  .pagination { flex-wrap: wrap; gap: 4px; }
+  .page-item { width: auto; min-width: 30px; }
+}
 
-  .modal-content {
-    padding: 1rem;
+@media (max-width: 480px) {
+  #textTitle { font-size: 1.2rem !important; }
+  table th, table td { font-size: 11px; }
+  .btn, .btn.blue { font-size: 12px; padding: 0.5rem; }
+}
+
+/* =============================== */
+/* RESPONSIVE - CONSULTAR PRÉSTAMOS */
+/* =============================== */
+@media (max-width: 768px) {
+  .contentSolicitud {
+    padding: 0.5rem;
+  }
+  .solicitudTitle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  #tituloConsult {
+    font-size: 1.5rem !important;
+    text-align: center;
+    width: 100%;
+  }
+  #filtrosPrestamo .input-field {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+  .tableDetalle {
     overflow-x: auto;
-    max-height: 80vh;
   }
-
-  .modal-content table {
+  .tableDetalle table {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
   }
-
-  .modal-content table td,
-  .modal-content table th {
-    text-align: center;
+  .tableDetalle th, 
+  .tableDetalle td {
     font-size: 12px;
     padding: 6px;
   }
-
-  .modal-content input[type="number"] {
-    max-width: 60px;
-  }
-
-  .modal-footer {
-    padding: 1rem 0.5rem;
-    display: flex;
-    justify-content: center;
-  }
-
-  .inputAddElements .btn {
-    font-size: 12px;
-    padding: 6px 10px;
-    width: 100%;
+  .pagination {
+    flex-wrap: wrap;
+    gap: 4px;
   }
 }
 
+@media (max-width: 480px) {
+  #tituloConsult {
+    font-size: 1.2rem !important;
+  }
+  .tableDetalle th, 
+  .tableDetalle td {
+    font-size: 11px;
+  }
+  .btn, 
+  .btn.blue, 
+  .btn-ver-detalle, 
+  .btn-cancelar-prestamo {
+    font-size: 12px;
+    padding: 0.5rem;
+  }
+}

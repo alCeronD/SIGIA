@@ -46,14 +46,14 @@
               <td>
                 <div class="center-align">
                   <button type="button"
-                    class="btn btn-ver-detalle btn-small waves-effect waves-teal white-text"
+                    class="btn btn-ver-detalle btn-small waves-teal white-text"
                     data-id="<?= $prestamo['codigoSolicitud'] ?>"
                     title="Ver detalle del préstamo">
                     <i class="material-icons">visibility</i>
                   </button>
                   <?php if ((strtolower($prestamo['estadoNombre']) !== 'cancelado') && strtolower($prestamo['estadoNombre']) !== 'finalizado'): ?>
                     <button type="button"
-                      class="btn btn-cancelar-prestamo btn-small red lighten-1 white-text waves-effect"
+                      class="btn btn-cancelar-prestamo btn-small red lighten-1 white-text"
                       data-id="<?= $prestamo['codigoSolicitud'] ?>"
                       data-url="<?= getUrl('solicitudPrestamos', 'solicitudPrestamos', 'cancelarPrestamo', false, 'dashboard'); ?>"
                       title="Cancelar préstamo">
