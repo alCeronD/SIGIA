@@ -1,3 +1,4 @@
+import { addClassItem } from "../utils/cases.js";
 import {
   closeModal,
   createCheckboxGeneric,
@@ -38,26 +39,23 @@ const getPermisosRolAsig = async ({ data = null } = {}) => {
 let functionIdsAssoc = new Set();
 // Funciones descartadas para enviar a eliminar.
 let functionDesc = new Set();
-// let functionIdsAssoc = [];
 /**
- * Agregar id de la función al arreglo para enviar a guardar cambios.
- * Para esta función, estaba antes con un arreglo básico usando push, ahora se usan set.
+ * Actualiza la selección de funciones asociadas a un rol.
+ *
+ * Si `isAdd` es `true`, agrega el ID de la función a la colección `functionIdsAssoc`.
+ * Si `isAdd` es `false`, elimina el ID de la función de `functionIdsAssoc` y lo agrega a `functionDesc`.
+ *
+ * @param {number|string|null} idFuncion - El ID de la función que se va a agregar o quitar. Puede ser `null`.
+ * @param {boolean} [isAdd=true] - Indica si se debe agregar (`true`) o quitar (`false`) la función.
  */
 const updateFunctionSelection = (idFuncion = null, isAdd = true) => {
   // IDS DE las funciones asociadas al rol que se selecciono.
   if (isAdd) {
-    // if (!functionIdsAssoc.includes(idFuncion)) {
-    //   functionIdsAssoc.push(idFuncion);
-    // }
     functionIdsAssoc.add(idFuncion);
   } else {
     functionIdsAssoc.delete(idFuncion);
     functionDesc.add(idFuncion);
-    // functionIdsAssoc = functionIdsAssoc.filter((fuId) => fuId != idFuncion);
   }
-
-  console.log(functionIdsAssoc);
-  console.log(functionDesc);
 };
 
 // Función para traer los roles y las funciones junto a su modulo.
@@ -68,15 +66,9 @@ const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
     { action: "getRolesPermisos" }
   );
 
-  // Obtener los nombres amigables para el usuario
-  // const getNombresModulos = await getData("Modules/Roles/Controller/rolesController.php", "GET", {action : "getRolesPermisos"});
-
-  
   const rolesYFunciones = getRlFunciones.data.data.funciones;
   const modulos = getRlFunciones.data.data.modulos;
   asigPermisosContent.innerHTML = "";
-  console.log(rolesYFunciones);
-  // Itinerar sobre los keys y la valor
   Object.entries(rolesYFunciones).forEach(([nombreModulo, funcionesModulo]) => {
     // Contenedor del modulo, Acá va toda la estructura, la de la las funciones y el modulo.
     const contenedorModulo = document.createElement("div");
@@ -129,7 +121,6 @@ const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
         classItem: "checkboxFunciones",
         data: funcion.idModulo,
       });
-      // checkBoxNmGeneric.setAttribute('data-IdModulo',`${funcion.idModulo}`);
 
       // Agregar al contenedor
       contenedor.appendChild(checkBoxNmGeneric);
@@ -211,6 +202,10 @@ preconfirmButton.addEventListener("click", (e) => {
         modalConfirmacion.close();
         modalAsing.close();
         initAlert(responsePost.message, "success", toastOptions);
+        // Esto lo hago para recargar la página y así ver los últimos cambios de la página del menú, buscar como hacerlo de una mejor manera.
+        setTimeout(() => {
+          location.reload();
+        }, 400);
         return;
       } catch (error) {
         initAlert(error.message, "info", toastOptions);
@@ -219,7 +214,7 @@ preconfirmButton.addEventListener("click", (e) => {
     }
   );
 });
-
+  
 // Renderizar la vista de la tabla roles.
 const renderRoles = async () => {
   const responseRoles = await getData(
@@ -247,8 +242,10 @@ const renderRoles = async () => {
     btnStatus.setAttribute("type", "button");
     btnStatus.setAttribute("data-id", `${rl.rl_id}`);
     btnStatus.setAttribute("data-status", `${rl.rl_status}`);
+    btnStatus.setAttribute("class", "btnStatus");
     btnAsig.setAttribute("type", "button");
     btnAsig.setAttribute("data-rol", `${rl.rl_id}`);
+    btnAsig.setAttribute("class", "btnAsig");
     let iconEditar = createI("border_color");
     let iconStatus = createI("delete_sweep");
     let iconAsig = createI("build");
@@ -258,6 +255,9 @@ const renderRoles = async () => {
     tdActions.appendChild(btnAsig);
     tdActions.appendChild(btnEditar);
     tdActions.appendChild(btnStatus);
+    addClassItem(btnAsig, {btn: "btn", waves: "waves-effect"});
+    addClassItem(btnEditar, {btn: "btn",waves: "waves-effect", hoover: "waves-orange" });
+    addClassItem(btnStatus, {btn: "btn", waves: "waves-effect"});
     tdID.innerText = rl.rl_id;
     tdNombre.innerText = rl.rl_nombre;
     tdDescript.innerText = rl.rl_descripcion;
@@ -438,7 +438,6 @@ formRol.addEventListener("submit", async (e) => {
 });
 document.addEventListener("DOMContentLoaded", () => {
   renderRoles();
-  // renderRolesFunciones();
   closeModal(modalAsing, closeModalBtnAsing, () => {
     rolId = null;
   });

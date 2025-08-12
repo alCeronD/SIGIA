@@ -3,8 +3,6 @@ include_once __DIR__ . '/../../../config/conn.php';
 
 class RolModelo
 {
-
-
     public function __construct()
     {
         // Ya no se necesita guardar la conexión en $this->conn

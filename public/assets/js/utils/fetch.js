@@ -32,13 +32,16 @@ export const sendData = async (
 
     let newUrl = parameters ? `${url}?${setParameter}` : url;
     const optionsFetch = setFetch(method, parameters, data);
-    // console.log(optionsFetch);
     const response = await fetch(newUrl, optionsFetch);
-    // console.log(response);
+    
+    if (response.status === 204) {
+      return {status: 204};
+    }
+    
     const json = await response.json();
-
+    
     if (!response.ok) {
-      throw { status: response.status, ...json };
+      return { status: response.status, ...json };
     }
     return json;
   } catch (error) {
@@ -64,10 +67,13 @@ export const getData = async (
       });
       newUrl = parameters ? `${url}?${setParameters.toString()}` : url;
     }
-
+    
     const bodyData = setFetch(method, parameters, data);
     const execute = await fetch(newUrl, bodyData);
 
+    if (execute.status === 204) {
+      return {status: 204};
+    }
 
     const getResponse = asText
       ? await execute.text()
@@ -77,8 +83,6 @@ export const getData = async (
     throw new Error(`Error de procedimiento ${error}`);
   }
 };
-
-
 
 export default {
   sendData,

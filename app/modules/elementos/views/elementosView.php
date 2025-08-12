@@ -46,28 +46,19 @@
             <!-- FILA DE PAGINACION DENTRO DE LA TABLA -->
         </table>
     </div>
-    <tfoot class="footerElements">
-        <tr>
-            <td colspan="9">
-                <ul class="pagination center-align" style="margin-top: 20px;">
-                    <!-- Botón Anterior -->
-                    <li class="waves-effect">
-
-                        <button type="button" class="waves-effect btn" id="previewElements">
-                            <i class="material-icons">chevron_left</i>
-
-                        </button>
-                    </li>
-                    <!-- Botón Siguiente -->
-                    <li class="waves-effect">
-                        <button type="button" class="waves-effect btn" id="nextElements">
-                            <i class="material-icons">chevron_right</i>
-                        </button>
-                    </li>
-                </ul>
-            </td>
-        </tr>
-    </tfoot>
+    <div class="footerElements">
+        <div class="notes">
+            <span id="totalPages"></span>
+        </div>
+        <div class="pages">
+            <button type="button" class="waves-effect btn" id="previewElements">
+                <i class="material-icons">chevron_left</i>
+            </button>
+            <button type="button" class="waves-effect btn" id="nextElements">
+                <i class="material-icons">chevron_right</i>
+            </button>
+        </div>
+    </div>
 </div>
 
 <?php

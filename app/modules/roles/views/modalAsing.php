@@ -8,15 +8,11 @@
             </button>
         </div>
         <div id="asigPermisosContent">
-
         </div>
 
     </div>
     <div class="modal-footer">
-        <!-- <a href="#!" id="preconfirmButton" class="waves-effect waves-green btn-flat">Guardar</a> -->
-        <!-- <button type="button" class="waves-effect waves-green btn-flat"></button> -->
-
-        <button id="preconfirmButton" class="btn waves-effect waves-light" type="submit" name="action">Guardar
+        <button id="preconfirmButton" class="btn waves-effect waves-red" type="submit" name="action">Guardar
             <i class="material-icons right">save</i>
         </button>
     </div>

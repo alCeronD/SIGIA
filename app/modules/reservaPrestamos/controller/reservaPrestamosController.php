@@ -1,6 +1,8 @@
 <?php
+
 require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../../../helpers/validatePermisos.php';
+require_once __DIR__ . '/../../../helpers/validateFecha.php';
 require_once __DIR__ . '/../../../helpers/getUrl.php';
 require_once __DIR__ . '/../model/reservaModel.php';
 require_once __DIR__ . '/../../usuarios/model/usuariosModel.php';
@@ -13,10 +15,13 @@ class reservaPrestamosController
 {
     private $model;
 
+    private $modelElemento;
     public function __construct()
     {
         $reservaModel = new ReservaModel();
         $this->model = $reservaModel;
+        $elementoModel = new ElementoModelo();
+        $this->modelElemento = $elementoModel;
         include_once __DIR__ . '/../../../helpers/response.php';
     }
 
@@ -84,8 +89,7 @@ class reservaPrestamosController
     }
 
     /**
-     * Procesa y estructura los datos de una solicitud o reserva de préstamo,
-     * transformándolos al formato requerido por la base de datos antes de ser insertados.
+     * Definimos la estructura para guardar el prestamo o la reserva en la base de datos.
      * 
      * Determina el tipo de préstamo y estado según el rol del usuario actual, 
      * organiza y limpia los datos, y luego delega la inserción al método insertReserva().
@@ -110,21 +114,9 @@ class reservaPrestamosController
     public function setReserva(array $data = [])
     {
         validatePermisos('reservaPrestamos', 'setReserva');
-        //Validar usuario. para guardar su rol. y su tipo de prestamo, reserva o solicitud.
-        if (($_SESSION['usuario']['rol_id'] == 2) || ($_SESSION['usuario']['rol_id'] == 1)) {
-            $pres_rol = $_SESSION['usuario']['rol_id'];
-            //Reserva
-            $tp_pres = 1;
-            //Estado
-            $pres_estado = 1;
-        }
-        if (($_SESSION['usuario']['rol_id'] == 4)) {
-            $pres_rol = $_SESSION['usuario']['rol_id'];
-            //Solicitud
-            $tp_pres = 2;
-            //Estado
-            $pres_estado = 3;
-        }
+        $tp_pres = isset($data['tpPrestamo']) ? (int) $data['tpPrestamo'] : null;
+        $pres_estado = null;
+        $pres_rol = $_SESSION['usuario']['rol_id'];
 
         $codConsumibles = $data["codigosElementos"]['consumibles'];
         $codDevolu = $data["codigosElementos"]['devolutivos'];
@@ -135,25 +127,27 @@ class reservaPrestamosController
         array_multisort($codDevolu, SORT_ASC, $ascDevolutivos);
         array_multisort($codConsumibles, SORT_ASC, $ascConsu);
 
+        if ($tp_pres == 2) {
+            //Cambiar nombre de la llave.
+            $data['pres_fch_reserva'] = $data['fechaReserva'];
+            unset($data['fechaReserva']);
+        }
+
+        $pres_estado = $tp_pres == 2 ? 3 : 1;
+
         unset($data["codigosElementos"]);
-
-        //Cambiar nombre de la llave.
-        $data['pres_fch_reserva'] = $data['fechaReserva'];
-        unset($data['fechaReserva']);
-
         $data['pres_fch_entrega'] = $data['fechaDevolucion'];
         unset($data['fechaDevolucion']);
-
         $data['pres_observacion'] = $data['observaciones'];
         unset($data['observaciones']);
-
         $data['pres_destino'] = $data['areaDestino'];
         unset($data['areaDestino']);
-
         $data['pres_estado'] = $pres_estado;
-
         $data['pres_rol'] = $pres_rol;
         $data['tp_pres'] = $tp_pres;
+        unset($data['tpPrestamo']);
+
+
         $result = $this->model->insertReserva($data, $codDevolu, $codConsumibles);
         if (!$result) {
             fail($result['message']);
@@ -185,6 +179,65 @@ class reservaPrestamosController
         }
     }
 
+    /**
+     * Summary of validateElemento - Función de controlador para validar el elemento si está disponible para esa fecha.
+     * @return void
+     */
+    public function validateElemento(int $elemento = 0,String $fechaReserva = "" ,$isOnly = false, array $elementos = []){
+        
+        if ($isOnly) {
+            $result = $this->modelElemento->validateDisponiblidad($elemento, $isOnly);
+            $data = $result['data'];
+            // Validamos si hay resultados para ejecutar la operación y devolver la respuesta.
+            if (count($result['data']) > 0) {
+                // 0 Porque está en la primera posición del resultado data.
+                $fechaResult = $data[0]['fechaReserva'];
+                if (validateFecha($fechaReserva, $fechaResult, true)) {
+                    fail("El elemento $elemento está reservado para la fecha $fechaResult", $result);
+                }
+            } else {
+                noResponse($result);
+            }
+        }else{
+            $resultElementos = $this->modelElemento->validateDisponiblidad(
+                isOnly:$isOnly, 
+                elementos:$elementos
+            );
+            $data = $resultElementos['data'];
+            $elementosYaSeleccionados = [];
+            foreach ($data as $key => $value) {
+                $fechaReservaElementos = $value['fechaReserva'];
+
+                if (validateFecha($fechaReservaElementos, $fechaReserva)) {
+                    $elementosYaSeleccionados[]= $value;
+                }
+            }
+
+            $resultado = [
+                'data'=>$elementosYaSeleccionados,
+                'status'=> false,
+                'message'=>'Elementos ya seleccionados'
+            ];
+
+            if (count($elementosYaSeleccionados)=== 0) {
+                noResponse($resultElementos);
+            }else{
+                // fail('Hay elementos seleccionados que están reservados para la fecha seleccionada', $resultElementos);
+                // Puedo implementar la función fail pero por ahora se deja a parte por temas de tiempo.
+                
+                $response = [
+                    'status' => true,
+                    'message' => 'Elementos ya seleccionados',
+                    'data' => $elementosYaSeleccionados
+                ];
+                http_response_code(200);
+                echo json_encode($response, JSON_PRETTY_PRINT);
+                exit();
+            }
+        }
+
+        
+    }
 }
 
 $controller = new reservaPrestamosController();
@@ -194,7 +247,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         $case = $_GET['action'] ?? '';
-        // var_dump($case);
         //valor de la página, por defecto, es la página #1.
         $pages = $_GET['pages'] ?? 1;
 
@@ -254,6 +306,27 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 }
                 break;
 
+                // Valido los elementos por y los mando por get porque se hace 1 por uno.
+            case 'validateElement':
+                $isOnly = $_GET['isOnly'] === "true" ? true : false;
+                if($isOnly) {
+                    $elementos = (int) $_GET['elementos'] ?? null;
+                }else{
+                    $elementos = $_GET['elementos'] ?? [];
+                }
+
+                $fecha = empty($_GET['fechaReserva']) ? "" : $_GET['fechaReserva'];
+
+                if (method_exists($controller, 'validateElemento')) {
+                    // $controller->validateElemento($elementos, $fecha, $isOnly);
+                    $controller->validateElemento(
+                        elemento:$elementos,
+                        fechaReserva:$fecha,
+                        isOnly:$isOnly
+                    );
+                }
+                break;
+
             default:
                 //TODO: Retornar un valor no valido.
 
@@ -267,6 +340,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
         $data = json_decode($input, true);
 
+
         switch ($data['action']) {
             case 'finalizar':
 
@@ -277,18 +351,27 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 break;
 
             case 'registrar':
-                $elementosPres = $data['data'];
+
+                $elementosPres = $data;
                 $controller->setReserva($elementosPres);
                 break;
             case 'validateLoan':
                 unset($data['action']);
                 $dataNuevo = $data;
                 $controller->setSolicitud($dataNuevo);
+                break;
 
-                //la validación del data es practicamente el setReserva pero la hare en otra función por cuestión de tiempo.
+                // Valido el listado de los elementos después de que el usuario haya seleccioando todos sus datos, mediante un arreglo.
+                case 'validateElements':
 
+                    $isOnly = $data['isOnly'];
+                    $fechaReserva = $data['fechaReserva'];
+                    $elementos = $data['elementos'];
+
+                    $controller->validateElemento(isOnly: $isOnly, fechaReserva: $fechaReserva, elementos: $elementos);
 
                 break;
+
             default:
                 break;
         }

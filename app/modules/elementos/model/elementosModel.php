@@ -3,20 +3,24 @@
 // require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../../../helpers/const.php';
 include_once __DIR__ . '/../../../config/conn.php';
+include_once __DIR__ . '/../../../helpers/expg.php';
 class ElementoModelo
 {
     private $conn;
+
+    private Regex $expg;
 
     public function __construct()
     {
         $conexion = new Conection();
         //Esto no es lo ideal, lo ideal es en cada función traer la conexión y cerrarla.
         $this->conn = $conexion->getConnect();
+        $this->expg = new Regex();
     }
 
     /**
-     * Obtiene todos los elementos con información relacionada (área, tipo, estado).
-     *
+     * Obtiene todos los elementos con información relacionada (departamento, tipo, estado).
+     * Esta función se aplica al modulo de reportes.
      * @return array Lista de elementos con sus respectivos datos.
      */
     public function obtenerElemento()
@@ -51,34 +55,34 @@ class ElementoModelo
     }
 
     // Obtener un solo elemento con nombres relacionados para edición, función que no me es de utilidad, desgraciadamente.
-    public function obtenerElementoPorId($id)
-    {
-        $sql = "SELECT 
-            e.elm_cod,
-            e.elm_placa,
-            e.elm_nombre,
-            e.elm_existencia,
-            e.elm_uni_medida,
-            e.elm_cod_tp_elemento,
-            e.elm_cod_estado,
-            e.elm_area_cod,
-            ar.ar_nombre AS nombreArea,
-            tpE.tp_el_nombre AS tipoElemento
-        FROM elementos e
-        INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
-        INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
-        WHERE e.elm_cod = ?";
+    // public function obtenerElementoPorId($id)
+    // {
+    //     $sql = "SELECT 
+    //         e.elm_cod,
+    //         e.elm_placa,
+    //         e.elm_nombre,
+    //         e.elm_existencia,
+    //         e.elm_uni_medida,
+    //         e.elm_cod_tp_elemento,
+    //         e.elm_cod_estado,
+    //         e.elm_area_cod,
+    //         ar.ar_nombre AS nombreArea,
+    //         tpE.tp_el_nombre AS tipoElemento
+    //     FROM elementos e
+    //     INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
+    //     INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
+    //     WHERE e.elm_cod = ?";
 
-        $stmt = $this->conn->prepare($sql);
-        if (!$stmt) {
-            echo "Error en prepare: " . $this->conn->error;
-            return null;
-        }
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        return $resultado->fetch_assoc();
-    }
+    //     $stmt = $this->conn->prepare($sql);
+    //     if (!$stmt) {
+    //         echo "Error en prepare: " . $this->conn->error;
+    //         return null;
+    //     }
+    //     $stmt->bind_param("i", $id);
+    //     $stmt->execute();
+    //     $resultado = $stmt->get_result();
+    //     return $resultado->fetch_assoc();
+    // }
     /**
      * Busca elementos cuyo nombre o placa coincida parcialmente con un valor.
      *
@@ -102,7 +106,7 @@ class ElementoModelo
     INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado
     WHERE e.elm_nombre LIKE CONCAT('%', ?, '%')
       AND LENGTH(e.elm_nombre) <= 20
-      OR e.elm_placa LIKE CONCAT('%',?,'%')";
+      OR e.elm_placa LIKE CONCAT('%',?,'%') OR e.elm_serie LIKE CONCAT('%',?,'%')";
 
         $stmtSearch = $this->conn->prepare($sql);
 
@@ -143,10 +147,11 @@ class ElementoModelo
      * @param string $type Tipo de elemento: 'consumible', 'devolutivo', o 'all'.
      * @return array Resultado de la consulta con mensaje, estado y datos.
      */
-    public function obtenerElementoPaginado(int $limite, int $offset, string $type)
+    public function obtenerElementoPaginado(int $limite, int $offset, String $type, bool $isBusqueda = false, String $value = "")
     {
         $elementos = [];
 
+        $newValue = $this->expg->validarNumeros($value) ? (int) $value : (string) $value;
         if (!in_array($type, ['consumible', 'devolutivo', 'all'])) {
             return [
                 'message' => 'Tipo de elemento no definido',
@@ -174,21 +179,54 @@ class ElementoModelo
         es_e.est_nombre AS estadoElemento,
         tpU.nombre_tp_uni AS nombreUnidad,
         tpU.cod_tp_uni AS codUnidadMedida
-    FROM elementos e
-    INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
-    INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
-    INNER JOIN tipo_unidad tpU ON e.elm_uni_medida = tpU.cod_tp_uni
-    INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado";
+        FROM elementos e
+        INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
+        INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
+        INNER JOIN tipo_unidad tpU ON e.elm_uni_medida = tpU.cod_tp_uni
+        INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado";
 
-        if ($type === 'all') {
-            $sql = "$baseSql ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("ii", $limite, $offset);
+        if ($isBusqueda) {
+            if ($type === 'all') {
+                $sql = "$baseSql 
+                    WHERE (
+                        e.elm_nombre LIKE CONCAT('%', ?, '%') 
+                        OR e.elm_placa LIKE CONCAT('%', ?, '%') 
+                        OR e.elm_serie LIKE CONCAT('%', ?, '%')
+                    ) 
+                    ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
+                $stmt = $this->conn->prepare($sql);
+
+                if ($this->expg->validarNumeros($value)) {
+                    $stmt->bind_param("iiiii", $newValue, $newValue, $newValue, $limite, $offset);
+                } else {
+                    $stmt->bind_param("sssii", $newValue, $newValue, $newValue, $limite, $offset);
+                }
+            } else {
+                $codType = ($type === 'consumible') ? 2 : 1;
+
+                if ($this->expg->validarNumeros($value)) {
+                    $sql = "$baseSql WHERE (e.elm_placa LIKE CONCAT('%',?,'%')) AND e.elm_cod_tp_elemento = ? ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
+                    $stmt = $this->conn->prepare($sql);
+                    $stmt->bind_param("iiii", $newValue, $codType, $limite, $offset);
+                } else {
+                    $sql = "$baseSql WHERE (e.elm_nombre LIKE CONCAT('%', ?, '%') AND LENGTH(e.elm_nombre) <= 100 OR e.elm_placa LIKE CONCAT('%',?,'%') OR e.elm_serie LIKE CONCAT('%',?,'%')) AND e.elm_cod_tp_elemento = ? ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
+                    $stmt = $this->conn->prepare($sql);
+
+                    $stmt->bind_param("sssiii", $newValue, $newValue, $newValue, $codType, $limite, $offset);
+                }
+            }
         } else {
-            $codType = ($type === 'consumible') ? 2 : 1;
-            $sql = "$baseSql WHERE tpE.tp_el_cod = ? ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("iii", $codType, $limite, $offset);
+
+            if ($type === 'all') {
+                $sql = "$baseSql ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param("ii", $limite, $offset);
+            } else {
+                $codType = ($type === 'consumible') ? 2 : 1;
+                $sql = "$baseSql WHERE tpE.tp_el_cod = ? ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param("iii", $codType, $limite, $offset);
+            }
         }
 
         if (!$stmt) {
@@ -260,6 +298,68 @@ class ElementoModelo
         $resultado = $stmtsql->get_result();
         $fila = $resultado->fetch_assoc();
         $stmtsql->close();
+
+        return [
+            'total' => (int)$fila['total'],
+            'status' => true
+        ];
+    }
+
+    public function contarElementosBusqueda(String $type = 'all', $value)
+    {
+
+        $sqlBase = "SELECT COUNT(*) AS total FROM elementos e";
+        if ($type === 'all') {
+
+            // Valido que en caso de que el valor que se envie no sea un entero, entonces aplique solo 2 condiciones.
+            if (!$this->expg->validarNumeros($value)) {
+
+                $sql = "$sqlBase WHERE (
+                        e.elm_nombre LIKE CONCAT('%', ?, '%') 
+                        OR e.elm_serie LIKE CONCAT('%', ?, '%')
+                        )";
+
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param('ss', $value, $value);
+            } else {
+                // Si es entero, solo la placa.
+                $sql = "$sqlBase WHERE (
+                        e.elm_placa LIKE CONCAT('%', ?, '%') 
+                )";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param('i', $value);
+            }
+        } else {
+            $newType = ($type === 'consumible') ? 2 : 1;
+            if (!$this->expg->validarNumeros($value)) {
+
+                $sql = "$sqlBase WHERE (
+                        e.elm_nombre LIKE CONCAT('%', ?, '%') 
+                        OR e.elm_serie LIKE CONCAT('%', ?, '%')
+                        ) AND e.elm_cod_tp_elemento = ?";
+
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param('ssi', $value, $value, $newType);
+            } else {
+                // Si es entero, solo la placa.
+                $sql = "$sqlBase WHERE (
+                        e.elm_placa LIKE CONCAT('%', ?, '%') 
+                ) AND e.elm_cod_tp_elemento = ?";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param('ii', $value, $newType);
+            }
+        }
+
+        if (!$stmt->execute()) {
+            return [
+                'message' => "Error al ejecutar la consulta: " . $stmt->error,
+                'status' => false
+            ];
+        }
+
+        $resultado = $stmt->get_result();
+        $fila = $resultado->fetch_assoc();
+        $stmt->close();
 
         return [
             'total' => (int)$fila['total'],
@@ -414,8 +514,8 @@ class ElementoModelo
                 $nuevoEstado = $estadoDisponible;
             } else {
                 return [
-                    "message"=> "estado no definido",
-                    "status"=> false
+                    "message" => "estado no definido",
+                    "status" => false
                 ];
             }
 
@@ -423,7 +523,7 @@ class ElementoModelo
             $stmtUpdate = $this->conn->prepare($sqlUpdate);
             if (!$stmtUpdate) {
                 return [
-                    "message"=>"Error en prepare: " . $this->conn->error,
+                    "message" => "Error en prepare: " . $this->conn->error,
                     "status" => false
                 ];
             }
@@ -486,22 +586,20 @@ class ElementoModelo
         $sql = "UPDATE elementos 
                 SET elm_existencia = elm_existencia - ? 
                 WHERE elm_cod = ? AND elm_existencia >= ?";
-    
+
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
             return false;
         }
         $stmt->bind_param("iii", $cantidad, $id, $cantidad);
         $stmt->execute();
-    
+
         if ($stmt->affected_rows > 0) {
             return true; // Se actualizó correctamente
         } else {
             return false; // No se actualizó (posible existencia insuficiente o id inválido)
         }
     }
-
-
 
     /**
      * Cambia la existencia de un elemento en inventario, registrando la operación como una compra o reembolso.
@@ -597,28 +695,26 @@ class ElementoModelo
             "status" => true
         ];
     }
-
     public function getElementByType(int $id = 1): ?int
     {
         $sql = "SELECT elm_cod_tp_elemento FROM elementos WHERE elm_cod = ?";
-    
+
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('i', $id);
-    
+
         if (!$stmt->execute()) {
             return null;
         }
-    
+
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
-    
+
         if (!$row) {
             return null;
         }
-    
+
         return (int) $row['elm_cod_tp_elemento'];
     }
-
 
     public function getAllPlacas()
     {
@@ -697,4 +793,110 @@ class ElementoModelo
             'status' => true
         ];
     }
+
+
+    /**
+     * Validar la disponibilidad del elemento antes de realizar su respectiva reserva inmediata.
+     * @param int $codigoElemento
+     * @param array $elementos
+     * @return array{data: array, message: string, status: bool}
+     */
+    public function validateDisponiblidad($codigoElemento = 0, bool $isOnly = false, array $elementos = []){
+        try {
+
+            $sql = "SELECT 
+                e.elm_cod As 'codigoElemento',
+                e.elm_serie AS 'seriElemento',
+                e.elm_nombre AS 'nombreElemento',
+                e.elm_cod_tp_elemento AS 'tipoElemento',
+                p.pres_fch_reserva AS 'fechaReserva'
+                FROM elementos e
+                INNER JOIN prestamos_elementos pe ON
+                pe.pres_el_elem_cod = e.elm_cod 
+                INNER JOIN prestamos p ON
+                pe.pres_cod = p.pres_cod WHERE e.elm_cod = ? AND p.tp_pres = 2";
+
+            $stmtFechas = $this->conn->prepare($sql);
+
+            if (!$stmtFechas) {
+                return [
+                    'status' => false,
+                    'message' => 'error al preparar la consulta',
+                    'data' => []
+                ];
+            }
+
+            if ($isOnly) {
+                $elemento = (int) $codigoElemento ?? null;
+
+                $stmtFechas->bind_param('i', $elemento);
+
+                if (!$stmtFechas->execute()) {
+                    return [
+                        'status' => false,
+                        'message' => "Error al ejecutar la consulta" . $this->conn->error,
+                        'data' => []
+                    ];
+                }
+
+                $result = $stmtFechas->get_result();
+                $fechas = [];
+                while ($row = $result->fetch_assoc()) {
+                    $fechas[] = $row;
+                }
+            } else {
+                $elementosYaReservados = [];
+                foreach ($elementos as $key => $value) {
+
+                    $codigoElemento = (int) $value['codigo'];
+                    $stmtFechas->bind_param('i', $codigoElemento);
+
+                    if (!$stmtFechas->execute()) {
+                        return [
+                            'status' => false,
+                            'message' => "Error al ejecutar la consulta" . $this->conn->error,
+                            'data' => []
+                        ];
+                    }
+
+                    $resultElementos = $stmtFechas->get_result();
+
+                    while ($row = $resultElementos->fetch_assoc()) {
+                        $elementosYaReservados[] = $row;
+                    }
+                }
+            }
+
+            if (!$stmtFechas->execute()) {
+                return [
+                    'data' => [],
+                    'message' => "error al ejecutar la consulta" . $this->conn->error,
+                    'status' => false
+                ];
+            }
+
+            $dataReturn = $isOnly ? [
+                'message' => "No hay fechas para este elemento",
+                'data' => $fechas,
+                'status' => count($fechas) > 0 ? true : false
+            ] : [
+                'message' => "Fechas de reserva relacionadas a los elementos",
+                'data' => $elementosYaReservados,
+                'status' => count($elementosYaReservados) > 0 ? true : false
+            ];
+
+            return $dataReturn;
+        } catch (\Throwable $th) {
+            return [
+                'message'=> "error al ejecutar el procedimiento".$th->getMessage(),
+                'status'=> false,
+                'data'=> []
+            ];
+        }
+    }
 }
+
+// $objElementos = new ElementoModelo();
+// $resultado = $objElementos->contarElementosBusqueda('consumible','papel');
+// $resultado = $objElementos->obtenerElementoPaginado(10,0,'consumible',true,'papel');
+// var_dump($resultado);

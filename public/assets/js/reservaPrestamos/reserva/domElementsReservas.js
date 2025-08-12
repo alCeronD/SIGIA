@@ -12,6 +12,7 @@ export const modalDoom = {
     modalAddDevolutivos: instanceModal("#modalAddDevolutivos", options),
     modalAddConsumibles: instanceModal("#modalAddConsumible", options),
     modalUsers: instanceModal("#modalUsers", options),
+    modalPreviewElements: instanceModal("#modalPreviewElements", options)
 
 };
 //Buttons
@@ -45,8 +46,13 @@ export const inputsForm = {
     inputNroDocumento: getSelector("#cedula"),
     inputApellido: getSelector("#apellido"),
     inputTelefono: getSelector("#telefono"),
-    inputEmail: getSelector("#email")
+    inputEmail: getSelector("#email"),
+    inputFechaReserva: getSelector("#fechaReserva")
+}
 
+// todos los contenedores de los elementos que sean necesarios usar
+export const divContainers ={
+    divFechaReserva: getSelector(".fechaReserva")
 }
 
 // Este proceso lo hago por si requiero usar el objeto en otro archivo.

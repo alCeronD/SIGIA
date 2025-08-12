@@ -37,7 +37,7 @@
         </div>
     <?php endif; ?>
 
-    <?php if ($rol_id == 4): ?>
+    <?php if ($rol_id == 4 || $rol_id == 12): ?>
         <div class="instruc">
             <div class="instruc-grid">
                 <div class="option-card z-depth-1">

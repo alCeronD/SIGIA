@@ -288,6 +288,7 @@ const modalConfirmacion = document.querySelector("#modalConfirmacion");
 const modalAddExistencia = instanceModal("#modalAddExistencia", options);
 const titleModalExistencia = document.querySelector("#titleModalExistencia");
 const categoriaSelect = document.querySelector("#categoriaSelect");
+const totalPages = document.querySelector("#totalPages");
 /**
  * Renderiza elementos desde el backend utilizando filtros de tipo, acción y paginación.
  * Realiza una petición GET al servidor y construye dinámicamente el contenido de una tabla HTML.
@@ -318,20 +319,37 @@ const renderElements = async ({
   type = "all",
   action = "elements",
   page = 1,
+  isBusqueda = false,
+  value = "",
 } = {}) => {
   try {
+    let parameters = {};
+    if (!isBusqueda && value === "") {
+      parameters = { action, pages: page, type };
+    } else {
+      parameters = { action, pages: page, type, isBusqueda, value };
+    }
     const dataElements = await getData(
       "modules/elementos/controller/elementosController.php",
       "GET",
-      { action, pages: page, type }
+      parameters
     );
+    console.log(dataElements);
     let data = dataElements.data.data;
     pageGlobal = dataElements.data.cantidadPaginas;
+    tbodyElements.innerHTML = "";
+    if (pageGlobal === 0) {
+      totalPages.innerText = "";
+      tbodyElements.innerHTML = "Sin resultados";
+      return;
+    }
+
     if (page > pageGlobal) {
       return;
     }
-    //Puedo hacer que si el tipo del elemento es consumible o no, se renderice solo unas columnas, no otras.
-    tbodyElements.innerHTML = "";
+    // totalPages.innerText = "";
+
+    const fragmentElements = document.createDocumentFragment();
     data.forEach((dta) => {
       let tr = document.createElement("tr");
       let tdPlaca = document.createElement("td");
@@ -381,11 +399,6 @@ const renderElements = async ({
       btnDelete.setAttribute("data-Cod", dta.codigoElemento);
       btnDelete.setAttribute("data-Status", dta.codEstadoElemento);
 
-      //TODO: esto se puede mejorar implementando la información de manera dinámica.
-      /**
-       * buscar como funciona document.createDocumentFragment
-       */
-
       tdPlaca.innerText = dta.placa;
       tdCantidad.innerText = dta.cantidad;
       tdCodigoElemento.innerText = dta.codigoElemento;
@@ -421,7 +434,6 @@ const renderElements = async ({
       if (dta.tipoElemento === "Devolutivo")
         tdAcciones.append(btnInfo, btnEdit, btnDelete);
 
-      tbodyElements.appendChild(tr);
       tr.append(
         tdPlaca,
         tdNombreElemento,
@@ -432,6 +444,8 @@ const renderElements = async ({
         tdAreaElemento,
         tdAcciones
       );
+
+      fragmentElements.appendChild(tr);
 
       // Boton de información.
       btnInfo.addEventListener("click", (e) => {
@@ -517,10 +531,8 @@ const renderElements = async ({
       btnDelete.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log(e.target);
         const btn = e.currentTarget;
 
-        console.log(btn.dataset.status);
         // Validar que el estado del elemento sea prestado para evitar inhabilitar el elemento
         if (parseInt(btn.dataset.status) === 3) {
           initAlert(
@@ -555,61 +567,63 @@ const renderElements = async ({
             initAlert("Proceso cancelado", "info", toastOptions);
             return;
           }
-           
-            try {
-              const dataCod = parseInt(btn.dataset.cod) || null;
-              const dataStatus = parseInt(btn.dataset.status) || null;
 
-              if (parseInt(dataStatus) === 3) {
-                initAlert(
-                  "El cambio de estado del elemento debe ser validado desde las reservas",
-                  "info",
-                  toastOptions
-                );
-                return;
-              }
+          try {
+            const dataCod = parseInt(btn.dataset.cod) || null;
+            const dataStatus = parseInt(btn.dataset.status) || null;
 
-              const data = {
-                elm_cod: dataCod,
-                elm_cod_estado: dataStatus,
-              };
-
-              let responseInhabilitar = await sendData(
-                "modules/elementos/controller/elementosController.php",
-                "PUT",
-                "statusElement",
-                data
+            if (parseInt(dataStatus) === 3) {
+              initAlert(
+                "El cambio de estado del elemento debe ser validado desde las reservas",
+                "info",
+                toastOptions
               );
-
-              console.log(responseInhabilitar);
-
-              if (!responseInhabilitar.status) {
-                initAlert("Ha ocurrido un error al actualizar el estado del elemento", "error", toastOptions);
-                return;
-              }
-
-              let messageData = responseInhabilitar.data.message;
-                // if (status) {
-                  const icon = btn.querySelector("i");
-                  if (icon) {
-                    icon.innerText = "compare_arrows";
-                  }
-                  console.log(pageElement);
-                  initAlert(messageData, "success", toastOptions);
-
-                  renderElements({ page: pageElement, type: currentType }).then(
-                    () => {
-                      renderWithFilter();
-                    }
-                  );
-                // }
-            } catch (error) {
-              console.log(error);
-              initAlert(`${error.message}`, "error", toastOptions);
-              throw new Error("Error al ejecutar proceso" + error);
-
+              return;
             }
-          
+
+            const data = {
+              elm_cod: dataCod,
+              elm_cod_estado: dataStatus,
+            };
+
+            let responseInhabilitar = await sendData(
+              "modules/elementos/controller/elementosController.php",
+              "PUT",
+              "statusElement",
+              data
+            );
+
+            console.log(responseInhabilitar);
+
+            if (!responseInhabilitar.status) {
+              initAlert(
+                "Ha ocurrido un error al actualizar el estado del elemento",
+                "error",
+                toastOptions
+              );
+              return;
+            }
+
+            let messageData = responseInhabilitar.data.message;
+            // if (status) {
+            const icon = btn.querySelector("i");
+            if (icon) {
+              icon.innerText = "compare_arrows";
+            }
+            console.log(pageElement);
+            initAlert(messageData, "success", toastOptions);
+
+            renderElements({ page: pageElement, type: currentType }).then(
+              () => {
+                renderWithFilter();
+              }
+            );
+            // }
+          } catch (error) {
+            console.log(error);
+            initAlert(`${error.message}`, "error", toastOptions);
+            throw new Error("Error al ejecutar proceso" + error);
+          }
         });
       });
 
@@ -627,6 +641,9 @@ const renderElements = async ({
         cantidadExistencia = cell[2].textContent.trim();
       });
     });
+
+    tbodyElements.appendChild(fragmentElements);
+    totalPages.innerText = `Página ${pageElement} de ${pageGlobal}`;
   } catch (error) {
     throw new Error(`Error al consultar los elementos ${error}`);
   }
@@ -740,37 +757,84 @@ function mostrarConfirmacion(titulo, mensaje, callback) {
   btnCancelar.onclick = () => callback(false);
 }
 
-// Los botones preview puedo crear una función para mandar el handlePage.
 /**
- * Paginación de elementos
+ * Realiza el proceso de páginado según los criterios (todos, consumibles o devolutivos)
+ * y si hay una búsqueda activa.
+ *
+ * Esta función determina qué tipo de renderizado aplicar:
+ *  1. Si el tipo es "all" (todos), renderiza todos los elementos, con o sin búsqueda.
+ *  2. Si el tipo es "consumible" o "devolutivo" y hay búsqueda, renderiza con filtro y activa `renderWithFilter`.
+ *  3. Si el tipo es "consumible" o "devolutivo" sin búsqueda, renderiza normalmente y aplica `renderWithFilter`.
+ *
+ * Utiliza un spread condicional para incluir los parámetros de búsqueda solo cuando es necesario.
+ *
+ * @async
+ * @function executePagination
+ * @returns {Promise<void>} No retorna valor; ejecuta acciones de renderizado asíncronas.
  */
+const executePagination = async () => {
+  // Creo una condicional interna dentro de la variable, si el campo de busqueda tiene caracteres, este me guarda true, en caso que no sea así, es false.
+  const isBusqueda = inputBusqueda.value.trim().length > 0;
+
+  // Proceso de páginado según su tipo de renderizado.
+  // 1. Páginar todos los elementos con el renderizado all (todos). o páginar los elementos con el renderizado all y búsqueda.
+  if (
+    (currentType === typeElements.all && inputBusqueda.value.length != "") ||
+    currentType === typeElements.all
+  ) {
+    // isBusqueda = true;
+    // usamos condicional spread ...(isBusqueda && {isBusqueda: true, value: inputBusqueda.value}) para validar si es una busqueda, en caso de que sea una busqueda, implementar los parámetros adicionales, en caso contrario, solamente implementar el parámetro type y page.
+    await renderElements({
+      type: currentType,
+      page: pageElement,
+      ...(isBusqueda && { isBusqueda: true, value: inputBusqueda.value }),
+    });
+    return;
+  }
+
+  // 2 Páginar todos los elementos con campo de búsqueda y filtro.
+  if (
+    (currentType === typeElements.consu || currentType === typeElements.dev) &&
+    inputBusqueda.value.length != ""
+  ) {
+    console.log("condicional2");
+    await renderElements({
+      type: currentType,
+      page: pageElement,
+      isBusqueda: true,
+      value: inputBusqueda.value,
+    }).then(() => {
+      renderWithFilter();
+    });
+    return;
+  }
+
+  //3 páginado de elementos con filtros, sin búsqueda.
+  if (currentType === typeElements.consu || currentType === typeElements.dev) {
+    await renderElements({ type: currentType, page: pageElement }).then(() => {
+      renderWithFilter();
+    });
+    return;
+  }
+};
+
 previewElements.addEventListener("click", async (e) => {
   e.stopPropagation();
   e.preventDefault();
   if (pageElement <= 1) return;
   pageElement--;
 
-  if (currentType === typeElements.all) {
-    await renderElements({ type: currentType, page: pageElement });
-  } else {
-    await renderElements({ type: currentType, page: pageElement }).then(() => {
-      renderWithFilter();
-    });
-  }
+  executePagination();
 });
 
 nextElements.addEventListener("click", async (e) => {
   e.stopPropagation();
   e.preventDefault();
+  let params = {};
   if (pageElement >= pageGlobal) return;
   pageElement++;
-  if (currentType === typeElements.all) {
-    await renderElements({ type: currentType, page: pageElement });
-  } else {
-    await renderElements({ type: currentType, page: pageElement }).then(() => {
-      renderWithFilter();
-    });
-  }
+
+  executePagination();
 });
 
 /**
@@ -793,62 +857,80 @@ filtroTipo.addEventListener("change", (e) => {
     currentType = typeElements.all;
   }
 
-  renderElements({ type: currentType, page: pageElement }).then(() => {
-    renderWithFilter();
-  });
+  let valueInput = document.querySelector("#inputBusqueda");
+
+  if (valueInput.value === "") {
+    renderElements({ type: currentType, page: pageElement }).then(() => {
+      renderWithFilter();
+    });
+  } else {
+    renderElements({
+      action: "elements",
+      value: valueInput.value,
+      type: currentType,
+      page: pageElement,
+      isBusqueda: true,
+    }).then(() => {
+      renderWithFilter();
+    });
+  }
 });
 
-// todo: Esta funcion debo moverla dentro de renderelements para que se ejecute y validarla con si su tipo es diferente de todos, esto para evitar buffer de desincronización.
 function renderWithFilter() {
   // CREO QUE SE PUEDE SOLUCIONAR APLICANDO UN DATATYPE AL TH DE DICIENDOLE EL TIPO.
   // Si veo que requiero esto en más funciones, transformarlo en función generica.
   const ths = tblElements.querySelectorAll("thead tr th");
-  const filas = tbodyElements.querySelectorAll(
-    `tbody tr [data-type=${typeElements.consu}]`
-  );
+
+  const filas = tbodyElements.querySelectorAll(`tbody tr`);
 
   // El numero 4 corresponde a la columna del tipo de elemento.
-  if (currentType === typeElements.consu) {
-    // console.log(currentType);
+  if (currentType === typeElements.consu || currentType === typeElements.dev) {
     ths[4].style.display = "none";
   } else {
-    //   console.log(currentType);
     ths[4].style.display = "table-cell";
   }
 
   filas.forEach((fila) => {
-    if (currentType === typeElements.consu) {
-      fila.style.display = "none";
-    }
-    if (currentType === typeElements.dev || currentType === typeElements.all) {
-      fila.style.display = "table-cell";
+    const tdTipo = fila.querySelector("[data-type]");
+    if (!tdTipo) return;
+
+    const tipo = tdTipo.getAttribute("data-type");
+    if (currentType === tipo) {
+      tdTipo.style.display = "none";
+    } else {
+      tdTipo.style.display = "";
     }
   });
 }
 
-/**
- * Búsqueda de elementos TODO: por implementar, la consulta ya esta hecha.
- */
-// let timer;
+let timer;
 // También puedes buscar al escribir directamente
 inputBusqueda.addEventListener("keyup", function (e) {
   e.stopPropagation();
   const filtro = e.target.value.toLowerCase().trim();
+  // Reemplazamos el valor de time out para crear un debounce a la búsqueda, esto con el fin de realizar multiples peticiones.
+  clearTimeout(timer);
 
-  console.log(filtro);
-  // console.log({"valor": filtro});
-  // console.log({"cantidadCaracteres": filtro.length});
-  // console.log(filtro);
+  if (filtro.length === 0) {
+    renderElements({ type: typeElements.all, type: currentType }).then(() => {
+      renderWithFilter();
+    });
+    return;
+  }
 
-  // if (filtro.length === 0) {
-  //     renderElements({type : typeElements.all, type: currentType});
-  //     return
-  // }
-
-  // timer = setTimeout(()=>{
-  //     renderElement({action: 'onlyElement', value:filtro});
-
-  // }, 400);
+  if (filtro.length >= 3) {
+    timer = setTimeout(() => {
+      renderElements({
+        action: "elements",
+        value: filtro,
+        type: currentType,
+        page: 1,
+        isBusqueda: true,
+      }).then(() => {
+        renderWithFilter();
+      });
+    }, 300);
+  }
 });
 
 // span en donde se visualizara la respuesta de la placa si es correcta o no.
@@ -967,7 +1049,6 @@ function checkObject(object, campos) {
       }
 
       if (element === "") {
-        console.log(key);
         initAlert(
           `el campo ${campos[key]} debe ser obligatorio`,
           "info",
@@ -997,7 +1078,7 @@ btnAddModalElements.addEventListener("click", (e) => {
 });
 
 // Enviar datos del formulario.
-addElementForm.addEventListener("submit",  (e) => {
+addElementForm.addEventListener("submit", (e) => {
   e.preventDefault();
   e.stopPropagation();
 
@@ -1096,20 +1177,18 @@ editarElementForm.addEventListener("submit", (e) => {
             "updateElement",
             data
           );
-          
+
           if (!response.status) {
             console.log(response);
-            initAlert('Error al ejecutar el proceso', "error", toastOptions);
+            initAlert("Error al ejecutar el proceso", "error", toastOptions);
             return;
           }
           initAlert("recurso actualizado con exito", "success", toastOptions);
-            modalEditarElemento.close();
-            // renderizo los elementos en base a la página en la que se encuentra.
-            renderElements({ page: pageElement, type: currentType }).then(
-              () => {
-                renderWithFilter();
-              }
-          );
+          modalEditarElemento.close();
+          // renderizo los elementos en base a la página en la que se encuentra.
+          renderElements({ page: pageElement, type: currentType }).then(() => {
+            renderWithFilter();
+          });
         } catch (error) {
           initAlert(`${error.message}`, "error", toastOptions);
           throw new Error("Error al actualizar el recurso.");
@@ -1188,10 +1267,13 @@ formAddExistencia.addEventListener("submit", (e) => {
 
           if (response.status) {
             // Renderizo la página nuevamente dependiendo del tipo y la página actual.
-            renderElements({ type: currentType, page: pageElement }).then(()=>{
-              renderWithFilter();
-            });
-            
+            renderElements({ type: currentType, page: pageElement }).then(
+              () => {
+                renderWithFilter();
+                inputBusqueda.value = "";
+              }
+            );
+
             initAlert(response.message, "success", toastOptions);
             modalAddExistencia.close();
             formAddExistencia.reset();
@@ -1201,12 +1283,10 @@ formAddExistencia.addEventListener("submit", (e) => {
             modalAddExistencia.close();
             return;
           }
-          
         } catch (error) {
           console.log(error);
           initAlert(`${error.message}`, "error", toastOptions);
         }
-
       } else {
         co_cantidad.value = "";
         tipo_movimiento.value = "";

@@ -21,7 +21,7 @@ class ElementosController
         return require_once __DIR__ . '/../views/elementosView.php';
     }
     // Traer todos los elementos.
-    public function getElements(int $pages = 1, String $type = 'all')
+    public function getElements(int $pages = 1, String $type = 'all', bool $isBusqueda = false, String $value = "")
     {
 
         // Parámetros de paginación
@@ -30,15 +30,16 @@ class ElementosController
         $offset = ($pagina - 1) * LIMIT;
 
         // Contar total de elementos para el paginador
-        $resultElements = $this->modeloElemento->contarElementos($type);
+        if ($isBusqueda) {
+            $resultElements = $this->modeloElemento->contarElementosBusqueda($type, $value);
+        } else {
+            $resultElements = $this->modeloElemento->contarElementos($type);
+        }
         $totalElementos = $resultElements['total'];
         $totalPaginas = ceil($totalElementos / $limite);
 
-
-
         // Obtener elementos paginados
-        $elementos = $this->modeloElemento->obtenerElementoPaginado($limite, $offset, $type);
-
+        $elementos = $this->modeloElemento->obtenerElementoPaginado($limite, $offset, $type, $isBusqueda, $value);
 
         if (!$elementos) {
             fail('error al traer los elementos');
@@ -162,8 +163,22 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         switch ($case) {
             case 'elements':
                 $type = $_GET['type'];
+                $isBusqueda = (empty($_GET['isBusqueda'])) ? null :(( $_GET['isBusqueda'] )== "true" ? true : false);
+                $value = (String) (empty($_GET['value'])) ? null : $_GET['value'];
+
+
                 if (method_exists($elementosController, 'getElements')) {
-                    $elementosController->getElements($pages, $type);
+                    if (!$isBusqueda) {
+                        $elementosController->getElements(
+                            pages: $pages,
+                            type: $type
+                        );
+                        
+                    }else{
+                        $elementosController->getElements($pages, $type, $isBusqueda, $value);
+
+                    }
+
                 }
                 break;
             case 'onlyElement':

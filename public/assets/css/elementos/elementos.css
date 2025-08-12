@@ -4,8 +4,8 @@
   --secundary: #004034;
   --other: #ccc;
   --white: #f0f0f0;
-  --btnEdit: #007D78;
-  --teal :#4db6ac;
+  --btnEdit: #007d78;
+  --teal: #4db6ac;
   --blue: #42a5f5;
   --red: #ef5350;
   --info: #004034;
@@ -17,150 +17,170 @@
 
 /* ----------------- Contenedor General ----------------- */
 .contentElements {
-    display: grid;
-    grid-template-rows: auto auto 1fr;
-    grid-template-areas: "headerElementsModal"
+  display: grid;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "headerElementsModal"
     "contentTableElements"
     "footerElements";
-    width: 100%;
+  width: 100%;
+  height: auto;
 }
 
-.headerElementsModal{
-    grid-area: headerElementsModal;
-    /* background-color: yellow; */
+.headerElementsModal {
+  grid-area: headerElementsModal;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem;
+
+  .tituloHeaderElement {
+    flex: 3;
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 25pt;
+  }
+
+  .btnAddHeaderElement {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .filtroHeaderElement {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+  .buscarHeaderElement {
+    flex: 3;
+    display: flex;
+  }
+}
+
+.contentTableElements {
+  grid-area: contentTableElements;
+}
+
+.footerElements {
+  grid-area: footerElements;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+
+  .pages {
+    width: 50%;
+    display: flex;
+    justify-content: center;
     gap: 0.8rem;
-
-    .tituloHeaderElement{
-        flex: 3;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        font-size: 25pt;
-    }
-
-    .btnAddHeaderElement{
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        
-    }
-    .filtroHeaderElement{
-        flex: 1;
-        display: flex;
-        align-items: center;
-    }
-    .buscarHeaderElement{
-        flex: 3;
-        display: flex;
-    }
-
+  }
+  .notes {
+    width: 50%;
+  }
 }
-
-.contentTableElements{
-    grid-area: contentTableElements;
-}
-
-.footerElements{
-    grid-area: footerElements;
-    background-color: aqua;
-}
-
 
 /* ----------------- Título ----------------- */
 .container-fluid h2 {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
 }
 
 /* ----------------- Fila de Filtros y Botón ----------------- */
 .row.mb-3 {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    align-items: center;
-    gap: 20px;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
+  gap: 20px;
 }
 
 .row.mb-3 > .col-md-8 {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
 }
 
 /* ----------------- Inputs y Select ----------------- */
 .form-select,
 .form-control {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
 /* ----------------- Tabla ----------------- */
 .table-responsive-fixed {
-    overflow-x: auto;
-    max-height: 70vh;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: white;
+  overflow-x: auto;
+  max-height: 70vh;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
 }
 
 .table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .table thead th {
-    position: sticky;
-    top: 0;
-    background-color: #e9ecef;
-    color: #333;
-    padding: 10px;
-    font-weight: 600;
-    z-index: 1;
+  position: sticky;
+  top: 0;
+  background-color: #e9ecef;
+  color: #333;
+  padding: 10px;
+  font-weight: 600;
+  z-index: 1;
 }
 
 .table td,
 .table th {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
+  border: 1px solid #ddd;
+  padding: 0.2rem;
+  text-align: center;
 }
 
-.accionesElements{
-    gap: 0.3rem;
-    display: flex;
-    justify-content: space-evenly;
+.accionesElements {
+  gap: 0.3rem;
+  display: flex;
+  justify-content: space-evenly;
 }
 
-.infoColor{
-    background-color: var(--btnEdit) !important;
-    color: var(--white) !important;
+.infoColor {
+  background-color: var(--btnEdit) !important;
+  color: var(--white) !important;
+}
+
+.pagination {
+  width: 100%;
+  height: 10vh;
+  position: relative;
+  top: 0;
 }
 
 /* ----------------- Botones de acción del modulo ----------------- */
-.btnInactive{
-    background-color: var(--error2);
-    color: var(--white);
+.btnInactive {
+  background-color: var(--error2);
+  color: var(--white);
 }
 
 /*  */
-.btnAddExistencia{
-    background-color: var(--blue);
-    color: var(--secundary);
+.btnAddExistencia {
+  background-color: var(--blue);
+  color: var(--secundary);
 }
-
 
 /* ----------------- Modal "Ver Más" ----------------- */
 #modalVerMas {
-    display: none;
-  position: fixed; 
-  overflow:auto;
+  display: none;
+  position: fixed;
+  overflow: auto;
   /* Sobre escribo el top de materialize */
   top: 0 !important;
   z-index: 9999;
@@ -173,52 +193,54 @@
   align-items: center;
   margin: 0 auto;
 
-  
-    div{
-        background:#fff; 
-        padding:20px; border-radius:8px; width:90%; max-width:600px; position:relative;
+  div {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
 
-        margin: 3% auto;
-    }
+    margin: 3% auto;
+  }
 }
 
 #modalVerMas .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 28px;
-    font-weight: bold;
-    color: #000;
-    cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
 }
 
 /* Modal Table */
 #modalVerMas table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
 }
 
 #modalVerMas th,
 #modalVerMas td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
 }
 
 #modalVerMas th {
-    background-color: #f1f1f1;
-    font-weight: bold;
-    width: 40%;
+  background-color: #f1f1f1;
+  font-weight: bold;
+  width: 40%;
 }
-
 
 /* ---------- Modal Registrar elemento ---------- */
 
-#addElementModal{
-    display: none;
-  position: fixed; 
-  overflow:auto;
+#addElementModal {
+  display: none;
+  position: fixed;
+  overflow: auto;
   /* Sobre escribo el top de materialize */
   top: 0 !important;
   z-index: 9999;
@@ -232,42 +254,44 @@
 }
 
 /* Contenido del modal */
-#modalContentElements{
-    padding: 20px;
-    display: grid;
-    grid-template-areas: "modalContentTitle"
+#modalContentElements {
+  padding: 20px;
+  display: grid;
+  grid-template-areas:
+    "modalContentTitle"
     "modalContentForm";
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    background-color: var(--white);
-    margin: 3% auto;
-    width: 50%;
-    height: fit-content;
-    max-height: 80vh;
-    overflow-y: auto;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  background-color: var(--white);
+  margin: 3% auto;
+  width: 50%;
+  height: fit-content;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
-.modalContentTitle{
-    grid-area: modalContentTitle;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+.modalContentTitle {
+  grid-area: modalContentTitle;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.modalContentForm{
-    grid-area: modalContentForm;
+.modalContentForm {
+  grid-area: modalContentForm;
 }
 
 /* Estructura del formulario */
 #addElementForm {
   display: grid;
-  grid-template-areas: "placa placa"
-  "nombre area"
-  "categoria marca"
-  "tipoElemento tipoElemento"
-  "apuntes apuntes"
-  "footerBtn footerBtn";
+  grid-template-areas:
+    "placa placa"
+    "nombre area"
+    "categoria marca"
+    "tipoElemento tipoElemento"
+    "apuntes apuntes"
+    "footerBtn footerBtn";
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
   gap: 3px;
@@ -281,8 +305,8 @@
 /* Todo lo relacionado al contenedor de la placa */
 .placa {
   grid-area: placa;
-  
-  .radioPlaca{
+
+  .radioPlaca {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -292,144 +316,149 @@
 }
 
 /* Contenedor de los input de la placa, del tipo text o select */
-.inputPlaca, .selectPlaca, .inputSerie{
-    display: none;
-}
-
-.tableResult{
-    display: none;
-}
-
-.placaAssocContent {
-    width: 100%;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-    display: none;
-    grid-template-areas:
-        "selectPlaca contentPlacaAssoc"
-        "tableResult tableResult";
-    row-gap: 1rem; /* opcional: separación vertical entre áreas */
-}
-
-.selectPlaca {
-    grid-area: selectPlaca;
-}
-
-.contentPlacaAssoc {
-    grid-area: contentPlacaAssoc;
-}
-
-.selectPlaca , .contentPlacaAssoc{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 0.3rem;
+.inputPlaca,
+.selectPlaca,
+.inputSerie {
+  display: none;
 }
 
 .tableResult {
-    grid-area: tableResult;
+  display: none;
 }
 
-.contentPlaca{
-    display: flex;
-    flex-direction: row;
-    gap: 12px; 
-    align-items: flex-end; 
-    margin-top: 8px;
+.placaAssocContent {
+  width: 100%;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  display: none;
+  grid-template-areas:
+    "selectPlaca contentPlacaAssoc"
+    "tableResult tableResult";
+  row-gap: 1rem; /* opcional: separación vertical entre áreas */
 }
 
+.selectPlaca {
+  grid-area: selectPlaca;
+}
+
+.contentPlacaAssoc {
+  grid-area: contentPlacaAssoc;
+}
+
+.selectPlaca,
+.contentPlacaAssoc {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.3rem;
+}
+
+.tableResult {
+  grid-area: tableResult;
+}
+
+.contentPlaca {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-end;
+  margin-top: 8px;
+}
 
 .apuntes {
-    display: grid;
-    grid-template-areas: "observacion sugerencia";
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-    gap: 20px;
-    width: 100%;
-    grid-area: apuntes;
+  display: grid;
+  grid-template-areas: "observacion sugerencia";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  gap: 20px;
+  width: 100%;
+  grid-area: apuntes;
 }
 
-.footerBtn{
-    grid-area: footerBtn;
-    /* text-align: center; */
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+.footerBtn {
+  grid-area: footerBtn;
+  /* text-align: center; */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .input-field {
-    flex: 1; /* que cada uno tome el 50% */
+  flex: 1; /* que cada uno tome el 50% */
 }
 
-#observacionInput{
-    resize: none;
-    width: 100%;
+#observacionInput {
+  resize: none;
+  width: 100%;
 }
 
-#sugerenciaInput{
-    width: 100%;
-    resize: none;
+#sugerenciaInput {
+  width: 100%;
+  resize: none;
 }
 
-.contentPlaca > .inputPlaca{
-    width: 100%;
+.contentPlaca > .inputPlaca {
+  width: 100%;
 }
-.contentPlaca > .inputSerie{
-    width: 100%;
-    
-}
-
-.nombre{
-    grid-area: nombre;
+.contentPlaca > .inputSerie {
+  width: 100%;
 }
 
-.area{
-    grid-area: area;
+.nombre {
+  grid-area: nombre;
 }
 
-.marca{
-    grid-area: marca;
+.area {
+  grid-area: area;
 }
 
-.categoria{
-    grid-area: categoria;
+.marca {
+  grid-area: marca;
 }
 
-.tipoElemento{
-    grid-area: tipoElemento;
+.categoria {
+  grid-area: categoria;
 }
 
-.radioTpElemento{
-    display: flex;
-    flex-direction: row;
+.tipoElemento {
+  grid-area: tipoElemento;
 }
 
-.checkboxTpElemento{
-    display: none;
-    grid-template-areas: "unidadMedida cantidadElemento";
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
+.radioTpElemento {
+  display: flex;
+  flex-direction: row;
 }
 
-.unidadMedida{
-    grid-area: unidadMedida;
+.checkboxTpElemento {
+  display: none;
+  grid-template-areas: "unidadMedida cantidadElemento";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
 }
 
-.cantidadElemento{
-    grid-area:cantidadElemento ;
+.unidadMedida {
+  grid-area: unidadMedida;
 }
 
-
-#btnCloseModalAddElements{
-    position:absolute; top:10px; right:15px; font-size:24px; background:none; border:none; cursor:pointer;
+.cantidadElemento {
+  grid-area: cantidadElemento;
 }
 
-#cerrarModalRegistrar{
-    border: none;
-    cursor: pointer;
-    font-size: 22pt;
+#btnCloseModalAddElements {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
+#cerrarModalRegistrar {
+  border: none;
+  cursor: pointer;
+  font-size: 22pt;
+}
 
 /* Selector tipo de elemento */
 #tipoElementoSelect {
@@ -454,211 +483,208 @@
   background-color: white !important;
 }
 
-
 /*EDITAR ELEMENTOS*/
 
 #modalEditarElemento {
-    display: none;
-    position: fixed;
-    overflow: auto;
-    top: 0 !important;
-    z-index: 9999;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
+  display: none;
+  position: fixed;
+  overflow: auto;
+  top: 0 !important;
+  z-index: 9999;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
 }
 
 #modalEditarElemento > #modalContentElements {
-    padding: 20px;
-    display: grid;
-    grid-template-areas:
-        "modalContentTitleEditar"
-        "modalContentForm";
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    background-color: var(--white);
-    margin: 3% auto;
-    width: 50%;
-    height: fit-content;
-    max-height: 80vh;
-    overflow-y: auto;
+  padding: 20px;
+  display: grid;
+  grid-template-areas:
+    "modalContentTitleEditar"
+    "modalContentForm";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  background-color: var(--white);
+  margin: 3% auto;
+  width: 50%;
+  height: fit-content;
+  max-height: 80vh;
+  overflow-y: auto;
 }
-
-
 
 /* Cuerpo del formulario */
 #modalEditarElemento .modalContentForm {
-    grid-area: modalContentForm;
+  grid-area: modalContentForm;
 }
 #modalEditarElemento > #modalContentElements {
-    padding: 20px;
-    display: grid;
-    grid-template-areas:
-        "modalContentTitleEditar"
-        "modalContentForm";
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    background-color: var(--white);
-    margin: 3% auto;
-    width: 50%;
-    height: fit-content;
-    max-height: 80vh;
-    overflow-y: auto;
+  padding: 20px;
+  display: grid;
+  grid-template-areas:
+    "modalContentTitleEditar"
+    "modalContentForm";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  background-color: var(--white);
+  margin: 3% auto;
+  width: 50%;
+  height: fit-content;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 #modalEditarElemento .modalContentTitleEditar {
-    grid-area: modalContentTitleEditar;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
+  grid-area: modalContentTitleEditar;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /* Cuerpo del formulario */
 #modalEditarElemento .modalContentForm {
-    grid-area: modalContentForm;
+  grid-area: modalContentForm;
 }
-
 
 #modalEditarElemento form#editarElementForm {
-    display: grid;
-    grid-template-areas:
-        "placa placa"
-        "placaInputsEditar placaInputsEditar"
-        "nombre area"
-        "unidadMedida unidadMedida"
-        "tipoElemento existencia"
-        "apuntes apuntes"
-        "footerBtn footerBtn";
-    grid-template-columns: 1fr 1fr;
-    gap: 3px;
-    background-color: var(--white);
-    border-radius: 10px;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 14px 5px;
+  display: grid;
+  grid-template-areas:
+    "placa placa"
+    "placaInputsEditar placaInputsEditar"
+    "nombre area"
+    "unidadMedida unidadMedida"
+    "tipoElemento existencia"
+    "apuntes apuntes"
+    "footerBtn footerBtn";
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  background-color: var(--white);
+  border-radius: 10px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 14px 5px;
 }
 
-#modalEditarElemento form .placaInputsEditar{
-    display: none;
-    grid-area: placaInputsEditar;
+#modalEditarElemento form .placaInputsEditar {
+  display: none;
+  grid-area: placaInputsEditar;
 }
 
-.inputPlacaEditar{
-    display: none;
+.inputPlacaEditar {
+  display: none;
 }
 
-.inputSerieEdit{
-    display: none;
+.inputSerieEdit {
+  display: none;
 }
 
 /* Áreas */
 #modalEditarElemento .placa {
-    grid-area: placa;
+  grid-area: placa;
 }
 
 #modalEditarElemento .nombre {
-    grid-area: nombre;
+  grid-area: nombre;
 }
 
 #modalEditarElemento .area {
-    grid-area: area;
+  grid-area: area;
 }
 
 #modalEditarElemento .unidadMedida {
-    grid-area: unidadMedida;
+  grid-area: unidadMedida;
 }
 
 #modalEditarElemento .tipoElemento {
-    grid-area: tipoElemento;
+  grid-area: tipoElemento;
 }
 
 #modalEditarElemento .existencia {
-    grid-area: existencia;
+  grid-area: existencia;
 }
 
-#modalEditarElemento .cantidadElemento{
-    grid-area: cantidadElemento;
+#modalEditarElemento .cantidadElemento {
+  grid-area: cantidadElemento;
 }
 
 #modalEditarElemento .apuntes {
-    grid-area: apuntes;
-    display: grid;
-    grid-template-areas: "observacion sugerencia";
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    width: 100%;
+  grid-area: apuntes;
+  display: grid;
+  grid-template-areas: "observacion sugerencia";
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
 }
 
 #modalEditarElemento .footerBtn {
-    grid-area: footerBtn;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+  grid-area: footerBtn;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 #modalEditarElemento .input-field {
-    flex: 1;
+  flex: 1;
 }
 
 /* Textareas */
 #observacionInputEditar,
 #sugerenciaInputEditar {
-    width: 100%;
-    resize: none;
+  width: 100%;
+  resize: none;
 }
 
 /* Botón de cerrar modal */
-#cerrarModalEditar, #cerrarModalExistencia {
-    /* position: relative; */
-    top: 10px;
-    right: 15px;
-    font-size: 28pt;
-    background: none;
-    border: none;
-    cursor: pointer;
+#cerrarModalEditar,
+#cerrarModalExistencia {
+  /* position: relative; */
+  top: 10px;
+  right: 15px;
+  font-size: 28pt;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 /* --------------------- */
 /* AGREGAR EXISTENCIAS */
 /* -------------------- */
 
-#modalAddExistencia{
-    display: none;
-    position: fixed;
-    overflow: auto;
-    top: 0 !important;
-    z-index: 9999;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
+#modalAddExistencia {
+  display: none;
+  position: fixed;
+  overflow: auto;
+  top: 0 !important;
+  z-index: 9999;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
 }
-.modalContentExistencia{
-    background-color: var(--white);
-    width: 50%;
-    display: grid;
-    grid-template-areas: "modalContentTitleExistencia "
+.modalContentExistencia {
+  background-color: var(--white);
+  width: 50%;
+  display: grid;
+  grid-template-areas:
+    "modalContentTitleExistencia "
     "addExistenciaForm ";
-    grid-template-columns:  1fr;
-    grid-template-rows: auto 1fr;
-    margin: 3% auto;
-    width: 30%;
-    height: fit-content;
-    max-height: 80vh;
-    overflow-y: auto;
-    /* padding: 2.1rem; */
-    border-radius: 10px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    border: 1px solid #e0e0e0;
-    transition: all 0.3s ease-in-out;
-    
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  margin: 3% auto;
+  width: 30%;
+  height: fit-content;
+  max-height: 80vh;
+  overflow-y: auto;
+  /* padding: 2.1rem; */
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease-in-out;
 }
 
 /* Estilo a header del modal */
@@ -666,26 +692,27 @@
   grid-area: modalContentTitleExistencia;
   /* background-color: var(--teal);  */
   /* color: var(--other); */
-    padding: 0.8rem 1rem;
-    font-weight: 600;
-    font-size: 1.2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 5px 5px 0 0;
+  padding: 0.8rem 1rem;
+  font-weight: 600;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 5px 5px 0 0;
 }
 
-#formAddExistencia{
-    grid-area: addExistenciaForm;
-    display: grid;
-    grid-template-areas: "tp_movimiento tp_movimiento"
+#formAddExistencia {
+  grid-area: addExistenciaForm;
+  display: grid;
+  grid-template-areas:
+    "tp_movimiento tp_movimiento"
     "cantidad cantidad"
     "co_descrip co_descrip"
     "btnExistencia btnExistencia";
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-    gap: 0.4rem;
-    padding: 0.3rem 0.8rem;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  gap: 0.4rem;
+  padding: 0.3rem 0.8rem;
 }
 
 .tp_movimiento {
@@ -696,12 +723,10 @@
   width: 100%;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 1.0rem;
+  gap: 1rem;
 
-  #tipo_movimiento{
+  #tipo_movimiento {
     width: 100%;
-
-
   }
 }
 
@@ -717,16 +742,15 @@
   grid-area: btnExistencia;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   background-color: var(--white) !important;
 }
 
-#btnAddExistencia{
-    background-color: var(--blue);
-    color: var(--white);
+#btnAddExistencia {
+  background-color: var(--blue);
+  color: var(--white);
 }
 
 .modalContentExistencia:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
-

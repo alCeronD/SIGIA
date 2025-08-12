@@ -5,6 +5,7 @@ import {
   createBtn,
   createI,
   initAlert,
+  initTooltip,
   instanceModal,
   options,
   setReserva,
@@ -37,6 +38,10 @@ const bodyDetailValidate = document.querySelector("#bodyDetailValidate");
 const btnCloseValidte = document.querySelector("#modalValidate .close-modal");
 const btnCloseElements = document.querySelector("#modalDetail .close-modal");
 const formDetail = document.querySelector("#formDetail");
+const pagesPrestamos = document.querySelector('#pagesPrestamos');
+const rowsPrestamos = document.querySelector('#rowsPrestamos');
+// Label del campo observaciones para cambiar si es obligatorio o no la observación
+const observacionesLabel = document.querySelector('#observacionesLabel');
 // El contenido de la tabla del modal validatePrestamo
 const tableContainerDetail = document.querySelector(
   ".tableContainerDetail table"
@@ -79,7 +84,7 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     { action: "reservas", pages: page, type },false
   );
 
-  console.log(result);
+
   let status = result.status;
   data = result.data.data;
   pages = result.data.pages;
@@ -89,7 +94,6 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     return;
   }
   if (pagesReserva > pages) return;
-
   tbodyReservaConsult.innerHTML = "";
   data.forEach((dta) => {
     codigo = dta.codigo;
@@ -107,8 +111,6 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
 
     btnDetail.setAttribute("class", "btnDetail btnClick");
     btnDetail.setAttribute("data-id", `${dta.codigo}`);
-    //TODO: Esto lo debo si o si cambiar, puedo crear una funcion para implementar las clases.
-
     btnAdd.setAttribute("class", "addElements");
     btnAdd.setAttribute("data-add", `${dta.codigo}`);
     btnEnd.setAttribute("data-end", `${dta.codigo}`);
@@ -140,8 +142,7 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     btnEnd.append(iFinalizar);
     let tdCodigo = document.createElement("td");
     let tdNombreCompleto = document.createElement("td");
-    // Capturo el span del modal title 
-
+    let tdFechaRegistro = document.createElement("td");
     let tdCantidad = document.createElement("td");
     let tdEstado = document.createElement("td");
     let tdAcciones = document.createElement("td");
@@ -150,35 +151,34 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     tdNombreCompleto.textContent = dta.nombre + " " + dta.apellido;
     tdEstado.textContent = dta.estadoPrestamo;
     tdTipo.textContent = dta.tipoPrestamo;
+    tdFechaRegistro.textContent = dta.fechaSolicitud;
 
     tbodyReservaConsult.appendChild(tr);
     tr.appendChild(tdCodigo);
+    tr.appendChild(tdFechaRegistro);
     tr.appendChild(tdNombreCompleto);
     tr.appendChild(tdEstado);
     tr.appendChild(tdTipo);
+    
     tdAcciones.innerHTML = "";
     tr.append(tdAcciones);
 
     if (tdEstado.textContent === "Finalizado") {
       btnEnd.style.display = "none";
       tdEstado.style.color = "gray";
-      // tdEstado.style.fontWeight = "bold";
     }
 
     if (tdEstado.textContent === "Rechazado") {
       tdEstado.style.color = "red";
-      // tdEstado.style.fontWeight = "bold";
     }
 
     if (tdEstado.textContent === "Validado") {
       tdEstado.style.color = "green";
-      // tdEstado.style.fontWeight = "bold";
     }
 
     tdAcciones.appendChild(btnDetail);
 
     if (dta.estadoPrestamo === "Finalizado") {
-      // Solo mostrar botón Detalle
       return;
     }
 
@@ -214,16 +214,15 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
         };
 
       });
-
     }
   });
+  pagesPrestamos.innerText = `Página ${pagesReserva} de ${pages}`;
+  // rowsPrestamos.innerText = `Cantidad prestamos: ${pages}`;
+
   } catch (error) {
     console.warn(`Error al procesar la solicitud, intente más tarde ${error}`);
     tbodyReservaConsult.innerHTML = "Error al realizar la solicitud, intente nuevamente";
   }
-  
-
-  
 };
 
 //Estas variables las uso para guardar los elementos que no han sido validados.
@@ -399,15 +398,19 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
       BodydetailReserva.innerHTML = "";
       elementosDetalle.forEach((elm) => {
+        console.log(elm);
         const trTable = document.createElement("tr");
         const tdCodigo = document.createElement("td");
+        const tdSerie = document.createElement("td");
         const tdNombre = document.createElement("td");
         const tdCantidad = document.createElement("td");
 
         tdCodigo.innerText = elm.codigo;
         tdNombre.innerText = elm.nombre;
+        tdSerie.innerText = elm.seriElemento;
         tdCantidad.innerText = elm.cantidadSolicitada;
         trTable.appendChild(tdCodigo);
+        trTable.appendChild(tdSerie);
         trTable.appendChild(tdNombre);
         trTable.appendChild(tdCantidad);
         BodydetailReserva.appendChild(trTable);
@@ -703,12 +706,15 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       'textarea[name="textarea1"]'
     );
 
+    const textBase = "Observación:";
     radioYes.addEventListener("change", (e) => {
       let radioCheck = e.target.checked;
       let radioNoChecked = radioCheck ? false : true;
       radioNo.checked = radioNoChecked;
 
       if (radioCheck) {
+        // observacionesLabel.innerText = "";
+        observacionesLabel.innerText = `${textBase} *`;
         textAreaObsInput.disabled = false;
       }
     });
@@ -716,6 +722,9 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       if (e.target.checked) {
         textAreaObsInput.value = "";
         textAreaObsInput.disabled = true;
+
+        observacionesLabel.innerText = textBase;
+
       }
     });
 
@@ -730,12 +739,17 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       let validate = Object.values(valuesForm);
 
       if (!validate[0]) {
-        alert("Selección de observación requerida");
+        initAlert("La selección de observación (Si/No) Es requerida.");
         return;
       }
       let observacion = !valuesForm.textarea1
         ? ""
         : valuesForm.textarea1.trim();
+
+        if (validate[0].includes("on") && validate[1] === "") {
+          initAlert("La observación es requerida", "info", toastOptions);
+          return;
+        }
 
       // Aplico spreead para traer las propiedades previas del objeto y adiciono la observación.
       validateReserva = {
@@ -763,14 +777,11 @@ tbodyReservaConsult.addEventListener("click", (event) => {
             "validateLoan",
             validateReserva
           );
-
           if (responseValidate.status) {
             estadoNew.textContent = "Validado";
             estadoNew.style.color = "green";
 
-            let btnValidate = tdAcciones.querySelector(
-              `button[data-validate='${validateReserva.codigoReserva}']`
-            );
+            let btnValidate = document.querySelector(`#tbodyReservaConsult tr td [data-validate='${validateReserva.codigoReserva}']`);
             if (btnValidate) {
               // Renderizo nuevamente basada en la pagína y el tipo.
               renderReservas({page:currentPage, type: valueSelect});
@@ -894,4 +905,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderReservas();
   // Inicializar select 
   M.FormSelect.init(filtroTipoReserva);
+  const helpEstados = document.querySelector('#helpEstados');
+  initTooltip(helpEstados,tooltipOptions,`Estados elementos\nValidado: El prestamo ha sido validado y los elementos está en posesión del usuario\nPor validar: Elementos en espera por dar salida y entregar insumos al usuario`,"top");
 });
