@@ -382,6 +382,7 @@ const validateDisponibilidad = async ({
   codigosElementos,
   isOnly = false,
   method = "GET",
+  tpPrestamo = null
 } = {}) => {
   let param = {};
 
@@ -393,6 +394,7 @@ const validateDisponibilidad = async ({
 
   try {
     if (method === "GET") {
+      
       param = {
         ...param,
         action: "validateElement",
@@ -403,7 +405,6 @@ const validateDisponibilidad = async ({
         param
       );
 
-      console.log({"get": responseDisponibilidadGet});
 
       if (responseDisponibilidadGet.status === 204) {
         return true;
@@ -424,7 +425,9 @@ const validateDisponibilidad = async ({
         elementos: codigosElementos,
         isOnly: false,
         fechaReserva: fecha,
+        tpPrestamo: tpPrestamo
       };
+
       responseDisponibilidadPost = await sendData(
         "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
         method,
@@ -432,8 +435,7 @@ const validateDisponibilidad = async ({
         param
       );
 
-      console.log({"post": responseDisponibilidadPost});
-
+      // console.log(responseDisponibilidadPost);
 
       if (responseDisponibilidadPost.status === 204) {
         return true;
@@ -819,12 +821,12 @@ const createMessageElementos = (rows = {}) => {
   let textConfirmReservaDev = "";
 
   if (consumiblesRows.length === 0) {
-    textConfirmReservaConsumibles += `Consumibles:\n Sin elementos`;
+    textConfirmReservaConsumibles += `\n Consumibles:\n Sin elementos \n`;
   } else {
-    textConfirmReservaConsumibles += `Consumibles:\n${consumiblesRows
+    textConfirmReservaConsumibles += `Elementos consumibles seleccionados por el usuario:\n${consumiblesRows
       .map(
         (el) =>
-          `Código: ${el.codigo}  Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
+          `Código: ${el.codigo}  Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad} \n`
       )
       .join("\n")}\n`;
   }
@@ -833,7 +835,7 @@ const createMessageElementos = (rows = {}) => {
     textConfirmReservaDev += `Devolutivos:\n Sin elementos`;
   } else {
     // Devolutivos.
-    textConfirmReservaDev += `Devolutivos:\n${devolutivosRows
+    textConfirmReservaDev += `Elementos devolutivos seleccionados por el usuario:\n${devolutivosRows
       .map(
         (el) =>
           `Serie: ${el.serie} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
@@ -841,29 +843,40 @@ const createMessageElementos = (rows = {}) => {
       .join("\n")}\n`;
   }
 
-  const textRegistrar = `Elementos seleccionados: \n ${replaceln(textConfirmReservaConsumibles)}\n` +
+  const textRegistrar = `\n Elementos seleccionados: \n ${replaceln(textConfirmReservaConsumibles)}\n` +
     `\n ${replaceln(textConfirmReservaDev)}`;
 
   return textRegistrar;
 };
 
-const createMessagReservados = (dataValidate = {}) => {
-  if (!dataValidate) {
-    return {};
-  }
+const createMessagReservados = (dataValidate = {}, tpPrestamo) => {
+  if (!dataValidate) return {};
+
+  if(!tpPrestamo) return "";
+
   let textDataReservados = "";
   let textConfirmReserva = "";
-  
-  textDataReservados += `\n ${dataValidate
-    .map(
-      (el) =>
-        `Serie elemento ${el.seriElemento} Nombre elemento: ${el.nombreElemento} Fecha Reservada: ${el.fechaReserva}`
-    )
-    .join("\n")}\n`;
 
-  textConfirmReserva += `\n Estos elementos ya están reservados para la fecha seleccionada : ${replaceln(
-    textDataReservados
-  )}`;
+  textDataReservados += `\n ${dataValidate
+      .map(
+        (el) =>
+          `Serie elemento ${el.seriElemento} Nombre elemento: ${el.nombreElemento} Fecha Reservada: ${el.fechaReserva} Fecha Devolución : ${el.fechaDevolucion}`
+      )
+      .join("\n")}\n`;
+
+  if (tpPrestamo === "2") {
+    textConfirmReserva += `\n Estos elementos ya están reservados para la fecha seleccionada : ${replaceln(
+      textDataReservados
+    )}`;
+  }
+
+  if (tpPrestamo === "1") {
+    textConfirmReserva += `\n Estos elementos ya están reservados para la fecha de devolución seleccionada o posterior a ella ${replaceln(
+      textDataReservados
+    )} \n` ;
+  }
+  
+
 
   return textConfirmReserva;
 };
@@ -1008,23 +1021,39 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
   paramModal = { titulo: `Registrar ${title}`, mensaje: messageElements };
 
   try {
+    let paramValidateDisponibilidad = {};
     let devolutivosCheck = rows.codigoElementos.devolutivos;
-    const responseValidate = await validateDisponibilidad({
-      fecha: data.fechaReserva,
-      codigosElementos: devolutivosCheck,
-      method: "POST",
-      isOnly: false,
-    });
-
-
     let modalMessage = "";
+
+    if (tpPrestamo === "1") {
+      let fechaDevolucion = data.fechaDevolucion;
+      paramValidateDisponibilidad = {
+        fecha: fechaDevolucion,
+        codigosElementos: devolutivosCheck,
+        method: "POST",
+        isOnly: false,
+        tpPrestamo: tpPrestamo,
+      };
+    } else {
+      let fechaReserva = data.fechaReserva;
+      paramValidateDisponibilidad = {
+        fecha: fechaReserva,
+        codigosElementos: devolutivosCheck,
+        method: "POST",
+        isOnly: false,
+        tpPrestamo: tpPrestamo,
+      };
+    }
+
+    const responseValidate = await validateDisponibilidad(paramValidateDisponibilidad);
+
     //Mostrar mensaje de modal para informar que hay elementos ya reservados para esa fecha y por ende, no se podrán reservar.
     if (responseValidate.status) {
       messageValidate = responseValidate.message;
       dataValidate = responseValidate.data;
-      const messageReservado = createMessagReservados(dataValidate);
+      const messageReservado = createMessagReservados(dataValidate, tpPrestamo);
       // Unificamos ambos mensajes, el de los elementos que ya están reservados con los elementos que el usuario ha seleccionado.
-      modalMessage += `${messageReservado} \n Si presiona aceptar, los elementos ya reservados no se asociarán a la reserva, ¿Desea continuar?\n ${replaceln(
+      modalMessage += `\n ${messageReservado} \n Si presiona aceptar, los elementos ya reservados no se asociarán a la reserva, ¿Desea continuar? \n ${replaceln(
         messageElements
       )} \n `;
       paramModal = {
@@ -1061,11 +1090,17 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
         //Agrego los códigos de los elementos al data.
         data.codigosElementos = codigosElementos;
 
-        console.log({"nueva data con elementos modificados": data.codigosElementos});
       }
 
-      console.log({"sin cambios": data});
-      
+      // Extraer los elementos para validar si hay o no elementos.
+      let validateDevolutivos = data.codigosElementos.devolutivos;
+      // Si el usuario selecciona x elementos y todos ellos están reservados para la fecha en concreto, muestro una alerta indicando que seleccione elementos que estén disponibles para esa fecha.
+      if (validateDevolutivos.length === 0) {
+        let fecha = tpPrestamo === "2" ? data.fechaReserva : data.fechaDevolucion;
+        initAlert(`Seleccione elementos que no estén reservados para la fecha ${fecha}`, "info", toastOptions);
+        return;
+      }
+
       try {
         const responseReserva = await sendData(
           "Modules/reservaPrestamos/controller/reservaPrestamosController.php",

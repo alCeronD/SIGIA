@@ -33,7 +33,6 @@ export const sendData = async (
     let newUrl = parameters ? `${url}?${setParameter}` : url;
     const optionsFetch = setFetch(method, parameters, data);
     const response = await fetch(newUrl, optionsFetch);
-    
     if (response.status === 204) {
       return {status: 204};
     }

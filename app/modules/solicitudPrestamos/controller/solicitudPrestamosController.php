@@ -354,18 +354,17 @@ class solicitudPrestamosController
     {
         $fechaHoy = date('Y-m-d');
         // $fechaHoy = '2025-08-08';
-    
-       
+
         $sql = "SELECT p.pres_cod
                 FROM prestamos p
                 WHERE p.pres_fch_reserva = ?
-                  AND p.pres_estado = 1"; // Por validar
+                  AND p.pres_estado = 3"; // Por validar
     
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('s', $fechaHoy);
         $stmt->execute();
         $result = $stmt->get_result();
-    
+
         $prestamosActualizados = [];
     
         while ($row = $result->fetch_assoc()) {

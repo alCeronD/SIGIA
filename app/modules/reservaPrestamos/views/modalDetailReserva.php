@@ -16,10 +16,10 @@
           <label for="nombreCompleto" class="labelForm labelFormDetail">Nombre: <span class="inputFormDetail" name="nombreCompleto" id="nombreCompleto"></span></label>
         </div>
         <div class="inputContent inputContentDetail fechaReserva">
-          <label for="fechaReserva" class="labelForm labelFormDetail">Fecha Registro: <span class="inputFormDetail" name="fechaReserva" id="fechaReserva"></span></label>
+          <label for="fechaReserva" class="labelForm labelFormDetail">Fecha Reserva: <span class="inputFormDetail" name="fechaReserva" id="fechaReserva"></span></label>
         </div>
         <div class="inputContent inputContentDetail fechaSolicitud">
-          <label for="fechaSolicitud" class="labelForm labelFormDetail">Fecha Entrega: <span class="inputFormDetail" name="fechaSolicitud" id="fechaSolicitud"></span></label>
+          <label for="fechaSolicitud" class="labelForm labelFormDetail">Fecha de registro: <span class="inputFormDetail" name="fechaSolicitud" id="fechaSolicitud"></span></label>
         </div>
         <div class="inputContent inputContentDetail fechaDevolucion">
           <label for="fechaDevolucion" class="labelForm labelFormDetail">Fecha Devolución: <span class="inputFormDetail" name="fechaDevolucion" id="fechaDevolucion"></span></label>

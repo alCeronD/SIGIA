@@ -183,7 +183,8 @@ class reservaPrestamosController
      * Summary of validateElemento - Función de controlador para validar el elemento si está disponible para esa fecha.
      * @return void
      */
-    public function validateElemento(int $elemento = 0,String $fechaReserva = "" ,$isOnly = false, array $elementos = []){
+    public function validateElemento(int $elemento = 0,String $fechaReserva = "" ,$isOnly = false, array $elementos = [], int $tpPrestamo = 0){
+
         
         if ($isOnly) {
             $result = $this->modelElemento->validateDisponiblidad($elemento, $isOnly);
@@ -207,12 +208,18 @@ class reservaPrestamosController
             $elementosYaSeleccionados = [];
             foreach ($data as $key => $value) {
                 $fechaReservaElementos = $value['fechaReserva'];
-
-                if (validateFecha($fechaReservaElementos, $fechaReserva)) {
+                $fechaDevolucionElementos = $value['fechaDevolucion'];
+                if (validateFecha(
+                    date1: $fechaReservaElementos,
+                    date2: $fechaReserva,
+                    date3: $fechaDevolucionElementos,
+                    tpPrestamo:$tpPrestamo
+                )) {
                     $elementosYaSeleccionados[]= $value;
                 }
             }
 
+            // No le estoy dando uso porque no pude usar la respuesta de fail o success.
             $resultado = [
                 'data'=>$elementosYaSeleccionados,
                 'status'=> false,
@@ -252,6 +259,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
         $codigo = $_GET['codigo'] ?? 0;
         $codigo = (int) $codigo;
+
         switch ($case) {
             // TODO: Revisar, ya que estos 2 cases traen la info pero uno trae la pagina y su tipo, el otro no.
             case 'elements':
@@ -336,11 +344,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $input = file_get_contents("php://input");
-
         //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
         $data = json_decode($input, true);
-
-
         switch ($data['action']) {
             case 'finalizar':
 
@@ -367,8 +372,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                     $isOnly = $data['isOnly'];
                     $fechaReserva = $data['fechaReserva'];
                     $elementos = $data['elementos'];
+                    $tpPrestamo = (int) $data['tpPrestamo'];
 
-                    $controller->validateElemento(isOnly: $isOnly, fechaReserva: $fechaReserva, elementos: $elementos);
+                    $controller->validateElemento(isOnly: $isOnly, fechaReserva: $fechaReserva, elementos: $elementos, tpPrestamo: $tpPrestamo);
 
                 break;
 
