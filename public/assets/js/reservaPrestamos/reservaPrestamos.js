@@ -977,6 +977,7 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
   let codigosElementos = rows.codigoElementos;
   // Agrego el tipo de prestamo al objeto data para envíar a registrar.
   data.tpPrestamo = tpPrestamo;
+  data.codigosElementos = codigosElementos;
 
   //Validar si hay elementos seleccionados para así continuar con el proceso.
   if (rows.codigoElementos.devolutivos.length === 0 && rows.codigoElementos.consumibles.length === 0
@@ -1034,6 +1035,7 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
   } catch (error) {
     console.error(`${error}`);
   }
+
   mostrarConfirmacion(
     paramModal.titulo,
     paramModal.mensaje,
@@ -1043,19 +1045,27 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
         return;
       }
 
-      // Transformo el arreglo dataValidate en uno nuevo solamente trayendo LOS CÓDIGOS de los elementos para comparar con los que el usuario ha seleccionado.
-      const codigosElementosReservados = dataValidate.map(
-        (item) => item.codigoElemento
-      );
-      // Uso la función filter para mutar los nuevos elementos que voy a enviar a reservar Y SOLO RETORNO los elementos que NO ESTEN INCLUIDOS EN MI OBJETO ELEMENTO.
-      const newDev = codigosElementos.devolutivos.filter((elemento) => {
-        return !codigosElementosReservados.includes(parseInt(elemento.codigo));
-      });
+      // if (JSON.stringify(dataValidate) != "{}") {
+      if (Array.from(dataValidate) && dataValidate.length  > 0 ) {
+        
+        // Transformo el arreglo dataValidate en uno nuevo solamente trayendo LOS CÓDIGOS de los elementos para comparar con los que el usuario ha seleccionado.
+        const codigosElementosReservados = dataValidate.map(
+          (item) => item.codigoElemento
+        );
+        // Uso la función filter para mutar los nuevos elementos que voy a enviar a reservar Y SOLO RETORNO los elementos que NO ESTEN INCLUIDOS EN MI OBJETO ELEMENTO.
+        const newDev = codigosElementos.devolutivos.filter((elemento) => {
+          return !codigosElementosReservados.includes(parseInt(elemento.codigo));
+        });
 
-      codigosElementos.devolutivos = newDev;
-      //Agrego los códigos de los elementos al data.
-      data.codigosElementos = codigosElementos;
+        codigosElementos.devolutivos = newDev;
+        //Agrego los códigos de los elementos al data.
+        data.codigosElementos = codigosElementos;
 
+        console.log({"nueva data con elementos modificados": data.codigosElementos});
+      }
+
+      console.log({"sin cambios": data});
+      
       try {
         const responseReserva = await sendData(
           "Modules/reservaPrestamos/controller/reservaPrestamosController.php",

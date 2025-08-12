@@ -59,7 +59,7 @@
           </div>
           <div class="input-field col s12" id="textAreaObservacion">
             <textarea id="inputObservacion" name="textarea1" class="materialize-textarea" disabled></textarea>
-            <label for="textarea1" >Observación: </label>
+            <label for="textarea1" id="observacionesLabel">Observación: </label>
             <button type="submit" class="btn waves-effect waves-light" id="submitValidate"><i class="material-icons">send</i></button>
           </div>
         </form>

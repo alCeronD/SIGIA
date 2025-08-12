@@ -654,9 +654,9 @@ class ReservaModel
         $conn = $this->conect->getConnect();
         try {
 
-            //Esta consulta debe ser cambiada, dependiendo de si el tipo de movimiento es uno u otro, si el movimiento ya se ha validado y la cantidad de elementos ha cambiado, debe de mostrarme la cantidad de elementos que se validaron.
     $sqlElementsReserva = "SELECT DISTINCT
             el.elm_cod AS 'codigo',
+            el.elm_serie AS 'seriElemento',
             el.elm_nombre AS 'nombre',
             en_s.ent_sal_cantidad AS 'cantidadSolicitada',
             tpE.tp_el_cod AS 'codTipoElemento',

@@ -40,6 +40,8 @@ const btnCloseElements = document.querySelector("#modalDetail .close-modal");
 const formDetail = document.querySelector("#formDetail");
 const pagesPrestamos = document.querySelector('#pagesPrestamos');
 const rowsPrestamos = document.querySelector('#rowsPrestamos');
+// Label del campo observaciones para cambiar si es obligatorio o no la observación
+const observacionesLabel = document.querySelector('#observacionesLabel');
 // El contenido de la tabla del modal validatePrestamo
 const tableContainerDetail = document.querySelector(
   ".tableContainerDetail table"
@@ -396,15 +398,19 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
       BodydetailReserva.innerHTML = "";
       elementosDetalle.forEach((elm) => {
+        console.log(elm);
         const trTable = document.createElement("tr");
         const tdCodigo = document.createElement("td");
+        const tdSerie = document.createElement("td");
         const tdNombre = document.createElement("td");
         const tdCantidad = document.createElement("td");
 
         tdCodigo.innerText = elm.codigo;
         tdNombre.innerText = elm.nombre;
+        tdSerie.innerText = elm.seriElemento;
         tdCantidad.innerText = elm.cantidadSolicitada;
         trTable.appendChild(tdCodigo);
+        trTable.appendChild(tdSerie);
         trTable.appendChild(tdNombre);
         trTable.appendChild(tdCantidad);
         BodydetailReserva.appendChild(trTable);
@@ -700,12 +706,15 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       'textarea[name="textarea1"]'
     );
 
+    const textBase = "Observación:";
     radioYes.addEventListener("change", (e) => {
       let radioCheck = e.target.checked;
       let radioNoChecked = radioCheck ? false : true;
       radioNo.checked = radioNoChecked;
 
       if (radioCheck) {
+        // observacionesLabel.innerText = "";
+        observacionesLabel.innerText = `${textBase} *`;
         textAreaObsInput.disabled = false;
       }
     });
@@ -713,6 +722,9 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       if (e.target.checked) {
         textAreaObsInput.value = "";
         textAreaObsInput.disabled = true;
+
+        observacionesLabel.innerText = textBase;
+
       }
     });
 
@@ -727,12 +739,17 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       let validate = Object.values(valuesForm);
 
       if (!validate[0]) {
-        alert("Selección de observación requerida");
+        initAlert("La selección de observación (Si/No) Es requerida.");
         return;
       }
       let observacion = !valuesForm.textarea1
         ? ""
         : valuesForm.textarea1.trim();
+
+        if (validate[0].includes("on") && validate[1] === "") {
+          initAlert("La observación es requerida", "info", toastOptions);
+          return;
+        }
 
       // Aplico spreead para traer las propiedades previas del objeto y adiciono la observación.
       validateReserva = {

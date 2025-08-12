@@ -724,6 +724,11 @@ color: var(--secundary);
   flex-direction: column;
   gap: 0.3rem;
   align-items: center;
+
+  #inputObservacion{
+    width: 55vh;
+    height: 15vh !important;
+  }
 }
 
 #submitValidate{

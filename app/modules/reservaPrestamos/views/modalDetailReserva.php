@@ -25,7 +25,7 @@
           <label for="fechaDevolucion" class="labelForm labelFormDetail">Fecha Devolución: <span class="inputFormDetail" name="fechaDevolucion" id="fechaDevolucion"></span></label>
         </div>
         <div class=" inputContentDetail observaciones">
-          <label for="observaciones" class="labelForm labelFormDetail">Observaciones:
+          <label for="observaciones" id="" class="labelForm labelFormDetail">Observaciones:
             <p class="inputFormDetail" id="observaciones" name="observaciones"></p>
           </label>
            
@@ -37,7 +37,8 @@
       <table>
         <thead>
           <tr>
-            <th>Codigo </th>
+            <th>Codigo</th>
+            <th>Serie</th>
             <th>Nombre</th>
             <th>Cantidad solicitada</th>
           </tr>
