@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-08-2025 a las 02:11:26
+-- Tiempo de generación: 12-08-2025 a las 04:14:24
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -39,11 +39,12 @@ CREATE TABLE `areas` (
 --
 
 INSERT INTO `areas` (`ar_cod`, `ar_nombre`, `ar_descripcion`, `ar_status`) VALUES
-(1, 'Sonidos', 'Elementos pertenecientes al area de sonido.', 1),
-(2, 'Luz', 'Elementos asociados al departamento de Luces', 1),
-(3, 'General', 'Elementos que pueden ser utilizados por los diferentes departamentos', 1),
-(4, 'Fotografia', 'Elementos pertenecientes al área de fotografía de la central didactica.', 1),
-(120, 'Iluminación', 'Elementos pertenecientes al área de iluminación de la central didáctica.', 1);
+(1, 'Sonidos', '', 1),
+(2, 'Luz', '', 1),
+(3, 'General', '', 1),
+(4, 'Fotografia', '', 1),
+(5, 'Iluminación', '', 1),
+(6, 'Cámaras', '', 1);
 
 -- --------------------------------------------------------
 
@@ -63,13 +64,11 @@ CREATE TABLE `categoria` (
 --
 
 INSERT INTO `categoria` (`ca_id`, `ca_nombre`, `ca_descripcion`, `ca_status`) VALUES
-(3, 'Camaras', ' ', 0),
-(4, 'Computadoras', '', 0),
-(6, 'Computadoras AIO', ' ', 1),
-(13, 'informacion adicional de la categoria', 'información.', 1),
-(14, 'Elemento', 'fff', 1),
-(15, 'Elementos Audio Visuales', 'Clasificación de elementos que corresponden al area de visuales.', 1),
-(16, 'Elementos Audio', 'dddd', 1);
+(1, 'Soporte', '', 1),
+(2, 'Iluminación Fría', '', 1),
+(3, 'Iluminación Cálida', '', 1),
+(4, 'Video Cámara', '', 1),
+(5, 'Cámaras', '', 1);
 
 -- --------------------------------------------------------
 
@@ -86,36 +85,6 @@ CREATE TABLE `compras` (
   `co_fecha_compra` datetime DEFAULT NULL COMMENT 'fecha de registro del proceso.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Registra las compras y/o reembolsos de elementos, incluyendo cantidad, fecha y tipo de movimiento relacionado y código del elemento identificador';
 
---
--- Volcado de datos para la tabla `compras`
---
-
-INSERT INTO `compras` (`cod_compra`, `co_cod_elm`, `co_cantidad`, `co_tp_movimiento`, `co_descripcion`, `co_fecha_compra`) VALUES
-(16, 170, 9, 1, 'OPCIONAL.', '2025-07-22 21:45:10'),
-(17, 182, 1, 5, '', '2025-07-23 19:01:59'),
-(18, 170, 2, 1, 'calculadora', '2025-07-23 19:10:17'),
-(19, 178, 10, 1, 'Sobres carta', '2025-07-23 19:13:49'),
-(20, 174, 1, 5, 'Tijeras', '2025-07-23 19:14:48'),
-(21, 189, 32, 1, '', '2025-07-27 00:10:26'),
-(22, 165, 2, 1, '', '2025-07-27 00:10:50'),
-(23, 180, 5, 1, '', '2025-07-27 00:12:49'),
-(24, 180, 5, 5, '', '2025-07-27 00:13:12'),
-(25, 189, 3, 1, 'información adicional.', '2025-07-27 21:55:44'),
-(26, 159, 3, 1, '', '2025-07-27 21:58:01'),
-(27, 227, 23, 1, '', '2025-07-27 22:01:06'),
-(28, 174, 23, 1, 'adjunto estos nuevos elementos.', '2025-07-27 23:07:14'),
-(29, 167, 21, 1, 'dd', '2025-07-27 23:07:35'),
-(30, 170, 33, 1, 'adiciono estos elementos.', '2025-07-28 18:00:34'),
-(31, 155, 3, 1, '', '2025-07-28 18:01:51'),
-(32, 168, 3, 5, '', '2025-07-28 18:04:39'),
-(33, 162, 2, 5, '', '2025-07-28 18:15:11'),
-(34, 162, 32, 1, '', '2025-07-28 18:15:22'),
-(35, 156, 8, 1, 'Adiciono 8 elementos de más.', '2025-07-29 18:32:06'),
-(36, 157, 3, 1, 'dd', '2025-07-29 18:33:18'),
-(37, 227, 12, 1, '', '2025-07-29 18:33:45'),
-(38, 160, 8, 1, 'Información', '2025-07-29 18:34:41'),
-(39, 157, 12, 1, '', '2025-07-29 18:34:55');
-
 -- --------------------------------------------------------
 
 --
@@ -128,13 +97,13 @@ CREATE TABLE `elementos` (
   `elm_serie` varchar(40) DEFAULT NULL COMMENT 'serial interno identificador',
   `elm_nombre` varchar(100) NOT NULL COMMENT 'nombre del elemento',
   `elm_existencia` int(11) DEFAULT NULL COMMENT 'cantidad actual en el almacen',
-  `elm_fecha_registro` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'fecha en la cual se registro el elemento en la base de datos',
+  `elm_fecha_registro` date NOT NULL DEFAULT current_timestamp() COMMENT 'fecha en la cual se registro el elemento en la base de datos',
   `elm_sugerencia` varchar(100) DEFAULT NULL COMMENT 'campo de sugerencia en caso de que elemento requiera una anotación de su uso u algún otro elemento.',
   `elm_observacion` varchar(100) DEFAULT NULL COMMENT 'campo de observación en caso de ser necesraio su observación.',
   `elm_uni_medida` int(11) DEFAULT NULL COMMENT 'unidad de medida del elemento, galon, caja, unidad, entre otros.',
-  `elm_cod_tp_elemento` int(11) NOT NULL COMMENT 'tipo de elemento, devolutivo o consumible',
-  `elm_cod_estado` int(11) NOT NULL COMMENT 'estado actual del elemento, dependiendo de su id se define, los valores estan en la tabla estados_elementos',
-  `elm_area_cod` int(11) NOT NULL COMMENT 'area del elemento, sus valores relacionados con tabla areas.',
+  `elm_cod_tp_elemento` int(11) DEFAULT NULL COMMENT 'tipo de elemento, devolutivo o consumible',
+  `elm_cod_estado` int(11) DEFAULT NULL COMMENT 'estado actual del elemento, dependiendo de su id se define, los valores estan en la tabla estados_elementos',
+  `elm_area_cod` int(11) DEFAULT NULL COMMENT 'area del elemento, sus valores relacionados con tabla areas.',
   `elm_ma_cod` int(11) DEFAULT NULL COMMENT 'marca del elemento, su valor relacional esta en la tabla marcas.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla que almacena los elementos físicos, su identificación, estado, departamento e información relevante.';
 
@@ -143,62 +112,83 @@ CREATE TABLE `elementos` (
 --
 
 INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_serie`, `elm_nombre`, `elm_existencia`, `elm_fecha_registro`, `elm_sugerencia`, `elm_observacion`, `elm_uni_medida`, `elm_cod_tp_elemento`, `elm_cod_estado`, `elm_area_cod`, `elm_ma_cod`) VALUES
-(125, 1001, '1001-1', 'Computadora portátil HP', 2, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1, NULL),
-(126, 1001, '1001-2', 'Proyector Epson', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
-(129, 1002, '1002-1', 'Ratón inalámbrico', 2, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1, NULL),
-(130, 1001, '1001-3', 'Impresora laser Brother', 0, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
-(133, 1009, NULL, 'Parlantes Bose', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1, NULL),
-(134, 1010, NULL, 'Auriculares Sony', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
-(137, 1013, NULL, 'Estabilizador APC 1000VA', 0, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1, NULL),
-(138, 1014, NULL, 'Unidad USB 64GB', 8, '2025-07-05 16:06:08', '', '', 1, 2, 1, 2, NULL),
-(141, 1017, NULL, 'Disco duro externo 1TB', 1, '2025-07-05 16:06:08', '', '', 1, 1, 1, 1, NULL),
-(142, 1018, NULL, 'Proyector portátil LG', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
-(145, 1021, NULL, 'Soporte para monitor', 2, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1, NULL),
-(146, 1022, NULL, 'Teclado inalámbrico Microsoft', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
-(149, 1025, NULL, 'Pantalla táctil Dell', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 1, NULL),
-(150, 1026, NULL, 'Cámara de seguridad IP', 1, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
-(153, 1029, NULL, 'Router inalámbrico Netgear', 2, '2025-07-05 16:06:08', '', '', 1, 1, 1, 2, NULL),
-(154, 1030, NULL, 'Micrófono inalámbrico Shure X2', 2, '2025-07-05 16:06:08', '', '', 1, 1, 1, 2, NULL),
-(155, 3001, NULL, 'Papel A4', 3, '2025-07-05 16:06:08', '', '', 2, 2, 1, 3, NULL),
-(156, 3002, NULL, 'Tinta para impresora negra', 8, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
-(157, 3003, NULL, 'Tinta para impresora color', 10, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
-(158, 3004, NULL, 'Marcadores permanentes Nuevos.', 8, '2025-07-05 16:06:08', '', '', 1, 2, 1, 3, NULL),
-(159, 3005, '3005-1', 'Bolígrafos azules', 5, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
-(160, 3006, NULL, 'Resaltadores fluorescentes', 8, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
-(161, 3007, NULL, 'Cinta adhesiva', 1, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
-(162, 3008, NULL, 'Grapas para engrampadora de telas', 34, '2025-07-05 16:06:08', '', '', 2, 2, 1, 3, NULL),
-(163, 3009, NULL, 'Hojas para notas ', 3, '2025-07-05 16:06:08', '', '', 2, 2, 1, 3, NULL),
-(164, 3010, NULL, 'Cartuchos de tinta HP', 2, '2025-07-05 16:06:08', '', '', 1, 2, 1, 3, NULL),
-(165, 3011, NULL, 'Papel bond blanco', 8, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
-(166, 3012, NULL, 'Papel bond color', 9, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
-(167, 3013, NULL, 'Toners para impresora', 30, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
-(168, 3014, NULL, 'Papel carbón', 5, '2025-07-05 16:06:08', '', '', 2, 2, 1, 3, 22),
-(169, 3015, NULL, 'Papel fotográfico', 6, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
-(170, 3016, NULL, 'Borradores para pizarras', 28, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
-(171, 3017, NULL, 'Cintas correctoras', 8, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
-(172, 3018, NULL, 'Clips metálicos', 8, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
-(173, 3019, NULL, 'Cintas para nuevos', 8, '2025-07-05 16:06:08', '', '', 2, 2, 1, 3, NULL),
-(174, 3020, NULL, 'Tijeras', 31, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
-(175, 3021, NULL, 'Gomas de borrar', 3, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
-(176, 3022, NULL, 'Perforadoras de papel', 4, '2025-07-05 16:06:08', '', '', 1, 1, 1, 3, NULL),
-(177, 3023, NULL, 'Agendas para anotaciones', 1, '2025-07-05 16:06:08', '', '', 1, 2, 1, 3, NULL),
-(178, 3024, NULL, 'Sobres tamaño carta', 16, '2025-07-05 16:06:08', '', '', 2, 2, 1, 3, 22),
-(179, 3025, NULL, 'Carpetas plásticas', 5, '2025-07-05 16:06:08', '', '', 2, 1, 1, 3, NULL),
-(180, 3026, NULL, 'Papel reciclado', 8, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
-(181, 3027, NULL, 'Marcadores de pizarra blanca', 8, '2025-07-05 16:06:08', '', '', 1, 2, 1, 3, 22),
-(182, 3028, NULL, 'Clips plásticos', 7, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
-(183, 3029, NULL, 'Cinta doble faz', 4, '2025-07-05 16:06:08', NULL, NULL, 2, 2, 1, 3, NULL),
-(184, 3030, NULL, 'Sellos de goma', 7, '2025-07-05 16:06:08', NULL, NULL, 1, 2, 1, 3, NULL),
-(187, 46575467, NULL, 'Cargador hp 107', 2, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 1, 2, NULL),
-(189, 333, NULL, 'cinca adeciva', 27, '2025-07-05 16:06:08', '', '', 1, 2, 1, 3, NULL),
-(190, 3534543, NULL, 'Información de elementos', 0, '2025-07-05 16:06:08', NULL, NULL, 1, 1, 5, 2, NULL),
-(209, 922919589, '922919589-1', 'CARRY LIGHT', 1, '2025-07-15 15:41:20', 'Implemento este elemento de prueba', 'Adiciono sugerencia', 1, 1, 1, 4, NULL),
-(212, 922919589, '9229-2', 'Escáner de códigos Honeywell', 0, '2025-07-17 01:47:24', 'Verificar funcionamiento antes de ingresar al sistema.', 'Registro asociado para validación de productos.', 1, 1, 5, 4, NULL),
-(225, 4000, '4000-1', 'Sony LG 532', 1, '2025-07-24 04:03:03', 'se recomienda usar este elemento con un tripode.', 'Este elemento requiere de mantenimiento', 1, 1, 1, 1, 23),
-(226, 922919589, '9229-2', 'Tripode de cabeza Fluida adicionada.', 0, '2025-07-27 05:05:13', 'Este elemento requiere de un tipo elemento previo.', 'Este elemento se encuentra disponible', 1, 1, 1, 4, NULL),
-(227, 68494, '68494-1', 'Scroup fluorecente nuevo', 36, '2025-07-27 05:08:20', 'selecciono esta instancia.', 'adiciono una nueva observación', 1, 2, 1, 120, NULL),
-(228, 92297898, '92297898-1', 'Camara video panasonic', 1, '2025-07-29 23:05:11', 'hola mundo.', 'información de prueba', 1, 1, 1, 1, NULL),
-(229, 92297899, '92297899-1', 'Camara de video sonic', 1, '2025-07-29 23:06:19', 'prueba nueva.', 'Adiciono información', 1, 1, 1, 1, NULL);
+(1, 922917451, '922917451', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA MANIVELA', 4, 1, 1, 6, 1),
+(2, 92293396, '92293396', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA MANIVELA', 4, 1, 1, 6, 1),
+(3, 922919603, '922919603', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'COMPLETO', 4, 1, 1, 6, 1),
+(4, 922917452, '922917452', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'COMPLETO', 4, 1, 1, 6, 1),
+(5, 107685076, '107685076', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'COMPLETO', 4, 1, 1, 6, 1),
+(6, 92293395, '92293395', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA TORINILLO PARA LA PLATINA', 4, 1, 1, 6, 1),
+(7, 922917453, '922917453', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA PLATINA', 4, 1, 1, 6, 1),
+(8, 922917453, '922917453', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA PLATINA', 4, 1, 1, 6, 1),
+(9, 92293397, '92293397', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'COMPLETO', 4, 1, 1, 6, 1),
+(10, 100189225, '100189225', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'SIN CABEZAL (DEVOLVER)', 4, 1, 1, 6, 1),
+(11, 100189226, '100189226', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA SEGURO PARA PLATINA', 4, 1, 1, 6, 1),
+(12, 922919586, '922919586-1', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA MARIPOSA - FALTA CABLE DE PODER', 4, 1, 1, 5, 1),
+(13, 922919586, '922919586-2', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA DIFUSOR', 4, 1, 1, 5, 1),
+(14, 922919586, '922919586-3', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
+(15, 922919586, '922919586-4', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA MARIPOSA', 4, 1, 1, 5, 1),
+(16, 922919587, '922919587-1', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
+(17, 922919587, '922919587-2', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
+(18, 922919587, '922919587-3', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA CABLE', 4, 1, 1, 5, 1),
+(19, 922919587, '922919587-4', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
+(20, 92293941, '92293941-1', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 5 BOMBILLOS - FALTA MANILA', 4, 1, 1, 5, 1),
+(21, 92293941, '92293941-2', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 4 BOMBILLOS', 4, 1, 1, 5, 1),
+(22, 92293941, '92293941-3', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 4 BOMBILLOS', 4, 1, 1, 5, 1),
+(23, 92293941, '92293941-4', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALLAN 2 PLAFONES', 4, 1, 1, 5, 1),
+(24, 922917412, '922917412-1', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 2 BOBILLOS', 4, 1, 1, 5, 1),
+(25, 922917412, '922917412-2', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA 1 BOMBILLO', 4, 1, 1, 5, 1),
+(26, 922917413, '922917413-1', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
+(27, 922917413, '922917413-2', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 3 BOMBILLOS - DISFUSOR', 4, 1, 1, 5, 1),
+(28, 922917402, '922917402', 'LUZ LED BLANCAS', 1, '0000-00-00', 'LLEVAR TRIPODE DE LUZ CÁLIDA Y CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1),
+(29, 922917403, '922917403', 'LUZ LED BLANCAS', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1),
+(30, 922919588, '922919588-1', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1),
+(31, 922919589, '922919589-1', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1),
+(32, 922919589, '922919589-2', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'FALTA 1 BOMBILLO', 4, 1, 1, 5, 1),
+(33, 922919589, '922919589-3', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1),
+(34, 922919590, '922919590-1', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'FALTA 1 BOMBILLO', 4, 1, 1, 5, 1),
+(35, 922919590, '922919590-2', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1),
+(36, 922919590, '922919590-3', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
+(37, 922919588, '922919588-2', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
+(38, 922919588, '922919588-3', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
+(39, 922917415, '922917415', 'PAR LED', 1, '0000-00-00', 'LLEVAR CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1),
+(40, 922917416, '922917416', 'PAR LED', 1, '0000-00-00', 'LLEVAR CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1),
+(41, 922917417, '922917417', 'PAR LED', 1, '0000-00-00', 'LLEVAR CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1),
+(42, 922917404, '922917404', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'FALTA MANIVELA', 4, 1, 1, 6, 1),
+(43, 922919598, '922919598', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'FALTA MANIVELA', 4, 1, 1, 6, 1),
+(44, 922919599, '922919599', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'COMPLETA', 4, 1, 1, 6, 1),
+(45, 922919600, '922919600', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'COMPLETA', 4, 1, 1, 6, 1),
+(46, 9229191, '9229191', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'COMPLETA', 4, 1, 1, 5, 1),
+(47, 9229192, '9229192', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'FALLA DEL BALASTRO', 4, 1, 1, 5, 1),
+(48, 9229193, '9229193', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'FALTA BOMBILLO', 4, 1, 1, 5, 1),
+(49, 9229194, '9229194', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'COMPLETA', 4, 1, 1, 5, 1),
+(50, 92293286, '92293286', 'SMITH-VICTOR', 1, '0000-00-00', 'LLEVAR TRIPODE DE LUZ CÁLIDA Y CABLE DE PODER', 'FALTA BOMBILLO', 4, 1, 1, 5, 1),
+(51, 92293287, '92293287', 'SMITH-VICTOR', 1, '0000-00-00', 'LLEVAR TRIPODE DE LUZ CÁLIDA Y CABLE DE PODER', 'FALTA BOMBILLO', 4, 1, 1, 5, 1),
+(52, 922919535, '922919535', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
+(53, 922919536, '922919536', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
+(54, 922919537, '922919537', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
+(55, 922917450, '922917450', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
+(56, 922919611, '922919611', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
+(57, 922919539, '922919539', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
+(58, 922919540, '922919540', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
+(59, 922919542, '922919542', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
+(60, 922917094, '922917094', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'FALTA CARGADOR', 4, 1, 1, 6, 1),
+(61, 922917093, '922917093', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'FALTA CARGADOR', 4, 1, 1, 6, 1),
+(62, 922917096, '922917096', 'CÁMARA FOTO NIKON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
+(63, 92294487, '92294487', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'XS', 4, 1, 1, 6, 1),
+(64, 92294488, '92294488', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'FALTA LENTE', 4, 1, 1, 6, 1),
+(65, 92294489, '92294489', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'XS', 4, 1, 1, 6, 1),
+(66, 1076144983, '1076144983', 'CÁMARA VIDEO SONY', 1, '0000-00-00', '', 'DEVOLUCION', 4, 1, 1, 6, 1),
+(67, 93112759, '93112759', 'CÁMARA VIDEO SONY', 1, '0000-00-00', '', 'DEVOLUCION', 4, 1, 1, 6, 1),
+(68, 92293393, '92293393', 'CÁMARA VIDEO DVCAM', 1, '0000-00-00', '', 'DEVOLUCION', 4, 1, 1, 6, 1),
+(69, 92293392, '92293392', 'CÁMARA VIDEO DVCAM', 1, '0000-00-00', '', 'COMPLETA proyecto', 4, 1, 1, 6, 1),
+(70, 92293394, '92293394', 'CÁMARA VIDEO DVCAM', 1, '0000-00-00', ' ', 'DEVOLUCION', 4, 1, 1, 6, 1),
+(71, 92297900, '92297900', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1),
+(72, 92297898, '92297898', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1),
+(73, 92297899, '92297899', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1),
+(74, 100189107, '100189107', 'CÁMARA VIDEO PANASONIC (HANDICAM)', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1),
+(75, 100189081, '100189081', 'CÁMARA VIDEO PANASONIC (HANDICAM)', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1),
+(76, 100120741, '100120741', 'CÁMARA VIDEO BETACAM', 1, '0000-00-00', ' ', 'COMPLETO proyecto', 4, 1, 1, 6, 1),
+(77, 1076182658, '1076182658', 'CÁMARA VIDEO DVCAM', 1, '0000-00-00', ' ', 'COMPLETO proyecto', 4, 1, 1, 6, 1);
 
 -- --------------------------------------------------------
 
@@ -222,16 +212,14 @@ CREATE TABLE `entradas_salidas` (
 --
 
 INSERT INTO `entradas_salidas` (`ent_sal_cod`, `ent_sal_cantidad`, `ent_fech_registro`, `ent_sal_observacion`, `entr_tp_movmnt`, `ent_id_usu`, `ent_sal_cod_elemtn`, `ent_sal_cod_prestamo`) VALUES
-(884, 3, '2025-07-29 20:12:45', 'Adiciono nuevos elementos', 2, 138, 170, 552),
-(885, 1, '2025-07-29 20:12:45', 'Adiciono nuevos elementos', 2, 138, 126, 552),
-(886, 1, '2025-07-29 20:12:45', 'Adiciono nuevos elementos', 2, 138, 133, 552),
-(887, 3, '2025-07-29 23:51:50', 'Adicional prueba.', 2, 119, 189, 553),
-(888, 1, '2025-07-29 23:51:50', 'Adicional prueba.', 2, 119, 134, 553),
-(889, 1, '2025-07-29 23:51:50', 'Adicional prueba.', 2, 119, 145, 553),
-(890, 1, '2025-07-29 23:51:50', 'Adicional prueba.', 2, 119, 154, 553),
-(891, 5, '2025-08-01 22:49:09', 'solicitud de salida', 3, 148, 157, 554),
-(892, 1, '2025-08-01 22:49:09', 'solicitud de salida', 3, 148, 212, 554),
-(893, 1, '2025-08-01 22:49:09', 'solicitud de salida', 3, 148, 190, 554);
+(1, 1, '2025-08-12 02:05:57', 'información', 2, 109, 1, 612),
+(2, 1, '2025-08-12 02:05:57', 'información', 2, 109, 12, 612),
+(3, 1, '2025-08-12 02:05:57', 'información', 2, 109, 20, 612),
+(4, 1, '2025-08-12 02:05:57', 'información', 2, 109, 28, 612),
+(5, 1, '2025-08-12 02:05:57', 'información', 2, 109, 33, 612),
+(6, 1, '2025-08-12 02:05:57', 'información', 2, 109, 40, 612),
+(7, 1, '2025-08-12 02:05:57', 'información', 2, 109, 48, 612),
+(8, 1, '2025-08-12 02:05:57', 'información', 2, 109, 52, 612);
 
 -- --------------------------------------------------------
 
@@ -324,11 +312,11 @@ INSERT INTO `funciones` (`id_funcion`, `nombre_funcion`, `nombre_funcion_user`, 
 (27, 'updateRow', 'Actualizar ', 2, 2),
 (28, 'deleteRow', 'Inhabilitar', 2, 2),
 (29, 'addRow', 'Insertar', 2, 2),
-(31, 'consultCategoriasView', 'Ver', 10, 1),
+(31, 'consultCategoriasView', 'Ver Categorias', 10, 1),
 (34, 'createCategoria', 'Insertar', 10, 2),
 (35, 'updateCategoria', 'Actualizar', 10, 2),
 (36, 'deleteCategoria', 'Inhabilitar', 10, 2),
-(46, 'renderViewElements', 'Consultar', 3, 1),
+(46, 'renderViewElements', 'Consultar Elementos', 3, 1),
 (50, 'addElement', 'Insertar', 3, 2),
 (52, 'editarElemento', 'Actualizar', 3, 2),
 (53, 'cambiarEstadoElemento', 'Inhabilitar', 3, 2),
@@ -337,8 +325,8 @@ INSERT INTO `funciones` (`id_funcion`, `nombre_funcion`, `nombre_funcion_user`, 
 (64, 'generarReporteExcel', 'Generar Reporte Individual', 4, 2),
 (65, 'generarReporteTrazabilidad', 'Generar Reporte Entrada Salida', 4, 2),
 (66, 'generarReportePorPlaca', 'Generar Reporte Elementos', 4, 2),
-(67, 'reservaView', 'Registrar Reservas (Vista)', 5, 1),
-(68, 'consultaReservaView', 'Consultar Reservas (Vista)', 5, 1),
+(67, 'reservaView', 'Registrar Reservas ', 5, 1),
+(68, 'consultaReservaView', 'Consultar Reservas ', 5, 1),
 (72, 'setReserva', 'Registrar (Acción)', 5, 2),
 (73, 'setSolicitud', 'Validar Solicitudes(Acción)', 5, 2),
 (74, 'setEndReserva', 'Validar Devoluciones(Acción)', 5, 2),
@@ -359,7 +347,10 @@ INSERT INTO `funciones` (`id_funcion`, `nombre_funcion`, `nombre_funcion_user`, 
 (95, 'actualizarDatosView', 'Visualizar Datos Personales', 1, 1),
 (96, 'updateUserInfo', 'Actualizar Datos Personales', 1, 2),
 (97, 'assingRoles', 'Asignar Roles', 7, 2),
-(98, 'setPermisos', 'Establecer Permisos', 7, 2);
+(98, 'setPermisos', 'Establecer Permisos', 7, 2),
+(99, 'filtrarElementosAjax', 'Filter', 4, 2),
+(100, 'filtrarTrazabilidadAjax', 'Filtrar Entradas Y Salidas', 4, 2),
+(101, 'filtrarPorPlacaAjax', 'Filtrar Por Placa', 4, 2);
 
 -- --------------------------------------------------------
 
@@ -379,8 +370,9 @@ CREATE TABLE `marcas` (
 --
 
 INSERT INTO `marcas` (`ma_id`, `ma_nombre`, `ma_descripcion`, `ma_status`) VALUES
-(22, 'Canon', 'es el proveedor líder de soluciones de elementos digitales.', 1),
-(23, 'Sony', 'Marca mundialmente por su amplia gama de productos electrónicos,', 1);
+(1, 'No aplica', 'Elemento sin marca definida', 1),
+(2, 'Canon', '', 1),
+(3, 'Sony', '', 1);
 
 -- --------------------------------------------------------
 
@@ -391,6 +383,7 @@ INSERT INTO `marcas` (`ma_id`, `ma_nombre`, `ma_descripcion`, `ma_status`) VALUE
 CREATE TABLE `modulos` (
   `id_m` int(11) NOT NULL,
   `cod_nombre_m` varchar(30) NOT NULL,
+  `icono` varchar(30) DEFAULT NULL,
   `cod_descript` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -398,17 +391,16 @@ CREATE TABLE `modulos` (
 -- Volcado de datos para la tabla `modulos`
 --
 
-INSERT INTO `modulos` (`id_m`, `cod_nombre_m`, `cod_descript`) VALUES
-(1, 'Usuarios', ''),
-(2, 'ConfigModules', ''),
-(3, 'Elementos', ''),
-(4, 'reportes', ''),
-(5, 'reservaPrestamos', ''),
-(6, 'solicitudPrestamos', ''),
-(7, 'Roles', ''),
-(8, 'dashboard', ''),
-(10, 'Categorias', ''),
-(12, 'login', '');
+INSERT INTO `modulos` (`id_m`, `cod_nombre_m`, `icono`, `cod_descript`) VALUES
+(1, 'usuarios', 'person', ''),
+(2, 'configModules', 'settings', ''),
+(3, 'elementos', 'local_see', ''),
+(4, 'reportes', 'bar_chart', ''),
+(5, 'reservaPrestamos', 'assignment', ''),
+(6, 'solicitudPrestamos', 'storage', ''),
+(7, 'Roles', 'supervisor_account', ''),
+(8, 'dashboard', 'home', ''),
+(10, 'Categorias', 'widgets', '');
 
 -- --------------------------------------------------------
 
@@ -457,9 +449,7 @@ CREATE TABLE `prestamos` (
 --
 
 INSERT INTO `prestamos` (`pres_cod`, `pres_fch_slcitud`, `pres_fch_reserva`, `pres_hor_inicio`, `pres_hor_fin`, `pres_fch_entrega`, `pres_observacion`, `pres_destino`, `pres_estado`, `tp_pres`, `pres_rol`) VALUES
-(552, '2025-07-29 15:12:45', '2025-07-29', NULL, NULL, '2025-07-29', 'Adiciono nuevos elementos', 'Calle 9 #23 -35 ', 4, 1, 2),
-(553, '2025-07-29 18:51:50', '2025-07-29', NULL, NULL, '2025-07-30', 'Adicional prueba.', 'Calle 32 # 12 - 3 E F', 4, 1, 2),
-(554, '2025-08-01 17:49:09', '2025-08-01', '00:00:00', '00:00:00', '2025-08-02', 'Información adicional.', 'Calle 2 de oeste # 73 - 032', 3, 2, 4);
+(612, '2025-08-11 21:05:57', '2025-08-12', NULL, NULL, '2025-08-15', 'información', 'Calle 9 #23 -35 ', 3, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -480,16 +470,14 @@ CREATE TABLE `prestamos_elementos` (
 --
 
 INSERT INTO `prestamos_elementos` (`pres_el_cod`, `pres_cod`, `pres_el_usu_id`, `pres_el_elem_cod`, `pres_el_cantidad`) VALUES
-(1606, 552, 138, 126, 1),
-(1607, 552, 138, 133, 1),
-(1608, 552, 138, 170, 3),
-(1609, 553, 119, 134, 1),
-(1610, 553, 119, 145, 1),
-(1611, 553, 119, 154, 1),
-(1612, 553, 119, 189, 3),
-(1613, 554, 148, 212, 1),
-(1614, 554, 148, 190, 1),
-(1615, 554, 148, 157, 5);
+(1805, 612, 109, 1, 1),
+(1806, 612, 109, 12, 1),
+(1807, 612, 109, 20, 1),
+(1808, 612, 109, 28, 1),
+(1809, 612, 109, 33, 1),
+(1810, 612, 109, 40, 1),
+(1811, 612, 109, 48, 1),
+(1812, 612, 109, 52, 1);
 
 -- --------------------------------------------------------
 
@@ -511,10 +499,10 @@ CREATE TABLE `roles` (
 INSERT INTO `roles` (`rl_id`, `rl_nombre`, `rl_descripcion`, `rl_status`) VALUES
 (1, 'Almacenista', 'Almacenista', 1),
 (2, 'Administrador', 'Nuevo administrador .', 1),
-(3, 'SubDirector', 'Nuevo rol', 1),
 (4, 'Instructor', '', 1),
 (12, 'Aprendiz', 'Solo puede acceder a este bloque.', 1),
-(16, 'Coordinador', '', 1);
+(16, 'Coordinador', '', 1),
+(20, 'Pruebas', 'Rol de prueba para comprender el comportamiento de los modulos según su caso.', 1);
 
 -- --------------------------------------------------------
 
@@ -536,7 +524,6 @@ INSERT INTO `roles_funciones` (`rlp_id`, `rlp_id_rl`, `rlp_id_funcion`) VALUES
 (145, 2, 22),
 (146, 4, 22),
 (147, 2, 77),
-(149, 2, 31),
 (150, 4, 82),
 (152, 4, 84),
 (153, 4, 85),
@@ -545,17 +532,67 @@ INSERT INTO `roles_funciones` (`rlp_id`, `rlp_id_rl`, `rlp_id_funcion`) VALUES
 (156, 4, 95),
 (157, 4, 96),
 (165, 16, 22),
-(166, 2, 88),
-(167, 2, 89),
-(168, 2, 90),
-(169, 2, 91),
-(170, 2, 94),
-(171, 2, 95),
-(172, 2, 96),
 (173, 2, 97),
-(174, 2, 34),
-(175, 2, 35),
-(176, 2, 36);
+(186, 16, 59),
+(187, 16, 64),
+(188, 16, 65),
+(189, 16, 66),
+(190, 16, 95),
+(191, 16, 96),
+(192, 16, 99),
+(193, 16, 100),
+(194, 16, 101),
+(203, 2, 46),
+(204, 2, 50),
+(205, 2, 52),
+(206, 2, 53),
+(207, 2, 54),
+(213, 2, 78),
+(214, 2, 79),
+(215, 2, 80),
+(221, 2, 98),
+(222, 2, 88),
+(223, 2, 89),
+(224, 2, 90),
+(225, 2, 91),
+(226, 2, 94),
+(227, 2, 95),
+(228, 2, 96),
+(229, 2, 23),
+(230, 2, 24),
+(231, 2, 25),
+(232, 2, 31),
+(233, 2, 34),
+(234, 2, 35),
+(235, 2, 36),
+(240, 2, 29),
+(241, 2, 27),
+(242, 2, 28),
+(253, 12, 22),
+(254, 12, 82),
+(255, 12, 83),
+(256, 12, 84),
+(257, 12, 85),
+(258, 12, 87),
+(259, 12, 95),
+(262, 20, 22),
+(263, 2, 100),
+(264, 2, 101),
+(265, 2, 59),
+(266, 2, 64),
+(267, 2, 65),
+(268, 2, 66),
+(269, 2, 99),
+(280, 2, 67),
+(281, 2, 68),
+(282, 2, 72),
+(283, 2, 73),
+(284, 2, 74),
+(285, 2, 82),
+(286, 2, 83),
+(287, 2, 84),
+(288, 2, 85),
+(289, 2, 87);
 
 -- --------------------------------------------------------
 
@@ -684,7 +721,8 @@ CREATE TABLE `tipo_unidad` (
 INSERT INTO `tipo_unidad` (`cod_tp_uni`, `nombre_tp_uni`, `descrip_tp_uni`) VALUES
 (1, 'Unidad', 'Clasificado como undidad de elemento.'),
 (2, 'Caja', 'Elementos que dentro de su caja contienen las respectivas unidades.'),
-(3, 'Galon', '');
+(3, 'Galon', ''),
+(4, 'No aplica', '');
 
 -- --------------------------------------------------------
 
@@ -738,7 +776,7 @@ INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `
 (130, 100024, 'Diana', 'Ríos', 'mypassword', 'diana.rios@example.com', 'Calle 24', '3000000024', NULL, 2, 1),
 (131, 100025, 'Esteban', 'Cruz', 'test2025', 'esteban.cruz@example.com', 'Calle 25', '3000000025', NULL, 1, 2),
 (132, 100026, 'Florencia', 'Soto', 'florencia1', 'florencia.soto@example.com', 'Calle 26', '3000000026', NULL, 1, 3),
-(133, 100027, 'Gabriel', 'Vargas', '$2y$10$5m.3UyunBWwdvQqz.0ZMIODhGfyNzz9M0qHGCG3LF3NWHIpt1ulUe', 'gabriel.vargas@example.com', 'Calle 27', '3000000027', NULL, 1, 1),
+(133, 100027, 'Gabriel', 'Vargas', '$2y$10$fJWee3EyFDrZ0U.xVhEdZ.dtu0TNdB8u1l6lbOUw2jl05WYSk/pTm', 'gabriel.vargas@example.com', 'Calle 27', '3000000027', NULL, 1, 1),
 (134, 100028, 'Helena', 'Navarro', 'helena2025', 'helena.navarro@example.com', 'Calle 28', '3000000028', NULL, 1, 2),
 (135, 100029, 'Ignacio', 'Mendoza', 'ignacio', 'ignacio.mendoza@example.com', 'Calle 29', '3000000029', NULL, 1, 3),
 (136, 100030, 'Jimena', 'Lopez Pumarejo', 'jimena123', 'jimena.lopez@gmail.com', 'Calle 93 B # 13-03', '3000005230', NULL, 1, 1),
@@ -746,7 +784,7 @@ INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `
 (138, 100000, 'alejandro', 'Pérez', '$2y$10$Kbs/gKo1R2DqeI/HL8N5Du8qIrcJYfkTdPiHrJK8iA8ZMsCP0SaoS', 'juan.perez@example.com', 'calle 2 d oeste # 74 e 02', '3000000001', NULL, 1, 3),
 (147, 500000, 'dasdasd', 'ceron', '$2y$10$xo.C3p25NfRxVyEf.HUbleet/pF.3R23vX0X9KVLBiiXgaAUUemoK', '3_2@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', NULL, 1, 3),
 (148, 29114652, 'alejandro', 'ceron', '$2y$10$GO3TlYxTUJgVnIXNYDqTiu.Homl29S7YcuErpTKlIeU1z53W17RBG', '2_3@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', NULL, 1, 3),
-(149, 1107528994, 'Luis Alberto', 'Gutierrez', '$2y$10$bIQddMZHOJu4sNQ0RlArg.3KxrLkngGv5G57pg6Q8MdJreCuYsS9S', 'luisAl.gz@gmail.com', 'calle 73 #32 -321', '3226855437', NULL, 1, 3),
+(149, 1107528994, 'Luis Alberto Pozada', 'Gutierrez Brown', '$2y$10$bIQddMZHOJu4sNQ0RlArg.3KxrLkngGv5G57pg6Q8MdJreCuYsS9S', 'luisAl.gz@gmail.com', 'calle 73 #32 -321', '3226855437', NULL, 1, 3),
 (150, 1193439741, 'Edward', 'Fernandez', '$2y$10$/tXlxO3K4WQieMTze0gcAuQXfFsSBSs89JOuAtAVzwCfFN7T8Qese', 'edwardFer@gmail.com', 'Calle 93 B # 13-03', '5536735', NULL, 1, 3),
 (151, 55555555, 'Faker', 'Human', '$2y$10$HnjmFwEfXqtQZaC3vzBo3..vTN73qtuvLi.WFvj.DMRV9UKwYAPXS', '5_4@gmail.com', 'calle 2 d oeste # 74 e 02', '44345345', NULL, 1, 3),
 (152, 658234, 'Eric', 'Carman', '$2y$10$FCZPGmrhUeb2z5CmCfP5fO0vcwFJPzrx5OmUTZsz3zpK4M2suviFu', 'carman@gmail.com', 'Calle 93 B # 13-03', '53455432452', NULL, 1, 3),
@@ -754,14 +792,14 @@ INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `
 (154, 23582394, 'Alexander', 'gonzales', '$2y$10$WLJU12ALtQbJGFxirSNGaOJqCMew9wyCROomd2DHoHfLgVnv4copG', 'alex_g@gmail.com', 'Calle 93 B # 13-03', '53455432452', NULL, 1, 3),
 (155, 4234234, 'Fernando', 'uticaria', '$2y$10$QksEBkNcAK15ktSZSdMnSuvHHsLaINCRwGaRiMuhRQfwHxde2fcUK', 'fernandoutil@gmail.com', 'Calle 93 B # 13-03', '5234234', NULL, 1, 3),
 (156, 436634, 'Diana marcela', 'Gutierrez', '$2y$10$ySel.GVOu2vEbiqYu13.BeCAZXt64QluXfXPKtwbvMTrYY4EoTqqO', 'marceD@gmail.com', 'Calle #4 - 32 -23', '34056738', NULL, 1, 3),
-(157, 45234324, 'María', 'López', '$2y$10$lZt9RZ5uHp3Gd1LN00TOHeZ2nI02zoNbASYywFI37lkHSk4JfOo.e', 'hello@gmail.com', 'Calle 2', '3000000002', NULL, 1, 3),
+(157, 45234324, 'María', 'López', '$2y$10$G4ofjuHI5hKeCzTc1bPa5uyJyPwRURHfo6VAwFHZaD1Rrw7ofj0sy', 'maria.Lopez32@gmail.com', 'Calle 2', '3000000002', NULL, 1, 3),
 (158, 565464645, 'María', 'López', '$2y$10$a3t1Scz9gQCMxTfxAWo2fu./YV1QvUzcIyEaKAL9QDpjSQq5kqgH2', 'hello@gmail.com', 'Calle 2', '3000000002', '', 1, 4),
 (159, 2147483647, 'María', 'López', '$2y$10$QS92GIOg4MIi2c8649SDPeALoKcL0pjK8agxV0Wv3mdB.yQ5qKXju', 'hello@gmail.com', 'Calle 2', '3000000002', '', 1, 4),
 (160, 2147483647, 'María', 'López', '$2y$10$XXqBDZ/eti1NqtBnIoy7QuM.5Pu8ZJw0JQFPQiPMW0nLhdEaeWvjC', 'hello@gmail.com', 'Calle 2', '3000000002', 'sdfsdf', 1, 3),
 (161, 2147483647, 'María', 'López', '$2y$10$Nuos/m5VHOaP4rT7wVDQ1uoP2icgUgjIkESoE7I6uc28wdVRgDVim', 'helloWorldPrueba@gmail.com', 'Calle 2', '3000000002', ' prueba nueva enviando el usuariio.', 1, 2),
 (162, 9999999, 'María', 'López', '$2y$10$HQeEWgvHLL2gEdkPf0eJoOWqn7DXwLRQctnRZjg3cl4/OgovU3irW', 'helloMaria@gmail.com', 'Calle 2', '3000000002', 'aaaa', 1, 1),
-(163, 4545454, 'Mariana', 'Rivera', '$2y$10$/0KLxditmTvNfI1RtAYrW.CcsLf0v6pNSWdaGPwb.NteaxzlZllbq', 'hello@gmail.com', 'Calle 2', '3000000002', ' prueba nueva enviando el usuariio.', 1, 20),
-(164, 658585, 'Isabella', 'Rivera', '$2y$10$Fk4gp8DJSzRwtP7xMNLtD.9Q2yDuMJEV50Bd/98xT/bnjJC9iOLl2', 'hello@gmail.com', 'Calle 2', '3000000002', 'Solicito nuevo usuario.', 1, 4),
+(163, 4545454, 'Mariana', 'Rivera', '$2y$10$/OEJEHDK4I3BM5YcG.ZwdOeF.uiD1SGIEUTbzN0uDIe5nSGanq8Dy', 'mr.rivera@gmail.com', 'Calle 2', '3000000002', ' prueba nueva enviando el usuariio.', 1, 20),
+(164, 658585, 'Isabella', 'Rivera', '$2y$10$wSluFY9xJQ/4qnKnSZ7PVuN.OT3GA8YP4bjrcC5XtZzWPq.uIpohO', 'hello@gmail.com', 'Calle 2', '3000000002', 'Solicito nuevo usuario.', 1, 4),
 (165, 65858533, 'Isabella', 'Rivera', '$2y$10$g8zveEh4fHUpE60A46YrO.nzVsc.0jcIJeDAGuySjBwLv3Zq6YMmy', 'hello@gmail.com', 'Calle 2', '3000000002', 'Prueba de integración adicional.', 1, 5),
 (166, 10001922, 'alejandro', 'ceron', '$2y$10$6N3vmSHd7fgub1YBdHLk6urmGfjK4EsIr0iZQ5IQkgE8BmPtk8GFq', '4_5@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 'hola mundo', 1, 2),
 (167, 10002922, 'alejandro', 'ceron', '$2y$10$94XiXQaiJnh753Rw.IwIfOB5llWPRxdYLbtWNh6mQlbtQ9sS3NURW', '4_6@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', '', 1, 5),
@@ -779,7 +817,9 @@ INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `
 (179, 2147483647, 'Alejandro', 'Rojas', '$2y$10$aQ1cnxj15GKRy58vZrP5B.tIvTmeARXLSVbqPP0ti/BCuE1gA1kB2', 'rjAocd@gmail.com', 'Av 32 N # 83 - 103', '3000000003', 'información adicional', 1, 3),
 (180, 26432544, 'Alejandro', 'Rojas', '$2y$10$1b1u8jpkG5TvArDRykIF8u9EbNoQ6pAVbyTZBlCJgNvH2EMWTa1ni', 'rjrojasaprendiz@gmail.com', 'Av 32 N # 83 - 103', '3000000003', 'hola mundo.', 1, 2),
 (181, 2147483647, 'Ana Liliana', 'Fernández', '$2y$10$0WFTjjeeOkPN07QeoX.U3eP42tG20BUMuNKbwv4ACqALRbO7KpMGm', 'ALANA@gmail.com', 'Calle 6 # 344 - 32', '3000000006', 'DDDDD', 2, 1),
-(182, 5534032, 'Fernando ', 'Oliveria', '$2y$10$m9rm/rHBXkIGNMljTahnD.6cH0/gl6TE1ErjhSCrpJ7sT5FLwO2Xq', 'fernandoOlv@gmail.com', 'Av 32 N # 83 - 103', '4123123213', 'Es el usuario coordinador de la central didáctica.', 1, 1);
+(182, 5534032, 'Fernando Collazos', 'Oliveria', '$2y$10$m9rm/rHBXkIGNMljTahnD.6cH0/gl6TE1ErjhSCrpJ7sT5FLwO2Xq', 'fernandoOlv@gmail.com', 'Av 32 N # 83 - 103', '4123123213', 'Es el usuario coordinador de la central didáctica.', 1, 1),
+(183, 595747474, 'Adddro', 'Rojas', '$2y$10$nQl07mG65UqEl3OAm7xxtegzVxsh.vGiRJZbdq/OY13sf8IhPl6US', 'rjAaddro332d@gmail.com', 'Av 32 N # 83 - 103', '3000000003', 'usuario de prueba.', 1, 1),
+(184, 2643333, 'Alax', 'Brahim ', '$2y$10$43ijWw2hW9kl22KUzYSU9e3A52T9Z2RsHpkLkM1hD7EN6qF9pktgC', 'brahiamApex@gmail.com', 'Av 32 N # 9 - 11', '30000355', 'Es musulman, pd: explota.', 1, 3);
 
 -- --------------------------------------------------------
 
@@ -799,64 +839,47 @@ CREATE TABLE `usuarios_roles` (
 
 INSERT INTO `usuarios_roles` (`usr_id`, `usr_usu_id`, `usr_rl_id`) VALUES
 (1, 106, 2),
-(1126, 107, 3),
 (1127, 108, 4),
 (1128, 109, 4),
-(1129, 110, 3),
 (1130, 111, 4),
 (1131, 112, 1),
-(1132, 113, 3),
 (1133, 114, 4),
 (1134, 115, 1),
-(1135, 116, 3),
 (1136, 117, 4),
 (1137, 118, 1),
 (1138, 119, 12),
 (1139, 120, 4),
 (1140, 121, 1),
-(1141, 122, 3),
 (1142, 123, 4),
 (1143, 124, 4),
-(1144, 125, 3),
 (1145, 126, 4),
 (1146, 127, 1),
-(1147, 128, 3),
-(1148, 129, 3),
 (1149, 130, 1),
-(1150, 131, 3),
 (1151, 132, 4),
-(1152, 133, 4),
-(1153, 134, 3),
+(1152, 133, 12),
 (1154, 135, 4),
 (1155, 136, 12),
 (1158, 138, 4),
 (1168, 148, 4),
 (1169, 149, 2),
 (1170, 150, 4),
-(1171, 151, 3),
 (1172, 152, 4),
 (1173, 153, 4),
 (1174, 154, 4),
 (1175, 155, 4),
 (1176, 156, 4),
-(1177, 157, 2),
-(1178, 158, 3),
-(1179, 159, 3),
+(1177, 157, 12),
 (1180, 160, 4),
 (1181, 161, 4),
 (1182, 162, 4),
-(1183, 163, 2),
-(1184, 164, 2),
+(1183, 163, 12),
+(1184, 164, 4),
 (1185, 165, 2),
-(1186, 166, 3),
-(1187, 167, 3),
 (1188, 168, 2),
 (1189, 169, 1),
 (1190, 170, 4),
-(1191, 171, 3),
 (1192, 172, 12),
 (1193, 173, 4),
-(1194, 174, 3),
 (1195, 175, 4),
 (1196, 176, 4),
 (1197, 177, 4),
@@ -864,7 +887,9 @@ INSERT INTO `usuarios_roles` (`usr_id`, `usr_usu_id`, `usr_rl_id`) VALUES
 (1199, 179, 12),
 (1200, 180, 12),
 (1201, 181, 1),
-(1202, 182, 16);
+(1202, 182, 16),
+(1203, 183, 4),
+(1204, 184, 12);
 
 --
 -- Índices para tablas volcadas
@@ -888,21 +913,21 @@ ALTER TABLE `categoria`
 --
 ALTER TABLE `compras`
   ADD PRIMARY KEY (`cod_compra`),
-  ADD KEY `fk_tp_mvmnto` (`co_tp_movimiento`),
-  ADD KEY `fk_cod_elemnt` (`co_cod_elm`);
+  ADD KEY `fk_co_tp_movimiento` (`co_tp_movimiento`),
+  ADD KEY `fk_cod_elm` (`co_cod_elm`);
 
 --
 -- Indices de la tabla `elementos`
 --
 ALTER TABLE `elementos`
   ADD PRIMARY KEY (`elm_cod`),
-  ADD KEY `fk_elm_cod_estado` (`elm_cod_estado`),
-  ADD KEY `fk_elm_cod_tp_elemento` (`elm_cod_tp_elemento`),
-  ADD KEY `fk_ar_cod` (`elm_area_cod`),
-  ADD KEY `elm_uni_medida` (`elm_uni_medida`),
   ADD KEY `elm_placa` (`elm_placa`),
   ADD KEY `elm_serie` (`elm_serie`),
-  ADD KEY `fk_elm_ma_cod` (`elm_ma_cod`);
+  ADD KEY `fk_cod_tp_elm` (`elm_cod_tp_elemento`),
+  ADD KEY `fk_cod_estado` (`elm_cod_estado`),
+  ADD KEY `fk_cod_area` (`elm_area_cod`),
+  ADD KEY `fk_cod_ma` (`elm_ma_cod`),
+  ADD KEY `fk_uni_medida` (`elm_uni_medida`);
 
 --
 -- Indices de la tabla `entradas_salidas`
@@ -911,8 +936,8 @@ ALTER TABLE `entradas_salidas`
   ADD PRIMARY KEY (`ent_sal_cod`),
   ADD KEY `entr_tp_movmnt` (`entr_tp_movmnt`),
   ADD KEY `ent_id_usu` (`ent_id_usu`),
-  ADD KEY `ent_sal_cod_elemtn` (`ent_sal_cod_elemtn`),
-  ADD KEY `fk_cod_prestamo` (`ent_sal_cod_prestamo`) USING BTREE;
+  ADD KEY `fk_cod_prestamo` (`ent_sal_cod_prestamo`) USING BTREE,
+  ADD KEY `fk_ent_sal_cod_elm` (`ent_sal_cod_elemtn`);
 
 --
 -- Indices de la tabla `estados_elementos`
@@ -973,8 +998,8 @@ ALTER TABLE `prestamos`
 ALTER TABLE `prestamos_elementos`
   ADD PRIMARY KEY (`pres_el_cod`) USING BTREE,
   ADD KEY `pres_cod` (`pres_cod`) USING BTREE,
-  ADD KEY `fk_pres_elm_cod` (`pres_el_elem_cod`) USING BTREE,
-  ADD KEY `fk_pres_usu_id` (`pres_el_usu_id`) USING BTREE;
+  ADD KEY `fk_pres_usu_id` (`pres_el_usu_id`) USING BTREE,
+  ADD KEY `fk_pres_elm_cod` (`pres_el_elem_cod`);
 
 --
 -- Indices de la tabla `roles`
@@ -1051,31 +1076,31 @@ ALTER TABLE `usuarios_roles`
 -- AUTO_INCREMENT de la tabla `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código primario del area', AUTO_INCREMENT=123;
+  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código primario del area', AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `ca_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo de identificador de la categoria', AUTO_INCREMENT=17;
+  MODIFY `ca_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo de identificador de la categoria', AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `compras`
 --
 ALTER TABLE `compras`
-  MODIFY `cod_compra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo autoincrementable identificador de la existencia', AUTO_INCREMENT=40;
+  MODIFY `cod_compra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo autoincrementable identificador de la existencia', AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT de la tabla `elementos`
 --
 ALTER TABLE `elementos`
-  MODIFY `elm_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo primario autoincrementable', AUTO_INCREMENT=230;
+  MODIFY `elm_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo primario autoincrementable', AUTO_INCREMENT=128;
 
 --
 -- AUTO_INCREMENT de la tabla `entradas_salidas`
 --
 ALTER TABLE `entradas_salidas`
-  MODIFY `ent_sal_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único de la entrada o salida', AUTO_INCREMENT=894;
+  MODIFY `ent_sal_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único de la entrada o salida', AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `estados_elementos`
@@ -1099,13 +1124,13 @@ ALTER TABLE `estados_usuarios`
 -- AUTO_INCREMENT de la tabla `funciones`
 --
 ALTER TABLE `funciones`
-  MODIFY `id_funcion` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id representativo primario de la tabla funciones', AUTO_INCREMENT=99;
+  MODIFY `id_funcion` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id representativo primario de la tabla funciones', AUTO_INCREMENT=105;
 
 --
 -- AUTO_INCREMENT de la tabla `marcas`
 --
 ALTER TABLE `marcas`
-  MODIFY `ma_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la marca', AUTO_INCREMENT=26;
+  MODIFY `ma_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la marca', AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `modulos`
@@ -1123,31 +1148,31 @@ ALTER TABLE `permisos`
 -- AUTO_INCREMENT de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
-  MODIFY `pres_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código identificador del préstamo', AUTO_INCREMENT=555;
+  MODIFY `pres_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código identificador del préstamo', AUTO_INCREMENT=613;
 
 --
 -- AUTO_INCREMENT de la tabla `prestamos_elementos`
 --
 ALTER TABLE `prestamos_elementos`
-  MODIFY `pres_el_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único del registro de préstamo de elemento', AUTO_INCREMENT=1616;
+  MODIFY `pres_el_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único del registro de préstamo de elemento', AUTO_INCREMENT=1813;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `rl_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del rol', AUTO_INCREMENT=20;
+  MODIFY `rl_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del rol', AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `roles_funciones`
 --
 ALTER TABLE `roles_funciones`
-  MODIFY `rlp_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la relación rol-permiso', AUTO_INCREMENT=177;
+  MODIFY `rlp_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la relación rol-permiso', AUTO_INCREMENT=290;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_documento`
 --
 ALTER TABLE `tipo_documento`
-  MODIFY `tp_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del tipo de documento', AUTO_INCREMENT=30;
+  MODIFY `tp_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del tipo de documento', AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_elemento`
@@ -1171,19 +1196,19 @@ ALTER TABLE `tipo_prestamo`
 -- AUTO_INCREMENT de la tabla `tipo_unidad`
 --
 ALTER TABLE `tipo_unidad`
-  MODIFY `cod_tp_uni` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único de la unidad de medida', AUTO_INCREMENT=4;
+  MODIFY `cod_tp_uni` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único de la unidad de medida', AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `usu_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del usuario', AUTO_INCREMENT=183;
+  MODIFY `usu_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del usuario', AUTO_INCREMENT=185;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_roles`
 --
 ALTER TABLE `usuarios_roles`
-  MODIFY `usr_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único de la relación usuario-rol ​:contentReference[oaicite:0]{index=0}​', AUTO_INCREMENT=1203;
+  MODIFY `usr_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único de la relación usuario-rol ​:contentReference[oaicite:0]{index=0}​', AUTO_INCREMENT=1205;
 
 --
 -- Restricciones para tablas volcadas
@@ -1193,24 +1218,24 @@ ALTER TABLE `usuarios_roles`
 -- Filtros para la tabla `compras`
 --
 ALTER TABLE `compras`
-  ADD CONSTRAINT `fk_cod_elemnt` FOREIGN KEY (`co_cod_elm`) REFERENCES `elementos` (`elm_cod`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_tp_mvmnto` FOREIGN KEY (`co_tp_movimiento`) REFERENCES `tipo_movimiento` (`cod_tp`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_co_tp_movimiento` FOREIGN KEY (`co_tp_movimiento`) REFERENCES `tipo_movimiento` (`cod_tp`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cod_elm` FOREIGN KEY (`co_cod_elm`) REFERENCES `elementos` (`elm_cod`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `elementos`
 --
 ALTER TABLE `elementos`
-  ADD CONSTRAINT `fk_ar_cod` FOREIGN KEY (`elm_area_cod`) REFERENCES `areas` (`ar_cod`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_elm_cod_estado` FOREIGN KEY (`elm_cod_estado`) REFERENCES `estados_elementos` (`est_el_cod`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_elm_cod_tp_elemento` FOREIGN KEY (`elm_cod_tp_elemento`) REFERENCES `tipo_elemento` (`tp_el_cod`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_elm_ma_cod` FOREIGN KEY (`elm_ma_cod`) REFERENCES `marcas` (`ma_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_tp_uno` FOREIGN KEY (`elm_uni_medida`) REFERENCES `tipo_unidad` (`cod_tp_uni`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_cod_area` FOREIGN KEY (`elm_area_cod`) REFERENCES `areas` (`ar_cod`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cod_estado` FOREIGN KEY (`elm_cod_estado`) REFERENCES `estados_elementos` (`est_el_cod`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cod_ma` FOREIGN KEY (`elm_ma_cod`) REFERENCES `marcas` (`ma_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cod_tp_elm` FOREIGN KEY (`elm_cod_tp_elemento`) REFERENCES `tipo_elemento` (`tp_el_cod`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_uni_medida` FOREIGN KEY (`elm_uni_medida`) REFERENCES `tipo_unidad` (`cod_tp_uni`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `entradas_salidas`
 --
 ALTER TABLE `entradas_salidas`
-  ADD CONSTRAINT `fk_ent_sal_cod_elemnt` FOREIGN KEY (`ent_sal_cod_elemtn`) REFERENCES `elementos` (`elm_cod`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_ent_sal_cod_elm` FOREIGN KEY (`ent_sal_cod_elemtn`) REFERENCES `elementos` (`elm_cod`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_ent_sal_cod_pres` FOREIGN KEY (`ent_sal_cod_prestamo`) REFERENCES `prestamos` (`pres_cod`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_tp_mvto` FOREIGN KEY (`entr_tp_movmnt`) REFERENCES `tipo_movimiento` (`cod_tp`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_tp_mvto_usuId` FOREIGN KEY (`ent_id_usu`) REFERENCES `usuarios` (`usu_id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -1234,7 +1259,7 @@ ALTER TABLE `prestamos`
 -- Filtros para la tabla `prestamos_elementos`
 --
 ALTER TABLE `prestamos_elementos`
-  ADD CONSTRAINT `fk_pres_elm_cod` FOREIGN KEY (`pres_el_elem_cod`) REFERENCES `elementos` (`elm_cod`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_pres_elm_cod` FOREIGN KEY (`pres_el_elem_cod`) REFERENCES `elementos` (`elm_cod`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_pres_usu_id` FOREIGN KEY (`pres_el_usu_id`) REFERENCES `usuarios` (`usu_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `prestamos_elementos_ibfk_1` FOREIGN KEY (`pres_cod`) REFERENCES `prestamos` (`pres_cod`) ON DELETE SET NULL ON UPDATE CASCADE;
 
