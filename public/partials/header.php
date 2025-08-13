@@ -16,17 +16,14 @@
     <a href="<?php echo getUrl('dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>" class="brand-logo logo center">
     </a>
     <ul id="" class="right">
-      <li>
-        <div class="contentUser">
       <li class="user-dropdown">
         <div class="contentUser" id="userDropdownToggle">
-          <span id="userText">
-            <?php echo $_SESSION['usuario']['nombre'] ?> <?php echo $_SESSION['usuario']['apellido']; ?>
-            <i class="material-icons right">arrow_drop_down</i>
-          </span>
-          <span id="rolText"><?php echo $_SESSION['usuario']['rol_nombre']; ?></span>
+          <!-- <i class="material-icons large">account_circle</i> -->
+          <a href="<?php echo getUrl('usuarios', 'usuarios', 'actualizarDatosView',false,'dashboard'); ?>">
+            <i class="material-icons large">account_circle</i>
+          </a>
+          <span id="rolText"> <?php echo $_SESSION['usuario']['rol_nombre']; ?> </span> <i class="material-icons">arrow_drop_down</i>
         </div>
-
         <ul class="submenu" id="userDropdownMenu">
           <li>
             <a href="<?php echo getUrl('usuarios', 'usuarios', 'actualizarDatosView',false,'dashboard'); ?>">
@@ -38,7 +35,6 @@
   </div>
   </li>
   </ul>
-  <!-- Todo: se puede cambiar con javascript. -->
  
   </div>
 </nav>

@@ -9,7 +9,6 @@ html, body {
     font-family:  "Open Sans", "Helvetica Neue", sans-serif;
 }
 
-
 /* Variables para los colores */
 :root {
   --primary: #3a6c52;
@@ -37,16 +36,13 @@ html, body {
   color: var(--white);
 }
 
-/* Estilo de header, corresponde al titulo que está en la parte de arriba. */
+/* Inicio Estilos header */
 .header {
   position: fixed;
   top: 0;
   width: 100%;
   color: var(--white) !important;
-  height: 7vh;
-  text-align: center;
-  font-family: "Segoe UI", Roboto, Oxygen, "Open Sans", "Helvetica Neue", sans-serif;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  height: 9vh;
   user-select: none;
   background-color:var(--btnEdit);
 }
@@ -55,30 +51,44 @@ html, body {
   display: flex;
   align-items: center; 
   justify-content: space-between; 
-  height: 7vh; 
+  height: 7vh;
+  pad: 0 1rem;
+
 }
 .logo {
   background-image: url('/../proyecto_sigia/public/assets/image/login/sSigiaNegative.svg');
   background-repeat: no-repeat;
   width: 70px;
   height: 7vh;
+  display: flex;
+  align-items: center;
 }
+
+.user-dropdown {
+  display: flex;
+  justify-content: flex-end;
+}
+
+
 
 .contentUser{
   width: 100%;
-  height: 5vh;
+  height: 8vh;
   gap: 0.3rem;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  font-size: 12pt;
+  font-size: 15pt;
   justify-content: center;
 }
 
 #userText{
   display: flex;
 }
+/* Fin estilos header */
 
+
+/* Inicio estilos del contenedor principal */
 .container{
   display: flex;
   width: 100% !important;
@@ -90,7 +100,6 @@ html, body {
   overflow: visible;
   padding: 0.5rem;
   border-radius: 8px;
-  border: 1px solid black;
   /* Sombra sutil */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -99,6 +108,7 @@ html, body {
   max-width: 100%;
   box-sizing: border-box;
 }
+/* Fin estilos del contenedor principal */
 
 /* Botón de cerrar */
 .close-btn{
@@ -106,6 +116,7 @@ html, body {
   text-decoration: none;
   font-size: 2rem;
 }
+
 
 /* Inhabilitar flechas de los inputs de tipo number, para chrome, safari, edge y opera */
 /* Chrome, Safari, Edge, Opera */
@@ -115,10 +126,12 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-/* inhabilitar feclas a inputs de tipo number en Firefox */
+/* inhabilitar fechas a inputs de tipo number en Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+/** Inicio estilos Modulo configuración  */
 
 /* Estilos generales del modulo de configuración = Es la estructura de los siguientes modulos: areas, tipoDocumento, marca,categoria,roles */
 .contentLayout {
@@ -144,8 +157,6 @@ input[type="number"] {
   width: 100%;
 }
 
-
-
 /* Estilo a las tablas del modulo de configuración */
 .tblConfigModules th,
 .tblConfigModules td {
@@ -170,9 +181,14 @@ input[type="number"] {
 .textTitleSpan{
   font-size: 20pt;
 }
+/* ------------------------------------------ */
+
+/** Fin estilos Modulo configuración  */
+
+/* ------------------------------------------ */
 
 
-/* Estilos de alertas toast de materialize */
+/* Inicio Estilos de alertas toast de materialize */
 #toast-container{
     position: absolute !important;
     right: .5em;
@@ -215,9 +231,11 @@ input[type="number"] {
   border-left: 8px solid var(--success);
 }
 
+/* Fin estilos header */
 
 
-/* ////////////submenu para actualizar datos en HEADER////////////// */
+
+/* ////////////Inicio estilos submenu para actualizar datos en HEADER////////////// */
 .submenu {
   display: none;
   background-color: white;
@@ -242,6 +260,8 @@ input[type="number"] {
   margin: 0 !important;
   text-align: center !important;
 }
+
+/* Fin estilos submenu */
 
 
 /* Para pantallas medianas en adelante. */
