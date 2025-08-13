@@ -113,8 +113,8 @@
 .inputBtn {
   grid-area: inputBtn;
   display: flex;
-  align-items: center;
-  justify-items: center;
+  align-items: center !important;
+  justify-items: center !important;
   width: 100%;
   min-height: 1.3rem;
 }
@@ -197,7 +197,7 @@ textarea {
 
 .input-field label {
   transform: none !important;
-  font-size: 0.9rem;
+  font-size: 1rem;
   left: 0 !important;
 }
 

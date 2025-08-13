@@ -359,7 +359,7 @@ class solicitudPrestamosController
         $sql = "SELECT p.pres_cod
                 FROM prestamos p
                 WHERE p.pres_fch_reserva = ?
-                  AND p.pres_estado = 1"; // Por validar
+                  AND p.pres_estado = 3"; // Por validar
     
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('s', $fechaHoy);
