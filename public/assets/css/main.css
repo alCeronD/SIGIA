@@ -3,10 +3,12 @@
   /* margin: 0px; */
   padding: 0px;
 }
+/* resolución para mobile = 375x667 */
 html, body {
   height: 100vh;
     font-family:  "Open Sans", "Helvetica Neue", sans-serif;
 }
+
 
 /* Variables para los colores */
 :root {
@@ -79,14 +81,16 @@ html, body {
 
 .container{
   display: flex;
-  width: 100%;
+  width: 100% !important;
   height: 80vh;
+  max-height: 80vh;
   margin: 0 auto;
   position: relative;
   top: calc(100vh - 90vh);
   overflow: visible;
   padding: 0.5rem;
   border-radius: 8px;
+  border: 1px solid black;
   /* Sombra sutil */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -237,4 +241,10 @@ input[type="number"] {
   padding: 0 !important;
   margin: 0 !important;
   text-align: center !important;
+}
+
+
+/* Para pantallas medianas en adelante. */
+@media (min-width: 768px){
+
 }

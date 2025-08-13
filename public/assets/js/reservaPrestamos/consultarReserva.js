@@ -18,6 +18,12 @@ import {
 } from "../utils/cases.js";
 import { getData, sendData } from "../utils/fetch.js";
 
+const width = screen.width
+const height = screen.height;
+
+console.log(width, height)
+
+
 // tipos de prestamos
 const typesPrestamosLoan  ={
   all: 'all',
