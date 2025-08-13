@@ -1,6 +1,25 @@
-  .content {
+:root {
+  --primary: #3a6c52;
+  --secundary: #004034;
+  --other: #ccc;
+  --white: #f0f0f0;
+  --btnEdit: #007D78;
+  --teal :#4db6ac;
+  --blue: #42a5f5;
+  --red: #ef5350;
+  --info: #e57373;
+  --success: #3a6c52;
+  --warning: #fb8c00;
+  --error: #b71c1c;
+  --error2: #e57373;
+  --btnProcess: #4CAF50 ;
+}
+
+
+.content {
     background-color: #f9f9f9;
-    padding: 30px;
+    padding: 2rem;
+    width: 100%;
   }
 
   .card-filtros {
@@ -16,13 +35,18 @@
     color: #2c3e50;
   }
 
+  #btnDescargar, #btnDescargarTrazabilidad, #btnDescargarMovimientoPlaca{
+    background-color: var(--btnProcess);
+    color: var(--white);
+  }
+
   .btn {
     margin-top: 20px;
   }
 
   .striped thead {
-    background-color: #2196f3;
-    color: white;
+    background-color: var(--btnEdit) !important;
+    color: var(--white) !important;
   }
 
   .striped tbody tr:hover {
@@ -30,7 +54,7 @@
   }
 
   .pagination li.active {
-    background-color: #2196f3;
+    background-color: var(--btnProcess);
   }
 
   .page {

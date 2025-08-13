@@ -9,7 +9,6 @@ html, body {
     font-family:  "Open Sans", "Helvetica Neue", sans-serif;
 }
 
-/* Variables para los colores */
 :root {
   --primary: #3a6c52;
   --secundary: #004034;
@@ -24,6 +23,9 @@ html, body {
   --warning: #fb8c00;
   --error: #b71c1c;
   --error2: #e57373;
+  --btnProcess: #4CAF50 ;
+    /* Color para implementar en todos los contenedores. */
+  --backgroundContainer: #f9f9f9;
 }
 
 .btnInvalida{

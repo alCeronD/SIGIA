@@ -453,63 +453,75 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       "finalizar"
     );
 
-    const objEndReserva = new Ajax();
-    if (
-      confirm(
-        `¿Está seguro de finalizar el préstamo?\nEstos son los elementos que cambiarán a disponible:\n${endReserva.elementos
-          .map((el) => `- ${el.nombre}`)
-          .join("\n")}`
-      )
-    ) {
-      objEndReserva.request.open(
-        "POST",
-        "Modules/reservaPrestamos/controller/reservaPrestamosController.php"
-      );
-      objEndReserva.request.setRequestHeader(
-        "X-Requested-With",
-        "XMLHttpRequest"
-      );
-      objEndReserva.request.setRequestHeader(
-        "Content-Type",
-        "application/json"
-      );
+    let messageEnd = `¿Está seguro de finalizar el préstamo? \n 
+    Estos son los elementos que cambiarán a disponible:
+    \n${endReserva.elementos
+      .map((el) => `- ${el.nombre}`)
+      .join("\n")}`;
 
-      let reservaJson = JSON.stringify({
-        data: endReserva,
-        action: "finalizar",
-      });
+    mostrarConfirmacion("Finalizar prestamo", messageEnd, (response) => {
+      if (!response) {
+        initAlert("Proceso cancelado", "info", toastOptions);
+        return;
+      }
 
-      objEndReserva.request.onload = () => {
-        try {
-          let response = JSON.parse(objEndReserva.request.responseText);
-          if (response.status) {
-            initAlert(
-              `Prestamo # ${endReserva.codigoReserva} finalizada`,
-              "success",
-              toastOptions
-            );
+      try {
+        const objEndReserva = new Ajax();
 
-            // Lo ideal es renderizar esto en la página actual a la cual se encuentran los prestamos, no re direccionar a la página 1.
-            renderReservas({page:1, type:valueSelect});
+        objEndReserva.request.open(
+          "POST",
+          "Modules/reservaPrestamos/controller/reservaPrestamosController.php"
+        );
+        objEndReserva.request.setRequestHeader(
+          "X-Requested-With",
+          "XMLHttpRequest"
+        );
+        objEndReserva.request.setRequestHeader(
+          "Content-Type",
+          "application/json"
+        );
 
-            let codigoAdd = endReserva.codigoReserva;
-            let tr = [...document.querySelectorAll("#tbodyReservaConsult tr")];
+        let reservaJson = JSON.stringify({
+          data: endReserva,
+          action: "finalizar",
+        });
 
-          } else {
-            initAlert(`Respuesta del servidor: \n ${response.message}`, "warning", toastOptions);
-            console.warn("Respuesta negativa del servidor:", response.message);
+        objEndReserva.request.onload = () => {
+          try {
+            let response = JSON.parse(objEndReserva.request.responseText);
+            if (response.status) {
+              initAlert(
+                `Prestamo # ${endReserva.codigoReserva} finalizada`,
+                "success",
+                toastOptions
+              );
+
+              // Lo ideal es renderizar esto en la página actual a la cual se encuentran los prestamos, no re direccionar a la página 1.
+              renderReservas({ page: 1, type: valueSelect });
+
+              let codigoAdd = endReserva.codigoReserva;
+              let tr = [
+                ...document.querySelectorAll("#tbodyReservaConsult tr"),
+              ];
+            } else {
+              initAlert(
+                `Respuesta del servidor: \n ${response.message}`,
+                "warning",
+                toastOptions
+              );
+              console.warn(
+                "Respuesta negativa del servidor:",
+                response.message
+              );
+            }
+          } catch (error) {
+            initAlert(`${error.message}`, "warning", toastOptions);
           }
-        } catch (error) {
-          initAlert(`${error.message}`, "warning", toastOptions);
-        }
-      };
-      objEndReserva.request.setRequestHeader("accept", "application/json");
-      objEndReserva.request.send(reservaJson);
-    } else {
-      console.warn(
-        "No se encontraron elementos asociados aún. Espera a que cargue la información."
-      );
-    }
+        };
+        objEndReserva.request.setRequestHeader("accept", "application/json");
+        objEndReserva.request.send(reservaJson);
+      } catch (error) {}
+    });
   }
 
   const btnSalida = event.target.closest("button[data-validate]");
@@ -521,9 +533,17 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     //Capturo los datos para transformarlo en json.
     validateReserva = setReserva("data-validate", data, elementos, btnSalida);
     let fechaReserva = validateReserva.dataUsuario.fechaReserva;
-    console.log(fechaReserva);
 
     let messageSalida = "";
+
+    // Validamos que la fecha de salida debe ser igual a la fecha de hoy.
+    if ((dateNow < fechaReserva)) {
+      initAlert(`No puedes dar salida a elementos hasta la fecha de reserva ${fechaReserva}`, "info", toastOptions);
+      return;
+    }else if((dateNow > fechaReserva)){
+      initAlert(`No es posible dar salida a estos elementos, la fecha de reserva (${fechaReserva}) no corresponde con la fecha actual (${dateNow}). `, "info", toastOptions);
+      return;
+    }
 
     messageSalida =
       fechaReserva !== dateNow
@@ -532,6 +552,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
     mostrarConfirmacion("Salida elementos", messageSalida, (response) => {
       if (!response) {
+        initAlert("Proceso cancelado", "info", toastOptions);
         return;
       }
       resetModalValidate(true);
@@ -787,8 +808,26 @@ tbodyReservaConsult.addEventListener("click", (event) => {
           .map((el) => `Código: ${el.cod} Nombre: ${el.nombre}`)
           .join("\n")}`;
 
-        if (confirm(`¿Deseas dar salida a estos elementos? \n${textConfirm}`)) {
-          try {
+          mostrarConfirmacion(`Salida elementos`, `¿Deseas dar salida a estos elementos? \n${textConfirm}`, async (responseSalida)=>{
+            if (!responseSalida) {
+              initAlert("Proceso cancelado", "warning", tooltipOptions);
+              modalValidate.close();
+
+              // Esto se repite, lo puedo modificar haciendo no una función sino cerrando el modal usando la función close modal, para ello debo de cambiar la forma de enviar los parámetros, lo ideal, enviarlos mediante objeto.
+              BodydetailReserva.innerHTML = "";
+              // let falseChecked = checkBoxValidate.checked ? false : true;
+              let falseChecked = false;
+              checkBoxValidate.checked = falseChecked;
+
+              previewBtnValidate.style.display = "none";
+              nextBtnValidate.style.display = "none";
+              resetModalValidate(true);
+              resetDataModal();
+
+              return;
+            }
+
+             try {
             const responseValidate = await sendData(
               "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
               "POST",
@@ -832,24 +871,76 @@ tbodyReservaConsult.addEventListener("click", (event) => {
               );
               tdAcciones.appendChild(btnEnd);
             }
+          
+          
           } catch (error) {
             initAlert(`${error.message}`, "error", toastOptions);
           }
-        } else {
-          initAlert("Proceso cancelado", "warning", tooltipOptions);
-          modalValidate.close();
+          });
 
-          // Esto se repite, lo puedo modificar haciendo no una función sino cerrando el modal usando la función close modal, para ello debo de cambiar la forma de enviar los parámetros, lo ideal, enviarlos mediante objeto.
-          BodydetailReserva.innerHTML = "";
-          // let falseChecked = checkBoxValidate.checked ? false : true;
-          let falseChecked = false;
-          checkBoxValidate.checked = falseChecked;
+        // if (confirm(`¿Deseas dar salida a estos elementos? \n${textConfirm}`)) {
+        //   try {
+        //     const responseValidate = await sendData(
+        //       "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
+        //       "POST",
+        //       "validateLoan",
+        //       validateReserva
+        //     );
+        //     if (responseValidate.status) {
+        //       estadoNew.textContent = "Validado";
+        //       estadoNew.style.color = "green";
 
-          previewBtnValidate.style.display = "none";
-          nextBtnValidate.style.display = "none";
-          resetModalValidate(true);
-          resetDataModal();
-        }
+        //       let btnValidate = document.querySelector(
+        //         `#tbodyReservaConsult tr td [data-validate='${validateReserva.codigoReserva}']`
+        //       );
+        //       if (btnValidate) {
+        //         // Renderizo nuevamente basada en la pagína y el tipo.
+        //         renderReservas({ page: currentPage, type: valueSelect });
+        //         initAlert(
+        //           `Prestamo validado ${validateReserva.codigoReserva}`,
+        //           "success",
+        //           toastOptions
+        //         );
+        //         btnValidate.style.display = "none";
+        //         modalValidate.close();
+        //       }
+
+        //       let btnEnd = document.createElement("button");
+        //       let iFinalizar = createI();
+        //       iFinalizar.innerText = "swap_horiz";
+        //       //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
+        //       addClassItem(btnEnd, {
+        //         btn: "btn",
+        //         color: "red lighten-1",
+        //         wavesEffect: "waves-effect",
+        //         wavesLight: "waves-light",
+        //         btnSmall: "btn-small",
+        //       });
+        //       btnEnd.append(iFinalizar);
+        //       btnEnd.setAttribute(
+        //         "data-end",
+        //         `${validateReserva.codigoReserva}`
+        //       );
+        //       tdAcciones.appendChild(btnEnd);
+        //     }
+        //   } catch (error) {
+        //     initAlert(`${error.message}`, "error", toastOptions);
+        //   }
+        // } else {
+        //   initAlert("Proceso cancelado", "warning", tooltipOptions);
+        //   modalValidate.close();
+
+        //   // Esto se repite, lo puedo modificar haciendo no una función sino cerrando el modal usando la función close modal, para ello debo de cambiar la forma de enviar los parámetros, lo ideal, enviarlos mediante objeto.
+        //   BodydetailReserva.innerHTML = "";
+        //   // let falseChecked = checkBoxValidate.checked ? false : true;
+        //   let falseChecked = false;
+        //   checkBoxValidate.checked = falseChecked;
+
+        //   previewBtnValidate.style.display = "none";
+        //   nextBtnValidate.style.display = "none";
+        //   resetModalValidate(true);
+        //   resetDataModal();
+        // }
       });
     });
   }

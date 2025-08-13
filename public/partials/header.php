@@ -41,17 +41,17 @@
 
 <body>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const toggle = document.getElementById('userDropdownToggle');
-      const menu = document.getElementById('userDropdownMenu');
+    // document.addEventListener('DOMContentLoaded', function() {
+    //   const toggle = document.getElementById('userDropdownToggle');
+    //   const menu = document.getElementById('userDropdownMenu');
 
-      toggle.addEventListener('click', function(e) {
-        e.stopPropagation();
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-      });
+    //   toggle.addEventListener('click', function(e) {
+    //     e.stopPropagation();
+    //     menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    //   });
 
-      document.addEventListener('click', function() {
-        menu.style.display = 'none';
-      });
-    });
+    //   document.addEventListener('click', function() {
+    //     menu.style.display = 'none';
+    //   });
+    // });
   </script>

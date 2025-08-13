@@ -1,4 +1,4 @@
-<style>
+<!-- <style>
   .content {
     background-color: #f9f9f9;
     padding: 30px;
@@ -47,7 +47,7 @@
   .switch-container label {
     margin: 0 15px;
   }
-</style>
+</style> -->
 
 <div class="content">
   <h4 class="center-align">Reporte General</h4>
@@ -96,7 +96,7 @@
 
         <!-- Botón Descargar -->
         <div class="center-align">
-          <a id="btnDescargar" href="<?= getUrl('reportes', 'reportes', 'generarReporteExcel'); ?>" class="btn waves-effect blue">
+          <a id="btnDescargar" href="<?= getUrl('reportes', 'reportes', 'generarReporteExcel'); ?>" class="btn waves-effect">
             <i class="material-icons left">description</i>Descargar Reporte
           </a>
         </div>
@@ -129,7 +129,7 @@
           <button id="btnBuscarTrazabilidad" type="button" class="btn waves-effect teal darken-1">
             <i class="material-icons left">search</i>Buscar
           </button>
-          <a id="btnDescargarTrazabilidad" href="#" class="btn waves-effect blue" style="margin-left:10px">
+          <a id="btnDescargarTrazabilidad" href="#" class="btn waves-effect" style="margin-left:10px">
             <i class="material-icons left">description</i>Descargar
           </a>
         </div>
@@ -148,7 +148,7 @@
           <button id="btnBuscarPorPlaca" type="button" class="btn waves-effect teal darken-1">
             <i class="material-icons left">search</i>Buscar
           </button>
-          <a id="btnDescargarMovimientoPlaca" href="#" class="btn waves-effect blue" style="margin-left:10px">
+          <a id="btnDescargarMovimientoPlaca" href="#" class="btn waves-effect" style="margin-left:10px">
             <i class="material-icons left">description</i>Descargar
           </a>
         </div>

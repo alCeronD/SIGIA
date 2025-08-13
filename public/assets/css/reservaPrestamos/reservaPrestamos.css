@@ -578,7 +578,8 @@ table td .actionsElements {
 
 #tblDevolutivos {
   width: auto;
-  table-layout: auto; /* importante para permitir que el contenido determine el ancho */
+  /* Con esto, determino que el ancho de la tabla la determina el contenido interno. */
+  table-layout: auto; 
   border-collapse: collapse;
 }
 
@@ -626,7 +627,8 @@ paginación reservas
 
 /* bloque de codigo para evitar que el icono sea clickqueado por el usuario */
 .btn-small i {
-  pointer-events: none; /* hace que los clics pasen al botón, no al <i> */
+  /* Evito que los clicks pasen al botón y no al icono con la etiqueta <i> */
+  pointer-events: none; 
 }
 
 .btnDetail {
@@ -736,6 +738,11 @@ color: var(--secundary);
 
 #submitValidate{
   gap: 0.3rem;
+}
+
+/* body de la tabla que contiene los elementos a dar salida */
+#bodyDetailValidate{
+  overflow-y: auto;
 }
 
 /* Resolusiones mayores a 1440 */
