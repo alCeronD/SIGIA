@@ -48,4 +48,6 @@
     <?php require_once 'modalValidate.php'; ?>
 </div>
 
+<?php require_once __DIR__ . "/../../../helpers/modalConfirmation.php"; ?>
+
 <script type="module" src="../public/assets/js/reservaPrestamos/consultarReserva.js"></script>

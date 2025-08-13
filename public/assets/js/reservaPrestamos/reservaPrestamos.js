@@ -126,7 +126,6 @@ const renderUsers = async ({
       tdAcciones.appendChild(btnAdd);
     });
   } catch (error) {
-    console.log(error);
     initAlert(`${error.message}`, "warning", toastOptions);
     // throw new Error(`Error de procesado ${error}`);
   }
@@ -435,7 +434,6 @@ const validateDisponibilidad = async ({
         param
       );
 
-      // console.log(responseDisponibilidadPost);
 
       if (responseDisponibilidadPost.status === 204) {
         return true;

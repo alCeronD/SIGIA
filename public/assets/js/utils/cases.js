@@ -271,11 +271,18 @@ export const opcionesDatepicker = {
   onDraw: function () {},
 };
 
+
+/**
+ * Description - Función para formatear la fecha del input del formulario, solo sirven para materialize.
+ *
+ * @param {*} fecha 
+ * @param {boolean} [isNewDate=false] 
+ * @returns {*} 
+ */
 export const dateISOFormat = (fecha, isNewDate = false) => {
   if (!fecha) {
     return null;
   }
-
   const [year, day, month] = fecha.split(" ");
   const months = {
   Ene: "01",
@@ -358,7 +365,13 @@ export const setReserva = (attribute = "", data = {}, elementos = {},target,acti
   }
 };
 
-// Este checkbox hace parte de el checkbox de el elemento que se debe de asociar a la placa en el requerimiento registrar elemento.
+/**
+ * Description Función para crear los checkbox y renderizarlos dinámicamente, se envía como parámetro el serial y placa y se adjunta como data en el checkbox, esta función solo funciona si se está usando checkboxes de materialize...
+ *
+ * @param {*} seriales 
+ * @param {*} placa 
+ * @returns {*} 
+ */
 export const createCheckbox = (seriales, placa) => {
   let p = document.createElement('p');
   let label = document.createElement('label');
@@ -387,6 +400,12 @@ export const createCheckbox = (seriales, placa) => {
   return p;
 };
 
+/**
+ * Description Función para capturar el selector y devolver su selector.
+ *
+ * @param {*} selector - Nombre del selector que se requiere capturar
+ * @returns {*} 
+ */
 export const getSelector = (selector) =>{
   const el = document.querySelector(selector);
 
@@ -426,7 +445,14 @@ export const createCheckboxGeneric = ({ text = '', id = '', name = '', value = '
   return div;
 };
 
-// Función para validar campos el dormulario.
+/**
+ * Description placeholder - Función para validar los campos obligatorios del formulario.
+ *
+ * @param {*} formData - new Form Data del formulario
+ * @param {*} campos  - Campos opcionales en caso de que no sean obligatorios para el usuario
+ * @param {*} mapForm - Objeto del formulario para validar que la información del Form Data tenga información.
+ * @returns {boolean} 
+ */
 export const validateFormData = ({formData, campos, mapForm}={}) =>{
   for (const [key, value] of formData.entries()) {
     const isEmpty = !value || value.toString().trim() === "";
@@ -444,6 +470,15 @@ export const validateFormData = ({formData, campos, mapForm}={}) =>{
   return true;
 }
 
+/**
+ * Visualiza un modal de confirmación antes de una ejecución, contiene 2 botones, aceptar o cancelar.
+ * Ejecuta una función callback dependiendo de la respuesta del usuario.
+ *
+ * @param {string} titulo - Título que se mostrará en el modal.
+ * @param {string} mensaje - Mensaje HTML que se mostrará en el cuerpo del modal.
+ * @param {function(boolean): void} callback - Función que se ejecuta al hacer clic en Aceptar o Cancelar.
+ *     Recibe `true` si el usuario acepta, `false` si cancela.
+ */
 export const mostrarConfirmacion = (titulo, mensaje, callback)=>{
 // Rellenar el contenido
   document.getElementById("modalConfirmacionTitulo").textContent = titulo;
@@ -462,3 +497,12 @@ export const mostrarConfirmacion = (titulo, mensaje, callback)=>{
   btnAceptar.onclick = () => callback(true);
   btnCancelar.onclick = () => callback(false);
 }
+
+export const setDate = () => {
+  const dateNow = new Date();
+  let day = dateNow.getDate().toString();
+  let month = (dateNow.getMonth() + 1).toString();
+  let year = dateNow.getFullYear();
+  let dateActual = `${year}-${month.padStart(2,"0")}-${day.padStart(2, "0")}`;
+  return dateActual;
+};
