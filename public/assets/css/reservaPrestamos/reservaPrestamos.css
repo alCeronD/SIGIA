@@ -276,9 +276,15 @@ th {
 .modal-content {
   background-color: #fefefe;
   margin: 0 auto;
-  width: fit-content;
+  width: 100%;
   height: fit-content;
 }
+/* .modal-content {
+  background-color: #fefefe;
+  margin: 0 auto;
+  width: fit-content;
+  height: fit-content;
+} */
 
 
 .close {
@@ -743,6 +749,22 @@ color: var(--secundary);
 /* body de la tabla que contiene los elementos a dar salida */
 #bodyDetailValidate{
   overflow-y: auto;
+}
+
+
+/* modal finalizar prestamo */
+#formSalida{
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+
+}
+
+#modalContentSalida{
+  background-color: #fefefe;
+  margin: 0 auto;
+  width: 100%;
+  height: fit-content;
 }
 
 /* Resolusiones mayores a 1440 */

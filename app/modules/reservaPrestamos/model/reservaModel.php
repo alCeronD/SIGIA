@@ -222,6 +222,8 @@ class ReservaModel
             //Transacción para validar la salida de los elementos.
             $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,ent_sal_observacion,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn,ent_sal_cod_prestamo) VALUES(?,NOW(),?,?,?,?,?)";
 
+
+
             $stmtSalida = $conn->prepare($sqlInsertSalida);
             //Salida
             $tipoMovimento = 2;
@@ -279,20 +281,32 @@ class ReservaModel
     public function updateReserva() {}
 
     //Función para finalizar la reserva y todos los elementos cambiar sus respectivos estados.
-    public function endReserva($elementos, $codigo)
+    public function endReserva(array $elementos= [],int $codigo, array $data = [])
     {
         //Objetivo:
         /**
+         * 0- Traer el id del usuario.
          * 1- Actualizar el estado de los elementos a disponible.
          * 2- Actualizar el estado del prestamo a finalizado.
+         * 3- Registrar la entrada en la tabla entradas_salidas
          */
         try {
+
+
             $conn = $this->conect->getConnect();
             $conn->begin_transaction();
+            $cedula = $data['dataUsuario']['nroIdentidad'];
+
+            $responseIdUsuario = $this->usuario->searchU($cedula, true);
+            $idUsuario = $responseIdUsuario['data'];
+            $id = $idUsuario['usu_id'];
+
+
             $disponible = 1;
             $sqlStatus = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
             $stmtStatus = $conn->prepare($sqlStatus);
             $codElementos = array_column($elementos, 'codigo');
+            // $cantidadElementos = array_column($elementos,'cantidadSolicitada');
 
             //Primera transacción.
             foreach ($codElementos as $value) {
@@ -317,11 +331,37 @@ class ReservaModel
                 return $stmtEndReserva->error;
             }
 
-            //TODO: registrar en entradas_salidas la parte de finalizar el prestamo.
-            /** 
-             * 
-             * 
-            */
+            // Tercera transacción, registrar la entrada de los elementos en la base de datos..
+            $sqlEntrada = "INSERT INTO entradas_salidas (
+                ent_sal_cantidad,
+                ent_fech_registro,
+                ent_sal_observacion,
+                entr_tp_movmnt, 
+                ent_id_usu,
+                ent_sal_cod_elemtn,
+                ent_sal_cod_prestamo
+            ) VALUES (?, NOW(), ?, ?, ?, ?, ?)";
+            $stmtEntrada = $conn->prepare($sqlEntrada);
+
+            $observacionSalida = $data['observacionSalida'];
+            $entrada = 4;
+            $codigoReserva = $data['codigoReserva'];
+            foreach ($elementos as $key => $elm) {
+                $codigoElementoEntrada = $elm['codigo'];
+                $cantidad = $elm['cantidadSolicitada'];
+                // var_dump($cantidad);
+                // var_dump($codigoElementoEntrada);
+                $stmtEntrada->bind_param('isiiii',$cantidad,$observacionSalida,$entrada,$id,$codigoElementoEntrada,$codigoReserva);
+
+                if (!$stmtEntrada->execute()) {
+                    $conn->rollback();
+                    return [
+                        'status'=>false,
+                        'message'=>"error al ejecutar el proceso".$conn->error,
+                        'data'=> []
+                    ];
+                }
+            }
 
             $conn->commit();
             $conn->close();

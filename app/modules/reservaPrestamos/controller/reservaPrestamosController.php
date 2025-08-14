@@ -170,12 +170,12 @@ class reservaPrestamosController
     }
 
     //Finalizar la reserva, es decir, cuando el usuario devuelve los elementos.
-    public function setEndReserva(array $elementos = [], int $codigo = 0)
+    public function setEndReserva(array $elementos = [], int $codigo = 0, array $data = [])
     {
         validatePermisos('reservaPrestamos', 'setEndReserva');
-        $data = $this->model->endReserva($elementos, $codigo);
+        $data = $this->model->endReserva($elementos, $codigo, $data);
         if ($data['status']) {
-            success(value: 'Prestamo exitoso');
+            success(value: 'Prestamo finalizado.');
         }
     }
 
@@ -348,11 +348,13 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         $data = json_decode($input, true);
         switch ($data['action']) {
             case 'finalizar':
+                unset($data['action']);
+                $elementos = $data["elementos"];
+                $codigoReserva = $data["codigoReserva"];
+        
 
-                $elementos = $data['data']["elementos"];
-                $codigoReserva = $data['data']["codigoReserva"];
 
-                $controller->setEndReserva($elementos, $codigoReserva);
+                $controller->setEndReserva($elementos, $codigoReserva, $data);
                 break;
 
             case 'registrar':

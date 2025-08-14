@@ -506,3 +506,17 @@ export const setDate = () => {
   let dateActual = `${year}-${month.padStart(2,"0")}-${day.padStart(2, "0")}`;
   return dateActual;
 };
+
+
+/**
+ * Description - Función para implementar el caracter obligatorio(*) en caso de que el usuario seleccione la opción SI/NO
+ *
+ * @param {{ baseText?: string; selector?: any; isRequired?: boolean; }} [param0={}] 
+ * @param {string} [param1.baseText=""] - Texto que se desea unificar
+ * @param {null} [param2.selector=null]  - Selector del html
+ * @param {boolean} [param3.isRequired=false] - Flag boolean para realizar el cambio.
+ */
+export const setObservacion = ({baseText = "", selector = null, isRequired = false}={})=>{
+  selector.innerText = "";
+  selector.innerText = isRequired ? `${baseText} *` : baseText;
+}

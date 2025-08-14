@@ -14,7 +14,8 @@ import {
   tooltipOptions,
   typeLoans,
   mostrarConfirmacion,
-  setDate
+  setDate,
+  setObservacion
 } from "../utils/cases.js";
 import { getData, sendData } from "../utils/fetch.js";
 
@@ -46,6 +47,7 @@ const bodyDetailValidate = document.querySelector("#bodyDetailValidate");
 const btnCloseValidte = document.querySelector("#modalValidate .close-modal");
 const btnCloseElements = document.querySelector("#modalDetail .close-modal");
 const formDetail = document.querySelector("#formDetail");
+const modalSalida = instanceModal('#modalSalida', options);
 const pagesPrestamos = document.querySelector('#pagesPrestamos');
 const rowsPrestamos = document.querySelector('#rowsPrestamos');
 // Label del campo observaciones para cambiar si es obligatorio o no la observación
@@ -54,6 +56,7 @@ const observacionesLabel = document.querySelector('#observacionesLabel');
 const tableContainerDetail = document.querySelector(
   ".tableContainerDetail table"
 );
+const closeModalBtnSalida = document.querySelector('#closeModalBtnSalida');
 // Contenedor principal de modalValidate
 const containerDetail = document.querySelector('.tableContainerDetail');
 let consumibles = [];
@@ -338,6 +341,15 @@ function resetModalValidate(showTable = false) {
   BodydetailReserva.innerHTML = '';
 }
 
+
+/** Description - Función para limpiar los campos del formulario del modal de finalizar prestamo */
+function resetModalSalida() {
+  inputObservacionsalida.innerText = "";
+  radioButtonSalida.forEach((rd) => {
+    rd.checked = false;
+  });
+}
+
 /**
  * Reinicia los datos utilizados en el proceso de validación del modal.
  *
@@ -442,8 +454,29 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     event.target.tagName === "BUTTON" &&
     event.target.getAttribute(["data-end"])
   ) {
-    //Crear función para finalizar los prestamos de los elementos, se debe de finalizar a ambos prestamos, los que se hace como reserva Previa y reserva inmediata.
 
+
+    const inputObservacionsalida = document.querySelector('#inputObservacionsalida');
+    const radioButtonSalida = document.querySelectorAll('input[name="radioSalida"]');
+    const formSalida = document.querySelector('#formSalida');
+    const observacionesLabelSalida = document.querySelector('#observacionesLabelSalida');
+    radioButtonSalida.forEach((rdSal)=>{
+      rdSal.addEventListener('change', (e)=>{
+      e.stopPropagation();
+
+      if (e.target.value === "off") {
+        inputObservacionsalida.readOnly = true;
+        inputObservacionsalida.value = "";
+        setObservacion({baseText : "Observación: ",selector: observacionesLabelSalida, isRequired: false});
+        
+      }else{
+        inputObservacionsalida.readOnly = false;
+        setObservacion({baseText : "Observación: ",selector: observacionesLabelSalida, isRequired: true});
+      }
+
+      });
+    });
+   
     //Hago la captura de la data necesaria para validar el prestamo o para reservalo inmedaitamente.
     let endReserva = setReserva(
       "data-end",
@@ -465,62 +498,74 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         return;
       }
 
-      try {
-        const objEndReserva = new Ajax();
+      modalSalida.open();
+      let dataFormSalida = {};
+      formSalida.addEventListener("submit", async (f) => {
+        f.stopPropagation();
+        f.preventDefault();
 
-        objEndReserva.request.open(
-          "POST",
-          "Modules/reservaPrestamos/controller/reservaPrestamosController.php"
-        );
-        objEndReserva.request.setRequestHeader(
-          "X-Requested-With",
-          "XMLHttpRequest"
-        );
-        objEndReserva.request.setRequestHeader(
-          "Content-Type",
-          "application/json"
-        );
+        let formData = new FormData(f.target);
+        dataFormSalida = Object.fromEntries(formData.entries());
 
-        let reservaJson = JSON.stringify({
-          data: endReserva,
-          action: "finalizar",
-        });
+        if (Object.keys(dataFormSalida).length === 0) {
+          initAlert(
+            "Seleccione Si o No antes del finalizar el prestamo.",
+            "info",
+            toastOptions
+          );
+          return;
+        }
+        if (
+          Object.values(dataFormSalida).includes("on") &&
+          !dataFormSalida.observacion.trim()
+        ) {
+          initAlert("Campo de observación obligatorio", "info", toastOptions);
+          return;
+        }
 
-        objEndReserva.request.onload = () => {
-          try {
-            let response = JSON.parse(objEndReserva.request.responseText);
-            if (response.status) {
-              initAlert(
-                `Prestamo # ${endReserva.codigoReserva} finalizada`,
-                "success",
-                toastOptions
-              );
-
-              // Lo ideal es renderizar esto en la página actual a la cual se encuentran los prestamos, no re direccionar a la página 1.
-              renderReservas({ page: 1, type: valueSelect });
-
-              let codigoAdd = endReserva.codigoReserva;
-              let tr = [
-                ...document.querySelectorAll("#tbodyReservaConsult tr"),
-              ];
-            } else {
-              initAlert(
-                `Respuesta del servidor: \n ${response.message}`,
-                "warning",
-                toastOptions
-              );
-              console.warn(
-                "Respuesta negativa del servidor:",
-                response.message
-              );
-            }
-          } catch (error) {
-            initAlert(`${error.message}`, "warning", toastOptions);
-          }
+        endReserva = {
+          ...endReserva,
+          observacionSalida: dataFormSalida.observacion,
         };
-        objEndReserva.request.setRequestHeader("accept", "application/json");
-        objEndReserva.request.send(reservaJson);
-      } catch (error) {}
+
+        try {
+          const responseSalida = await sendData(
+            "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
+            "POST",
+            "finalizar",
+            endReserva
+          );
+          if (responseSalida.status) {
+            modalSalida.close();
+            initAlert(
+              `Prestamo # ${endReserva.codigoReserva} finalizada`,
+              "success",
+              toastOptions
+            );
+            
+            // Lo ideal es renderizar esto en la página actual a la cual se encuentran los prestamos, no re direccionar a la página 1.
+            renderReservas({ page: 1, type: valueSelect });
+
+            // Limpio campo de texto y reestablezco los input radio, lo puedo implementar como función.
+            inputObservacionsalida.innerText = "";
+            radioButtonSalida.forEach((rd) => {
+              rd.checked = false;
+            });
+
+
+            let codigoAdd = endReserva.codigoReserva;
+            let tr = [...document.querySelectorAll("#tbodyReservaConsult tr")];
+          } else {
+            initAlert(
+              `Respuesta del servidor: \n ${response.message}`,
+              "warning",
+              toastOptions
+            );
+            console.warn("Respuesta negativa del servidor:", response.message);
+          }
+        } catch (error) {}
+      });
+
     });
   }
 
@@ -753,8 +798,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         radioNo.checked = radioNoChecked;
 
         if (radioCheck) {
-          // observacionesLabel.innerText = "";
-          observacionesLabel.innerText = `${textBase} *`;
+          setObservacion({baseText : "Observación",selector: observacionesLabel, isRequired: true});
           textAreaObsInput.disabled = false;
         }
       });
@@ -762,8 +806,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         if (e.target.checked) {
           textAreaObsInput.value = "";
           textAreaObsInput.disabled = true;
-
-          observacionesLabel.innerText = textBase;
+          setObservacion({baseText : "Observación",selector: observacionesLabel, isRequired: false});
         }
       });
 
@@ -1013,27 +1056,46 @@ filtroTipoReserva.addEventListener('change', (e)=>{
     renderReservas({page:1});
   }
 });
-
 closeModal(modalDetail, btnCloseElements);
 document.addEventListener("DOMContentLoaded", () => {
   renderReservas();
-  // Inicializar select 
+  // Inicializar select
   M.FormSelect.init(filtroTipoReserva);
 
   // Inicializar modal, inicializó el modal confirmación.
   const modals = document.querySelectorAll(".modal");
   M.Modal.init(modals);
 
-  const helpEstados = document.querySelector('#helpEstados');
-  const helpPrestamos = document.querySelector('#helpPrestamos');
-  const helpFechaRegistro = document.querySelector('#helpFechaRegistro');
-  initTooltip(helpEstados,tooltipOptions,`Estados elementos
+  const helpEstados = document.querySelector("#helpEstados");
+  const helpPrestamos = document.querySelector("#helpPrestamos");
+  const helpFechaRegistro = document.querySelector("#helpFechaRegistro");
+  initTooltip(
+    helpEstados,
+    tooltipOptions,
+    `Estados elementos
     - Validado: El prestamo ha sido validado y los elementos está en posesión del usuario
     - Por validar: Elementos en espera por dar salida y entregar insumos al usuario
     - Finalizado: Los elementos han sido devueltos al almacén
-    `,"top");
-initTooltip(helpPrestamos, tooltipOptions, `Tipos de reservas:
+    `,
+    "top"
+  );
+  initTooltip(
+    helpPrestamos,
+    tooltipOptions,
+    `Tipos de reservas:
 - Reserva Inmediata: Entrega inmediata al registrar el préstamo.
-- Reserva Previa: Elementos apartados para fecha futura.`, "top");
-initTooltip(helpFechaRegistro, tooltipOptions, `Fecha del proceso agregado`, "top");
+- Reserva Previa: Elementos apartados para fecha futura.`,
+    "top"
+  );
+  initTooltip(
+    helpFechaRegistro,
+    tooltipOptions,
+    `Fecha del proceso agregado`,
+    "top"
+  );
+
+  closeModal(modalSalida,closeModalBtnSalida, ()=>{
+    resetModalSalida();
+
+  });
 });
