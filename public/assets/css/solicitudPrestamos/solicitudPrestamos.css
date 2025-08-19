@@ -399,7 +399,7 @@ td {
     padding: 0.5rem;
   }
   .solicitudTitle {
-    flex-direction: column;
+    /* flex-direction: column; */
     align-items: flex-start;
     gap: 0.5rem;
   }
