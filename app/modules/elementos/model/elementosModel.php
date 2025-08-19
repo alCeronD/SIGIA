@@ -6,7 +6,7 @@ include_once __DIR__ . '/../../../config/conn.php';
 include_once __DIR__ . '/../../../helpers/expg.php';
 class ElementoModelo
 {
-    private $conn;
+    private  $conn;
 
     private Regex $expg;
 
@@ -53,36 +53,6 @@ class ElementoModelo
 
         return $elementos;
     }
-
-    // Obtener un solo elemento con nombres relacionados para edición, función que no me es de utilidad, desgraciadamente.
-    // public function obtenerElementoPorId($id)
-    // {
-    //     $sql = "SELECT 
-    //         e.elm_cod,
-    //         e.elm_placa,
-    //         e.elm_nombre,
-    //         e.elm_existencia,
-    //         e.elm_uni_medida,
-    //         e.elm_cod_tp_elemento,
-    //         e.elm_cod_estado,
-    //         e.elm_area_cod,
-    //         ar.ar_nombre AS nombreArea,
-    //         tpE.tp_el_nombre AS tipoElemento
-    //     FROM elementos e
-    //     INNER JOIN areas ar ON ar.ar_cod = e.elm_area_cod
-    //     INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
-    //     WHERE e.elm_cod = ?";
-
-    //     $stmt = $this->conn->prepare($sql);
-    //     if (!$stmt) {
-    //         echo "Error en prepare: " . $this->conn->error;
-    //         return null;
-    //     }
-    //     $stmt->bind_param("i", $id);
-    //     $stmt->execute();
-    //     $resultado = $stmt->get_result();
-    //     return $resultado->fetch_assoc();
-    // }
     /**
      * Busca elementos cuyo nombre o placa coincida parcialmente con un valor.
      *

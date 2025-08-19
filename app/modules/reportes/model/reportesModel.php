@@ -2,7 +2,8 @@
 
 include_once __DIR__ . '/../../../config/conn.php';
 
-class ReportesModel{
+class ReportesModel
+{
 
     private $conn;
 
@@ -15,43 +16,46 @@ class ReportesModel{
     ///////////////////////////////////////////////////////////
     //Estare usando estas funciones para el reporte a generar// 
     ///////////////////////////////////////////////////////////
-    
-   public function getEstadosReport() {
+
+    public function getEstadosReport()
+    {
         $sql = "SELECT est_el_cod,est_nombre FROM estados_elementos";
         $stmt = $this->conn->prepare($sql);
-    
+
         if (!$stmt->execute()) {
             return null;
         }
-    
+
         $result = $stmt->get_result();
         $estados = [];
-    
+
         while ($row = $result->fetch_assoc()) {
             $estados[] = $row;
         }
         // dd($estados);
         return $estados;
     }
-        public function getTiposElemento() {
+    public function getTiposElemento()
+    {
         $sql = "SELECT tp_el_cod AS tip_cod, tp_el_nombre AS tip_nombre FROM tipo_elemento";
         $stmt = $this->conn->prepare($sql);
-    
+
         if (!$stmt->execute()) {
             return null;
         }
-    
+
         $result = $stmt->get_result();
         $tipos = [];
-    
+
         while ($row = $result->fetch_assoc()) {
             $tipos[] = $row;
         }
-    
+
         return $tipos;
     }
 
-    public function obtenerElementosPorEstado($estado) {
+    public function obtenerElementosPorEstado($estado)
+    {
         $sql = "SELECT 
                     e.elm_cod AS codigoElemento,
                     e.elm_placa AS placa,
@@ -67,44 +71,45 @@ class ReportesModel{
                 INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado
                 WHERE e.elm_cod_estado = ?
                 ORDER BY e.elm_placa ASC";
-    
+
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $estado);
-    
+
         if (!$stmt->execute()) {
             return [];
         }
-    
+
         $result = $stmt->get_result();
         $elementos = [];
-    
+
         while ($row = $result->fetch_assoc()) {
             $elementos[] = $row;
         }
-    
+
         return $elementos;
     }
 
-    public function tipoElemento() {
+    public function tipoElemento()
+    {
         $sql = "SELECT tp_el_cod, tp_el_nombre FROM tipo_elemento ORDER BY tp_el_nombre ASC";
-    
+
         $stmt = $this->conn->prepare($sql);
         if (!$stmt->execute()) {
             return [];
         }
-    
+
         $result = $stmt->get_result();
         $tipos = [];
-    
+
         while ($row = $result->fetch_assoc()) {
             $tipos[] = $row;
         }
-    
+
         return $tipos;
     }
 
-
-    public function obtenerElementosFiltrados($tipo, $estado) {
+    public function obtenerElementosFiltrados($tipo, $estado)
+    {
         $sql = "SELECT 
                     e.elm_cod AS codigoElemento,
                     e.elm_placa AS placa,
@@ -119,43 +124,42 @@ class ReportesModel{
                 INNER JOIN tipo_elemento tpE ON tpE.tp_el_cod = e.elm_cod_tp_elemento
                 INNER JOIN estados_elementos es_e ON es_e.est_el_cod = e.elm_cod_estado
                 WHERE 1 = 1";
-    
+
         $params = [];
         $types = '';
-    
+
         if (!empty($tipo)) {
             $sql .= " AND e.elm_cod_tp_elemento = ?";
             $types .= 'i';
             $params[] = $tipo;
         }
-    
+
         if (!empty($estado)) {
             $sql .= " AND e.elm_cod_estado = ?";
             $types .= 'i';
             $params[] = $estado;
         }
-    
+
         $sql .= " ORDER BY e.elm_placa ASC";
-    
+
         $stmt = $this->conn->prepare($sql);
         if (!empty($params)) {
             $stmt->bind_param($types, ...$params);
         }
-    
+
         if (!$stmt->execute()) {
             return [];
         }
-    
+
         $result = $stmt->get_result();
         $elementos = [];
-    
+
         while ($row = $result->fetch_assoc()) {
             $elementos[] = $row;
         }
-    
+
         return $elementos;
     }
-
 
     public function obtenerTrazabilidad($tipo, $fechaInicio, $fechaFin)
     {
@@ -169,41 +173,40 @@ class ReportesModel{
                 FROM entradas_salidas es
                 INNER JOIN elementos e ON e.elm_cod = es.ent_sal_cod_elemtn
                 WHERE DATE(es.ent_fech_registro) BETWEEN ? AND ?";
-    
+
         $params = [$fechaInicio, $fechaFin];
-        $types  = 'ss'; 
-    
+        $types  = 'ss';
+
         if (!empty($tipo)) {
             $sql .= " AND e.elm_cod_tp_elemento = ?";
             $params[] = $tipo;
             $types .= 'i';
         }
-    
+
         $sql .= " ORDER BY es.ent_fech_registro DESC";
-    
+
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
             return [];
         }
-    
+
         $stmt->bind_param($types, ...$params);
-    
+
         if (!$stmt->execute()) {
             return [];
         }
-    
+
         $result = $stmt->get_result();
         $trazabilidad = [];
-    
+
         while ($row = $result->fetch_assoc()) {
             $trazabilidad[] = $row;
         }
-    
+
         return $trazabilidad;
     }
 
-
-        /**
+    /**
      * Consulta la trazabilidad (entradas / salidas) de elementos.
      *
      * @param int|string $tipo         Código del tipo de elemento (puede venir vacío).
@@ -227,50 +230,53 @@ class ReportesModel{
                 INNER JOIN tipo_elemento  tp ON tp.tp_el_cod = e.elm_cod_tp_elemento
                 INNER JOIN tipo_movimiento tm ON tm.cod_tp   = es.entr_tp_movmnt 
                 WHERE 1 = 1";
-        
 
-    
+
+
         /* ---- filtros dinámicos ---- */
-        $types  = '';  $params = [];
-    
-       
+        $types  = '';
+        $params = [];
+
+
         if ($fechaInicio !== '' && $fechaFin !== '') {
             $sql   .= " AND DATE(es.ent_fech_registro) BETWEEN ? AND ?";
             $types .= 'ss';
             $params[] = $fechaInicio;
             $params[] = $fechaFin;
         }
-    
+
         /* tipo de elemento */
         if ($tipo !== '') {
             $sql   .= " AND e.elm_cod_tp_elemento = ?";
             $types .= 'i';
             $params[] = $tipo;
         }
-    
+
         $sql .= " ORDER BY es.ent_fech_registro DESC";
-    
+
         $stmt = $this->conn->prepare($sql);
-        if (!$stmt) { return []; }
-    
+        if (!$stmt) {
+            return [];
+        }
+
         if (!empty($params)) {
             $stmt->bind_param($types, ...$params);
         }
-    
+
         if (!$stmt->execute()) {
             return [];
         }
-    
+
         $result = $stmt->get_result();
         $movimientos = [];
-    
+
         while ($row = $result->fetch_assoc()) {
             $movimientos[] = $row;
         }
-    
+
         return $movimientos;
     }
-    
+
     /**
      * Devuelve todas las entradas / salidas de un elemento a partir de su placa.
      *
@@ -300,11 +306,9 @@ class ReportesModel{
 
         $res   = $stmt->get_result();
         $movs  = [];
-        while ($row = $res->fetch_assoc()) { $movs[] = $row; }
+        while ($row = $res->fetch_assoc()) {
+            $movs[] = $row;
+        }
         return $movs;
     }
 }
-
-
-
-?>

@@ -98,28 +98,28 @@
       </div>
 
       <div class="input-field nombres">
-        <label for="usu_nombres" class="active">Nombres</label>
-        <input type="text" name="usu_nombres" id="usu_nombres" required>
+        <label for="usu_nombres" class="active">Nombres *</label>
+        <input type="text" name="usu_nombres" id="usu_nombres" >
       </div>
 
       <div class="input-field apellidos">
-        <label for="usu_apellidos" class="active">Apellidos</label>
-        <input type="text" name="usu_apellidos" id="usu_apellidos" required>
+        <label for="usu_apellidos" class="active">Apellidos *</label>
+        <input type="text" name="usu_apellidos" id="usu_apellidos" >
       </div>
 
       <div class="input-field email">
-        <label for="usu_email" class="active">Correo</label>
+        <label for="usu_email" class="active">Correo *</label>
         <input type="email" name="usu_email" id="usu_email">
       </div>
 
       <div class="input-field telefono">
-        <label for="usu_telefono" class="active">Teléfono</label>
-        <input type="text" name="usu_telefono" id="usu_telefono" required>
+        <label for="usu_telefono" class="active">Teléfono *</label>
+        <input type="text" name="usu_telefono" id="usu_telefono" >
       </div>
 
       <div class="input-field direccion">
-        <label for="usu_direccion" class="active">Dirección</label>
-        <input type="text" name="usu_direccion" id="usu_direccion" required>
+        <label for="usu_direccion" class="active">Dirección *</label>
+        <input type="text" name="usu_direccion" id="usu_direccion" >
       </div>
 
       <div class="input-field password">

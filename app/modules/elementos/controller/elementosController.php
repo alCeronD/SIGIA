@@ -7,8 +7,8 @@ require_once __DIR__ . '/../../../helpers/validatePermisos.php';
 
 class ElementosController
 {
-    private $modeloElemento;
-    private $conn;
+    private ElementoModelo $modeloElemento;
+    private Conection $conn;
 
     public function __construct()
     {

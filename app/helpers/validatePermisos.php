@@ -25,7 +25,6 @@ function validatePermisos(String $modulo, String $funcion)
         exit();
     }
     
-    
     require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
     $objPermisos = new PermisosController();
 
@@ -56,6 +55,12 @@ function validatePermisos(String $modulo, String $funcion)
     }
 }
 
+/**
+ * Summary of isAjaxRequest - Sirve para validar que la petición enviada es mediante HTTP fue enviada por ajax.
+ * Esto verifica que la cabecera enviada es una cabecera de una librería de javascript, en este caso, ajax o fetch.
+ * Se transforma a minusculas porque es el estandar usado de XMLHttpRequest usado con fetch de javascript o ajax.
+ * @return bool
+ */
 function isAjaxRequest() {
     return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';

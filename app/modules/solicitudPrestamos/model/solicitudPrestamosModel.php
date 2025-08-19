@@ -199,8 +199,6 @@ class solicitudPrestamos
         return $stmt->execute();
     }
 
-
-
     public function registrarSalida($cantidades_consumibles, $fecha_registro, $usuario_id, $lastId, $elementos_devolutivos)
     {
         $tipo_movimiento = 3; // salida
@@ -326,13 +324,4 @@ class solicitudPrestamos
         return $count > 0;
     }
 
-
-
-
-
-
-
-
-    
-    
 }

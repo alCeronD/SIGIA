@@ -34,9 +34,6 @@ Class PermisosController{
         }
         return $idPermisoFuncion;
     }
-
-    public function renderMenu(){
-
-    }
+    
 }
 ?>

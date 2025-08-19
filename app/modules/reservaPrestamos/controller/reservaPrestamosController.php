@@ -13,9 +13,9 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 class reservaPrestamosController
 {
-    private $model;
+    private ReservaModel $model;
 
-    private $modelElemento;
+    private ElementoModelo $modelElemento;
     public function __construct()
     {
         $reservaModel = new ReservaModel();

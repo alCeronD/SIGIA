@@ -10,9 +10,9 @@ require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . "/../../../helpers/validatePermisos.php";
 class RolesController
 {
-    private $modeloRol;
-    private $permisosModel;
-    private $conn;
+    private RolModelo $modeloRol;
+    private PermisosModel $permisosModel;
+    private Conection $conn;
 
     public function __construct()
     {
@@ -102,11 +102,6 @@ class RolesController
     public function setPermisos(array $data = []){
 
         $rolId = $_SESSION['usuario']['rol_id'];
-        // var_dump($_SESSION);
-        // $renderMenu = $_SESSION['renderMenu'];
-
-        // para reemplazar el menú.
-        // $_SESSION['renderMenu']= $result['data'];
 
         $responsePermisos = $this->modeloRol->assocPermisos($data);
 

@@ -1,7 +1,4 @@
 <?php
-
-use SebastianBergmann\Environment\Console;
-
 include_once __DIR__ . '/../model/solicitudPrestamosModel.php';
 include_once __DIR__ . '/../../../config/conn.php';
 include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
@@ -234,7 +231,6 @@ class solicitudPrestamosController
         return $elementos;
     }
 
-
     //Pendiente nnviar al solicitudPrestamoModel - consultas para detalle prestamos Modal
     private function obtenerEstadoNombre($id)
     {
@@ -390,10 +386,6 @@ class solicitudPrestamosController
     
         return $prestamosActualizados;
     }
-
-    
-    
-    
 }
 
 

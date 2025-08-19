@@ -23,28 +23,28 @@ require_once __DIR__ ."/../../../helpers/helpers.php";
       </div>
 
       <div class="input-field col s12 m6">
-        <input id="usu_nombres" type="text" name="usu_nombres" value="<?= htmlspecialchars($usuarioUpdate['usu_nombres']) ?>" required>
-        <label for="usu_nombres" class="active">Nombres</label>
+        <input id="usu_nombres" type="text" name="usu_nombres" value="<?= htmlspecialchars($usuarioUpdate['usu_nombres']) ?>" >
+        <label for="usu_nombres" class="active">Nombres *</label>
       </div>
 
       <div class="input-field col s12 m6">
-        <input id="usu_apellidos" type="text" name="usu_apellidos" value="<?= htmlspecialchars($usuarioUpdate['usu_apellidos']) ?>" required>
-        <label for="usu_apellidos" class="active">Apellidos</label>
+        <input id="usu_apellidos" type="text" name="usu_apellidos" value="<?= htmlspecialchars($usuarioUpdate['usu_apellidos']) ?>" >
+        <label for="usu_apellidos" class="active">Apellidos *</label>
       </div>
 
       <div class="input-field col s12 m6">
-        <input id="usu_email" type="email" name="usu_email" value="<?= htmlspecialchars($usuarioUpdate['usu_email']) ?>" required>
-        <label for="usu_email" class="active">Correo electrónico</label>
+        <input id="usu_email" type="email" name="usu_email" value="<?= htmlspecialchars($usuarioUpdate['usu_email']) ?>" >
+        <label for="usu_email" class="active">Correo electrónico *</label>
       </div>
 
       <div class="input-field col s12 m6">
-        <input id="usu_direccion" type="text" name="usu_direccion" value="<?= htmlspecialchars($usuarioUpdate['usu_direccion']) ?>" required>
-        <label for="usu_direccion" class="active">Dirección</label>
+        <input id="usu_direccion" type="text" name="usu_direccion" value="<?= htmlspecialchars($usuarioUpdate['usu_direccion']) ?>" >
+        <label for="usu_direccion" class="active">Dirección *</label>
       </div>
 
       <div class="input-field col s12 m6">
-        <input id="usu_telefono" type="text" name="usu_telefono" value="<?= htmlspecialchars($usuarioUpdate['usu_telefono']) ?>" required>
-        <label for="usu_telefono" class="active">Teléfono</label>
+        <input id="usu_telefono" type="text" name="usu_telefono" value="<?= htmlspecialchars($usuarioUpdate['usu_telefono']) ?>" >
+        <label for="usu_telefono" class="active">Teléfono *</label>
       </div>
     </div>
 

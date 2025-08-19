@@ -20,11 +20,11 @@ class usuariosController
     public $usu_id_estado;
     private $usu_tp_id;
 
-    private $conn;
+    private Conection $conn;
 
-    protected $rolesModel;
-    protected $configModules;
-    protected $usuariosModel;
+    protected RolModelo $rolesModel;
+    protected ConfigModulesModel $configModules;
+    protected usuarios $usuariosModel;
 
     public function __construct()
     {
@@ -181,8 +181,6 @@ class usuariosController
         exit;
     }
 
-
-
     public function updateUserView()
     {
         $id = $_GET['usu_id'];
@@ -263,7 +261,6 @@ class usuariosController
         echo "<script>alert('Usuario actualizado exitosamente, vuelve a iniciar la sesión.'); window.location.href = '" . getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard') . "';</script>";
         $loginObj->logout();
     }
-    public function userPermView() {}
 }
 
 $objUsuarios = new usuariosController();

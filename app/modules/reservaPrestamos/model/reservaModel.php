@@ -17,7 +17,7 @@ class ReservaModel
 
     protected $usuario;
 
-    private $modelElemento;
+    private ElementoModelo $modelElemento;
 
     public function __construct()
     {
@@ -376,7 +376,6 @@ class ReservaModel
 
         return $result;
     }
-
 
     //Función para traer los elementos, posiblemente deba implementarla en el modelo de elementos, no en el modelo de reserva.
     public function selectElements(int $page = 1, int $type = 1)

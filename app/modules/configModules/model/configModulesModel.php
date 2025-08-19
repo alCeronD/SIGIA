@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../../config/conn.php';
 //Crud general para todos los elementos.
 class ConfigModulesModel
 {
-    private $mysqli;
+    private Conection $mysqli;
     private $conn;
     //puede que no necesite constructor.
     public function __construct()

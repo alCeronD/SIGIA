@@ -270,9 +270,6 @@ class ReportesController {
         (new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet))->save('php://output');
         exit;
     }
-
-    
-    
 }
 
 ?>
