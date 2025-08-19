@@ -51,60 +51,25 @@
   width: 100%;
 }
 
-.correo {
-  grid-area: correo;
-}
+.correo { grid-area: correo; }
+.direccion { grid-area: direccion; }
+.telefono { grid-area: telefono; padding: 10px; }
+.horaInicio { grid-area: horaInicio; }
+.horaFin { grid-area: horaFin; }
+.cantConsu { max-width: 50px !important; }
 
-.direccion {
-  grid-area: direccion;
-}
-
-.telefono {
-  grid-area: telefono;
-  padding: 10px;
-}
-
-.horaInicio {
-  grid-area: horaInicio;
-}
-
-.horaFin {
-  grid-area: horaFin;
-}
-
-.cantConsu {
-  max-width: 50px !important;
-}
-
-td,
-th {
-  text-align: center;
-}
+td, th { text-align: center; }
 
 .input-field {
   margin-left: 10px !important;
   width: 90%;
 }
 
-.nombre {
-  grid-area: nombre;
-}
-
-.inputAddElements {
-  grid-area: inputAddElements;
-}
-
-.fechaReserva {
-  grid-area: fechaReserva;
-}
-
-.fechaEntrega {
-  grid-area: fechaEntrega;
-}
-
-.destino {
-  grid-area: destino;
-}
+.nombre { grid-area: nombre; }
+.inputAddElements { grid-area: inputAddElements; }
+.fechaReserva { grid-area: fechaReserva; }
+.fechaEntrega { grid-area: fechaEntrega; }
+.destino { grid-area: destino; }
 
 .inputObservaciones {
   grid-area: inputObservaciones;
@@ -125,9 +90,7 @@ th {
   line-height: 1.4;
 }
 
-.inputBtn {
-  grid-area: inputBtn;
-}
+.inputBtn { grid-area: inputBtn; }
 
 .inputContent {
   display: flex;
@@ -135,9 +98,7 @@ th {
   gap: 0.3rem;
 }
 
-.labelForm {
-  font-size: 13pt;
-}
+.labelForm { font-size: 13pt; }
 
 .inputForm {
   height: 2.2rem;
@@ -159,9 +120,7 @@ textarea.inputForm {
   height: 80px;
 }
 
-.input-field>.fontInfo {
-  font-size: 1.5rem !important;
-}
+.input-field > .fontInfo { font-size: 1.5rem !important; }
 
 .btnForm {
   font-size: 10pt;
@@ -172,9 +131,7 @@ textarea.inputForm {
   width: 30%;
 }
 
-.btnForm:hover {
-  background-color: #bbc0be;
-}
+.btnForm:hover { background-color: #bbc0be; }
 
 #btnSubmit {
   padding: 0.75rem 2.5rem;
@@ -187,12 +144,9 @@ textarea.inputForm {
   cursor: pointer;
 }
 
-#btnSubmit:hover {
-  background-color: #0056b3;
-}
+#btnSubmit:hover { background-color: #0056b3; }
 
-.btn-ver-detalle,
-.btn-cancelar-prestamo {
+.btn-ver-detalle, .btn-cancelar-prestamo {
   position: static;
   z-index: 1;
 }
@@ -205,8 +159,7 @@ textarea.inputForm {
   box-sizing: border-box;
 }
 
-.tableElements th,
-.tableElements td {
+.tableElements th, .tableElements td {
   border: 1px solid #ccc;
   padding: 0.5rem;
   text-align: left;
@@ -235,8 +188,7 @@ textarea.inputForm {
   margin-bottom: 10px;
 }
 
-#paginacion,
-#paginacion-prestamos {
+#paginacion, #paginacion-prestamos {
   list-style: none;
   padding-left: 0;
   margin-top: 10px;
@@ -246,14 +198,12 @@ textarea.inputForm {
   gap: 6px;
 }
 
-#paginacion .page-item,
-#paginacion-prestamos .page-item {
+#paginacion .page-item, #paginacion-prestamos .page-item {
   width: 40px;
   text-align: center;
 }
 
-#paginacion .page-link,
-#paginacion-prestamos .page-link {
+#paginacion .page-link, #paginacion-prestamos .page-link {
   width: 100%;
 }
 
@@ -322,7 +272,6 @@ textarea.inputForm {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
 }
 
 #tituloConsult {
@@ -330,7 +279,7 @@ textarea.inputForm {
 }
 
 .tableDetalle {
-  /* margin-top: 1.3rem; */
+  margin-top: 1.3rem;
   grid-area: tableDetalle;
   overflow-x: auto;
   width: 100%;
@@ -338,11 +287,8 @@ textarea.inputForm {
 
 .tableDetalle table {
   width: 100%;
-  min-width: 700px;
-  /* evita amontonamiento */
+  min-width: 600px;
   border-collapse: collapse;
-  white-space: nowrap;
-  /* asegura scroll horizontal */
 }
 
 #consultPrestamoHead tr th {
@@ -351,9 +297,7 @@ textarea.inputForm {
   font-weight: bold;
 }
 
-.table-responsive {
-  width: 100%;
-}
+.table-responsive { width: 100%; }
 
 td {
   padding: 0.33rem;
@@ -368,11 +312,7 @@ td {
   margin-bottom: 12px;
 }
 
-.label {
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 3px;
-}
+.label { font-weight: bold; color: #333; margin-bottom: 3px; }
 
 .value-box {
   background-color: #f7f7f7;
@@ -382,18 +322,8 @@ td {
   color: #444;
 }
 
-.column {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 15px;
-  text-align: center;
-}
+.column { flex: 1; display: flex; flex-direction: column; }
+.title { font-size: 16px; font-weight: bold; margin-bottom: 15px; text-align: center; }
 
 #contenidoDetalle {
   width: 100%;
@@ -423,13 +353,8 @@ td {
   align-items: flex-start;
 }
 
-.itemsContent .rowDetails:nth-child(odd) {
-  background-color: #f0f0f0;
-}
-
-.itemsContent .rowDetails:nth-child(even) {
-  background-color: #dcdcdc;
-}
+.itemsContent .rowDetails:nth-child(odd) { background-color: #f0f0f0; }
+.itemsContent .rowDetails:nth-child(even) { background-color: #dcdcdc; }
 
 /* =============================== */
 /* RESPONSIVE GENERAL */
@@ -439,26 +364,19 @@ td {
     grid-template-columns: 1fr;
     text-align: left;
   }
-
+  
   .menuTitle {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-
-  #textTitle {
-    font-size: 1.5rem !important;
-    text-align: center;
-    width: 100%;
-  }
-
+  #textTitle { font-size: 1.5rem !important; text-align: center; width: 100%; }
   #formSolicitudPrestamo {
     display: flex;
     flex-direction: column;
     gap: 3rem;
     width: 100%;
   }
-
   #formSolicitudPrestamo .input-field,
   #formSolicitudPrestamo .inputContent,
   #formSolicitudPrestamo textarea,
@@ -468,111 +386,54 @@ td {
     max-width: 100% !important;
     margin: 0 auto;
   }
-
-  .inputObservaciones {
-    width: 100% !important;
-    max-width: 100%;
-  }
-
-  .btn,
-  .btn.blue,
-  .btnForm {
-    width: 100% !important;
-    font-size: 14px;
-  }
-
-  .inputObservaciones textarea {
-    height: auto !important;
-    min-height: 60px;
-  }
-
-  .table-responsive,
-  .tableDetalle table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  table th,
-  table td {
-    font-size: 12px;
-    padding: 6px;
-  }
-
-  .modal,
-  .modal-secElementos {
-    width: 95% !important;
-    max-width: 100% !important;
-    height: auto;
-  }
-
-  .modal-content {
-    padding: 1rem !important;
-    overflow-x: auto;
-    max-height: 80vh;
-  }
-
-  .pagination {
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-
-  .page-item {
-    width: auto;
-    min-width: 30px;
-  }
+  .inputObservaciones { width: 100% !important; max-width: 100%; }
+  .btn, .btn.blue, .btnForm { width: 100% !important; font-size: 14px; }
+  .inputObservaciones textarea { height: auto !important; min-height: 60px; }
+  .table-responsive, table { display: block; overflow-x: auto; white-space: nowrap; }
+  table th, table td { font-size: 12px; padding: 6px; }
+  .modal, .modal-secElementos { width: 95% !important; max-width: 100% !important; height: auto; }
+  .modal-content { padding: 1rem !important; overflow-x: auto; max-height: 80vh; }
+  .pagination { flex-wrap: wrap; gap: 4px; }
+  .page-item { width: auto; min-width: 30px; }
 }
 
-/* @media (max-width: 480px) {
+@media (max-width: 480px) {
   #textTitle { font-size: 1.2rem !important; }
   table th, table td { font-size: 11px; }
   .btn, .btn.blue, .btnForm { font-size: 12px; padding: 0.5rem; width: 100% !important; }
-} */
+}
 
 /* =============================== */
 /* RESPONSIVE - CONSULTAR PRÉSTAMOS */
 /* =============================== */
-@media (max-width: 368px) {
-  .contentSolicitud {
-    padding: 0.5rem;
-  }
-
+@media (max-width: 768px) {
+  .contentSolicitud { padding: 0.5rem; }
   .solicitudTitle {
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.5rem;
-    text-align: center;
   }
-
   #tituloConsult {
     font-size: 1.5rem !important;
     text-align: center;
     width: 100%;
   }
-
   #filtrosPrestamo .input-field {
     width: 100% !important;
     margin-left: 0 !important;
   }
+  .tableDetalle { overflow-x: auto; }
+  .tableDetalle table { display: block; overflow-x: auto; white-space: nowrap; }
+  .tableDetalle th, .tableDetalle td { font-size: 12px; padding: 6px; }
+  .pagination { flex-wrap: wrap; gap: 4px; }
+}
 
-  .tableDetalle {
-    overflow-x: auto;
-  }
-
-  .tableDetalle table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-    /* min-width: 600px; */
-  }
-
-  .tableDetalle th,
-  .tableDetalle td {
+@media (max-width: 480px) {
+  #tituloConsult { font-size: 1.2rem !important; }
+  .tableDetalle th, .tableDetalle td { font-size: 11px; }
+  .btn, .btn.blue, .btn-ver-detalle, .btn-cancelar-prestamo {
     font-size: 12px;
-  }
-
-  .pagination {
-    flex-wrap: wrap;
-    gap: 4px;
+    padding: 0.5rem;
+    width: 100% !important;
   }
 }
