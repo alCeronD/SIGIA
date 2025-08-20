@@ -60,17 +60,10 @@ class ReservaModel
             $id = (int) $userRow['id'];
             $this->id = $id;
 
-            // if ($data['tp_pres'] === 2) {
-            //     $presSql = "INSERT INTO prestamos (pres_fch_slcitud,pres_fch_reserva,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?,?,?,?)";
-
-            // }else{
-            //     $presSql = "INSERT INTO prestamos (pres_fch_slcitud,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?,?,?)";
-            // }
-
+            // Creo la consulta dependiendo del tipo de proceso, si es prestamo o reserva
             $presSql = $data['tp_pres'] === 2 ? "INSERT INTO prestamos (pres_fch_slcitud,pres_fch_reserva,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?,?)" : " INSERT INTO prestamos (pres_fch_slcitud,pres_fch_entrega,pres_observacion,pres_destino,pres_estado,tp_pres,pres_rol) VALUES (NOW(),?,?,?,?,?,?)";
-            
-            //segunda transacción, insertar los registros en el prestamo.
 
+            //segunda transacción, insertar los registros en el prestamo.
             $stmtPres = $conn->prepare($presSql);
 
             if (!$stmtPres) {
@@ -94,7 +87,7 @@ class ReservaModel
                     $p_tp_pres,
                     $p_pres_rol
                 );
-            }else{
+            } else {
                 $stmtPres->bind_param(
                     'sssiii',
                     $p_pres_fch_entrega,
@@ -104,7 +97,6 @@ class ReservaModel
                     $p_tp_pres,
                     $p_pres_rol
                 );
-
             }
 
             if (!$stmtPres->execute()) {
@@ -126,7 +118,14 @@ class ReservaModel
                 ];
             }
 
+            // Defino el estado del elemento, 3 si es reservado y 1 disponible dependiendo del proceso seleccionado, 1 es prestamo y 2 es reserva.
             $status = $data['tp_pres'] == 1 ? (int) 3 : (int) 1;
+
+            // Este proceso se hace para validar si es una reserva Y SI SE REALIZA PARA ESA MISMA FECHA, si se realiza para la misma fecha, los estados de los elementos cambian a reservados.
+            $fechaHoy = date('Y-m-d');
+            if ($data['tp_pres'] == 2) {
+                if ($fechaHoy === $p_pres_fch_reserva) $status = 5;
+            }
 
             //tercera para actualizar el estado de los elementos devolutivos
             $updateStatusElements = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
@@ -222,8 +221,6 @@ class ReservaModel
             //Transacción para validar la salida de los elementos.
             $sqlInsertSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad,ent_fech_registro,ent_sal_observacion,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn,ent_sal_cod_prestamo) VALUES(?,NOW(),?,?,?,?,?)";
 
-
-
             $stmtSalida = $conn->prepare($sqlInsertSalida);
             //Salida
             $tipoMovimento = 2;
@@ -233,7 +230,7 @@ class ReservaModel
                 $codigo = $element['codigo'];
                 $cant = $element['cantidad'];
 
-                $stmtSalida->bind_param('isiiii', $cant,$p_pres_observacion ,$tipoMovimento, $id, $codigo, $lastId);
+                $stmtSalida->bind_param('isiiii', $cant, $p_pres_observacion, $tipoMovimento, $id, $codigo, $lastId);
                 if (!$stmtSalida->execute()) {
                     $conn->rollback();
                     $result = [
@@ -250,7 +247,7 @@ class ReservaModel
                 $codigo = $value['codigo'];
                 $cant = $value['cantidad'];
 
-                $stmtSalida->bind_param('isiiii', $cant,$p_pres_observacion ,$tipoMovimento, $id, $codigo, $lastId);
+                $stmtSalida->bind_param('isiiii', $cant, $p_pres_observacion, $tipoMovimento, $id, $codigo, $lastId);
                 if (!$stmtSalida->execute()) {
                     $conn->rollback();
                     $result = [
@@ -261,8 +258,6 @@ class ReservaModel
                     return $result;
                 }
             }
-
-            
 
             $conn->commit();
             return [
