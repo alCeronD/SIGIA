@@ -75,19 +75,23 @@
                     <input id="elm_nombre" name="elm_nombre" type="text" placeholder="">
                 </div>
                 <div class="area">
+                    <input type="hidden" name="" id="selectAreaHidden">
                     <label for="elm_area_cod">Departamento * </label>
                     <select id="selectAreas" class="select_area" name="elm_area_cod">
                     </select>
                 </div>
 
+                <!-- Los elementos select disabled No capturan la data en el evento submit, se creo el evento hidden para pasar el valor del hidden al select, así validar que el usuario haya seleccionado o no la categoria. -->
                 <div class="categoria">
-                    <label for="categoriaSelect">Categorias:</label>
-                    <select name="categoriaSelect" id="selectCategorias" class=""></select>
+                    <input type="hidden" name="" id="selectCategoriasHidden" value="">
+                    <label for="categoriaSelect">Categoria:</label>
+                    <select name="elm_categoria" id="selectCategorias" class=""></select>
                 </div>
 
                 <div class="marca">
-                    <label for="selectMarca">Marcas:</label>
-                    <select class="" name="selectMarca" id="selectMarca"></select>
+                    <input type="hidden" name="" id="selectMarcaHidden" value="">
+                    <label for="elm_ma_cod">Marca:</label>
+                    <select class="" name="elm_ma_cod" id="selectMarca"></select>
                 </div>
 
                 <div class="tipoElemento">

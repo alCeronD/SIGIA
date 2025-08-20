@@ -1,6 +1,9 @@
 <?php
 
 // require_once __DIR__ . '/../../../helpers/session.php';
+
+use function PHPUnit\Framework\throwException;
+
 require_once __DIR__ . '/../../../helpers/const.php';
 include_once __DIR__ . '/../../../config/conn.php';
 include_once __DIR__ . '/../../../helpers/expg.php';
@@ -351,11 +354,12 @@ class ElementoModelo
         elm_uni_medida,
         elm_cod_tp_elemento,
         elm_cod_estado,
-        elm_area_cod
-    ) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?)";
+        elm_area_cod,
+        elm_ma_cod,
+        elm_categoria 
+    ) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?,?,?)";
 
         $stmt = $this->conn->prepare($sql);
-        $elm_cod_estado = 1; // valor fijo si aplica
 
         if (!$stmt) {
             return [
@@ -374,11 +378,11 @@ class ElementoModelo
         $tpElemento = (int) $datos['elm_cod_tp_elemento'];
         $estado = 1; // fijo
         $area = (int) $datos['elm_area_cod'];
-
-
+        $marca = (int) $datos['elm_ma_cod'];
+        $categoria = (int) $datos['elm_categoria'];
 
         $stmt->bind_param(
-            "ississiiii",
+            "ississiiiiii",
             $placa,
             $serie,
             $nombre,
@@ -388,7 +392,9 @@ class ElementoModelo
             $unidadMedida,
             $tpElemento,
             $estado,
-            $area
+            $area,
+            $marca,
+            $categoria
         );
 
         if (!$stmt->execute()) {
@@ -862,6 +868,61 @@ class ElementoModelo
                 'message'=> "error al ejecutar el procedimiento".$th->getMessage(),
                 'status'=> false,
                 'data'=> []
+            ];
+        }
+    }
+
+    public function validateSerie(String $serie = "")
+    {
+        try {
+
+            if (empty($serie)) {
+                throw new InvalidArgumentException("La serie no debe estar vacia");
+            }
+
+            $sql = "SELECT elm_serie FROM elementos WHERE elm_serie = ?";
+            $stmtSql = $this->conn->prepare($sql);
+            if (!$stmtSql) {
+                return [
+                    'status' => false,
+                    'message' => 'error al preparar la consulta' . $this->conn->error,
+                    'data' => []
+                ];
+            }
+
+            $stmtSql->bind_param("s", $serie);
+
+            if (!$stmtSql->execute()) {
+                return [
+                    'status' => false,
+                    'message' => 'error al preparar la consulta' . $this->conn->error,
+                    'data' => []
+                ];
+            }
+
+            $result = $stmtSql->get_result();
+            
+            $data = $result->num_rows > 0 ? $result->fetch_assoc()['elm_serie'] : "";
+            $this->conn->close();
+
+            return [
+                'data' => $data,
+                'message' => $data == "" ? "No hay serie " : "Serie encontrada",
+                'status' => $data == "" ? false : true
+            ];
+
+        } catch (InvalidArgumentException $f) {
+
+            return [
+                'data' => [],
+                'status' => false,
+                'message' => "error de serie" . $f->getMessage()
+            ];
+        } catch (Exception $e) {
+            return [
+                'data' => [],
+                'status' => false,
+                'message' => "error al ejecutar procedimiento " . $e->getMessage()
             ];
         }
     }

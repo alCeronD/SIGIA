@@ -59,7 +59,6 @@ class ElementosController
         }
         success('', $resultRow);
     }
-
     public function getPlacas(String $value = '')
     {
         $data = $this->modeloElemento->getAllPlacas();
@@ -68,7 +67,6 @@ class ElementosController
         }
         success('placas y seriales', $data);
     }
-
     //agregar elemento a la bd.
     public function addElement(array $data = [])
     {
@@ -78,12 +76,15 @@ class ElementosController
 
             // Valido si no se ha enviado nada en la serie para establecerla como NULL.
             if ($key == 'elm_serie' && empty($value))  $data['elm_serie'] = null;
+            if($key == 'elm_categoria' && empty($value)) $data['elm_categoria'] = (int) 1;
+            if($key == 'elm_ma_cod' && empty($value)) $data['elm_ma_cod'] = (int) 1;
         }
 
         if (!$result = $this->modeloElemento->insertarElemento($data)) {
             fail('error al ejecuutar proceso', $result);
         }
         success('registro adicionado con exito', $result);
+
     }
 
     public function getItems(String $action = '')
@@ -147,6 +148,40 @@ class ElementosController
         }
 
         success($result['message'], $result);
+    }
+
+    /**
+     * Summary of getResultValidateSerie - Función de controlador para capturar la respuesta de validar la disponibilidad de la serie digitada por el usuario, devolver respuesta al usuario, true, significa que existe el elemento en la base de datos, por ende, no debe de registrarse con esa serie, false si es false, no devolver nada.
+     * @param string $data
+     * @return void
+     */
+    public function getResultValidateSerie (String $serie = ""){
+        if(!$serie) fail('valor No definido', []);
+
+        $result = $this->modeloElemento->validateSerie($serie);
+        // Si el estatus es true, significa que si hay dato en la base de datos, y por ende, debe de mostrar mensaje de alerta indicando que no debe de registrar una serie ya existente.
+        //TODO: debo de modificar la forma de aplicar los response.
+        if ($result['status']) {
+
+            $response = [
+                'status' => false,
+                'message'=> "La serie ".$result['data']." ya está registrada en la base de datos",
+                'data' => $result
+            ];
+            http_response_code(200);
+            echo json_encode($response, JSON_PRETTY_PRINT);
+            exit();
+        }else{
+            $response = [
+                'status' => true,
+                'message' => 'Esta serie ya está registrada en la base de datos',
+                'data' => $result
+            ];
+            http_response_code(204);
+            echo json_encode($response, JSON_PRETTY_PRINT);
+            exit();
+        }
+
     }
 }
 
@@ -216,6 +251,14 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 }
 
                 break;
+
+
+                case 'validateSerie':
+                    $serie = (String) $_GET['data'];
+                    if (method_exists($elementosController, 'getResultValidateSerie')) {
+                        $elementosController->getResultValidateSerie($serie);
+                    }
+                    break;
 
 
             default:

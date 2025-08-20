@@ -13,6 +13,7 @@ import {
   replaceln,
   toastOptions,
   tooltipOptions,
+  mostrarConfirmacion
 } from "../utils/cases.js";
 import {
   validarCantidad,
@@ -122,6 +123,9 @@ function viewPlacaInputs(status = false) {
     elm_serie.removeAttribute("name");
     elm_placa.value = "";
     elm_serie.value = "";
+    searchPlaca.value = "";
+    serialPlacaAssoc.value = "";
+    tbodyPlacaResult.innerHTML = "";
   }
 }
 
@@ -170,7 +174,6 @@ function renderResultPlacas({ resultado = {}, status = false } = {}) {
     }
   }
 
-  // const placas =
   tbodyPlacaResult.innerHTML = "";
   let tr = document.createElement("tr");
   let tdCodigo = document.createElement("td");
@@ -190,7 +193,6 @@ function renderResultPlacas({ resultado = {}, status = false } = {}) {
   const checkboxPlacas = document.querySelectorAll(
     'input[name="serialCheckbox"]'
   );
-  console.log(checkboxPlacas);
   checkboxPlacas.forEach((checkPl) => {
     checkPl.addEventListener("change", (e) => {
       e.stopPropagation();
@@ -334,7 +336,6 @@ const renderElements = async ({
       "GET",
       parameters
     );
-    console.log(dataElements);
     let data = dataElements.data.data;
     pageGlobal = dataElements.data.cantidadPaginas;
     tbodyElements.innerHTML = "";
@@ -347,7 +348,6 @@ const renderElements = async ({
     if (page > pageGlobal) {
       return;
     }
-    // totalPages.innerText = "";
 
     const fragmentElements = document.createDocumentFragment();
     data.forEach((dta) => {
@@ -658,7 +658,7 @@ const renderSelectAreas = async (action = "", inputSelect) => {
   let dataResponse = response.data;
   inputSelect.innerHTML = "";
   const option = document.createElement("option");
-  option.value = 0;
+  option.value = "";
   option.textContent = "Seleccione un departamento";
   option.setAttribute("selected", "selected");
   option.setAttribute("disabled", "disabled");
@@ -684,7 +684,7 @@ const renderSelectCategorias = async (action = "", inputSelect) => {
   let categorias = response.data;
   inputSelect.innerHTML = "";
   const option = document.createElement("option");
-  option.value = 0;
+  option.value = "";
   option.textContent = "Seleccione una categoria";
   option.setAttribute("selected", "selected");
   option.setAttribute("disabled", "disabled");
@@ -736,27 +736,6 @@ const renderSelectPlacas = async (action = "") => {
   );
   return responsePlacas.data.data;
 };
-
-// Mensaje de confirmación.
-function mostrarConfirmacion(titulo, mensaje, callback) {
-  // Rellenar el contenido
-  document.getElementById("modalConfirmacionTitulo").textContent = titulo;
-  document.getElementById("modalConfirmacionMensaje").innerHTML = mensaje;
-
-  // Obtener instancia y abrir el modal
-  const modalElem = document.getElementById("modalConfirmacion");
-  const instance = M.Modal.getInstance(modalElem);
-  instance.open();
-
-  // Manejo de botones
-  const btnAceptar = document.getElementById("btnAceptar");
-  const btnCancelar = document.getElementById("btnCancelar");
-
-  // Limpiar cualquier listener anterior
-  btnAceptar.onclick = () => callback(true);
-  btnCancelar.onclick = () => callback(false);
-}
-
 /**
  * Realiza el proceso de páginado según los criterios (todos, consumibles o devolutivos)
  * y si hay una búsqueda activa.
@@ -904,11 +883,11 @@ function renderWithFilter() {
 }
 
 let timer;
-// También puedes buscar al escribir directamente
+// Campo de input busqueda para buscar elementos.
 inputBusqueda.addEventListener("keyup", function (e) {
   e.stopPropagation();
   const filtro = e.target.value.toLowerCase().trim();
-  // Reemplazamos el valor de time out para crear un debounce a la búsqueda, esto con el fin de realizar multiples peticiones.
+  // Reemplazamos el valor de time out para crear una pequeña tardanza a la búsqueda, esto con el fin de realizar multiples peticiones.
   clearTimeout(timer);
 
   if (filtro.length === 0) {
@@ -1013,38 +992,63 @@ const fieldLabels = {
   elm_existencia: "Existencia",
   elm_observacion: "Observaciones",
   elm_sugerencia: "Sugerencias",
-  elm_area_cod: "Area",
+  elm_area_cod: "Departamento",
+  elm_ma_cod: "Marca",
+  elm_categoria: "Categoria",
 };
 
 // Mapeo de elementos del formulario editar.
 const fieldLabelsEditar = {
   elm_cod: "Código del elemento",
+  elm_serie: "Serie del elemento",
   elm_nombre: "Nombre del elemento",
   elm_area_cod: "Departamento",
   elm_ma_cod: "Marca",
+  elm_categoria: "Categoria",
   elm_cod_tp_elemento: "Tipo de elemento",
   elm_existencia: "Existencia",
   elm_observacion: "Observación",
   elm_sugerencia: "Sugerencia",
-  //   searchPlaca: "Búsqueda de placa",
-  //   serialPlaca: "Serial asociado",
-  //   elm_placa: "Número de placa",
-  //   elm_serie: "Código de serie"
 };
 
-function checkObject(object, campos) {
-  const opcionalFielLabels = [
-    "elm_serie",
-    "elm_observacion",
-    "elm_sugerencia",
-    "descripcion_movimiento",
-  ];
+// Keys de los campos opcionales del formulario de editar.
+const opcionalFielLabelsEditar = [
+  "elm_serie",
+  "elm_observacion",
+  "elm_sugerencia",
+  "descripcion_movimiento",
+  "elm_cod"
+];
 
-  for (const key in object) {
-    if (Object.prototype.hasOwnProperty.call(object, key)) {
-      const element = object[key];
+// Keys de los campos opcionales del formulario de registrar
+const opcionalFielLabelsRegistrar = [
+  "elm_observacion",
+  "elm_sugerencia",
+  "elm_categoria",
+  "elm_ma_cod"
+];
+
+/**
+ * Description - Función para validar los campos obligatorios y opcionales del formulario
+ *
+ * @param {{ dataForm?: {}; campos?: {}; optionalInputs?: [];}} - Parámetros de la función
+ * @param {{}} [dataForm={}] - Objeto con la información del formulario
+ * @param {{}} [campos ={}] - Objeto con todos los campos del formulario junto a su name y nombre visual 
+ * @param {{}} [optionalsInput = []] - Arreglo con las keys del formulario NO OBLIGATORIAS.
+ * @returns {boolean}
+ */
+const checkObject = ({
+  dataForm = {},
+  campos = {},
+  optionalsInput = [],
+} = {}) => {
+
+  for (const key in dataForm) {
+    //Con call se asegura que aplique sobre el objeto dataForm y lo valide con la key, en donde key es un valor que está dentro del objeto, es una forma más robusta de ciclar el objeto y validar el key
+    if (Object.prototype.hasOwnProperty.call(dataForm, key)) {
+      const element = dataForm[key];
       // Valido si la key esta en el arreglo de campos opcionales, de ser así, omita el paso.
-      if (opcionalFielLabels.includes(key)) {
+      if (optionalsInput.includes(key)) {
         continue;
       }
 
@@ -1060,13 +1064,43 @@ function checkObject(object, campos) {
   }
 
   return true;
-}
+};
 
 const checkboxTp = document.querySelectorAll(
   'input[name="elm_cod_tp_elemento"]'
 );
 function validateValueChecked(inputRadio) {
   return Array.from(inputRadio).some((radio) => radio.checked);
+}
+
+/**
+ * Validar la serie o codigo que se este digitando por el usuario para evitar duplicados
+ *
+ * @param {{ action?: string; data?: {}; }} [param0={}] 
+ * @param {string} [action=""] 
+ * @param {{}} [data=""] 
+ */
+const validateDisponibilidad = async ({action = "", data = ""}={})=>{
+  if (!data && !action ) {
+    return;
+  }
+
+  let parameters = {};
+
+  parameters = { action, data };
+  const responseValidate = await getData("modules/elementos/controller/elementosController.php", "GET", parameters);
+  // Serie No existe, es decir, disponible para su creación
+  if(responseValidate.status === 204) return true;
+
+  // Serie existe, es decir, no disponible para su creación.
+  if (!responseValidate.status) {
+    initAlert(responseValidate.message, "info", toastOptions);
+    return false;
+  }
+
+  // Retornamos en esta sección false para esperar que siempre lo falle, es decir, no disponible para su creación.
+  return false;
+
 }
 
 //Abrir modal Registrar elemento
@@ -1078,29 +1112,42 @@ btnAddModalElements.addEventListener("click", (e) => {
 });
 
 // Enviar datos del formulario.
-addElementForm.addEventListener("submit", (e) => {
+addElementForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   e.stopPropagation();
 
   const formElements = new FormData(e.target);
   const dataObj = Object.fromEntries(formElements.entries());
   delete dataObj.placaRadio;
-  let data = dataObj;
 
+  // Capturo los valores de los select marca, categoria y departamento.
+  const selectCategoriasHidden = document.querySelector("#selectCategoriasHidden");
+  const selectCategorias = document.querySelector('#selectCategorias');
+  selectCategoriasHidden.value = selectCategorias.value;
+
+  const selectMarcasHidden = document.querySelector('#selectMarcaHidden');
+  const selectMarcas = document.querySelector('#selectMarca');
+  selectMarcasHidden.value = selectMarcas.value;
+
+  const selectAreaHidden = document.querySelector('#selectAreaHidden');
+  const selectAreas = document.querySelector('#selectAreas');
+  selectAreaHidden.value = selectAreas.value;
+
+  // Agrego los valores seleccionados al objeto.
+  dataObj["elm_ma_cod"] = selectMarcasHidden.value;
+  dataObj["elm_categoria"] = selectCategoriasHidden.value;
+  dataObj["elm_area_cod"] = selectAreaHidden.value;
+    // Validar si la opción asociar placa o nueva placa ha sido seleccionado.
   if (!validateValueChecked(nuevaPlaca)) {
     initAlert(
-      "Debe seleccionar una opción para registrar la placa.",
+      "Debe seleccionar una opción de asociar placa o elemento con placa.",
       "warning",
       toastOptions
     );
     return;
   }
 
-  // valido que los campos del formulario obligatorios esten validados.
-  if (!checkObject(dataObj, fieldLabels)) {
-    return;
-  }
-
+    // Validar si la opción tipo de elemento este seleccionada.
   if (!validateValueChecked(checkboxTp)) {
     initAlert(
       "El tipo de elemento debe ser seleccionado",
@@ -1110,6 +1157,14 @@ addElementForm.addEventListener("submit", (e) => {
     return;
   }
 
+  if (!checkObject({dataForm:dataObj,campos:fieldLabels,optionalsInput:opcionalFielLabelsRegistrar})) {
+    return;
+  }
+
+  // Valido la disponibilidad y niego en caso de que el elemento ya este en la bd.
+  const isDisponibleSerie = await validateDisponibilidad({action: "validateSerie", data: dataObj.elm_serie});
+  if(!isDisponibleSerie) return;
+
   mostrarConfirmacion(
     "Registrar elemento",
     "¿Estás seguro de registrar este elemento?",
@@ -1118,13 +1173,14 @@ addElementForm.addEventListener("submit", (e) => {
         if (!respuesta) {
           addElementModal.close();
           addElementForm.reset();
+          return;
         }
         //La respuesta puedo tranformarla en una función generica.
         const responseAddElement = await sendData(
           "modules/elementos/controller/elementosController.php",
           "POST",
           "registrar",
-          data
+          dataObj
         );
 
         if (!responseAddElement.status) {
@@ -1132,7 +1188,7 @@ addElementForm.addEventListener("submit", (e) => {
           return;
         }
 
-        initAlert("Elemento agreado exitosamente", "succes", {
+        initAlert("Elemento agreado exitosamente", "success", {
           toastOptions,
         });
         addElementModal.close();
@@ -1146,7 +1202,6 @@ addElementForm.addEventListener("submit", (e) => {
     }
   );
 
-  // Hacer una validación antes del envio, si el tipo de elemento seleccionado es consumible y en las opciones del select sea diferente de la primera y su cantidad sea mayor a 1.
 });
 
 // Formulario del modal editarElemento
@@ -1159,11 +1214,14 @@ editarElementForm.addEventListener("submit", (e) => {
   const formUpdate = new FormData(e.target);
   const dataObj = Object.fromEntries(formUpdate.entries());
   let data = dataObj;
-  if (!checkObject(dataObj, fieldLabelsEditar)) return;
+  console.log(dataObj);
+  // if (!checkObject(dataObj, fieldLabelsEditar)) return;
+  if (!checkObject({dataForm:dataObj,campos:fieldLabelsEditar,optionalsInput:opcionalFielLabelsEditar})) return;
   // Estos 3 elementos los estoy por ahora, borrando pero les daremos utilidad.
   delete dataObj["elm_serie"];
   delete dataObj["serialPlaca"];
   delete dataObj["elm_uni_medida_select"];
+
 
   mostrarConfirmacion(
     "Guardar cambios",
@@ -1357,14 +1415,16 @@ closeModal(modalEditarElemento, cerrarModalEditar);
 
 // Formulario del modal addElement
 const modalForm = document.querySelector("#addElementForm");
+
 document.addEventListener("DOMContentLoaded", () => {
-  //Inicializo los select.
   //Renderizado de los elementos
   renderElements({ type: currentType });
-
+  
+  //Inicializo los select.
   const selectAreas = document.querySelector("#selectAreas");
   const selectCategorias = document.querySelector("#selectCategorias");
   const selectMarcas = document.querySelector("#selectMarca");
+  
   // Inicializar select de las placas ya registradas
   const elemsSelect = document.querySelector("#placaAssoc");
 

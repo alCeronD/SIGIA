@@ -21,6 +21,13 @@ export const validationRules = {
   }
 };
 
+
+/**
+ * Description - Función para validar que la placa cumpla con las reglas de solo Números.
+ *
+ * @param {*} placa - Valor de la placa.
+ * @returns {boolean} - True or false dependiendo del valor enviado como parámetro. 
+ */
 export const validatePlaca = (placa) => {
   const regex = validationRules.placa.regex;
   return regex.test(placa);
