@@ -484,7 +484,7 @@ td {
 
   .table-responsive,
   table {
-    display: block;
+    /* display: block; */
     overflow-x: auto;
     /* white-space: nowrap; */
   }
@@ -533,7 +533,7 @@ td {
   .btn.blue,
   .btnForm {
     font-size: 12px;
-    padding: 0.5rem;
+    /* padding: 0.5rem; */
     width: 100% !important;
   }
 }

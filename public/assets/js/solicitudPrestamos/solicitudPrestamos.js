@@ -63,11 +63,141 @@ function initDatepickers() {
 // PAGINACIÓN Y FILTRADO - DEVOLUTIVOS
 /////////////////////////////////
 
+// function initFiltroDevolutivos() {
+//   const filtroArea = document.getElementById("filtro_area_modal");
+//   const paginacion = document.getElementById("paginacion");
+//   let filasOriginales = [];
+//   let filasFiltradas = [];
+
+//   function inicializarFilas() {
+//     filasOriginales = Array.from(
+//       document.querySelectorAll("#tabla-elementos-devolutivos-modal tr")
+//     );
+//     filasFiltradas = [...filasOriginales];
+//     generarPaginacion();
+//   }
+
+//   function actualizarTabla(pagina) {
+//     filasOriginales.forEach((fila) => (fila.style.display = "none"));
+//     const inicio = (pagina - 1) * itemsPorPagina;
+//     const fin = inicio + itemsPorPagina;
+//     filasFiltradas.slice(inicio, fin).forEach((fila) => (fila.style.display = "table-row"));
+//   }
+
+//   // function generarPaginacion() {
+//   //   paginacion.innerHTML = "";
+//   //   const totalPaginas = Math.ceil(filasFiltradas.length / itemsPorPagina);
+//   //   for (let i = 1; i <= totalPaginas; i++) {
+//   //     const li = document.createElement("li");
+//   //     li.classList.add("waves-effect");
+//   //     li.innerHTML = `<a href="#!">${i}</a>`;
+//   //     li.addEventListener("click", (e) => {
+//   //       e.preventDefault();
+//   //       actualizarTabla(i);
+//   //       document.querySelectorAll("#paginacion li").forEach((el) => el.classList.remove("active"));
+//   //       li.classList.add("active");
+//   //     });
+//   //     paginacion.appendChild(li);
+//   //   }
+
+//   //   if (totalPaginas > 0) {
+//   //     paginacion.firstChild.classList.add("active");
+//   //     actualizarTabla(1);
+//   //   }
+//   // }
+//   function generarPaginacion() {
+//     paginacion.innerHTML = "";
+//     const totalPaginas = Math.ceil(filasFiltradas.length / itemsPorPagina);
+
+//     // máximo de páginas visibles en la barra
+//     const maxVisible = 5;
+//     let currentPage = 1;
+
+//     function renderPagination() {
+//       paginacion.innerHTML = "";
+
+//       // calcular inicio y fin de ventana
+//       let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+//       let endPage = Math.min(totalPaginas, startPage + maxVisible - 1);
+
+//       // corregir cuando estamos cerca del final
+//       if (endPage - startPage < maxVisible - 1) {
+//         startPage = Math.max(1, endPage - maxVisible + 1);
+//       }
+
+//       // botón Anterior
+//       if (currentPage > 1) {
+//         const liPrev = document.createElement("li");
+//         liPrev.classList.add("waves-effect");
+//         liPrev.innerHTML = `<a href="#!"><i class="material-icons">chevron_left</i></a>`;
+//         liPrev.addEventListener("click", () => {
+//           currentPage--;
+//           actualizarTabla(currentPage);
+//           renderPagination();
+//         });
+//         paginacion.appendChild(liPrev);
+//       }
+
+//       // números de página
+//       for (let i = startPage; i <= endPage; i++) {
+//         const li = document.createElement("li");
+//         li.classList.add("waves-effect");
+//         if (i === currentPage) li.classList.add("active");
+//         li.innerHTML = `<a href="#!">${i}</a>`;
+//         li.addEventListener("click", () => {
+//           currentPage = i;
+//           actualizarTabla(currentPage);
+//           renderPagination();
+//         });
+//         paginacion.appendChild(li);
+//       }
+
+//       // botón Siguiente
+//       if (currentPage < totalPaginas) {
+//         const liNext = document.createElement("li");
+//         liNext.classList.add("waves-effect");
+//         liNext.innerHTML = `<a href="#!"><i class="material-icons">chevron_right</i></a>`;
+//         liNext.addEventListener("click", () => {
+//           currentPage++;
+//           actualizarTabla(currentPage);
+//           renderPagination();
+//         });
+//         paginacion.appendChild(liNext);
+//       }
+//     }
+
+//     if (totalPaginas > 0) {
+//       actualizarTabla(currentPage);
+//       renderPagination();
+//     }
+//   }
+
+
+//   if (filtroArea) {
+//     filtroArea.addEventListener("change", () => {
+//       const selectedArea = filtroArea.value;
+//       filasFiltradas = filasOriginales.filter((fila) => {
+//         const area = fila.getAttribute("data-area");
+//         return selectedArea === "" || area === selectedArea;
+//       });
+//       generarPaginacion();
+//     });
+//   }
+
+//   const modalTrigger = document.querySelector(".modal-trigger");
+//   if (modalTrigger) {
+//     modalTrigger.addEventListener("click", () => {
+//       setTimeout(() => inicializarFilas(), 100);
+//     });
+//   }
+// }
+
 function initFiltroDevolutivos() {
   const filtroArea = document.getElementById("filtro_area_modal");
   const paginacion = document.getElementById("paginacion");
   let filasOriginales = [];
   let filasFiltradas = [];
+  let currentPage = 1; // 👈 se mantiene global para este init
 
   function inicializarFilas() {
     filasOriginales = Array.from(
@@ -87,22 +217,64 @@ function initFiltroDevolutivos() {
   function generarPaginacion() {
     paginacion.innerHTML = "";
     const totalPaginas = Math.ceil(filasFiltradas.length / itemsPorPagina);
-    for (let i = 1; i <= totalPaginas; i++) {
-      const li = document.createElement("li");
-      li.classList.add("waves-effect");
-      li.innerHTML = `<a href="#!">${i}</a>`;
-      li.addEventListener("click", (e) => {
-        e.preventDefault();
-        actualizarTabla(i);
-        document.querySelectorAll("#paginacion li").forEach((el) => el.classList.remove("active"));
-        li.classList.add("active");
-      });
-      paginacion.appendChild(li);
+
+    const maxVisible = 5;
+
+    function renderPagination() {
+      paginacion.innerHTML = "";
+
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+      let endPage = Math.min(totalPaginas, startPage + maxVisible - 1);
+
+      if (endPage - startPage < maxVisible - 1) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+      }
+
+      // botón Anterior
+      if (currentPage > 1) {
+        const liPrev = document.createElement("li");
+        liPrev.classList.add("waves-effect");
+        liPrev.innerHTML = `<a href="#!"><i class="material-icons">chevron_left</i></a>`;
+        liPrev.addEventListener("click", () => {
+          currentPage--;
+          actualizarTabla(currentPage);
+          renderPagination();
+        });
+        paginacion.appendChild(liPrev);
+      }
+
+      // números de página
+      for (let i = startPage; i <= endPage; i++) {
+        const li = document.createElement("li");
+        li.classList.add("waves-effect");
+        if (i === currentPage) li.classList.add("active");
+        li.innerHTML = `<a href="#!">${i}</a>`;
+        li.addEventListener("click", () => {
+          currentPage = i;
+          actualizarTabla(currentPage);
+          renderPagination();
+        });
+        paginacion.appendChild(li);
+      }
+
+      // botón Siguiente
+      if (currentPage < totalPaginas) {
+        const liNext = document.createElement("li");
+        liNext.classList.add("waves-effect");
+        liNext.innerHTML = `<a href="#!"><i class="material-icons">chevron_right</i></a>`;
+        liNext.addEventListener("click", () => {
+          currentPage++;
+          actualizarTabla(currentPage);
+          renderPagination();
+        });
+        paginacion.appendChild(liNext);
+      }
     }
 
     if (totalPaginas > 0) {
-      paginacion.firstChild.classList.add("active");
-      actualizarTabla(1);
+      if (currentPage > totalPaginas) currentPage = totalPaginas; // 👈 evitar error si filtras y quedan menos páginas
+      actualizarTabla(currentPage);
+      renderPagination();
     }
   }
 
@@ -113,6 +285,7 @@ function initFiltroDevolutivos() {
         const area = fila.getAttribute("data-area");
         return selectedArea === "" || area === selectedArea;
       });
+      currentPage = 1; // 👈 reset solo cuando cambias filtro
       generarPaginacion();
     });
   }
@@ -124,6 +297,7 @@ function initFiltroDevolutivos() {
     });
   }
 }
+
 
 /////////////////////////////////
 // ARREGLOS DE ELEMENTOS
@@ -268,6 +442,67 @@ function initFormularioSolicitud() {
 // PAGINACIÓN CONSUMIBLES
 /////////////////////////////////
 
+// function initFiltroConsumibles() {
+//   const filtroArea = document.getElementById("filtro_area_modal_consumibles");
+//   const paginacion = document.getElementById("paginacion_consumibles");
+//   const filasOriginales = Array.from(
+//     document.querySelectorAll("#tabla-elementos-consumibles-modal tr")
+//   );
+//   let filasFiltradas = [...filasOriginales];
+
+//   function actualizarTabla(pagina) {
+//     filasOriginales.forEach((fila) => (fila.style.display = "none"));
+//     const inicio = (pagina - 1) * itemsPorPagina;
+//     const fin = inicio + itemsPorPagina;
+//     filasFiltradas.slice(inicio, fin).forEach((fila) => (fila.style.display = "table-row"));
+//   }
+
+//   // function generarPaginacion() {
+//   //   paginacion.innerHTML = "";
+//   //   const totalPaginas = Math.ceil(filasFiltradas.length / itemsPorPagina);
+//   //   for (let i = 1; i <= totalPaginas; i++) {
+//   //     const li = document.createElement("li");
+//   //     li.classList.add("waves-effect");
+//   //     li.innerHTML = `<a href="#!">${i}</a>`;
+//   //     li.addEventListener("click", (e) => {
+//   //       e.preventDefault();
+//   //       actualizarTabla(i);
+//   //       document
+//   //         .querySelectorAll("#paginacion_consumibles li")
+//   //         .forEach((el) => el.classList.remove("active"));
+//   //       li.classList.add("active");
+//   //     });
+//   //     paginacion.appendChild(li);
+//   //   }
+
+//   //   if (totalPaginas > 0) {
+//   //     paginacion.firstChild.classList.add("active");
+//   //     actualizarTabla(1);
+//   //   }
+//   // }
+
+//   if (filtroArea) {
+//     filtroArea.addEventListener("change", () => {
+//       const selectedArea = filtroArea.value;
+//       filasFiltradas = filasOriginales.filter((fila) => {
+//         const area = fila.getAttribute("data-area");
+//         return selectedArea === "" || area === selectedArea;
+//       });
+//       generarPaginacion();
+//     });
+//   }
+
+//   const modalTrigger = document.querySelector('a[href="#modalSeleccionConsumibles"]');
+//   if (modalTrigger) {
+//     modalTrigger.addEventListener("click", () => {
+//       setTimeout(() => {
+//         filasFiltradas = [...filasOriginales];
+//         generarPaginacion();
+//       }, 100);
+//     });
+//   }
+// }
+
 function initFiltroConsumibles() {
   const filtroArea = document.getElementById("filtro_area_modal_consumibles");
   const paginacion = document.getElementById("paginacion_consumibles");
@@ -275,35 +510,77 @@ function initFiltroConsumibles() {
     document.querySelectorAll("#tabla-elementos-consumibles-modal tr")
   );
   let filasFiltradas = [...filasOriginales];
+  let currentPage = 1; // 👈 variable propia para consumibles
 
   function actualizarTabla(pagina) {
     filasOriginales.forEach((fila) => (fila.style.display = "none"));
     const inicio = (pagina - 1) * itemsPorPagina;
     const fin = inicio + itemsPorPagina;
-    filasFiltradas.slice(inicio, fin).forEach((fila) => (fila.style.display = "table-row"));
+    filasFiltradas.slice(inicio, fin).forEach(
+      (fila) => (fila.style.display = "table-row")
+    );
   }
 
   function generarPaginacion() {
     paginacion.innerHTML = "";
     const totalPaginas = Math.ceil(filasFiltradas.length / itemsPorPagina);
-    for (let i = 1; i <= totalPaginas; i++) {
-      const li = document.createElement("li");
-      li.classList.add("waves-effect");
-      li.innerHTML = `<a href="#!">${i}</a>`;
-      li.addEventListener("click", (e) => {
-        e.preventDefault();
-        actualizarTabla(i);
-        document
-          .querySelectorAll("#paginacion_consumibles li")
-          .forEach((el) => el.classList.remove("active"));
-        li.classList.add("active");
-      });
-      paginacion.appendChild(li);
+    const maxVisible = 5;
+
+    function renderPagination() {
+      paginacion.innerHTML = "";
+
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+      let endPage = Math.min(totalPaginas, startPage + maxVisible - 1);
+
+      if (endPage - startPage < maxVisible - 1) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+      }
+
+      // Botón Anterior
+      if (currentPage > 1) {
+        const liPrev = document.createElement("li");
+        liPrev.classList.add("waves-effect");
+        liPrev.innerHTML = `<a href="#!"><i class="material-icons">chevron_left</i></a>`;
+        liPrev.addEventListener("click", () => {
+          currentPage--;
+          actualizarTabla(currentPage);
+          renderPagination();
+        });
+        paginacion.appendChild(liPrev);
+      }
+
+      // Botones numéricos
+      for (let i = startPage; i <= endPage; i++) {
+        const li = document.createElement("li");
+        li.classList.add("waves-effect");
+        if (i === currentPage) li.classList.add("active");
+        li.innerHTML = `<a href="#!">${i}</a>`;
+        li.addEventListener("click", () => {
+          currentPage = i;
+          actualizarTabla(currentPage);
+          renderPagination();
+        });
+        paginacion.appendChild(li);
+      }
+
+      // Botón Siguiente
+      if (currentPage < totalPaginas) {
+        const liNext = document.createElement("li");
+        liNext.classList.add("waves-effect");
+        liNext.innerHTML = `<a href="#!"><i class="material-icons">chevron_right</i></a>`;
+        liNext.addEventListener("click", () => {
+          currentPage++;
+          actualizarTabla(currentPage);
+          renderPagination();
+        });
+        paginacion.appendChild(liNext);
+      }
     }
 
     if (totalPaginas > 0) {
-      paginacion.firstChild.classList.add("active");
-      actualizarTabla(1);
+      if (currentPage > totalPaginas) currentPage = totalPaginas;
+      actualizarTabla(currentPage);
+      renderPagination();
     }
   }
 
@@ -314,20 +591,27 @@ function initFiltroConsumibles() {
         const area = fila.getAttribute("data-area");
         return selectedArea === "" || area === selectedArea;
       });
+      currentPage = 1; // 👈 reset al cambiar filtro
       generarPaginacion();
     });
   }
 
-  const modalTrigger = document.querySelector('a[href="#modalSeleccionConsumibles"]');
+  const modalTrigger = document.querySelector(
+    'a[href="#modalSeleccionConsumibles"]'
+  );
   if (modalTrigger) {
     modalTrigger.addEventListener("click", () => {
       setTimeout(() => {
         filasFiltradas = [...filasOriginales];
+        currentPage = 1; // 👈 reset cuando se abre modal
         generarPaginacion();
       }, 100);
     });
   }
 }
+
+
+
 
 /////////////////////////////////
 // VALIDACIÓN INPUT NUMÉRICO
