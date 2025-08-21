@@ -22,15 +22,15 @@ import { getData, sendData } from "../utils/fetch.js";
 const width = screen.width
 const height = screen.height;
 
-console.log(width, height)
-
+// console.log(width, height);
 
 // tipos de prestamos
 const typesPrestamosLoan  ={
   all: 'all',
   validate: 'validate',
   done: 'done',
-  toValidate: 'toValidate'
+  toValidate: 'toValidate',
+  cancel: 'cancel'
 };
 
 // Selector del filtro.
@@ -105,6 +105,7 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     return;
   }
   if (pagesReserva > pages) return;
+
   tbodyReservaConsult.innerHTML = "";
   data.forEach((dta) => {
     codigo = dta.codigo;
@@ -340,7 +341,6 @@ function resetModalValidate(showTable = false) {
   // Paso 6 Limpiar tabla de detalles
   BodydetailReserva.innerHTML = '';
 }
-
 
 /** Description - Función para limpiar los campos del formulario del modal de finalizar prestamo */
 function resetModalSalida() {
@@ -1017,6 +1017,8 @@ closeModal(modalValidate, btnCloseValidte, () => {
     }
   });
 });
+
+
 /**
  * Paginación de los prestamos.
  *
@@ -1030,7 +1032,13 @@ previewReserva.addEventListener("click", (e) => {
   //Si es 1, el sale del evento y no ejecuta Más.
   if (pagesReserva <= 1) return;
   currentPage = currentPage - 1;
-  renderReservas({page:currentPage, type:valueSelect});
+
+    renderReservas({page:currentPage, type:valueSelect});
+    console.log("valor de if preview");
+
+  // renderReservas({page:currentPage, type:valueSelect});
+
+
 });
 
 nextReserva.addEventListener("click", (e) => {
@@ -1040,8 +1048,15 @@ nextReserva.addEventListener("click", (e) => {
   //Si el numero de Páginas enviado es mayor o igual al numero de paginas que tiene los registros, no haga petición.
   if (pagesReserva >= pages) return;
   currentPage = currentPage + 1;
+
+   
   renderReservas({page:currentPage, type:valueSelect});
+  
+
+
+  // renderReservas({page:currentPage, type:valueSelect});
 });
+
 let valueSelect;
 filtroTipoReserva.addEventListener('change', (e)=>{
   e.preventDefault();
@@ -1050,12 +1065,16 @@ filtroTipoReserva.addEventListener('change', (e)=>{
   valueSelect = e.target.value;
 
   let mapTypeLoan = typesPrestamosLoan[valueSelect] ?? 'all';
-  if (mapTypeLoan) {
-    renderReservas({page: currentPage, type:mapTypeLoan});
-  }else{
-    renderReservas({page:1});
+  // Valido si es mayor la cantidad de Páginas en base al filtro seleccionado, si es mayor, lo reinicio a 1 para que evitar errores de renderizado.
+  if (pages >= currentPage) {
+    currentPage = 1;
   }
+  renderReservas({page: currentPage, type:mapTypeLoan});
+  
+
 });
+
+
 closeModal(modalDetail, btnCloseElements);
 document.addEventListener("DOMContentLoaded", () => {
   renderReservas();
@@ -1076,6 +1095,7 @@ document.addEventListener("DOMContentLoaded", () => {
     - Validado: El prestamo ha sido validado y los elementos está en posesión del usuario
     - Por validar: Elementos en espera por dar salida y entregar insumos al usuario
     - Finalizado: Los elementos han sido devueltos al almacén
+    - Cancelado: Se cancelo por el usuario o el sistema ya que no se dió salida en la fecha esperada.
     `,
     "top"
   );
@@ -1090,7 +1110,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initTooltip(
     helpFechaRegistro,
     tooltipOptions,
-    `Fecha del proceso agregado`,
+    `Fecha del proceso agregado a la base de datos`,
     "top"
   );
 

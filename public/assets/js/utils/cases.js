@@ -12,27 +12,25 @@ export const closeModal = (modal, btn, onCloseCallback) => {
     return;
   }
 
-  const executeClose =()=>{
-         //Valido si el tipo de lo que voy a ejecutar es una función.
-      if (typeof modal.close === 'function') {
-        modal.close();
-        
-      }else{
-        //En caso de que no sea una función, esta debe de ejecutar si o si cambiar el style del modal de flex a none, para que no sea visible.
-        modal.style.display = 'none';
-      }
+  const executeClose = () => {
+    //Valido si el tipo de lo que voy a ejecutar es una función.
+    if (typeof modal.close === "function") {
+      modal.close();
+    } else {
+      //En caso de que no sea una función, esta debe de ejecutar si o si cambiar el style del modal de flex a none, para que no sea visible.
+      modal.style.display = "none";
+    }
     //Si el tipo de la función closeCallback y se paso por parámetro, ejecutarla.
-    if (typeof onCloseCallback === 'function') {
+    if (typeof onCloseCallback === "function") {
       onCloseCallback();
     }
   };
 
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-  btn.addEventListener('click', (e)=>{
-      e.preventDefault();
-      e.stopPropagation();
-
-      executeClose();
+    executeClose();
   });
 };
 
@@ -60,18 +58,17 @@ export const createBtn = (valueClass = "") => {
   return button;
 };
 
-export const addClassItem = (item, valuesClass = {})=>{
-
+export const addClassItem = (item, valuesClass = {}) => {
   if (!valuesClass) {
     return;
   }
 
   //Como objeto, puedo buscar una forma de hacerlo con arreglo.
-  Object.values(valuesClass).forEach((val)=>{
+  Object.values(valuesClass).forEach((val) => {
     // item.classList.add(val);
-    val.split(" ").forEach(cl => item.classList.add(cl));
+    val.split(" ").forEach((cl) => item.classList.add(cl));
   });
-}
+};
 
 //Crear el horario de la reserva.
 export const instanceDateTime = (
@@ -271,13 +268,12 @@ export const opcionesDatepicker = {
   onDraw: function () {},
 };
 
-
 /**
  * Description - Función para formatear la fecha del input del formulario, solo sirven para materialize.
  *
- * @param {*} fecha 
- * @param {boolean} [isNewDate=false] 
- * @returns {*} 
+ * @param {*} fecha
+ * @param {boolean} [isNewDate=false]
+ * @returns {*}
  */
 export const dateISOFormat = (fecha, isNewDate = false) => {
   if (!fecha) {
@@ -285,26 +281,25 @@ export const dateISOFormat = (fecha, isNewDate = false) => {
   }
   const [year, day, month] = fecha.split(" ");
   const months = {
-  Ene: "01",
-  Feb: "02",
-  Mar: "03",
-  Abr: "04",
-  May: "05",
-  Jun: "06",
-  Jul: "07",
-  Ago: "08",
-  Sep: "09",
-  Oct: "10",
-  Nov: "11",
-  Dic: "12",
-};
+    Ene: "01",
+    Feb: "02",
+    Mar: "03",
+    Abr: "04",
+    May: "05",
+    Jun: "06",
+    Jul: "07",
+    Ago: "08",
+    Sep: "09",
+    Oct: "10",
+    Nov: "11",
+    Dic: "12",
+  };
 
   const monthFormate = months[month];
   const newDate = `${year}-${monthFormate}-${day.padStart(2, "0")}`;
   //Con padStart se rellena el valor en caso de que no hayan dos digitos, si hay 1 solo el le coloca un 0, si hay un valor de 10 en adelante, no hace nada y devuelve el nro 10.
   return isNewDate ? new Date(newDate) : newDate;
 };
-
 
 /**
  * Objeto con las opciones de las alertas.
@@ -346,8 +341,6 @@ export const initAlert = (message = "", type = "info", options = {}) => {
     toastElements[0].remove();
     return;
   }
-
-
 };
 
 /**
@@ -369,7 +362,13 @@ export const typeLoans = {
 };
 
 //Con esta función defino la estructura para FINALIZAR EL PRESTAMO y VALIDAR LA SOLICITUD., es cuando el prestamo me ya va a ser devuelto.
-export const setReserva = (attribute = "", data = {}, elementos = {},target,action = "finalizar") => {
+export const setReserva = (
+  attribute = "",
+  data = {},
+  elementos = {},
+  target,
+  action = "finalizar"
+) => {
   const codigoReserva = Number(target.getAttribute([`${attribute}`]));
   const dataResult = data.find((dta) => Number(dta.codigo) === codigoReserva);
 
@@ -380,38 +379,37 @@ export const setReserva = (attribute = "", data = {}, elementos = {},target,acti
     return {
       codigoReserva: reservaConElementos.reserva.codigo,
       elementos: elementosDeReserva,
-      dataUsuario: dataResult
-    }
-
+      dataUsuario: dataResult,
+    };
   }
 };
 
 /**
  * Description Función para crear los checkbox y renderizarlos dinámicamente, se envía como parámetro el serial y placa y se adjunta como data en el checkbox, esta función solo funciona si se está usando checkboxes de materialize...
  *
- * @param {*} seriales 
- * @param {*} placa 
- * @returns {*} 
+ * @param {*} seriales
+ * @param {*} placa
+ * @returns {*}
  */
 export const createCheckbox = (seriales, placa) => {
-  let p = document.createElement('p');
-  let label = document.createElement('label');
-  let input = document.createElement('input');
-  let span = document.createElement('span');
+  let p = document.createElement("p");
+  let label = document.createElement("label");
+  let input = document.createElement("input");
+  let span = document.createElement("span");
 
-  input.setAttribute('type', 'checkbox');
-  input.setAttribute('name', 'serialCheckbox');
-  input.classList.add('filled-in'); 
-  
+  input.setAttribute("type", "checkbox");
+  input.setAttribute("name", "serialCheckbox");
+  input.classList.add("filled-in");
+
   if (Array.isArray(seriales)) {
-    input.setAttribute('data-seriales', JSON.stringify(seriales));
-    input.setAttribute('data-placa',JSON.stringify(placa));
+    input.setAttribute("data-seriales", JSON.stringify(seriales));
+    input.setAttribute("data-placa", JSON.stringify(placa));
 
-     const ultimaSerie = seriales[seriales.length - 1]?.serie || '';
+    const ultimaSerie = seriales[seriales.length - 1]?.serie || "";
     span.innerText = `Asociar desde ${ultimaSerie}`;
   } else {
-    input.setAttribute('data-seriales', seriales || '');
-    span.innerText = 'Crear serial';
+    input.setAttribute("data-seriales", seriales || "");
+    span.innerText = "Crear serial";
   }
 
   label.appendChild(input);
@@ -425,9 +423,9 @@ export const createCheckbox = (seriales, placa) => {
  * Description Función para capturar el selector y devolver su selector.
  *
  * @param {*} selector - Nombre del selector que se requiere capturar
- * @returns {*} 
+ * @returns {*}
  */
-export const getSelector = (selector) =>{
+export const getSelector = (selector) => {
   const el = document.querySelector(selector);
 
   if (!el) {
@@ -435,32 +433,40 @@ export const getSelector = (selector) =>{
   }
 
   return el;
-}
+};
 
 // Función para crear un checkbox generico con materialize, esta función debo implementar un ciclo en caso de que se requiera adicionar más clases o más data-*
-export const createCheckboxGeneric = ({ text = '', id = '', name = '', value = '', checkedValue = false, classItem, data = ''} = {}) => {
-  const div = document.createElement('div');
-  div.classList.add('checkbox-container');
+export const createCheckboxGeneric = ({
+  text = "",
+  id = "",
+  name = "",
+  value = "",
+  checkedValue = false,
+  classItem,
+  data = "",
+} = {}) => {
+  const div = document.createElement("div");
+  div.classList.add("checkbox-container");
 
-  const labelText = document.createElement('span');
+  const labelText = document.createElement("span");
   labelText.innerText = text;
 
-  const labelCheckbox = document.createElement('label');
-  const inputCheckbox = document.createElement('input');
-  inputCheckbox.setAttribute('type', 'checkbox');
+  const labelCheckbox = document.createElement("label");
+  const inputCheckbox = document.createElement("input");
+  inputCheckbox.setAttribute("type", "checkbox");
   if (id) inputCheckbox.id = id;
   if (name) inputCheckbox.name = name;
   if (value) inputCheckbox.value = value;
   if (checkedValue) inputCheckbox.checked = checkedValue;
   if (classItem) inputCheckbox.classList.add(classItem);
-  if(data) inputCheckbox.setAttribute('data-idModulo', data);
+  if (data) inputCheckbox.setAttribute("data-idModulo", data);
 
-  const span = document.createElement('span'); // Materialize uses this
+  const span = document.createElement("span"); // Materialize uses this
 
   labelCheckbox.appendChild(inputCheckbox);
   labelCheckbox.appendChild(span);
 
-  div.appendChild(labelText);     // Texto a la izquierda
+  div.appendChild(labelText); // Texto a la izquierda
   div.appendChild(labelCheckbox); // Checkbox a la derecha
 
   return div;
@@ -472,9 +478,9 @@ export const createCheckboxGeneric = ({ text = '', id = '', name = '', value = '
  * @param {*} formData - new Form Data del formulario
  * @param {*} campos  - Campos opcionales en caso de que no sean obligatorios para el usuario
  * @param {*} mapForm - Objeto del formulario para validar que la información del Form Data tenga información.
- * @returns {boolean} 
+ * @returns {boolean}
  */
-export const validateFormData = ({formData, campos, mapForm}={}) =>{
+export const validateFormData = ({ formData, campos, mapForm } = {}) => {
   for (const [key, value] of formData.entries()) {
     const isEmpty = !value || value.toString().trim() === "";
     // pasamos por referencia los valores opcionales.
@@ -489,7 +495,7 @@ export const validateFormData = ({formData, campos, mapForm}={}) =>{
     }
   }
   return true;
-}
+};
 
 /**
  * Visualiza un modal de confirmación antes de una ejecución, contiene 2 botones, aceptar o cancelar.
@@ -500,8 +506,8 @@ export const validateFormData = ({formData, campos, mapForm}={}) =>{
  * @param {function(boolean): void} callback - Función que se ejecuta al hacer clic en Aceptar o Cancelar.
  *     Recibe `true` si el usuario acepta, `false` si cancela.
  */
-export const mostrarConfirmacion = (titulo, mensaje, callback)=>{
-// Rellenar el contenido
+export const mostrarConfirmacion = (titulo, mensaje, callback) => {
+  // Rellenar el contenido
   document.getElementById("modalConfirmacionTitulo").textContent = titulo;
   document.getElementById("modalConfirmacionMensaje").innerHTML = mensaje;
 
@@ -517,34 +523,35 @@ export const mostrarConfirmacion = (titulo, mensaje, callback)=>{
   // Limpiar cualquier listener anterior
   btnAceptar.onclick = () => callback(true);
   btnCancelar.onclick = () => callback(false);
-}
-
-
+};
 
 /**
  * Description Función para invocar una fecha en formato (Y-M-D)
  *
- * @returns {string} 
+ * @returns {string}
  */
 export const setDate = () => {
   const dateNow = new Date();
   let day = dateNow.getDate().toString();
   let month = (dateNow.getMonth() + 1).toString();
   let year = dateNow.getFullYear();
-  let dateActual = `${year}-${month.padStart(2,"0")}-${day.padStart(2, "0")}`;
+  let dateActual = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
   return dateActual;
 };
-
 
 /**
  * Description - Función para implementar el caracter obligatorio(*) en caso de que el usuario seleccione la opción SI/NO
  *
- * @param {{ baseText?: string; selector?: any; isRequired?: boolean; }} [param0={}] 
+ * @param {{ baseText?: string; selector?: any; isRequired?: boolean; }} [param0={}]
  * @param {string} [param1.baseText=""] - Texto que se desea unificar
  * @param {null} [param2.selector=null]  - Selector del html
  * @param {boolean} [param3.isRequired=false] - Flag boolean para realizar el cambio.
  */
-export const setObservacion = ({baseText = "", selector = null, isRequired = false}={})=>{
+export const setObservacion = ({
+  baseText = "",
+  selector = null,
+  isRequired = false,
+} = {}) => {
   selector.innerText = "";
   selector.innerText = isRequired ? `${baseText} *` : baseText;
-}
+};

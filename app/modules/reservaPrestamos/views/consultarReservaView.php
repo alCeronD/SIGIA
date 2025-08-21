@@ -12,6 +12,7 @@
                 <option value="toValidate">Por Validar</option>
                 <option value="validate">Validado</option>
                 <option value="done">Finalizados</option>
+                <option value="cancel">Cancelado</option>
             </select>
         </div>
         <div class="closeItem">
