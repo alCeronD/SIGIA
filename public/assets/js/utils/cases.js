@@ -305,6 +305,12 @@ export const dateISOFormat = (fecha, isNewDate = false) => {
   return isNewDate ? new Date(newDate) : newDate;
 };
 
+
+/**
+ * Objeto con las opciones de las alertas.
+ *
+ * @type {{ displayLength: number; classes: string; inDuration: number; outDuration: number; activationPercent: number; }}
+ */
 export const toastOptions = {
   displayLength: 4000,
   classes: "",
@@ -313,19 +319,34 @@ export const toastOptions = {
   activationPercent: 0.8,
 };
 
+/**
+ * Description - Función para visualizar alertas al usuario.
+ *
+ * @param {string} [message=""] - Mensaje de la alerta
+ * @param {string} [type="info"] - Tipo de mensaje para una mejor experiencia de usuario
+ * @param {{}} [options={}] - Objeto para enviar las opciones requeridas
+ */
 export const initAlert = (message = "", type = "info", options = {}) => {
+  const toastElements = document.querySelectorAll(".toast");
+  // Alertas Máximas, 3 en pantalla.
+  const maxToast = 3;
 
-  M.toast({
+  // Muestra la alerta.
+  const alertInstance = M.toast({
     html: message,
     ...options,
   });
 
-  const toastElements = document.querySelectorAll(".toast");
-  toastElements.forEach((tod)=>{
-    if (!tod.classList.contains(`toast-${type}`)) {
-      tod.classList.add(`toast-${type}`);
-    }
-  });
+  // Coloco el valor de el, porque materialize devuelve una propiedad el HTML DEL DOOM, esta propiedad se llama el. que tecnicamente es la alerta en si.
+  if (!alertInstance.el.classList.contains(`toast-${type}`)) {
+    alertInstance.el.classList.add(`toast-${type}`);
+  }
+
+  if (toastElements.length >= maxToast) {
+    toastElements[0].remove();
+    return;
+  }
+
 
 };
 
@@ -498,6 +519,13 @@ export const mostrarConfirmacion = (titulo, mensaje, callback)=>{
   btnCancelar.onclick = () => callback(false);
 }
 
+
+
+/**
+ * Description Función para invocar una fecha en formato (Y-M-D)
+ *
+ * @returns {string} 
+ */
 export const setDate = () => {
   const dateNow = new Date();
   let day = dateNow.getDate().toString();
