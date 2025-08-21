@@ -5,6 +5,7 @@ require_once __DIR__ . '/helpers/session.php';
 require_once __DIR__ . '/helpers/ScanFiles.php';
 require_once __DIR__ . '/config/conn.php';
 require_once __DIR__ . '/modules/solicitudPrestamos/controller/solicitudPrestamosController.php';
+require_once __DIR__ . '/Modules/reservaPrestamos/services/ServicesReservas.php';
 
 $modulo = $_GET['modulo'] ?? 'dashboard';
 $controllerFile = new ScanFiles($modulo);
@@ -17,6 +18,8 @@ $conn = $conexion->getConnect();
 
 $prestamoController = new solicitudPrestamosController($conn);
 $prestamoController->actualizarEstadosPorFecha();
+$reservaServices = new ServicesReservas();
+$reservaServices->callTask();
 
 
 if (ajaxGeneral()) {

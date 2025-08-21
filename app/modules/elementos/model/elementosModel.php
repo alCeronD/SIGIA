@@ -779,7 +779,7 @@ class ElementoModelo
      */
     public function validateDisponiblidad($codigoElemento = 0, bool $isOnly = false, array $elementos = []){
         try {
-
+            // Valido que el elemento que envió este disponible siempre y cuando no este asociado con un prestamo que este finalizado o cancelado, solamente si está validado, posiblemente se deba implementar también el estado sea el 1 y el 3.
             $sql = "SELECT 
                 e.elm_cod As 'codigoElemento',
                 e.elm_serie AS 'seriElemento',
@@ -791,8 +791,7 @@ class ElementoModelo
                 INNER JOIN prestamos_elementos pe ON
                 pe.pres_el_elem_cod = e.elm_cod 
                 INNER JOIN prestamos p ON
-                pe.pres_cod = p.pres_cod WHERE e.elm_cod = ? AND p.tp_pres = 2";
-
+                pe.pres_cod = p.pres_cod WHERE e.elm_cod = ? AND p.tp_pres = 2 AND p.pres_estado = 1";
             $stmtFechas = $this->conn->prepare($sql);
 
             if (!$stmtFechas) {

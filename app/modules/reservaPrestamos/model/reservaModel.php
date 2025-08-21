@@ -1,6 +1,5 @@
 <?php
 
-
 require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../../../helpers/const.php';
 include_once __DIR__ . '/../../../config/conn.php';
@@ -11,7 +10,7 @@ require_once __DIR__ . '/../../elementos/model/elementosModel.php';
 //TODO: en los mensajes de retorno, definir una estructura de retorno específica, así evitar devolver o valores null, o un string, la idea es que devuelva un array con su status y mensaje, en todos los retornos.
 class ReservaModel
 {
-    private $conect;
+    private Conection $conect;
 
     protected $id;
 
@@ -276,7 +275,7 @@ class ReservaModel
     public function updateReserva() {}
 
     //Función para finalizar la reserva y todos los elementos cambiar sus respectivos estados.
-    public function endReserva(array $elementos= [],int $codigo, array $data = [])
+    public function endReserva(array $elementos = [], int $codigo, array $data = [])
     {
         //Objetivo:
         /**
@@ -346,14 +345,14 @@ class ReservaModel
                 $cantidad = $elm['cantidadSolicitada'];
                 // var_dump($cantidad);
                 // var_dump($codigoElementoEntrada);
-                $stmtEntrada->bind_param('isiiii',$cantidad,$observacionSalida,$entrada,$id,$codigoElementoEntrada,$codigoReserva);
+                $stmtEntrada->bind_param('isiiii', $cantidad, $observacionSalida, $entrada, $id, $codigoElementoEntrada, $codigoReserva);
 
                 if (!$stmtEntrada->execute()) {
                     $conn->rollback();
                     return [
-                        'status'=>false,
-                        'message'=>"error al ejecutar el proceso".$conn->error,
-                        'data'=> []
+                        'status' => false,
+                        'message' => "error al ejecutar el proceso" . $conn->error,
+                        'data' => []
                     ];
                 }
             }
@@ -629,24 +628,24 @@ class ReservaModel
                 INNER JOIN estados_prestamos esp ON esp.es_pr_cod = pre.pres_estado
                 INNER JOIN roles r ON r.rl_id = pre.pres_rol
                 INNER JOIN tipo_prestamo tp_pr ON tp_pr.tp_pre = pre.tp_pres ";
-        if (is_null($type)) {
-            $queryCountReservas = $sqlBaseCountReserva;
-            //Obtengo la cantidad de registros de la tabla prestamos
-            $sqlReservas = "$sqlBase ORDER BY pre.pres_fch_slcitud DESC LIMIT ? OFFSET ?";
-            $stmtResevas = $conn->prepare($sqlReservas);
-            $stmtResevas->bind_param('ii', $limitConst, $offset);
-        } else {
-            $queryCountReservas = "$sqlBaseCountReserva WHERE esp.es_pr_cod = $type";
-            $sqlReservas = "$sqlBase WHERE pre.pres_estado = ? ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ?";
-            $stmtResevas = $conn->prepare($sqlReservas);
-            $stmtResevas->bind_param('iii', $type, $limitConst, $offset);
-        }
-        $getCountReservas = (int) $this->getCount($queryCountReservas, 'prestamos');
-        
-                    //Redondear cantidad de páginas.
+            if (is_null($type)) {
+                $queryCountReservas = $sqlBaseCountReserva;
+                //Obtengo la cantidad de registros de la tabla prestamos
+                $sqlReservas = "$sqlBase ORDER BY pre.pres_fch_slcitud DESC LIMIT ? OFFSET ?";
+                $stmtResevas = $conn->prepare($sqlReservas);
+                $stmtResevas->bind_param('ii', $limitConst, $offset);
+            } else {
+                $queryCountReservas = "$sqlBaseCountReserva WHERE esp.es_pr_cod = $type";
+                $sqlReservas = "$sqlBase WHERE pre.pres_estado = ? ORDER BY pre.pres_fch_slcitud ASC LIMIT ? OFFSET ?";
+                $stmtResevas = $conn->prepare($sqlReservas);
+                $stmtResevas->bind_param('iii', $type, $limitConst, $offset);
+            }
+            $getCountReservas = (int) $this->getCount($queryCountReservas, 'prestamos');
+
+            //Redondear cantidad de páginas.
             $pages = (int) ceil($getCountReservas / LIMIT);
 
-        
+
             if (!$stmtResevas->execute()) {
 
                 $result = [
@@ -661,7 +660,7 @@ class ReservaModel
             $dataReservas = [];
             while ($row = $resultReservas->fetch_assoc()) {
 
-                    $dataReservas[] = $row;
+                $dataReservas[] = $row;
             }
 
             // Aplico recursividad en caso de que la cantidad de registros sea 0 para que vuelva a ejecutar dicha función.
@@ -688,7 +687,7 @@ class ReservaModel
         $conn = $this->conect->getConnect();
         try {
 
-    $sqlElementsReserva = "SELECT DISTINCT
+            $sqlElementsReserva = "SELECT DISTINCT
             el.elm_cod AS 'codigo',
             el.elm_serie AS 'seriElemento',
             el.elm_nombre AS 'nombre',
@@ -945,5 +944,116 @@ class ReservaModel
 
         $resultCount = $stmtCount->get_result();
         return $resultCount->fetch_assoc()['Total'];
+    }
+
+    /**
+     * Función que pertenece a tarea automática para cancelar las reservas que se hayan pasado de fecha.
+     * @return void
+     */
+    public function cancelarPrestamosFecha()
+    {
+        try {
+            $conn = $this->conect->getConnect();
+
+            $conn->begin_transaction();
+            $newFecha = new DateTime('now', new DateTimeZone('America/Bogota'));
+
+            $fecha = $newFecha->format('Y-m-d');
+
+            // Primera transaccion: capturar los prestamos asociados a una fecha anterior.
+            $sql = "SELECT 
+            p.pres_cod AS 'codigoPrestamo', 
+            p.pres_fch_reserva AS 'fechaReserva'
+            FROM prestamos p 
+            WHERE p.pres_fch_reserva < ? && p.pres_estado = 3";
+
+            $stmtFirst = $conn->prepare($sql);
+
+
+            $stmtFirst->bind_param("s", $fecha);
+
+            if (!$stmtFirst->execute()) {
+                $conn->rollback();
+                $conn->close();
+                // Agregar throw de error de procedimiento.
+            }
+
+            $result = $stmtFirst->get_result();
+
+            $prestamosResult = [];
+            while ($row = $result->fetch_assoc()) {
+                $prestamosResult[] = $row['codigoPrestamo'];
+            }
+
+
+            if (count($prestamosResult) === 0) return;
+
+            // Segunda transacción: traer los elementos que pertenezcan a los elementos y aplicar su cambio de estado a reservado.
+            $secondSlq = "SELECT 
+                el.elm_cod AS 'codigoElemento',
+                el.elm_serie AS 'serieElemento',
+                el.elm_nombre AS 'nombreElemento',
+                el.elm_cod_estado AS 'estadoElemento',
+                p.pres_cod AS 'codigoPrestamo',
+                p.pres_fch_reserva AS 'fechaReserva'
+                FROM prestamos p 
+                INNER JOIN prestamos_elementos pre ON
+                pre.pres_cod = p.pres_cod 
+                INNER JOIN elementos el ON
+                pre.pres_el_elem_cod = el.elm_cod 
+                WHERE p.pres_fch_reserva < ? AND p.pres_cod = ? ORDER BY p.pres_cod ASC";
+
+            $thirdSql = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
+            $fourSql = "UPDATE prestamos SET pres_estado = ? WHERE pres_cod = ?";
+            $stmtSecond = $conn->prepare($secondSlq);
+            $stmtThird = $conn->prepare($thirdSql);
+            $stmtFour = $conn->prepare($fourSql);
+
+            $estadoPrestamos = 5;
+            $estadoElementos = 1;
+
+            foreach ($prestamosResult as $value) {
+                $codigoPrestamo = (int) $value;
+
+                $stmtSecond->bind_param('si', $Fecha, $codigoPrestamo);
+
+                if (!$stmtSecond->execute()) {
+                    $conn->rollback();
+                }
+
+                $result = $stmtSecond->get_result();
+
+                $dataElements = [];
+                while ($row = $result->fetch_assoc()) {
+                    $dataElements[] = $row['codigoElemento'];
+                }
+
+                // Tercera transacción: Actualizar estados de los elementos a disponible.
+                foreach ($dataElements as $value) {
+                    $codigo = (int) $value;
+
+                    $stmtThird->bind_param('ii', $estadoElementos, $codigo);
+
+                    if (!$stmtThird->execute()) {
+                        $conn->rollback();
+                    }
+                }
+
+                $stmtFour->bind_param('ii', $estadoPrestamos, $codigoPrestamo);
+                if (!$stmtFour->execute()) {
+                    $conn->rollback();
+                }
+            }
+
+            $conn->commit();
+        } catch (Exception $e) {
+
+            $conn->rollback();
+            // Esto se guarda en mi archivo php_error.log
+            error_log("Error al ejecutar la transacción de cancelarPrestamo fecha".$e->getMessage());
+        // Aplico un finally cuando todo el proceso ocurre
+        } finally {
+            $conn->close();
+        }
     }
 }
