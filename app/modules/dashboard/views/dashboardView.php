@@ -30,6 +30,7 @@
                 </div>
                 <div class="buttons">
                     <a class="btn grey btnGetUrl" href="<?php echo getUrl('reservaPrestamos', 'reservaPrestamos', 'consultaReservaView', false, 'dashboard'); ?>">Ver reservas</a>
+                    <a class="btn green btnGetUrl" href="<?php echo getUrl('reservaPrestamos', 'reservaPrestamos', 'reservaView', false, 'dashboard'); ?>">Crear prestamo o reserva</a>
                 </div>
             </div>
             <div class="option-card z-depth-1 div3">
@@ -42,7 +43,7 @@
                 </div>
                 <div class="buttons">
                     <a class="btn green btnGetUrl" href="<?php echo getUrl('usuarios', 'usuarios', 'userView', false, 'dashboard'); ?>">Crear usuario</a>
-                    <a class="btn green btnGetUrl" href="<?php echo getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard'); ?>">Consultar usuario</a>
+                    <a class="btn grey btnGetUrl" href="<?php echo getUrl('usuarios', 'usuarios', 'consultUser', false, 'dashboard'); ?>">Consultar usuario</a>
                 </div>
             </div>
             <div class="option-card z-depth-1 div4">

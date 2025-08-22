@@ -126,7 +126,7 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
   });
 </script>
 
-
+<script type="module" src="../public/assets/js/header.js"></script>
 </body>
 
 </html>

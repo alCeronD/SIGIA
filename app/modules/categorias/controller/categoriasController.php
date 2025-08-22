@@ -105,8 +105,6 @@ class categoriasController
         }
     }
 
-
-
     public function createCategoria()
     {
         

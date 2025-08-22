@@ -30,7 +30,17 @@ export const sendData = async (
     const setParameter = new URLSearchParams();
     setParameter.append("action", parameters);
 
-    let newUrl = parameters ? `${url}?${setParameter}` : url;
+    let newUrl;
+
+    if (Object.keys(parameters).length > 0) {
+      newUrl = `${url}?${setParameter}`;
+    }else{
+      newUrl = url;
+    }
+
+
+
+    // let newUrl = parameters ? `${url}?${setParameter}` : url;
     const optionsFetch = setFetch(method, parameters, data);
     const response = await fetch(newUrl, optionsFetch);
     if (response.status === 204) {

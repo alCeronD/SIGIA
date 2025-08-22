@@ -17,3 +17,4 @@ document.addEventListener('DOMContentLoaded', function () {
   M.Modal.init(elemsModals); 
   M.FormSelect.init(document.querySelectorAll('select'));
 });
+

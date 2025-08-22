@@ -50,6 +50,10 @@ html, body {
   background-color:var(--btnEdit);
 }
 
+#btnCerrarSesion{
+  cursor: pointer;
+}
+
 .nav-wrapper {
   display: flex;
   align-items: center; 
@@ -192,7 +196,7 @@ input[type="number"] {
 /* Inicio Estilos de alertas toast de materialize */
 
 #toast-container{
-    position: relative !important;
+    position: absolute !important;
     right: .5em;
     bottom: 0;
     z-index: 100;
@@ -212,8 +216,6 @@ input[type="number"] {
   z-index: 1000;
 }
 
-
-/* Estilos de las alertas de toast De materialize */
 .toast-info {
   border-left: 8px solid var(--info);
 }

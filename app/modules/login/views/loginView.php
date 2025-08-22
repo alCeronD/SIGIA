@@ -1,3 +1,16 @@
+<?php 
+
+// Valido si ya existe la sessión, si ya existe, re direccionar al usuario.
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+    if (isset($_SESSION['usuario'])) {
+        header("Location: /proyecto_sigia/app/dashboard.php?modulo=dashboard&controlador=dashboard&funcion=dashboard");
+        exit();
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,9 +20,10 @@
 
   <!-- Materialize CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link rel="icon" type="image/x-icon" href="/public/assets/image/sSigia.ico">
   <!-- Estilos personalizados -->
   <link rel="stylesheet" href="/proyecto_sigia/public/assets/css/login/login.css">
+  <link rel="icon" type="image/x-icon" href="/proyecto_sigia/public/assets/image/sSigia.ico">
+
 </head>
 <body>
   <div class="backGround bg-light-pattern">
@@ -22,7 +36,7 @@
       </div>
       <h5 class="center-align">Iniciar sesión</h5>
 
-      <form id="loginForm" action="<?php echo getUrl("login","login","login"); ?>" method="POST">
+      <form id="loginForm" action="<?php echo getUrl("login","login","login"); ?>">
         <div class="input-field">
           <input id="docum" name="docum" type="number" min="0" class="validate" >
           <label for="docum">No. Documento</label>

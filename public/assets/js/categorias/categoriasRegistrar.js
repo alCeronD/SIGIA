@@ -15,6 +15,7 @@ form.addEventListener("submit", async (e) => {
       body: formData,
     });
 
+
     if (!response.ok) throw new Error("Respuesta del servidor no válida");
 
     const data = await response.json();

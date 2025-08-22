@@ -3,6 +3,7 @@
 include_once __DIR__ . '/../model/loginModel.php';
 require_once __DIR__ . '/../../Permisos/Model/PermisosModel.php';
 include_once __DIR__ . '/../../../helpers/response.php';
+require_once __DIR__ . '/../../../Config/conn.php';
 
 class loginController {
     private $conn;
@@ -52,6 +53,9 @@ class loginController {
             exit();
         }
 
+        session_regenerate_id(true);
+
+
         $result = $permisosModel->renderMenu((int) $usuario['rl_id']);
 
         $_SESSION['usuario'] = [
@@ -62,6 +66,8 @@ class loginController {
             'rol_nombre' => $usuario['rl_nombre'],
             'email' => $usuario['usu_email']
         ];
+
+        // Elimino el id de sessión guardado anteriormente y lo regenero.
 
         $_SESSION['renderMenu']= $result['data'];
 
@@ -74,6 +80,8 @@ class loginController {
     }
 
     public function logout() {
+
+
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -81,6 +89,18 @@ class loginController {
         $_SESSION = [];
         session_destroy();
 
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status' => true,
+                'message' => 'Sesión cerrada correctamente.',
+                'redirect' => getUrl('login', 'login', 'index', false, false)
+            ]);
+            exit();
+        }
+
+
         redirect(getUrl('login', 'login', 'index', false, false));
+        exit();
     }
 }
