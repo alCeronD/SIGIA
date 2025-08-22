@@ -12,8 +12,6 @@
         <p><strong>Código del préstamo:</strong> <span id="detalle-pres_cod"></span></p>
         <p><strong>Fecha de solicitud:</strong> <span id="detalle-pres_fch_slcitud"></span></p>
         <p><strong>Fecha de reserva:</strong> <span id="detalle-pres_fch_reserva"></span></p>
-        <!-- <p><strong>Hora de inicio:</strong> <span id="detalle-pres_hor_inicio"></span></p>
-        <p><strong>Hora de fin:</strong> <span id="detalle-pres_hor_fin"></span></p> -->
         <p><strong>Fecha de entrega:</strong> <span id="detalle-pres_fch_entrega"></span></p>
       </div>
 
