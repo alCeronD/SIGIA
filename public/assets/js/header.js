@@ -1,5 +1,6 @@
 import { initAlert, mostrarConfirmacion, toastOptions } from "./utils/cases.js";
 import { sendData } from "./utils/fetch.js";
+import { Storage } from "./utils/Storage.js";
 const btnCerrarSesion = document.querySelector('#btnCerrarSesion');
 
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -24,6 +25,7 @@ btnCerrarSesion.addEventListener("click", (e) => {
 
         const response = await sendData(data, "POST");
         if (response.status) {
+          Storage.addValue({key:"sessionStatus", item: 'false'});
           window.location.href = response.redirect;
         }
       } catch (error) {}

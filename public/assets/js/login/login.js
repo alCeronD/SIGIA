@@ -1,5 +1,7 @@
 import { initAlert, toastOptions } from "../utils/cases.js";
 import { validationRules } from "../utils/regex.js";
+import { Storage } from "../utils/Storage.js";
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('loginForm');
@@ -51,6 +53,8 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success && data.url) {
+                Storage.addValue({key : 'sessionStatus', item : 'true'});
+                
                 window.location.href = data.url;
             } else {
                 initAlert("Usuario y contraseña incorrectos, Contactarse con el administrador.", "info", toastOptions);

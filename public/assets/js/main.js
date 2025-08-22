@@ -1,3 +1,4 @@
+import { Storage } from "./utils/Storage.js";
 // Inicializar selects de materialize.
 document.addEventListener('DOMContentLoaded', function () {
   //Tooltips
@@ -16,5 +17,18 @@ document.addEventListener('DOMContentLoaded', function () {
   //inicializar los modales
   M.Modal.init(elemsModals); 
   M.FormSelect.init(document.querySelectorAll('select'));
+
 });
 
+const responseStatus = Storage.getValue("sessionStatus");
+
+// Uso este evento para validar el estado de la sessión, si es falso, cierro la sesión de las ventanas.
+window.addEventListener('storage', (f)=>{
+  const newValueStorage = f.newValue;
+  const oldValueStorage = f.oldValue;
+
+  if (newValueStorage === 'false') {
+    localStorage.removeItem('sessionStatus');
+    window.location.href = '/proyecto_sigia/index.php';
+  }
+});
