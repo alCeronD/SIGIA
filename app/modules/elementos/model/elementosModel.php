@@ -791,7 +791,7 @@ class ElementoModelo
                 INNER JOIN prestamos_elementos pe ON
                 pe.pres_el_elem_cod = e.elm_cod 
                 INNER JOIN prestamos p ON
-                pe.pres_cod = p.pres_cod WHERE e.elm_cod = ? AND p.tp_pres = 2 AND p.pres_estado = 1";
+                pe.pres_cod = p.pres_cod WHERE e.elm_cod = ? AND p.tp_pres = 2 AND (p.pres_estado = 1 OR p.pres_estado = 3)";
             $stmtFechas = $this->conn->prepare($sql);
 
             if (!$stmtFechas) {
@@ -928,6 +928,6 @@ class ElementoModelo
 }
 
 // $objElementos = new ElementoModelo();
-// $resultado = $objElementos->contarElementosBusqueda('consumible','papel');
-// $resultado = $objElementos->obtenerElementoPaginado(10,0,'consumible',true,'papel');
+// $resultado = $objElementos->validateDisponiblidad(2,true);
 // var_dump($resultado);
+

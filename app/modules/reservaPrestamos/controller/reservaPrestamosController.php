@@ -179,26 +179,105 @@ class reservaPrestamosController
         }
     }
 
-    /**
-     * Summary of validateElemento - Función de controlador para validar el elemento si está disponible para esa fecha.
-     * @return void
-     */
+    // public function validateElemento(int $elemento = 0,String $fechaReserva = "" ,$isOnly = false, array $elementos = [], int $tpPrestamo = 0){
+    //     if ($isOnly) {
+    //         $result = $this->modelElemento->validateDisponiblidad($elemento, $isOnly);
+    //         $data = $result['data'];
+    //         // Validamos si hay resultados para ejecutar la operación y devolver la respuesta.
+    //         if (count($result['data']) > 0) {
+    //             // 0 Porque está en la primera posición del resultado data.
+    //             $fechaResult = $data[0]['fechaReserva'];
+    //             if (validateFecha($fechaReserva, $fechaResult, true)) {
+    //                 fail("El elemento $elemento está reservado para la fecha $fechaResult", $result);
+    //             }
+    //         } else {
+    //             noResponse($result);
+    //         }
+    //     }else{
+    //         $resultElementos = $this->modelElemento->validateDisponiblidad(
+    //             isOnly:$isOnly, 
+    //             elementos:$elementos
+    //         );
+    //         $data = $resultElementos['data'];
+    //         $elementosYaSeleccionados = [];
+    //         foreach ($data as $key => $value) {
+    //             $fechaReservaElementos = $value['fechaReserva'];
+    //             $fechaDevolucionElementos = $value['fechaDevolucion'];
+    //             if (validateFecha(
+    //                 date1: $fechaReservaElementos,
+    //                 date2: $fechaReserva,
+    //                 date3: $fechaDevolucionElementos,
+    //                 tpPrestamo:$tpPrestamo
+    //             )) {
+    //                 $elementosYaSeleccionados[]= $value;
+    //             }
+    //         }
+
+    //         // No le estoy dando uso porque no pude usar la respuesta de fail o success.
+    //         $resultado = [
+    //             'data'=>$elementosYaSeleccionados,
+    //             'status'=> false,
+    //             'message'=>'Elementos ya seleccionados'
+    //         ];
+
+    //         if (count($elementosYaSeleccionados)=== 0) {
+    //             noResponse($resultElementos);
+    //         }else{
+    //             // fail('Hay elementos seleccionados que están reservados para la fecha seleccionada', $resultElementos);
+    //             // Puedo implementar la función fail pero por ahora se deja a parte por temas de tiempo.
+                
+    //             $response = [
+    //                 'status' => true,
+    //                 'message' => 'Elementos ya seleccionados',
+    //                 'data' => $elementosYaSeleccionados
+    //             ];
+    //             http_response_code(200);
+    //             echo json_encode($response, JSON_PRETTY_PRINT);
+    //             exit();
+    //         }
+    //     }
+
+    // }
+
+
     public function validateElemento(int $elemento = 0,String $fechaReserva = "" ,$isOnly = false, array $elementos = [], int $tpPrestamo = 0){
 
-        
+
         if ($isOnly) {
             $result = $this->modelElemento->validateDisponiblidad($elemento, $isOnly);
             $data = $result['data'];
-            // Validamos si hay resultados para ejecutar la operación y devolver la respuesta.
-            if (count($result['data']) > 0) {
+            if (count($data) > 1 && count($data) < 2) {
                 // 0 Porque está en la primera posición del resultado data.
-                $fechaResult = $data[0]['fechaReserva'];
-                if (validateFecha($fechaReserva, $fechaResult, true)) {
-                    fail("El elemento $elemento está reservado para la fecha $fechaResult", $result);
+                $fechaResDB = $data[0]['fechaReserva'];
+                $fechaDevDb = $data[0]['fechaDevolucion'];
+                // if (validateFecha($fechaReserva, $fechaResult, true)) {
+                if (validateFecha(date1:$fechaReserva, date2:$fechaResDB,date3:$fechaDevDb,isFormat:true, tpPrestamo:$tpPrestamo)) {
+
+                    fail("El elemento $elemento está reservado para la fecha $fechaResDB", $result);
+                }else{
+                    noResponse($result);
                 }
-            } else {
+            } else if(count($data) > 1) {
+                foreach ($data as $key => $value) {
+                    $fechaPorValidar = $value['fechaReserva'];
+                    $fechaDevolucion = $value['fechaDevolucion'];
+                    if (!validateFecha(date1: $fechaReserva, date2: $fechaPorValidar, date3: $fechaDevolucion, isFormat: true, tpPrestamo: $tpPrestamo)) {
+                        $responseValidate = [
+                            'status'=>false,
+                            'message'=>'El elemento $elemento está reservado para la fecha $fechaPorValidar',
+                            'data'=> []
+                        ];
+                        http_response_code(200);
+                        echo json_encode($responseValidate, JSON_PRETTY_PRINT);
+                        exit();
+                    }
+                }
+
                 noResponse($result);
             }
+            noResponse($result);
+        
+        
         }else{
             $resultElementos = $this->modelElemento->validateDisponiblidad(
                 isOnly:$isOnly, 
@@ -243,7 +322,6 @@ class reservaPrestamosController
             }
         }
 
-        
     }
 }
 
@@ -324,13 +402,15 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 }
 
                 $fecha = empty($_GET['fechaReserva']) ? "" : $_GET['fechaReserva'];
+                $tpPrestamo = empty($_GET['tpPrestamo']) ? "" : (int) $_GET['tpPrestamo'];
 
                 if (method_exists($controller, 'validateElemento')) {
                     // $controller->validateElemento($elementos, $fecha, $isOnly);
                     $controller->validateElemento(
                         elemento:$elementos,
                         fechaReserva:$fecha,
-                        isOnly:$isOnly
+                        isOnly:$isOnly,
+                        tpPrestamo:$tpPrestamo
                     );
                 }
                 break;

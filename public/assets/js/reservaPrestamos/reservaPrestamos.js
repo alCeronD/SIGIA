@@ -389,7 +389,7 @@ const validateDisponibilidad = async ({
   let responseDisponibilidadPost = null;
 
   if (isOnly)
-    param = { fechaReserva: fecha, elementos: codigosElementos, isOnly };
+    param = { fechaReserva: fecha, elementos: codigosElementos, isOnly, tpPrestamo };
 
   try {
     if (method === "GET") {
@@ -405,7 +405,9 @@ const validateDisponibilidad = async ({
       );
 
 
+
       if (responseDisponibilidadGet.status === 204) {
+        console.log("responseget204");
         return true;
       }
 
@@ -415,6 +417,7 @@ const validateDisponibilidad = async ({
           "info",
           toastOptions
         );
+
         return false;
       }
     } else {
@@ -436,11 +439,13 @@ const validateDisponibilidad = async ({
 
 
       if (responseDisponibilidadPost.status === 204) {
+        console.log("aca if respons204");
         return true;
       }
 
       // devuelvo la data en caso de que sea true.
       if (responseDisponibilidadPost.status) {
+        console.log("aca if response Status");
         return responseDisponibilidadPost;
       }
     }
@@ -448,7 +453,7 @@ const validateDisponibilidad = async ({
     console.log(error);
   }
 
-  return true;
+  // return true;
 };
 
 tablesDoom.tblBodyDevolutivos.addEventListener("click", async (event) => {
@@ -465,6 +470,7 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", async (event) => {
     let valueInput = event.target.getAttribute("data-id");
     if (isChecked) {
       const fechaReserva = document.querySelector("#fechaReserva").value;
+      const valueChecked = document.querySelector('input[name="tipoPr"]').value;
       if (fechaReserva !== "") {
         // event.preventDefault();
         let fechaParse = dateISOFormat(fechaReserva, false);
@@ -473,6 +479,7 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", async (event) => {
           codigosElementos: valueInput,
           method: "GET",
           isOnly: true,
+          tpPrestamo: valueTpPrestamo
         });
         if (!responseValide) {
           event.target.checked = false;
@@ -789,6 +796,7 @@ function validateDate(date1, date2) {
 
 // Seleccionar los radiobuttons
 const radioButonTp = document.querySelectorAll('[name="tipoPr"]');
+let valueTpPrestamo;
 radioButonTp.forEach((rd) => {
   rd.addEventListener("change", (event) => {
     event.stopPropagation();
@@ -800,6 +808,7 @@ radioButonTp.forEach((rd) => {
       formSolicitudPrestamo.style.display = "grid";
       divContainers.divFechaReserva.style.display = "flex";
     }
+    valueTpPrestamo = event.target.value;
   });
 });
 
