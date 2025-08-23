@@ -377,7 +377,8 @@ tablesDoom.tblBodyUsers.addEventListener("click", (e) => {
 });
 
 const validateDisponibilidad = async ({
-  fecha = "",
+  fechaReserva = "",
+  fechaDevolucion = "",
   codigosElementos,
   isOnly = false,
   method = "GET",
@@ -389,8 +390,7 @@ const validateDisponibilidad = async ({
   let responseDisponibilidadPost = null;
 
   if (isOnly)
-    param = { fechaReserva: fecha, elementos: codigosElementos, isOnly, tpPrestamo };
-
+    param = { fechaReserva , fechaDevolucion, elemento: codigosElementos, isOnly, tpPrestamo };
   try {
     if (method === "GET") {
       
@@ -398,13 +398,13 @@ const validateDisponibilidad = async ({
         ...param,
         action: "validateElement",
       };
+      console.log(param);
       responseDisponibilidadGet = await getData(
         "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
         method,
         param
       );
-
-
+      console.log(responseDisponibilidadGet);
 
       if (responseDisponibilidadGet.status === 204) {
         console.log("responseget204");
@@ -470,12 +470,21 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", async (event) => {
     let valueInput = event.target.getAttribute("data-id");
     if (isChecked) {
       const fechaReserva = document.querySelector("#fechaReserva").value;
-      const valueChecked = document.querySelector('input[name="tipoPr"]').value;
-      if (fechaReserva !== "") {
-        // event.preventDefault();
-        let fechaParse = dateISOFormat(fechaReserva, false);
+      const fechaDevolucion = document.querySelector('#fechaDevolucion').value;
+      // event.preventDefault();
+      let fechaParse = dateISOFormat(fechaReserva, false);
+      let fechaParse2 = dateISOFormat(fechaDevolucion, false);
+      if (fechaParse > fechaParse2 ) {
+        initAlert("La fecha de reserva no debe ser mayor a la fecha de devolución", "info", toastOptions);
+        event.preventDefault();
+        return;
+      }
+
+      if (fechaReserva !== "" && fechaDevolucion !== "") {
+
         const responseValide = await validateDisponibilidad({
-          fecha: fechaParse,
+          fechaReserva: fechaParse,
+          fechaDevolucion: fechaParse2,
           codigosElementos: valueInput,
           method: "GET",
           isOnly: true,
@@ -811,8 +820,6 @@ radioButonTp.forEach((rd) => {
     valueTpPrestamo = event.target.value;
   });
 });
-
-
 /**
  * Función para unificar los elementos devolutivos y consumibles seleccionados para poder visualizar al usuario
  *
