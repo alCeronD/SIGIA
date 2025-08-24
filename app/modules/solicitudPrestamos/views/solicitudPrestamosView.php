@@ -89,12 +89,14 @@
           <h5>Seleccionar Elementos Devolutivos</h5>
 
           <div class="input-field">
-            <select id="filtro_area_modal" name="" class="textSolicitud">
-              <option value="" selected>Todas las áreas</option>
-              <?php foreach ($areas as $area): ?>
+          <select id="filtro_area_modal" name="" class="textSolicitud">
+            <option value="" selected>Todas las áreas</option>
+            <?php foreach ($areas as $area): ?>
+              <?php if (strtolower(trim($area['ar_nombre'])) !== 'general'): ?>
                 <option value="<?= $area['ar_cod']; ?>"><?= htmlspecialchars($area['ar_nombre']); ?></option>
-              <?php endforeach; ?>
-            </select>
+              <?php endif; ?>
+            <?php endforeach; ?>
+          </select>
             <label for="filtro_area_modal">Filtrar por área</label>
           </div>
 
