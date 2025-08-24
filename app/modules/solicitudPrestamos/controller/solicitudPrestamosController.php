@@ -350,46 +350,46 @@ class solicitudPrestamosController
         }
     }
 
-    public function actualizarEstadosPorFecha()
-    {
-        $fechaHoy = date('Y-m-d');
-        // $fechaHoy = '2025-08-08';
+    // public function actualizarEstadosPorFecha()
+    // {
+    //     $fechaHoy = date('Y-m-d');
+    //     // $fechaHoy = '2025-08-08';
 
-        $sql = "SELECT p.pres_cod
-                FROM prestamos p
-                WHERE p.pres_fch_reserva = ?
-                  AND p.pres_estado = 3"; // Por validar
+    //     $sql = "SELECT p.pres_cod
+    //             FROM prestamos p
+    //             WHERE p.pres_fch_reserva = ?
+    //               AND p.pres_estado = 3"; // Por validar
     
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param('s', $fechaHoy);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    //     $stmt = $this->conn->prepare($sql);
+    //     $stmt->bind_param('s', $fechaHoy);
+    //     $stmt->execute();
+    //     $result = $stmt->get_result();
 
-        $prestamosActualizados = [];
+    //     $prestamosActualizados = [];
     
-        while ($row = $result->fetch_assoc()) {
-            $presCod = $row['pres_cod'];
+    //     while ($row = $result->fetch_assoc()) {
+    //         $presCod = $row['pres_cod'];
     
-            // Obtener los elementos asociados al préstamo
-            $sqlElementos = "SELECT pres_el_elem_cod FROM prestamos_elementos WHERE pres_cod = ?";
-            $stmtElems = $this->conn->prepare($sqlElementos);
-            $stmtElems->bind_param('i', $presCod);
-            $stmtElems->execute();
-            $resElems = $stmtElems->get_result();
+    //         // Obtener los elementos asociados al préstamo
+    //         $sqlElementos = "SELECT pres_el_elem_cod FROM prestamos_elementos WHERE pres_cod = ?";
+    //         $stmtElems = $this->conn->prepare($sqlElementos);
+    //         $stmtElems->bind_param('i', $presCod);
+    //         $stmtElems->execute();
+    //         $resElems = $stmtElems->get_result();
     
-            // Cambiar estado de cada elemento a reservado (5)
-            while ($elem = $resElems->fetch_assoc()) {
-                $elm_cod = $elem['pres_el_elem_cod'];
-                $updateElem = $this->conn->prepare("UPDATE elementos SET elm_cod_estado = 5 WHERE elm_cod = ?");
-                $updateElem->bind_param('i', $elm_cod);
-                $updateElem->execute();
-            }
+    //         // Cambiar estado de cada elemento a reservado (5)
+    //         while ($elem = $resElems->fetch_assoc()) {
+    //             $elm_cod = $elem['pres_el_elem_cod'];
+    //             $updateElem = $this->conn->prepare("UPDATE elementos SET elm_cod_estado = 5 WHERE elm_cod = ?");
+    //             $updateElem->bind_param('i', $elm_cod);
+    //             $updateElem->execute();
+    //         }
     
-            $prestamosActualizados[] = $presCod;
-        }
+    //         $prestamosActualizados[] = $presCod;
+    //     }
     
-        return $prestamosActualizados;
-    }
+    //     return $prestamosActualizados;
+    // }
 
     
     

@@ -4,7 +4,7 @@ require_once __DIR__ . '/helpers/getUrl.php';
 require_once __DIR__ . '/helpers/session.php';
 require_once __DIR__ . '/helpers/ScanFiles.php';
 require_once __DIR__ . '/config/conn.php';
-require_once __DIR__ . '/modules/solicitudPrestamos/controller/solicitudPrestamosController.php';
+require_once __DIR__ . '/modules/solicitudPrestamos/services/servicesSolicitudPrestamos.php';
 
 $modulo = $_GET['modulo'] ?? 'dashboard';
 $controllerFile = new ScanFiles($modulo);
@@ -14,9 +14,11 @@ $css = $controllerFile->addUrl($modulo);
 
 $conexion = new Conection();
 $conn = $conexion->getConnect();
+$solicitudService = new servicesSolicitudPrestamos();
+$solicitudService->callTask();
 
-$prestamoController = new solicitudPrestamosController($conn);
-$prestamoController->actualizarEstadosPorFecha();
+// $prestamoController = new solicitudPrestamosController($conn);
+// $prestamoController->actualizarEstadosPorFecha();
 
 
 if (ajaxGeneral()) {
