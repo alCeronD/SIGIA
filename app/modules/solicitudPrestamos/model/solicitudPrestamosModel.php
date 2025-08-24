@@ -2,8 +2,6 @@
 
 class solicitudPrestamos
 {
-
-
     public $pres_cod;
     public $pres_fch_slcitud;
     public $pres_fch_reserva;
@@ -330,8 +328,8 @@ class solicitudPrestamos
 
     public function actualizarEstadosPorFecha()
     {
-        // $fechaHoy = date('Y-m-d');
-        $fechaHoy = '2025-08-25';
+        $fechaHoy = date('Y-m-d');
+        // $fechaHoy = '2025-08-25';
 
         $sql = "SELECT p.pres_cod
                 FROM prestamos p
