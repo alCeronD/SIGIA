@@ -241,6 +241,7 @@ class reservaPrestamosController
 
 
     public function validateElemento(int $elemento = 0,String $fechaReserva = "",String $fechaDevolucion = "" ,$isOnly = false, array $elementos = [], int $tpPrestamo = 0){
+
         if ($isOnly) {
             $result = $this->modelElemento->validateDisponiblidad($elemento, $isOnly);
             $data = $result['data'];
@@ -254,12 +255,12 @@ class reservaPrestamosController
                 }else{
                     noResponse($result);
                 }
-            } else if(count($data) > 1) {
-                
+            } else if(count(value: $data) > 1) {
+
                 foreach ($data as $key => $value) {
                     $fechaPorValidar = $value['fechaReserva'];
                     $fechaDevolucion = $value['fechaDevolucion'];
-                    if (!validateFecha(fechaReservaBD: $fechaReserva, fechaReservaUser: $fechaPorValidar, fechaDevolBD: $fechaDevolucion, isFormat: true, tpPrestamo: $tpPrestamo)) {
+                    if (validateFecha(fechaReservaBD: $fechaReserva, fechaReservaUser: $fechaPorValidar, fechaDevolBD: $fechaDevolucion, isFormat: true, tpPrestamo: $tpPrestamo)) {
                         $responseValidate = [
                             'status'=>false,
                             'message'=>'El elemento $elemento está reservado para la fecha $fechaPorValidar',
@@ -279,16 +280,19 @@ class reservaPrestamosController
                 isOnly:$isOnly, 
                 elementos:$elementos
             );
-            $data = $resultElementos['data'];
+
+            $dataElementos = $resultElementos['data'];
             $elementosYaSeleccionados = [];
-            foreach ($data as $key => $value) {
+            foreach ($dataElementos as $value) {
                 $fechaReservaElementos = $value['fechaReserva'];
                 $fechaDevolucionElementos = $value['fechaDevolucion'];
                 if (validateFecha(
                     fechaReservaBD: $fechaReservaElementos,
-                    fechaReservaUser: $fechaReserva,
                     fechaDevolBD: $fechaDevolucionElementos,
-                    tpPrestamo:$tpPrestamo
+                    fechaReservaUser: $fechaReserva,
+                    fechaDevolUser:$fechaDevolucion,
+                    tpPrestamo:$tpPrestamo,
+                    isFormat:true
                 )) {
                     $elementosYaSeleccionados[]= $value;
                 }
@@ -422,8 +426,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 $elementos = $data["elementos"];
                 $codigoReserva = $data["codigoReserva"];
         
-
-
                 $controller->setEndReserva($elementos, $codigoReserva, $data);
                 break;
 
@@ -438,18 +440,19 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 $controller->setSolicitud($dataNuevo);
                 break;
 
-                // Valido el listado de los elementos después de que el usuario haya seleccioando todos sus datos, mediante un arreglo.
-                case 'validateElements':
+            // Valido el listado de los elementos después de que el usuario haya seleccioando todos sus datos, mediante un arreglo.
+            case 'validateElements':
 
-                    $isOnly = $data['isOnly'];
-                    $fechaReserva = $data['fechaReserva'];
-                    $elementos = $data['elementos'];
-                    $tpPrestamo = (int) $data['tpPrestamo'];
-
-                    $controller->validateElemento(isOnly: $isOnly, fechaReserva: $fechaReserva, elementos: $elementos, tpPrestamo: $tpPrestamo);
-
+                $isOnly = (bool) $data['isOnly'];
+                $fechaReservaData = $data['fechaReserva'];
+                $fechaDevolucionData = $data['fechaDevolucion'];
+                $elementos = $data['elementos'];
+                $tpPrestamo = (int) $data['tpPrestamo'];
+                if (method_exists($controller, 'validateElemento')) {
+                    $controller->validateElemento(isOnly: $isOnly, fechaReserva: $fechaReservaData,fechaDevolucion:$fechaDevolucionData ,elementos: $elementos, tpPrestamo: $tpPrestamo);
+                }
                 break;
-
+                
             default:
                 break;
         }

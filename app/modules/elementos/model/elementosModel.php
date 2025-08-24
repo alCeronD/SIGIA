@@ -851,6 +851,7 @@ class ElementoModelo
                     ];
                 }
 
+
                 $dataReturn = $isOnly ? [
                     'message' => "No hay fechas para este elemento",
                     'data' => $fechas,
@@ -860,6 +861,8 @@ class ElementoModelo
                     'data' => $elementosYaReservados,
                     'status' => count($elementosYaReservados) > 0 ? true : false
                 ];
+
+                // var_dump($dataReturn);
 
                 return $dataReturn;
             } catch (\Throwable $th) {

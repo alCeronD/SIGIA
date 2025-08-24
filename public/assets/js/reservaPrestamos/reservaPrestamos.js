@@ -384,30 +384,38 @@ const validateDisponibilidad = async ({
   method = "GET",
   tpPrestamo = null
 } = {}) => {
-  let param = {};
+
+  let param = {
+    fechaReserva,
+    fechaDevolucion,
+    isOnly,
+    tpPrestamo,
+  };
 
   let responseDisponibilidadGet = null;
   let responseDisponibilidadPost = null;
 
-  if (isOnly)
-    param = { fechaReserva , fechaDevolucion, elemento: codigosElementos, isOnly, tpPrestamo };
+  // Defino los parámetros, dependiendo de si es un solo elemento o varios.
+  param = isOnly ? {
+       ... param, elemento:codigosElementos, action: "validateElement"
+      }: {
+        ... param,
+        elementos: codigosElementos, action:"validateElements" };
+
   try {
     if (method === "GET") {
       
-      param = {
-        ...param,
-        action: "validateElement",
-      };
-      console.log(param);
+      // param = {
+      //   ...param,
+      //   action: "validateElement",
+      // };
       responseDisponibilidadGet = await getData(
         "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
         method,
         param
       );
-      console.log(responseDisponibilidadGet);
 
       if (responseDisponibilidadGet.status === 204) {
-        console.log("responseget204");
         return true;
       }
 
@@ -420,23 +428,14 @@ const validateDisponibilidad = async ({
 
         return false;
       }
-    } else {
-      param = {
-        ...param,
-        action: "validateElements",
-        elementos: codigosElementos,
-        isOnly: false,
-        fechaReserva: fecha,
-        tpPrestamo: tpPrestamo
-      };
-
+    } else if (method === "POST") {
+      console.log({"paramPost":param});
       responseDisponibilidadPost = await sendData(
         "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
         method,
         "validateElements",
         param
       );
-
 
       if (responseDisponibilidadPost.status === 204) {
         console.log("aca if respons204");
@@ -445,7 +444,6 @@ const validateDisponibilidad = async ({
 
       // devuelvo la data en caso de que sea true.
       if (responseDisponibilidadPost.status) {
-        console.log("aca if response Status");
         return responseDisponibilidadPost;
       }
     }
@@ -1051,7 +1049,8 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
     } else {
       let fechaReserva = data.fechaReserva;
       paramValidateDisponibilidad = {
-        fecha: fechaReserva,
+        fechaReserva: data.fechaReserva,
+        fechaDevolucion:data.fechaDevolucion,
         codigosElementos: devolutivosCheck,
         method: "POST",
         isOnly: false,
@@ -1059,8 +1058,9 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
       };
     }
 
-    const responseValidate = await validateDisponibilidad(paramValidateDisponibilidad);
 
+    const responseValidate = await validateDisponibilidad(paramValidateDisponibilidad);
+    console.log(responseValidate);
     //Mostrar mensaje de modal para informar que hay elementos ya reservados para esa fecha y por ende, no se podrán reservar.
     if (responseValidate.status) {
       messageValidate = responseValidate.message;
