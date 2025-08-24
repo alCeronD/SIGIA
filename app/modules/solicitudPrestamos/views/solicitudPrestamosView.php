@@ -84,6 +84,8 @@
       <!-- Modal Devolutivos -->
       <div id="modalSeleccionElementos" class="modal">
         <div class="modal-content">
+        <a href="#!" class="modal-close btn-flat red-text right" title="Cerrar" style="font-size: 1.5rem;">&times;</a>
+
           <h5>Seleccionar Elementos Devolutivos</h5>
 
           <div class="input-field">
@@ -134,6 +136,8 @@
       <!-- Modal Consumibles -->
       <div id="modalSeleccionConsumibles" class="modal">
         <div class="modal-content">
+        <a href="#!" class="modal-close btn-flat red-text right" title="Cerrar" style="font-size: 1.5rem;">&times;</a>
+
           <h5>Seleccionar Elementos Consumibles</h5>
 
           <div class="input-field">
