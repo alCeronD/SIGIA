@@ -316,6 +316,16 @@ class reservaPrestamosController
         }
 
     }
+
+    public function executeCancelPrestamo(int $codigoPrestamo = 0){
+
+        $result = $this->model->cancelarPrestamo($codigoPrestamo);
+
+        if (!$result['status']) {
+            fail($result['message'], $result);
+        }
+        success($result['message'], $result);
+    }
 }
 
 $controller = new reservaPrestamosController();
@@ -451,6 +461,14 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 if (method_exists($controller, 'validateElemento')) {
                     $controller->validateElemento(isOnly: $isOnly, fechaReserva: $fechaReservaData,fechaDevolucion:$fechaDevolucionData ,elementos: $elementos, tpPrestamo: $tpPrestamo);
                 }
+                break;
+
+            case 'cancelPrestamo':
+                $codigoElemento = (int) $data['dataCodigo'];
+                if (method_exists($controller, 'executeCancelPrestamo')) {
+                    $controller->executeCancelPrestamo($codigoElemento);
+                }
+                
                 break;
                 
             default:

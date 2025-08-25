@@ -113,6 +113,7 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     let btnAdd = document.createElement("button");
     let btnEnd = document.createElement("button");
     let btnDetail = document.createElement("button");
+    let btnCancel = document.createElement("button");
     btnAdd.setAttribute("class", "btn waves-effect waves-light");
     let btnValidateLoan = createBtn("btnClick");
     let iDetalle = createI();
@@ -126,9 +127,12 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     btnAdd.setAttribute("class", "addElements");
     btnAdd.setAttribute("data-add", `${dta.codigo}`);
     btnEnd.setAttribute("data-end", `${dta.codigo}`);
+    btnCancel.setAttribute("data-cancel", `${dta.codigo}`);
     btnValidateLoan.setAttribute("data-validate", `${dta.codigo}`);
     let iFinalizar = createI();
     iFinalizar.innerText = "swap_horiz";
+    let iCancel = createI();
+    iCancel.innerText = "cancel";
     btnAdd.setAttribute("class", "btnEnd");
     addClassItem(btnDetail, {
       btn: "btn",
@@ -150,8 +154,16 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
       wavesLight: "waves-light",
       btnSmall: "btn-small",
     });
+    addClassItem(btnCancel, {
+      btn: "btn",
+      color: "blue lighten-1",
+      wavesEffect: "waves-effect",
+      wavesLight: "waves-light",
+      btnSmall: "btn-small"
+    });
     btnValidateLoan.append(iValidate);
     btnEnd.append(iFinalizar);
+    btnCancel.append(iCancel);
     let tdCodigo = document.createElement("td");
     let tdNombreCompleto = document.createElement("td");
     let tdFechaRegistro = document.createElement("td");
@@ -197,6 +209,7 @@ const renderReservas = async ({page = 1, type = 'all'} = {}) => {
     if (dta.codigoTipoPrestamo === typeLoans.solicitud) {
       if (dta.estadoPrestamo === "Por validar") {
         tdAcciones.appendChild(btnValidateLoan);
+        tdAcciones.appendChild(btnCancel);
       } else if (dta.estadoPrestamo === "Validado") {
         tdAcciones.appendChild(btnEnd);
       }
@@ -987,6 +1000,33 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       });
     });
   }
+
+  const btnCancel = event.target.closest("button[data-cancel]");
+  if (btnCancel) {
+    let dataCodigo = btnCancel.getAttribute('data-cancel');
+    mostrarConfirmacion(`Cancelar reserva # ${dataCodigo}`, "¿Deseas cancelar la reserva?", async (responseModal)=>{
+
+      try {
+        if (!responseModal) {
+          return;
+        }
+        const response = await sendData('Modules/reservaPrestamos/controller/reservaPrestamosController.php','POST','cancelPrestamo', {dataCodigo});
+
+        if (!response.status) {
+          initAlert("Error al ejecutar el proceso", "error", toastOptions);
+          return;
+        }
+
+        initAlert(response.message, "success", toastOptions);
+        renderReservas({page:currentPage, type: valueSelect});
+
+      } catch (error) {
+        console.warn(`Error de procedimiento ${error}`);
+      }
+
+    });
+  }
+
 });
 
 /**
@@ -1052,8 +1092,6 @@ nextReserva.addEventListener("click", (e) => {
    
   renderReservas({page:currentPage, type:valueSelect});
   
-
-
   // renderReservas({page:currentPage, type:valueSelect});
 });
 
