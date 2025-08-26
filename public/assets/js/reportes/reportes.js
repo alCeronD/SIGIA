@@ -66,17 +66,78 @@ document.addEventListener("DOMContentLoaded", () => {
       `<tr><td colspan="${(rbMov.checked || rbPlaca.checked) ? 6 : 5}" class="red-text">No se encontraron registros</td></tr>`;
   };
 
+  // const paginar = () => {
+  //   const total = Math.ceil(data.length / per);
+  //   pager.innerHTML = Array.from({ length: total }, (_, i) => `
+  //     <li data-pag="${i + 1}" class="waves-effect ${i + 1 === page ? "active" : ""}">
+  //       <a href="#!">${i + 1}</a>
+  //     </li>`).join("");
+
+  //   pager.querySelectorAll("li").forEach(li => {
+  //     li.onclick = e => { e.preventDefault(); page = +li.dataset.pag; pintar(); paginar(); };
+  //   });
+  // };
+  
   const paginar = () => {
     const total = Math.ceil(data.length / per);
-    pager.innerHTML = Array.from({ length: total }, (_, i) => `
-      <li data-pag="${i + 1}" class="waves-effect ${i + 1 === page ? "active" : ""}">
-        <a href="#!">${i + 1}</a>
-      </li>`).join("");
-
-    pager.querySelectorAll("li").forEach(li => {
-      li.onclick = e => { e.preventDefault(); page = +li.dataset.pag; pintar(); paginar(); };
+    const maxVisible = 5; // Máximo de páginas visibles
+  
+    // calcular el rango de páginas que se muestran
+    let start = Math.max(1, page - Math.floor(maxVisible / 2));
+    let end = start + maxVisible - 1;
+  
+    if (end > total) {
+      end = total;
+      start = Math.max(1, end - maxVisible + 1);
+    }
+  
+    let html = "";
+  
+    // Botón anterior
+    if (page > 1) {
+      html += `<li class="waves-effect"><a href="#!" data-pag="${page - 1}"><i class="material-icons">chevron_left</i></a></li>`;
+    }
+  
+    // Páginas visibles
+    for (let i = start; i <= end; i++) {
+      html += `<li data-pag="${i}" class="waves-effect ${i === page ? "active" : ""}">
+                 <a href="#!">${i}</a>
+               </li>`;
+    }
+  
+    // Botón siguiente
+    if (page < total) {
+      html += `<li class="waves-effect"><a href="#!" data-pag="${page + 1}"><i class="material-icons">chevron_right</i></a></li>`;
+    }
+  
+    pager.innerHTML = html;
+  
+    // Activar clics
+    // pager.querySelectorAll("li a").forEach(a => {
+    //   a.onclick = e => {
+    //     e.preventDefault();
+    //     const newPage = +a.parentElement.dataset.pag;
+    //     if (!isNaN(newPage)) {
+    //       page = newPage;
+    //       pintar();
+    //       paginar();
+    //     }
+    //   };
+    // });
+    pager.querySelectorAll("a[data-pag]").forEach(a => {
+      a.onclick = e => {
+        e.preventDefault();
+        const newPage = +a.dataset.pag;
+        if (!isNaN(newPage)) {
+          page = newPage;
+          pintar();
+          paginar();
+        }
+      };
     });
+    
   };
+  
 
   // const fetchJSON = (url, fd) =>
   //   fetch(url, {
