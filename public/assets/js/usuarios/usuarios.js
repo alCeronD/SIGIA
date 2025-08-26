@@ -5,6 +5,11 @@ import { initAlert, toastOptions, validateFormData } from "../utils/cases.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  // Iniciarlizar selects 
+  // let elems = document.querySelectorAll('select:not(.browser-default)');
+  // M.FormSelect.init(elems);
+  M.FormSelect.init(document.querySelectorAll('select'));
+
   // ==== Vist consulta usuarios ======== //
 
   const paginacion = document.getElementById('paginacion-usuarios');

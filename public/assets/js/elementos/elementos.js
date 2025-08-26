@@ -30,12 +30,12 @@ const typeElements = {
 };
 let pageElement = 1;
 let pageGlobal;
-const filtroTipo = document.querySelector("#filtroTipo");
 const previewElements = document.querySelector("#previewElements");
 const nextElements = document.querySelector("#nextElements");
 const inputBusqueda = document.querySelector("#inputBusqueda");
 const tblElements = document.querySelector("#tblElements");
 const tbodyElements = document.querySelector("#tbodyElements");
+const filtroTipo = document.querySelector("#filtroTipo");
 const tipoElementoSelect = document.querySelector("#tipoElementoSelect");
 const addElementModal = instanceModal("#addElementModal", options);
 const btnAddModalElements = document.querySelector("#btnAddModalElements");
@@ -1423,9 +1423,7 @@ document.addEventListener("DOMContentLoaded", () => {
   //Inicializo los select.
   const selectAreas = document.querySelector("#selectAreas");
   const selectCategorias = document.querySelector("#selectCategorias");
-  const selectMarcas = document.querySelector("#selectMarca");
-  
-  // Inicializar select de las placas ya registradas
+  const selectMarcas = document.querySelector("#selectMarca");  
   const elemsSelect = document.querySelector("#placaAssoc");
 
   // inicializo el tipo de movimiento para el modal de agregar compra
