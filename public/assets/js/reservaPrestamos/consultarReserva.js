@@ -46,7 +46,9 @@ const modalValidate = instanceModal("#modalValidate", options);
 const bodyDetailValidate = document.querySelector("#bodyDetailValidate");
 const btnCloseValidte = document.querySelector("#modalValidate .close-modal");
 const btnCloseElements = document.querySelector("#modalDetail .close-modal");
+const btnCloseCancel = document.querySelector('#modalCancel .close-modal');
 const formDetail = document.querySelector("#formDetail");
+const formCancel = document.querySelector('#formCancel');
 const modalSalida = instanceModal('#modalSalida', options);
 const pagesPrestamos = document.querySelector('#pagesPrestamos');
 const rowsPrestamos = document.querySelector('#rowsPrestamos');
@@ -57,6 +59,7 @@ const tableContainerDetail = document.querySelector(
   ".tableContainerDetail table"
 );
 const closeModalBtnSalida = document.querySelector('#closeModalBtnSalida');
+const modalCancel = instanceModal('#modalCancel', options);
 // Contenedor principal de modalValidate
 const containerDetail = document.querySelector('.tableContainerDetail');
 let consumibles = [];
@@ -408,9 +411,9 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     let tipo = dataTr.children[2].textContent;
     let estado = dataTr.children[3].textContent;
     
+
     const modalTitle = document.querySelector('#modalTitle');
     codigo = parseInt(btnDetail.getAttribute("data-id"));
-    //TODO: refactorizarlo y transformarlo en una sola función.
     const reserva = data.find((item) => item.codigo === codigo);
     let action = "reservaDetailElements";
     //Petición para dibujar los elementos en la tabla del detail.
@@ -933,98 +936,105 @@ tbodyReservaConsult.addEventListener("click", (event) => {
             initAlert(`${error.message}`, "error", toastOptions);
           }
           });
-
-        // if (confirm(`¿Deseas dar salida a estos elementos? \n${textConfirm}`)) {
-        //   try {
-        //     const responseValidate = await sendData(
-        //       "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
-        //       "POST",
-        //       "validateLoan",
-        //       validateReserva
-        //     );
-        //     if (responseValidate.status) {
-        //       estadoNew.textContent = "Validado";
-        //       estadoNew.style.color = "green";
-
-        //       let btnValidate = document.querySelector(
-        //         `#tbodyReservaConsult tr td [data-validate='${validateReserva.codigoReserva}']`
-        //       );
-        //       if (btnValidate) {
-        //         // Renderizo nuevamente basada en la pagína y el tipo.
-        //         renderReservas({ page: currentPage, type: valueSelect });
-        //         initAlert(
-        //           `Prestamo validado ${validateReserva.codigoReserva}`,
-        //           "success",
-        //           toastOptions
-        //         );
-        //         btnValidate.style.display = "none";
-        //         modalValidate.close();
-        //       }
-
-        //       let btnEnd = document.createElement("button");
-        //       let iFinalizar = createI();
-        //       iFinalizar.innerText = "swap_horiz";
-        //       //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
-        //       addClassItem(btnEnd, {
-        //         btn: "btn",
-        //         color: "red lighten-1",
-        //         wavesEffect: "waves-effect",
-        //         wavesLight: "waves-light",
-        //         btnSmall: "btn-small",
-        //       });
-        //       btnEnd.append(iFinalizar);
-        //       btnEnd.setAttribute(
-        //         "data-end",
-        //         `${validateReserva.codigoReserva}`
-        //       );
-        //       tdAcciones.appendChild(btnEnd);
-        //     }
-        //   } catch (error) {
-        //     initAlert(`${error.message}`, "error", toastOptions);
-        //   }
-        // } else {
-        //   initAlert("Proceso cancelado", "warning", tooltipOptions);
-        //   modalValidate.close();
-
-        //   // Esto se repite, lo puedo modificar haciendo no una función sino cerrando el modal usando la función close modal, para ello debo de cambiar la forma de enviar los parámetros, lo ideal, enviarlos mediante objeto.
-        //   BodydetailReserva.innerHTML = "";
-        //   // let falseChecked = checkBoxValidate.checked ? false : true;
-        //   let falseChecked = false;
-        //   checkBoxValidate.checked = falseChecked;
-
-        //   previewBtnValidate.style.display = "none";
-        //   nextBtnValidate.style.display = "none";
-        //   resetModalValidate(true);
-        //   resetDataModal();
-        // }
       });
     });
   }
 
+  const radioCancel = document.querySelectorAll('#modalCancel input[name="radioCancel"');
+  const inputObservacionCancel = document.querySelector('#inputObservacionCancel');
+  const observacionesLabelCancel = document.querySelector('#observacionesLabelCancel');
+  radioCancel.forEach((rlc)=>{
+    rlc.addEventListener('change', (e)=>{
+      e.stopPropagation();
+      if (e.target.value === "off") {
+        inputObservacionCancel.readOnly = true;
+        inputObservacionCancel.value = "";
+        setObservacion({baseText:"Observación", selector: observacionesLabelCancel,isRequired: false});
+      }else{
+        inputObservacionCancel.readOnly = false;
+        setObservacion({baseText:"Observación", selector: observacionesLabelCancel,isRequired: true});
+      }
+    })
+  });
   const btnCancel = event.target.closest("button[data-cancel]");
   if (btnCancel) {
     let dataCodigo = btnCancel.getAttribute('data-cancel');
-    mostrarConfirmacion(`Cancelar reserva # ${dataCodigo}`, "¿Deseas cancelar la reserva?", async (responseModal)=>{
+    mostrarConfirmacion(
+      `Cancelar reserva # ${dataCodigo}`,
+      "¿Deseas cancelar la reserva?",
+      (responseModal) => {
+        try {
+          if (!responseModal) {
+            return;
+          }
 
-      try {
-        if (!responseModal) {
-          return;
+          // Span para insertar el titulo del proceso.
+          const modalTitleCancel = document.querySelector(
+            "#modalCancel #modalTitleCancel"
+          );
+          modalTitleCancel.innerText = `Cancelar reserva # ${dataCodigo}`;
+          modalCancel.open();
+          formCancel.addEventListener("submit", async (f) => {
+            f.stopPropagation();
+            f.preventDefault();
+            const dataCancel = new FormData(f.target);
+            let dataForm = Object.fromEntries(dataCancel.entries());
+
+            if (
+              dataForm.radioCancel === "on" &&
+              Object.keys(dataForm.observacion).length === 0
+            ) {
+              initAlert(
+                "El campo observación es obligatorio",
+                "info",
+                toastOptions
+              );
+              return;
+            }
+
+            dataForm = {
+              ...dataForm,
+              codigoPrestamo: dataCodigo,
+            };
+
+            delete dataForm.radioCancel;
+
+            const response = await sendData(
+              "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
+              "POST",
+              "cancelPrestamo",
+              dataForm
+            );
+
+            if (!response.status) {
+              initAlert("Error al ejecutar el proceso", "error", toastOptions);
+              return;
+            }
+            modalCancel.close();
+
+            // Esto esta repedido, se puede transformar en función a parte.
+            // Limpiar radios
+            document
+              .querySelectorAll('#modalCancel input[name="radioCancel"]')
+              .forEach((radio) => {
+                radio.checked = false;
+              });
+
+            // Limpiar textarea y deshabilitar
+            const observacion = document.querySelector(
+              "#inputObservacionCancel"
+            );
+            observacion.value = "";
+            observacion.readOnly = true;
+
+            initAlert(response.message, "success", toastOptions);
+            renderReservas({ page: currentPage, type: valueSelect });
+          });
+        } catch (error) {
+          console.warn(`Error de procedimiento ${error}`);
         }
-        const response = await sendData('Modules/reservaPrestamos/controller/reservaPrestamosController.php','POST','cancelPrestamo', {dataCodigo});
-
-        if (!response.status) {
-          initAlert("Error al ejecutar el proceso", "error", toastOptions);
-          return;
-        }
-
-        initAlert(response.message, "success", toastOptions);
-        renderReservas({page:currentPage, type: valueSelect});
-
-      } catch (error) {
-        console.warn(`Error de procedimiento ${error}`);
       }
-
-    });
+    );
   }
 
 });
@@ -1056,6 +1066,25 @@ closeModal(modalValidate, btnCloseValidte, () => {
       BodydetailReserva.innerHTML = "";
     }
   });
+});
+
+closeModal(modalCancel, btnCloseCancel, ()=>{
+  instanceModal('#modalCancel', {
+    ...options,
+    onCloseEnd: ()=>{
+      // Limpiar radios
+      document.querySelectorAll('#modalCancel input[name="radioCancel"]').forEach(radio => {
+        radio.checked = false;
+      });
+
+      // Limpiar textarea y deshabilitar
+      const observacion = document.querySelector('#inputObservacionCancel');
+      observacion.value = '';
+      observacion.readOnly = true;
+
+    }
+  });
+
 });
 
 

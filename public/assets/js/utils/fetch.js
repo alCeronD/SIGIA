@@ -37,9 +37,6 @@ export const sendData = async (
     }else{
       newUrl = url;
     }
-
-
-
     // let newUrl = parameters ? `${url}?${setParameter}` : url;
     const optionsFetch = setFetch(method, parameters, data);
     const response = await fetch(newUrl, optionsFetch);

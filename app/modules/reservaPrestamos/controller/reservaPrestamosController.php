@@ -317,10 +317,10 @@ class reservaPrestamosController
 
     }
 
-    public function executeCancelPrestamo(int $codigoPrestamo = 0){
-
-        $result = $this->model->cancelarPrestamo($codigoPrestamo);
-
+    public function executeCancelPrestamo(array $data = []){
+        $codigoPrestamo = (int) $data['codigoPrestamo'];
+        $observacion = (String) $data['observacion'];
+        $result = $this->model->cancelarPrestamo($codigoPrestamo, $observacion);
         if (!$result['status']) {
             fail($result['message'], $result);
         }
@@ -464,9 +464,10 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 break;
 
             case 'cancelPrestamo':
-                $codigoElemento = (int) $data['dataCodigo'];
+                unset($data['action']);
+                
                 if (method_exists($controller, 'executeCancelPrestamo')) {
-                    $controller->executeCancelPrestamo($codigoElemento);
+                    $controller->executeCancelPrestamo($data);
                 }
                 
                 break;

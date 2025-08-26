@@ -1056,8 +1056,9 @@ class ReservaModel
             $conn->close();
         }
     }
-    
-    public function cancelarPrestamo(int $codPrestamo = 0){
+
+    public function cancelarPrestamo(int $codPrestamo = 0, String $observacion = "")
+    {
         try {
             $conn = $this->conect->getConnect();
 
@@ -1065,83 +1066,131 @@ class ReservaModel
             //Objetivos:
             // 1 - Traer los elementos relacionados al prestamo
             // 2 - Actualizar los estados del elemento
-            // 3 - Actualizar el prestamo de por validar a cancelado.
+            // 4 - Actualizar el prestamo de por validar a cancelado.
+            // 5 - Actualizar el tipo de movimiento en la entrada y salida.
 
             // Primera transacción - traer los elementos relacionados al prestamo.
             $sqlGetElementsPrestamo = "SELECT 
                 el.elm_cod AS 'codigoElemento',
-                el.elm_cod_estado AS 'estadoActual'
+                el.elm_cod_estado AS 'estadoActual',
+                prel.pres_el_cantidad AS 'cantidadSolicitada',
+                prel.pres_el_usu_id AS 'usuarioAsociado'
                 FROM elementos el
                 INNER JOIN prestamos_elementos prel ON
                 prel.pres_el_elem_cod = el.elm_cod 
                 INNER JOIN prestamos p ON
                 prel.pres_cod = p.pres_cod WHERE p.pres_cod = ?";
 
-                $stmt1 = $conn->prepare($sqlGetElementsPrestamo);
+            $stmt1 = $conn->prepare($sqlGetElementsPrestamo);
 
-                $stmt1->bind_param('i', $codPrestamo);
+            $stmt1->bind_param('i', $codPrestamo);
 
-                if (!$stmt1->execute()) {
-                    $conn->rollback();
-                    return [
-                        'status'=>false,
-                        'message'=> "Error al traer elementos".$conn->error,
-                        'data'=> []
-                    ];
-                }
+            if (!$stmt1->execute()) {
+                $conn->rollback();
+                return [
+                    'status' => false,
+                    'message' => "Error al traer elementos" . $conn->error,
+                    'data' => []
+                ];
+            }
 
-                $elementosPrestamo = [];
+            $elementosPrestamo = [];
 
-                $result1 = $stmt1->get_result();
-                while($row = $result1->fetch_assoc()){
-                    $elementosPrestamo[]= $row;
-                }
+            $result1 = $stmt1->get_result();
+            while ($row = $result1->fetch_assoc()) {
+                $elementosPrestamo[] = $row;
+            }
 
             // Segunda transacción - Actualizar estado de los elementos.
             $updateElementos = "UPDATE elementos el SET elm_cod_estado = 1 WHERE el.elm_cod = ?";
             $stmt2 = $conn->prepare($updateElementos);
-            
+
+            // Tercera transacción - registrar El movimiento de la cancelación del prestamo.
+            $insertEntradaSalida = "INSERT INTO entradas_salidas (ent_sal_cantidad, ent_fech_registro,ent_sal_observacion,entr_tp_movmnt,ent_id_usu,ent_sal_cod_elemtn,ent_sal_cod_prestamo) VALUES(?, NOW(),?,?,?,?,?)";
+
+            $stmt3 = $conn->prepare($insertEntradaSalida);
+
+            if (!$stmt3) {
+                $conn->rollback();
+                return [
+                    'status' => false,
+                    'message' => "Error al preparar la consulta" . $conn->error,
+                    'data' => []
+                ];
+            }
+
+            if (empty($elementosPrestamo)) {
+                $conn->rollback();
+                return [
+                    'status' => false,
+                    'message' => "No se encontraron elementos relacionados al préstamo.",
+                    'data' => []
+                ];
+            }
+
+            // Tipo movimiento cancelado.
+            $tipoMovimiento = 6;
+            // Ejecuto la transacción 2 y 3 en este ciclo.
             foreach ($elementosPrestamo as $key => $value) {
                 $codigoElemento = $value['codigoElemento'];
+                $cantidad = $value['cantidadSolicitada'];
+                $usuario = $value['usuarioAsociado'];
+
                 $stmt2->bind_param('i', $codigoElemento);
                 if (!$stmt2->execute()) {
                     $conn->rollback();
                     return [
-                        'status'=>false,
-                        'message'=> "Error al actualizar código elemento".$conn->error,
-                        'data'=> []
+                        'status' => false,
+                        'message' => "Error al actualizar código elemento" . $conn->error,
+                        'data' => []
+                    ];
+                }
+
+                $stmt3->bind_param('isiiii', $cantidad, $observacion, $tipoMovimiento, $usuario, $codigoElemento, $codPrestamo);
+
+                if (!$stmt3->execute()) {
+                    $conn->rollback();
+                    return [
+                        'status' => false,
+                        'message' => "Error al insertar registro código elemento" . $conn->error,
+                        'data' => []
                     ];
                 }
             }
 
-            // Tercera transacción - Actualizar prestamo, de por validar a cancelado.
+            // Cuarta transacción - Actualizar prestamo, de por validar a cancelado.
             $updatePrestamo = "UPDATE prestamos pe SET pe.pres_estado = 5 WHERE pe.pres_cod = ?";
-            $stmt3 = $conn->prepare($updatePrestamo);
+            $stmt4 = $conn->prepare($updatePrestamo);
 
-            $stmt3->bind_param('i',$codPrestamo);
+            $stmt4->bind_param('i', $codPrestamo);
 
-            if (!$stmt3->execute()) {
+            if (!$stmt4->execute()) {
                 $conn->rollback();
                 return [
-                    'status'=>false,
-                    'message'=> "Error al actualizar el estado del prestamo".$conn->error,
-                    'data'=>[]
+                    'status' => false,
+                    'message' => "Error al actualizar el estado del prestamo" . $conn->error,
+                    'data' => []
                 ];
             }
 
             $conn->commit();
 
-            return [
-                'status'=> true,
-                'message'=> "Prestamo ".$codPrestamo." cancelado con exito",
-                'data'=> []
-            ];
+            // Cerrar el proceso de las consultas, liberar recursos en memoria.
+            $stmt1->close();
+            $stmt2->close();
+            $stmt3->close();
+            $stmt4->close();
 
+            return [
+                'status' => true,
+                'message' => "Prestamo " . $codPrestamo . " cancelado con exito",
+                'data' => []
+            ];
         } catch (\Throwable $e) {
             return [
-                'status'=>false,
-                'message'=> "Error al ejecutar el procesod".$e->getMessage(),
-                'data'=>[]
+                'status' => false,
+                'message' => "Error al ejecutar el procesod" . $e->getMessage(),
+                'data' => []
             ];
         }
     }

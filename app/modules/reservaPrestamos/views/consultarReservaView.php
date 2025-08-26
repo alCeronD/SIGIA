@@ -53,6 +53,9 @@
 require_once __DIR__ . "/../../../helpers/modalConfirmation.php"; 
 // Modal salida
 require_once __DIR__ . "/modalSalida.php";
+
+// Modal Cancelar
+require_once __DIR__ . "/modalCancel.php";
 ?>
 
 <script type="module" src="../public/assets/js/reservaPrestamos/consultarReserva.js"></script>
