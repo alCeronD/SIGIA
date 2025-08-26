@@ -316,7 +316,7 @@ function resetModalValidate(showTable = false) {
   const table = document.querySelector("#modalValidate table");
   const formContainer = document.querySelector("#modalValidate .formValidateContainer");
   const radioInputs = document.querySelectorAll('#modalValidate input[name="radioValidate"]');
-  const textareaObservacion = document.querySelector('#inputObservacion');
+  const textareaObservacion = document.querySelector('#inputObservacionValidate');
   const checkboxSelectAll = document.querySelector('#checkBoxValidate');
   const allValidateItems = document.querySelector('#allValidateItems');
   const btnNextValidate = document.querySelector('#btnNextValidate');
@@ -341,7 +341,7 @@ function resetModalValidate(showTable = false) {
 
   // 3. eliminar texto del textArea
   textareaObservacion.value = '';
-  textareaObservacion.disabled = true;
+  textareaObservacion.readOnly = true;
 
   // Paso 4 cambiar estado del checked de los elementos a false
   if (checkboxSelectAll) {
@@ -803,27 +803,20 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       });
 
       // No tiene ni punto ni asterisco porque lo llamo x el nombre
-      const textAreaObsInput = document.querySelector(
-        'textarea[name="textarea1"]'
-      );
-
-      const textBase = "Observación:";
-      radioYes.addEventListener("change", (e) => {
-        let radioCheck = e.target.checked;
-        let radioNoChecked = radioCheck ? false : true;
-        radioNo.checked = radioNoChecked;
-
-        if (radioCheck) {
-          setObservacion({baseText : "Observación",selector: observacionesLabel, isRequired: true});
-          textAreaObsInput.disabled = false;
-        }
-      });
-      radioNo.addEventListener("change", (e) => {
-        if (e.target.checked) {
-          textAreaObsInput.value = "";
-          textAreaObsInput.disabled = true;
-          setObservacion({baseText : "Observación",selector: observacionesLabel, isRequired: false});
-        }
+      const textAreaObsInput = document.querySelector('#modalValidate #inputObservacionValidate');
+      const radioValidatePrestamo = document.querySelectorAll('#modalValidate input[name="radioValidate"]');
+      radioValidatePrestamo.forEach((rvp)=>{
+        rvp.addEventListener('change', (e)=>{
+          e.stopPropagation();
+          if (e.target.value === "yes") {
+            setObservacion({baseText : "Observación",selector: observacionesLabel, isRequired: true});
+            textAreaObsInput.readOnly = false;
+          }else{
+            setObservacion({baseText : "Observación",selector: observacionesLabel, isRequired: false});
+            textAreaObsInput.value = "";
+            textAreaObsInput.readOnly = true;
+          }
+        })
       });
 
       const formValidate = document.querySelector("#formValidate");
@@ -836,24 +829,29 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         let valuesForm = Object.fromEntries(form.entries());
         let validate = Object.values(valuesForm);
 
-        if (!validate[0]) {
-          initAlert("La selección de observación (Si/No) Es requerida.");
+        // Valido que se haya seleccionado una de las opciones (Si o no).
+        if (validate[0].trim() === "") {
+          initAlert("Seleccione una de las opciones (SI o No)", "info", toastOptions);
           return;
         }
-        let observacion = !valuesForm.textarea1
-          ? ""
-          : valuesForm.textarea1.trim();
-
-        if (validate[0].includes("on") && validate[1] === "") {
+        // Valido que se haya seleccionado la opción si y que el campo observación (Obligatorio) tenga información.
+        if (valuesForm.radioValidate === "yes" && valuesForm.textarea1.trim() === "") {
           initAlert("La observación es requerida", "info", toastOptions);
           return;
         }
+
+        let observacion = !valuesForm.textarea1
+          ? ""
+          : valuesForm.textarea1.trim();
 
         // Aplico spreead para traer las propiedades previas del objeto y adiciono la observación.
         validateReserva = {
           ...validateReserva,
           observacionSalida: observacion,
         };
+
+        // Cierro el modal para mostrar el otro de pre confirmación..
+        modalValidate.close();
 
         let textConfirm = "";
         textConfirm += `Consumibles:\n${elementosPreviewConsu
@@ -867,75 +865,83 @@ tbodyReservaConsult.addEventListener("click", (event) => {
           .map((el) => `Código: ${el.cod} Nombre: ${el.nombre}`)
           .join("\n")}`;
 
-          mostrarConfirmacion(`Salida elementos`, `¿Deseas dar salida a estos elementos? \n${textConfirm}`, async (responseSalida)=>{
-            if (!responseSalida) {
-              initAlert("Proceso cancelado", "warning", tooltipOptions);
-              modalValidate.close();
-
-              // Esto se repite, lo puedo modificar haciendo no una función sino cerrando el modal usando la función close modal, para ello debo de cambiar la forma de enviar los parámetros, lo ideal, enviarlos mediante objeto.
-              BodydetailReserva.innerHTML = "";
-              // let falseChecked = checkBoxValidate.checked ? false : true;
-              let falseChecked = false;
-              checkBoxValidate.checked = falseChecked;
-
-              previewBtnValidate.style.display = "none";
-              nextBtnValidate.style.display = "none";
-              resetModalValidate(true);
-              resetDataModal();
-
-              return;
-            }
-
-             try {
-            const responseValidate = await sendData(
-              "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
-              "POST",
-              "validateLoan",
-              validateReserva
-            );
-            if (responseValidate.status) {
-              estadoNew.textContent = "Validado";
-              estadoNew.style.color = "green";
-
-              let btnValidate = document.querySelector(
-                `#tbodyReservaConsult tr td [data-validate='${validateReserva.codigoReserva}']`
-              );
-              if (btnValidate) {
-                // Renderizo nuevamente basada en la pagína y el tipo.
-                renderReservas({ page: currentPage, type: valueSelect });
-                initAlert(
-                  `Prestamo validado ${validateReserva.codigoReserva}`,
-                  "success",
-                  toastOptions
-                );
-                btnValidate.style.display = "none";
+          mostrarConfirmacion(
+            `Salida elementos`,
+            `¿Deseas dar salida a estos elementos? \n${textConfirm}`,
+            async (responseSalida) => {
+              if (!responseSalida) {
+                initAlert("Proceso cancelado", "warning", tooltipOptions);
                 modalValidate.close();
+
+                // Esto se repite, lo puedo modificar haciendo no una función sino cerrando el modal usando la función close modal, para ello debo de cambiar la forma de enviar los parámetros, lo ideal, enviarlos mediante objeto.
+                BodydetailReserva.innerHTML = "";
+                checkBoxValidate.checked = false;
+
+                previewBtnValidate.style.display = "none";
+                nextBtnValidate.style.display = "none";
+                resetModalValidate(true);
+                resetDataModal();
+
+                return;
               }
 
-              let btnEnd = document.createElement("button");
-              let iFinalizar = createI();
-              iFinalizar.innerText = "swap_horiz";
-              //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
-              addClassItem(btnEnd, {
-                btn: "btn",
-                color: "red lighten-1",
-                wavesEffect: "waves-effect",
-                wavesLight: "waves-light",
-                btnSmall: "btn-small",
-              });
-              btnEnd.append(iFinalizar);
-              btnEnd.setAttribute(
-                "data-end",
-                `${validateReserva.codigoReserva}`
-              );
-              tdAcciones.appendChild(btnEnd);
+              try {
+                const responseValidate = await sendData(
+                  "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
+                  "POST",
+                  "validateLoan",
+                  validateReserva
+                );
+
+                //  Acá cae el mensaje de "no tienes permisos para realizar está acción."
+                if (!responseValidate.status) {
+                  initAlert(responseValidate.message, "error", toastOptions);
+                  return;
+                }
+
+                if (responseValidate.status) {
+                  estadoNew.textContent = "Validado";
+                  estadoNew.style.color = "green";
+
+                  let btnValidate = document.querySelector(
+                    `#tbodyReservaConsult tr td [data-validate='${validateReserva.codigoReserva}']`
+                  );
+                  if (btnValidate) {
+                    // Renderizo nuevamente basada en la pagína y el tipo.
+                    renderReservas({ page: currentPage, type: valueSelect });
+                    initAlert(
+                      `Prestamo validado ${validateReserva.codigoReserva}`,
+                      "success",
+                      toastOptions
+                    );
+                    btnValidate.style.display = "none";
+                    modalValidate.close();
+                  }
+
+                  let btnEnd = document.createElement("button");
+                  let iFinalizar = createI();
+                  iFinalizar.innerText = "swap_horiz";
+                  //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
+                  addClassItem(btnEnd, {
+                    btn: "btn",
+                    color: "red lighten-1",
+                    wavesEffect: "waves-effect",
+                    wavesLight: "waves-light",
+                    btnSmall: "btn-small",
+                  });
+                  btnEnd.append(iFinalizar);
+                  btnEnd.setAttribute(
+                    "data-end",
+                    `${validateReserva.codigoReserva}`
+                  );
+                  tdAcciones.appendChild(btnEnd);
+                }
+              } catch (error) {
+                console.log(error);
+                initAlert(`${error.message}`, "error", toastOptions);
+              }
             }
-          
-          
-          } catch (error) {
-            initAlert(`${error.message}`, "error", toastOptions);
-          }
-          });
+          );
       });
     });
   }
@@ -1007,7 +1013,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
             );
 
             if (!response.status) {
-              initAlert("Error al ejecutar el proceso", "error", toastOptions);
+              initAlert(response.message, "error", toastOptions);
               return;
             }
             modalCancel.close();

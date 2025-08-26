@@ -1,6 +1,5 @@
-
 /**
- * Description - Función para ejecutar procesos de localStorage
+ * Description - Función para ejecutar procesos de localStorage para manipular información.
  *
  * @type {{ addValue: ({ key, item }?: { key?: string; item?: string; }) => void; }}
  */

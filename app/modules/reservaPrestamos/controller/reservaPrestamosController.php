@@ -179,67 +179,6 @@ class reservaPrestamosController
         }
     }
 
-    // public function validateElemento(int $elemento = 0,String $fechaReserva = "" ,$isOnly = false, array $elementos = [], int $tpPrestamo = 0){
-    //     if ($isOnly) {
-    //         $result = $this->modelElemento->validateDisponiblidad($elemento, $isOnly);
-    //         $data = $result['data'];
-    //         // Validamos si hay resultados para ejecutar la operación y devolver la respuesta.
-    //         if (count($result['data']) > 0) {
-    //             // 0 Porque está en la primera posición del resultado data.
-    //             $fechaResult = $data[0]['fechaReserva'];
-    //             if (validateFecha($fechaReserva, $fechaResult, true)) {
-    //                 fail("El elemento $elemento está reservado para la fecha $fechaResult", $result);
-    //             }
-    //         } else {
-    //             noResponse($result);
-    //         }
-    //     }else{
-    //         $resultElementos = $this->modelElemento->validateDisponiblidad(
-    //             isOnly:$isOnly, 
-    //             elementos:$elementos
-    //         );
-    //         $data = $resultElementos['data'];
-    //         $elementosYaSeleccionados = [];
-    //         foreach ($data as $key => $value) {
-    //             $fechaReservaElementos = $value['fechaReserva'];
-    //             $fechaDevolucionElementos = $value['fechaDevolucion'];
-    //             if (validateFecha(
-    //                 date1: $fechaReservaElementos,
-    //                 date2: $fechaReserva,
-    //                 date3: $fechaDevolucionElementos,
-    //                 tpPrestamo:$tpPrestamo
-    //             )) {
-    //                 $elementosYaSeleccionados[]= $value;
-    //             }
-    //         }
-
-    //         // No le estoy dando uso porque no pude usar la respuesta de fail o success.
-    //         $resultado = [
-    //             'data'=>$elementosYaSeleccionados,
-    //             'status'=> false,
-    //             'message'=>'Elementos ya seleccionados'
-    //         ];
-
-    //         if (count($elementosYaSeleccionados)=== 0) {
-    //             noResponse($resultElementos);
-    //         }else{
-    //             // fail('Hay elementos seleccionados que están reservados para la fecha seleccionada', $resultElementos);
-    //             // Puedo implementar la función fail pero por ahora se deja a parte por temas de tiempo.
-                
-    //             $response = [
-    //                 'status' => true,
-    //                 'message' => 'Elementos ya seleccionados',
-    //                 'data' => $elementosYaSeleccionados
-    //             ];
-    //             http_response_code(200);
-    //             echo json_encode($response, JSON_PRETTY_PRINT);
-    //             exit();
-    //         }
-    //     }
-
-    // }
-
-
     public function validateElemento(int $elemento = 0,String $fechaReserva = "",String $fechaDevolucion = "" ,$isOnly = false, array $elementos = [], int $tpPrestamo = 0){
 
         if ($isOnly) {
@@ -318,6 +257,7 @@ class reservaPrestamosController
     }
 
     public function executeCancelPrestamo(array $data = []){
+        validatePermisos('reservaPrestamos','executeCancelPrestamo');
         $codigoPrestamo = (int) $data['codigoPrestamo'];
         $observacion = (String) $data['observacion'];
         $result = $this->model->cancelarPrestamo($codigoPrestamo, $observacion);

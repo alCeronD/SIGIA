@@ -12,19 +12,25 @@ require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
 function validatePermisos(String $modulo, String $funcion)
 {
 
+    $dataResponse = [
+        'status' => false,
+        'data' => [],
+        'message' => "No tienes permisos para realizar esta acción."
+    ];
     if (session_status() === PHP_SESSION_NONE || !isset($_SESSION['usuario'])) {
         if ($modulo === 'login') return;
 
         if (isAjaxRequest()) {
             header("Content-Type: application/json");
-            fail("Sesión no iniciada o expirada.");
+
+            fail("Sesión no iniciada o expirada.", $dataResponse);
         } else {
             echo json_encode(['error'], JSON_PRETTY_PRINT);
             header("Location: " . getUrl('login', 'login', 'index', false, 'index'));
         }
         exit();
     }
-    
+
     require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
     $objPermisos = new PermisosController();
 
@@ -47,7 +53,13 @@ function validatePermisos(String $modulo, String $funcion)
 
     if (!$isValidate) {
         if (isAjaxRequest()) {
-            fail("No tienes permisos para esta acción.");
+            
+            // TODO: re hacer el response de la función fail y success.
+            http_response_code(403);
+            echo json_encode($dataResponse,JSON_PRETTY_PRINT);
+            exit();
+
+            // fail("No tienes permisos para esta acción.",$dataResponse);
         } else {
             redirect(getUrl('login', 'login', 'index', false, 'index'));
         }

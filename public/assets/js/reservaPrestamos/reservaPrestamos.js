@@ -1060,7 +1060,6 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
 
 
     const responseValidate = await validateDisponibilidad(paramValidateDisponibilidad);
-    console.log(responseValidate);
     //Mostrar mensaje de modal para informar que hay elementos ya reservados para esa fecha y por ende, no se podrán reservar.
     if (responseValidate.status) {
       messageValidate = responseValidate.message;
@@ -1125,8 +1124,9 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
 
         let status = responseReserva.status;
 
+        // Valido si hay o no permisos, pero debo de crear una clase para mejorar la respuesta del catch
         if (!status) {
-          initAlert("Error al realizar el proceso", "info", toastOptions);
+          initAlert(responseReserva.message, "info", toastOptions);
           return;
         }
 
@@ -1147,6 +1147,7 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
         inputsForm.inputTelefono.textContent = "";
         tablesDoom.tblBodyPreviewElements.innerHTML = "";
       } catch (error) {
+        console.log(error);
         initAlert(error.message, "error", toastOptions);
       }
     }

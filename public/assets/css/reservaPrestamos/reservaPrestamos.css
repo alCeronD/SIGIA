@@ -736,7 +736,7 @@ color: var(--secundary);
   gap: 0.3rem;
   align-items: center;
 
-  #inputObservacion{
+  #inputObservacionValidate{
     width: 55vh;
     height: 15vh !important;
   }

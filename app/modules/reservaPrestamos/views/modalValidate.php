@@ -44,21 +44,21 @@
             <div class="inputsRadio">
               <p>
                 <label>
-                  <input id="radioYes" class="with-gap" name="radioValidate" type="radio" />
+                  <input id="radioYes" class="with-gap" name="radioValidate" type="radio" value="yes" />
                   <span>Si</span>
                 </label>
               </p>
               <!-- validateNo -->
               <p>
                 <label>
-                  <input id="radioNo" class="with-gap" name="radioValidate" type="radio" />
+                  <input id="radioNo" class="with-gap" name="radioValidate" type="radio" value="no" />
                   <span>No</span>
                 </label>
               </p>
             </div>
           </div>
           <div class="input-field col s12" id="textAreaObservacion">
-            <textarea id="inputObservacion" name="textarea1" class="materialize-textarea" disabled></textarea>
+            <textarea id="inputObservacionValidate" name="textarea1" class="materialize-textarea" readonly></textarea>
             <label for="textarea1" id="observacionesLabel">Observación: </label>
             <button type="submit" class="btn waves-effect waves-light" id="submitValidate"><i class="material-icons">send</i></button>
           </div>

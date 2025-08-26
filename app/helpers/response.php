@@ -38,25 +38,6 @@ function fail(String $value = '', array $data = []){
     echo json_encode($data,JSON_PRETTY_PRINT);
     exit();
 }
-// function fail(String $value = '', array $data = []){
-//     header('Content-Type: application/json');
-//     $statusData = $data['status'];
-//     $src = $data['data'];
-//     if ((count($src) === 0) && (!$statusData)) {
-//         $errorCode = 404;
-//     }else{
-//         $errorCode = 400;
-//     }
-
-//     $data = [
-//         'status' => false,
-//         'message' => $value,
-//         'data' => $data
-//     ];
-//     http_response_code($errorCode);
-//     echo json_encode($data,JSON_PRETTY_PRINT);
-//     exit();
-// }
 
 function noResponse($data){
     http_response_code(204);

@@ -5,13 +5,13 @@ document.addEventListener('DOMContentLoaded', function () {
   // let tooltip = document.querySelectorAll('.tooltipped');
   // M.Tooltip.init(tooltip);
 
-  // let elems = document.querySelectorAll('select:not(.browser-default)');
-  // M.FormSelect.init(elems);
+  let elems = document.querySelectorAll('select:not(.browser-default)');
+  M.FormSelect.init(elems);
   // //Inicializar los inputs
-  // M.updateTextFields();
+  M.updateTextFields();
   // //Definir el resize del textarea del campo descripción del modulo de roles.
-  // M.textareaAutoResize(document.getElementById('rol_descripcionInput'));
-  // M.FormSelect.init(document.querySelectorAll('select'));
+  M.textareaAutoResize(document.getElementById('rol_descripcionInput'));
+  M.FormSelect.init(document.querySelectorAll('select'));
 
   //buscar los modales
   const elemsModals = document.querySelectorAll('.modal');
