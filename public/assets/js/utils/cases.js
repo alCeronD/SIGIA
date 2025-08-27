@@ -497,6 +497,9 @@ export const validateFormData = ({ formData, campos, mapForm } = {}) => {
   return true;
 };
 
+
+let aceptarExecution;
+let cancelarExecution;
 /**
  * Visualiza un modal de confirmación antes de una ejecución, contiene 2 botones, aceptar o cancelar.
  * Ejecuta una función callback dependiendo de la respuesta del usuario.
@@ -507,22 +510,43 @@ export const validateFormData = ({ formData, campos, mapForm } = {}) => {
  *     Recibe `true` si el usuario acepta, `false` si cancela.
  */
 export const mostrarConfirmacion = (titulo, mensaje, callback) => {
-  // Rellenar el contenido
+  // TODO: buscar bien como se usan los handlers en javascript (manejador de eventos)
+  console.log({"btnAceptar antes": aceptarExecution});
+  console.log({"btnCancelar Antes": cancelarExecution});
+  // Agrego la informacion en los espacios html.
   document.getElementById("modalConfirmacionTitulo").textContent = titulo;
   document.getElementById("modalConfirmacionMensaje").innerHTML = mensaje;
 
-  // Obtener instancia y abrir el modal
+  // Obtengo la instancia para después abrir el modal
   const modalElem = document.getElementById("modalConfirmacion");
   const instance = M.Modal.getInstance(modalElem);
-  instance.open();
 
   // Manejo de botones
   const btnAceptar = document.getElementById("btnAceptar");
   const btnCancelar = document.getElementById("btnCancelar");
 
+  // Elimino las llamadas anteriores.
+  if (aceptarExecution) {
+    btnAceptar.removeEventListener('click', aceptarExecution);
+  }
+  if (cancelarExecution) {
+    btnCancelar.removeEventListener('click',cancelarExecution);
+  }
+
+  console.log({"btnAceptar removeEventListener": aceptarExecution});
+  console.log({"btnCancelar removeEventListener": cancelarExecution});
+
   // Limpiar cualquier listener anterior
-  btnAceptar.onclick = () => callback(true);
-  btnCancelar.onclick = () => callback(false);
+  aceptarExecution = () => callback(true);
+  cancelarExecution = () => callback(false);
+
+  btnAceptar.addEventListener('click', aceptarExecution);
+  btnCancelar.addEventListener('click', cancelarExecution);
+
+  console.log({"btnAceptar addEventListener": aceptarExecution});
+  console.log({"btnCancelar addEventListener": cancelarExecution});
+
+  instance.open();
 };
 
 /**

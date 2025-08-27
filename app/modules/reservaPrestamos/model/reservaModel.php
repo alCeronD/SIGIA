@@ -1101,6 +1101,7 @@ class ReservaModel
                 $elementosPrestamo[] = $row;
             }
 
+
             // Segunda transacción - Actualizar estado de los elementos.
             $updateElementos = "UPDATE elementos el SET elm_cod_estado = 1 WHERE el.elm_cod = ?";
             $stmt2 = $conn->prepare($updateElementos);
@@ -1128,7 +1129,7 @@ class ReservaModel
                 ];
             }
 
-            // Tipo movimiento cancelado.
+            // // Tipo movimiento cancelado.
             $tipoMovimiento = 6;
             // Ejecuto la transacción 2 y 3 en este ciclo.
             foreach ($elementosPrestamo as $key => $value) {

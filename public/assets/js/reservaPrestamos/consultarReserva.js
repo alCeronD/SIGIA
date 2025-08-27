@@ -18,6 +18,13 @@ import {
   setObservacion
 } from "../utils/cases.js";
 import { getData, sendData } from "../utils/fetch.js";
+import { cancelarProcesoPreview } from "./reserva/submitEvents.js";
+
+
+let cancelarProceso = null;
+
+
+
 
 const width = screen.width
 const height = screen.height;
@@ -964,7 +971,16 @@ tbodyReservaConsult.addEventListener("click", (event) => {
   });
   const btnCancel = event.target.closest("button[data-cancel]");
   if (btnCancel) {
+
+    // Borro el proceso de ejecución si ya existe uno creado.
+    if (cancelarProceso) {
+      formCancel.removeEventListener('submit', cancelarProceso);
+    }
+
     let dataCodigo = btnCancel.getAttribute('data-cancel');
+    console.log(dataCodigo)
+    // Guardo la función de renderizado en la variable, no puedo hacerla junto
+
     mostrarConfirmacion(
       `Cancelar reserva # ${dataCodigo}`,
       "¿Deseas cancelar la reserva?",
@@ -974,68 +990,75 @@ tbodyReservaConsult.addEventListener("click", (event) => {
             return;
           }
 
+          cancelarProceso = cancelarProcesoPreview(dataCodigo,modalCancel,toastOptions,sendData,initAlert, renderReservas, currentPage, valueSelect);
+
           // Span para insertar el titulo del proceso.
           const modalTitleCancel = document.querySelector(
             "#modalCancel #modalTitleCancel"
           );
           modalTitleCancel.innerText = `Cancelar reserva # ${dataCodigo}`;
           modalCancel.open();
-          formCancel.addEventListener("submit", async (f) => {
-            f.stopPropagation();
-            f.preventDefault();
-            const dataCancel = new FormData(f.target);
-            let dataForm = Object.fromEntries(dataCancel.entries());
+          
+          // formCancel.addEventListener("submit", async (f) => {
+          //   f.stopPropagation();
+          //   f.preventDefault();
+          //   const dataCancel = new FormData(f.target);
+          //   let dataForm = Object.fromEntries(dataCancel.entries());
 
-            if (
-              dataForm.radioCancel === "on" &&
-              Object.keys(dataForm.observacion).length === 0
-            ) {
-              initAlert(
-                "El campo observación es obligatorio",
-                "info",
-                toastOptions
-              );
-              return;
-            }
+          //   if (
+          //     dataForm.radioCancel === "on" &&
+          //     Object.keys(dataForm.observacion).length === 0
+          //   ) {
+          //     initAlert(
+          //       "El campo observación es obligatorio",
+          //       "info",
+          //       toastOptions
+          //     );
+          //     return;
+          //   }
 
-            dataForm = {
-              ...dataForm,
-              codigoPrestamo: dataCodigo,
-            };
+          //   dataForm = {
+          //     ...dataForm,
+          //     codigoPrestamo: dataCodigo,
+          //   };
 
-            delete dataForm.radioCancel;
+          //   delete dataForm.radioCancel;
 
-            const response = await sendData(
-              "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
-              "POST",
-              "cancelPrestamo",
-              dataForm
-            );
+          //   const response = await sendData(
+          //     "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
+          //     "POST",
+          //     "cancelPrestamo",
+          //     dataForm
+          //   );
 
-            if (!response.status) {
-              initAlert(response.message, "error", toastOptions);
-              return;
-            }
-            modalCancel.close();
+          //   if (!response.status) {
+          //     initAlert(response.message, "error", toastOptions);
+          //     return;
+          //   }
+          //   modalCancel.close();
 
-            // Esto esta repedido, se puede transformar en función a parte.
-            // Limpiar radios
-            document
-              .querySelectorAll('#modalCancel input[name="radioCancel"]')
-              .forEach((radio) => {
-                radio.checked = false;
-              });
+          //   // Esto esta repedido, se puede transformar en función a parte.
+          //   // Limpiar radios
+          //   document
+          //     .querySelectorAll('#modalCancel input[name="radioCancel"]')
+          //     .forEach((radio) => {
+          //       radio.checked = false;
+          //     });
 
-            // Limpiar textarea y deshabilitar
-            const observacion = document.querySelector(
-              "#inputObservacionCancel"
-            );
-            observacion.value = "";
-            observacion.readOnly = true;
+          //   // Limpiar textarea y deshabilitar
+          //   const observacion = document.querySelector(
+          //     "#inputObservacionCancel"
+          //   );
+          //   observacion.value = "";
+          //   observacion.readOnly = true;
 
-            initAlert(response.message, "success", toastOptions);
-            renderReservas({ page: currentPage, type: valueSelect });
-          });
+          //   initAlert(response.message, "success", toastOptions);
+          //   renderReservas({ page: currentPage, type: valueSelect });
+          // });
+
+
+          formCancel.addEventListener('submit', cancelarProceso);
+
         } catch (error) {
           console.warn(`Error de procedimiento ${error}`);
         }
@@ -1074,22 +1097,23 @@ closeModal(modalValidate, btnCloseValidte, () => {
   });
 });
 
-closeModal(modalCancel, btnCloseCancel, ()=>{
-  instanceModal('#modalCancel', {
-    ...options,
-    onCloseEnd: ()=>{
-      // Limpiar radios
-      document.querySelectorAll('#modalCancel input[name="radioCancel"]').forEach(radio => {
-        radio.checked = false;
-      });
+closeModal(modalCancel, btnCloseCancel, () => {
+  // Limpiar radios
+  document
+    .querySelectorAll('#modalCancel input[name="radioCancel"]')
+    .forEach((radio) => {
+      radio.checked = false;
+    });
 
-      // Limpiar textarea y deshabilitar
-      const observacion = document.querySelector('#inputObservacionCancel');
-      observacion.value = '';
-      observacion.readOnly = true;
+  // Limpiar textarea y deshabilitar
+  const observacion = document.querySelector("#inputObservacionCancel");
+  observacion.value = "";
+  observacion.readOnly = true;
 
-    }
-  });
+  if (cancelarProceso) {
+    formCancel.removeEventListener("submit", cancelarProceso);
+    cancelarProceso = null;
+  }
 
 });
 
@@ -1109,11 +1133,8 @@ previewReserva.addEventListener("click", (e) => {
   currentPage = currentPage - 1;
 
     renderReservas({page:currentPage, type:valueSelect});
-    console.log("valor de if preview");
 
   // renderReservas({page:currentPage, type:valueSelect});
-
-
 });
 
 nextReserva.addEventListener("click", (e) => {
