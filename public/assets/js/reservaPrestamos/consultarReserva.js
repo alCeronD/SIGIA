@@ -18,10 +18,9 @@ import {
   setObservacion
 } from "../utils/cases.js";
 import { getData, sendData } from "../utils/fetch.js";
-import { cancelarProcesoPreview } from "./reserva/submitEvents.js";
-
-
+import { cancelarProcesoPreview, finalizarPresvamoPreview } from "./consultar/submitEvents.js";
 let cancelarProceso = null;
+let finalizarPrestamo = null;
 
 
 
@@ -56,6 +55,9 @@ const btnCloseElements = document.querySelector("#modalDetail .close-modal");
 const btnCloseCancel = document.querySelector('#modalCancel .close-modal');
 const formDetail = document.querySelector("#formDetail");
 const formCancel = document.querySelector('#formCancel');
+const formSalida = document.querySelector('#formSalida');
+const inputObservacionsalida = document.querySelector('#modalSalida #inputObservacionsalida');
+const radioButtonSalida = document.querySelectorAll('#modalSalida input[name="radioSalida"]');
 const modalSalida = instanceModal('#modalSalida', options);
 const pagesPrestamos = document.querySelector('#pagesPrestamos');
 const rowsPrestamos = document.querySelector('#rowsPrestamos');
@@ -367,7 +369,8 @@ function resetModalValidate(showTable = false) {
 
 /** Description - Función para limpiar los campos del formulario del modal de finalizar prestamo */
 function resetModalSalida() {
-  inputObservacionsalida.innerText = "";
+  inputObservacionsalida.value = "";
+  inputObservacionsalida.readOnly = true;
   radioButtonSalida.forEach((rd) => {
     rd.checked = false;
   });
@@ -478,10 +481,11 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     event.target.getAttribute(["data-end"])
   ) {
 
+    // Si ya existe un evento, lo elimino.
+    if (finalizarPrestamo) {
+      formSalida.removeEventListener('submit', finalizarPrestamo)
+    }
 
-    const inputObservacionsalida = document.querySelector('#inputObservacionsalida');
-    const radioButtonSalida = document.querySelectorAll('input[name="radioSalida"]');
-    const formSalida = document.querySelector('#formSalida');
     const observacionesLabelSalida = document.querySelector('#observacionesLabelSalida');
     radioButtonSalida.forEach((rdSal)=>{
       rdSal.addEventListener('change', (e)=>{
@@ -521,73 +525,10 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         return;
       }
 
+      finalizarPrestamo = finalizarPresvamoPreview(endReserva,sendData,modalSalida,initAlert,toastOptions,renderReservas,valueSelect,inputObservacionsalida,radioButtonSalida);
+
       modalSalida.open();
-      let dataFormSalida = {};
-      formSalida.addEventListener("submit", async (f) => {
-        f.stopPropagation();
-        f.preventDefault();
-
-        let formData = new FormData(f.target);
-        dataFormSalida = Object.fromEntries(formData.entries());
-
-        if (Object.keys(dataFormSalida).length === 0) {
-          initAlert(
-            "Seleccione Si o No antes del finalizar el prestamo.",
-            "info",
-            toastOptions
-          );
-          return;
-        }
-        if (
-          Object.values(dataFormSalida).includes("on") &&
-          !dataFormSalida.observacion.trim()
-        ) {
-          initAlert("Campo de observación obligatorio", "info", toastOptions);
-          return;
-        }
-
-        endReserva = {
-          ...endReserva,
-          observacionSalida: dataFormSalida.observacion,
-        };
-
-        try {
-          const responseSalida = await sendData(
-            "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
-            "POST",
-            "finalizar",
-            endReserva
-          );
-          if (responseSalida.status) {
-            modalSalida.close();
-            initAlert(
-              `Prestamo # ${endReserva.codigoReserva} finalizada`,
-              "success",
-              toastOptions
-            );
-            
-            // Lo ideal es renderizar esto en la página actual a la cual se encuentran los prestamos, no re direccionar a la página 1.
-            renderReservas({ page: 1, type: valueSelect });
-
-            // Limpio campo de texto y reestablezco los input radio, lo puedo implementar como función.
-            inputObservacionsalida.innerText = "";
-            radioButtonSalida.forEach((rd) => {
-              rd.checked = false;
-            });
-
-
-            let codigoAdd = endReserva.codigoReserva;
-            let tr = [...document.querySelectorAll("#tbodyReservaConsult tr")];
-          } else {
-            initAlert(
-              `Respuesta del servidor: \n ${response.message}`,
-              "warning",
-              toastOptions
-            );
-            console.warn("Respuesta negativa del servidor:", response.message);
-          }
-        } catch (error) {}
-      });
+      formSalida.addEventListener("submit", finalizarPrestamo);
 
     });
   }
@@ -978,7 +919,6 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     }
 
     let dataCodigo = btnCancel.getAttribute('data-cancel');
-    console.log(dataCodigo)
     // Guardo la función de renderizado en la variable, no puedo hacerla junto
 
     mostrarConfirmacion(
@@ -1097,6 +1037,7 @@ closeModal(modalValidate, btnCloseValidte, () => {
   });
 });
 
+// Acciones del cancelar el prestamo luego de que se cierre el modal
 closeModal(modalCancel, btnCloseCancel, () => {
   // Limpiar radios
   document
@@ -1117,6 +1058,15 @@ closeModal(modalCancel, btnCloseCancel, () => {
 
 });
 
+// Acciones de finalizar el prestamo luego de que se cierre el modal.
+closeModal(modalSalida,closeModalBtnSalida, ()=>{
+  resetModalSalida();
+  if (finalizarPrestamo) {
+    formSalida.removeEventListener(finalizarPrestamo);
+    finalizarPrestamo = null;
+  }
+
+});
 
 /**
  * Paginación de los prestamos.
@@ -1208,8 +1158,5 @@ document.addEventListener("DOMContentLoaded", () => {
     "top"
   );
 
-  closeModal(modalSalida,closeModalBtnSalida, ()=>{
-    resetModalSalida();
 
-  });
 });
