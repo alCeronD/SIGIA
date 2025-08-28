@@ -84,19 +84,19 @@
       <!-- Modal Devolutivos -->
       <div id="modalSeleccionElementos" class="modal">
         <div class="modal-content">
-        <a href="#!" class="modal-close btn-flat red-text right" title="Cerrar" style="font-size: 1.5rem;">&times;</a>
+          <a href="#!" class="modal-close btn-flat red-text right" title="Cerrar" style="font-size: 1.5rem;">&times;</a>
 
           <h5>Seleccionar Elementos Devolutivos</h5>
 
           <div class="input-field">
-          <select id="filtro_area_modal" name="" class="textSolicitud">
-            <option value="" selected>Todas las áreas</option>
-            <?php foreach ($areas as $area): ?>
-              <?php if (strtolower(trim($area['ar_nombre'])) !== 'general'): ?>
-                <option value="<?= $area['ar_cod']; ?>"><?= htmlspecialchars($area['ar_nombre']); ?></option>
-              <?php endif; ?>
-            <?php endforeach; ?>
-          </select>
+            <select id="filtro_area_modal" name="" class="textSolicitud">
+              <option value="" selected>Todas las áreas</option>
+              <?php foreach ($areas as $area): ?>
+                <?php if (strtolower(trim($area['ar_nombre'])) !== 'general'): ?>
+                  <option value="<?= $area['ar_cod']; ?>"><?= htmlspecialchars($area['ar_nombre']); ?></option>
+                <?php endif; ?>
+              <?php endforeach; ?>
+            </select>
             <label for="filtro_area_modal">Filtrar por área</label>
           </div>
 
@@ -111,7 +111,7 @@
                 </tr>
               </thead>
               <tbody id="tabla-elementos-devolutivos-modal">
-                <?php  
+                <?php
                 foreach ($elementos as $elemento): ?>
                   <tr data-area="<?= $elemento['ar_cod']; ?>">
                     <td><?= htmlspecialchars($elemento['elm_placa']); ?></td>
@@ -119,7 +119,7 @@
                     <td><?= htmlspecialchars($elemento['elm_existencia']); ?></td>
                     <td>
                       <label>
-                        <input type="checkbox" class="filled-in" data-tpelementoDev="<?php echo $elemento['elm_cod_tp_elemento']; ?>" name="elementosDevolutivos" data-cantidadDev="<?php echo $elemento['elm_existencia']; ?>"  value="<?= $elemento['elm_cod']; ?>">
+                        <input type="checkbox" class="filled-in" data-tpelementoDev="<?php echo $elemento['elm_cod_tp_elemento']; ?>" name="elementosDevolutivos" data-cantidadDev="<?php echo $elemento['elm_existencia']; ?>" value="<?= $elemento['elm_cod']; ?>">
                         <span></span>
                       </label>
                     </td>
@@ -130,15 +130,20 @@
           </div>
           <ul id="paginacion" class="pagination center-align"></ul>
         </div>
-        <div class="modal-footer">
-          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Confirmar Selección</a>
+        <div class="modal-footer center-align">
+          <button type="button"
+            class="modal-close waves-effect waves-light btn"
+            id="btnConfirmarDevolutivos">
+            <i class="material-icons left">send</i>
+          </button>
         </div>
+
       </div>
 
       <!-- Modal Consumibles -->
       <div id="modalSeleccionConsumibles" class="modal">
         <div class="modal-content">
-        <a href="#!" class="modal-close btn-flat red-text right" title="Cerrar" style="font-size: 1.5rem;">&times;</a>
+          <a href="#!" class="modal-close btn-flat red-text right" title="Cerrar" style="font-size: 1.5rem;">&times;</a>
 
           <h5>Seleccionar Elementos Consumibles</h5>
 
@@ -185,9 +190,14 @@
           </div>
           <ul id="paginacion_consumibles" class="pagination center-align"></ul>
         </div>
-        <div class="modal-footer">
-          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Confirmar Selección</a>
+        <div class="modal-footer center-align">
+          <button type="button"
+            class="modal-close waves-effect waves-light btn"
+            id="btnConfirmarConsumibles">
+            <i class="material-icons left">send</i>
+          </button>
         </div>
+
       </div>
 
 
