@@ -1,7 +1,7 @@
 <!-- Realizar la reserva -->
 <div class="content">
     <div class="menuTitle">
-        <span id="textTitle">Gestión de prestamos</span>
+        <span id="textTitle" class="textTitleSpan">Gestión de prestamos</span>
         <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>

@@ -1,7 +1,7 @@
 <div class="content">
   <div class="titleUsuarios">
     <span id="textTitle" class="teal-text text-darken-4">Registrar usuario</span>
-    <a href="<?= getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close btn-flat red-text" title="Volver al dashboard">&times;</a>
+    <a href="<?= getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
   </div>
   
   <div class="registrarUsuario">

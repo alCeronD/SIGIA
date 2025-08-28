@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-08-2025 a las 04:14:24
+-- Tiempo de generación: 28-08-2025 a las 17:03:57
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -64,11 +64,12 @@ CREATE TABLE `categoria` (
 --
 
 INSERT INTO `categoria` (`ca_id`, `ca_nombre`, `ca_descripcion`, `ca_status`) VALUES
-(1, 'Soporte', '', 1),
-(2, 'Iluminación Fría', '', 1),
-(3, 'Iluminación Cálida', '', 1),
-(4, 'Video Cámara', '', 1),
-(5, 'Cámaras', '', 1);
+(1, 'No aplica', 'Categoría No aplica', 1),
+(2, 'Soporte', 'Categoría Soporte', 1),
+(3, 'Iluminación Fría', 'Categoría Iluminación Fría', 1),
+(4, 'Iluminación Cálida', 'Categoría Iluminación Cálida', 1),
+(5, 'Video Cámara', 'Categoría Video Cámara', 1),
+(6, 'Cámaras', 'Categoría Cámaras', 1);
 
 -- --------------------------------------------------------
 
@@ -84,6 +85,13 @@ CREATE TABLE `compras` (
   `co_descripcion` varchar(300) DEFAULT NULL COMMENT 'descripción en caso de ser necesaria',
   `co_fecha_compra` datetime DEFAULT NULL COMMENT 'fecha de registro del proceso.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Registra las compras y/o reembolsos de elementos, incluyendo cantidad, fecha y tipo de movimiento relacionado y código del elemento identificador';
+
+--
+-- Volcado de datos para la tabla `compras`
+--
+
+INSERT INTO `compras` (`cod_compra`, `co_cod_elm`, `co_cantidad`, `co_tp_movimiento`, `co_descripcion`, `co_fecha_compra`) VALUES
+(49, NULL, 32, 1, 'prueba de registro adicional.', '2025-08-27 21:28:22');
 
 -- --------------------------------------------------------
 
@@ -104,91 +112,92 @@ CREATE TABLE `elementos` (
   `elm_cod_tp_elemento` int(11) DEFAULT NULL COMMENT 'tipo de elemento, devolutivo o consumible',
   `elm_cod_estado` int(11) DEFAULT NULL COMMENT 'estado actual del elemento, dependiendo de su id se define, los valores estan en la tabla estados_elementos',
   `elm_area_cod` int(11) DEFAULT NULL COMMENT 'area del elemento, sus valores relacionados con tabla areas.',
-  `elm_ma_cod` int(11) DEFAULT NULL COMMENT 'marca del elemento, su valor relacional esta en la tabla marcas.'
+  `elm_ma_cod` int(11) DEFAULT NULL COMMENT 'marca del elemento, su valor relacional esta en la tabla marcas.',
+  `elm_categoria` int(11) DEFAULT NULL COMMENT 'Categoría del elemento para aplicar una categorización de los elementos.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla que almacena los elementos físicos, su identificación, estado, departamento e información relevante.';
 
 --
 -- Volcado de datos para la tabla `elementos`
 --
 
-INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_serie`, `elm_nombre`, `elm_existencia`, `elm_fecha_registro`, `elm_sugerencia`, `elm_observacion`, `elm_uni_medida`, `elm_cod_tp_elemento`, `elm_cod_estado`, `elm_area_cod`, `elm_ma_cod`) VALUES
-(1, 922917451, '922917451', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA MANIVELA', 4, 1, 1, 6, 1),
-(2, 92293396, '92293396', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA MANIVELA', 4, 1, 1, 6, 1),
-(3, 922919603, '922919603', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'COMPLETO', 4, 1, 1, 6, 1),
-(4, 922917452, '922917452', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'COMPLETO', 4, 1, 1, 6, 1),
-(5, 107685076, '107685076', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'COMPLETO', 4, 1, 1, 6, 1),
-(6, 92293395, '92293395', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA TORINILLO PARA LA PLATINA', 4, 1, 1, 6, 1),
-(7, 922917453, '922917453', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA PLATINA', 4, 1, 1, 6, 1),
-(8, 922917453, '922917453', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA PLATINA', 4, 1, 1, 6, 1),
-(9, 92293397, '92293397', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'COMPLETO', 4, 1, 1, 6, 1),
-(10, 100189225, '100189225', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'SIN CABEZAL (DEVOLVER)', 4, 1, 1, 6, 1),
-(11, 100189226, '100189226', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA SEGURO PARA PLATINA', 4, 1, 1, 6, 1),
-(12, 922919586, '922919586-1', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA MARIPOSA - FALTA CABLE DE PODER', 4, 1, 1, 5, 1),
-(13, 922919586, '922919586-2', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA DIFUSOR', 4, 1, 1, 5, 1),
-(14, 922919586, '922919586-3', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
-(15, 922919586, '922919586-4', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA MARIPOSA', 4, 1, 1, 5, 1),
-(16, 922919587, '922919587-1', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
-(17, 922919587, '922919587-2', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
-(18, 922919587, '922919587-3', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA CABLE', 4, 1, 1, 5, 1),
-(19, 922919587, '922919587-4', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
-(20, 92293941, '92293941-1', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 5 BOMBILLOS - FALTA MANILA', 4, 1, 1, 5, 1),
-(21, 92293941, '92293941-2', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 4 BOMBILLOS', 4, 1, 1, 5, 1),
-(22, 92293941, '92293941-3', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 4 BOMBILLOS', 4, 1, 1, 5, 1),
-(23, 92293941, '92293941-4', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALLAN 2 PLAFONES', 4, 1, 1, 5, 1),
-(24, 922917412, '922917412-1', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 2 BOBILLOS', 4, 1, 1, 5, 1),
-(25, 922917412, '922917412-2', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA 1 BOMBILLO', 4, 1, 1, 5, 1),
-(26, 922917413, '922917413-1', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
-(27, 922917413, '922917413-2', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 3 BOMBILLOS - DISFUSOR', 4, 1, 1, 5, 1),
-(28, 922917402, '922917402', 'LUZ LED BLANCAS', 1, '0000-00-00', 'LLEVAR TRIPODE DE LUZ CÁLIDA Y CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1),
-(29, 922917403, '922917403', 'LUZ LED BLANCAS', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1),
-(30, 922919588, '922919588-1', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1),
-(31, 922919589, '922919589-1', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1),
-(32, 922919589, '922919589-2', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'FALTA 1 BOMBILLO', 4, 1, 1, 5, 1),
-(33, 922919589, '922919589-3', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1),
-(34, 922919590, '922919590-1', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'FALTA 1 BOMBILLO', 4, 1, 1, 5, 1),
-(35, 922919590, '922919590-2', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1),
-(36, 922919590, '922919590-3', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
-(37, 922919588, '922919588-2', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
-(38, 922919588, '922919588-3', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1),
-(39, 922917415, '922917415', 'PAR LED', 1, '0000-00-00', 'LLEVAR CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1),
-(40, 922917416, '922917416', 'PAR LED', 1, '0000-00-00', 'LLEVAR CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1),
-(41, 922917417, '922917417', 'PAR LED', 1, '0000-00-00', 'LLEVAR CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1),
-(42, 922917404, '922917404', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'FALTA MANIVELA', 4, 1, 1, 6, 1),
-(43, 922919598, '922919598', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'FALTA MANIVELA', 4, 1, 1, 6, 1),
-(44, 922919599, '922919599', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'COMPLETA', 4, 1, 1, 6, 1),
-(45, 922919600, '922919600', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'COMPLETA', 4, 1, 1, 6, 1),
-(46, 9229191, '9229191', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'COMPLETA', 4, 1, 1, 5, 1),
-(47, 9229192, '9229192', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'FALLA DEL BALASTRO', 4, 1, 1, 5, 1),
-(48, 9229193, '9229193', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'FALTA BOMBILLO', 4, 1, 1, 5, 1),
-(49, 9229194, '9229194', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'COMPLETA', 4, 1, 1, 5, 1),
-(50, 92293286, '92293286', 'SMITH-VICTOR', 1, '0000-00-00', 'LLEVAR TRIPODE DE LUZ CÁLIDA Y CABLE DE PODER', 'FALTA BOMBILLO', 4, 1, 1, 5, 1),
-(51, 92293287, '92293287', 'SMITH-VICTOR', 1, '0000-00-00', 'LLEVAR TRIPODE DE LUZ CÁLIDA Y CABLE DE PODER', 'FALTA BOMBILLO', 4, 1, 1, 5, 1),
-(52, 922919535, '922919535', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
-(53, 922919536, '922919536', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
-(54, 922919537, '922919537', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
-(55, 922917450, '922917450', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
-(56, 922919611, '922919611', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
-(57, 922919539, '922919539', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
-(58, 922919540, '922919540', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
-(59, 922919542, '922919542', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
-(60, 922917094, '922917094', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'FALTA CARGADOR', 4, 1, 1, 6, 1),
-(61, 922917093, '922917093', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'FALTA CARGADOR', 4, 1, 1, 6, 1),
-(62, 922917096, '922917096', 'CÁMARA FOTO NIKON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1),
-(63, 92294487, '92294487', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'XS', 4, 1, 1, 6, 1),
-(64, 92294488, '92294488', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'FALTA LENTE', 4, 1, 1, 6, 1),
-(65, 92294489, '92294489', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'XS', 4, 1, 1, 6, 1),
-(66, 1076144983, '1076144983', 'CÁMARA VIDEO SONY', 1, '0000-00-00', '', 'DEVOLUCION', 4, 1, 1, 6, 1),
-(67, 93112759, '93112759', 'CÁMARA VIDEO SONY', 1, '0000-00-00', '', 'DEVOLUCION', 4, 1, 1, 6, 1),
-(68, 92293393, '92293393', 'CÁMARA VIDEO DVCAM', 1, '0000-00-00', '', 'DEVOLUCION', 4, 1, 1, 6, 1),
-(69, 92293392, '92293392', 'CÁMARA VIDEO DVCAM', 1, '0000-00-00', '', 'COMPLETA proyecto', 4, 1, 1, 6, 1),
-(70, 92293394, '92293394', 'CÁMARA VIDEO DVCAM', 1, '0000-00-00', ' ', 'DEVOLUCION', 4, 1, 1, 6, 1),
-(71, 92297900, '92297900', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1),
-(72, 92297898, '92297898', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1),
-(73, 92297899, '92297899', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1),
-(74, 100189107, '100189107', 'CÁMARA VIDEO PANASONIC (HANDICAM)', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1),
-(75, 100189081, '100189081', 'CÁMARA VIDEO PANASONIC (HANDICAM)', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1),
-(76, 100120741, '100120741', 'CÁMARA VIDEO BETACAM', 1, '0000-00-00', ' ', 'COMPLETO proyecto', 4, 1, 1, 6, 1),
-(77, 1076182658, '1076182658', 'CÁMARA VIDEO DVCAM', 1, '0000-00-00', ' ', 'COMPLETO proyecto', 4, 1, 1, 6, 1);
+INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_serie`, `elm_nombre`, `elm_existencia`, `elm_fecha_registro`, `elm_sugerencia`, `elm_observacion`, `elm_uni_medida`, `elm_cod_tp_elemento`, `elm_cod_estado`, `elm_area_cod`, `elm_ma_cod`, `elm_categoria`) VALUES
+(1, 922917451, '922917451', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA MANIVELA', 4, 1, 1, 6, 1, NULL),
+(2, 92293396, '92293396', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA MANIVELA', 4, 1, 1, 6, 1, NULL),
+(3, 922919603, '922919603', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'COMPLETO', 4, 1, 3, 6, 1, NULL),
+(4, 922917452, '922917452', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
+(5, 107685076, '107685076', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'COMPLETO', 4, 1, 5, 6, 1, NULL),
+(6, 92293395, '92293395', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA TORINILLO PARA LA PLATINA', 4, 1, 1, 6, 1, NULL),
+(7, 922917453, '922917453', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA PLATINA', 4, 1, 5, 6, 1, NULL),
+(8, 922917453, '922917453', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA PLATINA', 4, 1, 1, 6, 1, NULL),
+(9, 92293397, '92293397', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
+(10, 100189225, '100189225', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'SIN CABEZAL (DEVOLVER)', 4, 1, 1, 6, 1, NULL),
+(11, 100189226, '100189226', 'TRIPODE DE CABEZA FLUIDA', 1, '0000-00-00', 'LLEVAR LA PLATINA', 'FALTA SEGURO PARA PLATINA', 4, 1, 1, 6, 1, NULL),
+(12, 922919586, '922919586-1', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA MARIPOSA - FALTA CABLE DE PODER', 4, 1, 1, 5, 1, NULL),
+(13, 922919586, '922919586-2', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA DIFUSOR', 4, 1, 1, 5, 1, NULL),
+(14, 922919586, '922919586-3', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1, NULL),
+(15, 922919586, '922919586-4', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA MARIPOSA', 4, 1, 1, 5, 1, NULL),
+(16, 922919587, '922919587-1', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1, NULL),
+(17, 922919587, '922919587-2', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1, NULL),
+(18, 922919587, '922919587-3', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA CABLE', 4, 1, 1, 5, 1, NULL),
+(19, 922919587, '922919587-4', 'LUZ LED BICROMATICA', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1, NULL),
+(20, 92293941, '92293941-1', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 5 BOMBILLOS - FALTA MANILA', 4, 1, 1, 5, 1, NULL),
+(21, 92293941, '92293941-2', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 4 BOMBILLOS', 4, 1, 1, 5, 1, NULL),
+(22, 92293941, '92293941-3', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 4 BOMBILLOS', 4, 1, 1, 5, 1, NULL),
+(23, 92293941, '92293941-4', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALLAN 2 PLAFONES', 4, 1, 1, 5, 1, NULL),
+(24, 922917412, '922917412-1', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 2 BOBILLOS', 4, 1, 1, 5, 1, NULL),
+(25, 922917412, '922917412-2', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA 1 BOMBILLO', 4, 1, 1, 5, 1, NULL),
+(26, 922917413, '922917413-1', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1, NULL),
+(27, 922917413, '922917413-2', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 3 BOMBILLOS - DISFUSOR', 4, 1, 1, 5, 1, NULL),
+(28, 922917402, '922917402', 'LUZ LED BLANCAS', 1, '0000-00-00', 'LLEVAR TRIPODE DE LUZ CÁLIDA Y CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
+(29, 922917403, '922917403', 'LUZ LED BLANCAS', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
+(30, 922919588, '922919588-1', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
+(31, 922919589, '922919589-1', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
+(32, 922919589, '922919589-2', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'FALTA 1 BOMBILLO', 4, 1, 1, 5, 1, NULL),
+(33, 922919589, '922919589-3', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
+(34, 922919590, '922919590-1', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'FALTA 1 BOMBILLO', 4, 1, 1, 5, 1, NULL),
+(35, 922919590, '922919590-2', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
+(36, 922919590, '922919590-3', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1, NULL),
+(37, 922919588, '922919588-2', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1, NULL),
+(38, 922919588, '922919588-3', 'CARRY LIGHT', 1, '0000-00-00', 'LLEVAR CABLE DE PODER Y TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1, NULL),
+(39, 922917415, '922917415', 'PAR LED', 1, '0000-00-00', 'LLEVAR CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
+(40, 922917416, '922917416', 'PAR LED', 1, '0000-00-00', 'LLEVAR CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
+(41, 922917417, '922917417', 'PAR LED', 1, '0000-00-00', 'LLEVAR CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
+(42, 922917404, '922917404', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'FALTA MANIVELA', 4, 1, 1, 6, 1, NULL),
+(43, 922919598, '922919598', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'FALTA MANIVELA', 4, 1, 1, 6, 1, NULL),
+(44, 922919599, '922919599', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'COMPLETA', 4, 1, 1, 6, 1, NULL),
+(45, 922919600, '922919600', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'COMPLETA', 4, 1, 1, 6, 1, NULL),
+(46, 9229191, '9229191', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
+(47, 9229192, '9229192', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'FALLA DEL BALASTRO', 4, 1, 1, 5, 1, NULL),
+(48, 9229193, '9229193', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'FALTA BOMBILLO', 4, 1, 1, 5, 1, NULL),
+(49, 9229194, '9229194', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
+(50, 92293286, '92293286', 'SMITH-VICTOR', 1, '0000-00-00', 'LLEVAR TRIPODE DE LUZ CÁLIDA Y CABLE DE PODER', 'FALTA BOMBILLO', 4, 1, 1, 5, 1, NULL),
+(51, 92293287, '92293287', 'SMITH-VICTOR', 1, '0000-00-00', 'LLEVAR TRIPODE DE LUZ CÁLIDA Y CABLE DE PODER', 'FALTA BOMBILLO', 4, 1, 1, 5, 1, NULL),
+(52, 922919535, '922919535', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
+(53, 922919536, '922919536', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
+(54, 922919537, '922919537', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 4, NULL),
+(55, 922917450, '922917450', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
+(56, 922919611, '922919611', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
+(57, 922919539, '922919539', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
+(58, 922919540, '922919540', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
+(59, 922919542, '922919542', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
+(60, 922917094, '922917094', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'FALTA CARGADOR', 4, 1, 1, 6, 1, NULL),
+(61, 922917093, '922917093', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'FALTA CARGADOR', 4, 1, 1, 6, 1, NULL),
+(62, 922917096, '922917096', 'CÁMARA FOTO NIKON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
+(63, 92294487, '92294487', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'XS', 4, 1, 1, 6, 1, NULL),
+(64, 92294488, '92294488', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'FALTA LENTE', 4, 1, 1, 6, 1, NULL),
+(65, 92294489, '92294489', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'XS', 4, 1, 1, 6, 1, NULL),
+(66, 1076144983, '1076144983', 'CÁMARA VIDEO SONY', 1, '0000-00-00', '', 'DEVOLUCION', 4, 1, 1, 6, 3, NULL),
+(67, 93112759, '93112759', 'CÁMARA VIDEO SONY', 1, '0000-00-00', '', 'DEVOLUCION', 4, 1, 1, 6, 1, NULL),
+(68, 92293393, '92293393', 'CÁMARA VIDEO DVCAM', 1, '0000-00-00', '', 'DEVOLUCION', 4, 1, 1, 6, 1, NULL),
+(69, 92293392, '92293392', 'CÁMARA VIDEO DVCAM', 1, '0000-00-00', '', 'COMPLETA proyecto', 4, 1, 1, 6, 1, NULL),
+(70, 92293394, '92293394', 'CÁMARA VIDEO DVCAM', 1, '0000-00-00', ' ', 'DEVOLUCION', 4, 1, 1, 6, 1, NULL),
+(71, 92297900, '92297900', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1, NULL),
+(72, 92297898, '92297898', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1, NULL),
+(73, 92297899, '92297899', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1, NULL),
+(74, 100189107, '100189107', 'CÁMARA VIDEO PANASONIC (HANDICAM)', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1, NULL),
+(75, 100189081, '100189081', 'CÁMARA VIDEO PANASONIC (HANDICAM)', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1, NULL),
+(76, 100120741, '100120741', 'CÁMARA VIDEO BETACAM', 1, '0000-00-00', ' ', 'COMPLETO proyecto', 4, 1, 1, 6, 1, NULL),
+(77, 1076182658, '1076182658', 'CÁMARA VIDEO DVCAM', 1, '0000-00-00', ' ', 'COMPLETO proyecto', 4, 1, 1, 6, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -212,14 +221,143 @@ CREATE TABLE `entradas_salidas` (
 --
 
 INSERT INTO `entradas_salidas` (`ent_sal_cod`, `ent_sal_cantidad`, `ent_fech_registro`, `ent_sal_observacion`, `entr_tp_movmnt`, `ent_id_usu`, `ent_sal_cod_elemtn`, `ent_sal_cod_prestamo`) VALUES
-(1, 1, '2025-08-12 02:05:57', 'información', 2, 109, 1, 612),
-(2, 1, '2025-08-12 02:05:57', 'información', 2, 109, 12, 612),
-(3, 1, '2025-08-12 02:05:57', 'información', 2, 109, 20, 612),
-(4, 1, '2025-08-12 02:05:57', 'información', 2, 109, 28, 612),
-(5, 1, '2025-08-12 02:05:57', 'información', 2, 109, 33, 612),
-(6, 1, '2025-08-12 02:05:57', 'información', 2, 109, 40, 612),
-(7, 1, '2025-08-12 02:05:57', 'información', 2, 109, 48, 612),
-(8, 1, '2025-08-12 02:05:57', 'información', 2, 109, 52, 612);
+(266, 1, '2025-08-27 04:30:58', 'Información adicional 1', 2, 176, 1, 662),
+(267, 1, '2025-08-27 04:31:16', 'información adicional 2.', 2, 114, 2, 663),
+(268, 1, '2025-08-27 04:31:30', 'información adicional 3', 2, 109, 3, 664),
+(269, 1, '2025-08-27 04:33:07', 'valido esto.', 6, 109, 3, 664),
+(270, 1, '2025-08-27 04:33:29', 'dsadad', 6, 114, 2, 663),
+(271, 1, '2025-08-27 04:33:30', 'dsadad', 6, 109, 3, 664),
+(272, 1, '2025-08-27 04:34:27', 'valido esto.', 6, 109, 3, 664),
+(273, 1, '2025-08-27 04:34:27', 'valido esto.', 6, 114, 2, 663),
+(274, 1, '2025-08-27 04:34:27', 'valido esto.', 6, 176, 1, 662),
+(275, 1, '2025-08-27 04:36:47', '', 2, 172, 1, 665),
+(276, 1, '2025-08-27 04:37:08', 'información.', 2, 176, 2, 666),
+(277, 1, '2025-08-27 04:37:40', '', 6, 172, 1, 665),
+(278, 1, '2025-08-27 04:38:02', 'valido con el data codigo null.', 6, 172, 1, 665),
+(279, 1, '2025-08-27 04:38:02', 'valido con el data codigo null.', 6, 176, 2, 666),
+(280, 1, '2025-08-27 04:41:00', 'validoNuevoConCancelarFuera', 2, 138, 4, 667),
+(281, 1, '2025-08-27 04:41:17', 'validoNuevoConCancelarFuera1', 2, 109, 11, 668),
+(282, 1, '2025-08-27 04:41:35', 'validoNuevoConCancelarFuera3', 2, 138, 2, 669),
+(283, 1, '2025-08-27 04:44:52', '', 6, 138, 2, 669),
+(284, 1, '2025-08-27 04:45:39', 'dasdasdad', 6, 138, 2, 669),
+(285, 1, '2025-08-27 04:45:39', 'dasdasdad', 6, 109, 11, 668),
+(286, 1, '2025-08-27 04:47:45', 'información de cerrar scope 1', 2, 176, 2, 670),
+(287, 1, '2025-08-27 04:48:01', '', 2, 117, 3, 671),
+(288, 1, '2025-08-27 04:49:12', 'prueba nueva.', 6, 138, 4, 667),
+(289, 1, '2025-08-27 04:49:17', '', 6, 138, 4, 667),
+(290, 1, '2025-08-27 04:49:17', '', 6, 117, 3, 671),
+(291, 1, '2025-08-27 04:49:25', '', 6, 176, 2, 670),
+(292, 1, '2025-08-27 04:49:25', '', 6, 117, 3, 671),
+(293, 1, '2025-08-27 04:49:25', '', 6, 138, 4, 667),
+(294, 1, '2025-08-27 04:51:40', 'prueba nueva1', 2, 176, 1, 672),
+(295, 1, '2025-08-27 04:51:56', 'prueba nueva 2', 2, 109, 5, 673),
+(296, 1, '2025-08-27 04:52:07', 'prueba 4', 2, 109, 9, 674),
+(297, 1, '2025-08-27 04:52:42', 'adiciono nueva prueba.', 6, 109, 5, 673),
+(298, 1, '2025-08-27 04:52:59', '', 6, 109, 5, 673),
+(299, 1, '2025-08-27 04:52:59', '', 6, 109, 9, 674),
+(300, 1, '2025-08-27 04:53:28', 'informacion adicional.', 2, 114, 12, 675),
+(301, 1, '2025-08-27 04:54:20', 'aaa', 6, 114, 12, 675),
+(302, 1, '2025-08-27 04:54:27', '', 6, 114, 12, 675),
+(303, 1, '2025-08-27 04:54:27', '', 6, 176, 1, 672),
+(304, 1, '2025-08-27 04:58:52', 'prueba 1', 2, 138, 2, 676),
+(305, 1, '2025-08-27 04:59:03', 'prueba 2', 2, 114, 3, 677),
+(306, 1, '2025-08-27 04:59:16', 'prueba 3/', 2, 176, 7, 678),
+(307, 1, '2025-08-27 04:59:31', 'prueba 4.', 2, 120, 13, 679),
+(308, 1, '2025-08-27 04:59:43', 'prueba nueva.', 6, 176, 7, 678),
+(309, 1, '2025-08-27 04:59:50', '', 6, 138, 2, 676),
+(310, 1, '2025-08-27 05:01:52', '', 6, 120, 13, 679),
+(311, 1, '2025-08-27 05:02:13', '', 6, 114, 3, 677),
+(312, 1, '2025-08-27 05:02:46', 'prueba nueva.1', 2, 120, 1, 680),
+(313, 1, '2025-08-27 05:03:00', 'prueba nueva 2', 2, 136, 12, 681),
+(314, 1, '2025-08-27 05:03:17', 'prueba nueva 3', 2, 163, 13, 682),
+(315, 1, '2025-08-27 05:03:29', '', 6, 163, 13, 682),
+(316, 1, '2025-08-27 05:05:02', 'adiciono prueba.', 6, 120, 1, 680),
+(317, 1, '2025-08-27 05:05:33', '', 6, 136, 12, 681),
+(318, 1, '2025-08-27 05:08:05', 'prueba de envio.', 2, 176, 2, 683),
+(319, 1, '2025-08-27 05:08:05', 'prueba de envio.', 2, 176, 6, 683),
+(320, 1, '2025-08-27 05:08:24', 'prubea de envio 2', 2, 114, 3, 684),
+(321, 1, '2025-08-27 05:08:24', 'prubea de envio 2', 2, 114, 20, 684),
+(324, 1, '2025-08-27 05:15:00', 'valido salida nueva,', 6, 114, 3, 684),
+(325, 1, '2025-08-27 05:15:00', 'valido salida nueva,', 6, 114, 20, 684),
+(326, 1, '2025-08-27 05:15:33', '', 6, 176, 2, 683),
+(327, 1, '2025-08-27 05:15:33', '', 6, 176, 6, 683),
+(328, 1, '2025-08-27 05:26:06', 'informo', 2, 124, 1, 685),
+(329, 1, '2025-08-27 05:26:21', 'infomo nuevo proceso.', 2, 153, 12, 686),
+(330, 1, '2025-08-27 05:26:38', 'informo nuevo proceso.', 2, 176, 20, 687),
+(331, 1, '2025-08-27 05:26:56', 'informo nuevo proceso.', 2, 180, 19, 688),
+(332, 1, '2025-08-27 05:27:15', 'dddd', 4, 176, 20, 687),
+(333, 1, '2025-08-27 05:27:15', 'dddd', 4, 153, 12, 686),
+(334, 1, '2025-08-27 05:28:36', 'dasda', 2, 124, 4, 689),
+(335, 1, '2025-08-27 05:28:36', 'dasda', 2, 124, 13, 689),
+(336, 1, '2025-08-27 05:28:48', 'sddd', 2, 182, 5, 690),
+(337, 1, '2025-08-27 05:28:48', 'sddd', 2, 182, 9, 690),
+(338, 1, '2025-08-27 05:29:08', 'dsaa', 2, 176, 23, 691),
+(339, 1, '2025-08-27 05:29:22', 'sddd', 2, 176, 25, 692),
+(340, 1, '2025-08-27 05:29:36', 'asdd', 2, 182, 24, 693),
+(341, 1, '2025-08-27 05:29:47', 'sdddd', 2, 159, 3, 694),
+(342, 1, '2025-08-27 05:30:05', '', 4, 124, 1, 685),
+(343, 1, '2025-08-27 05:30:20', '', 2, 182, 24, 693),
+(344, 1, '2025-08-27 05:30:59', '', 2, 124, 4, 689),
+(345, 1, '2025-08-27 05:31:30', 'doy saldia a esto.', 2, 159, 3, 694),
+(346, 1, '2025-08-27 05:31:45', 'dddd', 2, 176, 25, 692),
+(347, 1, '2025-08-27 05:32:00', '', 6, 180, 19, 688),
+(348, 1, '2025-08-27 17:13:35', '', 4, 176, 25, 692),
+(349, 1, '2025-08-27 17:13:43', 'ddd', 4, 176, 23, 691),
+(350, 1, '2025-08-27 17:13:43', 'ddd', 4, 176, 25, 692),
+(351, 1, '2025-08-27 17:15:59', '', 4, 182, 5, 690),
+(352, 1, '2025-08-27 17:15:59', '', 4, 182, 9, 690),
+(353, 1, '2025-08-27 17:16:07', 'valido prueba nueva.', 4, 159, 3, 694),
+(354, 1, '2025-08-27 17:22:11', '', 4, 182, 24, 693),
+(355, 1, '2025-08-27 17:22:21', 'prueba nueva de salida', 4, 124, 4, 689),
+(356, 1, '2025-08-27 17:22:21', 'prueba nueva de salida', 4, 124, 13, 689),
+(357, 1, '2025-08-27 17:23:52', 'Prueba de prestamo 1.', 2, 176, 2, 695),
+(358, 1, '2025-08-27 17:23:52', 'Prueba de prestamo 1.', 2, 176, 12, 695),
+(359, 1, '2025-08-27 17:24:15', 'prueba de selección2.', 2, 176, 20, 696),
+(360, 1, '2025-08-27 17:24:45', 'información previa.', 2, 124, 6, 697),
+(361, 1, '2025-08-27 17:24:45', 'información previa.', 2, 124, 22, 697),
+(362, 1, '2025-08-27 17:29:40', 'prueba 4', 2, 124, 4, 698),
+(363, 1, '2025-08-27 17:30:05', 'información.', 2, 152, 24, 699),
+(364, 1, '2025-08-27 17:30:53', 'Información nueva.', 2, 182, 23, 700),
+(365, 1, '2025-08-27 17:31:19', 'información adicional.', 2, 148, 16, 701),
+(366, 1, '2025-08-27 17:31:44', 'nueva info', 2, 159, 25, 702),
+(367, 1, '2025-08-27 18:01:08', 'informo prueba de ejecución', 6, 159, 25, 702),
+(368, 1, '2025-08-27 18:01:22', '', 4, 148, 16, 701),
+(369, 1, '2025-08-27 18:01:37', 'a', 6, 182, 23, 700),
+(370, 1, '2025-08-27 18:01:43', '', 6, 152, 24, 699),
+(371, 1, '2025-08-27 18:01:51', '', 6, 176, 20, 696),
+(372, 1, '2025-08-27 18:01:58', '', 6, 124, 6, 697),
+(373, 1, '2025-08-27 18:01:58', '', 6, 124, 22, 697),
+(374, 1, '2025-08-27 18:02:06', '', 4, 176, 2, 695),
+(375, 1, '2025-08-27 18:02:06', '', 4, 176, 12, 695),
+(376, 1, '2025-08-27 18:02:18', 'cancelo este proceso.', 4, 124, 4, 698),
+(377, 1, '2025-08-28 00:57:40', 'Información.', 2, 176, 2, 703),
+(378, 1, '2025-08-28 00:57:40', 'Información.', 2, 176, 19, 703),
+(379, 1, '2025-08-28 00:57:40', 'Información.', 2, 176, 21, 703),
+(380, 1, '2025-08-28 00:57:54', '', 2, 138, 1, 704),
+(381, 1, '2025-08-28 00:58:19', 'Información de prueba.', 2, 124, 18, 705),
+(382, 1, '2025-08-28 00:58:37', 'Información adicional.', 2, 152, 20, 706),
+(383, 1, '2025-08-28 00:59:59', 'Prueba 4', 2, 108, 14, 707),
+(384, 1, '2025-08-28 02:14:05', '', 2, 138, 4, 708),
+(385, 1, '2025-08-28 02:36:01', 'información adicional de prueba.', 2, 136, 3, 709),
+(386, 1, '2025-08-28 02:51:37', '', 2, 124, 5, 710),
+(387, 1, '2025-08-28 02:51:37', '', 2, 124, 7, 710),
+(388, 1, '2025-08-28 02:53:12', '', 6, 138, 4, 708),
+(389, 1, '2025-08-28 02:54:14', '', 2, 108, 4, 711),
+(390, 1, '2025-08-28 02:56:50', '', 6, 108, 4, 711),
+(391, 1, '2025-08-28 02:58:12', '', 2, 114, 4, 712),
+(392, 1, '2025-08-28 02:58:12', '', 2, 114, 9, 712),
+(393, 1, '2025-08-28 03:14:55', '', 2, 124, 24, 713),
+(394, 1, '2025-08-28 03:14:55', '', 2, 124, 26, 713),
+(395, 1, '2025-08-28 03:20:27', 'prueba nueva.', 2, 124, 29, 714),
+(396, 1, '2025-08-28 03:39:30', 'informacion adicional.', 2, 109, 23, 715),
+(397, 1, '2025-08-28 14:42:28', 'Información adicional.', 2, 124, 15, 716),
+(398, 1, '2025-08-28 14:42:28', 'Información adicional.', 2, 124, 22, 716),
+(399, 1, '2025-08-28 14:42:48', 'Doy salida a estos elementos.', 6, 124, 15, 716),
+(400, 1, '2025-08-28 14:42:48', 'Doy salida a estos elementos.', 6, 124, 22, 716),
+(401, 1, '2025-08-28 14:43:23', 'Se da salida a este proceso de elementos.', 2, 109, 23, 715),
+(402, 1, '2025-08-28 14:43:33', '', 4, 109, 23, 715),
+(403, 1, '2025-08-28 14:43:48', '', 4, 152, 20, 706),
+(404, 1, '2025-08-28 14:43:57', '', 4, 108, 14, 707);
 
 -- --------------------------------------------------------
 
@@ -350,7 +488,8 @@ INSERT INTO `funciones` (`id_funcion`, `nombre_funcion`, `nombre_funcion_user`, 
 (98, 'setPermisos', 'Establecer Permisos', 7, 2),
 (99, 'filtrarElementosAjax', 'Filter', 4, 2),
 (100, 'filtrarTrazabilidadAjax', 'Filtrar Entradas Y Salidas', 4, 2),
-(101, 'filtrarPorPlacaAjax', 'Filtrar Por Placa', 4, 2);
+(101, 'filtrarPorPlacaAjax', 'Filtrar Por Placa', 4, 2),
+(105, 'executeCancelPrestamo', 'Cancelar Prestamo (Acción)', 5, 2);
 
 -- --------------------------------------------------------
 
@@ -372,7 +511,8 @@ CREATE TABLE `marcas` (
 INSERT INTO `marcas` (`ma_id`, `ma_nombre`, `ma_descripcion`, `ma_status`) VALUES
 (1, 'No aplica', 'Elemento sin marca definida', 1),
 (2, 'Canon', '', 1),
-(3, 'Sony', '', 1);
+(3, 'Sony', '', 1),
+(4, 'Panasonic', '', 1);
 
 -- --------------------------------------------------------
 
@@ -449,7 +589,61 @@ CREATE TABLE `prestamos` (
 --
 
 INSERT INTO `prestamos` (`pres_cod`, `pres_fch_slcitud`, `pres_fch_reserva`, `pres_hor_inicio`, `pres_hor_fin`, `pres_fch_entrega`, `pres_observacion`, `pres_destino`, `pres_estado`, `tp_pres`, `pres_rol`) VALUES
-(612, '2025-08-11 21:05:57', '2025-08-12', NULL, NULL, '2025-08-15', 'información', 'Calle 9 #23 -35 ', 3, 2, 2);
+(662, '2025-08-26 23:30:58', '2025-08-26', NULL, NULL, '2025-08-29', 'Información adicional 1', 'calle 32 F # 32 - 21', 5, 2, 2),
+(663, '2025-08-26 23:31:16', '2025-08-26', NULL, NULL, '2025-08-29', 'información adicional 2.', 'calle 32 F # 32 - 21', 5, 2, 2),
+(664, '2025-08-26 23:31:30', '2025-08-26', NULL, NULL, '2025-08-29', 'información adicional 3', 'calle 32 F # 32 - 21', 5, 2, 2),
+(665, '2025-08-26 23:36:47', '2025-08-26', NULL, NULL, '2025-08-29', '', 'calle 32 F # 32 - 21', 5, 2, 2),
+(666, '2025-08-26 23:37:08', '2025-08-26', NULL, NULL, '2025-08-29', 'información.', 'calle 32 F # 32 - 21', 5, 2, 2),
+(667, '2025-08-26 23:41:00', '2025-08-26', NULL, NULL, '2025-08-29', 'validoNuevoConCancelarFuera', 'calle 32 F # 32 - 21', 5, 2, 2),
+(668, '2025-08-26 23:41:17', '2025-08-28', NULL, NULL, '2025-08-29', 'validoNuevoConCancelarFuera1', 'calle 32 F # 32 - 21', 5, 2, 2),
+(669, '2025-08-26 23:41:35', '2025-08-27', NULL, NULL, '2025-08-29', 'validoNuevoConCancelarFuera3', 'calle 32 F # 32 - 21', 5, 2, 2),
+(670, '2025-08-26 23:47:45', '2025-08-27', NULL, NULL, '2025-08-29', 'información de cerrar scope 1', 'calle 32 F # 32 - 21', 5, 2, 2),
+(671, '2025-08-26 23:48:01', '2025-08-27', NULL, NULL, '2025-08-29', '', 'calle 32 F # 32 - 21', 5, 2, 2),
+(672, '2025-08-26 23:51:40', '2025-08-27', NULL, NULL, '2025-08-29', 'prueba nueva1', 'calle 32 F # 32 - 21', 5, 2, 2),
+(673, '2025-08-26 23:51:56', '2025-08-27', NULL, NULL, '2025-08-29', 'prueba nueva 2', 'calle 32 F # 32 - 21', 5, 2, 2),
+(674, '2025-08-26 23:52:07', '2025-08-27', NULL, NULL, '2025-08-29', 'prueba 4', 'calle 32 F # 32 - 21', 5, 2, 2),
+(675, '2025-08-26 23:53:28', '2025-08-26', NULL, NULL, '2025-08-29', 'informacion adicional.', 'calle 32 F # 32 - 21', 5, 2, 2),
+(676, '2025-08-26 23:58:52', '2025-08-27', NULL, NULL, '2025-08-29', 'prueba 1', 'calle 32 F # 32 - 21', 5, 2, 2),
+(677, '2025-08-26 23:59:03', '2025-08-27', NULL, NULL, '2025-08-29', 'prueba 2', 'calle 32 F # 32 - 21', 5, 2, 2),
+(678, '2025-08-26 23:59:16', '2025-08-27', NULL, NULL, '2025-08-29', 'prueba 3/', 'calle 32 F # 32 - 21', 5, 2, 2),
+(679, '2025-08-26 23:59:31', '2025-08-27', NULL, NULL, '2025-08-29', 'prueba 4.', 'calle 32 F # 32 - 21', 5, 2, 2),
+(680, '2025-08-27 00:02:46', '2025-08-27', NULL, NULL, '2025-08-29', 'prueba nueva.1', 'calle 32 F # 32 - 21', 5, 2, 2),
+(681, '2025-08-27 00:03:00', '2025-08-27', NULL, NULL, '2025-08-29', 'prueba nueva 2', 'calle 32 F # 32 - 21', 5, 2, 2),
+(682, '2025-08-27 00:03:17', '2025-08-27', NULL, NULL, '2025-08-29', 'prueba nueva 3', 'calle 32 F # 32 - 21', 5, 2, 2),
+(683, '2025-08-27 00:08:05', '2025-08-27', NULL, NULL, '2025-08-29', 'prueba de envio.', 'calle 32 F # 32 - 21', 5, 2, 2),
+(684, '2025-08-27 00:08:24', '2025-08-27', NULL, NULL, '2025-08-29', 'prubea de envio 2', 'calle 32 F # 32 - 21', 5, 2, 2),
+(685, '2025-08-27 00:26:06', NULL, NULL, NULL, '2025-08-29', 'informo', 'calle 32 F # 32 - 21', 4, 1, 2),
+(686, '2025-08-27 00:26:21', NULL, NULL, NULL, '2025-08-29', 'infomo nuevo proceso.', 'calle 32 F # 32 - 21', 4, 1, 2),
+(687, '2025-08-27 00:26:38', NULL, NULL, NULL, '2025-08-30', 'informo nuevo proceso.', 'calle 32 F # 32 - 21', 4, 1, 2),
+(688, '2025-08-27 00:26:56', '2025-08-27', NULL, NULL, '2025-08-29', 'informo nuevo proceso.', 'calle 32 F # 32 - 21', 5, 2, 2),
+(689, '2025-08-27 00:28:36', '2025-08-27', NULL, NULL, '2025-08-29', 'dasda', 'calle 32 F # 32 - 21', 4, 2, 2),
+(690, '2025-08-27 00:28:48', NULL, NULL, NULL, '2025-08-30', 'sddd', 'calle 32 F # 32 - 21', 4, 1, 2),
+(691, '2025-08-27 00:29:08', NULL, NULL, NULL, '2025-08-28', 'dsaa', 'calle 32 F # 32 - 21', 4, 1, 2),
+(692, '2025-08-27 00:29:22', '2025-08-27', NULL, NULL, '2025-08-28', 'sddd', 'Calle 9 #23 -35 ', 4, 2, 2),
+(693, '2025-08-27 00:29:36', '2025-08-27', NULL, NULL, '2025-08-28', 'asdd', 'Calle 9 #23 -35 ', 4, 2, 2),
+(694, '2025-08-27 00:29:47', '2025-08-27', NULL, NULL, '2025-08-28', 'sdddd', 'Calle 9 #23 -35 ', 4, 2, 2),
+(695, '2025-08-27 12:23:52', NULL, NULL, NULL, '2025-08-28', 'Prueba de prestamo 1.', 'calle 32 F # 32 - 21', 4, 1, 2),
+(696, '2025-08-27 12:24:15', '2025-08-28', NULL, NULL, '2025-08-30', 'prueba de selección2.', 'Calle 9 #23 -35 ', 5, 2, 2),
+(697, '2025-08-27 12:24:45', '2025-08-27', NULL, NULL, '2025-08-30', 'información previa.', 'Calle 9 #23 -35 ', 5, 2, 2),
+(698, '2025-08-27 12:29:40', NULL, NULL, NULL, '2025-08-28', 'prueba 4', 'calle 32 F # 32 - 21', 4, 1, 2),
+(699, '2025-08-27 12:30:05', '2025-08-29', NULL, NULL, '2025-08-29', 'información.', 'Calle 9 #23 -35 ', 5, 2, 2),
+(700, '2025-08-27 12:30:53', '2025-08-29', NULL, NULL, '2025-09-04', 'Información nueva.', 'Calle 9 #23 -35 ', 5, 2, 2),
+(701, '2025-08-27 12:31:19', NULL, NULL, NULL, '2025-08-28', 'información adicional.', 'calle 32 F # 32 - 21', 4, 1, 2),
+(702, '2025-08-27 12:31:44', '2025-08-28', NULL, NULL, '2025-09-03', 'nueva info', 'Calle 9 #23 -35 ', 5, 2, 2),
+(703, '2025-08-27 19:57:40', '2025-08-27', NULL, NULL, '2025-08-29', 'Información.', 'Calle 9 #23 -35 ', 5, 2, 2),
+(704, '2025-08-27 19:57:54', '2025-08-27', NULL, NULL, '2025-08-29', '', 'Calle 9 #23 -35 ', 5, 2, 2),
+(705, '2025-08-27 19:58:19', '2025-08-27', NULL, NULL, '2025-08-29', 'Información de prueba.', 'Calle 9 #23 -35 ', 5, 2, 2),
+(706, '2025-08-27 19:58:37', NULL, NULL, NULL, '2025-08-28', 'Información adicional.', 'calle 32 F # 32 - 21', 4, 1, 2),
+(707, '2025-08-27 19:59:59', NULL, NULL, NULL, '2025-08-30', 'Prueba 4', 'calle 32 F # 32 - 21', 4, 1, 2),
+(708, '2025-08-27 21:14:05', '2025-08-28', NULL, NULL, '2025-08-29', '', 'calle 32 F # 32 - 21', 5, 2, 2),
+(709, '2025-08-27 21:36:01', NULL, NULL, NULL, '2025-08-28', 'información adicional de prueba.', 'calle 32 F # 32 - 21', 1, 1, 2),
+(710, '2025-08-27 21:51:37', '2025-08-28', NULL, NULL, '2025-08-29', '', 'calle 32 F # 32 - 21', 3, 2, 2),
+(711, '2025-08-27 21:54:14', '2025-08-28', NULL, NULL, '2025-08-29', '', 'alejandro', 5, 2, 2),
+(712, '2025-08-27 21:58:12', '2025-08-29', NULL, NULL, '2025-08-31', '', 'calle 32 F # 32 - 21', 3, 2, 2),
+(713, '2025-08-27 22:14:55', '2025-09-03', NULL, NULL, '2025-09-05', '', 'calle 32 F # 32 - 21', 3, 2, 2),
+(714, '2025-08-27 22:20:27', '2025-09-02', NULL, NULL, '2025-09-04', 'prueba nueva.', 'calle 32 F # 32 - 21', 3, 2, 2),
+(715, '2025-08-27 22:39:30', '2025-08-28', NULL, NULL, '2025-08-30', 'informacion adicional.', 'calle 32 F # 32 - 21', 4, 2, 2),
+(716, '2025-08-28 09:42:28', '2025-08-28', NULL, NULL, '2025-08-29', 'Información adicional.', 'calle 32 F # 32 - 21', 5, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -470,14 +664,73 @@ CREATE TABLE `prestamos_elementos` (
 --
 
 INSERT INTO `prestamos_elementos` (`pres_el_cod`, `pres_cod`, `pres_el_usu_id`, `pres_el_elem_cod`, `pres_el_cantidad`) VALUES
-(1805, 612, 109, 1, 1),
-(1806, 612, 109, 12, 1),
-(1807, 612, 109, 20, 1),
-(1808, 612, 109, 28, 1),
-(1809, 612, 109, 33, 1),
-(1810, 612, 109, 40, 1),
-(1811, 612, 109, 48, 1),
-(1812, 612, 109, 52, 1);
+(1946, 662, 176, 1, 1),
+(1947, 663, 114, 2, 1),
+(1948, 664, 109, 3, 1),
+(1949, 665, 172, 1, 1),
+(1950, 666, 176, 2, 1),
+(1951, 667, 138, 4, 1),
+(1952, 668, 109, 11, 1),
+(1953, 669, 138, 2, 1),
+(1954, 670, 176, 2, 1),
+(1955, 671, 117, 3, 1),
+(1956, 672, 176, 1, 1),
+(1957, 673, 109, 5, 1),
+(1958, 674, 109, 9, 1),
+(1959, 675, 114, 12, 1),
+(1960, 676, 138, 2, 1),
+(1961, 677, 114, 3, 1),
+(1962, 678, 176, 7, 1),
+(1963, 679, 120, 13, 1),
+(1964, 680, 120, 1, 1),
+(1965, 681, 136, 12, 1),
+(1966, 682, 163, 13, 1),
+(1967, 683, 176, 2, 1),
+(1968, 683, 176, 6, 1),
+(1969, 684, 114, 3, 1),
+(1970, 684, 114, 20, 1),
+(1971, 685, 124, 1, 1),
+(1972, 686, 153, 12, 1),
+(1973, 687, 176, 20, 1),
+(1974, 688, 180, 19, 1),
+(1975, 689, 124, 4, 1),
+(1976, 689, 124, 13, 1),
+(1977, 690, 182, 5, 1),
+(1978, 690, 182, 9, 1),
+(1979, 691, 176, 23, 1),
+(1980, 692, 176, 25, 1),
+(1981, 693, 182, 24, 1),
+(1982, 694, 159, 3, 1),
+(1983, 695, 176, 2, 1),
+(1984, 695, 176, 12, 1),
+(1985, 696, 176, 20, 1),
+(1986, 697, 124, 6, 1),
+(1987, 697, 124, 22, 1),
+(1988, 698, 124, 4, 1),
+(1989, 699, 152, 24, 1),
+(1990, 700, 182, 23, 1),
+(1991, 701, 148, 16, 1),
+(1992, 702, 159, 25, 1),
+(1993, 703, 176, 2, 1),
+(1994, 703, 176, 19, 1),
+(1995, 703, 176, 21, 1),
+(1996, 704, 138, 1, 1),
+(1997, 705, 124, 18, 1),
+(1998, 706, 152, 20, 1),
+(1999, 707, 108, 14, 1),
+(2000, 708, 138, 4, 1),
+(2001, 709, 136, 3, 1),
+(2002, 710, 124, 5, 1),
+(2003, 710, 124, 7, 1),
+(2004, 711, 108, 4, 1),
+(2005, 712, 114, 4, 1),
+(2006, 712, 114, 9, 1),
+(2007, 713, 124, 24, 1),
+(2008, 713, 124, 26, 1),
+(2009, 714, 124, 29, 1),
+(2010, 715, 109, 23, 1),
+(2011, 716, 124, 15, 1),
+(2012, 716, 124, 22, 1);
 
 -- --------------------------------------------------------
 
@@ -579,20 +832,21 @@ INSERT INTO `roles_funciones` (`rlp_id`, `rlp_id_rl`, `rlp_id_funcion`) VALUES
 (263, 2, 100),
 (264, 2, 101),
 (265, 2, 59),
-(266, 2, 64),
 (267, 2, 65),
-(268, 2, 66),
 (269, 2, 99),
-(280, 2, 67),
 (281, 2, 68),
-(282, 2, 72),
-(283, 2, 73),
 (284, 2, 74),
 (285, 2, 82),
 (286, 2, 83),
 (287, 2, 84),
 (288, 2, 85),
-(289, 2, 87);
+(289, 2, 87),
+(290, 2, 67),
+(291, 2, 72),
+(293, 2, 105),
+(294, 2, 73),
+(295, 2, 64),
+(296, 2, 66);
 
 -- --------------------------------------------------------
 
@@ -681,7 +935,8 @@ INSERT INTO `tipo_movimiento` (`cod_tp`, `cod_tp_nombre`, `cod_tp_descrip`) VALU
 (2, 'Salida', NULL),
 (3, 'Por validar salida', NULL),
 (4, 'Entrada', NULL),
-(5, 'Regresión', 'tipo de movimiento que permite devolver aquellas existencias.');
+(5, 'Regresión', 'tipo de movimiento que permite devolver aquellas existencias.'),
+(6, 'Cancelado', 'Reserva cancelada por el usuario asignado, no se dio salida a la reserva');
 
 -- --------------------------------------------------------
 
@@ -779,7 +1034,7 @@ INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `
 (133, 100027, 'Gabriel', 'Vargas', '$2y$10$fJWee3EyFDrZ0U.xVhEdZ.dtu0TNdB8u1l6lbOUw2jl05WYSk/pTm', 'gabriel.vargas@example.com', 'Calle 27', '3000000027', NULL, 1, 1),
 (134, 100028, 'Helena', 'Navarro', 'helena2025', 'helena.navarro@example.com', 'Calle 28', '3000000028', NULL, 1, 2),
 (135, 100029, 'Ignacio', 'Mendoza', 'ignacio', 'ignacio.mendoza@example.com', 'Calle 29', '3000000029', NULL, 1, 3),
-(136, 100030, 'Jimena', 'Lopez Pumarejo', 'jimena123', 'jimena.lopez@gmail.com', 'Calle 93 B # 13-03', '3000005230', NULL, 1, 1),
+(136, 100030, 'Jimena', 'Lopez Pumarejo', '$2y$10$pQItJaHSTByqDBAHGrIl/uid7gMl6wPMWcBjXR8eIZnzYhpVNg20W', 'jimena.lopez@gmail.com', 'Calle 93 B # 13-03', '3000005230', NULL, 1, 1),
 (137, 555, 'alejandro', 'ceron', '$2y$10$zZDMorvOwpCJH5D6VvMb6ORv6IePjNCom6D3Prsq9pF57bR9eqr5i', '2_1@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', NULL, 1, 3),
 (138, 100000, 'alejandro', 'Pérez', '$2y$10$Kbs/gKo1R2DqeI/HL8N5Du8qIrcJYfkTdPiHrJK8iA8ZMsCP0SaoS', 'juan.perez@example.com', 'calle 2 d oeste # 74 e 02', '3000000001', NULL, 1, 3),
 (147, 500000, 'dasdasd', 'ceron', '$2y$10$xo.C3p25NfRxVyEf.HUbleet/pF.3R23vX0X9KVLBiiXgaAUUemoK', '3_2@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', NULL, 1, 3),
@@ -798,8 +1053,8 @@ INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `
 (160, 2147483647, 'María', 'López', '$2y$10$XXqBDZ/eti1NqtBnIoy7QuM.5Pu8ZJw0JQFPQiPMW0nLhdEaeWvjC', 'hello@gmail.com', 'Calle 2', '3000000002', 'sdfsdf', 1, 3),
 (161, 2147483647, 'María', 'López', '$2y$10$Nuos/m5VHOaP4rT7wVDQ1uoP2icgUgjIkESoE7I6uc28wdVRgDVim', 'helloWorldPrueba@gmail.com', 'Calle 2', '3000000002', ' prueba nueva enviando el usuariio.', 1, 2),
 (162, 9999999, 'María', 'López', '$2y$10$HQeEWgvHLL2gEdkPf0eJoOWqn7DXwLRQctnRZjg3cl4/OgovU3irW', 'helloMaria@gmail.com', 'Calle 2', '3000000002', 'aaaa', 1, 1),
-(163, 4545454, 'Mariana', 'Rivera', '$2y$10$/OEJEHDK4I3BM5YcG.ZwdOeF.uiD1SGIEUTbzN0uDIe5nSGanq8Dy', 'mr.rivera@gmail.com', 'Calle 2', '3000000002', ' prueba nueva enviando el usuariio.', 1, 20),
-(164, 658585, 'Isabella', 'Rivera', '$2y$10$wSluFY9xJQ/4qnKnSZ7PVuN.OT3GA8YP4bjrcC5XtZzWPq.uIpohO', 'hello@gmail.com', 'Calle 2', '3000000002', 'Solicito nuevo usuario.', 1, 4),
+(163, 4545454, 'Mariana', 'Rivera', '$2y$10$0cug9rbOUYj4ivTPEh1ip.X0FxYNXDLfbGhM5Z4F9HrDDH8zQAoBK', 'mr.rivera@gmail.com', 'Calle 2', '3000000002', ' prueba nueva enviando el usuariio.', 1, 20),
+(164, 658585, 'Isabella', 'Rivera', '$2y$10$liKvL0n4zDBXHd1c9U1uR.afJu1EdG0yix2jh.vV1P5J65bivCYxO', 'hello@gmail.com', 'Calle 2', '3000000002', 'Solicito nuevo usuario.', 1, 4),
 (165, 65858533, 'Isabella', 'Rivera', '$2y$10$g8zveEh4fHUpE60A46YrO.nzVsc.0jcIJeDAGuySjBwLv3Zq6YMmy', 'hello@gmail.com', 'Calle 2', '3000000002', 'Prueba de integración adicional.', 1, 5),
 (166, 10001922, 'alejandro', 'ceron', '$2y$10$6N3vmSHd7fgub1YBdHLk6urmGfjK4EsIr0iZQ5IQkgE8BmPtk8GFq', '4_5@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', 'hola mundo', 1, 2),
 (167, 10002922, 'alejandro', 'ceron', '$2y$10$94XiXQaiJnh753Rw.IwIfOB5llWPRxdYLbtWNh6mQlbtQ9sS3NURW', '4_6@gmail.com', 'calle 2 d oeste # 74 e 02', '3322', '', 1, 5),
@@ -872,7 +1127,7 @@ INSERT INTO `usuarios_roles` (`usr_id`, `usr_usu_id`, `usr_rl_id`) VALUES
 (1180, 160, 4),
 (1181, 161, 4),
 (1182, 162, 4),
-(1183, 163, 12),
+(1183, 163, 16),
 (1184, 164, 4),
 (1185, 165, 2),
 (1188, 168, 2),
@@ -927,7 +1182,8 @@ ALTER TABLE `elementos`
   ADD KEY `fk_cod_estado` (`elm_cod_estado`),
   ADD KEY `fk_cod_area` (`elm_area_cod`),
   ADD KEY `fk_cod_ma` (`elm_ma_cod`),
-  ADD KEY `fk_uni_medida` (`elm_uni_medida`);
+  ADD KEY `fk_uni_medida` (`elm_uni_medida`),
+  ADD KEY `fk_cod_ca` (`elm_categoria`);
 
 --
 -- Indices de la tabla `entradas_salidas`
@@ -1076,31 +1332,31 @@ ALTER TABLE `usuarios_roles`
 -- AUTO_INCREMENT de la tabla `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código primario del area', AUTO_INCREMENT=7;
+  MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código primario del area', AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `ca_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo de identificador de la categoria', AUTO_INCREMENT=6;
+  MODIFY `ca_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo de identificador de la categoria', AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `compras`
 --
 ALTER TABLE `compras`
-  MODIFY `cod_compra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo autoincrementable identificador de la existencia', AUTO_INCREMENT=49;
+  MODIFY `cod_compra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo autoincrementable identificador de la existencia', AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT de la tabla `elementos`
 --
 ALTER TABLE `elementos`
-  MODIFY `elm_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo primario autoincrementable', AUTO_INCREMENT=128;
+  MODIFY `elm_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo primario autoincrementable', AUTO_INCREMENT=142;
 
 --
 -- AUTO_INCREMENT de la tabla `entradas_salidas`
 --
 ALTER TABLE `entradas_salidas`
-  MODIFY `ent_sal_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único de la entrada o salida', AUTO_INCREMENT=9;
+  MODIFY `ent_sal_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único de la entrada o salida', AUTO_INCREMENT=405;
 
 --
 -- AUTO_INCREMENT de la tabla `estados_elementos`
@@ -1124,13 +1380,13 @@ ALTER TABLE `estados_usuarios`
 -- AUTO_INCREMENT de la tabla `funciones`
 --
 ALTER TABLE `funciones`
-  MODIFY `id_funcion` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id representativo primario de la tabla funciones', AUTO_INCREMENT=105;
+  MODIFY `id_funcion` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id representativo primario de la tabla funciones', AUTO_INCREMENT=106;
 
 --
 -- AUTO_INCREMENT de la tabla `marcas`
 --
 ALTER TABLE `marcas`
-  MODIFY `ma_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la marca', AUTO_INCREMENT=4;
+  MODIFY `ma_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la marca', AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `modulos`
@@ -1148,13 +1404,13 @@ ALTER TABLE `permisos`
 -- AUTO_INCREMENT de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
-  MODIFY `pres_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código identificador del préstamo', AUTO_INCREMENT=613;
+  MODIFY `pres_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código identificador del préstamo', AUTO_INCREMENT=717;
 
 --
 -- AUTO_INCREMENT de la tabla `prestamos_elementos`
 --
 ALTER TABLE `prestamos_elementos`
-  MODIFY `pres_el_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único del registro de préstamo de elemento', AUTO_INCREMENT=1813;
+  MODIFY `pres_el_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único del registro de préstamo de elemento', AUTO_INCREMENT=2013;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -1166,7 +1422,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT de la tabla `roles_funciones`
 --
 ALTER TABLE `roles_funciones`
-  MODIFY `rlp_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la relación rol-permiso', AUTO_INCREMENT=290;
+  MODIFY `rlp_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la relación rol-permiso', AUTO_INCREMENT=297;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_documento`
@@ -1226,6 +1482,7 @@ ALTER TABLE `compras`
 --
 ALTER TABLE `elementos`
   ADD CONSTRAINT `fk_cod_area` FOREIGN KEY (`elm_area_cod`) REFERENCES `areas` (`ar_cod`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cod_ca` FOREIGN KEY (`elm_categoria`) REFERENCES `categoria` (`ca_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_cod_estado` FOREIGN KEY (`elm_cod_estado`) REFERENCES `estados_elementos` (`est_el_cod`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_cod_ma` FOREIGN KEY (`elm_ma_cod`) REFERENCES `marcas` (`ma_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_cod_tp_elm` FOREIGN KEY (`elm_cod_tp_elemento`) REFERENCES `tipo_elemento` (`tp_el_cod`) ON DELETE SET NULL ON UPDATE CASCADE,

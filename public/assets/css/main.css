@@ -119,7 +119,12 @@ html, body {
 .close-btn{
   border: none;
   text-decoration: none;
-  font-size: 2rem;
+  font-size: 3rem;
+}
+
+/* Tamaño de subtitlo de modulo */
+.textTitleSpan{
+  font-size: 20pt;
 }
 
 
