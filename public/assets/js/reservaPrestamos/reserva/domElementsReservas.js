@@ -5,7 +5,8 @@ export const tablesDoom = {
     tblBodyConsumibles: getSelector("#tblBodyConsumibles"),
     tblBodyDevolutivos: getSelector("#tblBodyDevolutions"),
     tblBodyUsers: getSelector("#tblBodyUsers"),
-    tblBodyPreviewElements: getSelector("#tblBodyPreviewElements")
+    tblBodyPreviewElements: getSelector("#tblBodyPreviewElements"),
+    tableConsumibles: getSelector("#tableConsumible")
 };
 //Modals
 export const modalDoom = {

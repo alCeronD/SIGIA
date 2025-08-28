@@ -15,7 +15,8 @@ export {
   initAlert,
   toastOptions,
   mostrarConfirmacion,
-  replaceln
+  replaceln,
+  addClassItem
 } from "../utils/cases.js";
 
 export { tablesDoom,modalDoom, btnDoom, inputsForm, iDom, objDataConsumibles , objDataUsers, divContainers} from "./reserva/domElementsReservas.js";

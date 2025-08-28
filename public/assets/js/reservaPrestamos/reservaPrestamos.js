@@ -1,27 +1,7 @@
-import { addClassItem } from "../utils/cases.js";
 import {
-  Ajax,
-  closeModal,
-  createI,
-  instanceDate,
-  opcionesDatepicker,
-  dateISOFormat,
-  initTooltip,
-  tooltipOptions,
-  initAlert,
-  toastOptions,
-  tablesDoom,
-  modalDoom,
-  btnDoom,
-  getData,
-  inputsForm,
-  iDom,
-  objDataConsumibles,
-  divContainers,
-  mostrarConfirmacion,
-  sendData,
-  replaceln,
+  Ajax,closeModal,createI,instanceDate,opcionesDatepicker,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom,modalDoom,btnDoom,getData,inputsForm,iDom,objDataConsumibles,divContainers,mostrarConfirmacion,sendData,replaceln,addClassItem
 } from "./index.js";
+import { validateFormData, validateDate, definirCantidad, validateDisponibilidad, createMessageElementos, createMessagReservados } from "./reserva/reservaFunctions.js";
 
 const objAjax = new Ajax();
 btnDoom.btnModalPreviewElements.append(iDom.iCreatePreview);
@@ -37,11 +17,6 @@ const formSolicitudPrestamo = document.querySelector("#formSolicitudPrestamo");
 tablesDoom.tblBodyUsers.innerHTML =
   '<tr><td colspan="7">Cargando usuarios...</td></tr>';
 
-// variables que corresponden a los números de páginas de las tablas elementosDevolutivos y usuarios.
-let pagesUsers;
-let pagesElements;
-let pagesElementsConsumibles;
-let pagesElementsDevolutivos;
 //Este arreglo lo voy a crear con el fin de guardar los ids de los elementos para saber cuales son los elementos seleccionados.
 let ids = [];
 let addElements;
@@ -83,10 +58,7 @@ const renderUsers = async ({
       let pagesOptions = document.createElement("option");
       pagesOptions.value = index;
       pagesOptions.innerHTML = index;
-      // valuePage.append(pagesOptions);
     }
-    //por defecto, lo coloco en 1.
-    // valuePage.value = String(pgUsers);
 
     tablesDoom.tblBodyUsers.innerHTML = "";
     data.forEach((us) => {
@@ -127,7 +99,6 @@ const renderUsers = async ({
     });
   } catch (error) {
     initAlert(`${error.message}`, "warning", toastOptions);
-    // throw new Error(`Error de procesado ${error}`);
   }
 };
 
@@ -208,7 +179,7 @@ const renderConsumibles = async ({
     tdOpciones.appendChild(divElements);
 
     let cantidad = data.cantidad;
-    definirCantidad(cantidadInput, cantidad, checkBoxSelect);
+    definirCantidad(cantidadInput, cantidad, checkBoxSelect, {initAlert, toastOptions});
     let codigoString = data.codigo.toString();
     if (ids.includes(codigoString)) {
       checkBoxSelect.disabled = false;
@@ -268,40 +239,6 @@ const renderDevolutivos = async ({
     trTable.append(tdAccion);
   });
 };
-
-/**
- * Se valida que la cantidad de los elementos consumibles no sea ni negativa ni mayor a la cantidad disponible.
- * @constructor
- * @param {input} cantidadInput - El input number.
- * @param {int} cantidad - cantidad Del elemento disponible.
- * @param {input} checkBoxSelect - El checkbox deshabilitado.
- */
-function definirCantidad(cantidadInput, cantidad, checkBoxSelect) {
-  cantidadInput.addEventListener("change", (event) => {
-    event.stopPropagation();
-    event.preventDefault();
-
-    let valor = parseInt(event.target.value, 10);
-
-    if (valor < 0) {
-      // alert("Cantidad no disponible");
-      initAlert("Cantidad no disponible", "info", toastOptions);
-      event.target.value = "";
-      return;
-    }
-
-    if (event.target.value > cantidad) {
-      initAlert(`Cantidad Máxima permitida ${cantidad}`, "info", toastOptions);
-      cantidadInput.value = "";
-      return;
-    }
-
-    //El valor insertado en cantidad lo actualizo en el data del input. Si el usuario digita una cantidad menor a la cantidad disponible, el valor se actualiza.
-    cantidadInput.dataset.cantidad = event.target.value;
-    // Habilito el checkbox
-    checkBoxSelect.disabled = false;
-  });
-}
 
 // Abrir modal de elementos disponibles devolutivos
 btnDoom.btnAddElements.addEventListener("click", async (btnTarget) => {
@@ -376,84 +313,6 @@ tablesDoom.tblBodyUsers.addEventListener("click", (e) => {
   }
 });
 
-const validateDisponibilidad = async ({
-  fechaReserva = "",
-  fechaDevolucion = "",
-  codigosElementos,
-  isOnly = false,
-  method = "GET",
-  tpPrestamo = null
-} = {}) => {
-
-  let param = {
-    fechaReserva,
-    fechaDevolucion,
-    isOnly,
-    tpPrestamo,
-  };
-
-  let responseDisponibilidadGet = null;
-  let responseDisponibilidadPost = null;
-
-  // Defino los parámetros, dependiendo de si es un solo elemento o varios.
-  param = isOnly ? {
-       ... param, elemento:codigosElementos, action: "validateElement"
-      }: {
-        ... param,
-        elementos: codigosElementos, action:"validateElements" };
-
-  try {
-    if (method === "GET") {
-      
-      // param = {
-      //   ...param,
-      //   action: "validateElement",
-      // };
-      responseDisponibilidadGet = await getData(
-        "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
-        method,
-        param
-      );
-
-      if (responseDisponibilidadGet.status === 204) {
-        return true;
-      }
-
-      if (!responseDisponibilidadGet.status) {
-        initAlert(
-          "Este elemento ya está reservado para la fecha seleccionada",
-          "info",
-          toastOptions
-        );
-
-        return false;
-      }
-    } else if (method === "POST") {
-      console.log({"paramPost":param});
-      responseDisponibilidadPost = await sendData(
-        "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
-        method,
-        "validateElements",
-        param
-      );
-
-      if (responseDisponibilidadPost.status === 204) {
-        console.log("aca if respons204");
-        return true;
-      }
-
-      // devuelvo la data en caso de que sea true.
-      if (responseDisponibilidadPost.status) {
-        return responseDisponibilidadPost;
-      }
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
-  // return true;
-};
-
 tablesDoom.tblBodyDevolutivos.addEventListener("click", async (event) => {
   event.stopPropagation();
 
@@ -468,26 +327,33 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", async (event) => {
     let valueInput = event.target.getAttribute("data-id");
     if (isChecked) {
       const fechaReserva = document.querySelector("#fechaReserva").value;
-      const fechaDevolucion = document.querySelector('#fechaDevolucion').value;
+      const fechaDevolucion = document.querySelector("#fechaDevolucion").value;
       // event.preventDefault();
       let fechaParse = dateISOFormat(fechaReserva, false);
       let fechaParse2 = dateISOFormat(fechaDevolucion, false);
-      if (fechaParse > fechaParse2 ) {
-        initAlert("La fecha de reserva no debe ser mayor a la fecha de devolución", "info", toastOptions);
+      if (fechaParse > fechaParse2) {
+        initAlert(
+          "La fecha de reserva no debe ser mayor a la fecha de devolución",
+          "info",
+          toastOptions
+        );
         event.preventDefault();
         return;
       }
 
       if (fechaReserva !== "" && fechaDevolucion !== "") {
+        const responseValide = await validateDisponibilidad(
+          {
+            fechaReserva: fechaParse,
+            fechaDevolucion: fechaParse2,
+            codigosElementos: valueInput,
+            method: "GET",
+            isOnly: true,
+            tpPrestamo: valueTpPrestamo,
+          },
+          { sendData, getData, initAlert, toastOptions }
+        );
 
-        const responseValide = await validateDisponibilidad({
-          fechaReserva: fechaParse,
-          fechaDevolucion: fechaParse2,
-          codigosElementos: valueInput,
-          method: "GET",
-          isOnly: true,
-          tpPrestamo: valueTpPrestamo
-        });
         if (!responseValide) {
           event.target.checked = false;
           return;
@@ -546,8 +412,7 @@ tablesDoom.tblBodyDevolutivos.addEventListener("click", async (event) => {
 });
 
 //Delegar evento sobre la tabla de elementos consumibles
-const tableConsumible = document.querySelector("#tableConsumible");
-tableConsumible.addEventListener("click", (event) => {
+tablesDoom.tableConsumibles.addEventListener("click", (event) => {
   event.stopPropagation();
   let info = event.target.closest("tr");
   let inputCantidad = info.querySelector(`[type=number]`);
@@ -768,39 +633,6 @@ btnDoom.btnModalPreviewElements.addEventListener("click", (e) => {
   modalDoom.modalPreviewElements.open();
 });
 
-//Con esta función valido que los campos del formulario sean diligenciados.
-function validateFormData(formData, tipoPrestamo) {
-  for (const [key, value] of formData.entries()) {
-    const isEmpty = !value || value.toString().trim() === "";
-
-    // Evitamos validar dependiendo del tipo de prestamo, si es 1, omitir la fecha de reserva y si es 2, solo observaciones.
-    const camposOpcionales =
-      tipoPrestamo === "1"
-        ? ["observaciones", "fechaReserva"]
-        : ["observaciones"];
-    if (isEmpty && !camposOpcionales.includes(key)) {
-      initAlert(
-        `El campo "${key}" debe ser diligenciado`,
-        "info",
-        toastOptions
-      );
-      return false;
-    }
-  }
-  return true;
-}
-
-function validateDate(date1, date2) {
-  let timeDate1 = date1.getTime();
-  let timeDate2 = date2.getTime();
-
-  if (timeDate1 > timeDate2) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
 // Seleccionar los radiobuttons
 const radioButonTp = document.querySelectorAll('[name="tipoPr"]');
 let valueTpPrestamo;
@@ -818,80 +650,6 @@ radioButonTp.forEach((rd) => {
     valueTpPrestamo = event.target.value;
   });
 });
-/**
- * Función para unificar los elementos devolutivos y consumibles seleccionados para poder visualizar al usuario
- *
- * @param {{}} [rows={}] 
- * @returns {string} 
- */
-const createMessageElementos = (rows = {}) => {
-  if (!rows) return "";
-
-  let devolutivosRows = rows.codigoElementos.devolutivos;
-  let consumiblesRows = rows.codigoElementos.consumibles;
-  let textConfirmReservaConsumibles = "";
-  let textConfirmReservaDev = "";
-
-  if (consumiblesRows.length === 0) {
-    textConfirmReservaConsumibles += `\n Consumibles:\n Sin elementos \n`;
-  } else {
-    textConfirmReservaConsumibles += `Elementos consumibles seleccionados por el usuario:\n${consumiblesRows
-      .map(
-        (el) =>
-          `Código: ${el.codigo}  Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad} \n`
-      )
-      .join("\n")}\n`;
-  }
-
-  if (devolutivosRows.length === 0) {
-    textConfirmReservaDev += `Devolutivos:\n Sin elementos`;
-  } else {
-    // Devolutivos.
-    textConfirmReservaDev += `Elementos devolutivos seleccionados por el usuario:\n${devolutivosRows
-      .map(
-        (el) =>
-          `Serie: ${el.serie} Nombre: ${el.nombreElemento} Cantidad: ${el.cantidad}`
-      )
-      .join("\n")}\n`;
-  }
-
-  const textRegistrar = `\n Elementos seleccionados: \n ${replaceln(textConfirmReservaConsumibles)}\n` +
-    `\n ${replaceln(textConfirmReservaDev)}`;
-
-  return textRegistrar;
-};
-
-const createMessagReservados = (dataValidate = {}, tpPrestamo) => {
-  if (!dataValidate) return {};
-
-  if(!tpPrestamo) return "";
-
-  let textDataReservados = "";
-  let textConfirmReserva = "";
-
-  textDataReservados += `\n ${dataValidate
-      .map(
-        (el) =>
-          `Serie elemento ${el.seriElemento} Nombre elemento: ${el.nombreElemento} Fecha Reservada: ${el.fechaReserva} Fecha Devolución : ${el.fechaDevolucion}`
-      )
-      .join("\n")}\n`;
-
-  if (tpPrestamo === "2") {
-    textConfirmReserva += `\n Estos elementos ya están reservados para la fecha seleccionada : ${replaceln(
-      textDataReservados
-    )}`;
-  }
-
-  if (tpPrestamo === "1") {
-    textConfirmReserva += `\n Estos elementos ya están reservados para la fecha de devolución seleccionada o posterior a ella ${replaceln(
-      textDataReservados
-    )} \n` ;
-  }
-  
-
-
-  return textConfirmReserva;
-};
 
 /**
  * Submit al formulario.
@@ -930,7 +688,8 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
   let data = Object.fromEntries(info);
-  if (!validateFormData(info, tpPrestamo)) return;
+  if(!validateFormData(info, tpPrestamo, {initAlert, toastOptions})) return;
+
   let fechaReservaParse = null;
   let fechaDevolucionParse = null;
   let fechaReservaFormat = null;
@@ -1005,7 +764,9 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
   data.codigosElementos = codigosElementos;
 
   //Validar si hay elementos seleccionados para así continuar con el proceso.
-  if (rows.codigoElementos.devolutivos.length === 0 && rows.codigoElementos.consumibles.length === 0
+  if (
+    rows.codigoElementos.devolutivos.length === 0 &&
+    rows.codigoElementos.consumibles.length === 0
   ) {
     initAlert(
       "Debes agregar al menos un elemento para la solicitud.",
@@ -1020,16 +781,14 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
     return;
   }
 
-  let messageElements = createMessageElementos(rows);
-  //Valido si hay elemento seleccionados.
+  let messageElements = createMessageElementos(rows, replaceln);
 
   let title = tpPrestamo === "1" ? "Prestamo" : "Reserva";
-  // let responseValidate = null;
-  let messageValidate = "";
+  // let messageValidate = "";
   let dataValidate = {};
-  let textDataReservados = "";
+  // let textDataReservados = "";
   let paramModal = {};
-  let textConfirmReserva = "";
+  // let textConfirmReserva = "";
   paramModal = { titulo: `Registrar ${title}`, mensaje: messageElements };
 
   try {
@@ -1050,7 +809,7 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
       let fechaReserva = data.fechaReserva;
       paramValidateDisponibilidad = {
         fechaReserva: data.fechaReserva,
-        fechaDevolucion:data.fechaDevolucion,
+        fechaDevolucion: data.fechaDevolucion,
         codigosElementos: devolutivosCheck,
         method: "POST",
         isOnly: false,
@@ -1058,13 +817,12 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
       };
     }
 
-
-    const responseValidate = await validateDisponibilidad(paramValidateDisponibilidad);
+    const responseValidate = await validateDisponibilidad(paramValidateDisponibilidad, {sendData,getData,initAlert,toastOptions});
     //Mostrar mensaje de modal para informar que hay elementos ya reservados para esa fecha y por ende, no se podrán reservar.
     if (responseValidate.status) {
       messageValidate = responseValidate.message;
       dataValidate = responseValidate.data;
-      const messageReservado = createMessagReservados(dataValidate, tpPrestamo);
+      const messageReservado = createMessagReservados(dataValidate,tpPrestamo, replaceln);
       // Unificamos ambos mensajes, el de los elementos que ya están reservados con los elementos que el usuario ha seleccionado.
       modalMessage += `\n ${messageReservado} \n Si presiona aceptar, los elementos ya reservados no se asociarán a la reserva, ¿Desea continuar? \n ${replaceln(
         messageElements
@@ -1088,29 +846,34 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
       }
 
       // if (JSON.stringify(dataValidate) != "{}") {
-      if (Array.from(dataValidate) && dataValidate.length  > 0 ) {
-        
+      if (Array.from(dataValidate) && dataValidate.length > 0) {
         // Transformo el arreglo dataValidate en uno nuevo solamente trayendo LOS CÓDIGOS de los elementos para comparar con los que el usuario ha seleccionado.
         const codigosElementosReservados = dataValidate.map(
           (item) => item.codigoElemento
         );
         // Uso la función filter para mutar los nuevos elementos que voy a enviar a reservar Y SOLO RETORNO los elementos que NO ESTEN INCLUIDOS EN MI OBJETO ELEMENTO.
         const newDev = codigosElementos.devolutivos.filter((elemento) => {
-          return !codigosElementosReservados.includes(parseInt(elemento.codigo));
+          return !codigosElementosReservados.includes(
+            parseInt(elemento.codigo)
+          );
         });
 
         codigosElementos.devolutivos = newDev;
         //Agrego los códigos de los elementos al data.
         data.codigosElementos = codigosElementos;
-
       }
 
       // Extraer los elementos para validar si hay o no elementos.
       let validateDevolutivos = data.codigosElementos.devolutivos;
       // Si el usuario selecciona x elementos y todos ellos están reservados para la fecha en concreto, muestro una alerta indicando que seleccione elementos que estén disponibles para esa fecha.
       if (validateDevolutivos.length === 0) {
-        let fecha = tpPrestamo === "2" ? data.fechaReserva : data.fechaDevolucion;
-        initAlert(`Seleccione elementos que no estén reservados para la fecha ${fecha}`, "info", toastOptions);
+        let fecha =
+          tpPrestamo === "2" ? data.fechaReserva : data.fechaDevolucion;
+        initAlert(
+          `Seleccione elementos que no estén reservados para la fecha ${fecha}`,
+          "info",
+          toastOptions
+        );
         return;
       }
 
