@@ -2,8 +2,6 @@
 
 class solicitudPrestamos
 {
-
-
     public $pres_cod;
     public $pres_fch_slcitud;
     public $pres_fch_reserva;
@@ -31,7 +29,7 @@ class solicitudPrestamos
         $pres_fch_entrega  = $this->conn->real_escape_string($data['pres_fch_entrega']);
         $pres_observacion  = $this->conn->real_escape_string($data['pres_observacion']);
         $pres_destino      = $this->conn->real_escape_string($data['pres_destino']);
-   
+
         $pres_hor_inicio =  null;
         $pres_hor_fin = null;
 
@@ -189,7 +187,7 @@ class solicitudPrestamos
         $stmt->bind_param("iiii", $pres_cod, $usuario_id, $elm_cod, $cantidad);
         return $stmt->execute();
     }
-    
+
     public function registrarElemConsumible($pres_cod, $usuario_id, $elm_cod, $cantidad)
     {
         $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad) 
@@ -295,8 +293,9 @@ class solicitudPrestamos
         }
         return true;
     }
-    
-    public function elementoReservadoEnRango($codigoElemento, $fechaInicio, $fechaFin) {
+
+    public function elementoReservadoEnRango($codigoElemento, $fechaInicio, $fechaFin)
+    {
         $sql = "SELECT COUNT(*) 
                 FROM prestamos p
                 INNER JOIN prestamos_elementos pe ON p.pres_cod = pe.pres_cod
@@ -304,24 +303,65 @@ class solicitudPrestamos
                   AND p.pres_estado IN (1,3) -- Validado o por valiar
                   AND p.pres_fch_reserva <= ?
                   AND p.pres_fch_entrega >= ?";
-    
+
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
             throw new Exception("Error en prepare: " . $this->conn->error);
         }
-    
+
         $stmt->bind_param('iss', $codigoElemento, $fechaFin, $fechaInicio);
         $stmt->execute();
-    
-        $count = 0; 
+
+        $count = 0;
         $stmt->bind_result($count);
         if ($stmt->fetch() === null) {
             $count = 0;
         }
-    
+
         $stmt->close();
-    
+
         return $count > 0;
+    }
+
+        public function actualizarEstadosPorFecha()
+    {
+        $fechaHoy = date('Y-m-d');
+        // $fechaHoy = '2025-08-08';
+
+        $sql = "SELECT p.pres_cod
+                FROM prestamos p
+                WHERE p.pres_fch_reserva = ?
+                  AND p.pres_estado = 3"; // Por validar
+    
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('s', $fechaHoy);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $prestamosActualizados = [];
+    
+        while ($row = $result->fetch_assoc()) {
+            $presCod = $row['pres_cod'];
+    
+            // Obtener los elementos asociados al préstamo
+            $sqlElementos = "SELECT pres_el_elem_cod FROM prestamos_elementos WHERE pres_cod = ?";
+            $stmtElems = $this->conn->prepare($sqlElementos);
+            $stmtElems->bind_param('i', $presCod);
+            $stmtElems->execute();
+            $resElems = $stmtElems->get_result();
+    
+            // Cambiar estado de cada elemento a reservado (5)
+            while ($elem = $resElems->fetch_assoc()) {
+                $elm_cod = $elem['pres_el_elem_cod'];
+                $updateElem = $this->conn->prepare("UPDATE elementos SET elm_cod_estado = 5 WHERE elm_cod = ?");
+                $updateElem->bind_param('i', $elm_cod);
+                $updateElem->execute();
+            }
+    
+            $prestamosActualizados[] = $presCod;
+        }
+    
+        return $prestamosActualizados;
     }
 
 }

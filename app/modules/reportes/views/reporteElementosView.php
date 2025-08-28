@@ -1,53 +1,3 @@
-<!-- <style>
-  .content {
-    background-color: #f9f9f9;
-    padding: 30px;
-    width: 100%;
-  }
-
-  .card-filtros {
-    padding: 20px;
-    border-radius: 10px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  h4.center-align {
-    margin-bottom: 30px;
-    font-weight: bold;
-    color: #2c3e50;
-  }
-
-  .btn {
-    margin-top: 20px;
-  }
-
-  .striped thead {
-    background-color: #2196f3;
-    color: white;
-  }
-
-  .striped tbody tr:hover {
-    background-color: #e3f2fd;
-  }
-
-  .pagination li.active {
-    background-color: #2196f3;
-  }
-
-  .page {
-    margin-top: 20px;
-  }
-
-  .switch-container {
-    margin-bottom: 30px;
-    text-align: center;
-  }
-
-  .switch-container label {
-    margin: 0 15px;
-  }
-</style> -->
 
 <div class="content">
   <h4 class="center-align">Reporte General</h4>
@@ -158,7 +108,8 @@
     <!-- TABLA -->
     <div class="col s12 m7">
       <h5 class="center-align">Previsualización</h5>
-      <table id="tabla-previa" class="striped responsive-table highlight centered">
+      <!-- <table id="tabla-previa" class="striped responsive-table highlight centered"> -->
+      <table id="tabla-previa" class="striped highlight centered">
         <thead id="tabla-previa-head"></thead>
         <tbody id="tabla-elementos-body">
           <tr><td colspan="5" class="grey-text">Seleccione filtros para ver los elementos</td></tr>

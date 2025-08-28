@@ -15,9 +15,11 @@ $css = $controllerFile->addUrl($modulo);
 
 $conexion = new Conection();
 $conn = $conexion->getConnect();
+$solicitudService = new servicesSolicitudPrestamos();
+$solicitudService->callTask();
 
 $prestamoController = new solicitudPrestamosController($conn);
-$prestamoController->actualizarEstadosPorFecha();
+// $prestamoController->actualizarEstadosPorFecha();
 $reservaServices = new ServicesReservas();
 $reservaServices->callTask();
 

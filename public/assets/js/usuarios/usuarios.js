@@ -33,28 +33,90 @@ document.addEventListener("DOMContentLoaded", () => {
       if (liActivo) liActivo.classList.add('active');
     }
 
-    function generarPaginacion() {
-      if (!paginacion) return;
+    // function generarPaginacion() {
+    //   if (!paginacion) return;
 
+    //   paginacion.innerHTML = '';
+    //   const totalPaginas = Math.ceil(filasFiltradas.length / itemsPorPagina);
+
+    //   for (let i = 1; i <= totalPaginas; i++) {
+    //     const li = document.createElement('li');
+    //     li.classList.add('waves-effect');
+    //     li.setAttribute('data-pagina', i);
+    //     li.innerHTML = `<a href="#!">${i}</a>`;
+    //     li.addEventListener('click', (e) => {
+    //       e.preventDefault();
+    //       mostrarPagina(i);
+    //     });
+    //     paginacion.appendChild(li);
+    //   }
+
+    //   if (totalPaginas > 0) {
+    //     mostrarPagina(1);
+    //   }
+    // }
+    function generarPaginacion(paginaActual = 1) {
+      if (!paginacion) return;
+    
       paginacion.innerHTML = '';
       const totalPaginas = Math.ceil(filasFiltradas.length / itemsPorPagina);
-
-      for (let i = 1; i <= totalPaginas; i++) {
+      const maxVisible = 5; // cantidad de botones visibles
+    
+      if (totalPaginas <= 1) return;
+    
+      // Calcular el rango de páginas visibles
+      let inicio = Math.max(1, paginaActual - Math.floor(maxVisible / 2));
+      let fin = inicio + maxVisible - 1;
+    
+      if (fin > totalPaginas) {
+        fin = totalPaginas;
+        inicio = Math.max(1, fin - maxVisible + 1);
+      }
+    
+      // Botón Anterior
+      if (paginaActual > 1) {
+        const prev = document.createElement('li');
+        prev.classList.add('waves-effect');
+        prev.innerHTML = `<a href="#!">&laquo;</a>`;
+        prev.addEventListener('click', (e) => {
+          e.preventDefault();
+          mostrarPagina(paginaActual - 1);
+          generarPaginacion(paginaActual - 1);
+        });
+        paginacion.appendChild(prev);
+      }
+    
+      // Números dinámicos
+      for (let i = inicio; i <= fin; i++) {
         const li = document.createElement('li');
         li.classList.add('waves-effect');
+        if (i === paginaActual) li.classList.add('active');
         li.setAttribute('data-pagina', i);
         li.innerHTML = `<a href="#!">${i}</a>`;
         li.addEventListener('click', (e) => {
           e.preventDefault();
           mostrarPagina(i);
+          generarPaginacion(i);
         });
         paginacion.appendChild(li);
       }
-
-      if (totalPaginas > 0) {
-        mostrarPagina(1);
+    
+      // Botón Siguiente
+      if (paginaActual < totalPaginas) {
+        const next = document.createElement('li');
+        next.classList.add('waves-effect');
+        next.innerHTML = `<a href="#!">&raquo;</a>`;
+        next.addEventListener('click', (e) => {
+          e.preventDefault();
+          mostrarPagina(paginaActual + 1);
+          generarPaginacion(paginaActual + 1);
+        });
+        paginacion.appendChild(next);
       }
+    
+      mostrarPagina(paginaActual);
     }
+    
 
     generarPaginacion();
 

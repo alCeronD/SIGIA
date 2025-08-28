@@ -25,7 +25,8 @@
       </div>
     </div>
 
-    <table class="highlight striped centered responsive-table">
+    <!-- <table class="highlight striped centered responsive-table"> -->
+    <table class="highlight striped centered">
       <thead class="teal darken-3 white-text" id="consultPrestamoHead">
         <tr>
           <th>ID</th>
