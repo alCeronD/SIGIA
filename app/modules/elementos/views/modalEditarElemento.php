@@ -17,44 +17,11 @@
                     <label id="label_placa"></label>
                     <input id="elm_placa_editar" name="elm_placa" type="text" required>
                 </div>
-                <div class="placaInputsEditar">
-                    <!-- INPUTS DE PLACAS QUE SELECCIONE EL INPUT RADIO NUEVA PLACA -->
-                    <div class="contentPlacaEdit input-field">
-                        <!-- <div class="inputPlacaEditar">
-                            <input id="elm_placa" name="elm_placa" type="text">
-                            <label for="elm_placa">Número de placa *</label>
-                        </div> -->
-                        <div class="inputSerieEdit input-field">
-                            <!-- Validar, no se deben permitir catacteres con el arroba o el # -->
-                            <input id="elm_serie" name="elm_serie" type="text">
-                            <label for="elm_serie">Código de serie * Ejemplo = 922919587-1</label>
-                        </div>
-                    </div>
-                    <!-- INPUTS DE LAS PLACAS ASOCIADAS. -->
-                    <div class="placaAssocContent">
-                        <div class="selectPlaca">
-                            <label for="searchPlaca">Digite el número de placa</label>
-                            <span id="respuestaPlaca" style="display: none;"></span>
-                            <!-- <input type="text" name="searchPlaca" id="searchPlaca"> -->
-                        </div>
-                        <div class="contentPlacaAssoc ">
-                            <label for="serialPlaca">Serial asociado</label>
-                            <!-- <input type="text" name="serialPlaca" id="serialPlacaAssoc"> -->
-                        </div>
-                        <div class="tableResult">
-                            <table class="striped responsive-table" id="tablePlaca">
-                                <thead>
-                                    <tr>
-                                        <th>Codigo</th>
-                                        <th>Serial registrado</th>
-                                        <th>Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbodyPlacaResult"></tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div class="serie">
+                    <label for="">Serie:</label>
+                    <input type="text" name="elm_serie" id="elm_serie_editar">
                 </div>
+
                 <div class="nombre">
                     <label for="elm_nombre_editar">Nombre elemento *</label>
                     <input id="elm_nombre_editar" name="elm_nombre" type="text" required>
@@ -69,9 +36,6 @@
                     <label for="elm_ma_cod">Marca: </label>
                     <select class="" name="elm_ma_cod" id="elm_marca_cod_editar">
                         <option value="" selected>Seleccione una opción</option>
-                        <!-- <option value="1">Unitario</option>
-                        <option value="2">Caja</option>
-                        <option value="3">Galon</option> -->
                     </select>
                 </div>
 

@@ -389,14 +389,12 @@ formEditarRol.addEventListener("submit", async (e) => {
       "updateRol",
       objData
     );
-    console.log(updateInfo);
     if (updateInfo.status) {
       renderRoles();
       initAlert("Recurso actualizado", "success", toastOptions);
       modalEditar.close();
     }
   } catch (error) {
-    console.log(error);
     initAlert(`${error.message}`, "error", `${error}`);
   }
 });

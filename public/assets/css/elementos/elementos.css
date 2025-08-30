@@ -552,7 +552,7 @@
 #modalEditarElemento form#editarElementForm {
   display: grid;
   grid-template-areas:
-    "placa placa"
+    "placa serie"
     "placaInputsEditar placaInputsEditar"
     "nombre area"
     "unidadMedida unidadMedida"
@@ -584,6 +584,10 @@
 /* Áreas */
 #modalEditarElemento .placa {
   grid-area: placa;
+}
+
+#modalEditarElemento .serie{
+  grid-area: serie;
 }
 
 #modalEditarElemento .nombre {

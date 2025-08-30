@@ -231,7 +231,6 @@ tpUpdateForm.addEventListener("submit", (e) => {
   objAjax2.request.send(data);
 });
 
-
 //Formulario de insert.
 formulario.addEventListener("submit", (event) => {
 
@@ -259,7 +258,6 @@ formulario.addEventListener("submit", (event) => {
 
   objAjax2.request.onload = () => {
       const response = JSON.parse(objAjax2.request.responseText);
-      console.log(response)
       if (response.status) {
         const lastRow = response.data;
         initAlert('Registro adicionado con exito','success',toastOptions);

@@ -416,6 +416,7 @@ class ElementoModelo
 
         $sql = "UPDATE elementos 
             SET elm_nombre = ?, 
+                elm_serie = ?,
                 elm_area_cod = ?, 
                 elm_sugerencia = ?,
                 elm_observacion = ?,
@@ -433,8 +434,9 @@ class ElementoModelo
         $codMarca = (empty($data['elm_ma_cod'])) ? NULL : (int) $data['elm_ma_cod'];
         $codTpElemento = (int) $data['elm_cod_tp_elemento'];
         $stmt->bind_param(
-            "sissiii", // nombre(string), área(int), sugerencia(string), observación(string), id(int)
+            "ssissiii", // nombre(string), área(int), sugerencia(string), observación(string), id(int)
             $data['elm_nombre'],
+            $data['elm_serie'],
             $codArea,
             $data['elm_sugerencia'],
             $data['elm_observacion'],
@@ -929,7 +931,3 @@ class ElementoModelo
         }
     }
 }
-
-// $objElementos = new ElementoModelo();
-// $resultado = $objElementos->validateDisponiblidad(10,true);
-// var_dump($resultado);

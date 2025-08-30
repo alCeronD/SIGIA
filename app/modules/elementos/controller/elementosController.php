@@ -110,6 +110,11 @@ class ElementosController
         success("registros de: $action", $newData);
     }
 
+    /**
+     * Función para ejecutar el proceso de actualización del elemento.
+     * @param array $data
+     * @return never
+     */
     public function editarElemento(array $data = [])
     {
         validatePermisos('elementos', 'editarElemento');

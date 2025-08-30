@@ -497,7 +497,6 @@ export const validateFormData = ({ formData, campos, mapForm } = {}) => {
   return true;
 };
 
-
 let aceptarExecution;
 let cancelarExecution;
 /**
@@ -511,8 +510,6 @@ let cancelarExecution;
  */
 export const mostrarConfirmacion = (titulo, mensaje, callback) => {
   // TODO: buscar bien como se usan los handlers en javascript (manejador de eventos)
-  console.log({"btnAceptar antes": aceptarExecution});
-  console.log({"btnCancelar Antes": cancelarExecution});
   // Agrego la informacion en los espacios html.
   document.getElementById("modalConfirmacionTitulo").textContent = titulo;
   document.getElementById("modalConfirmacionMensaje").innerHTML = mensaje;
@@ -533,9 +530,6 @@ export const mostrarConfirmacion = (titulo, mensaje, callback) => {
     btnCancelar.removeEventListener('click',cancelarExecution);
   }
 
-  console.log({"btnAceptar removeEventListener": aceptarExecution});
-  console.log({"btnCancelar removeEventListener": cancelarExecution});
-
   // Limpiar cualquier listener anterior
   aceptarExecution = () => callback(true);
   cancelarExecution = () => callback(false);
@@ -543,8 +537,6 @@ export const mostrarConfirmacion = (titulo, mensaje, callback) => {
   btnAceptar.addEventListener('click', aceptarExecution);
   btnCancelar.addEventListener('click', cancelarExecution);
 
-  console.log({"btnAceptar addEventListener": aceptarExecution});
-  console.log({"btnCancelar addEventListener": cancelarExecution});
 
   instance.open();
 };

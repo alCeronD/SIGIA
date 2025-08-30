@@ -344,6 +344,7 @@ const renderElements = async ({
       tbodyElements.innerHTML = "Sin resultados";
       return;
     }
+    console.log(data);
 
     if (page > pageGlobal) {
       return;
@@ -486,6 +487,7 @@ const renderElements = async ({
 
         // TODO, puedo hacerlo de mejor forma creando un objeto y ciclando el formulario, no se hace x falta de tiempo.
         let elm_placa_editar = document.querySelector("#elm_placa_editar");
+        let elm_serie_edatar = document.querySelector('#elm_serie_editar');
         let elm_nombre_editar = document.querySelector("#elm_nombre_editar");
         let tp_elemento = document.querySelector("#tp_elemento");
         let undMedida = document.querySelector("#undMedida");
@@ -505,6 +507,7 @@ const renderElements = async ({
           "#elm_existencia_editar"
         );
         let codElementoEditar = document.querySelector("#codElementoEditar");
+        elm_serie_edatar.value = dta.serie;
         elm_placa_editar.value = dta.placa;
         elm_placa_editar.readOnly = true;
         elm_nombre_editar.value = dta.nombreElemento;
@@ -536,7 +539,7 @@ const renderElements = async ({
         // Validar que el estado del elemento sea prestado para evitar inhabilitar el elemento
         if (parseInt(btn.dataset.status) === 3) {
           initAlert(
-            "Este elemento no puede inhabilitarse hasta que elemento haya sido devuelto",
+            "Este elemento no puede inhabilitarse hasta que el elemento haya sido devuelto",
             "info",
             toastOptions
           );
@@ -761,8 +764,7 @@ const executePagination = async () => {
     (currentType === typeElements.all && inputBusqueda.value.length != "") ||
     currentType === typeElements.all
   ) {
-    // isBusqueda = true;
-    // usamos condicional spread ...(isBusqueda && {isBusqueda: true, value: inputBusqueda.value}) para validar si es una busqueda, en caso de que sea una busqueda, implementar los parámetros adicionales, en caso contrario, solamente implementar el parámetro type y page.
+
     await renderElements({
       type: currentType,
       page: pageElement,
@@ -1000,7 +1002,7 @@ const fieldLabels = {
 // Mapeo de elementos del formulario editar.
 const fieldLabelsEditar = {
   elm_cod: "Código del elemento",
-  elm_serie: "Serie del elemento",
+  elm_serie: "Serie",
   elm_nombre: "Nombre del elemento",
   elm_area_cod: "Departamento",
   elm_ma_cod: "Marca",
@@ -1013,7 +1015,6 @@ const fieldLabelsEditar = {
 
 // Keys de los campos opcionales del formulario de editar.
 const opcionalFielLabelsEditar = [
-  "elm_serie",
   "elm_observacion",
   "elm_sugerencia",
   "descripcion_movimiento",
@@ -1206,22 +1207,31 @@ addElementForm.addEventListener("submit", async (e) => {
 
 // Formulario del modal editarElemento
 const editarElementForm = document.querySelector("#editarElementForm");
-editarElementForm.addEventListener("submit", (e) => {
+editarElementForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   e.stopPropagation();
 
-  //TODO Validar campos obligatorios.
   const formUpdate = new FormData(e.target);
   const dataObj = Object.fromEntries(formUpdate.entries());
   let data = dataObj;
-  console.log(dataObj);
-  // if (!checkObject(dataObj, fieldLabelsEditar)) return;
   if (!checkObject({dataForm:dataObj,campos:fieldLabelsEditar,optionalsInput:opcionalFielLabelsEditar})) return;
   // Estos 3 elementos los estoy por ahora, borrando pero les daremos utilidad.
-  delete dataObj["elm_serie"];
   delete dataObj["serialPlaca"];
   delete dataObj["elm_uni_medida_select"];
 
+  if (!validarSerie(dataObj.elm_serie)) {
+    initAlert(
+      "Solo esta permitido el - en este campo",
+      "warning",
+      toastOptions
+    );
+    return;
+  }
+
+  // Valido la disponibilidad y niego en caso de que el elemento ya este en la bd.
+  const isDisponibleSerie = await validateDisponibilidad({action: "validateSerie", data: dataObj.elm_serie});
+  console.log(isDisponibleSerie);
+  if(!isDisponibleSerie) return;
 
   mostrarConfirmacion(
     "Guardar cambios",

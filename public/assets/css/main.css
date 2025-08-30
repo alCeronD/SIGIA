@@ -195,16 +195,13 @@ input[type="number"] {
 
 /** Fin estilos Modulo configuración  */
 
-/* ------------------------------------------ */
-
-
 /* Inicio Estilos de alertas toast de materialize */
 
 #toast-container{
     position: absolute !important;
     right: .5em;
     bottom: 0;
-    z-index: 100;
+    z-index: 1050;
 }
 
 .toast{

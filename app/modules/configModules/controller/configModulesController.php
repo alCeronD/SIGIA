@@ -179,40 +179,52 @@ class ConfigModulesController
         $model = new ConfigModulesModel();
         $dataResult = $model->delete($sql, $types, $values);
         return $dataResult;
-        //return null;
     }
 
     public function addRow(array $data = [])
     {
-        validatePermisos('ConfigModules', 'addRow');
-        if (!$data) {
-            exit();
+
+        try {
+
+            validatePermisos('ConfigModules', 'addRow');
+            if (!$data) {
+                exit();
+            }
+            //Nombres de las columnas de la tabla
+            $keysValues = array_keys($data['values']);
+
+            //Extraigo el nombre de la tabla, en este caso me interesa el el value de tableName, no su clave
+            $tableName = $data['tableName'];
+            //Los valores de las filas con sus respectivas columnas.
+            $dataValues = $data['values'];
+
+            $val = array_values($dataValues);
+
+            $sql = "INSERT INTO `$tableName` SET ";
+            //Estructura SET de consulta.
+            $set = [];
+            //Tipos de valores.
+            foreach ($dataValues as $keys => $values) {
+                $set[] = "`$keys` = ?";
+            }
+
+            //Tipos de datos
+            $types = "ssi";
+            $set2 = implode(', ', $set);
+            $sql .= $set2;
+            $model = new ConfigModulesModel();
+            $data = $model->insert($sql, $types, $val, $tableName);
+            if (!$data['status']) {
+                throw new Exception("Errror al ejecutar el procedimiento");
+            }
+            return $data;
+        } catch (Exception $th) {
+            return [
+                'status' => false,
+                'message' => $th->getMessage(),
+                'data' => []
+            ];;
         }
-        //Nombres de las columnas de la tabla
-        $keysValues = array_keys($data['values']);
-
-        //Extraigo el nombre de la tabla, en este caso me interesa el el value de tableName, no su clave
-        $tableName = $data['tableName'];
-        //Los valores de las filas con sus respectivas columnas.
-        $dataValues = $data['values'];
-
-        $val = array_values($dataValues);
-
-        $sql = "INSERT INTO `$tableName` SET ";
-        //Estructura SET de consulta.
-        $set = [];
-        //Tipos de valores.
-        foreach ($dataValues as $keys => $values) {
-            $set[] = "`$keys` = ?";
-        }
-
-        //Tipos de datos
-        $types = "ssi";
-        $set2 = implode(', ', $set);
-        $sql .= $set2;
-        $model = new ConfigModulesModel();
-        $data = $model->insert($sql, $types, $val, $tableName);
-        return $data;
     }
 
     public function validateUniqueItem(String $nameColum, String $tableName, String $nameValueColum)
