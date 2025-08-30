@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
           window.location.href = data.url;
         } else {
           initAlert(
-            "Usuario y contraseña incorrectos, Contactarse con el administrador.",
+            data.message,
             "info",
             toastOptions
           );

@@ -1,22 +1,29 @@
-<?php 
+<?php
 
 include_once __DIR__ . '/../model/loginModel.php';
 require_once __DIR__ . '/../../Permisos/Model/PermisosModel.php';
 include_once __DIR__ . '/../../../helpers/response.php';
+require_once __DIR__ . '/../../../helpers/expg.php';
 require_once __DIR__ . '/../../../Config/conn.php';
 
-class loginController {
+class loginController
+{
     private $conn;
+    private Regex $regex;
 
-    public function __construct($conexion) {
+    public function __construct($conexion)
+    {
         $this->conn = $conexion;
+        $this->regex = new Regex();
     }
 
-    public function index() {
+    public function index()
+    {
         include_once __DIR__ . '/../views/loginView.php';
     }
 
-    public function login() {
+    public function login()
+    {
         $permisosModel = new PermisosModel();
         header('Content-Type: application/json');
         session_start();
@@ -29,57 +36,69 @@ class loginController {
         $documento = $_POST['docum'] ?? '';
         $password = $_POST['pass'] ?? '';
 
-        if (empty($documento) || empty($password)) {
-            fail('Todos los campos son obligatorios');
+        try {
+
+            if (empty($documento)) throw new Exception("Documento debe ser obligatorio");
+            if (empty($password)) throw new Exception("Contraseña debe ser obligatorio");
+
+            if(!$this->regex->validarNumeros($documento)) throw new Exception("No se permiten caracteres especiales");
+
+            if (empty($documento) || empty($password)) {
+                fail('Todos los campos son obligatorios');
+            }
+
+            if (!$this->conn) {
+                echo json_encode(['success' => false, 'message' => 'Error de conexión a la base de datos']);
+                exit();
+            }
+
+            $modeloLogin = new login($this->conn);
+            $usuarioResult = $modeloLogin->buscarUsuarioPorDocumento($documento);
+
+            if (!$usuarioResult['status']) {
+                echo json_encode(['status' => false, 'message' => $usuarioResult['message']]);
+                exit();
+            }
+
+            $usuario = $usuarioResult['usuario'];
+
+            if (!$modeloLogin->verificarPassword($password, $usuario['usu_password'])) {
+                echo json_encode(['status' => false, 'message' => 'Contraseña incorrecta']);
+                exit();
+            }
+
+            // Elimino el id de sessión guardado anteriormente y lo regenero.
+            session_regenerate_id(true);
+
+            $result = $permisosModel->renderMenu((int) $usuario['rl_id']);
+
+            $_SESSION['usuario'] = [
+                'id' => $usuario['usu_id'],
+                'nombre' => $usuario['usu_nombres'],
+                'apellido' => $usuario['usu_apellidos'],
+                'rol_id' => $usuario['rl_id'],
+                'rol_nombre' => $usuario['rl_nombre'],
+                'email' => $usuario['usu_email']
+            ];
+
+
+            $_SESSION['renderMenu'] = $result['data'];
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Conectado',
+                'url' => '/proyecto_sigia/app/dashboard.php?modulo=dashboard&controlador=dashboard&funcion=dashboard'
+            ]);
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
         }
-
-        if (!$this->conn) {
-            echo json_encode(['success' => false, 'message' => 'Error de conexión a la base de datos']);
-            exit();
-        }
-
-        $modeloLogin = new login($this->conn);
-        $usuarioResult = $modeloLogin->buscarUsuarioPorDocumento($documento);
-
-        if (!$usuarioResult['status']) {
-            echo json_encode(['status' => false, 'message' => $usuarioResult['message']]);
-            exit();
-        }
-
-        $usuario = $usuarioResult['usuario'];
-
-        if (!$modeloLogin->verificarPassword($password, $usuario['usu_password'])) {
-            echo json_encode(['status' => false, 'message' => 'Contraseña incorrecta']);
-            exit();
-        }
-
-        session_regenerate_id(true);
-
-
-        $result = $permisosModel->renderMenu((int) $usuario['rl_id']);
-
-        $_SESSION['usuario'] = [
-            'id' => $usuario['usu_id'],
-            'nombre' => $usuario['usu_nombres'],
-            'apellido' => $usuario['usu_apellidos'],
-            'rol_id' => $usuario['rl_id'],
-            'rol_nombre' => $usuario['rl_nombre'],
-            'email' => $usuario['usu_email']
-        ];
-
-        // Elimino el id de sessión guardado anteriormente y lo regenero.
-
-        $_SESSION['renderMenu']= $result['data'];
-
-
-        echo json_encode([
-            'success' => true,
-            'message' => 'Conectado',
-            'url' => '/proyecto_sigia/app/dashboard.php?modulo=dashboard&controlador=dashboard&funcion=dashboard'
-        ]);
     }
 
-    public function logout() {
+    public function logout()
+    {
 
 
         if (session_status() === PHP_SESSION_NONE) {
