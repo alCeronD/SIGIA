@@ -582,15 +582,6 @@ const renderElements = async ({
             const dataCod = parseInt(btn.dataset.cod) || null;
             const dataStatus = parseInt(btn.dataset.status) || null;
 
-            if (parseInt(dataStatus) === 3) {
-              initAlert(
-                "El cambio de estado del elemento debe ser validado desde las reservas",
-                "info",
-                toastOptions
-              );
-              return;
-            }
-
             const data = {
               elm_cod: dataCod,
               elm_cod_estado: dataStatus,
@@ -605,7 +596,7 @@ const renderElements = async ({
 
             if (!responseInhabilitar.status) {
               initAlert(
-                "Ha ocurrido un error al actualizar el estado del elemento",
+                responseInhabilitar.message,
                 "error",
                 toastOptions
               );
@@ -613,7 +604,6 @@ const renderElements = async ({
             }
 
             let messageData = responseInhabilitar.data.message;
-            // if (status) {
             const icon = btn.querySelector("i");
             if (icon) {
               icon.innerText = "compare_arrows";
@@ -625,12 +615,13 @@ const renderElements = async ({
                 renderWithFilter();
               }
             );
-            // }
           } catch (error) {
             initAlert(`${error.message}`, "error", toastOptions);
             throw new Error("Error al ejecutar proceso" + error);
           }
         });
+
+
       });
 
       //Boton adicionar existencia

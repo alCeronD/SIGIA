@@ -161,19 +161,33 @@ class ElementosController
 
     public function cambiarEstadoElemento(array $data = [])
     {
-        validatePermisos('elementos', 'cambiarEstadoElemento');
-        if (isset($data['elm_cod']) && isset($data['elm_cod_estado'])) {
-            $cod = (int) $data['elm_cod'];
-            $id = (int) $data['elm_cod_estado'];
-            $exito = $this->modeloElemento->toggleEstadoElemento($cod, $id);
+        try {
+            validatePermisos('elementos', 'cambiarEstadoElemento');
+            if(!is_array($data)) throw new Exception("Tipo de dato recibido incorrecto");
+            if(empty($data['elm_cod'])) throw new Exception("Código del elemento no debe estar vacio");
+            if(empty($data['elm_cod_estado'])) throw new Exception("Estado recibido incorrecto");
+        
+            if (isset($data['elm_cod']) && isset($data['elm_cod_estado'])) {
+                $cod = (int) $data['elm_cod'];
+                $id = (int) $data['elm_cod_estado'];
+                $exito = $this->modeloElemento->toggleEstadoElemento($cod, $id);
 
-            if (!$exito) {
-                fail('Error al actualizar el elemento', $exito);
+                if (!$exito) {
+                    fail('Error al actualizar el elemento', $exito);
+                }
+                success($exito['message'], $exito);
+            } else {
+                // en caso de quie no se mande ningun elemento, devolver respuesta.
+                return;
             }
-            success('recurso actualizado', $exito);
-        } else {
-            // en caso de quie no se mande ningun elemento, devolver respuesta.
-            return;
+        } catch (Exception $e) {
+            $result = [
+                'status'=> false,
+                'message'=> $e->getMessage(),
+                'data'=> []
+            ];
+
+            fail($result['message'], $result);
         }
     }
 
