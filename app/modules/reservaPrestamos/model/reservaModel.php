@@ -262,14 +262,16 @@ class ReservaModel
             $conn->commit();
             return [
                 'message' => 'proceso realizado exitosamente',
-                'status' => true
+                'status' => true,
+                'data'=> []
             ];
-        } catch (\Throwable $th) {
+        } catch (Exception $th) {
             $messageError = $th->getMessage();
             $conn->rollback();
             return [
                 'message' => "Error en el proceso: $messageError",
-                'status' => false
+                'status' => false,
+                'data'=> []
             ];
         }
     }

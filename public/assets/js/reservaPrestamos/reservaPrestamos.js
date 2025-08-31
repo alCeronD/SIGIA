@@ -818,7 +818,7 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
     }
 
     const responseValidate = await validateDisponibilidad(paramValidateDisponibilidad, {sendData,getData,initAlert,toastOptions});
-    //Mostrar mensaje de modal para informar que hay elementos ya reservados para esa fecha y por ende, no se podrán reservar.
+    // //Mostrar mensaje de modal para informar que hay elementos ya reservados para esa fecha y por ende, no se podrán reservar.
     if (responseValidate.status) {
       messageValidate = responseValidate.message;
       dataValidate = responseValidate.data;
@@ -845,7 +845,6 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
         return;
       }
 
-      // if (JSON.stringify(dataValidate) != "{}") {
       if (Array.from(dataValidate) && dataValidate.length > 0) {
         // Transformo el arreglo dataValidate en uno nuevo solamente trayendo LOS CÓDIGOS de los elementos para comparar con los que el usuario ha seleccionado.
         const codigosElementosReservados = dataValidate.map(
@@ -893,7 +892,7 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
           return;
         }
 
-        initAlert("Reserva realizada con exito", "success", toastOptions);
+        initAlert(responseReserva.message, "success", toastOptions);
         // Elimino los ids de los prestamos.
         ids.length = 0;
         //Limpio el formulario, tabla y campos de span.

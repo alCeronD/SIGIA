@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../../helpers/session.php';
 require_once __DIR__ . '/../../../helpers/validatePermisos.php';
 require_once __DIR__ . '/../../../helpers/validateFecha.php';
 require_once __DIR__ . '/../../../helpers/getUrl.php';
+require_once __DIR__ . '/../../../helpers/validateData.php';
 require_once __DIR__ . '/../model/reservaModel.php';
 require_once __DIR__ . '/../../usuarios/model/usuariosModel.php';
 
@@ -16,12 +17,15 @@ class reservaPrestamosController
     private ReservaModel $model;
 
     private ElementoModelo $modelElemento;
+    private ValidateData $validarData;
+
     public function __construct()
     {
         $reservaModel = new ReservaModel();
         $this->model = $reservaModel;
         $elementoModel = new ElementoModelo();
         $this->modelElemento = $elementoModel;
+        $this->validarData = new ValidateData();
         include_once __DIR__ . '/../../../helpers/response.php';
     }
 
@@ -76,7 +80,7 @@ class reservaPrestamosController
 
         $data = $this->model->selectDetailReserva($pages, $estadoPrestamo);
         if (!$data['status'] && empty($data['data'])) {
-            success('No hay registros.', $data);
+            success($data['message'], $data);
         }
         success('Registros', $data);
     }
@@ -113,46 +117,86 @@ class reservaPrestamosController
      */
     public function setReserva(array $data = [])
     {
-        validatePermisos('reservaPrestamos', 'setReserva');
-        $tp_pres = isset($data['tpPrestamo']) ? (int) $data['tpPrestamo'] : null;
-        $pres_estado = null;
-        $pres_rol = $_SESSION['usuario']['rol_id'];
 
-        $codConsumibles = $data["codigosElementos"]['consumibles'];
-        $codDevolu = $data["codigosElementos"]['devolutivos'];
+        try {
+            validatePermisos('reservaPrestamos', 'setReserva');
 
-        $ascDevolutivos = array_column($codDevolu, 'codigo');
-        $ascConsu = array_column($codConsumibles, 'codigo');
-        //Cordenar los elementos del arreglo basado en el código
-        array_multisort($codDevolu, SORT_ASC, $ascDevolutivos);
-        array_multisort($codConsumibles, SORT_ASC, $ascConsu);
+            if (empty($data)) throw new Exception("No hay datos recibidos.");
 
-        if ($tp_pres == 2) {
-            //Cambiar nombre de la llave.
-            $data['pres_fch_reserva'] = $data['fechaReserva'];
-            unset($data['fechaReserva']);
-        }
+            // Campos del formulario exceptuando los elementos seleccionados.
+            $dataForm = [
+                'areaDestino'     => $data['areaDestino'],
+                'fechaReserva'    => $data['fechaReserva'],
+                'fechaDevolucion' => $data['fechaDevolucion'],
+                'observaciones'   => $data['observaciones'],
+                'cedula'          => $data['cedula'],
+                'tpPrestamo'      => $data['tpPrestamo'],
+            ];
+            // Variable para mostrar al usuario un mensaje adecuado.
+            $keyMessage = [
+                'areaDestino' => "area destino",
+                'fechaReserva' => "fecha de la reserva",
+                'fechaDevolucion' => "fecha de la devolución",
+                'cedula' => 'cedula',
+                'tpPrestamo' => 'tipo de prestamo',
+                'observaciones' => 'observaciones'
+            ];
 
-        $pres_estado = $tp_pres == 2 ? 3 : 1;
+            $resultDataValidate = $this->validarData->validarCampos($dataForm, ['areaDestino', 'fechaReserva', 'fechaDevolucion', 'cedula', 'tpPrestamo'], $keyMessage);
 
-        unset($data["codigosElementos"]);
-        $data['pres_fch_entrega'] = $data['fechaDevolucion'];
-        unset($data['fechaDevolucion']);
-        $data['pres_observacion'] = $data['observaciones'];
-        unset($data['observaciones']);
-        $data['pres_destino'] = $data['areaDestino'];
-        unset($data['areaDestino']);
-        $data['pres_estado'] = $pres_estado;
-        $data['pres_rol'] = $pres_rol;
-        $data['tp_pres'] = $tp_pres;
-        unset($data['tpPrestamo']);
+            if (!$resultDataValidate['status']) throw new Exception($resultDataValidate['message']);
 
+            $elementos = $data['codigosElementos'];
 
-        $result = $this->model->insertReserva($data, $codDevolu, $codConsumibles);
-        if (!$result) {
-            fail($result['message']);
-        } else {
-            success($result['message']);
+            if (count($elementos['devolutivos']) === 0) throw new Exception("Los elementos devolutivos son obligatorios");
+
+            $tp_pres = isset($data['tpPrestamo']) ? (int) $data['tpPrestamo'] : null;
+            $pres_estado = null;
+            $pres_rol = $_SESSION['usuario']['rol_id'];
+
+            $codConsumibles = $data["codigosElementos"]['consumibles'];
+            $codDevolu = $data["codigosElementos"]['devolutivos'];
+
+            $ascDevolutivos = array_column($codDevolu, 'codigo');
+            $ascConsu = array_column($codConsumibles, 'codigo');
+            //Cordenar los elementos del arreglo basado en el código
+            array_multisort($codDevolu, SORT_ASC, $ascDevolutivos);
+            array_multisort($codConsumibles, SORT_ASC, $ascConsu);
+
+            if ($tp_pres == 2) {
+                //Cambiar nombre de la llave.
+                $data['pres_fch_reserva'] = $data['fechaReserva'];
+                unset($data['fechaReserva']);
+            }
+
+            $pres_estado = $tp_pres == 2 ? 3 : 1;
+
+            unset($data["codigosElementos"]);
+            $data['pres_fch_entrega'] = $data['fechaDevolucion'];
+            unset($data['fechaDevolucion']);
+            $data['pres_observacion'] = $data['observaciones'];
+            unset($data['observaciones']);
+            $data['pres_destino'] = $data['areaDestino'];
+            unset($data['areaDestino']);
+            $data['pres_estado'] = $pres_estado;
+            $data['pres_rol'] = $pres_rol;
+            $data['tp_pres'] = $tp_pres;
+            unset($data['tpPrestamo']);
+
+            $result = $this->model->insertReserva($data, $codDevolu, $codConsumibles);
+            if (!$result) {
+                fail($result['message']);
+            } else {
+                success($result['message']);
+            }
+        } catch (Exception $e) {
+            $result = [
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => []
+            ];
+
+            fail($result['message'], $result);
         }
     }
     //Función para validar la solicitud del aprendiz/instructor y cambiar su estado a validado
