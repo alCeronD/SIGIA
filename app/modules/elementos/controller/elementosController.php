@@ -1,18 +1,21 @@
 <?php
 include_once __DIR__ . '/../model/elementosModel.php';
 require_once __DIR__ . '/../../configModules/model/configModulesModel.php';
-// require_once __DIR__ . '/../../../helpers/response.php';
 require_once __DIR__ . '/../../../helpers/const.php';
 require_once __DIR__ . '/../../../helpers/validatePermisos.php';
+require_once __DIR__ . '/../../../helpers/validateData.php';
 
 class ElementosController
 {
     private ElementoModelo $modeloElemento;
     private Conection $conn;
 
+    private ValidateData $dataValidate;
+
     public function __construct()
     {
         $this->modeloElemento = new ElementoModelo();
+        $this->dataValidate = new ValidateData();
     }
 
     public function renderViewElements()
@@ -113,17 +116,46 @@ class ElementosController
     /**
      * Función para ejecutar el proceso de actualización del elemento.
      * @param array $data
-     * @return never
+     * @return void
      */
     public function editarElemento(array $data = [])
     {
-        validatePermisos('elementos', 'editarElemento');
-        // Llamar al modelo para actualizar
-        $exito = $this->modeloElemento->actualizarElemento($data);
-        if (!$exito) {
-            fail('error al procesar actualización', $exito);
+        
+        try {
+            validatePermisos('elementos', 'editarElemento');
+            $obligatorios = ['elm_cod', 'elm_placa', 'elm_serie', 'elm_nombre', 'elm_area_cod', 'elm_ma_cod', 'elm_cod_tp_elemento'];
+
+            $keysMensaje = [
+                'elm_cod'            => "Código del elemento",
+                'elm_placa'          => "Placa del elemento",
+                'elm_serie'          => "Número de serie",
+                'elm_nombre'         => "Nombre del elemento",
+                'elm_area_cod'       => "Código del área",
+                'elm_ma_cod'         => "Código de marca",
+                'elm_cod_tp_elemento'=> "Tipo de elemento"
+            ];
+            $result = $this->dataValidate->validarCampos($data, $obligatorios, $keysMensaje);
+
+            if (!$result['status']) throw new Exception($result['message']);
+            
+            // Llamar al modelo para actualizar
+            $exito = $this->modeloElemento->actualizarElemento($data);
+            if (!$exito['status']) {
+                fail('error al procesar actualización', $exito);
+            }
+            success('recurso actualizado con exito', $exito);
+
+        } catch (Exception $e) {
+            $result = [
+                'status'=>false,
+                'message'=> $e->getMessage(),
+                'data'=> []
+            ];
+
+            fail($result['message'], $result);
         }
-        success('recurso actualizado con exito', $exito);
+
+
     }
 
     public function cambiarEstadoElemento(array $data = [])
@@ -144,49 +176,81 @@ class ElementosController
         }
     }
 
+    /**
+     * Función para cambiar la existencia del elemento.
+     * @param array $data - Arreglo asociativo con la información
+     * @return void
+     */
     public function editarExistencia(array $data = [])
     {
-        validatePermisos('elementos', 'editarExistencia');
-        $result = $this->modeloElemento->cambiarExistencia($data);
-        if (!$result) {
-            fail($result['message']);
-        }
+        try {
+            validatePermisos('elementos', 'editarExistencia');
 
-        success($result['message'], $result);
+            if(empty($data)) throw new Exception("Error al recibir la data");
+            $obligatorios = [''];
+            $keyMensaje = [];
+
+            $this->dataValidate->validarCampos($data, $obligatorios, $keyMensaje);
+
+            $result = $this->modeloElemento->cambiarExistencia($data);
+            if (!$result) {
+                fail($result['message']);
+            }
+            success($result['message'], $result);
+        } catch (Exception $e) {
+            $result = [
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => []
+            ];
+
+            fail($result['message'], $result);
+        }
     }
 
     /**
      * Summary of getResultValidateSerie - Función de controlador para capturar la respuesta de validar la disponibilidad de la serie digitada por el usuario, devolver respuesta al usuario, true, significa que existe el elemento en la base de datos, por ende, no debe de registrarse con esa serie, false si es false, no devolver nada.
-     * @param string $data
+     * @param string $serie - serie del elemento
+     * @param int $codigo - Codigo del elemento
+     * @param bool $isRegistrar - flag para realizar la validación, siendo un insert o un update, False si es para insert, true si es para update.
      * @return void
      */
-    public function getResultValidateSerie (String $serie = ""){
-        if(!$serie) fail('valor No definido', []);
+    public function getResultValidateSerie(String $serie = "", int $codigo = 0, bool $isRegistrar = true)
+    {
 
-        $result = $this->modeloElemento->validateSerie($serie);
-        // Si el estatus es true, significa que si hay dato en la base de datos, y por ende, debe de mostrar mensaje de alerta indicando que no debe de registrar una serie ya existente.
-        //TODO: debo de modificar la forma de aplicar los response.
-        if ($result['status']) {
+        try {
+            if (empty($serie)) throw new Exception("Serie del elemento no valida");
+            
+            if ($isRegistrar) {
+                $result = $this->modeloElemento->validateSerie(serie: $serie);
+                
+            } else {
+                if (empty($codigo)) throw new Exception("Código incorrecto");
+                $result = $this->modeloElemento->validateSerie(serie: $serie, codigo: $codigo, isRegistrar: $isRegistrar);
+            }
 
+            if ($result['status']) {
+                throw new Exception("La serie " . $result['data'] . " Ya está registrada en la base de datos");
+            }
+
+            // TODO: debo de modificar la forma de aplicar los response.
             $response = [
                 'status' => false,
-                'message'=> "La serie ".$result['data']." ya está registrada en la base de datos",
-                'data' => $result
-            ];
-            http_response_code(200);
-            echo json_encode($response, JSON_PRETTY_PRINT);
-            exit();
-        }else{
-            $response = [
-                'status' => true,
-                'message' => 'Esta serie ya está registrada en la base de datos',
+                'message' => 'Serie disponible',
                 'data' => $result
             ];
             http_response_code(204);
             echo json_encode($response, JSON_PRETTY_PRINT);
             exit();
-        }
+        } catch (Exception $th) {
+            $result = [
+                'status' => false,
+                'message' => $th->getMessage(),
+                'data' => []
+            ];
 
+            fail($result['message'], $result);
+        }
     }
 }
 
@@ -259,9 +323,20 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
 
                 case 'validateSerie':
-                    $serie = (String) $_GET['data'];
+                    if($_GET['isRegistrar'] === 'true'){
+                        $isRegistrar = true;
+                    }else{
+                        $isRegistrar = false;
+                    }
+
+                    $serie = (String) $_GET['serie'];
                     if (method_exists($elementosController, 'getResultValidateSerie')) {
-                        $elementosController->getResultValidateSerie($serie);
+                        if($isRegistrar){
+                            $elementosController->getResultValidateSerie(serie:$serie, isRegistrar:$isRegistrar);
+                        } else{
+                            $codigo = (int) $_GET['codigo'];
+                            $elementosController->getResultValidateSerie($serie, $codigo, $isRegistrar);
+                        }
                     }
                     break;
 
@@ -307,7 +382,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
         switch ($action) {
             case 'updateElement':
-                // var_dump($data);
                 if (method_exists($elementosController, 'editarElemento')) {
                     $elementosController->editarElemento($data);
                 }

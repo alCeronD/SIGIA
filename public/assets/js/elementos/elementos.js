@@ -248,7 +248,6 @@ nuevaPlaca.forEach((inputRadio) => {
 // Capturo todos los inputs del tipo de elemento, siendo devolutivo o consumible
 tpElemento.forEach((tpElement) => {
   tpElement.addEventListener("change", (e) => {
-    console.log(e.target);
 
     if (e.target.id === "devolutivoCheckbox") {
       viewTpElementoInputs(true);
@@ -270,14 +269,23 @@ function resetForm(form) {
       input.checked = false;
       input.disabled = false;
     } else if (input.tagName === "SELECT") {
-      // Esto no funciona como se espera, investigar
-      input.disabled = false;
-      input.selectedIndex = 0;
+      // oculto los elementos
+      const option = input.querySelector('option');
+      option.selected = "selected";
+      option.disabled = "disabled";
+      option.selectedIndex = 0;   
     } else {
       input.value = "";
       input.readOnly = false;
     }
   });
+
+  const tpElementoDiv = form.querySelector('.checkboxTpElemento');
+  if (tpElementoDiv) {
+    tpElementoDiv.style.display = "none";
+  }
+
+
 }
 // modal ver detalle
 const modalVerMas = instanceModal("#modalVerMas", options);
@@ -344,7 +352,6 @@ const renderElements = async ({
       tbodyElements.innerHTML = "Sin resultados";
       return;
     }
-    console.log(data);
 
     if (page > pageGlobal) {
       return;
@@ -463,9 +470,11 @@ const renderElements = async ({
           tipoElemento: "modalTipo",
           estadoElemento: "modalEstadoElemento",
           nombreArea: "modalArea",
+          observacionElemento: "modalObservacion",
+          sugerenciaIngresada: "modalSugerencia"
         };
 
-        // Ciclo el mapa creado y valido la info del campo cantidad, si este existe y su valor es 0, el text content mostrar la palabra sin existencia.
+        //Creo un objeto mapeado con cada key en donde la key es el alias del resultado de la consulta y su value es el id del elemento html, valido que existe y a cada uno le implemento su información.
         Object.entries(dataToTableMap).forEach(([dataKey, elementId]) => {
           const cell = document.getElementById(elementId);
           if (cell && dta[dataKey] !== undefined) {
@@ -596,7 +605,6 @@ const renderElements = async ({
               data
             );
 
-            console.log(responseInhabilitar);
 
             if (!responseInhabilitar.status) {
               initAlert(
@@ -613,7 +621,6 @@ const renderElements = async ({
             if (icon) {
               icon.innerText = "compare_arrows";
             }
-            console.log(pageElement);
             initAlert(messageData, "success", toastOptions);
 
             renderElements({ page: pageElement, type: currentType }).then(
@@ -623,7 +630,6 @@ const renderElements = async ({
             );
             // }
           } catch (error) {
-            console.log(error);
             initAlert(`${error.message}`, "error", toastOptions);
             throw new Error("Error al ejecutar proceso" + error);
           }
@@ -778,7 +784,6 @@ const executePagination = async () => {
     (currentType === typeElements.consu || currentType === typeElements.dev) &&
     inputBusqueda.value.length != ""
   ) {
-    console.log("condicional2");
     await renderElements({
       type: currentType,
       page: pageElement,
@@ -858,8 +863,6 @@ filtroTipo.addEventListener("change", (e) => {
 });
 
 function renderWithFilter() {
-  // CREO QUE SE PUEDE SOLUCIONAR APLICANDO UN DATATYPE AL TH DE DICIENDOLE EL TIPO.
-  // Si veo que requiero esto en más funciones, transformarlo en función generica.
   const ths = tblElements.querySelectorAll("thead tr th");
 
   const filas = tbodyElements.querySelectorAll(`tbody tr`);
@@ -1081,14 +1084,26 @@ function validateValueChecked(inputRadio) {
  * @param {string} [action=""] 
  * @param {{}} [data=""] 
  */
-const validateDisponibilidad = async ({action = "", data = ""}={})=>{
-  if (!data && !action ) {
+const validateDisponibilidad = async ({action = "", serie = "", codigo = "", isRegistrar}={})=>{
+  let parameters = {};
+  console.log(parameters);
+  // Valido que el balor de registrar sea false
+  parameters = { action, serie, isRegistrar};
+
+  if(isRegistrar != true || isRegistrar != false) {
+    initAlert("Flag (bandera) definida incorrectamente", "error", toastOptions);
     return;
+  }  
+
+  if(!isRegistrar){
+    parameters = {
+      ...parameters,
+      codigo
+    }
   }
 
-  let parameters = {};
+  if (!serie || !action ) return;
 
-  parameters = { action, data };
   const responseValidate = await getData("modules/elementos/controller/elementosController.php", "GET", parameters);
   // Serie No existe, es decir, disponible para su creación
   if(responseValidate.status === 204) return true;
@@ -1163,7 +1178,8 @@ addElementForm.addEventListener("submit", async (e) => {
   }
 
   // Valido la disponibilidad y niego en caso de que el elemento ya este en la bd.
-  const isDisponibleSerie = await validateDisponibilidad({action: "validateSerie", data: dataObj.elm_serie});
+  const isDisponibleSerie = await validateDisponibilidad({action: "validateSerie", serie: dataObj.elm_serie, isRegistrar: true});
+  console.log(isDisponibleSerie);
   if(!isDisponibleSerie) return;
 
   mostrarConfirmacion(
@@ -1197,7 +1213,6 @@ addElementForm.addEventListener("submit", async (e) => {
         renderSelectPlacas("placas");
         renderElements({ type: currentType, page: 1 });
       } catch (error) {
-        console.log(error);
         initAlert(`${error.message}`, "error", toastOptions);
       }
     }
@@ -1227,10 +1242,10 @@ editarElementForm.addEventListener("submit", async (e) => {
     );
     return;
   }
+  console.log(dataObj);
 
   // Valido la disponibilidad y niego en caso de que el elemento ya este en la bd.
-  const isDisponibleSerie = await validateDisponibilidad({action: "validateSerie", data: dataObj.elm_serie});
-  console.log(isDisponibleSerie);
+  const isDisponibleSerie = await validateDisponibilidad({action: "validateSerie", serie: dataObj.elm_serie, codigo: dataObj.elm_cod, isRegistrar: false});
   if(!isDisponibleSerie) return;
 
   mostrarConfirmacion(
@@ -1247,11 +1262,10 @@ editarElementForm.addEventListener("submit", async (e) => {
           );
 
           if (!response.status) {
-            console.log(response);
-            initAlert("Error al ejecutar el proceso", "error", toastOptions);
+            initAlert(response.message, "error", toastOptions);
             return;
           }
-          initAlert("recurso actualizado con exito", "success", toastOptions);
+          initAlert(response.message, "success", toastOptions);
           modalEditarElemento.close();
           // renderizo los elementos en base a la página en la que se encuentra.
           renderElements({ page: pageElement, type: currentType }).then(() => {
@@ -1310,7 +1324,6 @@ formAddExistencia.addEventListener("submit", (e) => {
     parseInt(data.co_cantidad) > parseInt(cantidadExistencia) &&
     tipo_movimiento.value === "5"
   ) {
-    console.log("cantidad existencia");
     initAlert(
       "La cantidad no debe ser mayor a la cantidad disponible",
       "info",
@@ -1352,7 +1365,6 @@ formAddExistencia.addEventListener("submit", (e) => {
             return;
           }
         } catch (error) {
-          console.log(error);
           initAlert(`${error.message}`, "error", toastOptions);
         }
       } else {
@@ -1381,7 +1393,6 @@ co_cantidad.addEventListener("change", (e) => {
     parseInt(cantidadExistencia, 10) < value &&
     tipo_movimiento.value === "5"
   ) {
-    console.log("cantidad existencia");
     initAlert(
       "La cantidad no debe ser mayor a la cantidad disponible",
       "info",

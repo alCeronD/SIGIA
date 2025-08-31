@@ -19,7 +19,6 @@ class DashboardController{
         $rol_nombre = $_SESSION['usuario']['rol_nombre'];
         $id = $_SESSION['usuario']['id'];
     
-        // $prestamoModel = new dashboard($this->conn);
         $prestamoModel = new dashboard();
         $prestamos = $prestamoModel->search($id);
         include __DIR__ . '/../views/dashboardView.php';

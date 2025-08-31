@@ -15,20 +15,20 @@
                 <div class="placa">
                     <label>Placa:</label>
                     <label id="label_placa"></label>
-                    <input id="elm_placa_editar" name="elm_placa" type="text" required>
+                    <input id="elm_placa_editar" name="elm_placa" type="text" >
                 </div>
                 <div class="serie">
-                    <label for="">Serie:</label>
+                    <label for="">Serie: *</label>
                     <input type="text" name="elm_serie" id="elm_serie_editar">
                 </div>
 
                 <div class="nombre">
                     <label for="elm_nombre_editar">Nombre elemento *</label>
-                    <input id="elm_nombre_editar" name="elm_nombre" type="text" required>
+                    <input id="elm_nombre_editar" name="elm_nombre" type="text" >
                 </div>
                 <div class="area">
                     <label for="elm_area_cod_editar">Departamento *</label>
-                    <select id="elm_area_cod_editar" name="elm_area_cod" required>
+                    <select id="elm_area_cod_editar" name="elm_area_cod" >
                     </select>
                 </div>
 
@@ -50,7 +50,7 @@
 
                 <div class="existencia">
                     <label for="elm_existencia">existencia</label>
-                    <input id="elm_existencia_editar" name="elm_existencia" type="text" required disabled>
+                    <input id="elm_existencia_editar" name="elm_existencia" type="text"  disabled>
                 </div>
                 <div class="apuntes">
                     <div class="input-field observacion">

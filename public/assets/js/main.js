@@ -24,7 +24,6 @@ const responseStatus = Storage.getValue("sessionStatus");
 
 // Uso este evento para validar el estado de la sessión, si es falso, cierro la sesión de las ventanas.
 window.addEventListener('storage', (f)=>{
-  console.log(f);
   const newValueStorage = f.newValue;
   const oldValueStorage = f.oldValue;
 
@@ -32,13 +31,4 @@ window.addEventListener('storage', (f)=>{
     localStorage.removeItem('sessionStatus');
     window.location.href = '/proyecto_sigia/index.php';
   }
-  console.log(newValueStorage);
-  console.log(oldValueStorage);
-  console.log(f.key);
-
-  if (f.key === 'sessionStatus') {
-    console.log('corresponde');
-    // window.location.href = '/proyecto_sigia/app/dashboard.php';
-  }
 });
-console.log(responseStatus);

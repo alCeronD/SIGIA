@@ -40,7 +40,7 @@
                             <div class="inputSerie input-field">
                                 <!-- Validar, no se deben permitir catacteres con el arroba o el # -->
                                 <input id="elm_serie" name="elm_serie" type="text">
-                                <label for="elm_serie">Código de serie  Ejemplo = 922919587-1</label>
+                                <label for="elm_serie">Serie * : Ejemplo = 922919587-1</label>
                             </div>
                         </div>
                         <!-- INPUTS DE LAS PLACAS ASOCIADAS. -->
@@ -117,7 +117,7 @@
                     <div class="checkboxTpElemento">
                         <div class="unidadMedida">
                             <select class="" name="elm_uni_medida" id="undMedida">
-                                <option value="" selected>Seleccione una opción</option>
+                                <option value="" selected="selected" disabled="disabled">Seleccione una opción</option>
                                 <option value="1">Unitario</option>
                                 <option value="2">Caja</option>
                                 <option value="3">Galon</option>

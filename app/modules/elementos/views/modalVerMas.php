@@ -1,10 +1,13 @@
 <!-- Modal Ver Más -->
 <div id="modalVerMas" class="modal">
-    <div>
-        <button id="modalCerrarVerMas">
-            <span class="close-btn" id="" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer;">&times;</span>
-        </button>
-        <h4>Detalles del Elemento</h4>
+    <div id="modalContentVerMas">
+        <div class="modal-head">
+            <button id="modalCerrarVerMas">
+                <span class="close-btn" id="" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer;">&times;</span>
+            </button>
+            <span id="titleModalEditar">Información del elemento</span>
+        </div>
+
         <table>
             <tbody>
                 <tr>
@@ -36,6 +39,14 @@
                 <tr>
                     <th>Área</th>
                     <td id="modalArea"></td>
+                </tr>
+                <tr>
+                    <th>Observación</th>
+                    <td id="modalObservacion"></td>
+                </tr>
+                <tr>
+                    <th>Sugerencia</th>
+                    <td id="modalSugerencia"></td>
                 </tr>
             </tbody>
         </table>
