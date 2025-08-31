@@ -652,26 +652,30 @@ class ElementoModelo
 
             $stmtExistencia->bind_param("ii", $existenciaActual, $codElemento);
             if (!$stmtExistencia->execute()) {
-                return
-                    [
-                        "message" => "Error al ejecutar la consulta" . $stmtExistencia->error_list,
-                        "status" => false
-                    ];
+                $conn->rollback();
+                return [
+                    "message" => "Error al ejecutar la consulta" . $stmtExistencia->error_list,
+                    "status" => false,
+                    "data" => []
+                ];
             }
 
             $conn->commit();
+
+
+            return [
+                "message" => $tp_mvmento === 1 ? "Existencia adicionada con exito" : "Existencia disminuida con exito.",
+                "status" => true,
+                "data" => []
+            ];
         } catch (\Throwable $th) {
             $conn->rollback();
             return [
                 "message" => "error al ejecutar el proceso " . $th->getMessage(),
-                "status" => false
+                "status" => false,
+                "data" => []
             ];
         }
-
-        return [
-            "message" => $tp_mvmento === 1 ? "Existencia adicionada con exito" : "Existencia disminuida con exito.",
-            "status" => true
-        ];
     }
     public function getElementByType(int $id = 1): ?int
     {

@@ -11,7 +11,7 @@
             <input type="hidden" class="validate" name="elm_cod" id="codAddExistencia">
 
             <div class="input-field cantidad">
-                <input type="number" name="co_cantidad" id="co_cantidad" class="validate" min="0">
+                <input type="text" name="co_cantidad" id="co_cantidad" class="validate" min="0" required>
                 <label for="co_cantidad">Cantidad elemento * </label>
             </div>
 

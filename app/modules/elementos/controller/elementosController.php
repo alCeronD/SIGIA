@@ -1,21 +1,26 @@
 <?php
+
+use function PHPUnit\Framework\throwException;
+
 include_once __DIR__ . '/../model/elementosModel.php';
 require_once __DIR__ . '/../../configModules/model/configModulesModel.php';
 require_once __DIR__ . '/../../../helpers/const.php';
 require_once __DIR__ . '/../../../helpers/validatePermisos.php';
 require_once __DIR__ . '/../../../helpers/validateData.php';
+require_once __DIR__ . '/../../../helpers/expg.php';
 
 class ElementosController
 {
     private ElementoModelo $modeloElemento;
     private Conection $conn;
-
     private ValidateData $dataValidate;
+    private Regex $regex;
 
     public function __construct()
     {
         $this->modeloElemento = new ElementoModelo();
         $this->dataValidate = new ValidateData();
+        $this->regex = new Regex();
     }
 
     public function renderViewElements()
@@ -79,15 +84,14 @@ class ElementosController
 
             // Valido si no se ha enviado nada en la serie para establecerla como NULL.
             if ($key == 'elm_serie' && empty($value))  $data['elm_serie'] = null;
-            if($key == 'elm_categoria' && empty($value)) $data['elm_categoria'] = (int) 1;
-            if($key == 'elm_ma_cod' && empty($value)) $data['elm_ma_cod'] = (int) 1;
+            if ($key == 'elm_categoria' && empty($value)) $data['elm_categoria'] = (int) 1;
+            if ($key == 'elm_ma_cod' && empty($value)) $data['elm_ma_cod'] = (int) 1;
         }
 
         if (!$result = $this->modeloElemento->insertarElemento($data)) {
             fail('error al ejecuutar proceso', $result);
         }
         success('registro adicionado con exito', $result);
-
     }
 
     public function getItems(String $action = '')
@@ -120,7 +124,7 @@ class ElementosController
      */
     public function editarElemento(array $data = [])
     {
-        
+
         try {
             validatePermisos('elementos', 'editarElemento');
             $obligatorios = ['elm_cod', 'elm_placa', 'elm_serie', 'elm_nombre', 'elm_area_cod', 'elm_ma_cod', 'elm_cod_tp_elemento'];
@@ -132,30 +136,27 @@ class ElementosController
                 'elm_nombre'         => "Nombre del elemento",
                 'elm_area_cod'       => "Código del área",
                 'elm_ma_cod'         => "Código de marca",
-                'elm_cod_tp_elemento'=> "Tipo de elemento"
+                'elm_cod_tp_elemento' => "Tipo de elemento"
             ];
             $result = $this->dataValidate->validarCampos($data, $obligatorios, $keysMensaje);
 
             if (!$result['status']) throw new Exception($result['message']);
-            
+
             // Llamar al modelo para actualizar
             $exito = $this->modeloElemento->actualizarElemento($data);
             if (!$exito['status']) {
                 fail('error al procesar actualización', $exito);
             }
             success('recurso actualizado con exito', $exito);
-
         } catch (Exception $e) {
             $result = [
-                'status'=>false,
-                'message'=> $e->getMessage(),
-                'data'=> []
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => []
             ];
 
             fail($result['message'], $result);
         }
-
-
     }
 
     public function cambiarEstadoElemento(array $data = [])
@@ -186,15 +187,25 @@ class ElementosController
         try {
             validatePermisos('elementos', 'editarExistencia');
 
-            if(empty($data)) throw new Exception("Error al recibir la data");
-            $obligatorios = [''];
-            $keyMensaje = [];
+            if (!is_array($data)) throw new Exception("Tipo de dato recibido no válido.");
 
-            $this->dataValidate->validarCampos($data, $obligatorios, $keyMensaje);
+            if (empty($data)) throw new Exception("Error al recibir la data");
+            $obligatorios = ['co_cantidad', 'tipo_movimiento'];
+            $keyMensaje = [
+                'co_cantdad' => "Cantidad",
+                'tipo_movimiento' => "Tipo movimiento"
+            ];
+
+            $resulValidate = $this->dataValidate->validarCampos($data, $obligatorios, $keyMensaje);
+
+            if (!$resulValidate['status']) throw new Exception($resulValidate['message']);
+
+            // Validar si la cantidad solo contiene números.
+            if (!$this->regex->validarNumeros($data['co_cantidad'])) throw new Exception("Cantidad digitada no valida");
 
             $result = $this->modeloElemento->cambiarExistencia($data);
-            if (!$result) {
-                fail($result['message']);
+            if (!$result['status']) {
+                fail($result['message'], $result);
             }
             success($result['message'], $result);
         } catch (Exception $e) {
@@ -220,10 +231,9 @@ class ElementosController
 
         try {
             if (empty($serie)) throw new Exception("Serie del elemento no valida");
-            
+
             if ($isRegistrar) {
                 $result = $this->modeloElemento->validateSerie(serie: $serie);
-                
             } else {
                 if (empty($codigo)) throw new Exception("Código incorrecto");
                 $result = $this->modeloElemento->validateSerie(serie: $serie, codigo: $codigo, isRegistrar: $isRegistrar);
@@ -267,8 +277,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
         switch ($case) {
             case 'elements':
                 $type = $_GET['type'];
-                $isBusqueda = (empty($_GET['isBusqueda'])) ? null :(( $_GET['isBusqueda'] )== "true" ? true : false);
-                $value = (String) (empty($_GET['value'])) ? null : $_GET['value'];
+                $isBusqueda = (empty($_GET['isBusqueda'])) ? null : (($_GET['isBusqueda']) == "true" ? true : false);
+                $value = (string) (empty($_GET['value'])) ? null : $_GET['value'];
 
 
                 if (method_exists($elementosController, 'getElements')) {
@@ -277,12 +287,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                             pages: $pages,
                             type: $type
                         );
-                        
-                    }else{
+                    } else {
                         $elementosController->getElements($pages, $type, $isBusqueda, $value);
-
                     }
-
                 }
                 break;
             case 'onlyElement':
@@ -322,23 +329,23 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 break;
 
 
-                case 'validateSerie':
-                    if($_GET['isRegistrar'] === 'true'){
-                        $isRegistrar = true;
-                    }else{
-                        $isRegistrar = false;
-                    }
+            case 'validateSerie':
+                if ($_GET['isRegistrar'] === 'true') {
+                    $isRegistrar = true;
+                } else {
+                    $isRegistrar = false;
+                }
 
-                    $serie = (String) $_GET['serie'];
-                    if (method_exists($elementosController, 'getResultValidateSerie')) {
-                        if($isRegistrar){
-                            $elementosController->getResultValidateSerie(serie:$serie, isRegistrar:$isRegistrar);
-                        } else{
-                            $codigo = (int) $_GET['codigo'];
-                            $elementosController->getResultValidateSerie($serie, $codigo, $isRegistrar);
-                        }
+                $serie = (string) $_GET['serie'];
+                if (method_exists($elementosController, 'getResultValidateSerie')) {
+                    if ($isRegistrar) {
+                        $elementosController->getResultValidateSerie(serie: $serie, isRegistrar: $isRegistrar);
+                    } else {
+                        $codigo = (int) $_GET['codigo'];
+                        $elementosController->getResultValidateSerie($serie, $codigo, $isRegistrar);
                     }
-                    break;
+                }
+                break;
 
 
             default:
