@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-08-2025 a las 17:03:57
+-- Tiempo de generación: 01-09-2025 a las 19:32:25
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -91,7 +91,9 @@ CREATE TABLE `compras` (
 --
 
 INSERT INTO `compras` (`cod_compra`, `co_cod_elm`, `co_cantidad`, `co_tp_movimiento`, `co_descripcion`, `co_fecha_compra`) VALUES
-(49, NULL, 32, 1, 'prueba de registro adicional.', '2025-08-27 21:28:22');
+(49, NULL, 32, 1, 'prueba de registro adicional.', '2025-08-27 21:28:22'),
+(50, 76, 3, 1, '', '2025-08-30 22:38:42'),
+(51, NULL, 9, 1, '', '2025-09-01 10:42:08');
 
 -- --------------------------------------------------------
 
@@ -144,8 +146,8 @@ INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_serie`, `elm_nombre`, `elm
 (21, 92293941, '92293941-2', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 4 BOMBILLOS', 4, 1, 1, 5, 1, NULL),
 (22, 92293941, '92293941-3', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 4 BOMBILLOS', 4, 1, 1, 5, 1, NULL),
 (23, 92293941, '92293941-4', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALLAN 2 PLAFONES', 4, 1, 1, 5, 1, NULL),
-(24, 922917412, '922917412-1', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 2 BOBILLOS', 4, 1, 1, 5, 1, NULL),
-(25, 922917412, '922917412-2', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA 1 BOMBILLO', 4, 1, 1, 5, 1, NULL),
+(24, 922917412, '922919590', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 2 BOBILLOS', 4, 1, 1, 5, 1, NULL),
+(25, 922917412, '922917412-5', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTA 1 BOMBILLO', 4, 1, 1, 5, 1, NULL),
 (26, 922917413, '922917413-1', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'COMPLETO', 4, 1, 1, 5, 1, NULL),
 (27, 922917413, '922917413-2', 'SCOUP FLUORECENTE', 1, '0000-00-00', 'REVISAR MALETIN CON CARGADOR Y LLEVAR TRIPODE DE LUZ', 'FALTAN 3 BOMBILLOS - DISFUSOR', 4, 1, 1, 5, 1, NULL),
 (28, 922917402, '922917402', 'LUZ LED BLANCAS', 1, '0000-00-00', 'LLEVAR TRIPODE DE LUZ CÁLIDA Y CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
@@ -164,25 +166,25 @@ INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_serie`, `elm_nombre`, `elm
 (41, 922917417, '922917417', 'PAR LED', 1, '0000-00-00', 'LLEVAR CABLE DE PODER', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
 (42, 922917404, '922917404', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'FALTA MANIVELA', 4, 1, 1, 6, 1, NULL),
 (43, 922919598, '922919598', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'FALTA MANIVELA', 4, 1, 1, 6, 1, NULL),
-(44, 922919599, '922919599', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'COMPLETA', 4, 1, 1, 6, 1, NULL),
+(44, 922919599, '922919599', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP.', 'COMPLETA', 4, 1, 1, 6, 1, NULL),
 (45, 922919600, '922919600', 'BASE/SOPORTE', 1, '0000-00-00', 'REVISAR EL CLAMP', 'COMPLETA', 4, 1, 1, 6, 1, NULL),
 (46, 9229191, '9229191', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
 (47, 9229192, '9229192', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'FALLA DEL BALASTRO', 4, 1, 1, 5, 1, NULL),
 (48, 9229193, '9229193', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'FALTA BOMBILLO', 4, 1, 1, 5, 1, NULL),
 (49, 9229194, '9229194', 'LUZ HMI', 1, '0000-00-00', 'DEBE LLEVAR REGULADOR', 'COMPLETA', 4, 1, 1, 5, 1, NULL),
-(50, 92293286, '92293286', 'SMITH-VICTOR', 1, '0000-00-00', 'LLEVAR TRIPODE DE LUZ CÁLIDA Y CABLE DE PODER', 'FALTA BOMBILLO', 4, 1, 1, 5, 1, NULL),
+(50, 92293286, '92293286-1', 'SMITH-VICTOR', 1, '0000-00-00', 'LLEVAR TRIPODE DE LUZ CÁLIDA Y CABLE DE PODER', 'FALTA BOMBILLO', 4, 1, 1, 5, 1, NULL),
 (51, 92293287, '92293287', 'SMITH-VICTOR', 1, '0000-00-00', 'LLEVAR TRIPODE DE LUZ CÁLIDA Y CABLE DE PODER', 'FALTA BOMBILLO', 4, 1, 1, 5, 1, NULL),
-(52, 922919535, '922919535', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
+(52, 922919535, '922919535', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD.', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
 (53, 922919536, '922919536', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
 (54, 922919537, '922919537', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 4, NULL),
 (55, 922917450, '922917450', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
-(56, 922919611, '922919611', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
+(56, 922919611, '922919611', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
 (57, 922919539, '922919539', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
 (58, 922919540, '922919540', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
 (59, 922919542, '922919542', 'CÁMARA VIDEO SONY', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
 (60, 922917094, '922917094', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'FALTA CARGADOR', 4, 1, 1, 6, 1, NULL),
 (61, 922917093, '922917093', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'FALTA CARGADOR', 4, 1, 1, 6, 1, NULL),
-(62, 922917096, '922917096', 'CÁMARA FOTO NIKON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
+(62, 922917096, '922917096', 'CÁMARA FOTO NIKON', 1, '0000-00-00', 'RECUERDE', 'COMPLETO', 4, 1, 1, 6, 1, NULL),
 (63, 92294487, '92294487', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'XS', 4, 1, 1, 6, 1, NULL),
 (64, 92294488, '92294488', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'FALTA LENTE', 4, 1, 1, 6, 1, NULL),
 (65, 92294489, '92294489', 'CÁMARA FOTO CANON', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'XS', 4, 1, 1, 6, 1, NULL),
@@ -196,7 +198,7 @@ INSERT INTO `elementos` (`elm_cod`, `elm_placa`, `elm_serie`, `elm_nombre`, `elm
 (73, 92297899, '92297899', 'CÁMARA VIDEO PANASONIC', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1, NULL),
 (74, 100189107, '100189107', 'CÁMARA VIDEO PANASONIC (HANDICAM)', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1, NULL),
 (75, 100189081, '100189081', 'CÁMARA VIDEO PANASONIC (HANDICAM)', 1, '0000-00-00', 'RECUERDE LLEVAR SD ', 'DEVOLUCION', 4, 1, 1, 6, 1, NULL),
-(76, 100120741, '100120741', 'CÁMARA VIDEO BETACAM', 1, '0000-00-00', ' ', 'COMPLETO proyecto', 4, 1, 1, 6, 1, NULL),
+(76, 100120741, '100120741', 'CÁMARA VIDEO BETACAM', 1, '0000-00-00', ' COMPLETO proyecto', 'COMPLETO proyecto', 4, 1, 1, 6, 1, NULL),
 (77, 1076182658, '1076182658', 'CÁMARA VIDEO DVCAM', 1, '0000-00-00', ' ', 'COMPLETO proyecto', 4, 1, 1, 6, 1, NULL);
 
 -- --------------------------------------------------------
@@ -357,7 +359,12 @@ INSERT INTO `entradas_salidas` (`ent_sal_cod`, `ent_sal_cantidad`, `ent_fech_reg
 (401, 1, '2025-08-28 14:43:23', 'Se da salida a este proceso de elementos.', 2, 109, 23, 715),
 (402, 1, '2025-08-28 14:43:33', '', 4, 109, 23, 715),
 (403, 1, '2025-08-28 14:43:48', '', 4, 152, 20, 706),
-(404, 1, '2025-08-28 14:43:57', '', 4, 108, 14, 707);
+(404, 1, '2025-08-28 14:43:57', '', 4, 108, 14, 707),
+(405, 1, '2025-08-31 22:40:47', '', 2, 176, 2, 717),
+(406, 1, '2025-08-31 22:42:19', '', 2, 109, 4, 718),
+(407, 1, '2025-08-31 22:46:24', 'Solicito esta información.', 2, 176, 2, 719),
+(408, 1, '2025-08-31 22:47:58', 'Información', 2, 114, 4, 720),
+(409, 1, '2025-08-31 22:47:58', 'Información', 2, 114, 23, 720);
 
 -- --------------------------------------------------------
 
@@ -637,13 +644,17 @@ INSERT INTO `prestamos` (`pres_cod`, `pres_fch_slcitud`, `pres_fch_reserva`, `pr
 (707, '2025-08-27 19:59:59', NULL, NULL, NULL, '2025-08-30', 'Prueba 4', 'calle 32 F # 32 - 21', 4, 1, 2),
 (708, '2025-08-27 21:14:05', '2025-08-28', NULL, NULL, '2025-08-29', '', 'calle 32 F # 32 - 21', 5, 2, 2),
 (709, '2025-08-27 21:36:01', NULL, NULL, NULL, '2025-08-28', 'información adicional de prueba.', 'calle 32 F # 32 - 21', 1, 1, 2),
-(710, '2025-08-27 21:51:37', '2025-08-28', NULL, NULL, '2025-08-29', '', 'calle 32 F # 32 - 21', 3, 2, 2),
+(710, '2025-08-27 21:51:37', '2025-08-28', NULL, NULL, '2025-08-29', '', 'calle 32 F # 32 - 21', 5, 2, 2),
 (711, '2025-08-27 21:54:14', '2025-08-28', NULL, NULL, '2025-08-29', '', 'alejandro', 5, 2, 2),
-(712, '2025-08-27 21:58:12', '2025-08-29', NULL, NULL, '2025-08-31', '', 'calle 32 F # 32 - 21', 3, 2, 2),
+(712, '2025-08-27 21:58:12', '2025-08-29', NULL, NULL, '2025-08-31', '', 'calle 32 F # 32 - 21', 5, 2, 2),
 (713, '2025-08-27 22:14:55', '2025-09-03', NULL, NULL, '2025-09-05', '', 'calle 32 F # 32 - 21', 3, 2, 2),
 (714, '2025-08-27 22:20:27', '2025-09-02', NULL, NULL, '2025-09-04', 'prueba nueva.', 'calle 32 F # 32 - 21', 3, 2, 2),
 (715, '2025-08-27 22:39:30', '2025-08-28', NULL, NULL, '2025-08-30', 'informacion adicional.', 'calle 32 F # 32 - 21', 4, 2, 2),
-(716, '2025-08-28 09:42:28', '2025-08-28', NULL, NULL, '2025-08-29', 'Información adicional.', 'calle 32 F # 32 - 21', 5, 2, 2);
+(716, '2025-08-28 09:42:28', '2025-08-28', NULL, NULL, '2025-08-29', 'Información adicional.', 'calle 32 F # 32 - 21', 5, 2, 2),
+(717, '2025-08-31 17:40:47', '0000-00-00', NULL, NULL, '0000-00-00', '', 'calle 32 F # 32 - 21', 5, 2, 2),
+(718, '2025-08-31 17:42:19', '0000-00-00', NULL, NULL, '0000-00-00', '', 'calle 32 F # 32 - 21', 5, 2, 2),
+(719, '2025-08-31 17:46:24', '2025-09-02', NULL, NULL, '2025-09-03', 'Solicito esta información.', 'calle 32 F # 32 - 21', 3, 2, 2),
+(720, '2025-08-31 17:47:58', '2025-09-03', NULL, NULL, '2025-09-05', 'Información', 'calle 32 F # 32 - 21', 3, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -730,7 +741,12 @@ INSERT INTO `prestamos_elementos` (`pres_el_cod`, `pres_cod`, `pres_el_usu_id`, 
 (2009, 714, 124, 29, 1),
 (2010, 715, 109, 23, 1),
 (2011, 716, 124, 15, 1),
-(2012, 716, 124, 22, 1);
+(2012, 716, 124, 22, 1),
+(2013, 717, 176, 2, 1),
+(2014, 718, 109, 4, 1),
+(2015, 719, 176, 2, 1),
+(2016, 720, 114, 4, 1),
+(2017, 720, 114, 23, 1);
 
 -- --------------------------------------------------------
 
@@ -754,7 +770,7 @@ INSERT INTO `roles` (`rl_id`, `rl_nombre`, `rl_descripcion`, `rl_status`) VALUES
 (2, 'Administrador', 'Nuevo administrador .', 1),
 (4, 'Instructor', '', 1),
 (12, 'Aprendiz', 'Solo puede acceder a este bloque.', 1),
-(16, 'Coordinador', '', 1),
+(16, 'Coordinador', 'prueba del rol coordinador.', 1),
 (20, 'Pruebas', 'Rol de prueba para comprender el comportamiento de los modulos según su caso.', 1);
 
 -- --------------------------------------------------------
@@ -1007,7 +1023,7 @@ INSERT INTO `usuarios` (`usu_id`, `usu_docum`, `usu_nombres`, `usu_apellidos`, `
 (106, 123, 'Jhon', 'doe nuevo', '$2y$10$lqtlzfSwmgBii6QKERQjk.Q0pDEZ3E47UehNQQiacUJKHOkRMle0q', 'jhondoe@gmail.com', 'Calle 2', '4444122', NULL, 2, 1),
 (107, 100001, 'Juan', 'Pérez', '1234', 'juan.perez@example.com', 'Calle 1', '3000000001', NULL, 1, 1),
 (108, 100002, 'María', 'López', '$2y$10$T.fGRHivXg7ytOibxiSMyOGvB3rvQ6Nq4z2IiWuilXYFZCJSe6Fwm', 'maria.lopez@example.com', 'Calle 2', '3000000002', NULL, 1, 2),
-(109, 100003, 'Alejandro', 'Rojas', 'pass123', 'rjAlejandrocd@gmail.com', 'Av 32 N # 83 - 103', '3000000003', NULL, 1, 1),
+(109, 100003, 'Alejandro', 'Rojas', '$2y$10$lWp9fMFDtlLl3MDI.IDApuIPJTPRSGlOV8WUMOt4TeqIVffVfdFQ.', 'rjAlejandrocd@gmail.com', 'Av 32 N # 83 - 103', '3000000003', NULL, 1, 1),
 (110, 100004, 'Laura', 'Martínez', 'qwerty', 'laura.martinez@example.com', 'Calle 4', '3000000004', NULL, 1, 3),
 (111, 100005, 'Carlos', 'Ruiz', '123456', 'carlos.ruiz@example.com', 'Calle 5', '3000000005', NULL, 1, 1),
 (112, 100006, 'Ana', 'Fernández', 'hello', 'ana.Isa@gmail.com', 'Calle 6', '3000000006', NULL, 1, 2),
@@ -1095,7 +1111,7 @@ CREATE TABLE `usuarios_roles` (
 INSERT INTO `usuarios_roles` (`usr_id`, `usr_usu_id`, `usr_rl_id`) VALUES
 (1, 106, 2),
 (1127, 108, 4),
-(1128, 109, 4),
+(1128, 109, 12),
 (1130, 111, 4),
 (1131, 112, 1),
 (1133, 114, 4),
@@ -1344,19 +1360,19 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `compras`
 --
 ALTER TABLE `compras`
-  MODIFY `cod_compra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo autoincrementable identificador de la existencia', AUTO_INCREMENT=50;
+  MODIFY `cod_compra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo autoincrementable identificador de la existencia', AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT de la tabla `elementos`
 --
 ALTER TABLE `elementos`
-  MODIFY `elm_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo primario autoincrementable', AUTO_INCREMENT=142;
+  MODIFY `elm_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo primario autoincrementable', AUTO_INCREMENT=153;
 
 --
 -- AUTO_INCREMENT de la tabla `entradas_salidas`
 --
 ALTER TABLE `entradas_salidas`
-  MODIFY `ent_sal_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único de la entrada o salida', AUTO_INCREMENT=405;
+  MODIFY `ent_sal_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único de la entrada o salida', AUTO_INCREMENT=410;
 
 --
 -- AUTO_INCREMENT de la tabla `estados_elementos`
@@ -1404,19 +1420,19 @@ ALTER TABLE `permisos`
 -- AUTO_INCREMENT de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
-  MODIFY `pres_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código identificador del préstamo', AUTO_INCREMENT=717;
+  MODIFY `pres_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código identificador del préstamo', AUTO_INCREMENT=721;
 
 --
 -- AUTO_INCREMENT de la tabla `prestamos_elementos`
 --
 ALTER TABLE `prestamos_elementos`
-  MODIFY `pres_el_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único del registro de préstamo de elemento', AUTO_INCREMENT=2013;
+  MODIFY `pres_el_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código único del registro de préstamo de elemento', AUTO_INCREMENT=2018;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `rl_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del rol', AUTO_INCREMENT=21;
+  MODIFY `rl_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del rol', AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `roles_funciones`
@@ -1428,7 +1444,7 @@ ALTER TABLE `roles_funciones`
 -- AUTO_INCREMENT de la tabla `tipo_documento`
 --
 ALTER TABLE `tipo_documento`
-  MODIFY `tp_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del tipo de documento', AUTO_INCREMENT=31;
+  MODIFY `tp_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del tipo de documento', AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_elemento`
