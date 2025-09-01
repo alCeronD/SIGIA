@@ -155,7 +155,8 @@ export const options = {
   startingTop: "4%",
   endingTop: "10%",
   onOpenStart: () => {},
-  onCloseEnd: () => {},
+  onCloseEnd: () => {
+  },
 };
 
 export const tooltipOptions = {
@@ -514,9 +515,25 @@ export const mostrarConfirmacion = (titulo, mensaje, callback) => {
   document.getElementById("modalConfirmacionTitulo").textContent = titulo;
   document.getElementById("modalConfirmacionMensaje").innerHTML = mensaje;
 
-  // Obtengo la instancia para después abrir el modal
-  const modalElem = document.getElementById("modalConfirmacion");
-  const instance = M.Modal.getInstance(modalElem);
+  // Esto se debe de arreglar.
+  const optionsModalConfirmacion = {
+  opacity: 0.7,
+  inDuration: 300,
+  outDuration: 200,
+  dismissible: false,
+  startingTop: "4%",
+  endingTop: "10%",
+  onOpenStart: () => {},
+  onCloseEnd: () => {
+    const overlay = document.querySelector('.modal-overlay');
+    if(overlay){
+      overlay.style.display = "none";
+    }
+  },
+};
+
+
+  const instance = instanceModal('#modalConfirmacion', optionsModalConfirmacion);
 
   // Manejo de botones
   const btnAceptar = document.getElementById("btnAceptar");
@@ -536,7 +553,6 @@ export const mostrarConfirmacion = (titulo, mensaje, callback) => {
 
   btnAceptar.addEventListener('click', aceptarExecution);
   btnCancelar.addEventListener('click', cancelarExecution);
-
 
   instance.open();
 };

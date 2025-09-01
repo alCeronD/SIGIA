@@ -298,7 +298,6 @@ const renderRoles = async () => {
       e.preventDefault();
       const id = e.target.getAttribute("data-id");
       const status = e.target.getAttribute("data-status");
-      console.log({ status, id });
       modalConfirmacion.open();
       const dataStatus = {
         idRol: id,
@@ -311,6 +310,7 @@ const renderRoles = async () => {
         async (respuesta) => {
           if (!respuesta) {
             initAlert("Proceso cancelado", "info", toastOptions);
+            console.log(modalConfirmacion);
             modalConfirmacion.close();
             return;
           }
