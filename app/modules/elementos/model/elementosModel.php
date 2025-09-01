@@ -677,6 +677,11 @@ class ElementoModelo
             ];
         }
     }
+    /**
+     * Summary of getElementByType - Función para traer los elementos por tipo, esta función se usa en el controlador de solicitudPrestamosController.php
+     * @param int $id
+     * @return int|null
+     */
     public function getElementByType(int $id = 1): ?int
     {
         $sql = "SELECT elm_cod_tp_elemento FROM elementos WHERE elm_cod = ?";

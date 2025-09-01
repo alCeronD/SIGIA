@@ -351,6 +351,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 }
 
                 $serie = (string) $_GET['serie'];
+
                 if (method_exists($elementosController, 'getResultValidateSerie')) {
                     if ($isRegistrar) {
                         $elementosController->getResultValidateSerie(serie: $serie, isRegistrar: $isRegistrar);

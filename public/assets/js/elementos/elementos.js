@@ -215,14 +215,13 @@ function renderResultPlacas({ resultado = {}, status = false } = {}) {
 
         // Ordeno el resultado
         valSeries.sort();
-
         // Extraigo el último valor
         let ultimoValor = valSeries[valSeries.length - 1];
-        let serie = ultimoValor.slice(0, 4);
+        // let serie = ultimoValor.slice(0, 4);
         // let codBasico = ultimoValor.indexOf(`${ultimoValor}"-"`);
         let codBasico = ultimoValor.indexOf("-");
+        let serie = ultimoValor.slice(0, codBasico);
         let consecutivo = parseInt(ultimoValor.slice(codBasico + 1));
-
         consecutivo++;
         let newCod = serie + "-" + consecutivo;
 
@@ -284,6 +283,11 @@ function resetForm(form) {
   if (tpElementoDiv) {
     tpElementoDiv.style.display = "none";
   }
+  const placaAssocContent = document.querySelector('.placaAssocContent');
+  const tbodyPlacaResult = document.querySelector('#tbodyPlacaResult');
+  placaAssocContent.style.display = "none";
+  tbodyPlacaResult.innerHTML = "";
+
 }
 // modal ver detalle
 const modalVerMas = instanceModal("#modalVerMas", options);
@@ -678,6 +682,7 @@ const renderSelectCategorias = async (action = "", inputSelect) => {
     "GET",
     { action: "categoria" }
   );
+  console.log(inputSelect);
   let categorias = response.data;
   inputSelect.innerHTML = "";
   const option = document.createElement("option");
@@ -1076,7 +1081,6 @@ const validateDisponibilidad = async ({
   isRegistrar,
 } = {}) => {
   let parameters = {};
-  console.log(parameters);
   // Valido que el balor de registrar sea false
   parameters = { action, serie, isRegistrar };
 
@@ -1091,6 +1095,7 @@ const validateDisponibilidad = async ({
       codigo,
     };
   }
+
 
   if (!serie || !action) return;
 
@@ -1184,7 +1189,6 @@ addElementForm.addEventListener("submit", async (e) => {
     serie: dataObj.elm_serie,
     isRegistrar: true,
   });
-  console.log(isDisponibleSerie);
   if (!isDisponibleSerie) return;
 
   mostrarConfirmacion(
@@ -1192,11 +1196,7 @@ addElementForm.addEventListener("submit", async (e) => {
     "¿Estás seguro de registrar este elemento?",
     async (respuesta) => {
       try {
-        if (!respuesta) {
-          addElementModal.close();
-          addElementForm.reset();
-          return;
-        }
+        if (!respuesta) return;
         //La respuesta puedo tranformarla en una función generica.
         const responseAddElement = await sendData(
           "modules/elementos/controller/elementosController.php",
@@ -1213,9 +1213,14 @@ addElementForm.addEventListener("submit", async (e) => {
         initAlert("Elemento agreado exitosamente", "success", {
           toastOptions,
         });
+        resetForm(e.target);
         addElementModal.close();
         addElementForm.reset();
-        renderSelectPlacas("placas");
+        renderSelectPlacas("placas").then((dataResult) => {
+          placas.length = 0;
+          placas = dataResult;
+        });
+
         renderElements({ type: currentType, page: 1 });
       } catch (error) {
         initAlert(`${error.message}`, "error", toastOptions);
@@ -1263,12 +1268,17 @@ editarElementForm.addEventListener("submit", async (e) => {
   });
   if (!isDisponibleSerie) return;
 
-  mostrarConfirmacion(
+    mostrarConfirmacion(
     "Guardar cambios",
     "¿Está seguro de continuar con el proceso?",
     async (respuesta) => {
-      if (respuesta) {
+
         try {
+
+          if (!respuesta){
+            return;
+          }
+
           let response = await sendData(
             "modules/elementos/controller/elementosController.php",
             "PUT",
@@ -1290,12 +1300,10 @@ editarElementForm.addEventListener("submit", async (e) => {
           initAlert(`${error.message}`, "error", toastOptions);
           throw new Error("Error al actualizar el recurso.");
         }
-      } else {
-        initAlert("Proceso cancelado", "info", toastOptions);
-        modalEditarElemento.close();
-      }
+      
     }
   );
+
 });
 
 // mapeo de adicionar existencia.
@@ -1392,6 +1400,11 @@ formAddExistencia.addEventListener("submit", (e) => {
             initAlert(response.message, "success", toastOptions);
             modalAddExistencia.close();
             formAddExistencia.reset();
+            renderSelectPlacas("placas").then((dataResult) => {
+              // placas.length = 0;
+              placas = dataResult;
+            });
+
             return;
           } else {
             initAlert(response.message, "success", toastOptions);
@@ -1490,6 +1503,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderSelectMarcas("marcas", selectMarcas);
   // Hago esto para evitar que mi función DOOM content loader sea asincrona.
   renderSelectPlacas("placas").then((dataResult) => {
+    placas.length = 0;
     placas = dataResult;
   });
   M.FormSelect.init(elemsSelect);
