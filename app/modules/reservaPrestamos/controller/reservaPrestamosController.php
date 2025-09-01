@@ -123,15 +123,41 @@ class reservaPrestamosController
 
             if (empty($data)) throw new Exception("No hay datos recibidos.");
 
+
+            $tp_pres = isset($data['tpPrestamo']) ? (int) $data['tpPrestamo'] : null;
+
+            if($tp_pres == null) throw new Exception("El tipo de proceso es obligatorio (Reserva o prestamo)");
+            
+
+            $pres_estado = $tp_pres == 2 ? 3 : 1;
+
+            if ($pres_estado == 1) {
+                $dataForm = [
+                    'areaDestino'     => $data['areaDestino'],
+                    'fechaDevolucion' => $data['fechaDevolucion'],
+                    'observaciones'   => $data['observaciones'],
+                    'cedula'          => $data['cedula'],
+                    'tpPrestamo'      => $data['tpPrestamo'],
+                ];
+
+                $obligatorios = ['areaDestino', 'fechaDevolucion', 'cedula', 'tpPrestamo'];
+                
+            } else {
+                $obligatorios = ['areaDestino', 'fechaReserva', 'fechaDevolucion', 'cedula', 'tpPrestamo'];
+                
+                $dataForm = [
+                    'areaDestino'     => $data['areaDestino'],
+                    'fechaReserva'    => $data['fechaReserva'],
+                    'fechaDevolucion' => $data['fechaDevolucion'],
+                    'observaciones'   => $data['observaciones'],
+                    'cedula'          => $data['cedula'],
+                    'tpPrestamo'      => $data['tpPrestamo'],
+                ];
+                $obligatorios = [];
+            }
+
             // Campos del formulario exceptuando los elementos seleccionados.
-            $dataForm = [
-                'areaDestino'     => $data['areaDestino'],
-                'fechaReserva'    => $data['fechaReserva'],
-                'fechaDevolucion' => $data['fechaDevolucion'],
-                'observaciones'   => $data['observaciones'],
-                'cedula'          => $data['cedula'],
-                'tpPrestamo'      => $data['tpPrestamo'],
-            ];
+           
             // Variable para mostrar al usuario un mensaje adecuado.
             $keyMessage = [
                 'areaDestino' => "area destino",
@@ -142,7 +168,7 @@ class reservaPrestamosController
                 'observaciones' => 'observaciones'
             ];
 
-            $resultDataValidate = $this->validarData->validarCampos($dataForm, ['areaDestino', 'fechaReserva', 'fechaDevolucion', 'cedula', 'tpPrestamo'], $keyMessage);
+            $resultDataValidate = $this->validarData->validarCampos($dataForm, $obligatorios, $keyMessage);
 
             if (!$resultDataValidate['status']) throw new Exception($resultDataValidate['message']);
 
@@ -150,7 +176,7 @@ class reservaPrestamosController
 
             if (count($elementos['devolutivos']) === 0) throw new Exception("Los elementos devolutivos son obligatorios");
 
-            $tp_pres = isset($data['tpPrestamo']) ? (int) $data['tpPrestamo'] : null;
+            
             $pres_estado = null;
             $pres_rol = $_SESSION['usuario']['rol_id'];
 
@@ -168,8 +194,6 @@ class reservaPrestamosController
                 $data['pres_fch_reserva'] = $data['fechaReserva'];
                 unset($data['fechaReserva']);
             }
-
-            $pres_estado = $tp_pres == 2 ? 3 : 1;
 
             unset($data["codigosElementos"]);
             $data['pres_fch_entrega'] = $data['fechaDevolucion'];
