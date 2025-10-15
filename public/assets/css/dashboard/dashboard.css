@@ -1,0 +1,168 @@
+/* Resolución para mobile 375x667 
+*/
+
+.content {
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  max-height: 100%;
+}
+
+/* ////////////dashboard instructor/////////// */
+.instruc {
+  display: grid;
+  grid-template-areas:
+    "instruc-cards"
+    "table-content";
+  grid-template-columns: 1fr;
+  grid-template-rows: 50% 50%;
+}
+
+.instruc-cards {
+  grid-area: instruc-cards;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: 100%;
+  width: 50%;
+  max-width: 50%;
+}
+
+.table-content {
+  grid-area: table-content;
+}
+
+/* Contenedor de coordinador */
+.coordinador {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+/* ///////////dashboard admin/////////// */
+.admin {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto auto;
+  grid-template-areas:
+    "div1"
+    "div2"
+    "div3"
+    "div4";
+  width: 100%;
+  max-width: 100%;
+  overflow-y: auto;
+  height: 100%;
+  max-width: 100%;
+}
+
+.div1 {
+  grid-area: div1;
+}
+.div2 {
+  grid-area: div2;
+}
+.div3 {
+  grid-area: div3;
+}
+.div4 {
+  grid-area: div4;
+}
+
+/* Estilos de cartas */
+.option-card {
+  padding: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  max-height: 100%;
+}
+
+.option-card i.material-icons {
+  font-size: 22pt;
+  margin-bottom: 0.5rem;
+}
+
+.option-card h5 {
+  font-size: 1.3rem;
+  margin: 0.5rem 0;
+}
+
+.option-card p {
+  font-size: 0.95rem;
+}
+
+.option-card .buttons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+
+  a.btn {
+    width: auto;
+    margin: 0.3rem auto;
+    display: block;
+    font-size: 0.9rem;
+  }
+}
+
+/* ///////////dashboard admin/////////// */
+
+.card-content {
+  min-height: 300px;
+  max-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.pagination {
+  margin-top: 1rem;
+}
+
+.responsive-table thead,
+.responsive-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* ////////////////////// */
+
+/* Tamaño superior a 768px */
+@media (min-width: 768px) {
+  /* Estructura general de las cards */
+  .option-card i.material-icons {
+    font-size: 33pt;
+    /* margin-bottom: 0.8rem; */
+  }
+  .option-card h5 {
+    font-size: 2rem;
+    margin: 0.5rem 0;
+  }
+
+  .instruc {
+    gap: 2rem;
+  }
+
+  .instruc-cards {
+    /* grid-area: instruc-cards; */
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Estructura general del dashboard administrador. */
+  .admin {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, auto);
+    grid-template-areas:
+      "div1 div2"
+      "div3 div4";
+  }
+}

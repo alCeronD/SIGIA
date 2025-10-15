@@ -1,0 +1,280 @@
+:root {
+  --primary: #3a6c52;
+  --secundary: #004034;
+  --other: #ccc;
+  --white: #f0f0f0;
+  --btnEdit: #007D78;
+  --teal :#4db6ac;
+  --blue: #42a5f5;
+  --red: #ef5350;
+  --info: #e57373;
+  --success: #3a6c52;
+  --warning: #fb8c00;
+  --error: #b71c1c;
+  --error2: #e57373;
+  --btnProcess: #4CAF50 ;
+    /* Color para implementar en todos los contenedores. */
+  --backgroundContainer: #f9f9f9;
+}
+
+* {
+  box-sizing: border-box;
+  /* margin: 0px; */
+  padding: 0px;
+}
+/* resolución para mobile = 375x667 */
+html, body {
+  height: 100vh;
+  font-family:  "Open Sans", "Helvetica Neue", sans-serif;
+
+  }
+
+.btnInvalida{
+  color: var(--white);
+  background-color: var(--red);
+}
+
+.btnInfo{
+  background-color: var(--teal);
+  color: var(--white);
+}
+
+/* Inicio Estilos header */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  color: var(--white) !important;
+  height: 9vh;
+  user-select: none;
+  background-color:var(--btnEdit);
+}
+
+#btnCerrarSesion{
+  cursor: pointer;
+}
+
+.nav-wrapper {
+  display: flex;
+  align-items: center; 
+  justify-content: space-between; 
+  height: 7vh;
+  pad: 0 1rem;
+
+}
+.logo {
+  background-image: url('/../proyecto_sigia/public/assets/image/login/sSigiaNegative.svg');
+  background-repeat: no-repeat;
+  width: 70px;
+  height: 7vh;
+  display: flex;
+  align-items: center;
+}
+
+.user-dropdown {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.contentUser{
+  width: 100%;
+  height: 8vh;
+  gap: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  font-size: 15pt;
+  justify-content: center;
+}
+
+#userText{
+  display: flex;
+}
+/* Fin estilos header */
+
+
+/* Inicio estilos del contenedor principal */
+.container{
+  display: flex;
+  width: 100% !important;
+  height: 80vh;
+  max-height: 80vh;
+  margin: 0 auto;
+  position: relative;
+  top: calc(100vh - 90vh);
+  overflow: visible;
+  padding: 0.5rem;
+  border-radius: 8px;
+  /* Sombra sutil */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.container * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+/* Fin estilos del contenedor principal */
+
+/* Botón de cerrar */
+.close-btn{
+  border: none;
+  text-decoration: none;
+  font-size: 3rem;
+}
+
+/* Tamaño de subtitlo de modulo */
+.textTitleSpan{
+  font-size: 20pt;
+}
+
+
+/* Inhabilitar flechas de los inputs de tipo number, para chrome, safari, edge y opera */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* inhabilitar fechas a inputs de tipo number en Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/** Inicio estilos Modulo configuración  */
+
+/* Estilos generales del modulo de configuración = Es la estructura de los siguientes modulos: areas, tipoDocumento, marca,categoria,roles */
+.contentLayout {
+  width: 100%;
+  height: 85vh;
+  display: grid;
+  grid-template-columns: 30% 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 1.5rem;
+}
+
+/* Estructura general del layout del formulario. */
+.formLayout {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr;
+  grid-template-rows: 5vh 1fr;
+  width: 100%;
+}
+
+/* Esta estructura menu corresponde al titulo  */
+.menuTitle {
+  width: 100%;
+}
+
+/* Estilo a las tablas del modulo de configuración */
+.tblConfigModules th,
+.tblConfigModules td {
+  padding: 0.20rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.tblConfigModules thead {
+  background-color: #f2f2f2;
+}
+
+.tblConfigModules tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.tblConfigModules tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* esta clase corresponde a los titulos del modulo de configuración, se puede usar para los demás modulos */
+.textTitleSpan{
+  font-size: 20pt;
+}
+/* ------------------------------------------ */
+
+/** Fin estilos Modulo configuración  */
+
+/* Inicio Estilos de alertas toast de materialize */
+
+#toast-container{
+    position: absolute !important;
+    right: .5em;
+    bottom: 0;
+    z-index: 1050;
+}
+
+.toast{
+  background-color: var(--white);
+  color: black;
+  border: 1px solid black;
+  text-align: left;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14pt;
+  min-width: 150px;
+  max-width: 250px;
+  width: auto;
+  z-index: 1000;
+}
+
+.toast-info {
+  border-left: 8px solid var(--info);
+}
+
+.toast-warning {
+  border-left: 8px solid var(--warning);
+}
+
+.toast-error {
+  border-left: 8px solid var(--info);
+}
+
+.toast-success {
+  border-left: 8px solid var(--success);
+}
+
+/* Fin estilos de alertas */
+
+
+/* evitamos que los elementos i dentro de botones capturen el evento principal */
+.material-icons {
+  pointer-events: none;
+}
+
+/* ////////////Inicio estilos submenu para actualizar datos en HEADER////////////// */
+.submenu {
+  display: none;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  text-align: center !important;
+  border-radius: 4px;
+  width: 30px !important;
+
+}
+
+.material-icons.left {
+  font-size: 15px;
+  margin: 0 !important;
+}
+
+.submenu a{
+  padding: 0 !important;
+}
+
+#userDropdownMenu{
+  padding: 0 !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
+
+/* Estilos del modal de confirmación */
+
+
+/* Fin estilos submenu */
+
+
+/* Para pantallas medianas en adelante. */
+@media (min-width: 768px){
+
+}
