@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require_once __DIR__ ."/../../../helpers/helpers.php";
 // require_once __DIR__ ."/../../../helpers/session.php";
@@ -50,7 +50,6 @@ require_once __DIR__ ."/../../../helpers/helpers.php";
 
     <div class="center-align">
       <button type="submit" class="btn waves-effect waves-light">
-        
         <i class="material-icons">save</i>
       </button>
     </div>
