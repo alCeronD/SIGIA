@@ -1,6 +1,6 @@
-<?php 
-include_once '../proyecto_sigia/app/helpers/getUrl.php';
-
+<?php
+define('BASE_URL', __DIR__);
+include_once BASE_URL.'/app/helpers/getUrl.php';
 if (ajaxGeneral()) {
     resolve();
     exit;

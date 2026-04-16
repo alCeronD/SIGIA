@@ -16,7 +16,6 @@ class loginController
         $this->conn = $conexion;
         $this->regex = new Regex();
     }
-
     public function index()
     {
         include_once __DIR__ . '/../views/loginView.php';

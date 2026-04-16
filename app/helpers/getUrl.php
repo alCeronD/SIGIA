@@ -62,13 +62,14 @@ function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
     if (!is_file($controllerPath)) {
         echo "El controlador no existe.";
         return;
+    }else{
+        include_once $controllerPath;
+
     }
 
-    include_once $controllerPath;
     include_once __DIR__ . '/../config/conn.php';
     $conexion = (new Conection())->getConnect();
     $nombreClase = $controlador . "Controller";
-
     require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
     $objPermisos = new PermisosController();
     // Si no es pública, validamos la sesión y permisos
@@ -93,6 +94,7 @@ function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
 
     if (method_exists($objeto, $funcion)) {
         $objeto->$funcion();
+
     } else {
         echo "La función '$funcion' no existe.";
     }

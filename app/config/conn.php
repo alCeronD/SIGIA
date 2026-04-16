@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once __DIR__ . '/config.php';
 class Conection {
     private $conn;
@@ -19,5 +19,10 @@ class Conection {
 
         return $this->conn;
     }
+
+    public function getPrueba(){
+        return "hola";
+    }
+
 }
 ?>
