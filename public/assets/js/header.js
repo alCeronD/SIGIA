@@ -3,9 +3,9 @@ import { sendData } from "./utils/fetch.js";
 import { Storage } from "./utils/Storage.js";
 const btnCerrarSesion = document.querySelector('#btnCerrarSesion');
 
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', () => {
   const elemsModals = document.querySelectorAll('.modal');
-  M.Modal.init(elemsModals); 
+  M.Modal.init(elemsModals);
 });
 
 btnCerrarSesion.addEventListener("click", (e) => {
@@ -24,11 +24,14 @@ btnCerrarSesion.addEventListener("click", (e) => {
         const data = e.target.getAttribute("data-logOut");
 
         const response = await sendData(data, "POST");
+        console.log(response);
         if (response.status) {
-          Storage.addValue({key:"sessionStatus", item: 'false'});
+          Storage.addValue({ key: "sessionStatus", item: 'false' });
           window.location.href = response.redirect;
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     }
   );
 });

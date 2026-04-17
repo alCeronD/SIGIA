@@ -20,8 +20,10 @@ class solicitudPrestamos
         $this->conn = $conexion;
     }
 
-    public function create(array $data = [], $rol_usuario)
+    public function create(array $data, $rol_usuario)
     {
+        $data = [];
+
         if (!is_array($data)) {
             exit();
         }
@@ -96,13 +98,13 @@ class solicitudPrestamos
             p.pres_fch_entrega AS fechaEntrega,
             p.pres_observacion AS observacion,
             p.pres_destino AS destino,
-            ep.es_pr_nombre AS estadoNombre,        
+            ep.es_pr_nombre AS estadoNombre,
             tp.tp_nombre AS tipoPrestamo
         FROM prestamos p
-        LEFT JOIN prestamos_elementos pe ON p.pres_cod = pe.pres_cod 
+        LEFT JOIN prestamos_elementos pe ON p.pres_cod = pe.pres_cod
         LEFT JOIN usuarios us ON us.usu_id = pe.pres_el_usu_id
         LEFT JOIN tipo_prestamo tp ON tp.tp_pre = p.tp_pres
-        LEFT JOIN estados_prestamos ep ON ep.es_pr_cod = p.pres_estado  
+        LEFT JOIN estados_prestamos ep ON ep.es_pr_cod = p.pres_estado
         WHERE us.usu_id = ?
         ORDER BY p.pres_fch_slcitud DESC";
 
@@ -179,7 +181,7 @@ class solicitudPrestamos
     }
     public function registrarElem($pres_cod, $usuario_id, $elm_cod)
     {
-        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad) 
+        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad)
                   VALUES (?, ?, ?, ?)";
 
         $stmt = $this->conn->prepare($query);
@@ -190,7 +192,7 @@ class solicitudPrestamos
 
     public function registrarElemConsumible($pres_cod, $usuario_id, $elm_cod, $cantidad)
     {
-        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad) 
+        $query = "INSERT INTO prestamos_elementos (pres_cod, pres_el_usu_id, pres_el_elem_cod, pres_el_cantidad)
                   VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("iiii", $pres_cod, $usuario_id, $elm_cod, $cantidad);
@@ -296,7 +298,7 @@ class solicitudPrestamos
 
     public function elementoReservadoEnRango($codigoElemento, $fechaInicio, $fechaFin)
     {
-        $sql = "SELECT COUNT(*) 
+        $sql = "SELECT COUNT(*)
                 FROM prestamos p
                 INNER JOIN prestamos_elementos pe ON p.pres_cod = pe.pres_cod
                 WHERE pe.pres_el_elem_cod = ?
@@ -332,24 +334,24 @@ class solicitudPrestamos
                 FROM prestamos p
                 WHERE p.pres_fch_reserva = ?
                   AND p.pres_estado = 3"; // Por validar
-    
+
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('s', $fechaHoy);
         $stmt->execute();
         $result = $stmt->get_result();
 
         $prestamosActualizados = [];
-    
+
         while ($row = $result->fetch_assoc()) {
             $presCod = $row['pres_cod'];
-    
+
             // Obtener los elementos asociados al préstamo
             $sqlElementos = "SELECT pres_el_elem_cod FROM prestamos_elementos WHERE pres_cod = ?";
             $stmtElems = $this->conn->prepare($sqlElementos);
             $stmtElems->bind_param('i', $presCod);
             $stmtElems->execute();
             $resElems = $stmtElems->get_result();
-    
+
             // Cambiar estado de cada elemento a reservado (5)
             while ($elem = $resElems->fetch_assoc()) {
                 $elm_cod = $elem['pres_el_elem_cod'];
@@ -357,10 +359,10 @@ class solicitudPrestamos
                 $updateElem->bind_param('i', $elm_cod);
                 $updateElem->execute();
             }
-    
+
             $prestamosActualizados[] = $presCod;
         }
-    
+
         return $prestamosActualizados;
     }
 

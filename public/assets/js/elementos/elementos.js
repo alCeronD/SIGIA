@@ -341,6 +341,7 @@ const renderElements = async ({
     } else {
       parameters = { action, pages: page, type, isBusqueda, value };
     }
+
     const dataElements = await getData(
       "modules/elementos/controller/elementosController.php",
       "GET",
@@ -1268,39 +1269,39 @@ editarElementForm.addEventListener("submit", async (e) => {
   });
   if (!isDisponibleSerie) return;
 
-    mostrarConfirmacion(
+  mostrarConfirmacion(
     "Guardar cambios",
     "¿Está seguro de continuar con el proceso?",
     async (respuesta) => {
 
-        try {
+      try {
 
-          if (!respuesta){
-            return;
-          }
-
-          let response = await sendData(
-            "modules/elementos/controller/elementosController.php",
-            "PUT",
-            "updateElement",
-            data
-          );
-
-          if (!response.status) {
-            initAlert(response.message, "error", toastOptions);
-            return;
-          }
-          initAlert(response.message, "success", toastOptions);
-          modalEditarElemento.close();
-          // renderizo los elementos en base a la página en la que se encuentra.
-          renderElements({ page: pageElement, type: currentType }).then(() => {
-            renderWithFilter();
-          });
-        } catch (error) {
-          initAlert(`${error.message}`, "error", toastOptions);
-          throw new Error("Error al actualizar el recurso.");
+        if (!respuesta) {
+          return;
         }
-      
+
+        let response = await sendData(
+          "modules/elementos/controller/elementosController.php",
+          "PUT",
+          "updateElement",
+          data
+        );
+
+        if (!response.status) {
+          initAlert(response.message, "error", toastOptions);
+          return;
+        }
+        initAlert(response.message, "success", toastOptions);
+        modalEditarElemento.close();
+        // renderizo los elementos en base a la página en la que se encuentra.
+        renderElements({ page: pageElement, type: currentType }).then(() => {
+          renderWithFilter();
+        });
+      } catch (error) {
+        initAlert(`${error.message}`, "error", toastOptions);
+        throw new Error("Error al actualizar el recurso.");
+      }
+
     }
   );
 

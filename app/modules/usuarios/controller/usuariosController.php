@@ -20,7 +20,7 @@ class usuariosController
     public $usu_id_estado;
     private $usu_tp_id;
 
-    private Conection $conn;
+    private mysqli $conn;
 
     protected RolModelo $rolesModel;
     protected ConfigModulesModel $configModules;
@@ -31,6 +31,7 @@ class usuariosController
         $this->rolesModel = new RolModelo();
         $this->configModules = new ConfigModulesModel();
         $this->usuariosModel = new usuarios();
+        $this->conn = (new Conection())->getConnect();
     }
     public function userView()
     {

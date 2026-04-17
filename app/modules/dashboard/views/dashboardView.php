@@ -16,7 +16,7 @@
                     <p>Contiene una consulta de los elementos.</p>
                 </div>
                 <div class="buttons">
-                    <a class="btn green btnGetUrl" href="<?php echo getUrl('elementos', 'Elementos', 'renderViewElements', false, 'dashboard'); ?>">Consultar</a>
+                    <a class="btn green btnGetUrl" href="<?php echo getUrl('elementos', 'elementos', 'renderViewElements', false, 'dashboard'); ?>">Consultar</a>
                 </div>
             </div>
 

@@ -4,9 +4,9 @@ require_once __DIR__ . '/helpers/getUrl.php';
 require_once __DIR__ . '/helpers/session.php';
 require_once __DIR__ . '/helpers/ScanFiles.php';
 require_once __DIR__ . '/config/conn.php';
-require_once __DIR__ . '/Modules/solicitudPrestamos/controller/solicitudPrestamosController.php';
-require_once __DIR__ . '/Modules/reservaPrestamos/services/ServicesReservas.php';
-require_once __DIR__ . '/Modules/solicitudPrestamos/services/servicesSolicitudPrestamos.php';
+require_once __DIR__ . '/modules/solicitudPrestamos/controller/solicitudPrestamosController.php';
+require_once __DIR__ . '/modules/reservaPrestamos/services/ServicesReservas.php';
+require_once __DIR__ . '/modules/solicitudPrestamos/services/servicesSolicitudPrestamos.php';
 
 $modulo = $_GET['modulo'] ?? 'dashboard';
 $controllerFile = new ScanFiles($modulo);
@@ -35,7 +35,7 @@ if ($css) {
     unset($_SESSION['css']);
 }
 
-require_once '../public/partials/header.php'; 
+require_once '../public/partials/header.php';
 ?>
 
 <div class="container bg-light-pattern">

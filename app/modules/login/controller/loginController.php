@@ -4,7 +4,7 @@ include_once __DIR__ . '/../model/loginModel.php';
 require_once __DIR__ . '/../../Permisos/Model/PermisosModel.php';
 include_once __DIR__ . '/../../../helpers/response.php';
 require_once __DIR__ . '/../../../helpers/expg.php';
-require_once __DIR__ . '/../../../Config/conn.php';
+require_once __DIR__ . '/../../../config/conn.php';
 
 class loginController
 {
@@ -86,7 +86,7 @@ class loginController
             echo json_encode([
                 'success' => true,
                 'message' => 'Conectado',
-                'url' => '/proyecto_sigia/app/dashboard.php?modulo=dashboard&controlador=dashboard&funcion=dashboard'
+                'url' => '/app/dashboard.php?modulo=dashboard&controlador=dashboard&funcion=dashboard'
             ]);
         } catch (Exception $e) {
             echo json_encode([
@@ -119,6 +119,7 @@ class loginController
 
 
         redirect(getUrl('login', 'login', 'index', false, false));
+
         exit();
     }
 }

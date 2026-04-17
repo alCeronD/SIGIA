@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/../../../Config/conn.php";
+require_once __DIR__ . "/../../../config/conn.php";
 
 class PermisosModel
 {
@@ -42,7 +42,7 @@ class PermisosModel
         try {
             $conn = (new Conection())->getConnect();
             $sqlFuncion = "SELECT id_funcion
-                FROM funciones f 
+                FROM funciones f
                 INNER JOIN modulos mo ON
                 mo.id_m = f.id_modulo WHERE mo.cod_nombre_m = ? AND mo.id_m = ? AND f.nombre_funcion = ?";
 
@@ -72,16 +72,19 @@ class PermisosModel
         }
     }
 
-    public function getPermisoFuncion(int $rolId = 0, $idFuncion)
+    public function getPermisoFuncion(int $rolId, $idFuncion)
     {
         try {
+            if(empty($rolId)) $rolId = 0;
+
+
             $conn = (new Conection())->getConnect();
             // Con esta función valido que el ROL PUEDA ACCEDER A ESA FUNCIÓN, que hace parte del modulo.
-            $sql = "SELECT * FROM funciones fu 
-                INNER JOIN roles_funciones rf ON 
-                fu.id_funcion = rf.rlp_id_funcion 
+            $sql = "SELECT * FROM funciones fu
+                INNER JOIN roles_funciones rf ON
+                fu.id_funcion = rf.rlp_id_funcion
                 INNER JOIN roles ro ON
-                ro.rl_id = rf.rlp_id_rl 
+                ro.rl_id = rf.rlp_id_rl
                 INNER JOIN modulos mo ON
                 mo.id_m = fu.id_modulo
                 WHERE ro.rl_id = ? AND rf.rlp_id_funcion = ?";
@@ -131,11 +134,11 @@ class PermisosModel
             mo.id_m AS 'idModulo',
             mo.cod_nombre_m AS 'nombreModulo',
             mo.icono AS 'iconModulo'
-            FROM modulos mo 
+            FROM modulos mo
             INNER JOIN funciones fu ON
-            fu.id_modulo = mo.id_m 
+            fu.id_modulo = mo.id_m
             INNER JOIN roles_funciones rof ON
-            rof.rlp_id_funcion = fu.id_funcion 
+            rof.rlp_id_funcion = fu.id_funcion
             INNER JOIN roles r ON
             r.rl_id = rof.rlp_id_rl WHERE r.rl_id = ?";
 
@@ -163,18 +166,18 @@ class PermisosModel
         }
 
 
-        $sqlOptionsMenu = "SELECT DISTINCT 
+        $sqlOptionsMenu = "SELECT DISTINCT
             fu.nombre_funcion_user AS 'nombreFuncionUser',
             fu.id_funcion AS 'idFunción',
             fu.nombre_funcion AS 'nombreFuncionController',
             mo.cod_nombre_m AS 'nombreModulo'
             FROM funciones fu
             INNER JOIN tipo_funcion tpf ON
-            tpf.id_tp_funcion = fu.tp_funcion 
-            INNER JOIN roles_funciones rof ON 
+            tpf.id_tp_funcion = fu.tp_funcion
+            INNER JOIN roles_funciones rof ON
             rof.rlp_id_funcion = fu.id_funcion
-            INNER JOIN roles r ON 
-            r.rl_id = rof.rlp_id_rl 
+            INNER JOIN roles r ON
+            r.rl_id = rof.rlp_id_rl
             INNER JOIN modulos mo ON
             mo.id_m = fu.id_modulo
             WHERE tpf.id_tp_funcion = 1 AND r.rl_id = ? AND mo.id_m = ?";
@@ -192,7 +195,7 @@ class PermisosModel
             $stmtOptionsMenu->execute();
 
             $resultOptions = $stmtOptionsMenu->get_result();
-            
+
             while($row = $resultOptions->fetch_assoc()){
                 $optionsMenu[] = $row;
                 $optionsMenuClasificado[$moduloNombre][]=$row;

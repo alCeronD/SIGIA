@@ -1,5 +1,5 @@
-<script src="/proyecto_sigia/public/assets/libraries/materialize/js/materialize.min.js"></script>
-<script type="module" src="/proyecto_sigia/public/assets/js/main.js"></script>
+<script src="../public/assets/libraries/materialize/js/materialize.min.js"></script>
+<script type="module" src="../public/assets/js/main.js"></script>
 
 <?php
 // Variables para validar el menú del usuario.

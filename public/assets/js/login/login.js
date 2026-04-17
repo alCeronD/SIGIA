@@ -1,3 +1,4 @@
+
 import { initAlert, toastOptions } from "../utils/cases.js";
 import { validationRules } from "../utils/regex.js";
 import { Storage } from "../utils/Storage.js";
@@ -7,7 +8,9 @@ window.addEventListener("storage", (g) => {
   const newValue = g.newValue;
   const key = g.key;
   if (key === "sessionStatus" && newValue === "true") {
-    window.location.href = "/proyecto_sigia/app/dashboard.php?modulo=dashboard&controlador=dashboard&funcion=dashboard";
+    window.location.href = "/SIGIA/app/dashboard.php?modulo=dashboard&controlador=dashboard&funcion=dashboard";
+    // window.location.href = "/SIGIA/app/dashboard.php?modulo=dashboard&controlador=dashboard&funcion=dashboard";
+
   }
 });
 

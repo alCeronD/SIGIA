@@ -1,7 +1,7 @@
-<?php 
+<?php
 
 /**
- * 
+ *
  * Archivo que contiene 2 funciones para visualizar la respuesta del json y enviarlo al front y visualizarlo.
  * TODO: puedo mejorar estas 2 funciones en 1, en donde la estructura es la misma y solamente le paso el código de respuesta por parámetros, 200 para true, 400 para false.
  * TODO: Esto se puede transformar en una clase.

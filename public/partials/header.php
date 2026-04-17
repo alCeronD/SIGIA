@@ -14,7 +14,7 @@
 </head>
 <nav class="header">
   <div class="nav-wrapper">
-    <a href="<?php echo getUrl('dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>" class="brand-logo logo center">
+    <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="brand-logo logo center">
     </a>
     <!-- Icono de usuario -->
     <ul id="" class="right">
@@ -39,9 +39,15 @@
     <ul id="" class="left">
       <li class="user-dropdown">
         <div class="contentUser" id="userDropdownToggle">
-          <span id="btnCerrarSesion" data-logOut="<?php echo getUrl('login', 'login', 'logout',false,'ajax'); ?>">
+          <span id="btnCerrarSesion" data-logOut="<?php echo getUrl('login','login','logout',false,false); ?>">
             Salir
           </span>
+
+          <br>
+
+
+
+
         </div>
       </li>
     </ul>

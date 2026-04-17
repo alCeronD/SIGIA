@@ -1,10 +1,3 @@
-<?php
-
-require_once __DIR__ ."/../../../helpers/helpers.php";
-// require_once __DIR__ ."/../../../helpers/session.php";
-
-?>
-
 <div class="content">
 
   <span class="card-title">Gestión de información personal.

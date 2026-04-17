@@ -53,6 +53,7 @@ class ElementosController
             fail('error al traer los elementos');
         }
 
+
         //Unifico ambos arreglos para obtener la cantidad de paginas con los elementos.
         $elementos = array_merge(['cantidadPaginas' => $totalPaginas], $elementos);
 
@@ -166,7 +167,7 @@ class ElementosController
             if(!is_array($data)) throw new Exception("Tipo de dato recibido incorrecto");
             if(empty($data['elm_cod'])) throw new Exception("Código del elemento no debe estar vacio");
             if(empty($data['elm_cod_estado'])) throw new Exception("Estado recibido incorrecto");
-        
+
             if (isset($data['elm_cod']) && isset($data['elm_cod_estado'])) {
                 $cod = (int) $data['elm_cod'];
                 $id = (int) $data['elm_cod_estado'];

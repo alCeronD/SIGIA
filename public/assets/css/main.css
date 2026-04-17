@@ -4,7 +4,7 @@
   --other: #ccc;
   --white: #f0f0f0;
   --btnEdit: #007D78;
-  --teal :#4db6ac;
+  --teal: #4db6ac;
   --blue: #42a5f5;
   --red: #ef5350;
   --info: #e57373;
@@ -12,8 +12,8 @@
   --warning: #fb8c00;
   --error: #b71c1c;
   --error2: #e57373;
-  --btnProcess: #4CAF50 ;
-    /* Color para implementar en todos los contenedores. */
+  --btnProcess: #4CAF50;
+  /* Color para implementar en todos los contenedores. */
   --backgroundContainer: #f9f9f9;
 }
 
@@ -22,19 +22,21 @@
   /* margin: 0px; */
   padding: 0px;
 }
+
 /* resolución para mobile = 375x667 */
-html, body {
+html,
+body {
   height: 100vh;
-  font-family:  "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: "Open Sans", "Helvetica Neue", sans-serif;
 
-  }
+}
 
-.btnInvalida{
+.btnInvalida {
   color: var(--white);
   background-color: var(--red);
 }
 
-.btnInfo{
+.btnInfo {
   background-color: var(--teal);
   color: var(--white);
 }
@@ -47,23 +49,24 @@ html, body {
   color: var(--white) !important;
   height: 9vh;
   user-select: none;
-  background-color:var(--btnEdit);
+  background-color: var(--btnEdit);
 }
 
-#btnCerrarSesion{
+#btnCerrarSesion {
   cursor: pointer;
 }
 
 .nav-wrapper {
   display: flex;
-  align-items: center; 
-  justify-content: space-between; 
+  align-items: center;
+  justify-content: space-between;
   height: 7vh;
   pad: 0 1rem;
 
 }
+
 .logo {
-  background-image: url('/../proyecto_sigia/public/assets/image/login/sSigiaNegative.svg');
+  background-image: url('/public/assets/image/login/sSigiaNegative.svg');
   background-repeat: no-repeat;
   width: 70px;
   height: 7vh;
@@ -76,7 +79,7 @@ html, body {
   justify-content: flex-end;
 }
 
-.contentUser{
+.contentUser {
   width: 100%;
   height: 8vh;
   gap: 0.3rem;
@@ -87,14 +90,15 @@ html, body {
   justify-content: center;
 }
 
-#userText{
+#userText {
   display: flex;
 }
+
 /* Fin estilos header */
 
 
 /* Inicio estilos del contenedor principal */
-.container{
+.container {
   display: flex;
   width: 100% !important;
   height: 80vh;
@@ -113,17 +117,18 @@ html, body {
   max-width: 100%;
   box-sizing: border-box;
 }
+
 /* Fin estilos del contenedor principal */
 
 /* Botón de cerrar */
-.close-btn{
+.close-btn {
   border: none;
   text-decoration: none;
   font-size: 3rem;
 }
 
 /* Tamaño de subtitlo de modulo */
-.textTitleSpan{
+.textTitleSpan {
   font-size: 20pt;
 }
 
@@ -188,23 +193,24 @@ input[type="number"] {
 }
 
 /* esta clase corresponde a los titulos del modulo de configuración, se puede usar para los demás modulos */
-.textTitleSpan{
+.textTitleSpan {
   font-size: 20pt;
 }
+
 /* ------------------------------------------ */
 
 /** Fin estilos Modulo configuración  */
 
 /* Inicio Estilos de alertas toast de materialize */
 
-#toast-container{
-    position: absolute !important;
-    right: .5em;
-    bottom: 0;
-    z-index: 1050;
+#toast-container {
+  position: absolute !important;
+  right: .5em;
+  bottom: 0;
+  z-index: 1050;
 }
 
-.toast{
+.toast {
   background-color: var(--white);
   color: black;
   border: 1px solid black;
@@ -246,7 +252,7 @@ input[type="number"] {
 .submenu {
   display: none;
   background-color: white;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   text-align: center !important;
   border-radius: 4px;
   width: 30px !important;
@@ -258,11 +264,11 @@ input[type="number"] {
   margin: 0 !important;
 }
 
-.submenu a{
+.submenu a {
   padding: 0 !important;
 }
 
-#userDropdownMenu{
+#userDropdownMenu {
   padding: 0 !important;
   margin: 0 !important;
   text-align: center !important;
@@ -275,6 +281,4 @@ input[type="number"] {
 
 
 /* Para pantallas medianas en adelante. */
-@media (min-width: 768px){
-
-}
+@media (min-width: 768px) {}

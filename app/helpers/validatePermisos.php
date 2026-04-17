@@ -7,7 +7,7 @@
 require_once __DIR__ . "/session.php";
 require_once __DIR__ . "/getUrl.php";
 require_once __DIR__ . '/response.php';
-require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
+require_once __DIR__ . "/../modules/Permisos/Controller/PermisosController.php";
 
 function validatePermisos(String $modulo, String $funcion)
 {
@@ -53,7 +53,7 @@ function validatePermisos(String $modulo, String $funcion)
 
     if (!$isValidate) {
         if (isAjaxRequest()) {
-            
+
             // TODO: re hacer el response de la función fail y success.
             http_response_code(403);
             echo json_encode($dataResponse,JSON_PRETTY_PRINT);

@@ -34,18 +34,17 @@ export const sendData = async (
 
     if (Object.keys(parameters).length > 0) {
       newUrl = `${url}?${setParameter}`;
-    }else{
+    } else {
       newUrl = url;
     }
-    // let newUrl = parameters ? `${url}?${setParameter}` : url;
     const optionsFetch = setFetch(method, parameters, data);
     const response = await fetch(newUrl, optionsFetch);
     if (response.status === 204) {
-      return {status: 204};
+      return { status: 204 };
     }
-    
+
     const json = await response.json();
-    
+
     if (!response.ok) {
       return { status: response.status, ...json };
     }
@@ -73,12 +72,11 @@ export const getData = async (
       });
       newUrl = parameters ? `${url}?${setParameters.toString()}` : url;
     }
-    
+
     const bodyData = setFetch(method, parameters, data);
     const execute = await fetch(newUrl, bodyData);
-
     if (execute.status === 204) {
-      return {status: 204};
+      return { status: 204 };
     }
 
     const getResponse = asText

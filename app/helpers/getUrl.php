@@ -70,7 +70,7 @@ function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
     include_once __DIR__ . '/../config/conn.php';
     $conexion = (new Conection())->getConnect();
     $nombreClase = $controlador . "Controller";
-    require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
+    require_once __DIR__ . "/../modules/Permisos/Controller/PermisosController.php";
     $objPermisos = new PermisosController();
     // Si no es pública, validamos la sesión y permisos
     if (!$isPublic) {
