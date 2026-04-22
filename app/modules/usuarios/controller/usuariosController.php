@@ -1,6 +1,6 @@
 <?php
 include_once __DIR__ . '/../../../config/conn.php';
-include_once __DIR__ . '/../../roles/model/rolesModel.php';
+include_once __DIR__ . '/../../Roles/model/rolesModel.php';
 require_once __DIR__ . "/../model/usuariosModel.php";
 include_once __DIR__ . '/../../configModules/model/configModulesModel.php';
 require_once __DIR__ . "/../../login/controller/loginController.php";

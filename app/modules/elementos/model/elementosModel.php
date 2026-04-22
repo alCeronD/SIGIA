@@ -1,6 +1,6 @@
 <?php
 
-// require_once __DIR__ . '/../../../helpers/session.php';
+require_once __DIR__ . '/../../../helpers/session.php';
 
 use function PHPUnit\Framework\throwException;
 
@@ -29,7 +29,7 @@ class ElementoModelo
     public function obtenerElemento()
     {
         $elementos = [];
-        $sql = "SELECT 
+        $sql = "SELECT
             e.elm_cod AS codigoElemento,
             e.elm_placa AS placa,
             e.elm_nombre AS nombreElemento,
@@ -64,7 +64,7 @@ class ElementoModelo
      */
     public function getElementLike(String $inputValue = '')
     {
-        $sql = "SELECT 
+        $sql = "SELECT
         e.elm_cod AS codigoElemento,
         e.elm_placa AS placa,
         e.elm_nombre AS nombreElemento,
@@ -133,7 +133,7 @@ class ElementoModelo
             ];
         }
 
-        $baseSql = "SELECT 
+        $baseSql = "SELECT
         e.elm_cod AS codigoElemento,
         e.elm_placa AS placa,
         e.elm_serie AS serie,
@@ -160,12 +160,12 @@ class ElementoModelo
 
         if ($isBusqueda) {
             if ($type === 'all') {
-                $sql = "$baseSql 
+                $sql = "$baseSql
                     WHERE (
-                        e.elm_nombre LIKE CONCAT('%', ?, '%') 
-                        OR e.elm_placa LIKE CONCAT('%', ?, '%') 
+                        e.elm_nombre LIKE CONCAT('%', ?, '%')
+                        OR e.elm_placa LIKE CONCAT('%', ?, '%')
                         OR e.elm_serie LIKE CONCAT('%', ?, '%')
-                    ) 
+                    )
                     ORDER BY e.elm_fecha_registro DESC LIMIT ? OFFSET ?";
                 $stmt = $this->conn->prepare($sql);
 
@@ -278,7 +278,7 @@ class ElementoModelo
         ];
     }
 
-    public function contarElementosBusqueda(String $type = 'all', $value)
+    public function contarElementosBusqueda($value, String $type = 'all')
     {
 
         $sqlBase = "SELECT COUNT(*) AS total FROM elementos e";
@@ -288,7 +288,7 @@ class ElementoModelo
             if (!$this->expg->validarNumeros($value)) {
 
                 $sql = "$sqlBase WHERE (
-                        e.elm_nombre LIKE CONCAT('%', ?, '%') 
+                        e.elm_nombre LIKE CONCAT('%', ?, '%')
                         OR e.elm_serie LIKE CONCAT('%', ?, '%')
                         )";
 
@@ -297,7 +297,7 @@ class ElementoModelo
             } else {
                 // Si es entero, solo la placa.
                 $sql = "$sqlBase WHERE (
-                        e.elm_placa LIKE CONCAT('%', ?, '%') 
+                        e.elm_placa LIKE CONCAT('%', ?, '%')
                 )";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bind_param('i', $value);
@@ -307,7 +307,7 @@ class ElementoModelo
             if (!$this->expg->validarNumeros($value)) {
 
                 $sql = "$sqlBase WHERE (
-                        e.elm_nombre LIKE CONCAT('%', ?, '%') 
+                        e.elm_nombre LIKE CONCAT('%', ?, '%')
                         OR e.elm_serie LIKE CONCAT('%', ?, '%')
                         ) AND e.elm_cod_tp_elemento = ?";
 
@@ -316,7 +316,7 @@ class ElementoModelo
             } else {
                 // Si es entero, solo la placa.
                 $sql = "$sqlBase WHERE (
-                        e.elm_placa LIKE CONCAT('%', ?, '%') 
+                        e.elm_placa LIKE CONCAT('%', ?, '%')
                 ) AND e.elm_cod_tp_elemento = ?";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bind_param('ii', $value, $newType);
@@ -356,7 +356,7 @@ class ElementoModelo
         elm_cod_estado,
         elm_area_cod,
         elm_ma_cod,
-        elm_categoria 
+        elm_categoria
     ) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?,?,?)";
 
         $stmt = $this->conn->prepare($sql);
@@ -414,10 +414,10 @@ class ElementoModelo
     public function actualizarElemento(array $data = [])
     {
 
-        $sql = "UPDATE elementos 
-            SET elm_nombre = ?, 
+        $sql = "UPDATE elementos
+            SET elm_nombre = ?,
                 elm_serie = ?,
-                elm_area_cod = ?, 
+                elm_area_cod = ?,
                 elm_sugerencia = ?,
                 elm_observacion = ?,
                 elm_ma_cod = ?,
@@ -531,8 +531,8 @@ class ElementoModelo
             elementos e
         JOIN areas a ON e.elm_area_cod = a.ar_cod
         JOIN estados_elementos ee ON e.elm_cod_estado = ee.est_el_cod
-        WHERE ee.est_el_cod = 1 
-          AND elm_cod_tp_elemento = ? 
+        WHERE ee.est_el_cod = 1
+          AND elm_cod_tp_elemento = ?
           AND (e.elm_existencia IS NULL OR e.elm_existencia > 0)";
 
         $stmt = $this->conn->prepare($query);
@@ -561,8 +561,8 @@ class ElementoModelo
     public function disminuirExistenciaElemento($id, $cantidad)
     {
 
-        $sql = "UPDATE elementos 
-                SET elm_existencia = elm_existencia - ? 
+        $sql = "UPDATE elementos
+                SET elm_existencia = elm_existencia - ?
                 WHERE elm_cod = ? AND elm_existencia >= ?";
 
         $stmt = $this->conn->prepare($sql);
@@ -787,11 +787,11 @@ class ElementoModelo
      * @param array $elementos
      * @return array{data: array, message: string, status: bool}
      */
-    public function validateDisponiblidad($codigoElemento = 0, bool $isOnly = false, array $elementos = [])
+    public function validateDisponiblidad(int $codigoElemento = 0, bool $isOnly = false, array $elementos = [])
     {
         try {
             // Valido que el elemento que envió este disponible siempre y cuando no este asociado con un prestamo que este finalizado o cancelado, solamente si está validado, posiblemente se deba implementar también el estado sea el 1 y el 3.
-            $sql = "SELECT 
+            $sql = "SELECT
                     e.elm_cod As 'codigoElemento',
                     e.elm_serie AS 'seriElemento',
                     e.elm_nombre AS 'nombreElemento',
@@ -800,7 +800,7 @@ class ElementoModelo
                     p.pres_fch_entrega AS 'fechaDevolucion'
                     FROM elementos e
                     INNER JOIN prestamos_elementos pe ON
-                    pe.pres_el_elem_cod = e.elm_cod 
+                    pe.pres_el_elem_cod = e.elm_cod
                     INNER JOIN prestamos p ON
                     pe.pres_cod = p.pres_cod WHERE e.elm_cod = ? AND p.tp_pres = 2 AND (p.pres_estado = 1 OR p.pres_estado = 3)";
             $stmtFechas = $this->conn->prepare($sql);

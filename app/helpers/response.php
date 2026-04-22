@@ -7,15 +7,23 @@
  * TODO: Esto se puede transformar en una clase.
  */
 
- function success(String $value = '', array $data = []){
-    header('Content-Type: application/json');
+
+/**
+ * Función para enviar respuesta exitosa al front.
+ *
+ * @param string $message - mensaje de respuesta.
+ * @param array $data - Arreglo con toda la data a enviar.
+ * @return void
+ */
+ function success(String $message = '', array $data = []){
+    header('Content-Type: application/json; charset=utf-8');
     $result = [
         'status' => true,
-        'message' => $value,
-        'data' => $data = count($data) === 0 ? [] : $data
+        'message' => $message,
+        'data' => empty($data) ? [] : $data
     ];
     http_response_code(200);
-    echo json_encode($result,JSON_PRETTY_PRINT);
+    echo json_encode($result,JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     exit();
 }
 

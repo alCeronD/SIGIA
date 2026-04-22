@@ -31,7 +31,7 @@ function validatePermisos(String $modulo, String $funcion)
         exit();
     }
 
-    require_once __DIR__ . "/../Modules/Permisos/Controller/PermisosController.php";
+    require_once __DIR__ . "/../modules/Permisos/Controller/PermisosController.php";
     $objPermisos = new PermisosController();
 
     $idNombreModulo = $objPermisos->gidIdModulo($modulo);

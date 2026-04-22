@@ -683,7 +683,6 @@ const renderSelectCategorias = async (action = "", inputSelect) => {
     "GET",
     { action: "categoria" }
   );
-  console.log(inputSelect);
   let categorias = response.data;
   inputSelect.innerHTML = "";
   const option = document.createElement("option");

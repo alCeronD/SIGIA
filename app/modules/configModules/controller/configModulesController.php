@@ -186,7 +186,7 @@ class ConfigModulesController
 
         try {
 
-            validatePermisos('ConfigModules', 'addRow');
+            validatePermisos('configModules', 'addRow');
             if (!$data) {
                 exit();
             }

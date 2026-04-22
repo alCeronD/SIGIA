@@ -72,9 +72,9 @@ class RolesController
     }
     public function getRoles()
     {
-        
+
         $roles = $this->modeloRol->obtenerRoles();
-        
+
         success('roles', $roles);
     }
 
@@ -98,7 +98,7 @@ class RolesController
         }
         success('roles asociados', $rolesResult);
     }
-    
+
     public function setPermisos(array $data = []){
 
         $rolId = $_SESSION['usuario']['rol_id'];
@@ -113,6 +113,10 @@ class RolesController
         $_SESSION['renderMenu'] = $result['data'];
         success('Permisos Asociados correctamente', $responsePermisos);
 
+    }
+
+    public function prueba(String $value = 'hola'){
+        success('prueba exitosa', ['value' => $value]);
     }
 }
 
@@ -146,6 +150,11 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 }
 
                 break;
+
+            case 'prueba':
+                if (method_exists($objRolesController, 'prueba')) {
+                    $objRolesController->prueba();
+                }
 
             default:
 

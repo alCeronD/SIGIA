@@ -1,12 +1,11 @@
 <?php
 
+require_once __DIR__ . '/../../../helpers/response.php';
+require_once __DIR__ . '/../controller/configModulesController.php';
+$configController = new ConfigModulesController();
 // Este documento recibe todas las solicitudes de ajax.
 header("Content-Type: application/json");
 $input = json_decode(file_get_contents("php://input"), true);
-
-require_once __DIR__ . '/../controller/configModulesController.php';
-require_once __DIR__ . '/../../../helpers/response.php';
-$configController = new ConfigModulesController();
 
 //Cambiar statusCols y tables por $schema.
 $statusCols = [
@@ -52,17 +51,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $status = $_GET['status'] ?? null;
 
     if (!in_array($tableName, $tables)) {
+        success('tabla inválida', []);
         exit();
     }
 
-    //TODO:Arreglar esta parte, si yo quiero traer solamente los elementos activos, inactivos o todos los elementos, con esto podemos dar un mayor acceso y re usabilidad.
     if (!in_array($status, ['0', '1'])) {
+        success('status inválido', []);
         exit();
     }
 
     //aca se ejecuta todo.
     $data = $configController->getData($tableName, $status);
-
     success('registros', $data);
 }
 
@@ -121,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         fail('Entrada duplicada', $responseUpdate);
     }
 
-    
+
 }
 
 //DELETE

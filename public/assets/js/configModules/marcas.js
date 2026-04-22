@@ -8,7 +8,7 @@ const myModal = document.querySelector("#modalMarca");
 const marcaUpdateForm = document.querySelector("#marcaUpdateForm");
 const closeModalBtn = document.querySelector(".closeModalBtn");
 
-const instanModal = instanceModal('#modalMarca',{"inDuration":options.inDuration, "outDuration": options.outDuration, "opacity": options.opacity });
+const instanModal = instanceModal('#modalMarca', { "inDuration": options.inDuration, "outDuration": options.outDuration, "opacity": options.opacity });
 
 let table = "marcas";
 let status = 1;
@@ -18,7 +18,7 @@ let descripcionMarca;
 let idPk;
 
 function fetchData() {
- tableBody.innerHTML = "";
+  tableBody.innerHTML = "";
   objAjax.request.open(
     "GET",
     `modules/configModules/api/apiConfigModules.php?tableName=${encodeURIComponent(
@@ -54,8 +54,8 @@ function fetchData() {
       const tdStatus = document.createElement("td");
       const tdAccion = document.createElement("td");
 
-      btnUpdate.setAttribute('class','waves-effect waves-light btn-small light-blue');
-      btnDelete.setAttribute('class','btn waves-effect waves-light btn-small modal-trigger red');
+      btnUpdate.setAttribute('class', 'waves-effect waves-light btn-small light-blue');
+      btnDelete.setAttribute('class', 'btn waves-effect waves-light btn-small modal-trigger red');
       iSave.innerText = 'edit';
       btnDelete.append(iDelete);
       tableBody.appendChild(tr);
@@ -93,7 +93,7 @@ function fetchData() {
         let btndl = f.target;
         let row = btndl.closest("tr");
         const celda = row.querySelectorAll("td");
-        
+
         //Capturo la información y la separo.
         idPk = celda[0].textContent;
         nombreMarca = celda[1].textContent;
@@ -169,7 +169,7 @@ function fetchData() {
   objAjax.request.send();
 }
 
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', () => {
   fetchData();
 
 });
@@ -198,7 +198,7 @@ formMarca.addEventListener("submit", (f) => {
     "modules/configModules/api/apiConfigModules.php",
     true
   );
-  
+
   objAjax.request.setRequestHeader("Content-Type", "application/json");
   objAjax.request.setRequestHeader("Accept", "application/json");
   objAjax.request.onload = () => {
@@ -252,4 +252,4 @@ marcaUpdateForm.addEventListener("submit", (e) => {
 });
 
 //Cerrar modal solo con el boton de span.
-closeModal(instanModal,closeModalBtn);
+closeModal(instanModal, closeModalBtn);

@@ -22,7 +22,7 @@ const tableBody = document.querySelector("#tableBodyArea");
 //formulario Update del modal
 const areaUpdateForm = document.querySelector("#areaUpdateForm");
 //Creo la instancia del modal con las siguientes propiedades, Options es un objeto que está creado en el file cases.js
-const instanceMyModal = instanceModal('#modalArea',{"inDuration":options.inDuration, "outDuration": options.outDuration, "opacity":options.opacity});
+const instanceMyModal = instanceModal('#modalArea', { "inDuration": options.inDuration, "outDuration": options.outDuration, "opacity": options.opacity });
 
 let idPk;
 let nombreArea;
@@ -42,8 +42,19 @@ function fetchData() {
   //Aca va la respuesta y el renderizado de los datos en la tabla.
   objAjax.request.onload = () => {
     //Capturo la respuesta
+    // let response = JSON.parse(objAjax.request.responseText);
     let response = JSON.parse(objAjax.request.responseText);
     let data = response.data;
+
+
+    if (data.length === 0) {
+      const spanMessage = document.createElement("span");
+      spanMessage.innerText = "Sin registros";
+      tableBody.appendChild(spanMessage);
+    }
+
+    console.log(objAjax.request.statusText);
+
 
     if (objAjax.request.status) {
       if (data.length === 0) {
@@ -57,16 +68,16 @@ function fetchData() {
         //boton de acción
         const iSave = createI();
         const iDelete = createI();
-        iDelete.setAttribute("class",'material-icons');
+        iDelete.setAttribute("class", 'material-icons');
         iSave.innerText = 'edit';
         const btnUpdate = createBtn();
         const btnDelete = createBtn();
         btnUpdate.setAttribute("class", "btnUpdate");
-        btnUpdate.setAttribute('class','waves-effect waves-light btn-small light-blue');
+        btnUpdate.setAttribute('class', 'waves-effect waves-light btn-small light-blue');
         btnUpdate.append(iSave);
         btnDelete.setAttribute("class", "btnDelete");
-        btnDelete.setAttribute('class','btn waves-effect waves-light btn-small modal-trigger red');
-        
+        btnDelete.setAttribute('class', 'btn waves-effect waves-light btn-small modal-trigger red');
+
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
         const tdName = document.createElement("td");
@@ -74,16 +85,16 @@ function fetchData() {
         const tdStatus = document.createElement("td");
         const tdAccion = document.createElement("td");
         // Asigno el botón a ambos elementos.
-        
+
         tableBody.appendChild(tr);
-        
+
         tdId.textContent = dta.ar_cod;
         tdName.textContent = dta.ar_nombre;
         tdDescript.textContent = dta.ar_descripcion;
-        
+
         //Dependiendo del estatus, en html se verá visible activo o inactivo pero sabemos que 1 es activo y 0 inactivo.
         tdStatus.textContent = dta.ar_status === 1 ? "Activo" : "Inactivo";
-        
+
         //Coloco el color rojo verde segun su estado.
         if (dta.ar_status === 1) {
           tdStatus.textContent = "Activo";
@@ -133,7 +144,7 @@ function fetchData() {
           //Abro el modal de manera tradicional.
           instanceMyModal.open();
           const closeModalBtn = document.querySelector('.closeModalBtn');
-          closeModal(instanceMyModal,closeModalBtn);
+          closeModal(instanceMyModal, closeModalBtn);
 
         });
 
@@ -179,25 +190,28 @@ function fetchData() {
               if (!dta.status) {
                 initAlert(`Respuesta del servidor: \n ${dta.message}`, "error", toastOptions);
                 return;
-              } 
-              initAlert(dta.message,"success",toastOptions);
+              }
+              initAlert(dta.message, "success", toastOptions);
               fetchData(); // Refrescar tabla
             };
-            
+
             objAjax.request.send(data);
           }
         });
       });
-    }else{
+    } else {
       initAlert(`${error.message}`, "warning", toastOptions);
       return;
     }
   };
 
+
+  objAjax.request.setRequestHeader("Content-Type", "application/json");
   //Establezco que su envio de solicitud es mediante un json.
   objAjax.request.setRequestHeader("Accept", "application/json");
   //Enviar datos a get para visualziar las areas
   objAjax.request.send();
+
 }
 
 // Apenas cargue la información, ejecutar la función fetchData para traer la info usando ajax.
@@ -225,7 +239,7 @@ formulario.addEventListener("submit", (event) => {
     tableName: table
   });
 
-  
+
 
   // Ajax POST
   objAjax.request.open('POST', "modules/configModules/api/apiConfigModules.php", true);
@@ -234,20 +248,20 @@ formulario.addEventListener("submit", (event) => {
   objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
   objAjax.request.onload = () => {
-      const response2 = objAjax.request.responseText;
-      console.log(response2);
-      const response = JSON.parse(objAjax.request.responseText);
-      console.log(response);
-      if (response.status) {
-        const lastRow = response.data;
-        initAlert('Registro adicionado con exito','success',toastOptions);
-        // Reiniciar el formulario
-        formulario.reset();
-        //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
-        fetchData();
-      } else {
-        initAlert(response.data.message, "error", toastOptions);
-      }
+    const response2 = objAjax.request.responseText;
+    console.log(response2);
+    const response = JSON.parse(objAjax.request.responseText);
+    console.log(response);
+    if (response.status) {
+      const lastRow = response.data;
+      initAlert('Registro adicionado con exito', 'success', toastOptions);
+      // Reiniciar el formulario
+      formulario.reset();
+      //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
+      fetchData();
+    } else {
+      initAlert(response.data.message, "error", toastOptions);
+    }
   };
 
   objAjax.request.send(data); // Esto debe ir fuera de onload
@@ -284,10 +298,10 @@ areaUpdateForm.addEventListener("submit", (e) => {
       if (dataStatus.status) {
         //Cerrar el modal
         closeModal(instanceMyModal);
-        initAlert('Registro actualizado','warning', toastOptions);
+        initAlert('Registro actualizado', 'warning', toastOptions);
         //Renderizo nuevamente la data.
         fetchData();
-      }else{
+      } else {
         initAlert(`${dataStatus.message}`, "info", toastOptions);
       }
     } catch (error) {

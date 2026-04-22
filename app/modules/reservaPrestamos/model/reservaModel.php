@@ -277,7 +277,7 @@ class ReservaModel
     }
 
     //Función para finalizar la reserva y todos los elementos cambiar sus respectivos estados.
-    public function endReserva(array $elementos = [], int $codigo, array $data = [])
+    public function endReserva(int $codigo, array $data = [],array $elementos = [])
     {
         //Objetivo:
         /**
@@ -332,7 +332,7 @@ class ReservaModel
                 ent_sal_cantidad,
                 ent_fech_registro,
                 ent_sal_observacion,
-                entr_tp_movmnt, 
+                entr_tp_movmnt,
                 ent_id_usu,
                 ent_sal_cod_elemtn,
                 ent_sal_cod_prestamo
@@ -452,8 +452,8 @@ class ReservaModel
                 INNER JOIN areas ar ON
                     el.elm_area_cod = ar.ar_cod
                 WHERE
-                    el.elm_existencia > 0 
-                    AND el.elm_cod_estado = 1 
+                    el.elm_existencia > 0
+                    AND el.elm_cod_estado = 1
                     AND el.elm_cod_tp_elemento = ?
                     AND ar.ar_status = 1
                 ORDER BY el.elm_nombre ASC LIMIT ? OFFSET ?";
@@ -523,7 +523,7 @@ class ReservaModel
             /**
              *  LIMIT = el limite de los registros que devuelve
              *  OFFSET = salte N, es el parámetro que le mandamos, es la ventana que se va a devolver. le indigamos que se salte los primeros N RESULTADOS. Este es el parámetro.
-             * 
+             *
              * OFFSET 0 = Devuelve los primeros resultados basados en el limit
              * OFFSET 20 limit 20 = se salta los primeros 20 resultados y devuelve los 20 siguientes, devuelve filas entre la posició 20 Y 40.
              */
@@ -537,7 +537,7 @@ class ReservaModel
 
             $offset = ($pages - 1) * $limit;
 
-            $sql = "SELECT 
+            $sql = "SELECT
                 us.usu_docum AS 'nroDocumento',
                 us.usu_nombres AS 'nombres',
                 us.usu_apellidos AS 'apellidos',
@@ -547,9 +547,9 @@ class ReservaModel
                 FROM usuarios us
                 INNER JOIN estados_usuarios es_u ON
                 es_u.est_id = us.usu_id_estado
-                INNER JOIN usuarios_roles usr ON 
-                usr.usr_usu_id = us.usu_id 
-                INNER JOIN roles r 
+                INNER JOIN usuarios_roles usr ON
+                usr.usr_usu_id = us.usu_id
+                INNER JOIN roles r
                 ON usr.usr_rl_id = r.rl_id
                 WHERE r.rl_id != 2 AND r.rl_status = 1 AND us.usu_id_estado = 1 ORDER BY us.usu_docum ASC LIMIT ? OFFSET ?";
 
@@ -731,7 +731,7 @@ class ReservaModel
     /**
      * Función para validar las solicitudes que hacen tanto el usuario instructor como aprendices.
      * @return array
-     * 
+     *
      */
     public function validateSolicitud(array $data = [], int $cedula = 0)
     {
@@ -851,7 +851,7 @@ class ReservaModel
                 ent_sal_cantidad,
                 ent_fech_registro,
                 ent_sal_observacion,
-                entr_tp_movmnt, 
+                entr_tp_movmnt,
                 ent_id_usu,
                 ent_sal_cod_elemtn,
                 ent_sal_cod_prestamo
@@ -963,10 +963,10 @@ class ReservaModel
             $fecha = $newFecha->format('Y-m-d');
 
             // Primera transaccion: capturar los prestamos asociados a una fecha anterior.
-            $sql = "SELECT 
-            p.pres_cod AS 'codigoPrestamo', 
+            $sql = "SELECT
+            p.pres_cod AS 'codigoPrestamo',
             p.pres_fch_reserva AS 'fechaReserva'
-            FROM prestamos p 
+            FROM prestamos p
             WHERE p.pres_fch_reserva < ? && p.pres_estado = 3";
 
             $stmtFirst = $conn->prepare($sql);
@@ -991,18 +991,18 @@ class ReservaModel
             if (count($prestamosResult) === 0) return;
 
             // Segunda transacción: traer los elementos que pertenezcan a los elementos y aplicar su cambio de estado a reservado.
-            $secondSlq = "SELECT 
+            $secondSlq = "SELECT
                 el.elm_cod AS 'codigoElemento',
                 el.elm_serie AS 'serieElemento',
                 el.elm_nombre AS 'nombreElemento',
                 el.elm_cod_estado AS 'estadoElemento',
                 p.pres_cod AS 'codigoPrestamo',
                 p.pres_fch_reserva AS 'fechaReserva'
-                FROM prestamos p 
+                FROM prestamos p
                 INNER JOIN prestamos_elementos pre ON
-                pre.pres_cod = p.pres_cod 
+                pre.pres_cod = p.pres_cod
                 INNER JOIN elementos el ON
-                pre.pres_el_elem_cod = el.elm_cod 
+                pre.pres_el_elem_cod = el.elm_cod
                 WHERE p.pres_fch_reserva < ? AND p.pres_cod = ? ORDER BY p.pres_cod ASC";
 
             $thirdSql = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
@@ -1072,14 +1072,14 @@ class ReservaModel
             // 5 - Actualizar el tipo de movimiento en la entrada y salida.
 
             // Primera transacción - traer los elementos relacionados al prestamo.
-            $sqlGetElementsPrestamo = "SELECT 
+            $sqlGetElementsPrestamo = "SELECT
                 el.elm_cod AS 'codigoElemento',
                 el.elm_cod_estado AS 'estadoActual',
                 prel.pres_el_cantidad AS 'cantidadSolicitada',
                 prel.pres_el_usu_id AS 'usuarioAsociado'
                 FROM elementos el
                 INNER JOIN prestamos_elementos prel ON
-                prel.pres_el_elem_cod = el.elm_cod 
+                prel.pres_el_elem_cod = el.elm_cod
                 INNER JOIN prestamos p ON
                 prel.pres_cod = p.pres_cod WHERE p.pres_cod = ?";
 

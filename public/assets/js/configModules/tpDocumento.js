@@ -1,5 +1,5 @@
 import { Ajax } from "../utils/ajax.js";
-import {closeModal, options, instanceModal, initAlert, toastOptions} from "../utils/cases.js";
+import { closeModal, options, instanceModal, initAlert, toastOptions } from "../utils/cases.js";
 
 const formulario = document.querySelector("#formTp");
 const objAjax2 = new Ajax();
@@ -13,7 +13,7 @@ const tableBodyTp = document.querySelector("#tableBodyTp");
 const tpUpdateForm = document.querySelector("#tpUpdateForm");
 const closeModalBtn = document.querySelector('.closeModalBtn');
 const myModal = document.querySelector("#modalTp");
-const modal = instanceModal('#modalTp',{"inDuration":options.inDuration, "outDuration": options.outDuration,"opacity": options.opacity});
+const modal = instanceModal('#modalTp', { "inDuration": options.inDuration, "outDuration": options.outDuration, "opacity": options.opacity });
 let idPk;
 let nombreTp;
 let descripcion;
@@ -32,8 +32,10 @@ function fetchData() {
   //Aca va la respuesta y el renderizado de los datos en la tabla.
   objAjax2.request.onload = () => {
     //Capturo la respuesta
+    console.log(objAjax2.request.responseText);
     let response = JSON.parse(objAjax2.request.responseText);
     let data = response.data;
+
 
     if (objAjax2.request.status) {
       //console.log(objAjax22.request.responseText);
@@ -57,25 +59,25 @@ function fetchData() {
         const tdAccion = document.createElement("td");
         // Asigno el botón a ambos elementos.
 
-        btnDelete.setAttribute('class','btn waves-effect waves-light btn-small red');
-        btnUpdate.setAttribute('class','waves-effect waves-light btn-small light-blue');
+        btnDelete.setAttribute('class', 'btn waves-effect waves-light btn-small red');
+        btnUpdate.setAttribute('class', 'waves-effect waves-light btn-small light-blue');
 
         const iSave = document.createElement('i');
         const iDelete = document.createElement('i');
-        iSave.setAttribute('class','material-icons');
-        iDelete.setAttribute("class",'material-icons');
+        iSave.setAttribute('class', 'material-icons');
+        iDelete.setAttribute("class", 'material-icons');
         iSave.innerText = 'edit';
         btnUpdate.append(iSave);
 
         tableBodyTp.appendChild(tr);
-        
+
         tdId.textContent = dta.tp_id;
         tdName.textContent = dta.tp_sigla;
         tdDescript.textContent = dta.tp_nombre;
-        
+
         //Dependiendo del estatus, en html se verá visible activo o inactivo pero sabemos que 1 es activo y 0 inactivo.
         tdStatus.textContent = dta.tp_status === 1 ? "Activo" : "Inactivo";
-        
+
         //Coloco el color rojo verde segun su estado.
         if (dta.tp_status === 1) {
           tdStatus.textContent = "Activo";
@@ -219,12 +221,12 @@ tpUpdateForm.addEventListener("submit", (e) => {
     //Transformo en un json la respuesta.
     dataStatus = JSON.parse(dataStatus);
     if (dataStatus.status) {
-      initAlert("Registro actualizado","info", toastOptions);
+      initAlert("Registro actualizado", "info", toastOptions);
       //Renderizo nuevamente la data.
       fetchData();
       //Cerrar el modal
       modal.close();
-    }else{
+    } else {
       initAlert("La sigla ya está registrada en la base de datos", "info", toastOptions);
     }
   };
@@ -236,7 +238,7 @@ formulario.addEventListener("submit", (event) => {
 
   event.preventDefault();
   event.stopPropagation();
-  
+
   let form = new FormData(formulario);
   let dt = Object.fromEntries(form);
 
@@ -257,21 +259,21 @@ formulario.addEventListener("submit", (event) => {
   objAjax2.request.setRequestHeader("Accept", "application/json");
 
   objAjax2.request.onload = () => {
-      const response = JSON.parse(objAjax2.request.responseText);
-      if (response.status) {
-        const lastRow = response.data;
-        initAlert('Registro adicionado con exito','success',toastOptions);
-        // Reiniciar el formulario
-        formulario.reset();
-        //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
-        fetchData();
+    const response = JSON.parse(objAjax2.request.responseText);
+    if (response.status) {
+      const lastRow = response.data;
+      initAlert('Registro adicionado con exito', 'success', toastOptions);
+      // Reiniciar el formulario
+      formulario.reset();
+      //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
+      fetchData();
 
-      } else {
-        initAlert(response.message, "error", toastOptions);
-      }
+    } else {
+      initAlert(response.message, "error", toastOptions);
+    }
   };
 
-  objAjax2.request.send(data); 
+  objAjax2.request.send(data);
 });
 
-closeModal(modal,closeModalBtn);
+closeModal(modal, closeModalBtn);

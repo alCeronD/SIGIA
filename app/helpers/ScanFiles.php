@@ -1,16 +1,13 @@
-<?php 
+<?php
 
 //Este archivo se va a encargar de extraer los nombres de los documentos que tenemos en ciertas carpetas para poder traer sus respectivos assets.
 
 class ScanFiles{
 
-    // private array $nameAssetsFiles;
 
-    // private array $nameFilesCss;
 
-    
-    private array $nameAssetsFiles = []; 
-    private array $nameFilesCss = [];    
+    protected array $nameAssetsFiles = [];
+    protected array $nameFilesCss = [];
 
 
     private $modulo;
@@ -30,10 +27,8 @@ class ScanFiles{
 
         $relativePathAssets = __DIR__ . "/../../public/assets/css/$module";
         $fileAssets = glob($relativePathAssets. '*',GLOB_MARK);
-        
         foreach ($fileAssets as $key => $value) {
             $filesAssets = basename($value);
-
 
             if (!str_contains($filesAssets,'.css')) {
 

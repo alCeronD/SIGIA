@@ -29,7 +29,7 @@ const preconfirmButton = document.querySelector("#preconfirmButton");
 // Función para traer las funciones que tiene asociadas el ROL, esta función sirve para verificar que si el permiso está asociado, seleccionar el checkbox automaticamente.
 const getPermisosRolAsig = async ({ data = null } = {}) => {
   const responseData = await getData(
-    "Modules/Roles/Controller/RolesController.php",
+    "modules/Roles/controller/RolesController.php",
     "GET",
     { action: "getPermisosRolAsig", idRol: data }
   );
@@ -61,7 +61,7 @@ const updateFunctionSelection = (idFuncion = null, isAdd = true) => {
 // Función para traer los roles y las funciones junto a su modulo.
 const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
   const getRlFunciones = await getData(
-    "Modules/Roles/Controller/rolesController.php",
+    "modules/Roles/controller/rolesController.php",
     "GET",
     { action: "getRolesPermisos" }
   );
@@ -189,7 +189,7 @@ preconfirmButton.addEventListener("click", (e) => {
         const rolesPorAsociar = Array.from(functionIdsAssoc).sort();
         const rolesDesleccionados = Array.from(functionDesc).sort();
         const responsePost = await sendData(
-          "Modules/Roles/Controller/rolesController.php",
+          "modules/Roles/controller/rolesController.php",
           "POST",
           "setPermisos",
           { rolesPorAsociar, rolesDesleccionados, rolId }
@@ -214,11 +214,11 @@ preconfirmButton.addEventListener("click", (e) => {
     }
   );
 });
-  
+
 // Renderizar la vista de la tabla roles.
 const renderRoles = async () => {
   const responseRoles = await getData(
-    "Modules/Roles/Controller/RolesController.php",
+    "modules/Roles/controller/rolesController.php",
     "GET",
     { action: "getRoles" }
   );
@@ -255,9 +255,9 @@ const renderRoles = async () => {
     tdActions.appendChild(btnAsig);
     tdActions.appendChild(btnEditar);
     tdActions.appendChild(btnStatus);
-    addClassItem(btnAsig, {btn: "btn", waves: "waves-effect"});
-    addClassItem(btnEditar, {btn: "btn",waves: "waves-effect", hoover: "waves-orange" });
-    addClassItem(btnStatus, {btn: "btn", waves: "waves-effect"});
+    addClassItem(btnAsig, { btn: "btn", waves: "waves-effect" });
+    addClassItem(btnEditar, { btn: "btn", waves: "waves-effect", hoover: "waves-orange" });
+    addClassItem(btnStatus, { btn: "btn", waves: "waves-effect" });
     tdID.innerText = rl.rl_id;
     tdNombre.innerText = rl.rl_nombre;
     tdDescript.innerText = rl.rl_descripcion;
@@ -316,7 +316,7 @@ const renderRoles = async () => {
           }
           try {
             const response = await sendData(
-              "Modules/Roles/Controller/RolesController.php",
+              "modules/Roles/controller/RolesController.php",
               "PUT",
               "statusRol",
               dataStatus
@@ -384,7 +384,7 @@ formEditarRol.addEventListener("submit", async (e) => {
 
   try {
     const updateInfo = await sendData(
-      "Modules/Roles/Controller/RolesController.php",
+      "modules/Roles/controller/RolesController.php",
       "PUT",
       "updateRol",
       objData
@@ -415,7 +415,7 @@ formRol.addEventListener("submit", async (e) => {
 
   try {
     const responseAdd = await sendData(
-      "Modules/Roles/Controller/RolesController.php",
+      "modules/Roles/controller/RolesController.php",
       "POST",
       "addRol",
       data
