@@ -39,6 +39,7 @@ export const sendData = async (
     }
     const optionsFetch = setFetch(method, parameters, data);
     const response = await fetch(newUrl, optionsFetch);
+    console.log({ "response": response, "optionsFetch": optionsFetch, "newUrl": newUrl });
     if (response.status === 204) {
       return { status: 204 };
     }

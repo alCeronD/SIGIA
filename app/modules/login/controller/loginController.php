@@ -4,6 +4,7 @@ include_once __DIR__ . '/../model/loginModel.php';
 require_once __DIR__ . '/../../Permisos/Model/PermisosModel.php';
 include_once __DIR__ . '/../../../helpers/response.php';
 require_once __DIR__ . '/../../../helpers/expg.php';
+require_once __DIR__ . '/../../../helpers/getUrl.php';
 require_once __DIR__ . '/../../../config/conn.php';
 
 class loginController
@@ -99,7 +100,6 @@ class loginController
     public function logout()
     {
 
-
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -112,14 +112,30 @@ class loginController
             echo json_encode([
                 'status' => true,
                 'message' => 'Sesión cerrada correctamente.',
-                'redirect' => getUrl('login', 'login', 'index', false, false)
+                'redirect' => getUrl('login', 'login', 'index', false, 'dashboard')
             ]);
             exit();
         }
 
 
-        redirect(getUrl('login', 'login', 'index', false, false));
+        redirect(getUrl('login', 'login', 'index', false, 'dashboard'));
 
         exit();
     }
 }
+
+if(!empty($_SERVER['HTTP_X_REQUESTED_WITH'])){
+
+if($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    $function = $input['action']['action'] ?? '';
+    if(!empty($function)){
+        $conn = (new Conection())->getConnect();
+        $controller = new loginController($conn);
+        $controller->$function();
+
+    }
+}
+
+}
+

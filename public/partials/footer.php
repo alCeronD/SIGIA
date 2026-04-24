@@ -28,7 +28,7 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
 
     <?php endforeach; ?>
     <li>
-      <a href="<?php echo getUrl('login', 'login', 'logout'); ?>" class="btn-floating red " data-tooltip="Cerrar sesión">
+      <a href="<?php echo getUrl('login', 'login', 'logout', false, 'dashboard'); ?>" class="btn-floating red " data-tooltip="Cerrar sesión">
         <i class="material-icons">exit_to_app</i>
       </a>
     </li>

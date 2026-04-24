@@ -39,7 +39,7 @@
     <ul id="" class="left">
       <li class="user-dropdown">
         <div class="contentUser" id="userDropdownToggle">
-          <span id="btnCerrarSesion" data-logOut="<?php echo getUrl('login','login','logout',false,false); ?>">
+          <span id="btnCerrarSesion" data-logOut='logOut' data-Url='modules/login/controller/loginController.php' ">
             Salir
           </span>
 
@@ -56,18 +56,3 @@
 
 <body>
   <?php require_once __DIR__ . '/../../app/helpers/modalConfirmation.php'; ?>
-  <script>
-    // document.addEventListener('DOMContentLoaded', function() {
-    //   const toggle = document.getElementById('userDropdownToggle');
-    //   const menu = document.getElementById('userDropdownMenu');
-
-    //   toggle.addEventListener('click', function(e) {
-    //     e.stopPropagation();
-    //     menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    //   });
-
-    //   document.addEventListener('click', function() {
-    //     menu.style.display = 'none';
-    //   });
-    // });
-  </script>

@@ -21,11 +21,17 @@ btnCerrarSesion.addEventListener("click", (e) => {
         return;
       }
       try {
-        const data = e.target.getAttribute("data-logOut");
 
-        const response = await sendData(data, "POST");
+        const url = e.target.getAttribute("data-Url");
+        let dta = e.target.getAttribute("data-logOut");
+        let data = {
+          action: dta
+        }
+        const response = await sendData(url, "POST", data);
+
         console.log(response);
         if (response.status) {
+          console.log("Sesión cerrada");
           Storage.addValue({ key: "sessionStatus", item: 'false' });
           window.location.href = response.redirect;
         }
