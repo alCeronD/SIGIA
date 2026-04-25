@@ -29,7 +29,7 @@ const preconfirmButton = document.querySelector("#preconfirmButton");
 // Función para traer las funciones que tiene asociadas el ROL, esta función sirve para verificar que si el permiso está asociado, seleccionar el checkbox automaticamente.
 const getPermisosRolAsig = async ({ data = null } = {}) => {
   const responseData = await getData(
-    "modules/Roles/controller/RolesController.php",
+    "modules/roles/controller/rolesController.php",
     "GET",
     { action: "getPermisosRolAsig", idRol: data }
   );
@@ -61,7 +61,7 @@ const updateFunctionSelection = (idFuncion = null, isAdd = true) => {
 // Función para traer los roles y las funciones junto a su modulo.
 const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
   const getRlFunciones = await getData(
-    "modules/Roles/controller/rolesController.php",
+    "modules/roles/controller/rolesController.php",
     "GET",
     { action: "getRolesPermisos" }
   );
@@ -189,7 +189,7 @@ preconfirmButton.addEventListener("click", (e) => {
         const rolesPorAsociar = Array.from(functionIdsAssoc).sort();
         const rolesDesleccionados = Array.from(functionDesc).sort();
         const responsePost = await sendData(
-          "modules/Roles/controller/rolesController.php",
+          "modules/roles/controller/rolesController.php",
           "POST",
           "setPermisos",
           { rolesPorAsociar, rolesDesleccionados, rolId }
@@ -218,7 +218,7 @@ preconfirmButton.addEventListener("click", (e) => {
 // Renderizar la vista de la tabla roles.
 const renderRoles = async () => {
   const responseRoles = await getData(
-    "modules/Roles/controller/rolesController.php",
+    "modules/roles/controller/rolesController.php",
     "GET",
     { action: "getRoles" }
   );
@@ -316,7 +316,7 @@ const renderRoles = async () => {
           }
           try {
             const response = await sendData(
-              "modules/Roles/controller/RolesController.php",
+              "modules/roles/controller/rolesController.php",
               "PUT",
               "statusRol",
               dataStatus
@@ -384,7 +384,7 @@ formEditarRol.addEventListener("submit", async (e) => {
 
   try {
     const updateInfo = await sendData(
-      "modules/Roles/controller/RolesController.php",
+      "modules/roles/controller/rolesController.php",
       "PUT",
       "updateRol",
       objData
@@ -415,7 +415,7 @@ formRol.addEventListener("submit", async (e) => {
 
   try {
     const responseAdd = await sendData(
-      "modules/Roles/controller/RolesController.php",
+      "modules/roles/controller/rolesController.php",
       "POST",
       "addRol",
       data

@@ -28,8 +28,7 @@ class categoriasController
         $modeloCategorias = new categorias($this->conn);
         $_SESSION['css'] = 'categorias/categorias.css';
         $categorias = $modeloCategorias->search();
-        // $path = __DIR__ . '/../views/categoriasConsultview.php';
-        $path = __DIR__ . '/../views/categoriasConsultview.php';
+        $path = __DIR__ . '/../views/categoriasConsultView.php';
         return include $path;
     }
 
@@ -107,7 +106,7 @@ class categoriasController
 
     public function createCategoria()
     {
-        
+
         validatePermisos('categorias', 'createCategoria');
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {

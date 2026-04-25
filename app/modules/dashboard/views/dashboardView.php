@@ -57,7 +57,7 @@
                 <div class="buttons">
                     <a class="btn grey btnGetUrl" href="<?php echo getUrl('configModules', 'configModules', 'renderViewArea', false, 'dashboard'); ?>">Áreas</a>
                     <a class="btn green btnGetUrl" href="<?php echo getUrl('configModules', 'configModules', 'renderViewTp', false, 'dashboard'); ?>">Tipo documento</a>
-                    <a class="btn grey btnGetUrl" href="<?php echo getUrl('Roles', 'roles', 'mostrarRoles', false, 'dashboard'); ?>">Roles</a>
+                    <a class="btn grey btnGetUrl" href="<?php echo getUrl('roles', 'roles', 'mostrarRoles', false, 'dashboard'); ?>">Roles</a>
                     <a class="btn green btnGetUrl" href="<?php echo getUrl('configModules', 'configModules', 'renderViewMarca', false, 'dashboard'); ?>">Marcas</a>
                 </div>
             </div>

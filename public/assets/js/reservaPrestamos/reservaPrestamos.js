@@ -1,5 +1,5 @@
 import {
-  Ajax,closeModal,createI,instanceDate,opcionesDatepicker,dateISOFormat,initTooltip,tooltipOptions,initAlert,toastOptions,tablesDoom,modalDoom,btnDoom,getData,inputsForm,iDom,objDataConsumibles,divContainers,mostrarConfirmacion,sendData,replaceln,addClassItem
+  Ajax, closeModal, createI, instanceDate, opcionesDatepicker, dateISOFormat, initTooltip, tooltipOptions, initAlert, toastOptions, tablesDoom, modalDoom, btnDoom, getData, inputsForm, iDom, objDataConsumibles, divContainers, mostrarConfirmacion, sendData, replaceln, addClassItem
 } from "./index.js";
 import { validateFormData, validateDate, definirCantidad, validateDisponibilidad, createMessageElementos, createMessagReservados } from "./reserva/reservaFunctions.js";
 
@@ -36,7 +36,7 @@ const renderUsers = async ({
 } = {}) => {
   try {
     const response = await getData(
-      "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
+      "modules/reservaPrestamos/controller/reservaPrestamosController.php",
       "GET",
       { action: action, pages }
     );
@@ -105,7 +105,7 @@ const renderUsers = async ({
 const getElements = async ({ action = "", pages = 1 } = {}) => {
   try {
     const response = await getData(
-      "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
+      "modules/reservaPrestamos/controller/reservaPrestamosController.php",
       "GET",
       { action, pages }
     );
@@ -179,7 +179,7 @@ const renderConsumibles = async ({
     tdOpciones.appendChild(divElements);
 
     let cantidad = data.cantidad;
-    definirCantidad(cantidadInput, cantidad, checkBoxSelect, {initAlert, toastOptions});
+    definirCantidad(cantidadInput, cantidad, checkBoxSelect, { initAlert, toastOptions });
     let codigoString = data.codigo.toString();
     if (ids.includes(codigoString)) {
       checkBoxSelect.disabled = false;
@@ -688,7 +688,7 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
   let info = new FormData(formSolicitudPrestamo);
   //Data de formulario
   let data = Object.fromEntries(info);
-  if(!validateFormData(info, tpPrestamo, {initAlert, toastOptions})) return;
+  if (!validateFormData(info, tpPrestamo, { initAlert, toastOptions })) return;
 
   let fechaReservaParse = null;
   let fechaDevolucionParse = null;
@@ -817,12 +817,12 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
       };
     }
 
-    const responseValidate = await validateDisponibilidad(paramValidateDisponibilidad, {sendData,getData,initAlert,toastOptions});
+    const responseValidate = await validateDisponibilidad(paramValidateDisponibilidad, { sendData, getData, initAlert, toastOptions });
     // //Mostrar mensaje de modal para informar que hay elementos ya reservados para esa fecha y por ende, no se podrán reservar.
     if (responseValidate.status) {
       messageValidate = responseValidate.message;
       dataValidate = responseValidate.data;
-      const messageReservado = createMessagReservados(dataValidate,tpPrestamo, replaceln);
+      const messageReservado = createMessagReservados(dataValidate, tpPrestamo, replaceln);
       // Unificamos ambos mensajes, el de los elementos que ya están reservados con los elementos que el usuario ha seleccionado.
       modalMessage += `\n ${messageReservado} \n Si presiona aceptar, los elementos ya reservados no se asociarán a la reserva, ¿Desea continuar? \n ${replaceln(
         messageElements
@@ -878,7 +878,7 @@ formSolicitudPrestamo.addEventListener("submit", async (event) => {
 
       try {
         const responseReserva = await sendData(
-          "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
+          "modules/reservaPrestamos/controller/reservaPrestamosController.php",
           "POST",
           "registrar",
           data

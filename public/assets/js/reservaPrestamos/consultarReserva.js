@@ -31,7 +31,7 @@ const height = screen.height;
 // console.log(width, height);
 
 // tipos de prestamos
-const typesPrestamosLoan  ={
+const typesPrestamosLoan = {
   all: 'all',
   validate: 'validate',
   done: 'done',
@@ -43,7 +43,7 @@ const typesPrestamosLoan  ={
 const filtroTipoReserva = document.querySelector('#filtroTipoReserva');
 
 // Página actual de los prestamos
-let currentPage =1;
+let currentPage = 1;
 const objAjax = new Ajax();
 //Cuerpo de la tabla para renderizar los datos.
 const tbodyReservaConsult = document.querySelector("#tbodyReservaConsult");
@@ -96,165 +96,165 @@ const nextBtnValidate = document.querySelector("#btnNextValidate");
 //Variable para mostrar la información en el modal.
 let elementosDetalle = [];
 
-const renderReservas = async ({page = 1, type = 'all'} = {}) => {
+const renderReservas = async ({ page = 1, type = 'all' } = {}) => {
   pagesReserva = page;
 
   try {
     //Traigo la data por medio de fetch.
-  const result = await getData(
-    "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
-    "GET",
-    { action: "reservas", pages: page, type },false
-  );
+    const result = await getData(
+      "modules/reservaPrestamos/controller/reservaPrestamosController.php",
+      "GET",
+      { action: "reservas", pages: page, type }, false
+    );
 
 
-  let status = result.status;
-  data = result.data.data;
-  pages = result.data.pages;
-  if (status && data.length === 0) {
-    tbodyReservaConsult.innerHTML = "";
-    tbodyReservaConsult.innerHTML = "No hay prestamos para el estado del prestamo seleccionado.";
-    return;
-  }
-  if (pagesReserva > pages) return;
-
-  tbodyReservaConsult.innerHTML = "";
-  data.forEach((dta) => {
-    codigo = dta.codigo;
-    let tr = document.createElement("tr");
-    let btnAdd = document.createElement("button");
-    let btnEnd = document.createElement("button");
-    let btnDetail = document.createElement("button");
-    let btnCancel = document.createElement("button");
-    btnAdd.setAttribute("class", "btn waves-effect waves-light");
-    let btnValidateLoan = createBtn("btnClick");
-    let iDetalle = createI();
-    btnDetail.append(iDetalle);
-    iDetalle.innerText = "info";
-    let iValidate = createI();
-    iValidate.innerText = "done";
-
-    btnDetail.setAttribute("class", "btnDetail btnClick");
-    btnDetail.setAttribute("data-id", `${dta.codigo}`);
-    btnAdd.setAttribute("class", "addElements");
-    btnAdd.setAttribute("data-add", `${dta.codigo}`);
-    btnEnd.setAttribute("data-end", `${dta.codigo}`);
-    btnCancel.setAttribute("data-cancel", `${dta.codigo}`);
-    btnValidateLoan.setAttribute("data-validate", `${dta.codigo}`);
-    let iFinalizar = createI();
-    iFinalizar.innerText = "swap_horiz";
-    let iCancel = createI();
-    iCancel.innerText = "cancel";
-    btnAdd.setAttribute("class", "btnEnd");
-    addClassItem(btnDetail, {
-      btn: "btn",
-      wavesEffect: "waves-effect",
-      wavesLight: "wares-light",
-      btnSmall: "btn-small",
-    });
-    addClassItem(btnValidateLoan, {
-      btn: "btn",
-      color: "yellow darken-2",
-      wavesEffect: "waves-effect",
-      wavesLight: "waves-light",
-      btnSmall: "btn-small",
-    });
-    addClassItem(btnEnd, {
-      btn: "btn",
-      color: "red lighten-1",
-      wavesEffect: "waves-effect",
-      wavesLight: "waves-light",
-      btnSmall: "btn-small",
-    });
-    addClassItem(btnCancel, {
-      btn: "btn",
-      color: "blue lighten-1",
-      wavesEffect: "waves-effect",
-      wavesLight: "waves-light",
-      btnSmall: "btn-small"
-    });
-    btnValidateLoan.append(iValidate);
-    btnEnd.append(iFinalizar);
-    btnCancel.append(iCancel);
-    let tdCodigo = document.createElement("td");
-    let tdNombreCompleto = document.createElement("td");
-    let tdFechaRegistro = document.createElement("td");
-    let tdCantidad = document.createElement("td");
-    let tdEstado = document.createElement("td");
-    let tdAcciones = document.createElement("td");
-    let tdTipo = document.createElement("td");
-    tdCodigo.textContent = dta.codigo;
-    tdNombreCompleto.textContent = dta.nombre + " " + dta.apellido;
-    tdEstado.textContent = dta.estadoPrestamo;
-    tdTipo.textContent = dta.tipoPrestamo;
-    tdFechaRegistro.textContent = dta.fechaSolicitud;
-
-    tbodyReservaConsult.appendChild(tr);
-    tr.appendChild(tdCodigo);
-    tr.appendChild(tdFechaRegistro);
-    tr.appendChild(tdNombreCompleto);
-    tr.appendChild(tdEstado);
-    tr.appendChild(tdTipo);
-    
-    tdAcciones.innerHTML = "";
-    tr.append(tdAcciones);
-
-    if (tdEstado.textContent === "Finalizado") {
-      btnEnd.style.display = "none";
-      tdEstado.style.color = "gray";
-    }
-
-    if (tdEstado.textContent === "Rechazado") {
-      tdEstado.style.color = "red";
-    }
-
-    if (tdEstado.textContent === "Validado") {
-      tdEstado.style.color = "green";
-    }
-
-    tdAcciones.appendChild(btnDetail);
-
-    if (dta.estadoPrestamo === "Finalizado") {
+    let status = result.status;
+    data = result.data.data;
+    pages = result.data.pages;
+    if (status && data.length === 0) {
+      tbodyReservaConsult.innerHTML = "";
+      tbodyReservaConsult.innerHTML = "No hay prestamos para el estado del prestamo seleccionado.";
       return;
     }
+    if (pagesReserva > pages) return;
 
-    if (dta.codigoTipoPrestamo === typeLoans.solicitud) {
-      if (dta.estadoPrestamo === "Por validar") {
-        tdAcciones.appendChild(btnValidateLoan);
-        tdAcciones.appendChild(btnCancel);
-      } else if (dta.estadoPrestamo === "Validado") {
-        tdAcciones.appendChild(btnEnd);
-      }
-    }
+    tbodyReservaConsult.innerHTML = "";
+    data.forEach((dta) => {
+      codigo = dta.codigo;
+      let tr = document.createElement("tr");
+      let btnAdd = document.createElement("button");
+      let btnEnd = document.createElement("button");
+      let btnDetail = document.createElement("button");
+      let btnCancel = document.createElement("button");
+      btnAdd.setAttribute("class", "btn waves-effect waves-light");
+      let btnValidateLoan = createBtn("btnClick");
+      let iDetalle = createI();
+      btnDetail.append(iDetalle);
+      iDetalle.innerText = "info";
+      let iValidate = createI();
+      iValidate.innerText = "done";
 
-    if (dta.codigoTipoPrestamo === typeLoans.inmediata) {
-      // En préstamos inmediatos, ya están validados desde el backend
-      if (dta.estadoPrestamo === "Validado") {
-        tdAcciones.appendChild(btnEnd);
-      }
-    }
-
-    //Re factorizarlo y transformarlo en fetch, en una sola función.
-    const reserva = data.find((item) => item.codigo === codigo);
-    if (reserva) {
-      let getReservaElementos =  getData(
-        "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
-        "GET",
-        { action: "reservaDetailElements" , codigo: dta.codigo}
-      ).then((result)=>{
-
-        //Guardo el código de la reserva con los elementos que están asociados a ese prestamo.
-        //Response.data tiene los elementos.
-        elementos[dta.codigo] = {
-          reserva: dta,
-          elementos: result.data,
-        };
-
+      btnDetail.setAttribute("class", "btnDetail btnClick");
+      btnDetail.setAttribute("data-id", `${dta.codigo}`);
+      btnAdd.setAttribute("class", "addElements");
+      btnAdd.setAttribute("data-add", `${dta.codigo}`);
+      btnEnd.setAttribute("data-end", `${dta.codigo}`);
+      btnCancel.setAttribute("data-cancel", `${dta.codigo}`);
+      btnValidateLoan.setAttribute("data-validate", `${dta.codigo}`);
+      let iFinalizar = createI();
+      iFinalizar.innerText = "swap_horiz";
+      let iCancel = createI();
+      iCancel.innerText = "cancel";
+      btnAdd.setAttribute("class", "btnEnd");
+      addClassItem(btnDetail, {
+        btn: "btn",
+        wavesEffect: "waves-effect",
+        wavesLight: "wares-light",
+        btnSmall: "btn-small",
       });
-    }
-  });
-  pagesPrestamos.innerText = `Página ${pagesReserva} de ${pages}`;
-  // rowsPrestamos.innerText = `Cantidad prestamos: ${pages}`;
+      addClassItem(btnValidateLoan, {
+        btn: "btn",
+        color: "yellow darken-2",
+        wavesEffect: "waves-effect",
+        wavesLight: "waves-light",
+        btnSmall: "btn-small",
+      });
+      addClassItem(btnEnd, {
+        btn: "btn",
+        color: "red lighten-1",
+        wavesEffect: "waves-effect",
+        wavesLight: "waves-light",
+        btnSmall: "btn-small",
+      });
+      addClassItem(btnCancel, {
+        btn: "btn",
+        color: "blue lighten-1",
+        wavesEffect: "waves-effect",
+        wavesLight: "waves-light",
+        btnSmall: "btn-small"
+      });
+      btnValidateLoan.append(iValidate);
+      btnEnd.append(iFinalizar);
+      btnCancel.append(iCancel);
+      let tdCodigo = document.createElement("td");
+      let tdNombreCompleto = document.createElement("td");
+      let tdFechaRegistro = document.createElement("td");
+      let tdCantidad = document.createElement("td");
+      let tdEstado = document.createElement("td");
+      let tdAcciones = document.createElement("td");
+      let tdTipo = document.createElement("td");
+      tdCodigo.textContent = dta.codigo;
+      tdNombreCompleto.textContent = dta.nombre + " " + dta.apellido;
+      tdEstado.textContent = dta.estadoPrestamo;
+      tdTipo.textContent = dta.tipoPrestamo;
+      tdFechaRegistro.textContent = dta.fechaSolicitud;
+
+      tbodyReservaConsult.appendChild(tr);
+      tr.appendChild(tdCodigo);
+      tr.appendChild(tdFechaRegistro);
+      tr.appendChild(tdNombreCompleto);
+      tr.appendChild(tdEstado);
+      tr.appendChild(tdTipo);
+
+      tdAcciones.innerHTML = "";
+      tr.append(tdAcciones);
+
+      if (tdEstado.textContent === "Finalizado") {
+        btnEnd.style.display = "none";
+        tdEstado.style.color = "gray";
+      }
+
+      if (tdEstado.textContent === "Rechazado") {
+        tdEstado.style.color = "red";
+      }
+
+      if (tdEstado.textContent === "Validado") {
+        tdEstado.style.color = "green";
+      }
+
+      tdAcciones.appendChild(btnDetail);
+
+      if (dta.estadoPrestamo === "Finalizado") {
+        return;
+      }
+
+      if (dta.codigoTipoPrestamo === typeLoans.solicitud) {
+        if (dta.estadoPrestamo === "Por validar") {
+          tdAcciones.appendChild(btnValidateLoan);
+          tdAcciones.appendChild(btnCancel);
+        } else if (dta.estadoPrestamo === "Validado") {
+          tdAcciones.appendChild(btnEnd);
+        }
+      }
+
+      if (dta.codigoTipoPrestamo === typeLoans.inmediata) {
+        // En préstamos inmediatos, ya están validados desde el backend
+        if (dta.estadoPrestamo === "Validado") {
+          tdAcciones.appendChild(btnEnd);
+        }
+      }
+
+      //Re factorizarlo y transformarlo en fetch, en una sola función.
+      const reserva = data.find((item) => item.codigo === codigo);
+      if (reserva) {
+        let getReservaElementos = getData(
+          "modules/reservaPrestamos/controller/reservaPrestamosController.php",
+          "GET",
+          { action: "reservaDetailElements", codigo: dta.codigo }
+        ).then((result) => {
+
+          //Guardo el código de la reserva con los elementos que están asociados a ese prestamo.
+          //Response.data tiene los elementos.
+          elementos[dta.codigo] = {
+            reserva: dta,
+            elementos: result.data,
+          };
+
+        });
+      }
+    });
+    pagesPrestamos.innerText = `Página ${pagesReserva} de ${pages}`;
+    // rowsPrestamos.innerText = `Cantidad prestamos: ${pages}`;
 
   } catch (error) {
     console.warn(`Error al procesar la solicitud, intente más tarde ${error}`);
@@ -296,7 +296,7 @@ function addElementsToArray(input, cantidadPersonalizada = null) {
 
     if (tipo === "Consumible") {
       // Reemplazo el elemento si ya existe.
-      consumibles = consumibles.filter(consu => consu.cod !== cod); 
+      consumibles = consumibles.filter(consu => consu.cod !== cod);
       consumibles.push({ tipo, cod, nombre, cantidadSalida: cantidad });
     }
   } else {
@@ -420,7 +420,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     let nombreCompleto = dataTr.children[1].textContent;
     let tipo = dataTr.children[2].textContent;
     let estado = dataTr.children[3].textContent;
-    
+
 
     const modalTitle = document.querySelector('#modalTitle');
     codigo = parseInt(btnDetail.getAttribute("data-id"));
@@ -430,7 +430,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     //TODO: Mejorar, en la variable elementos encuentro toda la información, no necesito hacer otra petición.
     objAjax.request.open(
       "GET",
-      `Modules/reservaPrestamos/controller/reservaPrestamosController.php?codigo=${encodeURIComponent(
+      `modules/reservaPrestamos/controller/reservaPrestamosController.php?codigo=${encodeURIComponent(
         codigo
       )}&action=${encodeURIComponent(action)}`,
       true
@@ -487,23 +487,23 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     }
 
     const observacionesLabelSalida = document.querySelector('#observacionesLabelSalida');
-    radioButtonSalida.forEach((rdSal)=>{
-      rdSal.addEventListener('change', (e)=>{
-      e.stopPropagation();
+    radioButtonSalida.forEach((rdSal) => {
+      rdSal.addEventListener('change', (e) => {
+        e.stopPropagation();
 
-      if (e.target.value === "off") {
-        inputObservacionsalida.readOnly = true;
-        inputObservacionsalida.value = "";
-        setObservacion({baseText : "Observación: ",selector: observacionesLabelSalida, isRequired: false});
-        
-      }else{
-        inputObservacionsalida.readOnly = false;
-        setObservacion({baseText : "Observación: ",selector: observacionesLabelSalida, isRequired: true});
-      }
+        if (e.target.value === "off") {
+          inputObservacionsalida.readOnly = true;
+          inputObservacionsalida.value = "";
+          setObservacion({ baseText: "Observación: ", selector: observacionesLabelSalida, isRequired: false });
+
+        } else {
+          inputObservacionsalida.readOnly = false;
+          setObservacion({ baseText: "Observación: ", selector: observacionesLabelSalida, isRequired: true });
+        }
 
       });
     });
-   
+
     //Hago la captura de la data necesaria para validar el prestamo o para reservalo inmedaitamente.
     let endReserva = setReserva(
       "data-end",
@@ -513,11 +513,11 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       "finalizar"
     );
 
-    let messageEnd = `¿Está seguro de finalizar el préstamo? \n 
+    let messageEnd = `¿Está seguro de finalizar el préstamo? \n
     Estos son los elementos que cambiarán a disponible:
     \n${endReserva.elementos
-      .map((el) => `- ${el.nombre}`)
-      .join("\n")}`;
+        .map((el) => `- ${el.nombre}`)
+        .join("\n")}`;
 
     mostrarConfirmacion("Finalizar prestamo", messageEnd, (response) => {
       if (!response) {
@@ -525,7 +525,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         return;
       }
 
-      finalizarPrestamo = finalizarPresvamoPreview(endReserva,sendData,modalSalida,initAlert,toastOptions,renderReservas,valueSelect,inputObservacionsalida,radioButtonSalida);
+      finalizarPrestamo = finalizarPresvamoPreview(endReserva, sendData, modalSalida, initAlert, toastOptions, renderReservas, valueSelect, inputObservacionsalida, radioButtonSalida);
 
       modalSalida.open();
       formSalida.addEventListener("submit", finalizarPrestamo);
@@ -549,7 +549,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
     if ((dateNow < fechaReserva)) {
       initAlert(`No puedes dar salida a elementos hasta la fecha de reserva ${fechaReserva}`, "info", toastOptions);
       return;
-    }else if((dateNow > fechaReserva)){
+    } else if ((dateNow > fechaReserva)) {
       initAlert(`No es posible dar salida a estos elementos, la fecha de reserva (${fechaReserva}) no corresponde con la fecha actual (${dateNow}). `, "info", toastOptions);
       return;
     }
@@ -753,14 +753,14 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       // No tiene ni punto ni asterisco porque lo llamo x el nombre
       const textAreaObsInput = document.querySelector('#modalValidate #inputObservacionValidate');
       const radioValidatePrestamo = document.querySelectorAll('#modalValidate input[name="radioValidate"]');
-      radioValidatePrestamo.forEach((rvp)=>{
-        rvp.addEventListener('change', (e)=>{
+      radioValidatePrestamo.forEach((rvp) => {
+        rvp.addEventListener('change', (e) => {
           e.stopPropagation();
           if (e.target.value === "yes") {
-            setObservacion({baseText : "Observación",selector: observacionesLabel, isRequired: true});
+            setObservacion({ baseText: "Observación", selector: observacionesLabel, isRequired: true });
             textAreaObsInput.readOnly = false;
-          }else{
-            setObservacion({baseText : "Observación",selector: observacionesLabel, isRequired: false});
+          } else {
+            setObservacion({ baseText: "Observación", selector: observacionesLabel, isRequired: false });
             textAreaObsInput.value = "";
             textAreaObsInput.readOnly = true;
           }
@@ -813,83 +813,83 @@ tbodyReservaConsult.addEventListener("click", (event) => {
           .map((el) => `Código: ${el.cod} Nombre: ${el.nombre}`)
           .join("\n")}`;
 
-          mostrarConfirmacion(
-            `Salida elementos`,
-            `¿Deseas dar salida a estos elementos? \n${textConfirm}`,
-            async (responseSalida) => {
-              if (!responseSalida) {
-                initAlert("Proceso cancelado", "warning", tooltipOptions);
-                modalValidate.close();
+        mostrarConfirmacion(
+          `Salida elementos`,
+          `¿Deseas dar salida a estos elementos? \n${textConfirm}`,
+          async (responseSalida) => {
+            if (!responseSalida) {
+              initAlert("Proceso cancelado", "warning", tooltipOptions);
+              modalValidate.close();
 
-                // Esto se repite, lo puedo modificar haciendo no una función sino cerrando el modal usando la función close modal, para ello debo de cambiar la forma de enviar los parámetros, lo ideal, enviarlos mediante objeto.
-                BodydetailReserva.innerHTML = "";
-                checkBoxValidate.checked = false;
+              // Esto se repite, lo puedo modificar haciendo no una función sino cerrando el modal usando la función close modal, para ello debo de cambiar la forma de enviar los parámetros, lo ideal, enviarlos mediante objeto.
+              BodydetailReserva.innerHTML = "";
+              checkBoxValidate.checked = false;
 
-                previewBtnValidate.style.display = "none";
-                nextBtnValidate.style.display = "none";
-                resetModalValidate(true);
-                resetDataModal();
+              previewBtnValidate.style.display = "none";
+              nextBtnValidate.style.display = "none";
+              resetModalValidate(true);
+              resetDataModal();
 
+              return;
+            }
+
+            try {
+              const responseValidate = await sendData(
+                "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
+                "POST",
+                "validateLoan",
+                validateReserva
+              );
+
+              //  Acá cae el mensaje de "no tienes permisos para realizar está acción."
+              if (!responseValidate.status) {
+                initAlert(responseValidate.message, "error", toastOptions);
                 return;
               }
 
-              try {
-                const responseValidate = await sendData(
-                  "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
-                  "POST",
-                  "validateLoan",
-                  validateReserva
+              if (responseValidate.status) {
+                estadoNew.textContent = "Validado";
+                estadoNew.style.color = "green";
+
+                let btnValidate = document.querySelector(
+                  `#tbodyReservaConsult tr td [data-validate='${validateReserva.codigoReserva}']`
                 );
-
-                //  Acá cae el mensaje de "no tienes permisos para realizar está acción."
-                if (!responseValidate.status) {
-                  initAlert(responseValidate.message, "error", toastOptions);
-                  return;
+                if (btnValidate) {
+                  // Renderizo nuevamente basada en la pagína y el tipo.
+                  renderReservas({ page: currentPage, type: valueSelect });
+                  initAlert(
+                    `Prestamo validado ${validateReserva.codigoReserva}`,
+                    "success",
+                    toastOptions
+                  );
+                  btnValidate.style.display = "none";
+                  modalValidate.close();
                 }
 
-                if (responseValidate.status) {
-                  estadoNew.textContent = "Validado";
-                  estadoNew.style.color = "green";
-
-                  let btnValidate = document.querySelector(
-                    `#tbodyReservaConsult tr td [data-validate='${validateReserva.codigoReserva}']`
-                  );
-                  if (btnValidate) {
-                    // Renderizo nuevamente basada en la pagína y el tipo.
-                    renderReservas({ page: currentPage, type: valueSelect });
-                    initAlert(
-                      `Prestamo validado ${validateReserva.codigoReserva}`,
-                      "success",
-                      toastOptions
-                    );
-                    btnValidate.style.display = "none";
-                    modalValidate.close();
-                  }
-
-                  let btnEnd = document.createElement("button");
-                  let iFinalizar = createI();
-                  iFinalizar.innerText = "swap_horiz";
-                  //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
-                  addClassItem(btnEnd, {
-                    btn: "btn",
-                    color: "red lighten-1",
-                    wavesEffect: "waves-effect",
-                    wavesLight: "waves-light",
-                    btnSmall: "btn-small",
-                  });
-                  btnEnd.append(iFinalizar);
-                  btnEnd.setAttribute(
-                    "data-end",
-                    `${validateReserva.codigoReserva}`
-                  );
-                  tdAcciones.appendChild(btnEnd);
-                }
-              } catch (error) {
-                console.log(error);
-                initAlert(`${error.message}`, "error", toastOptions);
+                let btnEnd = document.createElement("button");
+                let iFinalizar = createI();
+                iFinalizar.innerText = "swap_horiz";
+                //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
+                addClassItem(btnEnd, {
+                  btn: "btn",
+                  color: "red lighten-1",
+                  wavesEffect: "waves-effect",
+                  wavesLight: "waves-light",
+                  btnSmall: "btn-small",
+                });
+                btnEnd.append(iFinalizar);
+                btnEnd.setAttribute(
+                  "data-end",
+                  `${validateReserva.codigoReserva}`
+                );
+                tdAcciones.appendChild(btnEnd);
               }
+            } catch (error) {
+              console.log(error);
+              initAlert(`${error.message}`, "error", toastOptions);
             }
-          );
+          }
+        );
       });
     });
   }
@@ -897,16 +897,16 @@ tbodyReservaConsult.addEventListener("click", (event) => {
   const radioCancel = document.querySelectorAll('#modalCancel input[name="radioCancel"');
   const inputObservacionCancel = document.querySelector('#inputObservacionCancel');
   const observacionesLabelCancel = document.querySelector('#observacionesLabelCancel');
-  radioCancel.forEach((rlc)=>{
-    rlc.addEventListener('change', (e)=>{
+  radioCancel.forEach((rlc) => {
+    rlc.addEventListener('change', (e) => {
       e.stopPropagation();
       if (e.target.value === "off") {
         inputObservacionCancel.readOnly = true;
         inputObservacionCancel.value = "";
-        setObservacion({baseText:"Observación", selector: observacionesLabelCancel,isRequired: false});
-      }else{
+        setObservacion({ baseText: "Observación", selector: observacionesLabelCancel, isRequired: false });
+      } else {
         inputObservacionCancel.readOnly = false;
-        setObservacion({baseText:"Observación", selector: observacionesLabelCancel,isRequired: true});
+        setObservacion({ baseText: "Observación", selector: observacionesLabelCancel, isRequired: true });
       }
     })
   });
@@ -930,7 +930,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
             return;
           }
 
-          cancelarProceso = cancelarProcesoPreview(dataCodigo,modalCancel,toastOptions,sendData,initAlert, renderReservas, currentPage, valueSelect);
+          cancelarProceso = cancelarProcesoPreview(dataCodigo, modalCancel, toastOptions, sendData, initAlert, renderReservas, currentPage, valueSelect);
 
           // Span para insertar el titulo del proceso.
           const modalTitleCancel = document.querySelector(
@@ -938,7 +938,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
           );
           modalTitleCancel.innerText = `Cancelar reserva # ${dataCodigo}`;
           modalCancel.open();
-          
+
           // formCancel.addEventListener("submit", async (f) => {
           //   f.stopPropagation();
           //   f.preventDefault();
@@ -1016,7 +1016,7 @@ closeModal(modalValidate, btnCloseValidte, () => {
     ...options,
     onCloseEnd: () => {
       resetDataModal();
-      resetModalValidate(true); 
+      resetModalValidate(true);
 
       // Limpiar radios
       document.querySelectorAll('#modalValidate input[name="radioValidate"]').forEach(radio => {
@@ -1059,7 +1059,7 @@ closeModal(modalCancel, btnCloseCancel, () => {
 });
 
 // Acciones de finalizar el prestamo luego de que se cierre el modal.
-closeModal(modalSalida,closeModalBtnSalida, ()=>{
+closeModal(modalSalida, closeModalBtnSalida, () => {
   resetModalSalida();
   if (finalizarPrestamo) {
     formSalida.removeEventListener(finalizarPrestamo);
@@ -1082,7 +1082,7 @@ previewReserva.addEventListener("click", (e) => {
   if (pagesReserva <= 1) return;
   currentPage = currentPage - 1;
 
-    renderReservas({page:currentPage, type:valueSelect});
+  renderReservas({ page: currentPage, type: valueSelect });
 
   // renderReservas({page:currentPage, type:valueSelect});
 });
@@ -1095,14 +1095,14 @@ nextReserva.addEventListener("click", (e) => {
   if (pagesReserva >= pages) return;
   currentPage = currentPage + 1;
 
-   
-  renderReservas({page:currentPage, type:valueSelect});
-  
+
+  renderReservas({ page: currentPage, type: valueSelect });
+
   // renderReservas({page:currentPage, type:valueSelect});
 });
 
 let valueSelect;
-filtroTipoReserva.addEventListener('change', (e)=>{
+filtroTipoReserva.addEventListener('change', (e) => {
   e.preventDefault();
   e.stopPropagation();
 
@@ -1113,8 +1113,8 @@ filtroTipoReserva.addEventListener('change', (e)=>{
   if (pages >= currentPage) {
     currentPage = 1;
   }
-  renderReservas({page: currentPage, type:mapTypeLoan});
-  
+  renderReservas({ page: currentPage, type: mapTypeLoan });
+
 
 });
 
