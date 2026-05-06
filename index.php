@@ -1,6 +1,5 @@
 <?php
-define('BASE_URL', __DIR__);
-include_once BASE_URL.'/app/helpers/getUrl.php';
+include_once __DIR__.'/Core/Helpers/GetUrl.php';
 if (ajaxGeneral()) {
     resolve();
     exit;

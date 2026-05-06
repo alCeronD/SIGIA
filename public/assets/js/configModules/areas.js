@@ -6,6 +6,7 @@ import { createI, closeModal, openModal, createBtn, instanceModal, options, init
 const formulario = document.querySelector("#formArea");
 const objAjax = new Ajax();
 const btnAreaSend = document.querySelector('#btnAreaSend');
+const url = 'Modules/ConfigModules/api/apiConfigModules.php';
 let iPost = createI();
 iPost.innerText = 'send';
 btnAreaSend.append(iPost);
@@ -30,13 +31,10 @@ let descripcion;
 
 function fetchData() {
   tableBody.innerHTML = "";
-  //let dataFetch = [table, status];
 
   objAjax.request.open(
     "GET",
-    `modules/configModules/api/apiConfigModules.php?tableName=${encodeURIComponent(
-      table
-    )}&status=${encodeURIComponent(status)}`
+    url + `?tableName=${encodeURIComponent(table)}&status=${encodeURIComponent(status)}`
   );
 
   //Aca va la respuesta y el renderizado de los datos en la tabla.
@@ -53,7 +51,6 @@ function fetchData() {
       tableBody.appendChild(spanMessage);
     }
 
-    console.log(objAjax.request.statusText);
 
 
     if (objAjax.request.status) {
@@ -172,7 +169,7 @@ function fetchData() {
 
             objAjax.request.open(
               "POST",
-              "modules/configModules/api/apiConfigModules.php",
+              url,
               true
             );
             objAjax.request.setRequestHeader(
@@ -242,16 +239,14 @@ formulario.addEventListener("submit", (event) => {
 
 
   // Ajax POST
-  objAjax.request.open('POST', "modules/configModules/api/apiConfigModules.php", true);
+  objAjax.request.open('POST', url, true);
   objAjax.request.setRequestHeader("Content-Type", "application/json");
   objAjax.request.setRequestHeader("Accept", "application/json");
   objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
   objAjax.request.onload = () => {
     const response2 = objAjax.request.responseText;
-    console.log(response2);
     const response = JSON.parse(objAjax.request.responseText);
-    console.log(response);
     if (response.status) {
       const lastRow = response.data;
       initAlert('Registro adicionado con exito', 'success', toastOptions);
@@ -283,9 +278,7 @@ areaUpdateForm.addEventListener("submit", (e) => {
 
   objAjax.request.open(
     "PUT",
-    `modules/configModules/api/apiConfigModules.php?data=${encodeURIComponent(
-      data
-    )}`
+    url + `?data=${encodeURIComponent(data)}`
   );
   objAjax.request.setRequestHeader("Content-Type", "application/json");
 

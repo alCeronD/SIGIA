@@ -55,4 +55,4 @@
 </nav>
 
 <body>
-  <?php require_once __DIR__ . '/../../app/helpers/modalConfirmation.php'; ?>
+  <?php require_once __DIR__ . '/../../Core/Helpers/modalConfirmation.php'; ?>

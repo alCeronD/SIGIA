@@ -14,6 +14,7 @@ const tpUpdateForm = document.querySelector("#tpUpdateForm");
 const closeModalBtn = document.querySelector('.closeModalBtn');
 const myModal = document.querySelector("#modalTp");
 const modal = instanceModal('#modalTp', { "inDuration": options.inDuration, "outDuration": options.outDuration, "opacity": options.opacity });
+const url = 'Modules/ConfigModules/api/apiConfigModules.php';
 let idPk;
 let nombreTp;
 let descripcion;
@@ -24,9 +25,7 @@ function fetchData() {
 
   objAjax2.request.open(
     "GET",
-    `modules/configModules/api/apiConfigModules.php?tableName=${encodeURIComponent(
-      table
-    )}&status=${encodeURIComponent(status)}`
+    url + `?tableName=${encodeURIComponent(table)}&status=${encodeURIComponent(status)}`
   );
 
   //Aca va la respuesta y el renderizado de los datos en la tabla.
@@ -154,7 +153,7 @@ function fetchData() {
 
             objAjax2.request.open(
               "POST",
-              "modules/configModules/api/apiConfigModules.php",
+              url,
               true
             );
             objAjax2.request.setRequestHeader(
@@ -205,14 +204,13 @@ tpUpdateForm.addEventListener("submit", (e) => {
   dta["tableName"] = table;
 
   let data = JSON.stringify(dta);
-  console.log(data);
 
   objAjax2.request.open(
     "PUT",
-    `modules/configModules/api/apiConfigModules.php?data=${encodeURIComponent(
-      data
-    )}`
+    url + `?data=${encodeURIComponent(data)}`
   );
+
+
   objAjax2.request.setRequestHeader("Content-Type", "application/json");
 
   objAjax2.request.onload = () => {
@@ -254,7 +252,7 @@ formulario.addEventListener("submit", (event) => {
   });
 
   // Ajax POST
-  objAjax2.request.open('POST', "modules/configModules/api/apiConfigModules.php", true);
+  objAjax2.request.open('POST', url, true);
   objAjax2.request.setRequestHeader("Content-Type", "application/json");
   objAjax2.request.setRequestHeader("Accept", "application/json");
 
