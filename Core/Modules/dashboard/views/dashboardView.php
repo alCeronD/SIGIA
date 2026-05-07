@@ -55,6 +55,7 @@
                     <a class="btn green btnGetUrl" href="<?php echo getUrl(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewTp', false, CR_DASHBOARD); ?>">Tipo documento</a>
                     <a class="btn grey btnGetUrl" href="<?php echo getUrl('roles', 'roles', 'mostrarRoles', false, CR_DASHBOARD); ?>">Roles</a>
                     <a class="btn green btnGetUrl" href="<?php echo getUrl(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewMarca', false, CR_DASHBOARD); ?>">Marcas</a>
+                    <a class="btn green btnGetUrl" href="<?php echo getUrl('GeneralCrud', 'GeneralCrud', 'renderGeneralView', false, CR_DASHBOARD); ?>">GeneralCrud</a>
                 </div>
             </div>
         </div>

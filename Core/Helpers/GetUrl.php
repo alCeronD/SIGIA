@@ -86,7 +86,6 @@ function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
         $idModulo = $objPermisos->gidIdModulo($modulo);
 
         $idFuncion = $objPermisos->getIdFuncion($funcion, $modulo, $idModulo);
-
         if (!$idFuncion || !$objPermisos->validateRolFuncion($rolId, $idFuncion)) {
             echo "<script>alert(".MSG_ERROR_SIN_PERMISOS."); window.history.back();</script>";
             return;
