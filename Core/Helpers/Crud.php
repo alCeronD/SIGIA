@@ -54,11 +54,11 @@ abstract class Crud {
     $this->sql = "SELECT ".$this->organizarCampos($this->campos)." FROM ".$this->table;
   }
 
-  public function insert($insertValue){
+  public function insert(array $insertValue){
     $this->sql = "INSERT INTO ".$this->table." (".$this->organizarCampos($this->campos).") VALUES (".$this->organizarDatos($insertValue).")";
   }
 
-  public function delete($valueId){
+  public function delete(int $valueId){
     $this->sql = "DELETE FROM ".$this->table. " WHERE ".$this->id. "= ".$valueId;
   }
 
@@ -76,7 +76,7 @@ abstract class Crud {
       # Valido si la sentencia es de tipo select para devolver un arreglo asociativo con la información.
       if ((strpos($this->sql, 'SELECT') === 0) && ($select[0] === "SELECT")) {
         $result = $sql->get_result();
-        return $result->fetch_all();
+        return $result->fetch_all(MYSQLI_ASSOC);
       }
 
       return true;

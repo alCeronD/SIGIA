@@ -1,6 +1,8 @@
-import { initAlert, mostrarConfirmacion, toastOptions } from "./utils/cases.js";
-import { sendData } from "./utils/fetch.js";
-import { Storage } from "./utils/Storage.js";
+// import { initAlert, mostrarConfirmacion, toastOptions } from "./utils/cases.js";
+import { initAlert, mostrarConfirmacion, toastOptions } from './utils/index.js';
+import { sendData } from './utils/index.js';
+import { Storage } from './utils/index.js';
+// import { Storage } from "./utils/Storage.js";
 const btnCerrarSesion = document.querySelector('#btnCerrarSesion');
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -29,7 +31,6 @@ btnCerrarSesion.addEventListener("click", (e) => {
         }
         const response = await sendData(url, "POST", data);
 
-        console.log(response);
         if (response.status) {
           console.log("Sesión cerrada");
           Storage.addValue({ key: "sessionStatus", item: 'false' });

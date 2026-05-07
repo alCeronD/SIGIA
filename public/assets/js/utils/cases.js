@@ -154,7 +154,7 @@ export const options = {
   dismissible: false,
   startingTop: "4%",
   endingTop: "10%",
-  onOpenStart: () => {},
+  onOpenStart: () => { },
   onCloseEnd: () => {
   },
 };
@@ -263,10 +263,10 @@ export const opcionesDatepicker = {
 
   // Comportamiento de animación
   container: null, // Por defecto es <body>
-  onSelect: function (date) {},
-  onClose: function () {},
-  onOpen: function () {},
-  onDraw: function () {},
+  onSelect: function (date) { },
+  onClose: function () { },
+  onOpen: function () { },
+  onDraw: function () { },
 };
 
 /**
@@ -517,20 +517,20 @@ export const mostrarConfirmacion = (titulo, mensaje, callback) => {
 
   // Esto se debe de arreglar.
   const optionsModalConfirmacion = {
-  opacity: 0.7,
-  inDuration: 300,
-  outDuration: 200,
-  dismissible: false,
-  startingTop: "4%",
-  endingTop: "10%",
-  onOpenStart: () => {},
-  onCloseEnd: () => {
-    const overlay = document.querySelector('.modal-overlay');
-    if(overlay){
-      overlay.style.display = "none";
-    }
-  },
-};
+    opacity: 0.7,
+    inDuration: 300,
+    outDuration: 200,
+    dismissible: false,
+    startingTop: "4%",
+    endingTop: "10%",
+    onOpenStart: () => { },
+    onCloseEnd: () => {
+      const overlay = document.querySelector('.modal-overlay');
+      if (overlay) {
+        overlay.style.display = "none";
+      }
+    },
+  };
 
 
   const instance = instanceModal('#modalConfirmacion', optionsModalConfirmacion);
@@ -544,7 +544,7 @@ export const mostrarConfirmacion = (titulo, mensaje, callback) => {
     btnAceptar.removeEventListener('click', aceptarExecution);
   }
   if (cancelarExecution) {
-    btnCancelar.removeEventListener('click',cancelarExecution);
+    btnCancelar.removeEventListener('click', cancelarExecution);
   }
 
   // Limpiar cualquier listener anterior

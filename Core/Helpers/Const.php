@@ -1,7 +1,9 @@
 <?php
 
+//others
 define('BASE_URL', __DIR__);
 define('LIMIT', 7);
+define('CONTENT_TYPE','Content-Type: application/json; charset=utf-8');
 
 //Name Modules
 define('CR_CONFIG_MODULES','ConfigModules');

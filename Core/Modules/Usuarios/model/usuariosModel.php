@@ -1,5 +1,4 @@
 <?php
-var_dump(__DIR__ . '/../../../Helpers/Session.php');
 require_once __DIR__ . '/../../../Helpers/Session.php';
 require_once __DIR__ . '/../../../Helpers/Const.php';
 include_once __DIR__ . '/../../../Config/Conn.php';

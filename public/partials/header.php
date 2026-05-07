@@ -42,12 +42,7 @@
           <span id="btnCerrarSesion" data-logOut='logOut' data-Url='modules/login/controller/loginController.php' ">
             Salir
           </span>
-
           <br>
-
-
-
-
         </div>
       </li>
     </ul>

@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once __DIR__ ."/../Model/PermisosModel.php";
 Class PermisosController{
     private $modelPermisos;
@@ -18,7 +18,7 @@ Class PermisosController{
         $result = $this->modelPermisos->getIdFuncion($functionName, $modelName, $idModulo);
         $idNombreFuncion = $result['data']['id_funcion'];
 
-                if (empty($result['data']['id_funcion'])) {
+        if (empty($result['data']['id_funcion'])) {
             return null;
         }
         return $result['data']['id_funcion'];
@@ -34,6 +34,6 @@ Class PermisosController{
         }
         return $idPermisoFuncion;
     }
-    
+
 }
 ?>

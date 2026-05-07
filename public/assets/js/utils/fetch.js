@@ -71,7 +71,9 @@ export const getData = async (
       Object.entries(parameters).forEach(([key, value]) => {
         setParameters.append(key, value);
       });
-      newUrl = parameters ? `${url}?${setParameters.toString()}` : url;
+      // newUrl = parameters ? `${url}?${setParameters.toString()}` : url;
+
+      newUrl = JSON.stringify(parameters) === '{}' ? url : `${url}?${setParameters.toString()}`;
     }
 
     const bodyData = setFetch(method, parameters, data);
