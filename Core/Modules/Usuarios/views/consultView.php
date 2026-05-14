@@ -2,7 +2,7 @@
 <div class="contentUsuarios">
   <div class="titleUsuarios">
     <span id="textTitle">Consultar Usuarios</span>
-    <a href="<?= getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
+    <a href="<?= createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
   </div>
 
   <div class="filtroUsuarios">
@@ -55,7 +55,7 @@
                     data-rol="<?= htmlspecialchars($usuario['rolIdUser']) ?>">
                     <i class="material-icons">edit</i>
                   </a>
-                  <button 
+                  <button
                     class="btn toggleEstadoBtn white-text waves-effect waves-dark"
                     data-id="<?= $usuario['usu_id'] ?>"
                     onclick="cambiarEstadoUsuario(this)">
@@ -148,4 +148,4 @@
 </div>
 
 
-<script type="module" src="../public/assets/js/usuarios/usuarios.js"></script>
+<script type="module" src="../public/assets/js/Usuarios/Usuarios.js"></script>

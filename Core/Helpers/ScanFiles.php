@@ -4,8 +4,6 @@
 
 class ScanFiles{
 
-
-
     protected array $nameAssetsFiles = [];
     protected array $nameFilesCss = [];
 
@@ -13,17 +11,16 @@ class ScanFiles{
     private $modulo;
     private $file;
 
-    public function __construct(String $modulo = 'dashboard'){
+    public function __construct(String $modulo = 'Dashboard'){
         $this->modulo = $modulo;
     }
 
     //Función que sirve para mapear los css o javascript, solo mapea hasta que llegue a la carpeta.
-    public function mapAssets(String $module = 'dashboard'){
+    public function mapAssets(String $module = 'Dashboard'){
 
         if (!is_string($module)) {
             return;
         }
-        // $moduleNew = ucfirst($module);
 
         $relativePathAssets = __DIR__ . "/../../public/assets/css/$module";
         $fileAssets = glob($relativePathAssets. '*',GLOB_MARK);
@@ -40,7 +37,7 @@ class ScanFiles{
     }
 
     //Funcion que sirve para crear arreglo en donde puedo guardar los archivos css según su modulo.
-    public function addUrl(String $module = 'dashboard'){
+    public function addUrl(String $module = 'Dashboard'){
 
         //Se escanea los assets.
         $this->mapAssets($module);

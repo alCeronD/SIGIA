@@ -1,12 +1,13 @@
 <?php
 require_once __DIR__ . '/Helpers/Const.php';
 require_once BASE_URL . CR_ROUTE_CONN;
-require_once BASE_URL . '/GetUrl.php';
 require_once BASE_URL . '/'.CR_FILE_SESSION;
 require_once BASE_URL . '/'.CR_FILE_SCAN;
 require_once BASE_URL . '/..'.CR_ROUTE_SOLICITUD_PRESTAMOS_CONTROLLER;
 require_once BASE_URL . '/..'.CR_ROUTE_SERVICES_RESERVA;
 require_once BASE_URL . '/..'.CR_ROUTE_SERVICES_SOLICITUD;
+require_once BASE_URL . '/'.CR_EXECUTE_FUNCTION;
+require_once BASE_URL . '/'.CR_CREATE_ROUTE;
 
 $modulo = $_GET[CR_MODULO] ?? CR_DASHBOARD;
 $controllerFile = new ScanFiles($modulo);
@@ -24,7 +25,7 @@ $reservaServices = new ServicesReservas();
 $reservaServices->callTask();
 
 if (ajaxGeneral()) {
-    resolve();
+    ExecuteFunction();
     exit;
 }
 
@@ -38,7 +39,10 @@ require_once CR_ROUTE_HEADER;
 ?>
 
 <div class="container bg-light-pattern">
-    <?php resolve(); ?>
+    <?php
+        ExecuteFunction();
+        require_once CR_ROUTE_FOOTER;
+    ?>
 </div>
 
-<?php require_once CR_ROUTE_FOOTER; ?>
+

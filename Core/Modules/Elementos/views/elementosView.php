@@ -69,4 +69,4 @@ require_once 'modalConfirmacion.php';
 require_once 'modalAddExistencia.php';
 ?>
 
-<script type="module" src="../public/assets/js/elementos/elementos.js"></script>
+<script type="module" src="../public/assets/js/Elementos/Elementos.js"></script>

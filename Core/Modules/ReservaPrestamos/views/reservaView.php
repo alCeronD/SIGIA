@@ -2,7 +2,7 @@
 <div class="content">
     <div class="menuTitle">
         <span id="textTitle" class="textTitleSpan">Gestión de prestamos</span>
-        <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
+        <a href="<?php echo createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
     </div>
@@ -103,7 +103,7 @@
     <?php require_once 'modalAddUsers.php'; ?>
 </div>
 
-<?php require_once __DIR__ . '/../../../helpers/modalConfirmation.php'; 
+<?php require_once __DIR__ . '/../../../Helpers/modalConfirmation.php';
 ?>
 
-<script type="module" src="../public/assets/js/reservaPrestamos/reservaPrestamos.js"></script>
+<script type="module" src="../public/assets/js/ReservaPrestamos/ReservaPrestamos.js"></script>

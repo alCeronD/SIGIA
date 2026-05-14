@@ -1,8 +1,4 @@
-// import { initAlert, mostrarConfirmacion, toastOptions } from "./utils/cases.js";
-import { initAlert, mostrarConfirmacion, toastOptions } from './utils/index.js';
-import { sendData } from './utils/index.js';
-import { Storage } from './utils/index.js';
-// import { Storage } from "./utils/Storage.js";
+import { initAlert, mostrarConfirmacion, toastOptions, sendData, Storage } from './utils/index.js';
 const btnCerrarSesion = document.querySelector('#btnCerrarSesion');
 
 document.addEventListener('DOMContentLoaded', () => {

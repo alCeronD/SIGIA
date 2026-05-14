@@ -42,7 +42,11 @@ define('CR_ROUTE_FOOTER', '../public/partials/footer.php');
 define('CR_FILE_CONST', 'Const.php');
 define('CR_FILE_SESSION', 'Session.php');
 define('CR_FILE_SCAN','ScanFiles.php');
+define('CR_EXECUTE_FUNCTION', 'ExecuteFunction.php');
+define('CR_CREATE_ROUTE', 'CreateRoute.php');
 define('CR_FILE_VALIDATE_PERMISOS','validatePermisos.php');
+define('CR_FILE_VALIDATE_FECHA', 'validateFecha.php');
+define('CR_FILE_VALIDATE_DATA', 'validateData.php');
 define('CR_FILE_RESPONSE', 'Response.php');
 
 

@@ -28,7 +28,8 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
 
     <?php endforeach; ?>
     <li>
-      <a href="<?php echo getUrl('login', 'login', 'logout', false, 'dashboard'); ?>" class="btn-floating red " data-tooltip="Cerrar sesión">
+      <a href="<?php
+      echo createRoute('Login', 'Login', 'logout', 'false', 'dashboard'); ?>" class="btn-floating red " data-tooltip="Cerrar sesión">
         <i class="material-icons">exit_to_app</i>
       </a>
     </li>
@@ -38,13 +39,13 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
 
 <!-- Subitems -->
 <?php foreach ($subItems as $modulo => $funciones): ?>
-  <div id="submenu-<?php echo $modulo; ?>" class="submenu hidden">
+  <div id="submenu-<?php echo $modulo; ?>" class="submenu hidden ">
     <?php foreach ($funciones as $item):
       $nombreFuncionUser = $item['nombreFuncionUser'];
       $nombreModulo = $item['nombreModulo'];
-      $funcionController = $item['nombreFuncionController'];
+      $functionController = $item['nombreFuncionController'];
     ?>
-      <a href="<?php echo getUrl($nombreModulo, $nombreModulo, $funcionController, false, 'dashboard'); ?>">
+      <a href="<?php echo createRoute($nombreModulo, $nombreModulo, $functionController, false, 'dashboard'); ?>">
         <?php echo $nombreFuncionUser; ?>
       </a>
     <?php endforeach; ?>
@@ -53,14 +54,14 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
 
 <style>
   .submenu {
-    position: absolute;
+    position: fixed;
     background: white;
     padding: 12px 16px;
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     display: none;
     flex-direction: column;
-    z-index: 999;
+    z-index: 9999;
     min-width: 180px;
     max-height: 190px;
     overflow-y: auto;
@@ -101,9 +102,9 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
         document.querySelectorAll('.submenu').forEach(el => el.classList.remove('visible'));
 
         const rect = trigger.getBoundingClientRect();
-        const submenuHeight = submenu.offsetHeight || 150;
-        submenu.style.top = `${rect.top + window.scrollY  }px`;
-        submenu.style.left = `${rect.left - submenu.offsetWidth - 190}px`; //Ajusto menu <<
+        const submenuHeight = submenu.offsetHeight || 20;
+        submenu.style.top = `${rect.top - submenuHeight  }px`;
+        submenu.style.left = `${rect.left - submenu.offsetWidth - 200}px`;
         submenu.classList.add('visible');
       });
 
@@ -112,7 +113,7 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
           if (!submenu.matches(':hover') && !trigger.matches(':hover')) {
             submenu.classList.remove('visible');
           }
-        }, 200);
+        }, 500);
       });
 
 

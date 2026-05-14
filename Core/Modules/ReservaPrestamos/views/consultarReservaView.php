@@ -48,9 +48,9 @@
 <div id="validateElements">
     <?php require_once 'modalValidate.php'; ?>
 </div>
-<?php 
+<?php
 // Modal confirmación
-require_once __DIR__ . "/../../../helpers/modalConfirmation.php"; 
+require_once __DIR__ . "/../../../Helpers/modalConfirmation.php";
 // Modal salida
 require_once __DIR__ . "/modalSalida.php";
 

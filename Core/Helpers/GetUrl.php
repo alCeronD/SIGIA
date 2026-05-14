@@ -4,12 +4,12 @@ require_once __DIR__."/Const.php";
 require_once __DIR__ . "/Response.php";
 
 
-function redirect($url)
-{
-    echo "<script type='text/javascript'>"
-        . "window.location.href='$url'"
-        . "</script>";
-}
+// function redirect($url)
+// {
+//     echo "<script type='text/javascript'>"
+//         . "window.location.href='$url'"
+//         . "</script>";
+// }
 
 function dd($var)
 {
@@ -45,62 +45,64 @@ function getUrl(String $modulo, String $controlador, String $funcion, $parametro
     return $url;
 }
 
-function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
-{
-    if (isset($_GET['modulo'])) {
-        $modulo = $_GET['modulo'];
-        $controlador = $_GET['controlador'];
-        $funcion = $_GET['funcion'];
+// function resolve($modulo = 'login', $controlador = 'login', $funcion = 'index')
+// {
+//     if (isset($_GET['modulo'])) {
+//         $modulo = $_GET['modulo'];
+//         $controlador = $_GET['controlador'];
+//         $funcion = $_GET['funcion'];
 
-    }
+//     }
 
-    // Rutas públicas que no necesitan sesión
-    $publicRoutes = [
-        'login' => ['index', 'login', 'logout']
-    ];
+//     // Rutas públicas que no necesitan sesión
+//     $publicRoutes = [
+//         'login' => ['index', 'login', 'logout']
+//     ];
 
-    // Validamos que las rutas que el usuario ha seleccionado sean públicas para evitar su navegación.
-    $isPublic = isset($publicRoutes[$modulo]) && in_array($funcion, $publicRoutes[$modulo]);
-    $controllerPath = BASE_URL . "/../Modules/$modulo/controller/{$controlador}Controller.php";
-    if (!is_file($controllerPath)) {
-        echo "El controlador no existe.";
-        return;
-    }else{
-        include_once $controllerPath;
+//     // Validamos que las rutas que el usuario ha seleccionado sean públicas para evitar su navegación.
+//     $isPublic = isset($publicRoutes[$modulo]) && in_array($funcion, $publicRoutes[$modulo]);
+//     $controllerPath = BASE_URL . "/../Modules/$modulo/controller/{$controlador}Controller.php";
+//     if (!is_file($controllerPath)) {
+//         echo "El controlador no existe.";
+//         return;
+//     }else{
+//         include_once $controllerPath;
 
-    }
+//     }
 
-    include_once __DIR__ . CR_ROUTE_CONN;
-    $conexion = (new Conn())->getConnect();
-    $nombreClase = $controlador . CR_CONTROLLER;
-    require_once __DIR__ . CR_ROUTE_PERMISOS_CONTROLLER;
-    $objPermisos = new PermisosController();
-    // Si no es pública, validamos la sesión y permisos
-    if (!$isPublic) {
-        if (!isset($_SESSION[CR_USER])) {
-            redirect(getUrl(CR_LOGIN, CR_LOGIN, CR_INDEX));
-        }
+//     include_once __DIR__ . CR_ROUTE_CONN;
+//     $conexion = (new Conn())->getConnect();
+//     $nombreClase = $controlador . CR_CONTROLLER;
+//     require_once __DIR__ . CR_ROUTE_PERMISOS_CONTROLLER;
+//     $objPermisos = new PermisosController();
+//     // Si no es pública, validamos la sesión y permisos
+//     if (!$isPublic) {
+//         if (!isset($_SESSION[CR_USER])) {
+//             redirect(getUrl(CR_LOGIN, CR_LOGIN, CR_INDEX));
+//         }
 
-        $rolId = $_SESSION[CR_USER][CR_ROL_ID] ?? 0;
+//         $rolId = $_SESSION[CR_USER][CR_ROL_ID] ?? 0;
 
-        $idModulo = $objPermisos->gidIdModulo($modulo);
+//         $idModulo = $objPermisos->gidIdModulo($modulo);
 
-        $idFuncion = $objPermisos->getIdFuncion($funcion, $modulo, $idModulo);
-        if (!$idFuncion || !$objPermisos->validateRolFuncion($rolId, $idFuncion)) {
-            echo "<script>alert(".MSG_ERROR_SIN_PERMISOS."); window.history.back();</script>";
-            return;
-        }
-    }
-    // Llamamos al controlador y la función
-    $objeto = new $nombreClase($conexion);
+//         $idFuncion = $objPermisos->getIdFuncion($funcion, $modulo, $idModulo);
+//         if (!$idFuncion || !$objPermisos->validateRolFuncion($rolId, $idFuncion)) {
+//             echo "<script>alert(".MSG_ERROR_SIN_PERMISOS."); window.history.back();</script>";
+//             return;
+//         }
+//     }
+//     // Llamamos al controlador y la función
+//     $objeto = new $nombreClase($conexion);
 
-    if (method_exists($objeto, $funcion)) {
-        $objeto->$funcion();
+//     if (method_exists($objeto, $funcion)) {
+//         $objeto->$funcion();
 
-    } else {
-        echo CR_LA_FUNCION." '$funcion' .CR_NO_EXISTE";
-    }
-}
+//     } else {
+//         echo CR_LA_FUNCION." '$funcion' .CR_NO_EXISTE";
+//     }
+// }
+
+
 
 function ajaxGeneral()
 {
