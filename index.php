@@ -17,9 +17,10 @@
 // }
 
 // ---------------------- NUEVO ENRUTADOR
-include_once __DIR__.'/Core/Helpers/ExecuteFunction.php';
+// include_once __DIR__.'/Core/Helpers/ExecuteFunction.php';
 include_once __DIR__ .'/Core/Helpers/Redirect.php';
-include_once __DIR__.'/Core/Helpers/CreateRoute.php';
+include_once __DIR__ .'/Core/Helpers/Autoload.php';
+// include_once __DIR__.'/Core/Helpers/CreateRoute.php';
 
 
 // if(!isset($_GET['modulo'])){
@@ -45,14 +46,14 @@ include_once __DIR__.'/Core/Helpers/CreateRoute.php';
 //     exit;
 // }
 
-if (isAjax()) {
-    ExecuteFunction();
+if (Utils::ajaxGeneral()) {
+    Router::ExecuteFunction();
     exit;
 }
 
 if (isset($_GET['modulo'])) {
     // echo "<div class='container'>";
-    ExecuteFunction();
+    Router::ExecuteFunction();
     exit;
 }
-redirect(createRoute('Login', 'Login', 'index', false, 'index'));
+Redirect::reditectTo(Router::createRoute('Login', 'Login', 'index', false, 'index'));

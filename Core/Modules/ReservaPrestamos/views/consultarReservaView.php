@@ -16,7 +16,7 @@
             </select>
         </div>
         <div class="closeItem">
-            <a class="close close-btn" title="volver a dashboard" href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>">&times;</a>
+            <a class="close close-btn" title="volver a dashboard" href="<?php echo Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>">&times;</a>
         </div>
 
     </div>
@@ -58,4 +58,4 @@ require_once __DIR__ . "/modalSalida.php";
 require_once __DIR__ . "/modalCancel.php";
 ?>
 
-<script type="module" src="../public/assets/js/reservaPrestamos/consultarReserva.js"></script>
+<script type="module" src="../public/assets/js/ReservaPrestamos/ConsultarReserva.js"></script>

@@ -1,7 +1,7 @@
 <div class="contentArea contentLayout">
     <div class="titleArea menuTitle">
         <span id="textTitleAreas" class="textTitleSpan">Departamentos</span>
-        <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
+        <a href="<?php echo Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
     </div>
@@ -63,4 +63,4 @@
 </div>
 
 <!-- En la vista importar si o si el archivo específico a cada modulo -->
-<script type="module" src="../public/assets/js/configModules/areas.js"></script>
+<script type="module" src="../public/assets/js/ConfigModules/areas.js"></script>

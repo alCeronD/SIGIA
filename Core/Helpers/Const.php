@@ -28,7 +28,7 @@ define('CR_ROUTE_CONN', '/../Config/Conn.php');
 define('CR_ROUTE_CONST','/Helpers/Const.php');
 define('CR_ROUTE_SESSION','/Helpers/Session.php');
 define('CR_ROUTE_VALIDATE_PERMISOS', '/Helpers/validatePermisos.php');
-define('CR_ROUTE_USUARIOS_MODEL', '/Modules/Usuarios/model/usuariosModel.php');
+define('CR_ROUTE_USUARIOS_MODEL', '/Modules/Usuarios/Model/UsuariosModel.php');
 define('CR_ROUTE_CONFIG_MODULES_MODEL', '/Modules/ConfigModules/model/ConfigModulesModel.php');
 define('CR_ROUTE_CONFIG_MODULES_CONTROLLER', '/Modules/ConfigModules/controller/ConfigModulesController.php');
 define('CR_ROUT_SOLICITUD_PRESTAMOS_MODEL', '/../model/solicitudPrestamosModel.php');
@@ -42,12 +42,12 @@ define('CR_ROUTE_FOOTER', '../public/partials/footer.php');
 define('CR_FILE_CONST', 'Const.php');
 define('CR_FILE_SESSION', 'Session.php');
 define('CR_FILE_SCAN','ScanFiles.php');
-define('CR_EXECUTE_FUNCTION', 'ExecuteFunction.php');
-define('CR_CREATE_ROUTE', 'CreateRoute.php');
-define('CR_FILE_VALIDATE_PERMISOS','validatePermisos.php');
-define('CR_FILE_VALIDATE_FECHA', 'validateFecha.php');
-define('CR_FILE_VALIDATE_DATA', 'validateData.php');
+define('CR_CREATE_ROUTE', 'Router.php');
+define('CR_FILE_VALIDATE_PERMISOS','ValidatePermisos.php');
+define('CR_FILE_VALIDATE_FECHA', 'ValidateFecha.php');
+define('CR_FILE_VALIDATE_DATA', 'ValidateData.php');
 define('CR_FILE_RESPONSE', 'Response.php');
+define('CR_AUTOLOAD', 'Autoload.php');
 
 
 // Msg (message)

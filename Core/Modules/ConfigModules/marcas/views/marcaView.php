@@ -1,7 +1,7 @@
 <div class="contentMarca contentLayout">
     <div class="titleMarca menuTitle">
         <span id="textTitleAreas" class="textTitleSpan">Gestión de marcas</span>
-        <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
+        <a href="<?php echo Router::createRoute('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
     </div>
@@ -19,7 +19,7 @@
                 <label for="descripcionMarca">Descripción:</label>
             </div>
             <div class="contentSubmitMa">
-                <button type="submit" class="btnSubmit btnPermiso waves-effect waves-light btn" id="btnAreaUpdate" data-url="<?php echo getUrl('ConfigModules', 'configModules', 'addRow', false, 'dashboard'); ?>"><i class="material-icons">send</i><button></button>
+                <button type="submit" class="btnSubmit btnPermiso waves-effect waves-light btn" id="btnAreaUpdate" data-url="<?php echo Router::createRoute('ConfigModules', 'configModules', 'addRow', false, 'dashboard'); ?>"><i class="material-icons">send</i><button></button>
             </div>
         </form>
         </div>
@@ -61,4 +61,4 @@
 
 </div>
 
-<script type="module" src="../public/assets/js/configModules/marcas.js"></script>
+<script type="module" src="../public/assets/js/ConfigModules/marcas.js"></script>

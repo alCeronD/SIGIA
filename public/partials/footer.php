@@ -29,7 +29,7 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
     <?php endforeach; ?>
     <li>
       <a href="<?php
-      echo createRoute('Login', 'Login', 'logout', 'false', 'dashboard'); ?>" class="btn-floating red " data-tooltip="Cerrar sesión">
+      echo Router::createRoute('Login', 'Login', 'logout', 'false', 'dashboard'); ?>" class="btn-floating red " data-tooltip="Cerrar sesión">
         <i class="material-icons">exit_to_app</i>
       </a>
     </li>
@@ -45,7 +45,7 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
       $nombreModulo = $item['nombreModulo'];
       $functionController = $item['nombreFuncionController'];
     ?>
-      <a href="<?php echo createRoute($nombreModulo, $nombreModulo, $functionController, false, 'dashboard'); ?>">
+      <a href="<?php echo Router::createRoute($nombreModulo, $nombreModulo, $functionController, false, 'dashboard'); ?>">
         <?php echo $nombreFuncionUser; ?>
       </a>
     <?php endforeach; ?>

@@ -14,21 +14,21 @@
 </head>
 <nav class="header">
   <div class="nav-wrapper">
-    <a href="<?php echo createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>" class="brand-logo logo center">
+    <a href="<?php echo Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>" class="brand-logo logo center">
     </a>
     <!-- Icono de usuario -->
     <ul id="" class="right">
       <li class="user-dropdown">
         <div class="contentUser" id="userDropdownToggle">
           <!-- <i class="material-icons large">account_circle</i> -->
-          <a href="<?php echo createRoute('Usuarios', 'Usuarios', 'actualizarDatosView', false, 'dashboard'); ?>">
+          <a href="<?php echo Router::createRoute('Usuarios', 'Usuarios', 'actualizarDatosView', false, 'dashboard'); ?>">
             <i class="material-icons large">account_circle</i>
           </a>
           <span id="rolText"> <?php echo $_SESSION['usuario']['rol_nombre']; ?> </span> <i class="material-icons">arrow_drop_down</i>
         </div>
         <ul class="submenu" id="userDropdownMenu">
           <li>
-            <a href="<?php echo getUrl('usuarios', 'usuarios', 'actualizarDatosView', false, 'dashboard'); ?>">
+            <a href="<?php echo Router::createRoute('Usuarios', 'Usuarios', 'actualizarDatosView', false, 'dashboard'); ?>">
               <i class="material-icons left">edit</i>Actualizar datos
             </a>
           </li>

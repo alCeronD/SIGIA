@@ -1,13 +1,10 @@
 <?php
 require_once __DIR__ . '/Helpers/Const.php';
 require_once BASE_URL . CR_ROUTE_CONN;
-require_once BASE_URL . '/'.CR_FILE_SESSION;
-require_once BASE_URL . '/'.CR_FILE_SCAN;
-require_once BASE_URL . '/..'.CR_ROUTE_SOLICITUD_PRESTAMOS_CONTROLLER;
-require_once BASE_URL . '/..'.CR_ROUTE_SERVICES_RESERVA;
-require_once BASE_URL . '/..'.CR_ROUTE_SERVICES_SOLICITUD;
-require_once BASE_URL . '/'.CR_EXECUTE_FUNCTION;
-require_once BASE_URL . '/'.CR_CREATE_ROUTE;
+require_once BASE_URL . '/'.CR_AUTOLOAD;
+
+
+Session::validateSession();
 
 $modulo = $_GET[CR_MODULO] ?? CR_DASHBOARD;
 $controllerFile = new ScanFiles($modulo);
@@ -16,16 +13,18 @@ $css = $controllerFile->addUrl($modulo);
 // Ejecutar actualización automática de estados de prestamos
 $conexion = new Conn();
 $conn = $conexion->getConnect();
-$solicitudService = new servicesSolicitudPrestamos();
+// $solicitudService = new ServicesSolicitudPrestamos();
+// $solicitudService->callTask();
+$solicitudService = new ServicesSolicitudPrestamos();
 $solicitudService->callTask();
 
-$prestamoController = new solicitudPrestamosController($conn);
+$prestamoController = new SolicitudPrestamosController($conn);
 // $prestamoController->actualizarEstadosPorFecha();
 $reservaServices = new ServicesReservas();
 $reservaServices->callTask();
 
-if (ajaxGeneral()) {
-    ExecuteFunction();
+if (Utils::ajaxGeneral()) {
+    Router::ExecuteFunction();
     exit;
 }
 
@@ -40,9 +39,7 @@ require_once CR_ROUTE_HEADER;
 
 <div class="container bg-light-pattern">
     <?php
-        ExecuteFunction();
+        Router::ExecuteFunction();
         require_once CR_ROUTE_FOOTER;
     ?>
 </div>
-
-

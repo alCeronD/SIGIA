@@ -1,14 +1,14 @@
 <div class="contentCategoria contentLayout">
   <div class="menuTitle">
     <span id="textTitle" class="textTitleSpan">Gestión de Categorías</span>
-    <a href="<?= getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
+    <a href="<?= Router::createRoute('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
   </div>
 
   <div class="categoriaGrid">
     <div class="card-content">
       <span class="card-title">Crear Categoría</span>
 
-      <form id="formCreateCategoria" method="POST" action="<?= getUrl('categorias', 'categorias', 'createCategoria', false, 'ajax') ?>" novalidate>
+      <form id="formCreateCategoria" method="POST" action="<?= Router::createRoute('categorias', 'categorias', 'createCategoria', false, 'ajax') ?>" novalidate>
         <div class="input-field">
           <input type="text" name="ca_nombre" id="ca_nombre" required>
           <label for="ca_nombre">Nombre:</label>
@@ -32,7 +32,7 @@
   </div>
 
   <!-- Tabla -->
-  <div id="tabla-categorias" data-url="<?= getUrl('categorias', 'categorias', 'listarCategoriasAjax', false, 'ajax') ?>"></div>
+  <div id="tabla-categorias" data-url="<?= Router::createRoute('categorias', 'categorias', 'listarCategoriasAjax', false, 'ajax') ?>"></div>
   <div class="tablaCategoria highlight striped responsive-table">
     <table class="tblConfigModules">
       <thead>
@@ -97,7 +97,7 @@
       <span class="close-modal">&times;</span>
     </button>
 
-    <form id="formUpdateCategoria" method="POST" action="<?= getUrl('categorias', 'categorias', 'updateCategoria', false, 'ajax') ?>">
+    <form id="formUpdateCategoria" method="POST" action="<?= Router::createRoute('categorias', 'categorias', 'updateCategoria', false, 'ajax') ?>">
       <input type="hidden" name="ca_id" id="modal_ca_id">
 
       <div class="input-field">
@@ -130,12 +130,12 @@
 </div>
 
 
-<script type="module" src="../public/assets/js/categorias/categoriasUpdateModal.js"></script>
-<script type="module" src="../public/assets/js/categorias/categoriasRegistrar.js"></script>
+<script type="module" src="../public/assets/js/Categorias/categoriasUpdateModal.js"></script>
+<script type="module" src="../public/assets/js/Categorias/categoriasRegistrar.js"></script>
 
 
 <script>
-  const categoriasUrl = "<?= getUrl('categorias', 'categorias', 'listarCategoriasAjax') ?>";
+  const categoriasUrl = "<?= Router::createRoute('categorias', 'categorias', 'listarCategoriasAjax') ?>";
 </script>
-<script type="module" src="../public/assets/js/categorias/categoriaPaginado.js"></script>
-<script type="module" src="../public/assets/js/categorias/categoriasDesactivar.js"></script>
+<script type="module" src="../public/assets/js/Categorias/categoriaPaginado.js"></script>
+<script type="module" src="../public/assets/js/Categorias/categoriasDesactivar.js"></script>

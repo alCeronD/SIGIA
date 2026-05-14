@@ -2,7 +2,7 @@
 <div class="content">
     <div class="menuTitle">
         <span id="textTitle" class="textTitleSpan">Gestión de prestamos</span>
-        <a href="<?php echo createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>"
+        <a href="<?php echo Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
     </div>

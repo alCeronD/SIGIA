@@ -12,7 +12,7 @@
                     <p>Contiene una consulta de los elementos.</p>
                 </div>
                 <div class="buttons">
-                    <a class="btn green btnGetUrl" href="<?php echo createRoute('Elementos', 'Elementos', 'renderViewElements', false, 'dashboard'); ?>">Consultar</a>
+                    <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('Elementos', 'Elementos', 'renderViewElements', false, 'dashboard'); ?>">Consultar</a>
                 </div>
             </div>
 
@@ -25,8 +25,8 @@
                     <p>Consulta los préstamos actuales.</p>
                 </div>
                 <div class="buttons">
-                    <a class="btn grey btnGetUrl" href="<?php echo createRoute('ReservaPrestamos', 'ReservaPrestamos', 'consultaReservaView', false, 'dashboard'); ?>">Ver reservas</a>
-                    <a class="btn green btnGetUrl" href="<?php echo createRoute('ReservaPrestamos', 'ReservaPrestamos', 'reservaView', false, 'dashboard'); ?>">Crear prestamo o reserva</a>
+                    <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute('ReservaPrestamos', 'ReservaPrestamos', 'consultaReservaView', false, 'dashboard'); ?>">Ver reservas</a>
+                    <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('ReservaPrestamos', 'ReservaPrestamos', 'reservaView', false, 'dashboard'); ?>">Crear prestamo o reserva</a>
                 </div>
             </div>
             <div class="option-card z-depth-1 div3">
@@ -38,8 +38,8 @@
                     <p>Crea o busca usuarios.</p>
                 </div>
                 <div class="buttons">
-                    <a class="btn green btnGetUrl" href="<?php echo createRoute('Usuarios', 'Usuarios', 'userView', false, 'dashboard'); ?>">Crear usuario</a>
-                    <a class="btn grey btnGetUrl" href="<?php echo createRoute('Usuarios', 'Usuarios', 'consultUser', false, 'dashboard'); ?>">Consultar usuario</a>
+                    <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('Usuarios', 'Usuarios', 'userView', false, 'dashboard'); ?>">Crear usuario</a>
+                    <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute('Usuarios', 'Usuarios', 'consultUser', false, 'dashboard'); ?>">Consultar usuario</a>
                 </div>
             </div>
             <div class="option-card z-depth-1 div4">
@@ -51,11 +51,11 @@
                     <p>Configuraciones poco recurrentes.</p>
                 </div>
                 <div class="buttons">
-                    <a class="btn grey btnGetUrl" href="<?php echo createRoute(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewArea', false, CR_DASHBOARD); ?>">Áreas</a>
-                    <a class="btn green btnGetUrl" href="<?php echo createRoute(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewTp', false, CR_DASHBOARD); ?>">Tipo documento</a>
-                    <a class="btn grey btnGetUrl" href="<?php echo createRoute('roles', 'roles', 'mostrarRoles', false, CR_DASHBOARD); ?>">Roles</a>
-                    <a class="btn green btnGetUrl" href="<?php echo createRoute(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewMarca', false, CR_DASHBOARD); ?>">Marcas</a>
-                    <a class="btn green btnGetUrl" href="<?php echo createRoute('GeneralCrud', 'GeneralCrud', 'renderGeneralView', false, CR_DASHBOARD); ?>">GeneralCrud</a>
+                    <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewArea', false, CR_DASHBOARD); ?>">Áreas</a>
+                    <a class="btn green btnGetUrl" href="<?php echo Router::createRoute(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewTp', false, CR_DASHBOARD); ?>">Tipo documento</a>
+                    <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute('Roles', 'Roles', 'mostrarRoles', false, CR_DASHBOARD); ?>">Roles</a>
+                    <a class="btn green btnGetUrl" href="<?php echo Router::createRoute(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewMarca', false, CR_DASHBOARD); ?>">Marcas</a>
+                    <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('GeneralCrud', 'GeneralCrud', 'renderGeneralView', false, CR_DASHBOARD); ?>">GeneralCrud</a>
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
                         <p>Realiza la solicitud de préstamo de elementos.</p>
                     </div>
                     <div class="buttons">
-                        <a class="btn green btnGetUrl" href="<?php echo createRoute('SolicitudPrestamos', 'SolicitudPrestamos', 'registrarPrestamosView', false, 'dashboard'); ?>">Solicitar</a>
+                        <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('SolicitudPrestamos', 'SolicitudPrestamos', 'registrarPrestamosView', false, 'dashboard'); ?>">Solicitar</a>
                     </div>
                 </div>
 
@@ -136,7 +136,7 @@
                     <p>Generar reportes</p>
                 </div>
                 <div class="buttons">
-                    <a class="btn green btnGetUrl" href="<?php echo createRoute('Reportes', 'Reportes', 'genReporteView', false, 'dashboard'); ?>">Reportes</a>
+                    <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('Reportes', 'Reportes', 'genReporteView', false, 'dashboard'); ?>">Reportes</a>
                 </div>
             </div>
         </div>

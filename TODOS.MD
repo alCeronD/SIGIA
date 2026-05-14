@@ -11,7 +11,7 @@ Listado de TODOS generales y específicos por cada módulo.
 
 ## Generales
 
-- [ ] Arreglar palabras reservada para el levantamiento de la aplicación en linux
+- [X] Arreglar palabras reservada para el levantamiento de la aplicación en linux
 - [X] adicionar el tag de cuando se entrego el producto a la entidad de formación + tabla para visualizar la versión entregada.
 - [X] Arreglar rutas para verificar el correcto funcionamiento del sistema como la re direccionamiento al login, o a otros módulos de acceso.
 - [] **Documentación** = Colocar requisitos del sistema implementados y diagramas que se usaron para el proceso de creación del producto.

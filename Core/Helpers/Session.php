@@ -1,13 +1,38 @@
 <?php
-// Se puede transformar en una función.
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+Class Session{
 
-if (!isset($_SESSION['usuario'])) {
-    header("Location: /index.php");
-    exit();
-}
+    /**
+     * Validar que el usuario se encuentre logueado
+     *
+     * @return void
+     */
+    public static function validateSession(){
+        // Se puede transformar en una función.
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-$usuario = $_SESSION['usuario'];
-$rol = $usuario['rol_id'];
+        // if (!isset($_SESSION['usuario'])) {
+        //     header("Location: /index.php");
+        //     exit();
+        // }
+
+        if (!isset($_SESSION['usuario'])) {
+            Redirect::fast('/index.php');
+        }
+
+        $usuario = $_SESSION['usuario'];
+        $rol = $usuario['rol_id'];
+
+    }
+
+    public static function getRol(){
+        self::validateSession();
+        return $_SESSION['usuario'] ?? null;
+    }
+
+    public static function getUsuario(){
+        return $_SESSION['usuario'] ?? null;
+    }
+
+}

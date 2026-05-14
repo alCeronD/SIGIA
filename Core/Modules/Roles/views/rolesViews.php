@@ -1,9 +1,7 @@
-<?php require_once __DIR__ . '/../../../helpers/session.php'; ?>
-
 <div class="contentRoles contentLayout">
     <div class="titleRoles menuTitle">
         <span id="textTitleAreas" class="textTitleSpan">Gestión de roles</span>
-        <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
+        <a href="<?php echo Router::createRoute('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
     </div>
@@ -34,6 +32,6 @@
 <?php require_once 'modalAsing.php'; ?>
 
 <!-- modal de confirmación -->
-<?php require_once __DIR__ .'/../../../helpers/modalConfirmation.php'; ?>
+<?php require_once __DIR__ .'/../../../Helpers/modalConfirmation.php'; ?>
 
-<script type="module" src="../public/assets/js/roles/roles.js"></script>
+<script type="module" src="../public/assets/js/Roles/roles.js"></script>

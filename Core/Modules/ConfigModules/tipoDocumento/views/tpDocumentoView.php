@@ -2,7 +2,7 @@
 <div class="contentTpDocumento contentLayout">
     <div class="titleTp menuTitle">
         <span id="textTitleAreas" class="textTitleSpan">Tipos de documento</span>
-        <a href="<?php echo getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
+        <a href="<?php echo Router::createRoute('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
     </div>
@@ -59,9 +59,9 @@
             </div>
         </form>
         </div>
-        
+
     </div>
 
 </div>
 
-<script type="module" src="../public/assets/js/configModules/tpDocumento.js"></script>
+<script type="module" src="../public/assets/js/ConfigModules/tpDocumento.js"></script>

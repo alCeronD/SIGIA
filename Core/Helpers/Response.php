@@ -4,9 +4,9 @@
  *
  * Archivo que contiene 2 funciones para visualizar la respuesta del json y enviarlo al front y visualizarlo.
  * TODO: puedo mejorar estas 2 funciones en 1, en donde la estructura es la misma y solamente le paso el código de respuesta por parámetros, 200 para true, 400 para false.
- * TODO: Esto se puede transformar en una clase.
  */
 
+Class Response{
 
 /**
  * Función para enviar respuesta exitosa al front.
@@ -15,19 +15,19 @@
  * @param array $data - Arreglo con toda la data a enviar.
  * @return void
  */
- function success(String $message = '', array $data = []){
-    header('Content-Type: application/json; charset=utf-8');
-    $result = [
-        'status' => true,
-        'message' => $message,
-        'data' => empty($data) ? [] : $data
-    ];
-    http_response_code(200);
-    echo json_encode($result,JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-    exit();
-}
+    public static function success(String $message = '', array $data = []){
+        header('Content-Type: application/json; charset=utf-8');
+        $result = [
+            'status' => true,
+            'message' => $message,
+            'data' => empty($data) ? [] : $data
+        ];
+        http_response_code(200);
+        echo json_encode($result,JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        exit();
+    }
 
-function fail(String $value = '', array $data = []){
+    public static function fail(String $value = '', array $data = []){
     header('Content-Type: application/json');
     $statusData = $data['status'];
     $src = $data['data'];
@@ -47,7 +47,7 @@ function fail(String $value = '', array $data = []){
     exit();
 }
 
-function noResponse($data){
+public static function noResponse($data){
     http_response_code(204);
 
     echo json_encode(
@@ -61,4 +61,5 @@ function noResponse($data){
     exit();
 }
 
+}
 ?>
