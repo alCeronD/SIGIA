@@ -1,5 +1,7 @@
 <?php
-include_once __DIR__ . '/../../../Config/Conn.php';
+require_once __DIR__ . '/../../../Helpers/Const.php';
+require_once BASE_URL.CR_ROUTE_CONN;
+
 
 class RolesModel
 {
@@ -33,7 +35,7 @@ class RolesModel
             return null;
         }
 
-        $conn = (new Conection())->getConnect();
+        $conn = (new Conn())->getConnect();
         $query = "SELECT * FROM roles WHERE rl_id = $id";
         $resultado = $conn->query($query);
 
@@ -49,7 +51,7 @@ class RolesModel
     public function insertarRoles($rol_nombre, $rol_descripcion)
     {
         try {
-            $conn = (new Conection())->getConnect();
+            $conn = (new Conn())->getConnect();
             $rol_status = 1;
 
             $sql = "INSERT INTO roles (rl_nombre, rl_descripcion, rl_status)
@@ -98,7 +100,7 @@ class RolesModel
     {
 
         try {
-            $conn = (new Conection())->getConnect();
+            $conn = (new Conn())->getConnect();
 
             $sql = "UPDATE roles SET rl_nombre = ?, rl_descripcion = ?
                     WHERE rl_id = ?";
@@ -141,7 +143,7 @@ class RolesModel
     {
 
         try {
-            $conn = (new Conection())->getConnect();
+            $conn = (new Conn())->getConnect();
             $sql = "UPDATE roles SET rl_status = ? WHERE rl_id = ?";
             $stmtRol = $conn->prepare($sql);
             if (!$stmtRol) {
@@ -181,7 +183,7 @@ class RolesModel
     // Actualizo rol del usuario
     public function actRolUser($id_user, $rol_id)
     {
-        $conn = (new Conection())->getConnect();
+        $conn = (new Conn())->getConnect();
         $query = "UPDATE usuarios_roles SET usr_rl_id = '$rol_id' WHERE usr_usu_id = '$id_user'";
         $resultado = $conn->query($query);
 
@@ -199,7 +201,7 @@ class RolesModel
     public function getRolesPermisos()
     {
         try {
-            $conn = (new Conection())->getConnect();
+            $conn = (new Conn())->getConnect();
             $conn->begin_transaction();
 
             /**
@@ -322,7 +324,7 @@ class RolesModel
     public function getPermisosFuncion(int $rolId = 0)
     {
         try {
-            $conn = (new Conection())->getConnect();
+            $conn = (new Conn())->getConnect();
             // Con esta función valido que el ROL PUEDA ACCEDER A ESA FUNCIÓN, que hace parte del modulo.
             $sql = "SELECT
                 fu.id_funcion as 'idFuncion',
@@ -385,7 +387,7 @@ fu.nombre_funcion as 'nombreFunción'
     {
 
         try {
-            $conn = (new Conection())->getConnect();
+            $conn = (new Conn())->getConnect();
             $conn->begin_transaction();
             $rolId = (int) $data['rolId'];
             $funciones = $data['rolesPorAsociar'];

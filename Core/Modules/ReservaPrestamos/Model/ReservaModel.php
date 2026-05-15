@@ -1,9 +1,7 @@
 <?php
 require_once BASE_URL.'/'.CR_FILE_CONST;
 require_once BASE_URL.CR_ROUTE_CONN;
-require_once BASE_URL .'/'.CR_FILE_SESSION;
-require_once BASE_URL . '/..'.CR_ROUTE_USUARIOS_MODEL;
-require_once BASE_URL . '/../Modules/Elementos/Model/ElementosModel.php';
+require_once BASE_URL.'/'.CR_AUTOLOAD;
 
 
 

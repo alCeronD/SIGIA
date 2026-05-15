@@ -1,9 +1,9 @@
 <div class="content">
   <div class="titleUsuarios">
     <span id="textTitle" class="teal-text text-darken-4">Registrar usuario</span>
-    <a href="<?= getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
+    <a href="<?= Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
   </div>
-  
+
   <div class="registrarUsuario">
     <form id="formSolicitudPrestamo">
   <div class="inputContent tipoDocumento input-field">

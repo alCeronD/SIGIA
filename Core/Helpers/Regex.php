@@ -1,7 +1,7 @@
 <?php
 
 // Clase para crear expresiones regulares y validar su resultado
-class Regex{
+Class Regex{
 
     public const SOLO_NUMEROS = '/^\d+$/';
     public const SERIE = '/^\d+-\d+$/';

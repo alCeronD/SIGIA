@@ -1,21 +1,18 @@
 <?php
-include_once __DIR__ . '/../model/elementosModel.php';
-require_once __DIR__ . '/../../ConfigModules/model/ConfigModulesModel.php';
 require_once __DIR__ . '/../../../Helpers/Const.php';
-require_once __DIR__ . '/../../../Helpers/validatePermisos.php';
-require_once __DIR__ . '/../../../Helpers/validateData.php';
-require_once __DIR__ . '/../../../Helpers/Expg.php';
+require_once __DIR__ . '/../../../Helpers/Autoload.php';
+
 
 class ElementosController
 {
-    private ElementoModelo $modeloElemento;
+    private ElementosModel $modeloElemento;
     private mysqli $conn;
     private ValidateData $dataValidate;
     private Regex $regex;
 
     public function __construct()
     {
-        $this->modeloElemento = new ElementoModelo();
+        $this->modeloElemento = new ElementosModel();
         $this->dataValidate = new ValidateData();
         $this->regex = new Regex();
     }
@@ -47,31 +44,31 @@ class ElementosController
         $elementos = $this->modeloElemento->obtenerElementoPaginado($limite, $offset, $type, $isBusqueda, $value);
 
         if (!$elementos) {
-            fail('error al traer los elementos');
+            Response::fail('error al traer los elementos');
         }
 
 
         //Unifico ambos arreglos para obtener la cantidad de paginas con los elementos.
         $elementos = array_merge(['cantidadPaginas' => $totalPaginas], $elementos);
 
-        success('elementos', $elementos);
+        Response::success('elementos', $elementos);
     }
 
     // Traer el elemento por medio de busqueda
     public function getElement(String $value = '')
     {
         if (!$resultRow = $this->modeloElemento->getElementLike($value)) {
-            fail('sin registros');
+            Response::fail('sin registros');
         }
-        success('', $resultRow);
+        Response::success('', $resultRow);
     }
     public function getPlacas(String $value = '')
     {
         $data = $this->modeloElemento->getAllPlacas();
         if (!$data) {
-            fail('no hay registros', $data);
+            Response::fail('no hay registros', $data);
         }
-        success('placas y seriales', $data);
+        Response::success('placas y seriales', $data);
     }
     //agregar elemento a la bd.
     public function addElement(array $data = [])
@@ -87,9 +84,9 @@ class ElementosController
         }
 
         if (!$result = $this->modeloElemento->insertarElemento($data)) {
-            fail('error al ejecuutar proceso', $result);
+            Response::fail('error al ejecuutar proceso', $result);
         }
-        success('registro adicionado con exito', $result);
+        Response::success('registro adicionado con exito', $result);
     }
 
     public function getItems(String $action = '')
@@ -112,7 +109,7 @@ class ElementosController
                 }
             }
         }
-        success("registros de: $action", $newData);
+        Response::success("registros de: $action", $newData);
     }
 
     /**
@@ -143,9 +140,9 @@ class ElementosController
             // Llamar al modelo para actualizar
             $exito = $this->modeloElemento->actualizarElemento($data);
             if (!$exito['status']) {
-                fail('error al procesar actualización', $exito);
+                Response::fail('error al procesar actualización', $exito);
             }
-            success('recurso actualizado con exito', $exito);
+            Response::success('recurso actualizado con exito', $exito);
         } catch (Exception $e) {
             $result = [
                 'status' => false,
@@ -153,7 +150,7 @@ class ElementosController
                 'data' => []
             ];
 
-            fail($result['message'], $result);
+            Response::fail($result['message'], $result);
         }
     }
 
@@ -171,9 +168,9 @@ class ElementosController
                 $exito = $this->modeloElemento->toggleEstadoElemento($cod, $id);
 
                 if (!$exito) {
-                    fail('Error al actualizar el elemento', $exito);
+                    Response::fail('Error al actualizar el elemento', $exito);
                 }
-                success($exito['message'], $exito);
+                Response::success($exito['message'], $exito);
             } else {
                 // en caso de quie no se mande ningun elemento, devolver respuesta.
                 return;
@@ -185,7 +182,7 @@ class ElementosController
                 'data'=> []
             ];
 
-            fail($result['message'], $result);
+            Response::fail($result['message'], $result);
         }
     }
 
@@ -217,9 +214,9 @@ class ElementosController
 
             $result = $this->modeloElemento->cambiarExistencia($data);
             if (!$result['status']) {
-                fail($result['message'], $result);
+                Response::fail($result['message'], $result);
             }
-            success($result['message'], $result);
+            Response::success($result['message'], $result);
         } catch (Exception $e) {
             $result = [
                 'status' => false,
@@ -227,7 +224,7 @@ class ElementosController
                 'data' => []
             ];
 
-            fail($result['message'], $result);
+            Response::fail($result['message'], $result);
         }
     }
 
@@ -271,7 +268,7 @@ class ElementosController
                 'data' => []
             ];
 
-            fail($result['message'], $result);
+            Response::fail($result['message'], $result);
         }
     }
 }
@@ -362,7 +359,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
 
             default:
-                fail('error de acción.');
+                Response::fail('error de acción.');
                 break;
         }
     }

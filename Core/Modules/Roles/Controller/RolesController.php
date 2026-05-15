@@ -1,14 +1,10 @@
 <?php
-include_once __DIR__ . '/../../../Config/Conn.php';
-include_once __DIR__ . '/../../../Helpers/Autoload.php';
-// include_once __DIR__ . '/../model/rolesModel.php';
-// include_once __DIR__ . '/../../Permisos/Model/PermisosModel.php';
-// require_once __DIR__ . '/../../../Helpers/Response.php';
-// require_once __DIR__ . '/../../../Helpers/Session.php';
-/**
- * En este documento está adjunto la variable de sessión, getUrl y response que me permite mandar el json al front como respuesta.
- */
-// require_once __DIR__ . "/../../../Helpers/validatePermisos.php";
+
+require_once __DIR__ . '/../../../Helpers/Const.php';
+require_once BASE_URL . '/'.CR_AUTOLOAD;
+require_once BASE_URL.CR_ROUTE_CONN;
+
+
 class RolesController
 {
     private RolesModel $modeloRol;

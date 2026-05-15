@@ -1,14 +1,17 @@
 <?php
+require_once __DIR__ . '/../../../Config/Conn.php';
 
-class login {
+
+class LoginModel {
     private $conn;
 
-    public function __construct($conexion) {
-        $this->conn = $conexion;    
+    public function __construct() {
+        $this->conn = (new Conn)->getConnect();
     }
 
     public function buscarUsuarioPorDocumento($documento, $estado_user = 1) {
-        $query = "SELECT 
+
+        $query = "SELECT
                     u.usu_id,
                     u.usu_docum,
                     u.usu_password,
@@ -19,13 +22,13 @@ class login {
                     u.usu_email,
                     r.rl_id,
                     r.rl_nombre
-                FROM 
+                FROM
                     usuarios u
-                INNER JOIN  
+                INNER JOIN
                     usuarios_roles ur ON u.usu_id = ur.usr_usu_id
-                INNER JOIN 
+                INNER JOIN
                     roles r ON ur.usr_rl_id = r.rl_id
-                WHERE 
+                WHERE
                     u.usu_docum = ? AND u.usu_id_estado = ?";
 
         $stmt = $this->conn->prepare($query);

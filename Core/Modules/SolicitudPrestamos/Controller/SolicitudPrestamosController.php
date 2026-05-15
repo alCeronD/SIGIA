@@ -1,11 +1,8 @@
 <?php
-// include_once __DIR__ . '/../model/solicitudPrestamosModel.php';
-include_once __DIR__ . '/../../../Config/Conn.php';
-include_once __DIR__ . '/../../ConfigModules/Model/ConfigModulesModel.php';
-include_once __DIR__ . '/../../Elementos/Model/ElementosModel.php';
-include_once __DIR__ . '/../../..'.CR_ROUTE_USUARIOS_MODEL;
-include_once __DIR__ . '/../../../Helpers/Response.php';
-include_once __DIR__ . '/../../../Helpers/ValidatePermisos.php';
+require_once __DIR__ . '/../../../Helpers/Const.php';
+require_once BASE_URL.CR_ROUTE_CONN;
+require_once BASE_URL . '/'.CR_AUTOLOAD;
+
 
 
 class SolicitudPrestamosController
@@ -36,7 +33,7 @@ class SolicitudPrestamosController
         $areas = $objetoArea->select("SELECT * FROM areas WHERE ar_status = 1");
 
         // $objetoElemento = new ElementoModelo($this->conn);
-        $objetoElemento = new ElementoModelo();
+        $objetoElemento = new ElementosModel();
         $elementos = $objetoElemento->searchElements(1);
         $elementos_consumibles = $objetoElemento->searchElements(2);
 
@@ -107,7 +104,7 @@ class SolicitudPrestamosController
             }
 
             // Procesar elementos devolutivos
-            $elementoModel = new ElementoModelo();
+            $elementoModel = new ElementosModel();
 
             foreach ($elementosDevolutivos as $item) {
                 if (isset($item['codigo'])) {

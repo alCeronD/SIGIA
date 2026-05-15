@@ -1,9 +1,6 @@
 <?php
-
 include_once __DIR__ . '/../../../Config/Conn.php';
-require_once __DIR__ . '/../../../Helpers/Session.php';
-require_once __DIR__ . '/../../../Helpers/Const.php';
-include_once __DIR__ . '/../../../Helpers/Expg.php';
+include_once __DIR__ . '/../../../Helpers/Autoload.php';
 class ElementosModel
 {
     private  $conn;

@@ -1,9 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../../..'.CR_ROUTE_CONST;
-require_once __DIR__ .'/../../../Helpers/Autoload.php';
-// require_once BASE_URL . '/'.CR_FILE_VALIDATE_PERMISOS;
-// require_once BASE_URL . '/..'.CR_ROUTE_CONFIG_MODULES_MODEL;
+require_once BASE_URL .'/Autoload.php';
+
 
 class ConfigModulesController
 {

@@ -1,14 +1,10 @@
 <?php
-include_once __DIR__ . '/../../../Config/Conn.php';
-include_once __DIR__ . '/../../Roles/model/rolesModel.php';
-require_once __DIR__ . "/../model/usuariosModel.php";
-include_once __DIR__ . '/../../ConfigModules/model/ConfigModulesModel.php';
-require_once __DIR__ . "/../../Login/controller/LoginController.php";
-require_once __DIR__ . "/../../../Helpers/validatePermisos.php";
-require_once __DIR__ . "/../../../Helpers/Response.php";
-require_once __DIR__ . "/../../../Helpers/Session.php";
-require_once __DIR__ . "/../../../Helpers/GetUrl.php";
-class usuariosController
+require_once __DIR__ . '/../../../Helpers/Const.php';
+require_once BASE_URL.CR_ROUTE_CONN;
+require_once BASE_URL . '/'.CR_AUTOLOAD;
+
+
+class UsuariosController
 {
 
     public $usu_docum;
@@ -22,15 +18,15 @@ class usuariosController
 
     private mysqli $conn;
 
-    protected RolModelo $rolesModel;
+    protected RolesModel $rolesModel;
     protected ConfigModulesModel $configModules;
-    protected usuarios $usuariosModel;
+    protected UsuariosModel $usuariosModel;
 
     public function __construct()
     {
-        $this->rolesModel = new RolModelo();
+        $this->rolesModel = new RolesModel();
         $this->configModules = new ConfigModulesModel();
-        $this->usuariosModel = new usuarios();
+        $this->usuariosModel = new UsuariosModel();
         $this->conn = (new Conn())->getConnect();
     }
     public function userView()
@@ -42,7 +38,7 @@ class usuariosController
         $resultado = $this->rolesModel->obtenerRoles();
         $rowTp = $this->configModules->select("SELECT * FROM tipo_documento");
 
-        $_SESSION['css'] = 'usuarios/usuarios.css';
+        $_SESSION['css'] = 'Usuarios/Usuarios.css';
         return include __DIR__ . '/../views/usuariosView.php';
     }
     public function createUser(array $data = [])
@@ -120,7 +116,7 @@ class usuariosController
     public function consultUser()
     {
 
-        $modeloUsuarios = new usuarios();
+        $modeloUsuarios = new UsuariosModel();
 
         $usuarios = $modeloUsuarios->search();
         $resultado = $this->rolesModel->obtenerRoles();
@@ -186,7 +182,7 @@ class usuariosController
     {
         $id = $_GET['usu_id'];
         $_SESSION['css'] = 'usuarios/usuarios.css';
-        $datos = new usuarios();
+        $datos = new UsuariosModel();
         $usuarioUpdate = $datos->searchU($id);
 
         include_once __DIR__ . '/../../usuarios/views/updateView.php';
@@ -231,7 +227,7 @@ class usuariosController
     {
         $_SESSION['css'] = 'usuarios/usuarios.css';
         $id = $_SESSION['usuario']['id'];
-        $datos = new usuarios();
+        $datos = new UsuariosModel();
         $data = $datos->searchU($id);
         // Este valor es usado en la vista para dar visualizar su información.
         $usuarioUpdate = $data['data'];
@@ -251,15 +247,15 @@ class usuariosController
             }
         }
 
-        $dato = new usuarios();
+        $dato = new UsuariosModel();
         $dato->update($data, $id);
 
-        $modeloUsuarios = new usuarios();
+        $modeloUsuarios = new UsuariosModel();
         $usuarios = $modeloUsuarios->search();
 
         $loginObj = new loginController($this->conn);
 
-        echo "<script>alert('Usuario actualizado exitosamente, vuelve a iniciar la sesión.'); window.location.href = '" . getUrl('dashboard', 'dashboard', 'dashboard', false, 'dashboard') . "';</script>";
+        echo "<script>alert('Usuario actualizado exitosamente, vuelve a iniciar la sesión.'); window.location.href = '" . Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard') . "';</script>";
         $loginObj->logout();
     }
 }

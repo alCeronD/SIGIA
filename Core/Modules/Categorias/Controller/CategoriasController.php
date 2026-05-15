@@ -1,6 +1,6 @@
 <?php
 include_once __DIR__ . '/../../../Config/Conn.php';
-include_once __DIR__ . '/../../../Helpers/Autoload.php';
+include_once __DIR__ . '/Autoload.php';
 
 class CategoriasController
 {

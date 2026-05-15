@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ ."/../Model/PermisosModel.php";
+require_once __DIR__ . '/../../../Helpers/Autoload.php';
 Class PermisosController{
     private $modelPermisos;
 

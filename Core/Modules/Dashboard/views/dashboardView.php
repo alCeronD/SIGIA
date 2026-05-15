@@ -51,11 +51,11 @@
                     <p>Configuraciones poco recurrentes.</p>
                 </div>
                 <div class="buttons">
-                    <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewArea', false, CR_DASHBOARD); ?>">Áreas</a>
-                    <a class="btn green btnGetUrl" href="<?php echo Router::createRoute(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewTp', false, CR_DASHBOARD); ?>">Tipo documento</a>
-                    <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute('Roles', 'Roles', 'mostrarRoles', false, CR_DASHBOARD); ?>">Roles</a>
-                    <a class="btn green btnGetUrl" href="<?php echo Router::createRoute(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewMarca', false, CR_DASHBOARD); ?>">Marcas</a>
-                    <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('GeneralCrud', 'GeneralCrud', 'renderGeneralView', false, CR_DASHBOARD); ?>">GeneralCrud</a>
+                    <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewArea', false, CR_DASHBOARD_LOWER_CASE); ?>">Áreas</a>
+                    <a class="btn green btnGetUrl" href="<?php echo Router::createRoute(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewTp', false, CR_DASHBOARD_LOWER_CASE); ?>">Tipo documento</a>
+                    <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute('Roles', 'Roles', 'mostrarRoles', false, CR_DASHBOARD_LOWER_CASE); ?>">Roles</a>
+                    <a class="btn green btnGetUrl" href="<?php echo Router::createRoute(CR_CONFIG_MODULES, CR_CONFIG_MODULES, 'renderViewMarca', false, CR_DASHBOARD_LOWER_CASE); ?>">Marcas</a>
+                    <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('GeneralCrud', 'GeneralCrud', 'renderGeneralView', false, CR_DASHBOARD_LOWER_CASE); ?>">GeneralCrud</a>
                 </div>
             </div>
         </div>

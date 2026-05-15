@@ -1,6 +1,8 @@
 <?php
 
-include_once __DIR__ . '/../../../config/conn.php';
+require_once __DIR__ . '/Helpers/Const.php';
+require_once BASE_URL . CR_ROUTE_CONN;
+require_once BASE_URL . '/'.CR_AUTOLOAD;
 
 class ReportesModel
 {
@@ -9,12 +11,12 @@ class ReportesModel
 
     public function __construct()
     {
-        $conexion = new Conection();
+        $conexion = new Conn();
         $this->conn = $conexion->getConnect();
     }
 
     ///////////////////////////////////////////////////////////
-    //Estare usando estas funciones para el reporte a generar// 
+    //Estare usando estas funciones para el reporte a generar//
     ///////////////////////////////////////////////////////////
 
     public function getEstadosReport()
@@ -56,7 +58,7 @@ class ReportesModel
 
     public function obtenerElementosPorEstado($estado)
     {
-        $sql = "SELECT 
+        $sql = "SELECT
                     e.elm_cod AS codigoElemento,
                     e.elm_placa AS placa,
                     e.elm_nombre AS nombreElemento,
@@ -110,7 +112,7 @@ class ReportesModel
 
     public function obtenerElementosFiltrados($tipo, $estado)
     {
-        $sql = "SELECT 
+        $sql = "SELECT
                     e.elm_cod AS codigoElemento,
                     e.elm_placa AS placa,
                     e.elm_nombre AS nombreElemento,
@@ -163,7 +165,7 @@ class ReportesModel
 
     public function obtenerTrazabilidad($tipo, $fechaInicio, $fechaFin)
     {
-        $sql = "SELECT 
+        $sql = "SELECT
                     e.elm_cod AS codigoElemento,
                     e.elm_nombre AS nombreElemento,
                     e.elm_placa AS placa,
@@ -222,13 +224,13 @@ class ReportesModel
                   e.elm_nombre         AS nombreElemento,
                   e.elm_placa          AS placa,
                   es.ent_sal_cantidad  AS cantidad,
-                  tm.cod_tp_nombre     AS tipoMovimiento,   
+                  tm.cod_tp_nombre     AS tipoMovimiento,
                   es.ent_fech_registro AS fechaMovimiento,
                   tp.tp_el_nombre      AS tipoElemento
                 FROM entradas_salidas es
                 INNER JOIN elementos      e  ON e.elm_cod = es.ent_sal_cod_elemtn
                 INNER JOIN tipo_elemento  tp ON tp.tp_el_cod = e.elm_cod_tp_elemento
-                INNER JOIN tipo_movimiento tm ON tm.cod_tp   = es.entr_tp_movmnt 
+                INNER JOIN tipo_movimiento tm ON tm.cod_tp   = es.entr_tp_movmnt
                 WHERE 1 = 1";
 
 

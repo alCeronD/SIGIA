@@ -1,7 +1,7 @@
 
 <?php
 require_once BASE_URL . CR_ROUTE_CONN;
-include_once __DIR__ . '/../../Dashboard/model/dashboardModel.php';
+require_once BASE_URL .'/Autoload.php';
 
 
 Class DashboardController{
@@ -19,7 +19,7 @@ Class DashboardController{
         $rol_nombre = $_SESSION['usuario']['rol_nombre'];
         $id = $_SESSION['usuario']['id'];
 
-        $prestamoModel = new dashboard();
+        $prestamoModel = new DashboardModel();
         $prestamos = $prestamoModel->search($id);
         include __DIR__ . '/../views/dashboardView.php';
     }

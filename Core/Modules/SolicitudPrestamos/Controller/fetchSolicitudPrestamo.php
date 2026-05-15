@@ -1,8 +1,9 @@
 <?php
-require_once __DIR__ . '/../../../config/conn.php';
-require_once __DIR__ . '/../controller/solicitudPrestamosController.php';
+require_once __DIR__ . '/Helpers/Const.php';
+require_once BASE_URL.CR_ROUTE_CONN;
+require_once BASE_URL . '/'.CR_AUTOLOAD;
 
-$conexion = new Conection(); // o Conection
+$conexion = new Conn(); // o Conection
 $conn = $conexion->getConnect();
 $controller = new solicitudPrestamosController($conn);
 
@@ -11,6 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pres_cod = (int) $_GET['pres_cod'];
         $controller->verDetallePrestamo($pres_cod);
     } else {
-        fail('Parámetros inválidos');
+        Response::fail('Parámetros inválidos');
     }
 }

@@ -1,7 +1,7 @@
 <div class="contentGeneral contentLayout">
   <div class="titleArea menuTitle">
         <span id="textTitleAreas" class="textTitleSpan"><?PHP ECHO GC_TITLE_DEPARTAMENTO; ?></span>
-        <a href="<?php echo getUrl(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD, false, CR_DASHBOARD); ?>"
+        <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD); ?>"
             class="close-btn"
             title="Volver al dashboard">&times;</a>
   </div>

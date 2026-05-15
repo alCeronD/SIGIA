@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../Helpers/Const.php';
-require_once BASE_URL . '/'. CR_FILE_RESPONSE;
-require_once BASE_URL . '/..' . CR_ROUTE_CONFIG_MODULES_CONTROLLER;
+require_once BASE_URL . '/Autoload.php';
 $configController = new ConfigModulesController();
 // Este documento recibe todas las solicitudes de ajax.
 header("Content-Type: application/json");
@@ -52,18 +51,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 
     if (!in_array($tableName, $tables)) {
-        success('tabla inválida', []);
+        Response::success('tabla inválida', []);
         exit();
     }
 
     if (!in_array($status, ['0', '1'])) {
-        success('status inválido', []);
+        Response::success('status inválido', []);
         exit();
     }
 
     //aca se ejecuta todo.
     $data = $configController->getData($tableName, $status);
-    success('registros', $data);
+    Response::success('registros', $data);
 }
 
 //UPDATE
@@ -116,9 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     if (is_array($responseUpdate) && $responseUpdate['status']) {
         http_response_code(200);
 
-        success('Registro actualizado', $responseUpdate);
+        Response::success('Registro actualizado', $responseUpdate);
     }else{
-        fail('Entrada duplicada', $responseUpdate);
+        Response::fail('Entrada duplicada', $responseUpdate);
     }
 
 
@@ -222,14 +221,14 @@ if ($method === 'POST') {
 
 
     if (!$dataValidate['status']) {
-        fail('Entrada duplicada', $dataValidate);
+        Response::fail('Entrada duplicada', $dataValidate);
         return;
     }
     $dataResult = $configController->addRow($data);
 
     if (!$dataResult['status']) {
-        fail('fallo al registrar el recurso', $dataResult);
+        Response::fail('fallo al registrar el recurso', $dataResult);
     }
 
-    success('registro adicionado con exito', $dataResult);
+    Response::success('registro adicionado con exito', $dataResult);
 }

@@ -6,11 +6,10 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 // Este paquete lo uso para conocer la cantidad de celdas y así hacer el filtrado de manera dinámica.
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-include_once __DIR__ . '/../model/reportesModel.php';
-include_once __DIR__ . '/../../elementos/model/elementosModel.php';
 
-include_once __DIR__ . '/../../../config/conn.php';
-require_once __DIR__ . '/../../../helpers/validatePermisos.php';
+require_once __DIR__ . '/Helpers/Const.php';
+require_once BASE_URL . CR_ROUTE_CONN;
+require_once BASE_URL . '/'.CR_AUTOLOAD;
 
 class ReportesController {
 
@@ -28,7 +27,7 @@ class ReportesController {
         validatePermisos('reportes', 'genReporteView');
 
         $_SESSION['css'] = 'reportes/reportes.css';
-        $objElm    = new ElementoModelo();
+        $objElm    = new ElementosModel();
         $reportMdl = new ReportesModel();
 
         $estados = $reportMdl->getEstadosReport();
@@ -41,14 +40,14 @@ class ReportesController {
         $fechaFin           = $_GET['ff']             ?? '';
 
         // --- decide qué dataset precargar (solo para la pre‑visualización) ---
-        if ($fechaInicio && $fechaFin) {                       
+        if ($fechaInicio && $fechaFin) {
             $elementos    = [];
             $trazabilidad = $reportMdl->consultEntSal($tipoSeleccionado, $fechaInicio, $fechaFin);
-        } elseif ($estadoSeleccionado || $tipoSeleccionado) {  
-        
+        } elseif ($estadoSeleccionado || $tipoSeleccionado) {
+
             $trazabilidad = [];
             $elementos    = $reportMdl->obtenerElementosFiltrados($tipoSeleccionado, $estadoSeleccionado);
-        } else {                                               
+        } else {
             $trazabilidad = [];
             $elementos    = $objElm->obtenerElemento();
         }
@@ -61,7 +60,7 @@ class ReportesController {
      * ----------------------------------------------------------------*/
     public function filtrarElementosAjax() {
         validatePermisos('reportes','filtrarElementosAjax');
-        if (!ajaxGeneral()) {
+        if (!Utils::ajaxGeneral()) {
             http_response_code(403);
             echo json_encode(['error' => 'Acceso no permitido']);
             exit;
@@ -74,7 +73,7 @@ class ReportesController {
         $mdl   = new ReportesModel();
         $datos = ($estado || $tipo)
                ? $mdl->obtenerElementosFiltrados($tipo, $estado)
-               : (new ElementoModelo())->obtenerElemento();
+               : (new ElementosModel())->obtenerElemento();
 
         echo json_encode($datos);
         exit;
@@ -85,7 +84,7 @@ class ReportesController {
      * ----------------------------------------------------------------*/
     public function filtrarTrazabilidadAjax() {
         validatePermisos('reportes', 'filtrarTrazabilidadAjax');
-        if (!ajaxGeneral()) {
+        if (!Utils::ajaxGeneral()) {
             http_response_code(403);
             echo json_encode(['error' => 'Acceso no permitido']);
             exit;
@@ -111,7 +110,7 @@ class ReportesController {
      * ----------------------------------------------------------------*/
     public function filtrarPorPlacaAjax() {
         validatePermisos('reportes', 'filtrarPorPlacaAjax');
-        if (!ajaxGeneral()) {
+        if (!Utils::ajaxGeneral()) {
             http_response_code(403);
             echo json_encode(['error' => 'Acceso no permitido']);
             exit;
@@ -135,7 +134,7 @@ class ReportesController {
         // Traigo la longitud del arreglo.
         $colIndex = count($filtros);
         // traigo el numero de indices que hay por columna y lo tranformo en letras.
-        $lastCol = Coordinate::stringFromColumnIndex($colIndex); 
+        $lastCol = Coordinate::stringFromColumnIndex($colIndex);
 
         // Aplicar autofiltro en el rango correcto (solo en la fila 1)
         $sh->setAutoFilter("A1:{$lastCol}1");
@@ -152,7 +151,7 @@ class ReportesController {
         $mdl = new ReportesModel();
         $elementos = ($estado || $tipo)
                    ? $mdl->obtenerElementosFiltrados($tipo, $estado)
-                   : (new ElementoModelo())->obtenerElemento();
+                   : (new ElementosModel())->obtenerElemento();
 
         $ss   = new Spreadsheet();
         $sh   = $ss->getActiveSheet();
@@ -217,25 +216,25 @@ class ReportesController {
         (new Xlsx($ss))->save('php://output');
         exit;
     }
-    
+
      /* ------------------------------------------------------------------
      * REPORTE EXCEL – PLACa
      * ----------------------------------------------------------------*/
     public function generarReportePorPlaca() {
         validatePermisos('reportes', 'generarReportePorPlaca');
         $placa = $_GET['placaElemento'] ?? '';
-    
+
         if (empty($placa)) {
             exit('Debe especificar una placa.');
         }
-    
+
         $modelo = new ReportesModel();
         $registros = $modelo->consultarMovimientosPorPlaca($placa);
-    
+
         if (empty($registros)) {
             exit('No se encontraron movimientos para la placa ingresada.');
         }
-    
+
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
@@ -248,7 +247,7 @@ class ReportesController {
         );
 
         $this->setAutoFiltro($sheet, $filtrosEncabezados);
-    
+
         // Contenido
         $row = 2;
         foreach ($registros as $r) {
@@ -260,13 +259,13 @@ class ReportesController {
             $sheet->setCellValue("F{$row}", $r['fechaMovimiento']);
             $row++;
         }
-    
+
         // Descargar
         if (ob_get_length()) ob_end_clean();
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="ReporteMovimientoPlaca.xlsx"');
         header('Cache-Control: max-age=0');
-    
+
         (new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet))->save('php://output');
         exit;
     }

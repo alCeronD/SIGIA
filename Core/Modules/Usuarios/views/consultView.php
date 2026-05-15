@@ -2,7 +2,7 @@
 <div class="contentUsuarios">
   <div class="titleUsuarios">
     <span id="textTitle">Consultar Usuarios</span>
-    <a href="<?= createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
+    <a href="<?= Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
   </div>
 
   <div class="filtroUsuarios">

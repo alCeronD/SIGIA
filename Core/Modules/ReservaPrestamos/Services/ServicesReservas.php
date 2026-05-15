@@ -1,6 +1,7 @@
 <?php
-// Archivo para ejecutar las tareas automáticas con relación al modulo de reservas.
-require_once __DIR__ . '/../Model/ReservaModel.php';
+require_once __DIR__ . '/../../../Helpers/Const.php';
+require_once BASE_URL . '/'.CR_AUTOLOAD;
+
 
 /**
  * Summary of ServicesReservas - Clase que me permite ejecutar tareas programadas con relación al modulo de reserva, este proceso aplico el valor final para indicar que esta clase no debe ser heredada

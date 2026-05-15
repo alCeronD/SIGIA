@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../../Helpers/Const.php';
-require_once __DIR__ . '/../../../Helpers/Autoload.php';
+require_once BASE_URL . '/'.CR_AUTOLOAD;
 
 // Recibir la respuesta de la solicitud.
 $method = $_SERVER['REQUEST_METHOD'];

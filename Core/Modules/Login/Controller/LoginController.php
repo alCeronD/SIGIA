@@ -1,12 +1,6 @@
 <?php
-
-include_once __DIR__ . '/../model/loginModel.php';
-require_once __DIR__ . '/../../Permisos/Model/PermisosModel.php';
-include_once __DIR__ . '/../../../Helpers/Response.php';
-require_once __DIR__ . '/../../../Helpers/Expg.php';
-// require_once __DIR__ . '/../../../Helpers/GetUrl.php';
 require_once __DIR__ . '/../../../Config/Conn.php';
-require_once __DIR__ . '/../../../Helpers/Redirect.php';
+require_once __DIR__ . '/../../../Helpers/Autoload.php';
 
 class LoginController
 {
@@ -53,7 +47,7 @@ class LoginController
             if(!$this->regex->validarNumeros($documento)) throw new Exception("No se permiten caracteres especiales");
 
             if (empty($documento) || empty($password)) {
-                fail('Todos los campos son obligatorios');
+                Response::fail('Todos los campos son obligatorios');
             }
 
             if (!$this->conn) {
@@ -61,7 +55,7 @@ class LoginController
                 exit();
             }
 
-            $modeloLogin = new login($this->conn);
+            $modeloLogin = new LoginModel($this->conn);
             $usuarioResult = $modeloLogin->buscarUsuarioPorDocumento($documento);
 
             if (!$usuarioResult['status']) {
@@ -122,13 +116,14 @@ class LoginController
             echo json_encode([
                 'status' => true,
                 'message' => 'Sesión cerrada correctamente.',
-                'redirect' => createRoute('Login', 'Login', 'index', false, 'dashboard')
+                'redirect' => Router::createRoute('Login', 'Login', 'index', false, 'dashboard')
             ]);
             exit();
         }
+        Redirect::reditectTo(Router::createRoute('Login','Login','index',false,'dashboard'));
 
 
-        redirect(createRoute('Login', 'Login', 'index', false, 'dashboard'));
+        // Redirect::reditectTo(Router::createRoute('Login', 'Login', 'index', false, 'dashboard'));
 
         exit();
     }

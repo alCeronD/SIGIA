@@ -18,7 +18,8 @@ define('CR_ROL_ID', 'rol_id');
 define('CR_LA_FUNCION', 'Función');
 define('CR_NO_EXISTE', 'No existe');
 define('CR_MODULO', 'modulo');
-define('CR_DASHBOARD', 'dashboard');
+define('CR_DASHBOARD', 'Dashboard');
+define('CR_DASHBOARD_LOWER_CASE','dashboard');
 
 
 // Urls

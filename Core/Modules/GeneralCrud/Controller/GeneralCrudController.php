@@ -2,10 +2,9 @@
 
 #Incluir los modelos, la conexión.
 require_once __DIR__ . '/../../../Helpers/Const.php';
+require_once BASE_URL . '/Autoload.php';
 require_once __DIR__ . '/../const/ConstGeneralCrud.php';
-require_once BASE_URL .'/Crud.php';
-require_once BASE_URL . '/..'.GC_ROUTE_MODEL_GENERAL_CRUD;
-require_once BASE_URL . '/Response.php';
+
 
 
 class GeneralCrudController{

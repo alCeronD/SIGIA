@@ -1,12 +1,12 @@
 <div class="content">
 
   <span class="card-title">Gestión de información personal.
-    <a href="<?php echo getUrl('dashboard', 'Dashboard', 'dashboard', false,'dashboard'); ?>" class="close btn-flat right" title="Volver al listado">
+    <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false,CR_DASHBOARD_LOWER_CASE); ?>" class="close btn-flat right" title="Volver al listado">
       <i class="material-icons">close</i>
     </a>
   </span>
 
-  <form method="POST" action="<?= getUrl('usuarios', 'usuarios', 'updateUserInfo', false, 'dashboard') ?>" id="formUpdateUserView">
+  <form method="POST" action="<?= Router::createRoute('usuarios', 'usuarios', 'updateUserInfo', false, 'dashboard') ?>" id="formUpdateUserView">
     <input type="hidden" name="usu_id" value="<?= htmlspecialchars($usuarioUpdate['usu_id']) ?>">
 
     <div class="row">
