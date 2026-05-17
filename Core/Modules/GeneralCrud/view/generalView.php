@@ -9,14 +9,14 @@
         <div class="card z-depth-2">
             <div class="card-content">
                 <p class="flow-text card-title"><?PHP ECHO GC_TITLE_REGISTRAR; ?></p>
-                <form id="formArea" class="formLayout" action="">
+                <form id="formGeneral" class="formLayout" action="<?php echo Router::createRoute('GeneralCrud','GeneralCrud', 'insert',false, 'dashboard'); ?>">
                     <div class="input-field contentAreaNem">
-                        <input type="text" name="ar_nombre" id="ar_nombre" class="validate">
+                        <input type="text" name="gc_nombre" id="ar_nombre" class="validate">
                         <label for="ar_nombre"><?PHP echo GC_WORD_NOMBRE_ITEM; ?></label>
                     </div>
                     <div class="input-field contentDescript">
-                        <textarea name="ar_descripcion" id="ar_descripcion" class="materialize-textarea"></textarea>
-                        <label for="ar_descripcion"><?PHP echo GC_WORD_DESCRIPT_ITEM; ?></label>
+                        <textarea name="gc_descrip" id="ar_descripcion" class="materialize-textarea"></textarea>
+                        <label for="gc_descrip"><?PHP echo GC_WORD_DESCRIPT_ITEM; ?></label>
                     </div>
 
                     <div class="contentSubmit">

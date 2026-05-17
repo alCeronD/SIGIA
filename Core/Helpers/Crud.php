@@ -34,14 +34,34 @@ abstract class Crud {
     return trim($cadena,", ");
   }
 
-  # Funcion para organizar los campos de los datos de la tabla en caso de que los vamos a realizar proceso transaccional
+  # Funcion para organizar los campos de los datos de la tabla en caso de que los vamos a realizar proceso transaccional como insert o update.
   public function organizarDatos($datos){
     $string = "";
 
     // colocar un validador adicional, los valores deben de venir de forma arreglo asociativo, en donde su clave debe ser el nombre de la tabla y el value, el valor a insertar.
-    foreach ($datos as $camp) {
-      $string .= "'". $camp. "', ";
-    }
+    // foreach ($datos as $key => $camp) {
+    //   $string .= "'". $camp. "', ";
+    // }
+
+      // var_dump($datos);
+
+      /**
+       * array(2){
+       * 	["gc_nombre"]=>string(6)"nombre"
+       * ["gc_descrip"]=>string(11)"descripcion"
+       * }
+       */
+
+      foreach ($datos as $key => $camp) {
+        // valido que las keys esten en el modelo de las tablas;
+        if(in_array($key,$this->campos)){
+          $string .= "'". $camp. "', ";
+        }
+      }
+
+
+
+
     return trim($string,", ");
   }
 
@@ -52,6 +72,15 @@ abstract class Crud {
   # Función para definir la estructura select
   public function select(){
     $this->sql = "SELECT ".$this->organizarCampos($this->campos)." FROM ".$this->table;
+  }
+
+  // Función para crear la estructura de paginación
+  public function paginate(){
+
+  }
+
+  public function groupBy(){
+
   }
 
   public function insert(array $insertValue){

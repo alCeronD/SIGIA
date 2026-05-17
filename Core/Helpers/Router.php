@@ -26,11 +26,10 @@ Class Router {
     $controlador = $_GET['controlador'] ?? $_POST['controlador'] ?? null;
     $function = $_GET['function'] ?? $_POST['function'] ?? null;
 
-
     if (!$modulo || !$controlador || !$function) {
 
         header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'message' => 'Faltan parámetros de enrutamiento']);
+        echo json_encode(['success' => false, 'message' => "Faltan parámetros de ejecución"]);
         exit;
     }
 

@@ -5,10 +5,10 @@ const headers = {
 };
 
 //Función para establecer el fetch.
-const setFetch = (method = "GET", action = "", data = {}) => {
-  if (method === "GET" || method === "POST" || method === "PUT") {
-    data["action"] = action;
-  }
+const setFetch = (method = "GET", data = {}) => {
+  // if (method === "GET" || method === "POST" || method === "PUT") {
+  //   data["action"] = action['action'];
+  // }
 
   let returnPrueba = {
     method,
@@ -23,23 +23,23 @@ const setFetch = (method = "GET", action = "", data = {}) => {
 export const sendData = async (
   url,
   method = "POST",
-  parameters = {},
   data = {}
 ) => {
   try {
-    const setParameter = new URLSearchParams();
-    setParameter.append("action", parameters);
+    // const setParameter = new URLSearchParams();
+    // setParameter.append("action", parameters);
 
-    let newUrl;
+    let newUrl = url;
 
-    if (Object.keys(parameters).length > 0) {
-      newUrl = `${url}?${setParameter}`;
-    } else {
-      newUrl = url;
-    }
-    const optionsFetch = setFetch(method, parameters, data);
+    // if (Object.keys(parameters).length > 0) {
+    //   newUrl = `${url}&${setParameter}`;
+    // } else {
+    //   newUrl = url;
+    // }
+    const optionsFetch = setFetch(method, data);
     const response = await fetch(newUrl, optionsFetch);
-    console.log({ "response": response, "optionsFetch": optionsFetch, "newUrl": newUrl });
+
+
     if (response.status === 204) {
       return { status: 204 };
     }

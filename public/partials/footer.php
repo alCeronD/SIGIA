@@ -28,11 +28,14 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
 
     <?php endforeach; ?>
     <li>
-      <a href="<?php
-      echo Router::createRoute('Login', 'Login', 'logout', 'false', 'dashboard'); ?>" class="btn-floating red " data-tooltip="Cerrar sesión">
+      <!-- <a data-btnClose="dataBtnClose" href="<?php //echo Router::createRoute('Login', 'Login', 'logout', 'false', 'dashboard'); ?>" class="btn-floating red " data-tooltip="Cerrar sesión"> <i class="material-icons">exit_to_app</i></a> -->
+
+      <a data-btnClose="dataBtnClose" class="btn-floating red " href="" data-logOut="logOut" data-Url="<?php echo Router::createRoute('Login','Login','logout',false,'dashboard') ?>">
         <i class="material-icons">exit_to_app</i>
       </a>
     </li>
+
+
 
   </ul>
 </div>
@@ -127,7 +130,7 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
     });
   });
 </script>
-
+<script type="module" src="../public/assets/js/main.js"></script>
 <script type="module" src="../public/assets/js/header.js"></script>
 </body>
 

@@ -1,15 +1,16 @@
-
 import { initAlert, toastOptions } from "../utils/cases.js";
 import { validationRules } from "../utils/regex.js";
 import { Storage } from "../utils/Storage.js";
 
-// Proceso estorage para re direccionar inmediatamente al usuario en caso de que este tenga su inicio de sesión.
+// Proceso Storage para re direccionar inmediatamente al usuario en caso de que este tenga su inicio de sesión.
 window.addEventListener("storage", (g) => {
   const newValue = g.newValue;
   const key = g.key;
   if (key === "sessionStatus" && newValue === "true") {
-    window.location.href = "/SIGIA/Core/dashboard.php?modulo=Dashboard&controlador=Dashboard&funcion=dashboard";
-
+    console.log('if storage');
+    window.location.href = "/Core/dashboard.php?modulo=Dashboard&controlador=Dashboard&function=dashboard";
+  } else {
+    console.log('else storage');
   }
 });
 

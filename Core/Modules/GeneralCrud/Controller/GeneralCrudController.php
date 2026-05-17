@@ -26,4 +26,23 @@ class GeneralCrudController{
 
     Response::success('registros', $result);
   }
+
+  public function insert(){
+
+    header(CONTENT_TYPE);
+
+    if (ob_get_length()) ob_clean();
+
+    $json = file_get_contents("php://input");
+
+    $data = json_decode($json, true);
+
+
+    $this->modelGeneralCrud->insert($data);
+
+
+
+    // Ya recibe la data, AHORA CREAR EL CONTROLADOR PARA INSERTAR LOS DATOS.
+    // Response::success('respuesta', $data);
+  }
 }

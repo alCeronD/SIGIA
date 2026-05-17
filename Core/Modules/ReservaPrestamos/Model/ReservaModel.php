@@ -1014,7 +1014,7 @@ class ReservaModel
             foreach ($prestamosResult as $value) {
                 $codigoPrestamo = (int) $value;
 
-                $stmtSecond->bind_param('si', $Fecha, $codigoPrestamo);
+                $stmtSecond->bind_param('si', $fecha, $codigoPrestamo);
 
                 if (!$stmtSecond->execute()) {
                     $conn->rollback();
@@ -1044,15 +1044,16 @@ class ReservaModel
                 }
             }
 
+            $stmtSecond->close();
+            $stmtThird->close();
+            $stmtFour->close();
+
             $conn->commit();
         } catch (Exception $e) {
 
             $conn->rollback();
             // Esto se guarda en mi archivo php_error.log
             error_log("Error al ejecutar la transacción de cancelarPrestamo fecha".$e->getMessage());
-        // Aplico un finally cuando todo el proceso ocurre
-        } finally {
-            $conn->close();
         }
     }
 

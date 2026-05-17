@@ -1,14 +1,7 @@
 <?php
-// function redirect($url)
-// {
-//     echo "<script type='text/javascript'>"
-//         . "window.location.href='$url'"
-//         . "</script>";
-// }
+Class Rect{
 
-class Redirect{
-
-    public static function reditectTo($url)
+    public static function redirectTo($url)
     {
         echo "<script type='text/javascript'>"
             . "window.location.href='$url'"
@@ -20,5 +13,4 @@ class Redirect{
         exit;
     }
 }
-
 ?>

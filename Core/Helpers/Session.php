@@ -12,13 +12,9 @@ Class Session{
             session_start();
         }
 
-        // if (!isset($_SESSION['usuario'])) {
-        //     header("Location: /index.php");
-        //     exit();
-        // }
 
         if (!isset($_SESSION['usuario'])) {
-            Redirect::fast('/index.php');
+            Rect::fast('/index.php');
         }
 
         $usuario = $_SESSION['usuario'];

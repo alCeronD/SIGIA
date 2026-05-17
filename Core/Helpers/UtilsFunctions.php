@@ -3,7 +3,7 @@
 /**
  * Clase general para instanciar funciones basicas requeridas, se usa en forma static porque usamos autoload para validarla.
  */
-Class Utils{
+Class UtilsFunctions{
   public static function ajaxGeneral()
   {
       return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';

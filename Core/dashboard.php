@@ -13,8 +13,13 @@ $css = $controllerFile->addUrl($modulo);
 // Ejecutar actualización automática de estados de prestamos
 $conexion = new Conn();
 $conn = $conexion->getConnect();
-// $solicitudService = new ServicesSolicitudPrestamos();
-// $solicitudService->callTask();
+
+
+if (UtilsFunctions::ajaxGeneral()) {
+    Router::ExecuteFunction();
+    exit;
+}
+
 $solicitudService = new ServicesSolicitudPrestamos();
 $solicitudService->callTask();
 
@@ -23,10 +28,6 @@ $prestamoController = new SolicitudPrestamosController($conn);
 $reservaServices = new ServicesReservas();
 $reservaServices->callTask();
 
-if (Utils::ajaxGeneral()) {
-    Router::ExecuteFunction();
-    exit;
-}
 
 if ($css) {
     $_SESSION['css'] = $css;
@@ -39,7 +40,7 @@ require_once CR_ROUTE_HEADER;
 
 <div class="container bg-light-pattern">
     <?php
-        Router::ExecuteFunction();
-        require_once CR_ROUTE_FOOTER;
-    ?>
+    Router::ExecuteFunction();?>
 </div>
+
+<?php require_once CR_ROUTE_FOOTER; ?>

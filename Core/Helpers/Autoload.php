@@ -1,19 +1,19 @@
 <?php
 
 // Función para buscar una clase automáticamente e implementarla para su uso.
-require_once __DIR__ . '/Utils.php';
+require_once __DIR__ . '/UtilsFunctions.php';
 require_once __DIR__ . '/Const.php';
 
 // FUNCIón ANóNIMA PROPIA DE PHP= spl_autoload_register
 spl_autoload_register(function ($className){
   // Url del archivo para crear la clase
-  // $urlFile = BASE_URL . '/'.$className.".php";
+  $moduleNames = UtilsFunctions::getModulesNames();
+  $moduleName = UtilsFunctions::getNameModule();
 
-  $moduleNames = Utils::getModulesNames();
-  $moduleName = Utils::getNameModule();
 
   $dir = [
     BASE_URL.'/',
+
   ];
 
   // Creamos las rutas y las guardamos en el arreglo.
@@ -30,7 +30,7 @@ spl_autoload_register(function ($className){
   // Ciclamos una sola vez el arreglo hasta que encuentre el archivo, lo incluya en en donde se necesite y se ejecute.
   $route = "";
   foreach ($dir as $value) {
-    $route = $value.$className.".php";
+    $route = realpath($value).'/'.$className.".php";
     if(is_file($route)){
       include_once $route;
       return;

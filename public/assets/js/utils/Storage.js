@@ -10,4 +10,5 @@ export const Storage = {
     getValue: (key) => {
         return window.localStorage.getItem(key);
     }
+
 };

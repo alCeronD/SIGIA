@@ -8,19 +8,17 @@ class LoginController
     private Regex $regex;
 
 
-
     public function __construct()
     {
         $this->conn = (new Conn)->getConnect();
         $this->regex = new Regex();
+
     }
 
     public function index()
     {
         include_once __DIR__ . '/../views/loginView.php';
     }
-
-
 
     public function login()
     {
@@ -100,7 +98,6 @@ class LoginController
         }
     }
 
-
     public function logout()
     {
 
@@ -111,19 +108,23 @@ class LoginController
         $_SESSION = [];
         session_destroy();
 
-        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-            header('Content-Type: application/json');
-            echo json_encode([
-                'status' => true,
-                'message' => 'Sesión cerrada correctamente.',
-                'redirect' => Router::createRoute('Login', 'Login', 'index', false, 'dashboard')
+
+        if (UtilsFunctions::ajaxGeneral()) {
+            header(CONTENT_TYPE);
+            // echo json_encode([
+            //     'status' => true,
+            //     'message' => 'Sesión cerrada correctamente.',
+            //     'redirect' => Router::createRoute('Login', 'Login', 'index', false, 'dashboard')
+            // ]);
+            Response::success('Sesión cerrada correctamente.',[
+                'redirect'=> Router::createRoute('Login', 'Login', 'index', false, 'dashboard')
             ]);
             exit();
         }
-        Redirect::reditectTo(Router::createRoute('Login','Login','index',false,'dashboard'));
+
+        Rect::redirectTo(Router::createRoute('Login','Login','index',false,'dashboard'));
 
 
-        // Redirect::reditectTo(Router::createRoute('Login', 'Login', 'index', false, 'dashboard'));
 
         exit();
     }

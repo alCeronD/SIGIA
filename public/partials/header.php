@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="../public/assets/css/main.css">
   <link rel="stylesheet" href="<?php echo $_SESSION['css']; ?>">
 
+
 </head>
 <nav class="header">
   <div class="nav-wrapper">
@@ -39,7 +40,7 @@
     <ul id="" class="left">
       <li class="user-dropdown">
         <div class="contentUser" id="userDropdownToggle">
-          <span id="btnCerrarSesion" data-logOut='logOut' data-Url='modules/login/controller/loginController.php' ">
+          <span id="btnCerrarSesion" data-logOut='logOut' data-Url='<?php echo Router::createRoute('Login','Login','logout',false,'dashboard') ?>' data-btnClose="dataBtnClose">
             Salir
           </span>
           <br>
