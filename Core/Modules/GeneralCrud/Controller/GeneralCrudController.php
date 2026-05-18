@@ -1,18 +1,12 @@
 <?php
 
-#Incluir los modelos, la conexión.
-
-use ZipStream\Test\Util;
-
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once BASE_URL . '/Autoload.php';
 require_once __DIR__ . '/../const/ConstGeneralCrud.php';
 
-
-
-class GeneralCrudController
+class GeneralCrudController extends ConfigGeneralCrud
 {
-  protected $modelGeneralCrud;
+  protected GeneralCrudModel $modelGeneralCrud;
   # Incluimos todos los modelos que vamos a usar
   public function __construct()
   {
@@ -27,9 +21,10 @@ class GeneralCrudController
   public function selectData()
   {
     header(CONTENT_TYPE);
-
     # Types del paginado
     $types = 'ii';
+    $paginaActual = $_GET[GC_PAGE] ?? 1;
+
 
     // Cantidad de paginas
     $this->modelGeneralCrud->count();
@@ -37,14 +32,14 @@ class GeneralCrudController
     $resultCount = $this->modelGeneralCrud->get($preparedCount);
 
     # se coloca get pero esto vendrá como petición desde fetch de javascript
-    $paginaActual = $_GET['page'] ?? 1;
 
     // lógica paginado
     $resultPaginate = UtilsFunctions::executePaginate($resultCount, LIMIT, $paginaActual);
 
+
     $dataSql = [
-      'types' => $types,
-      'data' => [LIMIT, $resultPaginate['offset']]
+      GC_TYPES => $types,
+      GC_DATA => [LIMIT, $resultPaginate[GC_OFFSET]]
     ];
 
     $this->modelGeneralCrud->select(false);
@@ -54,11 +49,11 @@ class GeneralCrudController
     $sqlPreparedSelect = $this->modelGeneralCrud->prepareSql($dataSql);
     $resultSelect = $this->modelGeneralCrud->get($sqlPreparedSelect);
     Response::success('registros', [
-      'items' => $resultSelect,
-      'limit' => LIMIT,
-      'cantidadPaginas' => $resultPaginate['totalPaginas'],
-      'totalRegistros' => $resultCount,
-      'paginaActual' => $paginaActual
+      GC_ITEMS => $resultSelect,
+      GC_LIMIT => LIMIT,
+      GC_CANTIDAD_PAGINAS => $resultPaginate[GC_TOTAL_PAGINAS],
+      GC_TOTAL_REGISTROS => $resultCount,
+      GC_PAGINA_ACTUAL => $paginaActual
     ]);
   }
 

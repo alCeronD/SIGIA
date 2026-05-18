@@ -22,12 +22,12 @@ Listado de TODOS generales y específicos por cada módulo.
 - [ ] Crear CRUD
   - [X] Crear consulta basica select
   - [X] Crear consulta insert basica
-  - [ ] Crear estructura paginada
+  - [X] Crear estructura paginada
   - [ ] Crear update
   - [ ] Crear delete
   - [ ] Crear where
   - [ ] Crear join
-  - [ ]
+  - [X] Crear count
 - [ ] Investigar e implementar rastro de miga.
 - [ ] Implementar variables ENV según el contexto, si es dev o producción, en caso de ser requerido.
 
