@@ -17,8 +17,17 @@ Listado de TODOS generales y específicos por cada módulo.
 - [] **Documentación** = Colocar requisitos del sistema implementados y diagramas que se usaron para el proceso de creación del producto.
 - [X] Cambiar estructura de carpetas del proyecto, cambiar la carpeta app a core y core debe de tener solo config, helpers, adicionar la carpeta mod que esa tendrá los módulos del proyecto
 - [ ] Crear el núcleo del proyecto que me permita crear escalar el proyecto según la necesidad.
-- [ ] Re definir estructura de carpetas del proyecto para asi módularizar más los módulos.
+- [X] Re definir estructura de carpetas del proyecto para asi módularizar más los módulos.
 - [ ] Crear constantes a cada modulo y si se puede al core principal para evitar redundancia en mensajes de alerta y/o textos.
+- [ ] Crear CRUD
+  - [X] Crear consulta basica select
+  - [X] Crear consulta insert basica
+  - [ ] Crear estructura paginada
+  - [ ] Crear update
+  - [ ] Crear delete
+  - [ ] Crear where
+  - [ ] Crear join
+  - [ ]
 - [ ] Investigar e implementar rastro de miga.
 - [ ] Implementar variables ENV según el contexto, si es dev o producción, en caso de ser requerido.
 

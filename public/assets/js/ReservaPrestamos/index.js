@@ -1,6 +1,6 @@
 // Barrell File
-export { getData, sendData } from "../utils/fetch.js";
-export { Ajax } from "../utils/ajax.js";
+export { getData, sendData } from '../utils/fetch.js';
+export { Ajax } from '../utils/ajax.js';
 export {
   closeModal,
   createI,
@@ -16,7 +16,16 @@ export {
   toastOptions,
   mostrarConfirmacion,
   replaceln,
-  addClassItem
-} from "../utils/cases.js";
+  addClassItem,
+} from '../utils/cases.js';
 
-export { tablesDoom,modalDoom, btnDoom, inputsForm, iDom, objDataConsumibles , objDataUsers, divContainers} from "./reserva/domElementsReservas.js";
+export {
+  tablesDoom,
+  modalDoom,
+  btnDoom,
+  inputsForm,
+  iDom,
+  objDataConsumibles,
+  objDataUsers,
+  divContainers,
+} from './reserva/domElementsReservas.js';

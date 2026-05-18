@@ -72,10 +72,16 @@ abstract class Crud
 
   public function organizarDatosUpdate() {}
 
-  # Función para definir la estructura select
-  public function select()
+  /**
+   * function para crear sentencia select
+   *
+   * @param boolean $campos - flag para determinar si hacemos un select con * o en su defecto con los campos de la tabla sin su id.
+   * @return void
+   */
+  public function select(bool $campos = false)
   {
-    $this->sql = "SELECT " . $this->organizarCampos($this->campos) . " FROM " . $this->table;
+    $campos = ($campos) ? $this->campos : ["*"];
+    $this->sql = "SELECT " . $this->organizarCampos($campos) . " FROM " . $this->table;
   }
   public function insert(array $insertValue)
   {
@@ -87,15 +93,57 @@ abstract class Crud
   }
   public function update($valuesUpdate) {}
 
+  /**
+   * Function para devolver la cantidad de registros de una tabla
+   *
+   * @return void
+   */
+  public function count()
+  {
+    $this->sql = "SELECT COUNT(*) FROM $this->table";
+  }
+
   public function where() {}
 
   // Función para crear la estructura de paginación
-  public function paginate() {}
+
 
   public function groupBy() {}
 
+  /**
+   * Function para definir el orden del campo, como parámetro se recomienda enviar el index de la tabla, por defecto, asigna el id.
+   * @param string|null $campo - String o null para definir el index de la tabla, si no se envia nada, se determina que es el id de la tabla, en caso contrario, se valida la información enviada
+   * @param boolean $ASC - flag para determinar si es ascendente o descendente dependiendo del booleano recibido
+   * @return void
+   */
+  public function orderBy(string $campo = "", bool $ASC = true)
+  {
+    #SELECT * FROM `GeneralCrud` ORDER BY gc_id ASC LIMIT 5 OFFSET 5;
+    $campoValido = "";
+    if (empty($campo)) {
+      $campoValido = $this->id;
+    }
 
 
+    // Function para definir el orden del campo, como parámetro se recomienda enviar el index de la tabla, por defecto, asigna el id.
+
+    if (in_array($campo, $this->campos)) {
+      $campoValido = $campo;
+    }
+
+
+    $ASC = ($ASC) ? 'ASC' : 'DESC';
+    $this->sql .= " ORDER BY $campoValido $ASC";
+  }
+  public function limit()
+  {
+    $this->sql .= " LIMIT ?";
+  }
+
+  public function offset()
+  {
+    $this->sql .= " OFFSET ?";
+  }
 
   # Function para preparar la consulta y pasar los valores por referencia
   public function prepareSql(array $datos = [])
@@ -104,16 +152,34 @@ abstract class Crud
 
     $sql = $this->conn->prepare($this->sql);
 
+    #Extraigo los tipos de datos
+    $types = $datos['types'] ?? [];
+    #Extraigo la informacion
+    $data = $datos['data'] ?? [];
+
     // Si es un select, solamente preparamos la consulta y retornamos su resultado
     if ((strpos($this->sql, 'SELECT') === 0) && ($select[0] === "SELECT")) {
+
+      // validar si tiene un COUNT para solo devolver la consulta
+      $hasCount = str_contains($this->sql, "COUNT");
+      if ($hasCount) {
+        $stmt = $sql;
+        return $stmt;
+      }
+
+      // validar si el string contiene o WHERE u OFFSET O LIMIT
+      $hasOffset = str_contains($this->sql, "OFFSET");
+      $hasLimit = str_contains($this->sql, "LIMIT");
+      # Validar si requiere paginación
+      if ($hasOffset && $hasLimit) {
+        $sql->bind_param($types, ...$data);
+      }
+
       $stmSql = $sql;
       return $stmSql;
     } else {
 
-      #Extraigo los tipos de datos
-      $types = $datos['types'];
-      #Extraigo la informacion
-      $data = $datos['data'];
+
       # validamos los parámetros con el tipo de dato
       $sql->bind_param($types, ...$data);
       return $sql;
@@ -146,6 +212,11 @@ abstract class Crud
       # Verificamos si es un select para solamente devolver un arreglo asociativo
       if ((strpos($this->sql, 'SELECT') === 0) && ($checkSelect[0] === "SELECT")) {
         $result = $prepare->get_result();
+
+        if (str_contains(strtoupper($this->sql), "COUNT")) {
+          return (int) $result->fetch_row()[0];
+        }
+
         return $result->fetch_all(MYSQLI_ASSOC);
       }
 

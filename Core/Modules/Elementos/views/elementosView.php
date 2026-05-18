@@ -43,7 +43,6 @@
             </thead>
             <tbody id="tbodyElements">
             </tbody>
-            <!-- FILA DE PAGINACION DENTRO DE LA TABLA -->
         </table>
     </div>
     <div class="footerElements">
