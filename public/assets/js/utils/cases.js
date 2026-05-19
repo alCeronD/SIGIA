@@ -1,5 +1,9 @@
 /**
- * Archivo donde podemos importar y re utilizar cosas. como crear elementos html
+ * Close modal - function para cerrar el modal tanto con el framework materialize como de forma nativa
+ *
+ * @param {*} modal - selector del modal
+ * @param {*} btn - selector del boton que va a ejecutar el proceso
+ * @param {*} onCloseCallback
  */
 export const closeModal = (modal, btn, onCloseCallback) => {
   //Valido que el modal si haya sido enviado
@@ -14,19 +18,19 @@ export const closeModal = (modal, btn, onCloseCallback) => {
 
   const executeClose = () => {
     //Valido si el tipo de lo que voy a ejecutar es una función.
-    if (typeof modal.close === "function") {
+    if (typeof modal.close === 'function') {
       modal.close();
     } else {
       //En caso de que no sea una función, esta debe de ejecutar si o si cambiar el style del modal de flex a none, para que no sea visible.
-      modal.style.display = "none";
+      modal.style.display = 'none';
     }
     //Si el tipo de la función closeCallback y se paso por parámetro, ejecutarla.
-    if (typeof onCloseCallback === "function") {
+    if (typeof onCloseCallback === 'function') {
       onCloseCallback();
     }
   };
 
-  btn.addEventListener("click", (e) => {
+  btn.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -35,26 +39,26 @@ export const closeModal = (modal, btn, onCloseCallback) => {
 };
 
 export const openModal = (modal) => {
-  modal.style.display = "flex";
+  modal.style.display = 'flex';
 };
 
 export const createI = (text) => {
-  const i = document.createElement("i");
-  i.setAttribute("class", "material-icons");
-  i.style.pointerEvents = "none";
+  const i = document.createElement('i');
+  i.setAttribute('class', 'material-icons');
+  i.style.pointerEvents = 'none';
   i.innerText = text;
   return i;
 };
 
 export const createSpan = () => {
-  const span = document.createElement("span");
+  const span = document.createElement('span');
   // span.setAttribute("class", "material-symbols-outlined");
   return span;
 };
 
-export const createBtn = (valueClass = "") => {
-  const button = document.createElement("button");
-  button.setAttribute("class", valueClass);
+export const createBtn = (valueClass = '') => {
+  const button = document.createElement('button');
+  button.setAttribute('class', valueClass);
   return button;
 };
 
@@ -66,15 +70,12 @@ export const addClassItem = (item, valuesClass = {}) => {
   //Como objeto, puedo buscar una forma de hacerlo con arreglo.
   Object.values(valuesClass).forEach((val) => {
     // item.classList.add(val);
-    val.split(" ").forEach((cl) => item.classList.add(cl));
+    val.split(' ').forEach((cl) => item.classList.add(cl));
   });
 };
 
 //Crear el horario de la reserva.
-export const instanceDateTime = (
-  selector = ".timepicker",
-  timePickerOptions = {}
-) => {
+export const instanceDateTime = (selector = '.timepicker', timePickerOptions = {}) => {
   if (!selector) return null;
 
   let elems = document.querySelector(selector);
@@ -98,19 +99,14 @@ export const instanceModal = (selector, options = {}) => {
 };
 
 //Crear una fecha.
-export const instanceDate = (selector = ".datepicker", options = {}) => {
+export const instanceDate = (selector = '.datepicker', options = {}) => {
   let datePicker = document.querySelector(selector);
   //TODO: crear un objeto con las opciones personalizadas, usar object.assing para este proceso.
   return M.Datepicker.init(datePicker, options);
 };
 
 //Crear el tooltip al boton TODO: crear el tooltip
-export const initTooltip = (
-  btn,
-  options = {},
-  message = "",
-  position = "left"
-) => {
+export const initTooltip = (btn, options = {}, message = '', position = 'left') => {
   if (!btn) return;
   //Destruimos el tooltip que existe asignado al boton, esto para evitar que se vuelva a sobre escribir.
   const instanceToltip = M.Tooltip.getInstance(btn);
@@ -119,22 +115,22 @@ export const initTooltip = (
     instanceToltip.destroy();
   }
 
-  let newMessage = message.replace(/\n/g, "<br>");
+  let newMessage = message.replace(/\n/g, '<br>');
   const mergedOptions = {
     ...options,
     html: newMessage,
     position: position,
   };
 
-  if (!btn.classList.contains("tooltipped")) {
-    btn.classList.add("tooltipped");
+  if (!btn.classList.contains('tooltipped')) {
+    btn.classList.add('tooltipped');
   }
 
   //Si trabajamos html, debemos eliminar el data-tooltip.
-  btn.removeAttribute("data-tooltip");
+  btn.removeAttribute('data-tooltip');
   //btn.setAttribute('data-tooltip', message);
 
-  btn.setAttribute("data-position", position);
+  btn.setAttribute('data-position', position);
 
   //Lo re inicializo.
   M.Tooltip.init(btn, mergedOptions);
@@ -143,7 +139,7 @@ export const initTooltip = (
 // Reemplazar los saltos de línea de un texto por etiquetas br html.
 export const replaceln = (message) => {
   // la letra g significa "global", es decir, se debe aplicar a todos.
-  return message.replace(/\n/g, "<br>");
+  return message.replace(/\n/g, '<br>');
 };
 
 //Configuración de las opciones del modal
@@ -152,11 +148,10 @@ export const options = {
   inDuration: 300,
   outDuration: 200,
   dismissible: false,
-  startingTop: "4%",
-  endingTop: "10%",
-  onOpenStart: () => { },
-  onCloseEnd: () => {
-  },
+  startingTop: '4%',
+  endingTop: '10%',
+  onOpenStart: () => {},
+  onCloseEnd: () => {},
 };
 
 export const tooltipOptions = {
@@ -166,7 +161,7 @@ export const tooltipOptions = {
   margin: 5, // Espacio entre el tooltip y el elemento objetivo
   inDuration: 300, // Duración de la animación de entrada (ms)
   outDuration: 250, // Duración de la animación de salida (ms)
-  position: "bottom", // Posición del tooltip: 'top', 'right', 'bottom', 'left'
+  position: 'bottom', // Posición del tooltip: 'top', 'right', 'bottom', 'left'
   transitionMovement: 10, // Movimiento vertical durante la transición (solo para 'top' y 'bottom')
 };
 
@@ -195,7 +190,7 @@ export const opcionesDatepicker = {
   firstDay: 0,
 
   // Formato de la fecha para mostrar (ver más abajo)
-  format: "yyyy dd mmm",
+  format: 'yyyy dd mmm',
 
   // Habilitar/Deshabilitar selección de fechas
   disableWeekends: false,
@@ -206,50 +201,42 @@ export const opcionesDatepicker = {
 
   // Idioma Español.
   i18n: {
-    cancel: "Cancelar",
-    clear: "Limpiar",
-    done: "Ok",
-    previousMonth: "‹",
-    nextMonth: "›",
+    cancel: 'Cancelar',
+    clear: 'Limpiar',
+    done: 'Ok',
+    previousMonth: '‹',
+    nextMonth: '›',
     months: [
-      "Enero",
-      "Febrero",
-      "Marzo",
-      "Abril",
-      "Mayo",
-      "Junio",
-      "Julio",
-      "Agosto",
-      "Septiembre",
-      "Octubre",
-      "Noviembre",
-      "Diciembre",
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
     ],
     monthsShort: [
-      "Ene",
-      "Feb",
-      "Mar",
-      "Abr",
-      "May",
-      "Jun",
-      "Jul",
-      "Ago",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dic",
+      'Ene',
+      'Feb',
+      'Mar',
+      'Abr',
+      'May',
+      'Jun',
+      'Jul',
+      'Ago',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dic',
     ],
-    weekdays: [
-      "Domingo",
-      "Lunes",
-      "Martes",
-      "Miércoles",
-      "Jueves",
-      "Viernes",
-      "Sábado",
-    ],
-    weekdaysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
-    weekdaysAbbrev: ["D", "L", "M", "M", "J", "V", "S"],
+    weekdays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+    weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+    weekdaysAbbrev: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
   },
 
   // Si el selector debe cerrarse automáticamente al seleccionar
@@ -263,10 +250,10 @@ export const opcionesDatepicker = {
 
   // Comportamiento de animación
   container: null, // Por defecto es <body>
-  onSelect: function (date) { },
-  onClose: function () { },
-  onOpen: function () { },
-  onDraw: function () { },
+  onSelect: function (date) {},
+  onClose: function () {},
+  onOpen: function () {},
+  onDraw: function () {},
 };
 
 /**
@@ -280,24 +267,24 @@ export const dateISOFormat = (fecha, isNewDate = false) => {
   if (!fecha) {
     return null;
   }
-  const [year, day, month] = fecha.split(" ");
+  const [year, day, month] = fecha.split(' ');
   const months = {
-    Ene: "01",
-    Feb: "02",
-    Mar: "03",
-    Abr: "04",
-    May: "05",
-    Jun: "06",
-    Jul: "07",
-    Ago: "08",
-    Sep: "09",
-    Oct: "10",
-    Nov: "11",
-    Dic: "12",
+    Ene: '01',
+    Feb: '02',
+    Mar: '03',
+    Abr: '04',
+    May: '05',
+    Jun: '06',
+    Jul: '07',
+    Ago: '08',
+    Sep: '09',
+    Oct: '10',
+    Nov: '11',
+    Dic: '12',
   };
 
   const monthFormate = months[month];
-  const newDate = `${year}-${monthFormate}-${day.padStart(2, "0")}`;
+  const newDate = `${year}-${monthFormate}-${day.padStart(2, '0')}`;
   //Con padStart se rellena el valor en caso de que no hayan dos digitos, si hay 1 solo el le coloca un 0, si hay un valor de 10 en adelante, no hace nada y devuelve el nro 10.
   return isNewDate ? new Date(newDate) : newDate;
 };
@@ -309,7 +296,7 @@ export const dateISOFormat = (fecha, isNewDate = false) => {
  */
 export const toastOptions = {
   displayLength: 4000,
-  classes: "",
+  classes: '',
   inDuration: 300,
   outDuration: 500,
   activationPercent: 0.8,
@@ -322,8 +309,8 @@ export const toastOptions = {
  * @param {string} [type="info"] - Tipo de mensaje para una mejor experiencia de usuario
  * @param {{}} [options={}] - Objeto para enviar las opciones requeridas
  */
-export const initAlert = (message = "", type = "info", options = {}) => {
-  const toastElements = document.querySelectorAll(".toast");
+export const initAlert = (message = '', type = 'info', options = {}) => {
+  const toastElements = document.querySelectorAll('.toast');
   // Alertas Máximas, 3 en pantalla.
   const maxToast = 3;
 
@@ -364,11 +351,11 @@ export const typeLoans = {
 
 //Con esta función defino la estructura para FINALIZAR EL PRESTAMO y VALIDAR LA SOLICITUD., es cuando el prestamo me ya va a ser devuelto.
 export const setReserva = (
-  attribute = "",
+  attribute = '',
   data = {},
   elementos = {},
   target,
-  action = "finalizar"
+  action = 'finalizar'
 ) => {
   const codigoReserva = Number(target.getAttribute([`${attribute}`]));
   const dataResult = data.find((dta) => Number(dta.codigo) === codigoReserva);
@@ -393,24 +380,24 @@ export const setReserva = (
  * @returns {*}
  */
 export const createCheckbox = (seriales, placa) => {
-  let p = document.createElement("p");
-  let label = document.createElement("label");
-  let input = document.createElement("input");
-  let span = document.createElement("span");
+  let p = document.createElement('p');
+  let label = document.createElement('label');
+  let input = document.createElement('input');
+  let span = document.createElement('span');
 
-  input.setAttribute("type", "checkbox");
-  input.setAttribute("name", "serialCheckbox");
-  input.classList.add("filled-in");
+  input.setAttribute('type', 'checkbox');
+  input.setAttribute('name', 'serialCheckbox');
+  input.classList.add('filled-in');
 
   if (Array.isArray(seriales)) {
-    input.setAttribute("data-seriales", JSON.stringify(seriales));
-    input.setAttribute("data-placa", JSON.stringify(placa));
+    input.setAttribute('data-seriales', JSON.stringify(seriales));
+    input.setAttribute('data-placa', JSON.stringify(placa));
 
-    const ultimaSerie = seriales[seriales.length - 1]?.serie || "";
+    const ultimaSerie = seriales[seriales.length - 1]?.serie || '';
     span.innerText = `Asociar desde ${ultimaSerie}`;
   } else {
-    input.setAttribute("data-seriales", seriales || "");
-    span.innerText = "Crear serial";
+    input.setAttribute('data-seriales', seriales || '');
+    span.innerText = 'Crear serial';
   }
 
   label.appendChild(input);
@@ -430,7 +417,7 @@ export const getSelector = (selector) => {
   const el = document.querySelector(selector);
 
   if (!el) {
-    console.warn("elemento no idenfificado");
+    console.warn('elemento no idenfificado');
   }
 
   return el;
@@ -438,31 +425,31 @@ export const getSelector = (selector) => {
 
 // Función para crear un checkbox generico con materialize, esta función debo implementar un ciclo en caso de que se requiera adicionar más clases o más data-*
 export const createCheckboxGeneric = ({
-  text = "",
-  id = "",
-  name = "",
-  value = "",
+  text = '',
+  id = '',
+  name = '',
+  value = '',
   checkedValue = false,
   classItem,
-  data = "",
+  data = '',
 } = {}) => {
-  const div = document.createElement("div");
-  div.classList.add("checkbox-container");
+  const div = document.createElement('div');
+  div.classList.add('checkbox-container');
 
-  const labelText = document.createElement("span");
+  const labelText = document.createElement('span');
   labelText.innerText = text;
 
-  const labelCheckbox = document.createElement("label");
-  const inputCheckbox = document.createElement("input");
-  inputCheckbox.setAttribute("type", "checkbox");
+  const labelCheckbox = document.createElement('label');
+  const inputCheckbox = document.createElement('input');
+  inputCheckbox.setAttribute('type', 'checkbox');
   if (id) inputCheckbox.id = id;
   if (name) inputCheckbox.name = name;
   if (value) inputCheckbox.value = value;
   if (checkedValue) inputCheckbox.checked = checkedValue;
   if (classItem) inputCheckbox.classList.add(classItem);
-  if (data) inputCheckbox.setAttribute("data-idModulo", data);
+  if (data) inputCheckbox.setAttribute('data-idModulo', data);
 
-  const span = document.createElement("span"); // Materialize uses this
+  const span = document.createElement('span'); // Materialize uses this
 
   labelCheckbox.appendChild(inputCheckbox);
   labelCheckbox.appendChild(span);
@@ -483,15 +470,11 @@ export const createCheckboxGeneric = ({
  */
 export const validateFormData = ({ formData, campos, mapForm } = {}) => {
   for (const [key, value] of formData.entries()) {
-    const isEmpty = !value || value.toString().trim() === "";
+    const isEmpty = !value || value.toString().trim() === '';
     // pasamos por referencia los valores opcionales.
     const camposOpcionales = campos;
     if (isEmpty && !camposOpcionales.includes(key)) {
-      initAlert(
-        `El campo "${mapForm[key]}" debe ser diligenciado`,
-        "info",
-        toastOptions
-      );
+      initAlert(`El campo "${mapForm[key]}" debe ser diligenciado`, 'info', toastOptions);
       return false;
     }
   }
@@ -512,8 +495,8 @@ let cancelarExecution;
 export const mostrarConfirmacion = (titulo, mensaje, callback) => {
   // TODO: buscar bien como se usan los handlers en javascript (manejador de eventos)
   // Agrego la informacion en los espacios html.
-  document.getElementById("modalConfirmacionTitulo").textContent = titulo;
-  document.getElementById("modalConfirmacionMensaje").innerHTML = mensaje;
+  document.getElementById('modalConfirmacionTitulo').textContent = titulo;
+  document.getElementById('modalConfirmacionMensaje').innerHTML = mensaje;
 
   // Esto se debe de arreglar.
   const optionsModalConfirmacion = {
@@ -521,23 +504,22 @@ export const mostrarConfirmacion = (titulo, mensaje, callback) => {
     inDuration: 300,
     outDuration: 200,
     dismissible: false,
-    startingTop: "4%",
-    endingTop: "10%",
-    onOpenStart: () => { },
+    startingTop: '4%',
+    endingTop: '10%',
+    onOpenStart: () => {},
     onCloseEnd: () => {
       const overlay = document.querySelector('.modal-overlay');
       if (overlay) {
-        overlay.style.display = "none";
+        overlay.style.display = 'none';
       }
     },
   };
 
-
   const instance = instanceModal('#modalConfirmacion', optionsModalConfirmacion);
 
   // Manejo de botones
-  const btnAceptar = document.getElementById("btnAceptar");
-  const btnCancelar = document.getElementById("btnCancelar");
+  const btnAceptar = document.getElementById('btnAceptar');
+  const btnCancelar = document.getElementById('btnCancelar');
 
   // Elimino las llamadas anteriores.
   if (aceptarExecution) {
@@ -567,7 +549,7 @@ export const setDate = () => {
   let day = dateNow.getDate().toString();
   let month = (dateNow.getMonth() + 1).toString();
   let year = dateNow.getFullYear();
-  let dateActual = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  let dateActual = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   return dateActual;
 };
 
@@ -579,11 +561,7 @@ export const setDate = () => {
  * @param {null} [param2.selector=null]  - Selector del html
  * @param {boolean} [param3.isRequired=false] - Flag boolean para realizar el cambio.
  */
-export const setObservacion = ({
-  baseText = "",
-  selector = null,
-  isRequired = false,
-} = {}) => {
-  selector.innerText = "";
+export const setObservacion = ({ baseText = '', selector = null, isRequired = false } = {}) => {
+  selector.innerText = '';
   selector.innerText = isRequired ? `${baseText} *` : baseText;
 };

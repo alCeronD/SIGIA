@@ -53,7 +53,6 @@ abstract class Crud
      * }
      */
 
-
     // Concatenamos con signos de interrogacion para preparar la consulta.
     foreach ($datos as $key => $camp) {
       // valido que las keys esten en el modelo de las tablas;
@@ -70,7 +69,24 @@ abstract class Crud
     return trim($string, ", ");
   }
 
-  public function organizarDatosUpdate() {}
+
+  /**
+   * Undocumented function
+   *
+   * @param array $datos
+   * @return string
+   */
+  public function organizarDatosUpdate(array $datos = [])
+  {
+    $sql = "";
+    foreach ($datos as $key => $value) {
+
+      if (in_array($key, $this->campos)) {
+        $sql .= "$key = ? ,";
+      }
+    }
+    return trim($sql, ", ");
+  }
 
   /**
    * function para crear sentencia select
@@ -91,7 +107,11 @@ abstract class Crud
   {
     $this->sql = "DELETE FROM " . $this->table . " WHERE " . $this->id . "= " . $valueId;
   }
-  public function update($valuesUpdate) {}
+  public function update(array $datos = [])
+  {
+    $valuesUpdate = $this->organizarDatosUpdate($datos);
+    $this->sql .= "UPDATE $this->table SET $valuesUpdate";
+  }
 
   /**
    * Function para devolver la cantidad de registros de una tabla
@@ -103,7 +123,12 @@ abstract class Crud
     $this->sql = "SELECT COUNT(*) FROM $this->table";
   }
 
-  public function where() {}
+  public function where(array $datos = [])
+  {
+    if (array_key_exists($this->id, $datos)) {
+      $this->sql .= " WHERE $this->id = ?";
+    }
+  }
 
   // Función para crear la estructura de paginación
 
@@ -188,13 +213,22 @@ abstract class Crud
     return true;
   }
 
-  # Function para castear los tipos de datos de las tablas y devolver un string con el tipo de dato: ejemplo: [s,s,s,i] = devolver un sssi
+  /**
+   * function para castear los tipos de datos de las tablas y devolver un string con el tipo de dato: ejemplo: [s,s,s,i] = devolver un sssi
+   *
+   * @return string;
+   */
   public function castParam()
   {
     $types = $this->typeCampos;
     $typeCasted = "";
     foreach ($types as $value) {
       $typeCasted .= $value;
+    }
+
+    // si la estructura tiene UPDATE,DELETE, IMPLEMENTAR EL WHERE
+    if (str_contains(strtoupper($this->sql), 'WHERE') || str_contains(strtoupper($this->sql), 'DELETE') || str_contains(strtoupper($this->sql), 'UPDATE')) {
+      $typeCasted .= "i";
     }
 
     return $typeCasted;
@@ -207,6 +241,7 @@ abstract class Crud
       # Variable para verificar si es un select
       $checkSelect = explode(' ', $this->sql);
 
+      // if (!$prepare->execute()) return $prepare->error_list;
       $prepare->execute();
 
       # Verificamos si es un select para solamente devolver un arreglo asociativo
@@ -220,10 +255,19 @@ abstract class Crud
         return $result->fetch_all(MYSQLI_ASSOC);
       }
 
+      if ((strpos($this->sql, 'UPDATE') === 0) && str_contains(strtoupper($this->sql), "UPDATE")) {
+        return $prepare->affected_rows;
+      }
+
       return true;
     } catch (\Exception $e) {
       return $e->getMessage();
     }
+  }
+
+  public function getPrimaryKey()
+  {
+    return $this->id;
   }
 
   # Funcion de prueba para verificar como esta armada la sql

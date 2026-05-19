@@ -11,4 +11,7 @@ class GeneralCrudModel extends Crud
     's',
     's'
   ];
+  protected $typeId = [
+    'i'
+  ];
 }

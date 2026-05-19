@@ -45,6 +45,38 @@
         </table>
     </div>
 
+    <!-- MODAL -->
+    <div id="modalGeneralCrud" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content-ma">
+            <div class="titleSection">
+                <span id="modalTitle">Actualizar registro</span>
+                <button type="button" class="closeModalBtn">
+                    <span class="close-modal">&times;</span>
+                </button>
+            </div>
+            <div class="marcaUpdate">
+                <form id="generalCrudUpdate" action="<?php echo Router::createRoute('GeneralCrud', 'GeneralCrud', 'update', false, 'dashboard') ?>">
+                    <div class="input-field idMaUpdate">
+                        <input type="hidden" name="gc_id" id="idGeneralCrudUpdate">
+                    </div>
+                    <div class="input-field nombreMaUpdte">
+                        <input type="text" name="gc_nombre" id="nombreGeneralCrudUpdate">
+                        <label for="gc_nombre">Nombre:</label>
+                    </div>
+                    <div class="input-field descripMaUpdte">
+                        <textarea name="gc_descrip" id="descripcionGeneralCrudUpdate"></textarea>
+                        <label for="gc_descrip">Description:</label>
+                    </div>
+                    <div class="btnMaUpdate">
+                        <button type="submit" id="btnGeneralCrudUpdate" class="btnSubmit waves-effect waves-light btn"><i class="material-icons">save</i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
 </div>
 
 <script type="module" src="../public/assets/js/GeneralCrud/GeneralCrud.js"></script>

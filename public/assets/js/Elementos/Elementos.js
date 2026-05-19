@@ -336,7 +336,7 @@ const renderElements = async ({
     }
 
     const dataElements = await getData(
-      'modules/elementos/controller/elementosController.php',
+      'Modules/Elementos/Controller/ElementosController.php',
       'GET',
       parameters
     );

@@ -25,7 +25,6 @@ class GeneralCrudController extends ConfigGeneralCrud
     $types = 'ii';
     $paginaActual = $_GET[GC_PAGE] ?? 1;
 
-
     // Cantidad de paginas
     $this->modelGeneralCrud->count();
     $preparedCount = $this->modelGeneralCrud->prepareSql();
@@ -35,7 +34,6 @@ class GeneralCrudController extends ConfigGeneralCrud
 
     // lógica paginado
     $resultPaginate = UtilsFunctions::executePaginate($resultCount, LIMIT, $paginaActual);
-
 
     $dataSql = [
       GC_TYPES => $types,
@@ -64,7 +62,7 @@ class GeneralCrudController extends ConfigGeneralCrud
     $data = UtilsFunctions::returnGetDecode();
 
     // caso el tipo de dato para despues pasar por referencia
-    $types = $this->modelGeneralCrud->castParam();
+
 
     // TODO:: Crear una posible function para castear la informacion, podemos re utilizar esta estructura
     $gc_nombre = (string) $data['gc_nombre'];
@@ -72,13 +70,13 @@ class GeneralCrudController extends ConfigGeneralCrud
 
     $dataSql = [];
 
-    $dataSql['types'] = $types;
     $dataSql['data'][] = $gc_nombre;
     $dataSql['data'][] = $gc_descrip;
 
     $this->modelGeneralCrud->insert($data);
+    $types = $this->modelGeneralCrud->castParam();
+    $dataSql['types'] = $types;
     $sqlPrepared = $this->modelGeneralCrud->prepareSql($dataSql);
-
     $resultGet = $this->modelGeneralCrud->get($sqlPrepared);
 
     if (!$resultGet || is_string($resultGet)) {
@@ -86,5 +84,38 @@ class GeneralCrudController extends ConfigGeneralCrud
     }
 
     Response::success('Registro exitoso', [$resultGet]);
+  }
+
+  public function update()
+  {
+    header(CONTENT_TYPE);
+
+
+    $data = UtilsFunctions::returnGetDecode();
+    $primaryKey = $this->modelGeneralCrud->getPrimaryKey();
+    $dataUpdateSql = [];
+
+    // Implementamos todos los valores en el arreglo exceptuando la primary key.
+    foreach ($data as $key => $value) {
+
+      if ($primaryKey === $key) {
+        continue;
+      } else {
+        $dataUpdateSql['data'][] = $value;
+      }
+    }
+    $dataUpdateSql['data'][] = $data[$primaryKey];
+
+    $this->modelGeneralCrud->update($data);
+    $this->modelGeneralCrud->where($data);
+    $typesUpdate = $this->modelGeneralCrud->castParam();
+    $dataUpdateSql['types'] = $typesUpdate;
+
+    $preparedSql = $this->modelGeneralCrud->prepareSql($dataUpdateSql);
+    $responseUpdate = $this->modelGeneralCrud->get($preparedSql);
+
+    if ($responseUpdate) {
+      Response::success('Registro actualizado con exito', [$responseUpdate]);
+    }
   }
 }

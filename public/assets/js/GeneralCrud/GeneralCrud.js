@@ -1,10 +1,22 @@
-import { getData, sendData, initAlert, initTooltip, toastOptions } from '../utils/index.js';
+import {
+  getData,
+  sendData,
+  initAlert,
+  initTooltip,
+  toastOptions,
+  instanceModal,
+  closeModal,
+  options,
+} from '../utils/index.js';
 const url = 'dashboard.php?modulo=GeneralCrud&controlador=GeneralCrud&function=selectData';
 const formGeneral = document.querySelector('#formGeneral');
 const tblBody = document.querySelector('#tblBodyGeneralCrud');
 const tblFooterGeneralCrud = document.querySelector('#tblFooterGeneralCrud');
+const closeModalBtn = document.querySelector('.closeModalBtn');
+const addElementModal = instanceModal('#modalGeneralCrud', options);
 const btnPreview = document.createElement('button');
 const btnNext = document.createElement('button');
+const generalCrudUpdate = document.querySelector('#generalCrudUpdate');
 const render = async (pagina = 1) => {
   const response = await getData(url, 'GET', { pagina: pagina }, false, {});
   let totalPaginas = response.data.cantidadPaginas;
@@ -22,6 +34,10 @@ const render = async (pagina = 1) => {
     let tdOptions = document.createElement('td');
     let btnEdit = document.createElement('button');
     let btnChangeStatus = document.createElement('button');
+    btnChangeStatus.innerText = 'Inhabilitar';
+    btnEdit.innerText = 'Editar';
+    btnEdit.setAttribute('value', dta.gc_id);
+    btnChangeStatus.setAttribute('value', dta.gc_id);
 
     tdIndex.innerText = dta.gc_id;
     tdName.innerText = dta.gc_nombre;
@@ -31,7 +47,29 @@ const render = async (pagina = 1) => {
     tr.append(tdIndex, tdName, tdDescript, tdStatus, tdOptions);
 
     fragmentBody.appendChild(tr);
+
+    btnEdit.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log(e.target);
+
+      addElementModal.open();
+
+      // buscar como capturar la data y visualizarla e implementarla en el formulario
+
+      // campos para editar
+      let nombreGeneralCrudEdit = document.querySelector('#nombreGeneralCrudUpdate');
+      let descriptGeneralCrudEdit = document.querySelector('#descripcionGeneralCrudUpdate');
+      let idGeneralCrudUpdate = document.querySelector('#idGeneralCrudUpdate');
+
+      nombreGeneralCrudEdit.value = dta.gc_nombre;
+      descriptGeneralCrudEdit.value = dta.gc_descrip;
+      idGeneralCrudUpdate.value = dta.gc_id;
+
+      console.log({ dta: dta });
+    });
   });
+
   tblBody.appendChild(fragmentBody);
   renderPagination(totalPaginas);
 };
@@ -101,8 +139,9 @@ const renderPagination = (totalPaginas = 0) => {
 
 render();
 
-// Eventos
+// ---Eventos---
 
+// Evento post crear elemento
 formGeneral.addEventListener('submit', async (e) => {
   e.preventDefault();
   e.stopPropagation();
@@ -116,3 +155,20 @@ formGeneral.addEventListener('submit', async (e) => {
   // Reiniciar el formulario
   e.target.reset();
 });
+
+// Evento put actualizar elemento
+generalCrudUpdate.addEventListener('submit', async (f) => {
+  f.stopPropagation();
+  f.preventDefault();
+
+  console.log(f.currentTarget);
+  const formUpdate = new FormData(f.currentTarget);
+  // datos
+  let data = Object.fromEntries(formUpdate);
+  console.log(data);
+  let actionUpdate = f.currentTarget.getAttribute('action');
+  console.log(actionUpdate);
+  const response = await sendData(actionUpdate, 'PUT', data);
+});
+
+closeModal(addElementModal, closeModalBtn);
