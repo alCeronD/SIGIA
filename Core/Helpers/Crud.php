@@ -23,6 +23,20 @@ abstract class Crud
   protected $campos;
   protected $id;
   protected $typeCampos;
+  protected $stmt;
+  protected $operators = [
+    '=',
+    '!=',
+    '<>',
+    '<',
+    '>',
+    '<=',
+    '>=',
+    'BETWEEN',
+    'IN',
+    'IS NULL',
+    'LIKE'
+  ];
 
   public function __construct()
   {
@@ -91,21 +105,24 @@ abstract class Crud
    * function para crear sentencia select
    *
    * @param boolean $campos - flag para determinar si hacemos un select con * o en su defecto con los campos de la tabla sin su id.
-   * @return void
+   * @return $this
    */
   public function select(bool $campos = false)
   {
     $campos = ($campos) ? $this->campos : ["*"];
     $this->sql = "SELECT " . $this->organizarCampos($campos) . " FROM " . $this->table;
+
+    return $this;
   }
   public function insert(array $insertValue)
   {
     $this->sql = "INSERT INTO " . $this->table . " (" . $this->organizarCampos($this->campos) . ") VALUES (" . $this->organizarDatos($insertValue) . ")";
+    return $this;
   }
   public function delete()
   {
-    #DELETE FROM `GeneralCrud` WHERE gc_id = 188;
     $this->sql = "DELETE FROM " . $this->table;
+    return $this;
   }
   public function update(array $datos = [])
   {
@@ -116,15 +133,20 @@ abstract class Crud
   /**
    * Function para devolver la cantidad de registros de una tabla
    *
-   * @return void
+   * @return $this
    */
   public function count()
   {
     $this->sql = "SELECT COUNT(*) FROM $this->table";
+    return $this;
   }
+
+
 
   public function where(array $datos = [])
   {
+    // necesito los datos, para validar que existen y asi validarlos, los operadores de comparacion
+
     if (array_key_exists($this->id, $datos)) {
       $this->sql .= " WHERE $this->id = ?";
     }
@@ -139,7 +161,7 @@ abstract class Crud
    * Function para definir el orden del campo, como parámetro se recomienda enviar el index de la tabla, por defecto, asigna el id.
    * @param string|null $campo - String o null para definir el index de la tabla, si no se envia nada, se determina que es el id de la tabla, en caso contrario, se valida la información enviada
    * @param boolean $ASC - flag para determinar si es ascendente o descendente dependiendo del booleano recibido
-   * @return void
+   * @return $this;
    */
   public function orderBy(string $campo = "", bool $ASC = true)
   {
@@ -159,23 +181,69 @@ abstract class Crud
 
     $ASC = ($ASC) ? 'ASC' : 'DESC';
     $this->sql .= " ORDER BY $campoValido $ASC";
+    return $this;
   }
   public function limit()
   {
     $this->sql .= " LIMIT ?";
+    return $this;
   }
 
   public function offset()
   {
     $this->sql .= " OFFSET ?";
+
+    return $this;
   }
+
+  # Function para preparar la consulta y pasar los valores por referencia
+  // public function prepareSql(array $datos = [])
+  // {
+  //   $select = explode(' ', $this->sql);
+
+  //   $sql = $this->conn->prepare($this->sql);
+
+  //   #Extraigo los tipos de datos
+  //   $types = $datos['types'] ?? [];
+  //   #Extraigo la informacion
+  //   $data = $datos['data'] ?? [];
+
+  //   // Si es un select, solamente preparamos la consulta y retornamos su resultado
+  //   if ((strpos($this->sql, 'SELECT') === 0) && ($select[0] === "SELECT")) {
+
+  //     // validar si tiene un COUNT para solo devolver la consulta
+  //     $hasCount = str_contains($this->sql, "COUNT");
+  //     if ($hasCount) {
+  //       $stmt = $sql;
+  //       return $stmt;
+  //     }
+
+  //     // validar si el string contiene o WHERE u OFFSET O LIMIT
+  //     $hasOffset = str_contains($this->sql, "OFFSET");
+  //     $hasLimit = str_contains($this->sql, "LIMIT");
+  //     # Validar si requiere paginación
+  //     if ($hasOffset && $hasLimit) {
+  //       $sql->bind_param($types, ...$data);
+  //     }
+
+  //     $stmSql = $sql;
+  //     return $stmSql;
+  //   } else {
+
+
+  //     # validamos los parámetros con el tipo de dato
+  //     $sql->bind_param($types, ...$data);
+  //     return $sql;
+  //   }
+  // }
+
 
   # Function para preparar la consulta y pasar los valores por referencia
   public function prepareSql(array $datos = [])
   {
     $select = explode(' ', $this->sql);
 
-    $sql = $this->conn->prepare($this->sql);
+    $this->stmt = $this->conn->prepare($this->sql);
 
     #Extraigo los tipos de datos
     $types = $datos['types'] ?? [];
@@ -188,8 +256,8 @@ abstract class Crud
       // validar si tiene un COUNT para solo devolver la consulta
       $hasCount = str_contains($this->sql, "COUNT");
       if ($hasCount) {
-        $stmt = $sql;
-        return $stmt;
+
+        return $this;
       }
 
       // validar si el string contiene o WHERE u OFFSET O LIMIT
@@ -197,20 +265,19 @@ abstract class Crud
       $hasLimit = str_contains($this->sql, "LIMIT");
       # Validar si requiere paginación
       if ($hasOffset && $hasLimit) {
-        $sql->bind_param($types, ...$data);
+        $this->stmt->bind_param($types, ...$data);
       }
 
-      $stmSql = $sql;
-      return $stmSql;
+      return $this;
     } else {
 
 
       # validamos los parámetros con el tipo de dato
-      $sql->bind_param($types, ...$data);
-      return $sql;
+      $this->stmt->bind_param($types, ...$data);
+      return $this;
     }
 
-    return true;
+    return $this;
   }
 
   /**
@@ -240,18 +307,19 @@ abstract class Crud
   }
 
   # Obtener el resultado sql y devolverlo
-  public function get(mysqli_stmt|bool $prepare = false)
+  public function get()
   {
     try {
       # Variable para verificar si es un select
       $checkSelect = explode(' ', $this->sql);
 
       // if (!$prepare->execute()) return $prepare->error_list;
-      $prepare->execute();
+      $this->stmt->execute();
+
 
       # Verificamos si es un select para solamente devolver un arreglo asociativo
       if ((strpos($this->sql, 'SELECT') === 0) && ($checkSelect[0] === "SELECT")) {
-        $result = $prepare->get_result();
+        $result = $this->stmt->get_result();
 
         if (str_contains(strtoupper($this->sql), "COUNT")) {
           return (int) $result->fetch_row()[0];
@@ -261,9 +329,10 @@ abstract class Crud
       }
 
       if ((strpos($this->sql, 'UPDATE') === 0) && str_contains(strtoupper($this->sql), "UPDATE")) {
-        return $prepare->affected_rows;
+        return $this->stmt->affected_rows;
       }
-
+      $this->sql = "";
+      $this->stmt = null;
       return true;
     } catch (\Exception $e) {
       return $e->getMessage();

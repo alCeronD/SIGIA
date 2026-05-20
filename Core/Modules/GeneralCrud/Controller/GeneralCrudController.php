@@ -26,9 +26,7 @@ class GeneralCrudController extends ConfigGeneralCrud
     $paginaActual = $_GET[GC_PAGE] ?? 1;
 
     // Cantidad de paginas
-    $this->modelGeneralCrud->count();
-    $preparedCount = $this->modelGeneralCrud->prepareSql();
-    $resultCount = $this->modelGeneralCrud->get($preparedCount);
+    $resultCount = $this->modelGeneralCrud->count()->prepareSql()->get();
 
     # se coloca get pero esto vendrá como petición desde fetch de javascript
 
@@ -40,12 +38,7 @@ class GeneralCrudController extends ConfigGeneralCrud
       GC_DATA => [LIMIT, $resultPaginate[GC_OFFSET]]
     ];
 
-    $this->modelGeneralCrud->select(false);
-    $this->modelGeneralCrud->orderBy('', true);
-    $this->modelGeneralCrud->limit();
-    $this->modelGeneralCrud->offset();
-    $sqlPreparedSelect = $this->modelGeneralCrud->prepareSql($dataSql);
-    $resultSelect = $this->modelGeneralCrud->get($sqlPreparedSelect);
+    $resultSelect =  $this->modelGeneralCrud->select(false)->orderBy('', true)->limit()->offset()->prepareSql($dataSql)->get();
     Response::success('registros', [
       GC_ITEMS => $resultSelect,
       GC_LIMIT => LIMIT,
