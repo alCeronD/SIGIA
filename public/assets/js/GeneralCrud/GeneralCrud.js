@@ -68,6 +68,17 @@ const render = async (pagina = 1) => {
 
       console.log({ dta: dta });
     });
+
+    btnChangeStatus.addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      console.log(e.target);
+      const update = 'dashboard.php?modulo=GeneralCrud&controlador=GeneralCrud&function=delete';
+
+      // enviar data al controlador.
+      const responseChangeStatus = await sendData(update, 'DELETE', { gc_id: dta.gc_id });
+    });
   });
 
   tblBody.appendChild(fragmentBody);
@@ -170,5 +181,7 @@ generalCrudUpdate.addEventListener('submit', async (f) => {
   console.log(actionUpdate);
   const response = await sendData(actionUpdate, 'PUT', data);
 });
+
+// Evento eliminar (uso delete pero la idea es aplicar el inhabilitar)
 
 closeModal(addElementModal, closeModalBtn);

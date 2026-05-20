@@ -24,3 +24,9 @@ define('GC_PAGINA_ACTUAL', 'paginaActual');
 define('GC_TOTAL_PAGINAS', 'totalPaginas');
 define('GC_OFFSET', 'offset');
 define('GC_PAGE', 'pagina');
+
+
+#Mensajes de respuesta
+define('GC_SUCCESS', 'REGISTRO CREADO EXITOSAMENTE');
+define('GC_FAIL', 'ERROR AL EJECUTAR EL PROCEDIMIENTO');
+define('GC_CHANGE_STATUS_SUCCESS', 'RECURSO INHABILITADO EXITOSAMENTE');

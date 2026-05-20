@@ -90,7 +90,6 @@ class GeneralCrudController extends ConfigGeneralCrud
   {
     header(CONTENT_TYPE);
 
-
     $data = UtilsFunctions::returnGetDecode();
     $primaryKey = $this->modelGeneralCrud->getPrimaryKey();
     $dataUpdateSql = [];
@@ -116,6 +115,30 @@ class GeneralCrudController extends ConfigGeneralCrud
 
     if ($responseUpdate) {
       Response::success('Registro actualizado con exito', [$responseUpdate]);
+    }
+  }
+
+  public function delete()
+  {
+    header(CONTENT_TYPE);
+    $data = UtilsFunctions::returnGetDecode();
+
+    $this->modelGeneralCrud->delete();
+    $this->modelGeneralCrud->where($data);
+
+    $deleteSql = [];
+
+    $types = $this->modelGeneralCrud->castParam();
+
+    $deleteSql['types'] = $types;
+    foreach ($data as $key => $value) {
+      $deleteSql['data'][] = $value;
+    }
+    $preapredSqlDelete = $this->modelGeneralCrud->prepareSql($deleteSql);
+    $resultDelete = $this->modelGeneralCrud->get($preapredSqlDelete);
+
+    if ($resultDelete) {
+      Response::success('registro eliminado exitosamente', $resultDelete);
     }
   }
 }

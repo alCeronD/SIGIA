@@ -69,7 +69,6 @@ abstract class Crud
     return trim($string, ", ");
   }
 
-
   /**
    * Undocumented function
    *
@@ -103,9 +102,10 @@ abstract class Crud
   {
     $this->sql = "INSERT INTO " . $this->table . " (" . $this->organizarCampos($this->campos) . ") VALUES (" . $this->organizarDatos($insertValue) . ")";
   }
-  public function delete(int $valueId)
+  public function delete()
   {
-    $this->sql = "DELETE FROM " . $this->table . " WHERE " . $this->id . "= " . $valueId;
+    #DELETE FROM `GeneralCrud` WHERE gc_id = 188;
+    $this->sql = "DELETE FROM " . $this->table;
   }
   public function update(array $datos = [])
   {
@@ -220,6 +220,11 @@ abstract class Crud
    */
   public function castParam()
   {
+    if (str_contains(strtoupper($this->sql), 'DELETE')) {
+      return "i";
+    }
+
+
     $types = $this->typeCampos;
     $typeCasted = "";
     foreach ($types as $value) {
@@ -227,7 +232,7 @@ abstract class Crud
     }
 
     // si la estructura tiene UPDATE,DELETE, IMPLEMENTAR EL WHERE
-    if (str_contains(strtoupper($this->sql), 'WHERE') || str_contains(strtoupper($this->sql), 'DELETE') || str_contains(strtoupper($this->sql), 'UPDATE')) {
+    if (str_contains(strtoupper($this->sql), 'WHERE') || str_contains(strtoupper($this->sql), 'UPDATE')) {
       $typeCasted .= "i";
     }
 
