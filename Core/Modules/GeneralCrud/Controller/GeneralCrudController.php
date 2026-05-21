@@ -97,13 +97,8 @@ class GeneralCrudController extends ConfigGeneralCrud
     }
     $dataUpdateSql['data'][] = $data[$primaryKey];
 
-    $this->modelGeneralCrud->update($data);
-    $this->modelGeneralCrud->where($data);
-    $typesUpdate = $this->modelGeneralCrud->castParam();
-    $dataUpdateSql['types'] = $typesUpdate;
-
-    $preparedSql = $this->modelGeneralCrud->prepareSql($dataUpdateSql);
-    $responseUpdate = $this->modelGeneralCrud->get($preparedSql);
+    $this->modelGeneralCrud->update($data)->where($data);
+    $responseUpdate = $this->modelGeneralCrud->prepareSql($dataUpdateSql)->get();
 
     if ($responseUpdate) {
       Response::success('Registro actualizado con exito', [$responseUpdate]);

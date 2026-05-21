@@ -132,6 +132,15 @@ abstract class Crud
   {
     $valuesUpdate = $this->organizarDatosUpdate($datos);
     $this->sql .= "UPDATE $this->table SET $valuesUpdate";
+    return $this;
+  }
+  public function where(array $datos = [])
+  {
+    // necesito los datos, para validar que existen y asi validarlos, los operadores de comparacion
+    if (array_key_exists($this->id, $datos)) {
+      $this->sql .= " WHERE $this->id = ?";
+    }
+    return $this;
   }
 
   /**
@@ -147,14 +156,7 @@ abstract class Crud
 
 
 
-  public function where(array $datos = [])
-  {
-    // necesito los datos, para validar que existen y asi validarlos, los operadores de comparacion
 
-    if (array_key_exists($this->id, $datos)) {
-      $this->sql .= " WHERE $this->id = ?";
-    }
-  }
 
   // Función para crear la estructura de paginación
 
@@ -257,8 +259,10 @@ abstract class Crud
     $types = $typesData ?? [];
 
 
+
     #Extraigo la informacion
     $data = $datos['data'] ?? [];
+
 
 
     // Si es un select, solamente preparamos la consulta y retornamos su resultado
@@ -277,6 +281,7 @@ abstract class Crud
       if ($hasOffset && $hasLimit) {
         $this->stmt->bind_param($types, ...$data);
       }
+
 
       return $this;
     } else {
@@ -313,17 +318,16 @@ abstract class Crud
       return $this->typedCasted .= "ii";
     }
 
-    // si la estructura tiene UPDATE,DELETE, IMPLEMENTAR EL WHERE
-    if (str_contains(strtoupper($this->sql), 'WHERE') || str_contains(strtoupper($this->sql), 'UPDATE')) {
-      return $this->typedCasted .= "i";
-    }
-
     # arreglo con los tipos de datos segun el campo DEL MODELO['s','s','i'];
     $typesCampos = $this->typeCampos;
     foreach ($typesCampos as $value) {
       $this->typedCasted .= $value;
     }
 
+    // si la estructura tiene UPDATE,DELETE, IMPLEMENTAR EL WHERE
+    if (str_contains(strtoupper($this->sql), 'WHERE') || str_contains(strtoupper($this->sql), 'UPDATE')) {
+      $this->typedCasted .= "i";
+    }
 
     return $this->typedCasted;
   }
