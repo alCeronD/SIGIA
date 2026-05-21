@@ -64,10 +64,6 @@ class GeneralCrudController extends ConfigGeneralCrud
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
 
-    // caso el tipo de dato para despues pasar por referencia
-
-
-    // TODO:: Crear una posible function para castear la informacion, podemos re utilizar esta estructura
     $gc_nombre = (string) $data['gc_nombre'];
     $gc_descrip = (string) $data['gc_descrip'];
 
@@ -77,31 +73,9 @@ class GeneralCrudController extends ConfigGeneralCrud
     $dataSql['data'][] = $gc_descrip;
 
     $this->modelGeneralCrud->insert($data);
-    $types = $this->modelGeneralCrud->castParam();
-    $dataSql['types'] = $types;
-    $sqlPrepared = $this->modelGeneralCrud->prepareSql($dataSql);
-    // $resultGet = $this->modelGeneralCrud->get($sqlPrepared);
-
-    $resultInsert = $this->modelGeneralCrud->insert($dataSql)->prepareSql()->get();
-    var_dump($resultInsert);
-    die();
-    // if (!$resultGet || is_string($resultGet)) {
-    //   Response::fail('Error', [$resultGet]);
-    // }
-
-    // Response::success('Registro exitoso', [$resultGet]);
-
-    // $this->modelGeneralCrud->insert($data);
-    // $types = $this->modelGeneralCrud->castParam();
-    // $dataSql['types'] = $types;
-    // $sqlPrepared = $this->modelGeneralCrud->prepareSql($dataSql);
-    // $resultGet = $this->modelGeneralCrud->get($sqlPrepared);
-
-    // if (!$resultGet || is_string($resultGet)) {
-    //   Response::fail('Error', [$resultGet]);
-    // }
-
-    // Response::success('Registro exitoso', [$resultGet]);
+    $resultInsert = $this->modelGeneralCrud->prepareSql($dataSql)->get();
+    if (!$resultInsert) Response::fail('Error al ejecutar el procedimiento', [$resultInsert]);
+    Response::success('Registro exitoso', [$resultInsert]);
   }
 
   public function update()

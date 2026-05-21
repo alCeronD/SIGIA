@@ -63,6 +63,7 @@ abstract class Crud
   {
     $string = "";
 
+
     /**
      * array(2){
      * 	["gc_nombre"]=>string(6)"nombre"
@@ -80,6 +81,7 @@ abstract class Crud
 
       }
     }
+
 
 
 
@@ -118,11 +120,7 @@ abstract class Crud
   }
   public function insert(array $insertValue)
   {
-
-    #INSERT INTO roles_funciones (rlp_id_rl,rlp_id_funcion) VALUES (2,110);
-
     $this->sql = "INSERT INTO " . $this->table . " (" . $this->organizarCampos($this->campos) . ") VALUES (" . $this->organizarDatos($insertValue) . ")";
-    $this->castParam();
     return $this;
   }
   public function delete()
@@ -262,6 +260,7 @@ abstract class Crud
     #Extraigo la informacion
     $data = $datos['data'] ?? [];
 
+
     // Si es un select, solamente preparamos la consulta y retornamos su resultado
     if ((strpos($this->sql, 'SELECT') === 0) && ($select[0] === "SELECT")) {
 
@@ -324,6 +323,7 @@ abstract class Crud
     foreach ($typesCampos as $value) {
       $this->typedCasted .= $value;
     }
+
 
     return $this->typedCasted;
   }
