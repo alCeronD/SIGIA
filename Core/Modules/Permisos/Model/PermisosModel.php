@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/../../../Config/Conn.php";
 
+
 class PermisosModel
 {
 
@@ -75,7 +76,7 @@ class PermisosModel
     public function getPermisoFuncion(int $rolId, $idFuncion)
     {
         try {
-            if(empty($rolId)) $rolId = 0;
+            if (empty($rolId)) $rolId = 0;
 
 
             $conn = (new Conn())->getConnect();
@@ -162,7 +163,7 @@ class PermisosModel
             if ($nombreModulo === 'dashboard') {
                 $newModulosMenu[$key] = $value;
             }
-            $newModulosMenu [$key]= $value;
+            $newModulosMenu[$key] = $value;
         }
 
 
@@ -196,25 +197,22 @@ class PermisosModel
 
             $resultOptions = $stmtOptionsMenu->get_result();
 
-            while($row = $resultOptions->fetch_assoc()){
+            while ($row = $resultOptions->fetch_assoc()) {
                 $optionsMenu[] = $row;
-                $optionsMenuClasificado[$moduloNombre][]=$row;
+                $optionsMenuClasificado[$moduloNombre][] = $row;
             }
         }
 
         $data = [
-            'modulos'=> $modulosMenu,
-            'vistas'=> $optionsMenu,
-            'subMenus'=>$optionsMenuClasificado
+            'modulos' => $modulosMenu,
+            'vistas' => $optionsMenu,
+            'subMenus' => $optionsMenuClasificado
         ];
 
         return [
-            'status'=>true,
-            'message'=> 'Vistas y modulos encontrados',
-            'data'=> $data
+            'status' => true,
+            'message' => 'Vistas y modulos encontrados',
+            'data' => $data
         ];
-
-
     }
 }
-

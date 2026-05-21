@@ -1,8 +1,10 @@
 <?php
 
+
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once BASE_URL . '/Autoload.php';
 require_once __DIR__ . '/../const/ConstGeneralCrud.php';
+
 
 class GeneralCrudController extends ConfigGeneralCrud
 {
@@ -21,31 +23,39 @@ class GeneralCrudController extends ConfigGeneralCrud
   public function selectData()
   {
     header(CONTENT_TYPE);
-    # Types del paginado
-    $types = 'ii';
     $paginaActual = $_GET[GC_PAGE] ?? 1;
 
     // Cantidad de paginas
     $resultCount = $this->modelGeneralCrud->count()->prepareSql()->get();
 
-    # se coloca get pero esto vendrá como petición desde fetch de javascript
-
     // lógica paginado
     $resultPaginate = UtilsFunctions::executePaginate($resultCount, LIMIT, $paginaActual);
 
     $dataSql = [
-      GC_TYPES => $types,
       GC_DATA => [LIMIT, $resultPaginate[GC_OFFSET]]
     ];
 
-    $resultSelect =  $this->modelGeneralCrud->select(false)->orderBy('', true)->limit()->offset()->prepareSql($dataSql)->get();
-    Response::success('registros', [
-      GC_ITEMS => $resultSelect,
-      GC_LIMIT => LIMIT,
-      GC_CANTIDAD_PAGINAS => $resultPaginate[GC_TOTAL_PAGINAS],
-      GC_TOTAL_REGISTROS => $resultCount,
-      GC_PAGINA_ACTUAL => $paginaActual
-    ]);
+    $this->modelGeneralCrud->select()->orderBy('', true)->limit()->offset();
+    $resultSelect = $this->modelGeneralCrud->prepareSql($dataSql)->get();
+
+    # Validar forma de envio dependiendo de lo que tenga la consulta, si tiene offset o limit validamos su re envio
+    if (UtilsFunctions::validateContentString($this->modelGeneralCrud->showSql(), 'OFFSET') && UtilsFunctions::validateContentString($this->modelGeneralCrud->showSql(), 'LIMIT')) {
+      $response =  [
+        GC_ITEMS => $resultSelect,
+        GC_LIMIT => LIMIT,
+        GC_CANTIDAD_PAGINAS => $resultPaginate[GC_TOTAL_PAGINAS],
+        GC_TOTAL_REGISTROS => $resultCount,
+        GC_PAGINA_ACTUAL => $paginaActual
+      ];
+    } else {
+      $response = [
+        GC_ITEMS => $resultSelect,
+        GC_TOTAL_REGISTROS => $resultCount
+      ];
+    }
+
+
+    Response::success('registros', $response);
   }
 
   public function insert()
@@ -70,13 +80,28 @@ class GeneralCrudController extends ConfigGeneralCrud
     $types = $this->modelGeneralCrud->castParam();
     $dataSql['types'] = $types;
     $sqlPrepared = $this->modelGeneralCrud->prepareSql($dataSql);
-    $resultGet = $this->modelGeneralCrud->get($sqlPrepared);
+    // $resultGet = $this->modelGeneralCrud->get($sqlPrepared);
 
-    if (!$resultGet || is_string($resultGet)) {
-      Response::fail('Error', [$resultGet]);
-    }
+    $resultInsert = $this->modelGeneralCrud->insert($dataSql)->prepareSql()->get();
+    var_dump($resultInsert);
+    die();
+    // if (!$resultGet || is_string($resultGet)) {
+    //   Response::fail('Error', [$resultGet]);
+    // }
 
-    Response::success('Registro exitoso', [$resultGet]);
+    // Response::success('Registro exitoso', [$resultGet]);
+
+    // $this->modelGeneralCrud->insert($data);
+    // $types = $this->modelGeneralCrud->castParam();
+    // $dataSql['types'] = $types;
+    // $sqlPrepared = $this->modelGeneralCrud->prepareSql($dataSql);
+    // $resultGet = $this->modelGeneralCrud->get($sqlPrepared);
+
+    // if (!$resultGet || is_string($resultGet)) {
+    //   Response::fail('Error', [$resultGet]);
+    // }
+
+    // Response::success('Registro exitoso', [$resultGet]);
   }
 
   public function update()

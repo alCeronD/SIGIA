@@ -80,4 +80,8 @@ class UtilsFunctions
             'totalPaginas' => $totalPaginas
         ];
     }
+    public static function validateContentString(String $valor, String $key)
+    {
+        return str_contains(strtoupper($valor), $key);
+    }
 }

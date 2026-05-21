@@ -3,6 +3,7 @@ class GeneralCrudModel extends Crud
 {
   protected $id = 'gc_id';
   protected $table = 'GeneralCrud';
+  protected $typedCasted;
   protected $campos = [
     'gc_nombre',
     'gc_descrip'
@@ -11,7 +12,5 @@ class GeneralCrudModel extends Crud
     's',
     's'
   ];
-  protected $typeId = [
-    'i'
-  ];
+  protected $typeId = 'i';
 }

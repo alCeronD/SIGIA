@@ -1,14 +1,16 @@
 <?php
-require_once __DIR__ . '/../../..'.CR_ROUTE_CONST;
-include_once __DIR__ . '/../..'.CR_ROUTE_CONN;
+require_once __DIR__ . '/../../..' . CR_ROUTE_CONST;
+include_once __DIR__ . '/../..' . CR_ROUTE_CONN;
 
-class DashboardModel{
+
+class DashboardModel
+{
 
     private $conn;
 
     public function __construct()
     {
-        $objConn= new Conn();
+        $objConn = new Conn();
         $this->conn = $objConn->getConnect();
     }
 
@@ -46,6 +48,4 @@ class DashboardModel{
 
         return $data;
     }
-
 }
-?>

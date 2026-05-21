@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/Helpers/Const.php';
 require_once BASE_URL . CR_ROUTE_CONN;
-require_once BASE_URL . '/'.CR_AUTOLOAD;
+require_once BASE_URL . '/' . CR_AUTOLOAD;
 
 
 Session::validateSession();
@@ -11,8 +11,7 @@ $controllerFile = new ScanFiles($modulo);
 $css = $controllerFile->addUrl($modulo);
 
 // Ejecutar actualización automática de estados de prestamos
-$conexion = new Conn();
-$conn = $conexion->getConnect();
+$conn = (new Conn())->getConnect();
 
 
 if (UtilsFunctions::ajaxGeneral()) {
@@ -40,7 +39,7 @@ require_once CR_ROUTE_HEADER;
 
 <div class="container bg-light-pattern">
     <?php
-    Router::ExecuteFunction();?>
+    Router::ExecuteFunction(); ?>
 </div>
 
 <?php require_once CR_ROUTE_FOOTER; ?>

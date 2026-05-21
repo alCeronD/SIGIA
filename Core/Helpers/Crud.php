@@ -15,15 +15,18 @@ require_once __DIR__ . '/../Config/Conn.php';
  * right join
  */
 
+
 abstract class Crud
 {
-  protected $conn;
-  protected $sql;
-  protected $table;
-  protected $campos;
-  protected $id;
-  protected $typeCampos;
-  protected $stmt;
+  protected $conn; # En donde se guarda la conexion
+  protected $sql; # String que crea la consulta sql
+  protected $table; # Nombre de la tabla, hereda su valor desde el modelo
+  protected $campos; # Arreglo que contiene campos de la tabla, hereda su valor desde el modelo
+  protected $id; # primary key de la tabla, hereda su valor desde el modelo
+  protected $typeCampos; # arreglo que tiene los tipos de datos de la tabla, su orden es igual orden de la tabla
+  protected $typedCasted; # String que me devuelve los tipos de datos casteados segun su estructura.
+  protected $stmt; # en donde se guarda el mysqliprepared
+  protected $typeId; # tipo de dato del primary key
   protected $operators = [
     '=',
     '!=',
@@ -36,7 +39,7 @@ abstract class Crud
     'IN',
     'IS NULL',
     'LIKE'
-  ];
+  ]; # arreglo para validar e implementar las condicionales
 
   public function __construct()
   {
@@ -111,12 +114,15 @@ abstract class Crud
   {
     $campos = ($campos) ? $this->campos : ["*"];
     $this->sql = "SELECT " . $this->organizarCampos($campos) . " FROM " . $this->table;
-
     return $this;
   }
   public function insert(array $insertValue)
   {
+
+    #INSERT INTO roles_funciones (rlp_id_rl,rlp_id_funcion) VALUES (2,110);
+
     $this->sql = "INSERT INTO " . $this->table . " (" . $this->organizarCampos($this->campos) . ") VALUES (" . $this->organizarDatos($insertValue) . ")";
+    $this->castParam();
     return $this;
   }
   public function delete()
@@ -170,7 +176,6 @@ abstract class Crud
     if (empty($campo)) {
       $campoValido = $this->id;
     }
-
 
     // Function para definir el orden del campo, como parámetro se recomienda enviar el index de la tabla, por defecto, asigna el id.
 
@@ -244,9 +249,16 @@ abstract class Crud
     $select = explode(' ', $this->sql);
 
     $this->stmt = $this->conn->prepare($this->sql);
+    $typesData = "";
+    if (substr_count($this->sql, "?") > 0) {
+      # Ejecuto el casteo de los datos.
+      $typesData = $this->castParam($datos);
+    }
 
     #Extraigo los tipos de datos
-    $types = $datos['types'] ?? [];
+    $types = $typesData ?? [];
+
+
     #Extraigo la informacion
     $data = $datos['data'] ?? [];
 
@@ -256,7 +268,6 @@ abstract class Crud
       // validar si tiene un COUNT para solo devolver la consulta
       $hasCount = str_contains($this->sql, "COUNT");
       if ($hasCount) {
-
         return $this;
       }
 
@@ -283,27 +294,38 @@ abstract class Crud
   /**
    * function para castear los tipos de datos de las tablas y devolver un string con el tipo de dato: ejemplo: [s,s,s,i] = devolver un sssi
    *
-   * @return string;
    */
-  public function castParam()
+  public function castParam(array $datos = [])
   {
+    # variable en donde vamos a adjuntar poco a poco la cantidad de tipos de datos basados en la consulta
+    $finalTypes = "";
+
+    # verificar primero cuantos argumentos hay
+    $cantidadParametros = substr_count($this->sql, "?");
+
+
+    # Retornamos el tipo del id que esta definido en el modelo
     if (str_contains(strtoupper($this->sql), 'DELETE')) {
-      return "i";
+      return $this->typedCasted .= $this->typeId;
     }
 
-
-    $types = $this->typeCampos;
-    $typeCasted = "";
-    foreach ($types as $value) {
-      $typeCasted .= $value;
+    # Validar si la consulta tiene un OFFSET o LIMIT
+    if (str_contains(strtoupper($this->sql), 'OFFSET') && str_contains(strtoupper($this->sql), 'LIMIT')) {
+      return $this->typedCasted .= "ii";
     }
 
     // si la estructura tiene UPDATE,DELETE, IMPLEMENTAR EL WHERE
     if (str_contains(strtoupper($this->sql), 'WHERE') || str_contains(strtoupper($this->sql), 'UPDATE')) {
-      $typeCasted .= "i";
+      return $this->typedCasted .= "i";
     }
 
-    return $typeCasted;
+    # arreglo con los tipos de datos segun el campo DEL MODELO['s','s','i'];
+    $typesCampos = $this->typeCampos;
+    foreach ($typesCampos as $value) {
+      $this->typedCasted .= $value;
+    }
+
+    return $this->typedCasted;
   }
 
   # Obtener el resultado sql y devolverlo

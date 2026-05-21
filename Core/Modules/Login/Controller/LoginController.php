@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../../../Config/Conn.php';
 require_once __DIR__ . '/../../../Helpers/Autoload.php';
 
+use Core\Database\Conn;
+
 class LoginController
 {
     private $conn;
@@ -12,7 +14,6 @@ class LoginController
     {
         $this->conn = (new Conn)->getConnect();
         $this->regex = new Regex();
-
     }
 
     public function index()
@@ -42,7 +43,7 @@ class LoginController
             if (empty($documento)) throw new Exception("Documento debe ser obligatorio");
             if (empty($password)) throw new Exception("Contraseña debe ser obligatorio");
 
-            if(!$this->regex->validarNumeros($documento)) throw new Exception("No se permiten caracteres especiales");
+            if (!$this->regex->validarNumeros($documento)) throw new Exception("No se permiten caracteres especiales");
 
             if (empty($documento) || empty($password)) {
                 Response::fail('Todos los campos son obligatorios');
@@ -116,13 +117,13 @@ class LoginController
             //     'message' => 'Sesión cerrada correctamente.',
             //     'redirect' => Router::createRoute('Login', 'Login', 'index', false, 'dashboard')
             // ]);
-            Response::success('Sesión cerrada correctamente.',[
-                'redirect'=> Router::createRoute('Login', 'Login', 'index', false, 'dashboard')
+            Response::success('Sesión cerrada correctamente.', [
+                'redirect' => Router::createRoute('Login', 'Login', 'index', false, 'dashboard')
             ]);
             exit();
         }
 
-        Rect::redirectTo(Router::createRoute('Login','Login','index',false,'dashboard'));
+        Rect::redirectTo(Router::createRoute('Login', 'Login', 'index', false, 'dashboard'));
 
 
 

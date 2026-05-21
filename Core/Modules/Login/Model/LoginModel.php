@@ -1,15 +1,19 @@
 <?php
 require_once __DIR__ . '/../../../Config/Conn.php';
 
+use Core\Database\Conn;
 
-class LoginModel {
+class LoginModel
+{
     private $conn;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->conn = (new Conn)->getConnect();
     }
 
-    public function buscarUsuarioPorDocumento($documento, $estado_user = 1) {
+    public function buscarUsuarioPorDocumento($documento, $estado_user = 1)
+    {
 
         $query = "SELECT
                     u.usu_id,
@@ -46,7 +50,8 @@ class LoginModel {
         return ['status' => false, 'message' => 'Usuario no encontrado'];
     }
 
-    public function verificarPassword($passwordPlano, $passwordEncriptado) {
+    public function verificarPassword($passwordPlano, $passwordEncriptado)
+    {
         return password_verify($passwordPlano, $passwordEncriptado);
     }
 }

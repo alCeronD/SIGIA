@@ -1,8 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../Helpers/Const.php';
-require_once BASE_URL.CR_ROUTE_CONN;
-require_once BASE_URL . '/'.CR_AUTOLOAD;
-
+require_once BASE_URL . CR_ROUTE_CONN;
+require_once BASE_URL . '/' . CR_AUTOLOAD;
 
 
 class SolicitudPrestamosController
@@ -144,7 +143,6 @@ class SolicitudPrestamosController
 
 
                 $elementoModel->disminuirExistenciaElemento($elm_cod, $cantidad);
-
             }
 
 
@@ -158,7 +156,6 @@ class SolicitudPrestamosController
                 "prestamo_id" => $lastId
             ]);
             exit;
-
         } catch (\Throwable $th) {
             http_response_code(500);
             echo json_encode([
@@ -248,7 +245,8 @@ class SolicitudPrestamosController
         return $res ? $res['tp_nombre'] : 'Desconocido';
     }
 
-    private function obtenerRolNombre($id) {
+    private function obtenerRolNombre($id)
+    {
         $stmt = $this->conn->prepare("SELECT rl_nombre FROM roles WHERE rl_id = ?");
         $stmt->bind_param('i', $id);
         $stmt->execute();
@@ -276,7 +274,8 @@ class SolicitudPrestamosController
         exit;
     }
 
-    public function validarSocPrestamo(array $data = []) {
+    public function validarSocPrestamo(array $data = [])
+    {
         header('Content-Type: application/json; charset=utf-8');
 
         try {
@@ -331,7 +330,6 @@ class SolicitudPrestamosController
 
             // Si pasa toda la validación, devolver éxito (opcional)
             return true;
-
         } catch (\Throwable $th) {
             http_response_code(500);
             echo json_encode([

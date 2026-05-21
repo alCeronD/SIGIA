@@ -1,18 +1,18 @@
 
 <?php
 require_once BASE_URL . CR_ROUTE_CONN;
-require_once BASE_URL .'/Autoload.php';
+require_once BASE_URL . '/Autoload.php';
 
 
-Class DashboardController{
+class DashboardController
+{
 
     private $conn;
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
-    public function dashboard(){
+    public function dashboard()
+    {
         $nombre = $_SESSION['usuario']['nombre'];
         $apellido = $_SESSION['usuario']['apellido'];
         $nombreCompleto = $nombre . ' ' . $apellido;
@@ -23,7 +23,6 @@ Class DashboardController{
         $prestamos = $prestamoModel->search($id);
         include __DIR__ . '/../views/dashboardView.php';
     }
-
 }
 
 

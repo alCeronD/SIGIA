@@ -1,8 +1,7 @@
 <?php
-require_once BASE_URL.'/'.CR_FILE_CONST;
-require_once BASE_URL.CR_ROUTE_CONN;
-require_once BASE_URL.'/'.CR_AUTOLOAD;
-
+require_once BASE_URL . '/' . CR_FILE_CONST;
+require_once BASE_URL . CR_ROUTE_CONN;
+require_once BASE_URL . '/' . CR_AUTOLOAD;
 
 
 //TODO: en los mensajes de retorno, definir una estructura de retorno específica, así evitar devolver o valores null, o un string, la idea es que devuelva un array con su status y mensaje, en todos los retornos.
@@ -260,7 +259,7 @@ class ReservaModel
             return [
                 'message' => 'proceso realizado exitosamente',
                 'status' => true,
-                'data'=> []
+                'data' => []
             ];
         } catch (Exception $th) {
             $messageError = $th->getMessage();
@@ -268,13 +267,13 @@ class ReservaModel
             return [
                 'message' => "Error en el proceso: $messageError",
                 'status' => false,
-                'data'=> []
+                'data' => []
             ];
         }
     }
 
     //Función para finalizar la reserva y todos los elementos cambiar sus respectivos estados.
-    public function endReserva(int $codigo, array $data = [],array $elementos = [])
+    public function endReserva(int $codigo, array $data = [], array $elementos = [])
     {
         //Objetivo:
         /**
@@ -1053,7 +1052,7 @@ class ReservaModel
 
             $conn->rollback();
             // Esto se guarda en mi archivo php_error.log
-            error_log("Error al ejecutar la transacción de cancelarPrestamo fecha".$e->getMessage());
+            error_log("Error al ejecutar la transacción de cancelarPrestamo fecha" . $e->getMessage());
         }
     }
 
