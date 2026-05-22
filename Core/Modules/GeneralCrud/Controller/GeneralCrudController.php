@@ -85,16 +85,20 @@ class GeneralCrudController extends ConfigGeneralCrud
     $primaryKey = $this->modelGeneralCrud->getPrimaryKey();
     $dataUpdateSql = [];
 
-    // Implementamos todos los valores en el arreglo exceptuando la primary key.
+    $keyData = [];
+    # extraigo el primary key del arreglo.
     foreach ($data as $key => $value) {
-
-      if ($primaryKey === $key) {
-        continue;
-      } else {
-        $dataUpdateSql[GC_DATA][] = $value;
+      if ($key === $primaryKey) {
+        $keyData = [
+          $key => $value
+        ];
       }
     }
-    $dataUpdateSql[GC_DATA][] = $data[$primaryKey];
+    #Elimino el primary que independiente de donde este en el arreglo que llega desde el front
+    unset($data[$primaryKey]);
+    #Agrego el primary key al final del arreglo para mantener la nomenclatura requerida para enviar los datos.
+    $data[$primaryKey] = $keyData[$primaryKey];
+    $dataUpdateSql[GC_DATA] = $data;
 
     $this->modelGeneralCrud->update($data)->where($data);
     $responseUpdate = $this->modelGeneralCrud->prepareSql($dataUpdateSql)->get();
@@ -108,10 +112,7 @@ class GeneralCrudController extends ConfigGeneralCrud
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
-    $deleteSql = [];
-    foreach ($data as $key => $value) {
-      $deleteSql['data'][] = $value;
-    }
+    $deleteSql['data'] = $data;
     $resultDelete = $this->modelGeneralCrud->delete()->where($data)->prepareSql($deleteSql)->get();
     if ($resultDelete) {
       Response::success(GC_DELETE_SUCCESS, [$resultDelete]);

@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../Config/Conn.php';
 
-use Core\Database\Conn;
 
 class LoginModel
 {

@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../../../Config/Conn.php';
 require_once __DIR__ . '/../../../Helpers/Autoload.php';
 
-use Core\Database\Conn;
 
 class LoginController
 {

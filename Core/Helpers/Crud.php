@@ -227,21 +227,6 @@ abstract class Crud
     #Extraigo la informacion
     // $data = empty($datos) ? [] : array_values($datos);
     $data = isset($datos['data']) ? array_values($datos['data']) : [];
-    // var_dump($data);
-    //     array(2){
-    // 	[
-    // 		0
-    // 	]=>int(7)[
-    // 		1
-    // 	]=>int(28)
-    // }
-
-    var_dump($types);
-
-
-
-
-
 
     // Si es un select, solamente preparamos la consulta y retornamos su resultado
     if ((strpos($this->sql, 'SELECT') === 0) && ($select[0] === "SELECT")) {
@@ -276,7 +261,7 @@ abstract class Crud
    * function para castear los tipos de datos de las tablas y devolver un string con el tipo de dato: ejemplo: [s,s,s,i] = devolver un sssi
    *
    * @param array $datos
-   * @return void
+   * @return string;
    */
   public function castParam(array $datos = [], array $tiposDatos = [])
   {
@@ -288,8 +273,7 @@ abstract class Crud
 
     # Retornamos el tipo del id que esta definido en el modelo
     if (str_contains(strtoupper($this->sql), 'DELETE')) {
-      $this->typedCasted .= $this->typeId;
-      // validar si existe la llave e implementarla
+      return $this->typedCasted .= $this->typeId;
     }
 
     # Validar si la consulta tiene un OFFSET o LIMIT
@@ -349,7 +333,7 @@ abstract class Crud
         return $result->fetch_all(MYSQLI_ASSOC);
       }
 
-      if ((strpos($this->sql, 'UPDATE') === 0) && str_contains(strtoupper($this->sql), "UPDATE")) {
+      if (str_contains(strtoupper($this->sql), "UPDATE")) {
         return $this->stmt->affected_rows;
       }
       $this->sql = "";
