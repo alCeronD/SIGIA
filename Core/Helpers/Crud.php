@@ -27,6 +27,7 @@ abstract class Crud
   protected $typedCasted; # String que me devuelve los tipos de datos casteados segun su estructura.
   protected $stmt; # en donde se guarda el mysqliprepared
   protected $typeId; # tipo de dato del primary key
+  protected $typeCampos2;
   protected $operators = [
     '=',
     '!=',
@@ -162,7 +163,6 @@ abstract class Crud
 
 
 
-  // Función para crear la estructura de paginación
 
 
   public function groupBy() {}
@@ -205,86 +205,40 @@ abstract class Crud
     return $this;
   }
 
-  # Function para preparar la consulta y pasar los valores por referencia
-  // public function prepareSql(array $datos = [])
-  // {
-  //   $select = explode(' ', $this->sql);
-
-  //   $sql = $this->conn->prepare($this->sql);
-
-  //   #Extraigo los tipos de datos
-  //   $types = $datos['types'] ?? [];
-  //   #Extraigo la informacion
-  //   $data = $datos['data'] ?? [];
-
-  //   // Si es un select, solamente preparamos la consulta y retornamos su resultado
-  //   if ((strpos($this->sql, 'SELECT') === 0) && ($select[0] === "SELECT")) {
-
-  //     // validar si tiene un COUNT para solo devolver la consulta
-  //     $hasCount = str_contains($this->sql, "COUNT");
-  //     if ($hasCount) {
-  //       $stmt = $sql;
-  //       return $stmt;
-  //     }
-
-  //     // validar si el string contiene o WHERE u OFFSET O LIMIT
-  //     $hasOffset = str_contains($this->sql, "OFFSET");
-  //     $hasLimit = str_contains($this->sql, "LIMIT");
-  //     # Validar si requiere paginación
-  //     if ($hasOffset && $hasLimit) {
-  //       $sql->bind_param($types, ...$data);
-  //     }
-
-  //     $stmSql = $sql;
-  //     return $stmSql;
-  //   } else {
-
-
-  //     # validamos los parámetros con el tipo de dato
-  //     $sql->bind_param($types, ...$data);
-  //     return $sql;
-  //   }
-  // }
-
 
   # Function para preparar la consulta y pasar los valores por referencia
   public function prepareSql(array $datos = [])
   {
     $select = explode(' ', $this->sql);
 
+
     $this->stmt = $this->conn->prepare($this->sql);
     $typesData = "";
     if (substr_count($this->sql, "?") > 0) {
       # Ejecuto el casteo de los datos.
-      $typesData = $this->castParam($datos);
+      $typesData = $this->castParam($datos, $this->typeCampos2);
     }
+
 
     #Extraigo los tipos de datos
     $types = $typesData ?? [];
 
 
-
     #Extraigo la informacion
-    $data = $datos['data'] ?? [];
+    // $data = empty($datos) ? [] : array_values($datos);
+    $data = isset($datos['data']) ? array_values($datos['data']) : [];
+    // var_dump($data);
+    //     array(2){
+    // 	[
+    // 		0
+    // 	]=>int(7)[
+    // 		1
+    // 	]=>int(28)
+    // }
 
-    // var_dump($types);
-    // die();
+    var_dump($types);
 
-    /**
-     * array(2){
-	[
-		0
-	]=>string(70)"Use the primary FTP bandwidth, then you can compress the online alarm!"[
-		1
-	]=>string(6)"silver"
-}
 
-array(1){
-	[
-		0
-	]=>int(200)
-}
-     */
 
 
 
@@ -318,12 +272,13 @@ array(1){
 
     return $this;
   }
-
   /**
    * function para castear los tipos de datos de las tablas y devolver un string con el tipo de dato: ejemplo: [s,s,s,i] = devolver un sssi
    *
+   * @param array $datos
+   * @return void
    */
-  public function castParam(array $datos = [])
+  public function castParam(array $datos = [], array $tiposDatos = [])
   {
     # variable en donde vamos a adjuntar poco a poco la cantidad de tipos de datos basados en la consulta
     $finalTypes = "";
@@ -331,27 +286,43 @@ array(1){
     # verificar primero cuantos argumentos hay
     $cantidadParametros = substr_count($this->sql, "?");
 
-
     # Retornamos el tipo del id que esta definido en el modelo
     if (str_contains(strtoupper($this->sql), 'DELETE')) {
-      return $this->typedCasted .= $this->typeId;
+      $this->typedCasted .= $this->typeId;
+      // validar si existe la llave e implementarla
     }
 
     # Validar si la consulta tiene un OFFSET o LIMIT
     if (str_contains(strtoupper($this->sql), 'OFFSET') && str_contains(strtoupper($this->sql), 'LIMIT')) {
-      return $this->typedCasted .= "ii";
+      $this->typedCasted .= "ii";
+    }
+
+    // si la estructura tiene UPDATE,DELETE, IMPLEMENTAR EL WHERE
+    if (str_contains(strtoupper($this->sql), 'UPDATE')) {
+      foreach ($tiposDatos as $key => $value) {
+        if (isset($datos['data'][$key])) {
+          $this->typedCasted .= $tiposDatos[$key];
+        }
+      }
+    }
+
+    if (str_contains(strtoupper($this->sql), 'INSERT')) {
+      foreach ($tiposDatos as $key => $value) {
+        if (isset($datos['data'][$key])) {
+          $this->typedCasted .= $tiposDatos[$key];
+        }
+      }
+    }
+
+
+    // validar si hay un where para implementar el tipo de dato integer
+    if (str_contains(strtoupper($this->sql), 'WHERE')) {
+      $this->typedCasted .= $this->typeId;
     }
 
     # arreglo con los tipos de datos segun el campo DEL MODELO['s','s','i'];
     $typesCampos = $this->typeCampos;
-    foreach ($typesCampos as $value) {
-      $this->typedCasted .= $value;
-    }
 
-    // si la estructura tiene UPDATE,DELETE, IMPLEMENTAR EL WHERE
-    if (str_contains(strtoupper($this->sql), 'WHERE') || str_contains(strtoupper($this->sql), 'UPDATE')) {
-      $this->typedCasted .= "i";
-    }
 
     return $this->typedCasted;
   }

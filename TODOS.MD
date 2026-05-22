@@ -26,7 +26,7 @@ Listado de TODOS generales y específicos por cada módulo.
   - [X] Crear update
   - [X] Crear delete
   - [X] Crear where
-    - [x] ajustar where para hacer consulta con mas opciones and y or
+    - [ ] ajustar where para hacer consulta con mas opciones and y or
   - [ ] Crear join
   - [X] Crear count
 - [ ] Investigar e implementar rastro de miga.

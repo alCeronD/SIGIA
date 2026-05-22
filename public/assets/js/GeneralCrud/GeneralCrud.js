@@ -17,6 +17,8 @@ const addElementModal = instanceModal('#modalGeneralCrud', options);
 const btnPreview = document.createElement('button');
 const btnNext = document.createElement('button');
 const generalCrudUpdate = document.querySelector('#generalCrudUpdate');
+let actualPage = 1;
+
 const render = async (pagina = 1) => {
   const response = await getData(url, 'GET', { pagina: pagina }, false, {});
   let totalPaginas = response.data.cantidadPaginas;
@@ -34,16 +36,20 @@ const render = async (pagina = 1) => {
     let tdOptions = document.createElement('td');
     let btnEdit = document.createElement('button');
     let btnChangeStatus = document.createElement('button');
+    let btnDelete = document.createElement('button');
+
     btnChangeStatus.innerText = 'Inhabilitar';
     btnEdit.innerText = 'Editar';
+    btnDelete.innerText = 'Eliminar';
     btnEdit.setAttribute('value', dta.gc_id);
     btnChangeStatus.setAttribute('value', dta.gc_id);
+    btnDelete.setAttribute('value', 'dta.gc_id');
 
     tdIndex.innerText = dta.gc_id;
     tdName.innerText = dta.gc_nombre;
     tdDescript.innerText = dta.gc_descrip;
 
-    tdOptions.append(btnEdit, btnChangeStatus);
+    tdOptions.append(btnEdit, btnChangeStatus, btnDelete);
     tr.append(tdIndex, tdName, tdDescript, tdStatus, tdOptions);
 
     fragmentBody.appendChild(tr);
@@ -65,26 +71,24 @@ const render = async (pagina = 1) => {
       nombreGeneralCrudEdit.value = dta.gc_nombre;
       descriptGeneralCrudEdit.value = dta.gc_descrip;
       idGeneralCrudUpdate.value = dta.gc_id;
-
-      console.log({ dta: dta });
     });
 
     btnChangeStatus.addEventListener('click', async (e) => {
       e.preventDefault();
       e.stopPropagation();
 
-      console.log(e.target);
-      const update = 'dashboard.php?modulo=GeneralCrud&controlador=GeneralCrud&function=delete';
+      const update =
+        'dashboard.php?modulo=GeneralCrud&controlador=GeneralCrud&function=changeStatusItem';
 
-      // enviar data al controlador.
-      const responseChangeStatus = await sendData(update, 'DELETE', { gc_id: dta.gc_id });
+      if (confirm('Estas seguro de inhabilitar el item #', dta.gc_id)) {
+        const responseChangeStatus = await sendData(update, 'PUT', { gc_id: dta.gc_id });
+      }
     });
   });
 
   tblBody.appendChild(fragmentBody);
   renderPagination(totalPaginas);
 };
-let actualPage = 1;
 
 // PAGINATION
 const renderPagination = (totalPaginas = 0) => {
@@ -172,14 +176,16 @@ generalCrudUpdate.addEventListener('submit', async (f) => {
   f.stopPropagation();
   f.preventDefault();
 
-  console.log(f.currentTarget);
   const formUpdate = new FormData(f.currentTarget);
   // datos
   let data = Object.fromEntries(formUpdate);
-  console.log(data);
   let actionUpdate = f.currentTarget.getAttribute('action');
-  console.log(actionUpdate);
   const response = await sendData(actionUpdate, 'PUT', data);
+  if (response.status) {
+    initAlert(response.message, 'info', toastOptions);
+    addElementModal.close();
+    render(actualPage);
+  }
 });
 
 // Evento eliminar (uso delete pero la idea es aplicar el inhabilitar)

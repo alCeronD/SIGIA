@@ -4,8 +4,6 @@
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once BASE_URL . '/Autoload.php';
 require_once __DIR__ . '/../const/ConstGeneralCrud.php';
-
-
 class GeneralCrudController extends ConfigGeneralCrud
 {
   protected GeneralCrudModel $modelGeneralCrud;
@@ -30,9 +28,11 @@ class GeneralCrudController extends ConfigGeneralCrud
 
     // lógica paginado
     $resultPaginate = UtilsFunctions::executePaginate($resultCount, LIMIT, $paginaActual);
+    $dataSql = [];
 
-    $dataSql = [
-      GC_DATA => [LIMIT, $resultPaginate[GC_OFFSET]]
+    $dataSql['data'] = [
+      'limit'           => LIMIT,
+      'resultPaginated' => $resultPaginate[GC_OFFSET]
     ];
 
     $this->modelGeneralCrud->select()->orderBy('', true)->limit()->offset();
@@ -69,8 +69,7 @@ class GeneralCrudController extends ConfigGeneralCrud
 
     $dataSql = [];
 
-    $dataSql['data'][] = $gc_nombre;
-    $dataSql['data'][] = $gc_descrip;
+    $dataSql['data'] = $data;
 
     $this->modelGeneralCrud->insert($data);
     $resultInsert = $this->modelGeneralCrud->prepareSql($dataSql)->get();
@@ -117,5 +116,31 @@ class GeneralCrudController extends ConfigGeneralCrud
     if ($resultDelete) {
       Response::success(GC_DELETE_SUCCESS, [$resultDelete]);
     }
+  }
+
+  public function changeStatusItem()
+  {
+    header(CONTENT_TYPE);
+
+    // traer la data
+    $data = UtilsFunctions::returnGetDecode();
+    $primaryKey = $this->modelGeneralCrud->getPrimaryKey();
+    // foreach ($data as $key => $value) {
+
+    //   if ($primaryKey === $key) {
+    //     continue;
+    //   } else {
+    //     $dataUpdateSql[GC_DATA][] = $value;
+    //   }
+    // }
+    // $dataUpdateSql[GC_DATA][] = $data[$primaryKey];
+    // var_dump($data);
+    // die();
+    $this->modelGeneralCrud->update($data)->where($data);
+    $resultChangeStatus = $this->modelGeneralCrud->prepareSql($data)->get();
+
+    var_dump($resultChangeStatus);
+
+    die();
   }
 }
