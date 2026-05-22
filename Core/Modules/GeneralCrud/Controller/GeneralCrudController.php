@@ -92,16 +92,16 @@ class GeneralCrudController extends ConfigGeneralCrud
       if ($primaryKey === $key) {
         continue;
       } else {
-        $dataUpdateSql['data'][] = $value;
+        $dataUpdateSql[GC_DATA][] = $value;
       }
     }
-    $dataUpdateSql['data'][] = $data[$primaryKey];
+    $dataUpdateSql[GC_DATA][] = $data[$primaryKey];
 
     $this->modelGeneralCrud->update($data)->where($data);
     $responseUpdate = $this->modelGeneralCrud->prepareSql($dataUpdateSql)->get();
 
     if ($responseUpdate) {
-      Response::success('Registro actualizado con exito', [$responseUpdate]);
+      Response::success(GC_SUCCESS_UPDATE, [$responseUpdate]);
     }
   }
 
@@ -109,23 +109,13 @@ class GeneralCrudController extends ConfigGeneralCrud
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
-
-    $this->modelGeneralCrud->delete();
-    $this->modelGeneralCrud->where($data);
-
     $deleteSql = [];
-
-    $types = $this->modelGeneralCrud->castParam();
-
-    $deleteSql['types'] = $types;
     foreach ($data as $key => $value) {
       $deleteSql['data'][] = $value;
     }
-    $preapredSqlDelete = $this->modelGeneralCrud->prepareSql($deleteSql);
-    $resultDelete = $this->modelGeneralCrud->get($preapredSqlDelete);
-
+    $resultDelete = $this->modelGeneralCrud->delete()->where($data)->prepareSql($deleteSql)->get();
     if ($resultDelete) {
-      Response::success('registro eliminado exitosamente', $resultDelete);
+      Response::success(GC_DELETE_SUCCESS, [$resultDelete]);
     }
   }
 }

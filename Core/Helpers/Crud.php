@@ -82,17 +82,14 @@ abstract class Crud
       }
     }
 
-
-
-
     return trim($string, ", ");
   }
 
   /**
-   * Undocumented function
+   * Function para crear los campos a actualizar junto a la cantidad de parametros, es una function auxiliar.
    *
-   * @param array $datos
-   * @return string
+   * @param array $datos - arreglo clave valor con el name del input que viene desde el formulario y el value debe ser el valor a actualizar.
+   * @return void
    */
   public function organizarDatosUpdate(array $datos = [])
   {
@@ -128,6 +125,13 @@ abstract class Crud
     $this->sql = "DELETE FROM " . $this->table;
     return $this;
   }
+
+  /**
+   * function Crear estructura UPDATE para la actualizacion de datos
+   *
+   * @param array $datos - arreglo clave valor en donde la clave debe ser igual al valor asignado en name del input de los formularios, y value su valor a actualizar.
+   * @return $this
+   */
   public function update(array $datos = [])
   {
     $valuesUpdate = $this->organizarDatosUpdate($datos);
@@ -262,6 +266,26 @@ abstract class Crud
 
     #Extraigo la informacion
     $data = $datos['data'] ?? [];
+
+    // var_dump($types);
+    // die();
+
+    /**
+     * array(2){
+	[
+		0
+	]=>string(70)"Use the primary FTP bandwidth, then you can compress the online alarm!"[
+		1
+	]=>string(6)"silver"
+}
+
+array(1){
+	[
+		0
+	]=>int(200)
+}
+     */
+
 
 
 
