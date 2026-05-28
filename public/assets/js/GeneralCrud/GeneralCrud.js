@@ -38,7 +38,7 @@ const render = async (pagina = 1) => {
     let btnChangeStatus = document.createElement('button');
     let btnDelete = document.createElement('button');
 
-    btnChangeStatus.innerText = 'Inhabilitar';
+    btnChangeStatus.innerText = dta.gc_status === 1 ? 'Inhabilitar' : 'Activar';
     btnEdit.innerText = 'Editar';
     btnDelete.innerText = 'Eliminar';
     btnEdit.setAttribute('value', dta.gc_id);
@@ -48,6 +48,7 @@ const render = async (pagina = 1) => {
     tdIndex.innerText = dta.gc_id;
     tdName.innerText = dta.gc_nombre;
     tdDescript.innerText = dta.gc_descrip;
+    tdStatus.innerText = dta.gc_status === 1 ? 'Activo' : 'Inactivo';
 
     tdOptions.append(btnEdit, btnChangeStatus, btnDelete);
     tr.append(tdIndex, tdName, tdDescript, tdStatus, tdOptions);
@@ -81,13 +82,28 @@ const render = async (pagina = 1) => {
         'dashboard.php?modulo=GeneralCrud&controlador=GeneralCrud&function=changeStatusItem';
 
       if (confirm('Estas seguro de inhabilitar el item #', dta.gc_id)) {
-        const responseChangeStatus = await sendData(update, 'PUT', { gc_id: dta.gc_id });
+        let changeValue = dta.gc_status === 0 ? 1 : 0;
+        let data = {
+          gc_id: dta.gc_id,
+          gc_status: changeValue,
+        };
+
+        const responseChangeStatus = await sendData(update, 'PUT', data);
+        if (responseChangeStatus.status) {
+          initAlert(responseChangeStatus.message, 'info', toastOptions);
+          render(actualPage);
+        }
       }
     });
+
+    btnDelete.addEventListener('click', (e) => {});
   });
 
   tblBody.appendChild(fragmentBody);
-  renderPagination(totalPaginas);
+  // renderizar estructura de pagina siempre y cuando haya mas de una pagina.
+  if (totalPaginas > 0) {
+    renderPagination(totalPaginas);
+  }
 };
 
 // PAGINATION

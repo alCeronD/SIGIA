@@ -29,6 +29,7 @@ Listado de TODOS generales y específicos por cada módulo.
     - [ ] ajustar where para hacer consulta con mas opciones and y or
   - [ ] Crear join
   - [X] Crear count
+- [ ] Mover archivos javascript y css a cada modulo correspondiente.
 - [ ] Investigar e implementar rastro de miga.
 - [ ] Implementar variables ENV según el contexto, si es dev o producción, en caso de ser requerido.
 

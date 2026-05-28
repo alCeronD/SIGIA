@@ -1,5 +1,6 @@
 <?php
 
+include_once __DIR__ . '/../../../Config/Conn.php';
 class SolicitudPrestamosModel
 {
     public $pres_cod;
@@ -15,8 +16,9 @@ class SolicitudPrestamosModel
 
     private $conn;
 
-    public function __construct($conexion)
+    public function __construct()
     {
+        $conexion = (new Conn)->getConnect();
         $this->conn = $conexion;
     }
 
@@ -27,10 +29,10 @@ class SolicitudPrestamosModel
         if (!is_array($data)) {
             exit();
         }
-        $pres_fch_reserva  = $this->conn->real_escape_string($data['pres_fch_reserva']);
-        $pres_fch_entrega  = $this->conn->real_escape_string($data['pres_fch_entrega']);
-        $pres_observacion  = $this->conn->real_escape_string($data['pres_observacion']);
-        $pres_destino      = $this->conn->real_escape_string($data['pres_destino']);
+        $pres_fch_reserva  = $data['pres_fch_reserva'];
+        $pres_fch_entrega  = $data['pres_fch_entrega'];
+        $pres_observacion  = $data['pres_observacion'];
+        $pres_destino      = $data['pres_destino'];
 
         $pres_hor_inicio =  null;
         $pres_hor_fin = null;
@@ -46,11 +48,13 @@ class SolicitudPrestamosModel
             )
         ";
 
+        $stmt = $this->conn->prepare($query);
 
-        if ($this->conn->query($query)) {
-            return $this->conn->insert_id;
+        if ($stmt->execute()) {
+            return $this->conn->lastInsertId();
         } else {
-            return "Error al registrar el préstamo: " . $this->conn->error;
+            // todo: devolver el tipo de error e implementar esto dentro de un bloque try y catch
+            return "Error al registrar el prestamo";
         }
     }
 
@@ -59,7 +63,7 @@ class SolicitudPrestamosModel
         $cadena = "";
 
         foreach ($datos as $campo => $value) {
-            $cadena .= "$campo = '" . $this->conn->real_escape_string($value) . "',";
+            $cadena .= "$campo = '" . $value . "',";
         }
 
         $cadena = rtrim($cadena, ",");
@@ -69,7 +73,7 @@ class SolicitudPrestamosModel
         if ($resultado) {
             return true;
         } else {
-            return "Error al actualizar el préstamo: " . $this->conn->error;
+            return "Error al actualizar el préstamo: ";
         }
     }
 
@@ -105,19 +109,21 @@ class SolicitudPrestamosModel
         LEFT JOIN usuarios us ON us.usu_id = pe.pres_el_usu_id
         LEFT JOIN tipo_prestamo tp ON tp.tp_pre = p.tp_pres
         LEFT JOIN estados_prestamos ep ON ep.es_pr_cod = p.pres_estado
-        WHERE us.usu_id = ?
+        WHERE us.usu_id = :id_usuario
         ORDER BY p.pres_fch_slcitud DESC";
 
         $stmtSelect = $this->conn->prepare($sql);
-        $stmtSelect->bind_param('i', $id);
+        $stmtSelect->bindValue(':id_usuario', $id, PDO::PARAM_INT);
         $stmtSelect->execute();
 
-        $result = $stmtSelect->get_result();
+        $result = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
+
         $data = [];
 
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
+        foreach ($result as $key => $value) {
+            $data[]  = $value;
         }
+
 
         return $data;
     }
@@ -320,50 +326,48 @@ class SolicitudPrestamosModel
             $count = 0;
         }
 
-        $stmt->close();
+        $stmt->null;
 
         return $count > 0;
     }
 
-        public function actualizarEstadosPorFecha()
+    public function actualizarEstadosPorFecha()
     {
         $fechaHoy = date('Y-m-d');
         // $fechaHoy = '2025-08-08';
-
         $sql = "SELECT p.pres_cod
                 FROM prestamos p
-                WHERE p.pres_fch_reserva = ?
+                WHERE p.pres_fch_reserva = :pres_fch_reserva
                   AND p.pres_estado = 3"; // Por validar
-
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param('s', $fechaHoy);
-        $stmt->execute();
-        $result = $stmt->get_result();
 
+        $stmt->bindValue(':pres_fch_reserva', $fechaHoy, PDO::PARAM_STR);
+        $stmt->execute();
+
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $prestamosActualizados = [];
 
-        while ($row = $result->fetch_assoc()) {
-            $presCod = $row['pres_cod'];
+        foreach ($result as $key => $value) {
+            $pres_cod = $key['pres_cod'];
 
-            // Obtener los elementos asociados al préstamo
-            $sqlElementos = "SELECT pres_el_elem_cod FROM prestamos_elementos WHERE pres_cod = ?";
+            $sqlElementos = "SELECT pres_el_elem_cod FROM prestamos_elementos WHERE pres_cod = :pres_cod";
             $stmtElems = $this->conn->prepare($sqlElementos);
-            $stmtElems->bind_param('i', $presCod);
+            $stmtElems->bindValue(':pres_cod', $pres_cod, PDO::PARAM_INT);
             $stmtElems->execute();
-            $resElems = $stmtElems->get_result();
 
-            // Cambiar estado de cada elemento a reservado (5)
-            while ($elem = $resElems->fetch_assoc()) {
-                $elm_cod = $elem['pres_el_elem_cod'];
-                $updateElem = $this->conn->prepare("UPDATE elementos SET elm_cod_estado = 5 WHERE elm_cod = ?");
-                $updateElem->bind_param('i', $elm_cod);
+            $resElems = $stmtElems->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($resElems as $key2 => $value2) {
+                $elm_cod = $key2['pres_el_elem_cod'];
+                $updateElem = $this->conn->prepare("UPDATE elementos SET elm_cod_estado = 5 WHERE elm_cod = :elm_cod");
+                $updateElem->bindValue(':elm_cod', $elm_cod, PDO::PARAM_INT);
                 $updateElem->execute();
             }
-
-            $prestamosActualizados[] = $presCod;
+            $prestamosActualizados[] = $pres_cod;
         }
+
 
         return $prestamosActualizados;
     }
-
 }

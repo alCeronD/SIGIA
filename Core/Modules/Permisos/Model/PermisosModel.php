@@ -10,10 +10,9 @@ class PermisosModel
     {
         try {
             $conn = (new Conn())->getConnect();
-            $sql = "SELECT id_m FROM modulos WHERE cod_nombre_m = ? ";
+            $sql = "SELECT id_m FROM modulos WHERE cod_nombre_m = :nombre_modulo";
             $stmtModulo = $conn->prepare($sql);
-
-            $stmtModulo->bind_param('s', $nombreModulo);
+            $stmtModulo->bindValue(":nombre_modulo", $nombreModulo, PDO::PARAM_STR);
 
             if (!$stmtModulo->execute()) {
                 return [
@@ -23,10 +22,10 @@ class PermisosModel
                 ];
             }
 
-            $result = $stmtModulo->get_result();
+            $result = $stmtModulo->fetchAll(PDO::FETCH_ASSOC);
             return [
                 'message' => "id modulo encontrado",
-                'data' => $result->fetch_assoc(),
+                'data' => $result,
                 'status' => true
             ];
         } catch (\Throwable $th) {
@@ -45,24 +44,26 @@ class PermisosModel
             $sqlFuncion = "SELECT id_funcion
                 FROM funciones f
                 INNER JOIN modulos mo ON
-                mo.id_m = f.id_modulo WHERE mo.cod_nombre_m = ? AND mo.id_m = ? AND f.nombre_funcion = ?";
+                mo.id_m = f.id_modulo WHERE mo.cod_nombre_m = :nombre_modulo AND mo.id_m = :id_modulo AND f.nombre_funcion = :nombre_funcion";
 
             $stmtFuncion = $conn->prepare($sqlFuncion);
-            $stmtFuncion->bind_param('sis', $modelName, $idModulo, $functionName);
+            $stmtFuncion->bindValue(':nombre_modulo', $modelName, PDO::PARAM_STR);
+            $stmtFuncion->bindValue(':id_modulo', $idModulo, PDO::PARAM_INT);
+            $stmtFuncion->bindValue(':nombre_funcion', $functionName, PDO::PARAM_STR);
+
 
             if (!$stmtFuncion->execute()) {
                 return [
-                    'message' => "error al ejecutar la consulta" . $conn->error,
+                    'message' => "error al ejecutar la consulta",
                     'status' => false,
                     'data' => []
                 ];
             }
-            $result = $stmtFuncion->get_result();
-            $row = $result->fetch_assoc();
+            $result = $stmtFuncion->fetchAll(PDO::FETCH_ASSOC);
             return [
                 'message' => "id encontrado",
                 'status' => true,
-                'data' => $row
+                'data' => $result
             ];
         } catch (\Throwable $th) {
             return [
@@ -88,7 +89,7 @@ class PermisosModel
                 ro.rl_id = rf.rlp_id_rl
                 INNER JOIN modulos mo ON
                 mo.id_m = fu.id_modulo
-                WHERE ro.rl_id = ? AND rf.rlp_id_funcion = ?";
+                WHERE ro.rl_id = :rol_id AND rf.rlp_id_funcion = :id_funcion";
 
             $stmtGetPermisoFuncion = $conn->prepare($sql);
 
@@ -100,7 +101,9 @@ class PermisosModel
                 ];
             }
 
-            $stmtGetPermisoFuncion->bind_param('ii', $rolId, $idFuncion);
+            $stmtGetPermisoFuncion->bindValue('rol_id', $rolId, PDO::PARAM_INT);
+            $stmtGetPermisoFuncion->bindValue('id_funcion', $idFuncion, PDO::PARAM_INT);
+
             if (!$stmtGetPermisoFuncion->execute()) {
                 return [
                     'message' => "error al preparar la consulta",
@@ -109,8 +112,7 @@ class PermisosModel
                 ];
             }
 
-            $result = $stmtGetPermisoFuncion->get_result();
-            $row = $result->fetch_assoc();
+            $row = $stmtGetPermisoFuncion->fetchAll(PDO::FETCH_ASSOC);
 
             return [
                 'status' => true,
@@ -141,21 +143,21 @@ class PermisosModel
             INNER JOIN roles_funciones rof ON
             rof.rlp_id_funcion = fu.id_funcion
             INNER JOIN roles r ON
-            r.rl_id = rof.rlp_id_rl WHERE r.rl_id = ?";
+            r.rl_id = rof.rlp_id_rl WHERE r.rl_id = :rol_id";
 
         $stmtMenu = $coon->prepare($sqlMenu);
 
-        $stmtMenu->bind_param('i', $idRol);
+        $stmtMenu->bindValue(':rol_id', $idRol);
 
         $stmtMenu->execute();
 
-        $result = $stmtMenu->get_result();
+        $result = $stmtMenu->fetchAll(PDO::FETCH_ASSOC);
 
         $modulosMenu = [];
-        while ($row = $result->fetch_assoc()) {
-            $modulosMenu[] = $row;
+        foreach ($result as $key => $value) {
+            var_dump($value);
+            $modulosMenu[] = $value;
         }
-
         $newModulosMenu = [];
         foreach ($modulosMenu as $key => $value) {
             $nombreModulo = $value['nombreModulo'] === 'dashboard' ?? $value['nombreModulo'];
@@ -181,26 +183,23 @@ class PermisosModel
             r.rl_id = rof.rlp_id_rl
             INNER JOIN modulos mo ON
             mo.id_m = fu.id_modulo
-            WHERE tpf.id_tp_funcion = 1 AND r.rl_id = ? AND mo.id_m = ?";
+            WHERE tpf.id_tp_funcion = 1 AND r.rl_id = :id_rol AND mo.id_m = :id_modulo";
 
         $stmtOptionsMenu = $coon->prepare($sqlOptionsMenu);
-
         $optionsMenu = [];
         $optionsMenuClasificado = [];
         foreach ($modulosMenu as $key => $value) {
+
             $modulo = $value['idModulo'];
             $moduloNombre = $value['nombreModulo'];
 
-            $stmtOptionsMenu->bind_param('ii', $idRol, $modulo);
+            $stmtOptionsMenu->bindValue(":id_rol", $idRol);
+            $stmtOptionsMenu->bindValue(":id_modulo", $modulo);
 
             $stmtOptionsMenu->execute();
-
-            $resultOptions = $stmtOptionsMenu->get_result();
-
-            while ($row = $resultOptions->fetch_assoc()) {
-                $optionsMenu[] = $row;
-                $optionsMenuClasificado[$moduloNombre][] = $row;
-            }
+            $resultOptions = $stmtOptionsMenu->fetchAll(PDO::FETCH_ASSOC);
+            $optionsMenu[] = $resultOptions;
+            $optionsMenuClasificado[$moduloNombre] = $resultOptions;
         }
 
         $data = [

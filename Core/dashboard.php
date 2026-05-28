@@ -1,8 +1,7 @@
 <?php
 require_once __DIR__ . '/Helpers/Const.php';
-require_once BASE_URL . CR_ROUTE_CONN;
 require_once BASE_URL . '/' . CR_AUTOLOAD;
-
+require_once BASE_URL . CR_ROUTE_CONN;
 
 Session::validateSession();
 
@@ -38,8 +37,8 @@ require_once CR_ROUTE_HEADER;
 ?>
 
 <div class="container bg-light-pattern">
-    <?php
-    Router::ExecuteFunction(); ?>
+    <?php Router::ExecuteFunction();
+    ?>
 </div>
 
 <?php require_once CR_ROUTE_FOOTER; ?>

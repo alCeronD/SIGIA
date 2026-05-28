@@ -32,18 +32,19 @@ class LoginModel
                 INNER JOIN
                     roles r ON ur.usr_rl_id = r.rl_id
                 WHERE
-                    u.usu_docum = ? AND u.usu_id_estado = ?";
+                    u.usu_docum = :documento AND u.usu_id_estado = :estado_usu_id";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param('ii', $documento, $estado_user);
+        $stmt->bindValue(":documento", $documento);
+        $stmt->bindValue(":estado_usu_id", $estado_user);
 
         if (!$stmt->execute()) {
             return ['success' => false, 'message' => 'Error al ejecutar la consulta'];
         }
 
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            return ['status' => true, 'usuario' => $result->fetch_assoc()];
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (count($result) > 0) {
+            return ['status' => true, 'usuario' => $result];
         }
 
         return ['status' => false, 'message' => 'Usuario no encontrado'];

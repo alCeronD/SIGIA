@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../Config/Conn.php';
+require_once __DIR__ . '/../Helpers/Autoload.php';
 
 #Clase crud para crear toda la estructura general de consultas.
 /**
@@ -27,7 +27,6 @@ abstract class Crud
   protected $typedCasted; # String que me devuelve los tipos de datos casteados segun su estructura.
   protected $stmt; # en donde se guarda el mysqliprepared
   protected $typeId; # tipo de dato del primary key
-  protected $typeCampos2;
   protected $operators = [
     '=',
     '!=',
@@ -76,10 +75,7 @@ abstract class Crud
     foreach ($datos as $key => $camp) {
       // valido que las keys esten en el modelo de las tablas;
       if (in_array($key, $this->campos)) {
-        // $string .= "'". $camp. "', ";
         $string .= "?" . ", ";
-        // $string .= "'". "?". "', ";
-
       }
     }
 
@@ -90,7 +86,7 @@ abstract class Crud
    * Function para crear los campos a actualizar junto a la cantidad de parametros, es una function auxiliar.
    *
    * @param array $datos - arreglo clave valor con el name del input que viene desde el formulario y el value debe ser el valor a actualizar.
-   * @return void
+   * @return string
    */
   public function organizarDatosUpdate(array $datos = [])
   {
@@ -159,12 +155,6 @@ abstract class Crud
     return $this;
   }
 
-
-
-
-
-
-
   public function groupBy() {}
 
   /**
@@ -216,7 +206,7 @@ abstract class Crud
     $typesData = "";
     if (substr_count($this->sql, "?") > 0) {
       # Ejecuto el casteo de los datos.
-      $typesData = $this->castParam($datos, $this->typeCampos2);
+      $typesData = $this->castParam($datos, $this->typeCampos);
     }
 
 
@@ -303,11 +293,6 @@ abstract class Crud
     if (str_contains(strtoupper($this->sql), 'WHERE')) {
       $this->typedCasted .= $this->typeId;
     }
-
-    # arreglo con los tipos de datos segun el campo DEL MODELO['s','s','i'];
-    $typesCampos = $this->typeCampos;
-
-
     return $this->typedCasted;
   }
 
@@ -318,7 +303,6 @@ abstract class Crud
       # Variable para verificar si es un select
       $checkSelect = explode(' ', $this->sql);
 
-      // if (!$prepare->execute()) return $prepare->error_list;
       $this->stmt->execute();
 
 

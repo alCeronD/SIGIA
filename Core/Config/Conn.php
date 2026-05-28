@@ -1,12 +1,11 @@
 <?php
 
-
 require_once __DIR__ . '/Config.php';
 
 
 class Conn
 {
-    private mysqli $conn;
+    private \PDO $conn;
 
     public function __construct()
     {
@@ -16,15 +15,21 @@ class Conn
     public function setConnect()
     {
         try {
-            $this->conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-            $this->conn->set_charset(CHARSET);
-            if ($this->conn->connect_error) {
-                die("Conexión fallida: " . $this->conn->connect_error);
-            }
+            // DNS
+            $dns = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . CHARSET;
 
-            return $this->conn;
-        } catch (\Exception $e) {
-            return $e->getMessage();
+
+            // OPTIONS DE LA BASE DE DATOS.
+            $options = [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES   => false,
+                PDO::ATTR_PERSISTENT => true
+            ];
+
+            $this->conn = new PDO($dns, DB_USER, DB_PASS, options: $options);
+        } catch (\PDOException $e) {
+            die('Fallo en la conexión' . $e->getMessage());
         }
     }
 

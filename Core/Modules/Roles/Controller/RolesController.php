@@ -1,8 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../../../Helpers/Const.php';
-require_once BASE_URL . '/'.CR_AUTOLOAD;
-require_once BASE_URL.CR_ROUTE_CONN;
+require_once BASE_URL . '/' . CR_AUTOLOAD;
+require_once BASE_URL . CR_ROUTE_CONN;
 
 
 class RolesController
@@ -96,23 +96,25 @@ class RolesController
         Response::success('roles asociados', $rolesResult);
     }
 
-    public function setPermisos(array $data = []){
+    public function setPermisos(array $data = [])
+    {
 
         $rolId = $_SESSION['usuario']['rol_id'];
 
         $responsePermisos = $this->modeloRol->assocPermisos($data);
 
         if (!$responsePermisos['status']) {
-           Response::fail('error al ejecutar el proceso', $responsePermisos);
+            Response::fail('error al ejecutar el proceso', $responsePermisos);
         }
 
         $result = $this->permisosModel->renderMenu($rolId);
+        var_dump($result);
         $_SESSION['renderMenu'] = $result['data'];
         Response::success('Permisos Asociados correctamente', $responsePermisos);
-
     }
 
-    public function prueba(String $value = 'hola'){
+    public function prueba(String $value = 'hola')
+    {
         Response::success('prueba exitosa', ['value' => $value]);
     }
 }

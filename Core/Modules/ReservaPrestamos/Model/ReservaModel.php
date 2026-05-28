@@ -951,9 +951,8 @@ class ReservaModel
     public function cancelarPrestamosFecha()
     {
         try {
-            $conn = $this->conect->getConnect();
-
-            $conn->begin_transaction();
+            $conn = (new Conn())->getConnect();
+            $conn->beginTransaction();
             $newFecha = new DateTime('now', new DateTimeZone('America/Bogota'));
 
             $fecha = $newFecha->format('Y-m-d');
@@ -963,26 +962,27 @@ class ReservaModel
             p.pres_cod AS 'codigoPrestamo',
             p.pres_fch_reserva AS 'fechaReserva'
             FROM prestamos p
-            WHERE p.pres_fch_reserva < ? && p.pres_estado = 3";
+            WHERE p.pres_fch_reserva < :pres_fch_reserva AND p.pres_estado = 3";
 
             $stmtFirst = $conn->prepare($sql);
 
 
-            $stmtFirst->bind_param("s", $fecha);
+            $stmtFirst->bindValue(":pres_fch_reserva", $fecha, PDO::PARAM_STR);
 
             if (!$stmtFirst->execute()) {
                 $conn->rollback();
-                $conn->close();
+                $conn = null;
                 // Agregar throw de error de procedimiento.
             }
 
-            $result = $stmtFirst->get_result();
+            // $result = $stmtFirst->get_result();
+
+            $result = $stmtFirst->fetchAll(PDO::FETCH_ASSOC);
 
             $prestamosResult = [];
-            while ($row = $result->fetch_assoc()) {
-                $prestamosResult[] = $row['codigoPrestamo'];
+            foreach ($result as $key => $value) {
+                $prestamosResult[] = $key['codigoPrestamo'];
             }
-
 
             if (count($prestamosResult) === 0) return;
 
@@ -999,10 +999,10 @@ class ReservaModel
                 pre.pres_cod = p.pres_cod
                 INNER JOIN elementos el ON
                 pre.pres_el_elem_cod = el.elm_cod
-                WHERE p.pres_fch_reserva < ? AND p.pres_cod = ? ORDER BY p.pres_cod ASC";
+                WHERE p.pres_fch_reserva < :pres_fch_reserva AND p.pres_cod = :pres_cod ORDER BY p.pres_cod ASC";
 
-            $thirdSql = "UPDATE elementos SET elm_cod_estado = ? WHERE elm_cod = ?";
-            $fourSql = "UPDATE prestamos SET pres_estado = ? WHERE pres_cod = ?";
+            $thirdSql = "UPDATE elementos SET elm_cod_estado = :elm_cod_estado WHERE elm_cod = :elm_cod";
+            $fourSql = "UPDATE prestamos SET pres_estado = :pres_estado WHERE pres_cod = :pres_cod";
             $stmtSecond = $conn->prepare($secondSlq);
             $stmtThird = $conn->prepare($thirdSql);
             $stmtFour = $conn->prepare($fourSql);
@@ -1013,45 +1013,48 @@ class ReservaModel
             foreach ($prestamosResult as $value) {
                 $codigoPrestamo = (int) $value;
 
-                $stmtSecond->bind_param('si', $fecha, $codigoPrestamo);
+                $stmtSecond->bindValue(':pres_fch_reserva', $fecha, PDO::PARAM_STR);
+                $stmtSecond->bindValue(':pres_cod', $codigoPrestamo, PDO::PARAM_INT);
 
                 if (!$stmtSecond->execute()) {
                     $conn->rollback();
                 }
 
-                $result = $stmtSecond->get_result();
+                // $result = $stmtSecond->get_result();
+                $result = $stmtSecond->fetchAll(PDO::FETCH_ASSOC);
 
                 $dataElements = [];
-                while ($row = $result->fetch_assoc()) {
-                    $dataElements[] = $row['codigoElemento'];
+
+                foreach ($result as $key2 => $value2) {
+                    $dataElements[] = $key2['codigoElemento'];
                 }
 
+
                 // Tercera transacción: Actualizar estados de los elementos a disponible.
-                foreach ($dataElements as $value) {
+                foreach ($dataElements as $value3) {
                     $codigo = (int) $value;
 
-                    $stmtThird->bind_param('ii', $estadoElementos, $codigo);
+                    $stmtThird->bindValue(':elm_cod_estado', $estadoElementos, PDO::PARAM_INT);
+                    $stmtThird->bindValue(':elm_cod', $codigo, PDO::PARAM_INT);
+
 
                     if (!$stmtThird->execute()) {
                         $conn->rollback();
                     }
                 }
 
-                $stmtFour->bind_param('ii', $estadoPrestamos, $codigoPrestamo);
+                $stmtFour->bindValue(':pres_estado', $estadoPrestamos, PDO::PARAM_INT);
+                $stmtFour->bindValue(':pres_cod', $codigoPrestamo, PDO::PARAM_INT);
+
                 if (!$stmtFour->execute()) {
                     $conn->rollback();
                 }
             }
 
-            $stmtSecond->close();
-            $stmtThird->close();
-            $stmtFour->close();
-
             $conn->commit();
+            $conn = null;
         } catch (Exception $e) {
-
-            $conn->rollback();
-            // Esto se guarda en mi archivo php_error.log
+            $conn->rollBack();
             error_log("Error al ejecutar la transacción de cancelarPrestamo fecha" . $e->getMessage());
         }
     }

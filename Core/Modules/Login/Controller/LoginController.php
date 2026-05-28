@@ -53,7 +53,7 @@ class LoginController
                 exit();
             }
 
-            $modeloLogin = new LoginModel($this->conn);
+            $modeloLogin = new LoginModel();
             $usuarioResult = $modeloLogin->buscarUsuarioPorDocumento($documento);
 
             if (!$usuarioResult['status']) {
@@ -61,7 +61,7 @@ class LoginController
                 exit();
             }
 
-            $usuario = $usuarioResult['usuario'];
+            $usuario = $usuarioResult['usuario'][0];
 
             if (!$modeloLogin->verificarPassword($password, $usuario['usu_password'])) {
                 echo json_encode(['status' => false, 'message' => 'Contraseña incorrecta']);
@@ -72,7 +72,6 @@ class LoginController
             session_regenerate_id(true);
 
             $result = $permisosModel->renderMenu((int) $usuario['rl_id']);
-
             $_SESSION['usuario'] = [
                 'id' => $usuario['usu_id'],
                 'nombre' => $usuario['usu_nombres'],
@@ -111,11 +110,6 @@ class LoginController
 
         if (UtilsFunctions::ajaxGeneral()) {
             header(CONTENT_TYPE);
-            // echo json_encode([
-            //     'status' => true,
-            //     'message' => 'Sesión cerrada correctamente.',
-            //     'redirect' => Router::createRoute('Login', 'Login', 'index', false, 'dashboard')
-            // ]);
             Response::success('Sesión cerrada correctamente.', [
                 'redirect' => Router::createRoute('Login', 'Login', 'index', false, 'dashboard')
             ]);

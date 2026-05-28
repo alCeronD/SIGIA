@@ -3,7 +3,7 @@
 
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once BASE_URL . '/Autoload.php';
-require_once __DIR__ . '/../const/ConstGeneralCrud.php';
+require_once __DIR__ . '/../Const/ConstGeneralCrud.php';
 class GeneralCrudController extends ConfigGeneralCrud
 {
   protected GeneralCrudModel $modelGeneralCrud;
@@ -25,7 +25,6 @@ class GeneralCrudController extends ConfigGeneralCrud
 
     // Cantidad de paginas
     $resultCount = $this->modelGeneralCrud->count()->prepareSql()->get();
-
     // lógica paginado
     $resultPaginate = UtilsFunctions::executePaginate($resultCount, LIMIT, $paginaActual);
     $dataSql = [];

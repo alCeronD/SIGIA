@@ -11,8 +11,7 @@ class ServicesSolicitudPrestamos
     private SolicitudPrestamosModel $solicitudPrestamos;
     public function __construct()
     {
-        $conexion = new Conn();
-        $conn = $conexion->getConnect();
+        $conn = (new Conn)->getConnect();
         $this->solicitudPrestamos = new SolicitudPrestamosModel($conn);
     }
 

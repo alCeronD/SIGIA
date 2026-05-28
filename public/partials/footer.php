@@ -6,6 +6,8 @@
 $modulos = $_SESSION['renderMenu']['modulos'];
 $vistasModulos = $_SESSION['renderMenu']['vistas'];
 $subItems = $_SESSION['renderMenu']['subMenus'];
+
+
 ?>
 
 <div class="fixed-action-btn direction-top">
@@ -28,9 +30,8 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
 
     <?php endforeach; ?>
     <li>
-      <!-- <a data-btnClose="dataBtnClose" href="<?php //echo Router::createRoute('Login', 'Login', 'logout', 'false', 'dashboard'); ?>" class="btn-floating red " data-tooltip="Cerrar sesión"> <i class="material-icons">exit_to_app</i></a> -->
 
-      <a data-btnClose="dataBtnClose" class="btn-floating red " href="" data-logOut="logOut" data-Url="<?php echo Router::createRoute('Login','Login','logout',false,'dashboard') ?>">
+      <a data-btnClose="dataBtnClose" class="btn-floating red " href="" data-logOut="logOut" data-Url="<?php echo Router::createRoute('Login', 'Login', 'logout', false, 'dashboard') ?>">
         <i class="material-icons">exit_to_app</i>
       </a>
     </li>
@@ -43,7 +44,10 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
 <!-- Subitems -->
 <?php foreach ($subItems as $modulo => $funciones): ?>
   <div id="submenu-<?php echo $modulo; ?>" class="submenu hidden ">
-    <?php foreach ($funciones as $item):
+
+    <?php
+    foreach ($funciones as  $key => $item):
+
       $nombreFuncionUser = $item['nombreFuncionUser'];
       $nombreModulo = $item['nombreModulo'];
       $functionController = $item['nombreFuncionController'];
@@ -51,6 +55,7 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
       <a href="<?php echo Router::createRoute($nombreModulo, $nombreModulo, $functionController, false, 'dashboard'); ?>">
         <?php echo $nombreFuncionUser; ?>
       </a>
+
     <?php endforeach; ?>
   </div>
 <?php endforeach; ?>

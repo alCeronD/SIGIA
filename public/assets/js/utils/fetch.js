@@ -74,7 +74,6 @@ export const getData = async (url, method = 'GET', parameters = {}, asText = fal
 
       newUrl = JSON.stringify(parameters) === '{}' ? url : `${url}&${setParameters.toString()}`;
     }
-    console.log(newUrl);
 
     const bodyData = setFetch(method, parameters, data);
     const execute = await fetch(newUrl, bodyData);
