@@ -1,4 +1,4 @@
-import { Ajax } from '../utils/ajax.js';
+import { Ajax } from '../../../../public/assets/js/utils/ajax.js';
 import {
   createI,
   closeModal,
@@ -8,10 +8,9 @@ import {
   options,
   initAlert,
   toastOptions,
-} from '../utils/cases.js';
+} from '../../../../public/assets/js/utils/cases.js';
 //La idea es capturar la información aca desde javascript y enviarla al controlador.
 
-//Formulario de envio
 const formulario = document.querySelector('#formArea');
 const objAjax = new Ajax();
 const btnAreaSend = document.querySelector('#btnAreaSend');

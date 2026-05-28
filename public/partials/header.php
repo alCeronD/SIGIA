@@ -9,7 +9,15 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="../public/assets/libraries/materialize/css/materialize.css">
   <link rel="stylesheet" href="../public/assets/css/main.css">
-  <link rel="stylesheet" href="<?php echo $_SESSION['css']; ?>">
+
+  <?php
+  // Implementamos los css dinamicamente dependiendo del modulo.
+  if (!empty($_SESSION['css']) && is_array($_SESSION['css'])) {
+    foreach ($_SESSION['css'] as $key => $url) {
+  ?>
+      <link rel="stylesheet" href="<?php echo htmlspecialchars("/../../Core/" . $url); ?>">
+  <?php }
+  } ?>
 
 
 </head>
@@ -21,7 +29,6 @@
     <ul id="" class="right">
       <li class="user-dropdown">
         <div class="contentUser" id="userDropdownToggle">
-          <!-- <i class="material-icons large">account_circle</i> -->
           <a href="<?php echo Router::createRoute('Usuarios', 'Usuarios', 'actualizarDatosView', false, 'dashboard'); ?>">
             <i class="material-icons large">account_circle</i>
           </a>
@@ -40,7 +47,7 @@
     <ul id="" class="left">
       <li class="user-dropdown">
         <div class="contentUser" id="userDropdownToggle">
-          <span id="btnCerrarSesion" data-logOut='logOut' data-Url='<?php echo Router::createRoute('Login','Login','logout',false,'dashboard') ?>' data-btnClose="dataBtnClose">
+          <span id="btnCerrarSesion" data-logOut='logOut' data-Url='<?php echo Router::createRoute('Login', 'Login', 'logout', false, 'dashboard') ?>' data-btnClose="dataBtnClose">
             Salir
           </span>
           <br>

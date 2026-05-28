@@ -6,13 +6,9 @@ require_once BASE_URL . CR_ROUTE_CONN;
 Session::validateSession();
 
 $modulo = $_GET[CR_MODULO] ?? CR_DASHBOARD;
-$controllerFile = new ScanFiles($modulo);
-$css = $controllerFile->addUrl($modulo);
-
+$assetsFiles = (new ScanFiles($modulo))->mapAssets($modulo);
 // Ejecutar actualización automática de estados de prestamos
 $conn = (new Conn())->getConnect();
-
-
 if (UtilsFunctions::ajaxGeneral()) {
     Router::ExecuteFunction();
     exit;
@@ -27,11 +23,13 @@ $reservaServices = new ServicesReservas();
 $reservaServices->callTask();
 
 
-if ($css) {
-    $_SESSION['css'] = $css;
+if (!empty($assetsFiles)) {
+    $_SESSION['css'] = $assetsFiles['css'][$modulo];
+    $_SESSION['js'] = $assetsFiles['js'][$modulo];
 } else {
-    unset($_SESSION['css']);
+    unset($_SESSION['css']['css']);
 }
+
 
 require_once CR_ROUTE_HEADER;
 ?>

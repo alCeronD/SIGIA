@@ -17,4 +17,5 @@ class AreasController
   {
     return include_once __DIR__ . URL_MAIN_VIEW;
   }
+  public function insert() {}
 }

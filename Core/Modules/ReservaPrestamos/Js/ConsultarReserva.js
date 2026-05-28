@@ -1,4 +1,4 @@
-import { Ajax } from "../utils/ajax.js";
+import { Ajax } from '../../../../public/assets/js/utils/ajax.js';
 import {
   addClassItem,
   closeModal,
@@ -15,17 +15,14 @@ import {
   typeLoans,
   mostrarConfirmacion,
   setDate,
-  setObservacion
-} from "../utils/cases.js";
-import { getData, sendData } from "../utils/fetch.js";
-import { cancelarProcesoPreview, finalizarPresvamoPreview } from "./consultar/submitEvents.js";
+  setObservacion,
+} from '../../../../public/assets/js/utils/cases.js';
+import { getData, sendData } from '../../../../public/assets/js/utils/fetch.js';
+import { cancelarProcesoPreview, finalizarPresvamoPreview } from './consultar/submitEvents.js';
 let cancelarProceso = null;
 let finalizarPrestamo = null;
 
-
-
-
-const width = screen.width
+const width = screen.width;
 const height = screen.height;
 
 // console.log(width, height);
@@ -36,7 +33,7 @@ const typesPrestamosLoan = {
   validate: 'validate',
   done: 'done',
   toValidate: 'toValidate',
-  cancel: 'cancel'
+  cancel: 'cancel',
 };
 
 // Selector del filtro.
@@ -46,14 +43,14 @@ const filtroTipoReserva = document.querySelector('#filtroTipoReserva');
 let currentPage = 1;
 const objAjax = new Ajax();
 //Cuerpo de la tabla para renderizar los datos.
-const tbodyReservaConsult = document.querySelector("#tbodyReservaConsult");
-const modalDetail = instanceModal("#modalDetail", options);
-const modalValidate = instanceModal("#modalValidate", options);
-const bodyDetailValidate = document.querySelector("#bodyDetailValidate");
-const btnCloseValidte = document.querySelector("#modalValidate .close-modal");
-const btnCloseElements = document.querySelector("#modalDetail .close-modal");
+const tbodyReservaConsult = document.querySelector('#tbodyReservaConsult');
+const modalDetail = instanceModal('#modalDetail', options);
+const modalValidate = instanceModal('#modalValidate', options);
+const bodyDetailValidate = document.querySelector('#bodyDetailValidate');
+const btnCloseValidte = document.querySelector('#modalValidate .close-modal');
+const btnCloseElements = document.querySelector('#modalDetail .close-modal');
 const btnCloseCancel = document.querySelector('#modalCancel .close-modal');
-const formDetail = document.querySelector("#formDetail");
+const formDetail = document.querySelector('#formDetail');
 const formCancel = document.querySelector('#formCancel');
 const formSalida = document.querySelector('#formSalida');
 const inputObservacionsalida = document.querySelector('#modalSalida #inputObservacionsalida');
@@ -64,9 +61,7 @@ const rowsPrestamos = document.querySelector('#rowsPrestamos');
 // Label del campo observaciones para cambiar si es obligatorio o no la observación
 const observacionesLabel = document.querySelector('#observacionesLabel');
 // El contenido de la tabla del modal validatePrestamo
-const tableContainerDetail = document.querySelector(
-  ".tableContainerDetail table"
-);
+const tableContainerDetail = document.querySelector('.tableContainerDetail table');
 const closeModalBtnSalida = document.querySelector('#closeModalBtnSalida');
 const modalCancel = instanceModal('#modalCancel', options);
 // Contenedor principal de modalValidate
@@ -79,9 +74,9 @@ let devolutivos = [];
 let data;
 //variable para guardar los elementos
 let elementos = {};
-const BodydetailReserva = document.querySelector("#BodydetailReserva");
+const BodydetailReserva = document.querySelector('#BodydetailReserva');
 //Codigo del prestamo para hacer el fech
-let cases = "reservas";
+let cases = 'reservas';
 let codigo;
 let pages;
 // En esta variable guardo toda la información que voy a enviar cuando doy salida a los elementos.
@@ -89,10 +84,10 @@ let validateReserva;
 //Página actual.
 let pagesReserva = 1;
 // Checkbox para validar TODOS LOS ELEMENTOS
-const checkBoxValidate = document.querySelector("#allValidateItems");
+const checkBoxValidate = document.querySelector('#allValidateItems');
 // capturo el input de la tabla para seleccionarlos todos.
-const inputValidate = document.querySelectorAll(".inputValidate");
-const nextBtnValidate = document.querySelector("#btnNextValidate");
+const inputValidate = document.querySelectorAll('.inputValidate');
+const nextBtnValidate = document.querySelector('#btnNextValidate');
 //Variable para mostrar la información en el modal.
 let elementosDetalle = [];
 
@@ -102,89 +97,89 @@ const renderReservas = async ({ page = 1, type = 'all' } = {}) => {
   try {
     //Traigo la data por medio de fetch.
     const result = await getData(
-      "modules/reservaPrestamos/controller/reservaPrestamosController.php",
-      "GET",
-      { action: "reservas", pages: page, type }, false
+      'modules/reservaPrestamos/controller/reservaPrestamosController.php',
+      'GET',
+      { action: 'reservas', pages: page, type },
+      false
     );
-
 
     let status = result.status;
     data = result.data.data;
     pages = result.data.pages;
     if (status && data.length === 0) {
-      tbodyReservaConsult.innerHTML = "";
-      tbodyReservaConsult.innerHTML = "No hay prestamos para el estado del prestamo seleccionado.";
+      tbodyReservaConsult.innerHTML = '';
+      tbodyReservaConsult.innerHTML = 'No hay prestamos para el estado del prestamo seleccionado.';
       return;
     }
     if (pagesReserva > pages) return;
 
-    tbodyReservaConsult.innerHTML = "";
+    tbodyReservaConsult.innerHTML = '';
     data.forEach((dta) => {
       codigo = dta.codigo;
-      let tr = document.createElement("tr");
-      let btnAdd = document.createElement("button");
-      let btnEnd = document.createElement("button");
-      let btnDetail = document.createElement("button");
-      let btnCancel = document.createElement("button");
-      btnAdd.setAttribute("class", "btn waves-effect waves-light");
-      let btnValidateLoan = createBtn("btnClick");
+      let tr = document.createElement('tr');
+      let btnAdd = document.createElement('button');
+      let btnEnd = document.createElement('button');
+      let btnDetail = document.createElement('button');
+      let btnCancel = document.createElement('button');
+      btnAdd.setAttribute('class', 'btn waves-effect waves-light');
+      let btnValidateLoan = createBtn('btnClick');
       let iDetalle = createI();
       btnDetail.append(iDetalle);
-      iDetalle.innerText = "info";
+      iDetalle.innerText = 'info';
       let iValidate = createI();
-      iValidate.innerText = "done";
+      iValidate.innerText = 'done';
 
-      btnDetail.setAttribute("class", "btnDetail btnClick");
-      btnDetail.setAttribute("data-id", `${dta.codigo}`);
-      btnAdd.setAttribute("class", "addElements");
-      btnAdd.setAttribute("data-add", `${dta.codigo}`);
-      btnEnd.setAttribute("data-end", `${dta.codigo}`);
-      btnCancel.setAttribute("data-cancel", `${dta.codigo}`);
-      btnValidateLoan.setAttribute("data-validate", `${dta.codigo}`);
+      btnDetail.setAttribute('class', 'btnDetail btnClick');
+      btnDetail.setAttribute('data-id', `${dta.codigo}`);
+      btnAdd.setAttribute('class', 'addElements');
+      btnAdd.setAttribute('data-add', `${dta.codigo}`);
+      btnEnd.setAttribute('data-end', `${dta.codigo}`);
+      btnCancel.setAttribute('data-cancel', `${dta.codigo}`);
+      btnValidateLoan.setAttribute('data-validate', `${dta.codigo}`);
       let iFinalizar = createI();
-      iFinalizar.innerText = "swap_horiz";
+      iFinalizar.innerText = 'swap_horiz';
       let iCancel = createI();
-      iCancel.innerText = "cancel";
-      btnAdd.setAttribute("class", "btnEnd");
+      iCancel.innerText = 'cancel';
+      btnAdd.setAttribute('class', 'btnEnd');
       addClassItem(btnDetail, {
-        btn: "btn",
-        wavesEffect: "waves-effect",
-        wavesLight: "wares-light",
-        btnSmall: "btn-small",
+        btn: 'btn',
+        wavesEffect: 'waves-effect',
+        wavesLight: 'wares-light',
+        btnSmall: 'btn-small',
       });
       addClassItem(btnValidateLoan, {
-        btn: "btn",
-        color: "yellow darken-2",
-        wavesEffect: "waves-effect",
-        wavesLight: "waves-light",
-        btnSmall: "btn-small",
+        btn: 'btn',
+        color: 'yellow darken-2',
+        wavesEffect: 'waves-effect',
+        wavesLight: 'waves-light',
+        btnSmall: 'btn-small',
       });
       addClassItem(btnEnd, {
-        btn: "btn",
-        color: "red lighten-1",
-        wavesEffect: "waves-effect",
-        wavesLight: "waves-light",
-        btnSmall: "btn-small",
+        btn: 'btn',
+        color: 'red lighten-1',
+        wavesEffect: 'waves-effect',
+        wavesLight: 'waves-light',
+        btnSmall: 'btn-small',
       });
       addClassItem(btnCancel, {
-        btn: "btn",
-        color: "blue lighten-1",
-        wavesEffect: "waves-effect",
-        wavesLight: "waves-light",
-        btnSmall: "btn-small"
+        btn: 'btn',
+        color: 'blue lighten-1',
+        wavesEffect: 'waves-effect',
+        wavesLight: 'waves-light',
+        btnSmall: 'btn-small',
       });
       btnValidateLoan.append(iValidate);
       btnEnd.append(iFinalizar);
       btnCancel.append(iCancel);
-      let tdCodigo = document.createElement("td");
-      let tdNombreCompleto = document.createElement("td");
-      let tdFechaRegistro = document.createElement("td");
-      let tdCantidad = document.createElement("td");
-      let tdEstado = document.createElement("td");
-      let tdAcciones = document.createElement("td");
-      let tdTipo = document.createElement("td");
+      let tdCodigo = document.createElement('td');
+      let tdNombreCompleto = document.createElement('td');
+      let tdFechaRegistro = document.createElement('td');
+      let tdCantidad = document.createElement('td');
+      let tdEstado = document.createElement('td');
+      let tdAcciones = document.createElement('td');
+      let tdTipo = document.createElement('td');
       tdCodigo.textContent = dta.codigo;
-      tdNombreCompleto.textContent = dta.nombre + " " + dta.apellido;
+      tdNombreCompleto.textContent = dta.nombre + ' ' + dta.apellido;
       tdEstado.textContent = dta.estadoPrestamo;
       tdTipo.textContent = dta.tipoPrestamo;
       tdFechaRegistro.textContent = dta.fechaSolicitud;
@@ -196,40 +191,40 @@ const renderReservas = async ({ page = 1, type = 'all' } = {}) => {
       tr.appendChild(tdEstado);
       tr.appendChild(tdTipo);
 
-      tdAcciones.innerHTML = "";
+      tdAcciones.innerHTML = '';
       tr.append(tdAcciones);
 
-      if (tdEstado.textContent === "Finalizado") {
-        btnEnd.style.display = "none";
-        tdEstado.style.color = "gray";
+      if (tdEstado.textContent === 'Finalizado') {
+        btnEnd.style.display = 'none';
+        tdEstado.style.color = 'gray';
       }
 
-      if (tdEstado.textContent === "Rechazado") {
-        tdEstado.style.color = "red";
+      if (tdEstado.textContent === 'Rechazado') {
+        tdEstado.style.color = 'red';
       }
 
-      if (tdEstado.textContent === "Validado") {
-        tdEstado.style.color = "green";
+      if (tdEstado.textContent === 'Validado') {
+        tdEstado.style.color = 'green';
       }
 
       tdAcciones.appendChild(btnDetail);
 
-      if (dta.estadoPrestamo === "Finalizado") {
+      if (dta.estadoPrestamo === 'Finalizado') {
         return;
       }
 
       if (dta.codigoTipoPrestamo === typeLoans.solicitud) {
-        if (dta.estadoPrestamo === "Por validar") {
+        if (dta.estadoPrestamo === 'Por validar') {
           tdAcciones.appendChild(btnValidateLoan);
           tdAcciones.appendChild(btnCancel);
-        } else if (dta.estadoPrestamo === "Validado") {
+        } else if (dta.estadoPrestamo === 'Validado') {
           tdAcciones.appendChild(btnEnd);
         }
       }
 
       if (dta.codigoTipoPrestamo === typeLoans.inmediata) {
         // En préstamos inmediatos, ya están validados desde el backend
-        if (dta.estadoPrestamo === "Validado") {
+        if (dta.estadoPrestamo === 'Validado') {
           tdAcciones.appendChild(btnEnd);
         }
       }
@@ -238,27 +233,24 @@ const renderReservas = async ({ page = 1, type = 'all' } = {}) => {
       const reserva = data.find((item) => item.codigo === codigo);
       if (reserva) {
         let getReservaElementos = getData(
-          "modules/reservaPrestamos/controller/reservaPrestamosController.php",
-          "GET",
-          { action: "reservaDetailElements", codigo: dta.codigo }
+          'modules/reservaPrestamos/controller/reservaPrestamosController.php',
+          'GET',
+          { action: 'reservaDetailElements', codigo: dta.codigo }
         ).then((result) => {
-
           //Guardo el código de la reserva con los elementos que están asociados a ese prestamo.
           //Response.data tiene los elementos.
           elementos[dta.codigo] = {
             reserva: dta,
             elementos: result.data,
           };
-
         });
       }
     });
     pagesPrestamos.innerText = `Página ${pagesReserva} de ${pages}`;
     // rowsPrestamos.innerText = `Cantidad prestamos: ${pages}`;
-
   } catch (error) {
     console.warn(`Error al procesar la solicitud, intente más tarde ${error}`);
-    tbodyReservaConsult.innerHTML = "Error al realizar la solicitud, intente nuevamente";
+    tbodyReservaConsult.innerHTML = 'Error al realizar la solicitud, intente nuevamente';
   }
 };
 
@@ -266,20 +258,17 @@ const renderReservas = async ({ page = 1, type = 'all' } = {}) => {
 let noselectedDevolutivos = [];
 let noselectedConsumibles = [];
 
-
 function validateCheckboxChecked(inputValidate, checkBoxValidate) {
   /**
    * Con la propiedad array from me extrae el elemento en concreo que se ha chequeado, luego de ello, me valida quue alguno de esos elementos este chequeados para así determinar que el btnNextValidate se visualice.
    */
-  const elementChecked = Array.from(inputValidate).some(
-    (input) => input.checked
-  );
+  const elementChecked = Array.from(inputValidate).some((input) => input.checked);
   checkBoxValidate.checked = elementChecked;
   // nextBtnValidate.style.display = checkBoxValidate.checked ? "flex" : "none";
   if (elementChecked) {
-    nextBtnValidate.style.display = "flex";
+    nextBtnValidate.style.display = 'flex';
   } else {
-    nextBtnValidate.style.display = "none";
+    nextBtnValidate.style.display = 'none';
   }
 }
 
@@ -290,25 +279,24 @@ function addElementsToArray(input, cantidadPersonalizada = null) {
   const cantidad = cantidadPersonalizada ?? input.dataset.cantidadSalida;
 
   if (input.checked) {
-    if (tipo === "Devolutivo" && !devolutivos.find(dev => dev.cod === cod)) {
+    if (tipo === 'Devolutivo' && !devolutivos.find((dev) => dev.cod === cod)) {
       devolutivos.push({ tipo, cod, nombre, cantidadSalida: cantidad });
     }
 
-    if (tipo === "Consumible") {
+    if (tipo === 'Consumible') {
       // Reemplazo el elemento si ya existe.
-      consumibles = consumibles.filter(consu => consu.cod !== cod);
+      consumibles = consumibles.filter((consu) => consu.cod !== cod);
       consumibles.push({ tipo, cod, nombre, cantidadSalida: cantidad });
     }
   } else {
-    if (tipo === "Consumible") {
-      consumibles = consumibles.filter(consu => consu.cod !== cod);
+    if (tipo === 'Consumible') {
+      consumibles = consumibles.filter((consu) => consu.cod !== cod);
     }
 
-    if (tipo === "Devolutivo") {
-      devolutivos = devolutivos.filter(dev => dev.cod !== cod);
+    if (tipo === 'Devolutivo') {
+      devolutivos = devolutivos.filter((dev) => dev.cod !== cod);
     }
   }
-
 }
 
 /**
@@ -322,8 +310,8 @@ function addElementsToArray(input, cantidadPersonalizada = null) {
  */
 function resetModalValidate(showTable = false) {
   // Estas variables se estan re definiendo pese a que estan definidas de manera global, es para reiniciar el formulario ANTES de prestionare el botón de salida del elemento, no después.
-  const table = document.querySelector("#modalValidate table");
-  const formContainer = document.querySelector("#modalValidate .formValidateContainer");
+  const table = document.querySelector('#modalValidate table');
+  const formContainer = document.querySelector('#modalValidate .formValidateContainer');
   const radioInputs = document.querySelectorAll('#modalValidate input[name="radioValidate"]');
   const textareaObservacion = document.querySelector('#inputObservacionValidate');
   const checkboxSelectAll = document.querySelector('#checkBoxValidate');
@@ -332,19 +320,19 @@ function resetModalValidate(showTable = false) {
 
   // 1. Mostrar tabla o formulario
   if (showTable) {
-    table.style.display = "table";
-    formContainer.style.display = "none";
-    previewBtnValidate.style.display = "none";
-    nextBtnValidate.style.display = "inline-flex";
+    table.style.display = 'table';
+    formContainer.style.display = 'none';
+    previewBtnValidate.style.display = 'none';
+    nextBtnValidate.style.display = 'inline-flex';
   } else {
-    table.style.display = "none";
-    formContainer.style.display = "flex";
-    previewBtnValidate.style.display = "inline-flex";
-    nextBtnValidate.style.display = "none";
+    table.style.display = 'none';
+    formContainer.style.display = 'flex';
+    previewBtnValidate.style.display = 'inline-flex';
+    nextBtnValidate.style.display = 'none';
   }
 
   // Desmarcar todos los radio buttons del formulario
-  radioInputs.forEach(radio => {
+  radioInputs.forEach((radio) => {
     radio.checked = false;
   });
 
@@ -361,7 +349,7 @@ function resetModalValidate(showTable = false) {
   allValidateItems.checked = false;
 
   // Paso 6 ocultar el botón de next
-  btnNextValidate.style.display = "none";
+  btnNextValidate.style.display = 'none';
 
   // Paso 6 Limpiar tabla de detalles
   BodydetailReserva.innerHTML = '';
@@ -369,7 +357,7 @@ function resetModalValidate(showTable = false) {
 
 /** Description - Función para limpiar los campos del formulario del modal de finalizar prestamo */
 function resetModalSalida() {
-  inputObservacionsalida.value = "";
+  inputObservacionsalida.value = '';
   inputObservacionsalida.readOnly = true;
   radioButtonSalida.forEach((rd) => {
     rd.checked = false;
@@ -392,63 +380,56 @@ function resetDataModal() {
 }
 
 // Responsabilidades de las consultas
-tbodyReservaConsult.addEventListener("click", (event) => {
+tbodyReservaConsult.addEventListener('click', (event) => {
   event.preventDefault();
   event.stopPropagation();
-  const btnDetail = event.target.closest("button[data-id]");
+  const btnDetail = event.target.closest('button[data-id]');
   //Apunto ahora al boton porque cuando se agrega un elemento hijo, el evento click de javascript detecta el evento hijo, no el padre, lo ideal es capturarlo mejor por el data.
   if (btnDetail) {
-    let dataTr = event.target.closest("tr");
-    const nroIdentidad = document.querySelector("#formDetail #nroIdentidad");
-    const nombre = document.querySelector("#formDetail #nombreCompleto");
-    const fechaReserva = document.querySelector("#formDetail #fechaReserva");
-    const fechaSolicitud = document.querySelector(
-      "#formDetail #fechaSolicitud"
-    );
-    const fechaDevolucion = document.querySelector(
-      "#formDetail #fechaDevolucion"
-    );
-    const observaciones = document.querySelector("#formDetail #observaciones");
+    let dataTr = event.target.closest('tr');
+    const nroIdentidad = document.querySelector('#formDetail #nroIdentidad');
+    const nombre = document.querySelector('#formDetail #nombreCompleto');
+    const fechaReserva = document.querySelector('#formDetail #fechaReserva');
+    const fechaSolicitud = document.querySelector('#formDetail #fechaSolicitud');
+    const fechaDevolucion = document.querySelector('#formDetail #fechaDevolucion');
+    const observaciones = document.querySelector('#formDetail #observaciones');
 
     //Busco todos los input que tengan la clase inputFormDetail y los ciclo para aplicar un readOnly con el fin de que el usuario solo pueda leer la información, no manipularla.
-    const readOnly = document
-      .querySelectorAll("#formDetail .inputFormDetail")
-      .forEach((input) => {
-        input.readOnly = true;
-      });
+    const readOnly = document.querySelectorAll('#formDetail .inputFormDetail').forEach((input) => {
+      input.readOnly = true;
+    });
 
     let nombreCompleto = dataTr.children[1].textContent;
     let tipo = dataTr.children[2].textContent;
     let estado = dataTr.children[3].textContent;
 
-
     const modalTitle = document.querySelector('#modalTitle');
-    codigo = parseInt(btnDetail.getAttribute("data-id"));
+    codigo = parseInt(btnDetail.getAttribute('data-id'));
     const reserva = data.find((item) => item.codigo === codigo);
-    let action = "reservaDetailElements";
+    let action = 'reservaDetailElements';
     //Petición para dibujar los elementos en la tabla del detail.
     //TODO: Mejorar, en la variable elementos encuentro toda la información, no necesito hacer otra petición.
     objAjax.request.open(
-      "GET",
+      'GET',
       `modules/reservaPrestamos/controller/reservaPrestamosController.php?codigo=${encodeURIComponent(
         codigo
       )}&action=${encodeURIComponent(action)}`,
       true
     );
-    objAjax.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    objAjax.request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
     //TODO, Todo esto arreglarlo, no hay necesidad de hacer nuevamente la peticion porque en la función getReserva se encuentra toda esta información.
     objAjax.request.onload = () => {
       let response = JSON.parse(objAjax.request.responseText);
       elementosDetalle = response.data;
 
-      BodydetailReserva.innerHTML = "";
+      BodydetailReserva.innerHTML = '';
       elementosDetalle.forEach((elm) => {
-        const trTable = document.createElement("tr");
-        const tdCodigo = document.createElement("td");
-        const tdSerie = document.createElement("td");
-        const tdNombre = document.createElement("td");
-        const tdCantidad = document.createElement("td");
+        const trTable = document.createElement('tr');
+        const tdCodigo = document.createElement('td');
+        const tdSerie = document.createElement('td');
+        const tdNombre = document.createElement('td');
+        const tdCantidad = document.createElement('td');
 
         tdCodigo.innerText = elm.codigo;
         tdNombre.innerText = elm.nombre;
@@ -461,7 +442,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         BodydetailReserva.appendChild(trTable);
       });
     };
-    objAjax.request.setRequestHeader("Accept", "application/json");
+    objAjax.request.setRequestHeader('Accept', 'application/json');
     objAjax.request.send();
 
     modalDetail.open();
@@ -476,14 +457,10 @@ tbodyReservaConsult.addEventListener("click", (event) => {
   }
 
   //Finalizar el prestamo de los elementos.
-  if (
-    event.target.tagName === "BUTTON" &&
-    event.target.getAttribute(["data-end"])
-  ) {
-
+  if (event.target.tagName === 'BUTTON' && event.target.getAttribute(['data-end'])) {
     // Si ya existe un evento, lo elimino.
     if (finalizarPrestamo) {
-      formSalida.removeEventListener('submit', finalizarPrestamo)
+      formSalida.removeEventListener('submit', finalizarPrestamo);
     }
 
     const observacionesLabelSalida = document.querySelector('#observacionesLabelSalida');
@@ -491,113 +468,128 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       rdSal.addEventListener('change', (e) => {
         e.stopPropagation();
 
-        if (e.target.value === "off") {
+        if (e.target.value === 'off') {
           inputObservacionsalida.readOnly = true;
-          inputObservacionsalida.value = "";
-          setObservacion({ baseText: "Observación: ", selector: observacionesLabelSalida, isRequired: false });
-
+          inputObservacionsalida.value = '';
+          setObservacion({
+            baseText: 'Observación: ',
+            selector: observacionesLabelSalida,
+            isRequired: false,
+          });
         } else {
           inputObservacionsalida.readOnly = false;
-          setObservacion({ baseText: "Observación: ", selector: observacionesLabelSalida, isRequired: true });
+          setObservacion({
+            baseText: 'Observación: ',
+            selector: observacionesLabelSalida,
+            isRequired: true,
+          });
         }
-
       });
     });
 
     //Hago la captura de la data necesaria para validar el prestamo o para reservalo inmedaitamente.
-    let endReserva = setReserva(
-      "data-end",
-      data,
-      elementos,
-      event.target,
-      "finalizar"
-    );
+    let endReserva = setReserva('data-end', data, elementos, event.target, 'finalizar');
 
     let messageEnd = `¿Está seguro de finalizar el préstamo? \n
     Estos son los elementos que cambiarán a disponible:
-    \n${endReserva.elementos
-        .map((el) => `- ${el.nombre}`)
-        .join("\n")}`;
+    \n${endReserva.elementos.map((el) => `- ${el.nombre}`).join('\n')}`;
 
-    mostrarConfirmacion("Finalizar prestamo", messageEnd, (response) => {
+    mostrarConfirmacion('Finalizar prestamo', messageEnd, (response) => {
       if (!response) {
-        initAlert("Proceso cancelado", "info", toastOptions);
+        initAlert('Proceso cancelado', 'info', toastOptions);
         return;
       }
 
-      finalizarPrestamo = finalizarPresvamoPreview(endReserva, sendData, modalSalida, initAlert, toastOptions, renderReservas, valueSelect, inputObservacionsalida, radioButtonSalida);
+      finalizarPrestamo = finalizarPresvamoPreview(
+        endReserva,
+        sendData,
+        modalSalida,
+        initAlert,
+        toastOptions,
+        renderReservas,
+        valueSelect,
+        inputObservacionsalida,
+        radioButtonSalida
+      );
 
       modalSalida.open();
-      formSalida.addEventListener("submit", finalizarPrestamo);
-
+      formSalida.addEventListener('submit', finalizarPrestamo);
     });
   }
 
-  const btnSalida = event.target.closest("button[data-validate]");
+  const btnSalida = event.target.closest('button[data-validate]');
   //Dar salida a los prestamos, cambiar el estado de la solicitudes a validada e implementar su salida.
   if (btnSalida) {
     // Traer la fecha seteada en formato (Y-M-D);
     const dateNow = setDate();
 
     //Capturo los datos para transformarlo en json.
-    validateReserva = setReserva("data-validate", data, elementos, btnSalida);
+    validateReserva = setReserva('data-validate', data, elementos, btnSalida);
     let fechaReserva = validateReserva.dataUsuario.fechaReserva;
 
-    let messageSalida = "";
+    let messageSalida = '';
 
     // Validamos que la fecha de salida debe ser igual a la fecha de hoy.
-    if ((dateNow < fechaReserva)) {
-      initAlert(`No puedes dar salida a elementos hasta la fecha de reserva ${fechaReserva}`, "info", toastOptions);
+    if (dateNow < fechaReserva) {
+      initAlert(
+        `No puedes dar salida a elementos hasta la fecha de reserva ${fechaReserva}`,
+        'info',
+        toastOptions
+      );
       return;
-    } else if ((dateNow > fechaReserva)) {
-      initAlert(`No es posible dar salida a estos elementos, la fecha de reserva (${fechaReserva}) no corresponde con la fecha actual (${dateNow}). `, "info", toastOptions);
+    } else if (dateNow > fechaReserva) {
+      initAlert(
+        `No es posible dar salida a estos elementos, la fecha de reserva (${fechaReserva}) no corresponde con la fecha actual (${dateNow}). `,
+        'info',
+        toastOptions
+      );
       return;
     }
 
     messageSalida =
       fechaReserva !== dateNow
         ? `Esta reserva está validada para dar salida el día de ${fechaReserva}, No para el día de hoy, ${dateNow} \n, ¿Deseas continuar? `
-        : "¿Esta seguro de dar salida al prestamo?";
+        : '¿Esta seguro de dar salida al prestamo?';
 
-    mostrarConfirmacion("Salida elementos", messageSalida, (response) => {
+    mostrarConfirmacion('Salida elementos', messageSalida, (response) => {
       if (!response) {
-        initAlert("Proceso cancelado", "info", toastOptions);
+        initAlert('Proceso cancelado', 'info', toastOptions);
         return;
       }
       resetModalValidate(true);
       modalValidate.open();
 
-      let action = "validateLoan";
-      validateReserva["action"] = action;
+      let action = 'validateLoan';
+      validateReserva['action'] = action;
       let previewElements = validateReserva.elementos;
-      bodyDetailValidate.innerHTML = "";
+      bodyDetailValidate.innerHTML = '';
       //Los elementos pertenecientes al prestamo, los agrego en la tabla para validar su salida.
       previewElements.forEach((el) => {
-        let tr = document.createElement("tr");
-        let tdCodigo = document.createElement("td");
-        let tdNombre = document.createElement("td");
-        let tdCantidad = document.createElement("td");
-        let tdTipoElemento = document.createElement("td");
-        let tdAcciones = document.createElement("td");
-        tdAcciones.setAttribute("class", "idAccionesPreviewElements");
+        let tr = document.createElement('tr');
+        let tdCodigo = document.createElement('td');
+        let tdNombre = document.createElement('td');
+        let tdCantidad = document.createElement('td');
+        let tdTipoElemento = document.createElement('td');
+        let tdAcciones = document.createElement('td');
+        tdAcciones.setAttribute('class', 'idAccionesPreviewElements');
         // Input checkbox
-        let label = document.createElement("label");
-        let span = document.createElement("span");
-        let input = document.createElement("input");
+        let label = document.createElement('label');
+        let span = document.createElement('span');
+        let input = document.createElement('input');
 
         //Input agregar cantidad.
-        let inputCantidad = document.createElement("input");
-        inputCantidad.type = "number";
-        inputCantidad.setAttribute("min", 0);
+        let inputCantidad = document.createElement('input');
+        inputCantidad.type = 'number';
+        inputCantidad.setAttribute('min', 0);
         inputCantidad.dataset.codigo = el.codigo;
         inputCantidad.dataset.tipoElemento = el.nombreTipoElemento;
         inputCantidad.dataset.nombreElemento = el.nombre;
         inputCantidad.dataset.cantidadSalida = el.cantidadSolicitada;
         inputCantidad.disabled = true;
-        inputCantidad.classList.add("input-cantidad");
-        input.type = "checkbox";
-        input.classList.add("filled-in");
-        input.classList.add("inputValidate");
+        inputCantidad.classList.add('input-cantidad');
+        input.type = 'checkbox';
+        input.classList.add('filled-in');
+        input.classList.add('inputValidate');
 
         input.dataset.codigo = el.codigo;
         input.dataset.tipoElemento = el.nombreTipoElemento;
@@ -617,15 +609,15 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         label.appendChild(input);
         label.appendChild(span);
         tdAcciones.appendChild(label);
-        if (el.nombreTipoElemento === "Consumible") {
+        if (el.nombreTipoElemento === 'Consumible') {
           tdAcciones.appendChild(inputCantidad);
         }
 
         tr.appendChild(tdAcciones);
       });
 
-      const inputValidate = document.querySelectorAll(".inputValidate");
-      checkBoxValidate.addEventListener("change", (e) => {
+      const inputValidate = document.querySelectorAll('.inputValidate');
+      checkBoxValidate.addEventListener('change', (e) => {
         e.stopPropagation();
         e.preventDefault();
 
@@ -654,14 +646,14 @@ tbodyReservaConsult.addEventListener("click", (event) => {
             const cod = intp.dataset.codigo;
             const cantidad = intp.dataset.cantidadSalida;
             const nombreElemento = intp.dataset.nombreElemento;
-            if (tipo === "Consumible" && !noselectedConsumibles.includes(cod)) {
+            if (tipo === 'Consumible' && !noselectedConsumibles.includes(cod)) {
               noselectedConsumibles.push({
                 cod: cod,
                 nombreElemento: nombreElemento,
                 cantidad: cantidad,
               });
             }
-            if (tipo === "Devolutivo" && !noselectedDevolutivos.includes(cod)) {
+            if (tipo === 'Devolutivo' && !noselectedDevolutivos.includes(cod)) {
               // la cantidad en devolutivos no creo que lo necesitemos
               noselectedDevolutivos.push({
                 cod: cod,
@@ -674,39 +666,35 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       }
 
       inputValidate.forEach((input) => {
-        const row = input.closest("tr");
-        const inputCantidad = row.querySelector(".input-cantidad");
+        const row = input.closest('tr');
+        const inputCantidad = row.querySelector('.input-cantidad');
         const maxCantidad = parseInt(input.dataset.cantidadSalida);
         const tipo = input.dataset.tipoElemento;
 
         if (inputCantidad) {
-          inputCantidad.addEventListener("input", (e) => {
+          inputCantidad.addEventListener('input', (e) => {
             const val = parseInt(e.target.value);
             if (isNaN(val) || val <= 0 || val > maxCantidad) {
-              e.target.value = "";
+              e.target.value = '';
               input.checked = false;
               inputCantidad.disabled = true;
-              initAlert(
-                `Ingrese una cantidad entre 1 y ${maxCantidad}`,
-                "info",
-                toastOptions
-              );
+              initAlert(`Ingrese una cantidad entre 1 y ${maxCantidad}`, 'info', toastOptions);
               return;
             }
             addElementsToArray(input, val);
           });
         }
 
-        input.addEventListener("change", (e) => {
+        input.addEventListener('change', (e) => {
           const checked = e.target.checked;
 
-          if (tipo === "Consumible") {
+          if (tipo === 'Consumible') {
             if (inputCantidad) inputCantidad.disabled = !checked;
-            if (!checked) inputCantidad.value = "";
+            if (!checked) inputCantidad.value = '';
             if (!checked) addElementsToArray(input);
           }
 
-          if (tipo === "Devolutivo") {
+          if (tipo === 'Devolutivo') {
             addElementsToArray(input);
           }
 
@@ -717,16 +705,16 @@ tbodyReservaConsult.addEventListener("click", (event) => {
       // //Variable para visualizar los elementos cuando se ha validado el prestamo
       let elementosPreviewConsu = [];
       let elementosPreviewDev = [];
-      let dataTr = event.target.closest("tr");
+      let dataTr = event.target.closest('tr');
       //Estado por validar
       let estadoNew = dataTr.children[2];
       let tdAcciones = dataTr.children[4];
 
-      const previewBtnValidate = document.querySelector("#previewBtnValidate");
-      const radioYes = document.querySelector("#radioYes");
-      const radioNo = document.querySelector("#radioNo");
+      const previewBtnValidate = document.querySelector('#previewBtnValidate');
+      const radioYes = document.querySelector('#radioYes');
+      const radioNo = document.querySelector('#radioNo');
       //Cuando el usuario pase al siguiente paso, este valida todo
-      nextBtnValidate.addEventListener("click", (e) => {
+      nextBtnValidate.addEventListener('click', (e) => {
         resetModalValidate(false);
         addElementsNoSelected(inputValidate);
 
@@ -744,7 +732,7 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         elementosPreviewDev = validateReserva.elementosSalida.elmDevolutivos;
       });
 
-      previewBtnValidate.addEventListener("click", (e) => {
+      previewBtnValidate.addEventListener('click', (e) => {
         e.stopPropagation();
         e.preventDefault();
         resetModalValidate(true);
@@ -752,23 +740,33 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
       // No tiene ni punto ni asterisco porque lo llamo x el nombre
       const textAreaObsInput = document.querySelector('#modalValidate #inputObservacionValidate');
-      const radioValidatePrestamo = document.querySelectorAll('#modalValidate input[name="radioValidate"]');
+      const radioValidatePrestamo = document.querySelectorAll(
+        '#modalValidate input[name="radioValidate"]'
+      );
       radioValidatePrestamo.forEach((rvp) => {
         rvp.addEventListener('change', (e) => {
           e.stopPropagation();
-          if (e.target.value === "yes") {
-            setObservacion({ baseText: "Observación", selector: observacionesLabel, isRequired: true });
+          if (e.target.value === 'yes') {
+            setObservacion({
+              baseText: 'Observación',
+              selector: observacionesLabel,
+              isRequired: true,
+            });
             textAreaObsInput.readOnly = false;
           } else {
-            setObservacion({ baseText: "Observación", selector: observacionesLabel, isRequired: false });
-            textAreaObsInput.value = "";
+            setObservacion({
+              baseText: 'Observación',
+              selector: observacionesLabel,
+              isRequired: false,
+            });
+            textAreaObsInput.value = '';
             textAreaObsInput.readOnly = true;
           }
-        })
+        });
       });
 
-      const formValidate = document.querySelector("#formValidate");
-      formValidate.addEventListener("submit", async (e) => {
+      const formValidate = document.querySelector('#formValidate');
+      formValidate.addEventListener('submit', async (e) => {
         e.stopPropagation();
         e.preventDefault();
 
@@ -778,19 +776,17 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         let validate = Object.values(valuesForm);
 
         // Valido que se haya seleccionado una de las opciones (Si o no).
-        if (validate[0].trim() === "") {
-          initAlert("Seleccione una de las opciones (SI o No)", "info", toastOptions);
+        if (validate[0].trim() === '') {
+          initAlert('Seleccione una de las opciones (SI o No)', 'info', toastOptions);
           return;
         }
         // Valido que se haya seleccionado la opción si y que el campo observación (Obligatorio) tenga información.
-        if (valuesForm.radioValidate === "yes" && valuesForm.textarea1.trim() === "") {
-          initAlert("La observación es requerida", "info", toastOptions);
+        if (valuesForm.radioValidate === 'yes' && valuesForm.textarea1.trim() === '') {
+          initAlert('La observación es requerida', 'info', toastOptions);
           return;
         }
 
-        let observacion = !valuesForm.textarea1
-          ? ""
-          : valuesForm.textarea1.trim();
+        let observacion = !valuesForm.textarea1 ? '' : valuesForm.textarea1.trim();
 
         // Aplico spreead para traer las propiedades previas del objeto y adiciono la observación.
         validateReserva = {
@@ -801,32 +797,29 @@ tbodyReservaConsult.addEventListener("click", (event) => {
         // Cierro el modal para mostrar el otro de pre confirmación..
         modalValidate.close();
 
-        let textConfirm = "";
+        let textConfirm = '';
         textConfirm += `Consumibles:\n${elementosPreviewConsu
-          .map(
-            (el) =>
-              `Código: ${el.cod} Nombre: ${el.nombre} Cantidad: ${el.cantidadSalida}`
-          )
-          .join("\n")}\n`;
+          .map((el) => `Código: ${el.cod} Nombre: ${el.nombre} Cantidad: ${el.cantidadSalida}`)
+          .join('\n')}\n`;
 
         textConfirm += `Devolutivos:\n${elementosPreviewDev
           .map((el) => `Código: ${el.cod} Nombre: ${el.nombre}`)
-          .join("\n")}`;
+          .join('\n')}`;
 
         mostrarConfirmacion(
           `Salida elementos`,
           `¿Deseas dar salida a estos elementos? \n${textConfirm}`,
           async (responseSalida) => {
             if (!responseSalida) {
-              initAlert("Proceso cancelado", "warning", tooltipOptions);
+              initAlert('Proceso cancelado', 'warning', tooltipOptions);
               modalValidate.close();
 
               // Esto se repite, lo puedo modificar haciendo no una función sino cerrando el modal usando la función close modal, para ello debo de cambiar la forma de enviar los parámetros, lo ideal, enviarlos mediante objeto.
-              BodydetailReserva.innerHTML = "";
+              BodydetailReserva.innerHTML = '';
               checkBoxValidate.checked = false;
 
-              previewBtnValidate.style.display = "none";
-              nextBtnValidate.style.display = "none";
+              previewBtnValidate.style.display = 'none';
+              nextBtnValidate.style.display = 'none';
               resetModalValidate(true);
               resetDataModal();
 
@@ -835,21 +828,21 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
             try {
               const responseValidate = await sendData(
-                "Modules/reservaPrestamos/controller/reservaPrestamosController.php",
-                "POST",
-                "validateLoan",
+                'Modules/reservaPrestamos/controller/reservaPrestamosController.php',
+                'POST',
+                'validateLoan',
                 validateReserva
               );
 
               //  Acá cae el mensaje de "no tienes permisos para realizar está acción."
               if (!responseValidate.status) {
-                initAlert(responseValidate.message, "error", toastOptions);
+                initAlert(responseValidate.message, 'error', toastOptions);
                 return;
               }
 
               if (responseValidate.status) {
-                estadoNew.textContent = "Validado";
-                estadoNew.style.color = "green";
+                estadoNew.textContent = 'Validado';
+                estadoNew.style.color = 'green';
 
                 let btnValidate = document.querySelector(
                   `#tbodyReservaConsult tr td [data-validate='${validateReserva.codigoReserva}']`
@@ -859,34 +852,31 @@ tbodyReservaConsult.addEventListener("click", (event) => {
                   renderReservas({ page: currentPage, type: valueSelect });
                   initAlert(
                     `Prestamo validado ${validateReserva.codigoReserva}`,
-                    "success",
+                    'success',
                     toastOptions
                   );
-                  btnValidate.style.display = "none";
+                  btnValidate.style.display = 'none';
                   modalValidate.close();
                 }
 
-                let btnEnd = document.createElement("button");
+                let btnEnd = document.createElement('button');
                 let iFinalizar = createI();
-                iFinalizar.innerText = "swap_horiz";
+                iFinalizar.innerText = 'swap_horiz';
                 //Este bloque de codigo se repite Más arriba, puedo buscar una forma para refactorizar.
                 addClassItem(btnEnd, {
-                  btn: "btn",
-                  color: "red lighten-1",
-                  wavesEffect: "waves-effect",
-                  wavesLight: "waves-light",
-                  btnSmall: "btn-small",
+                  btn: 'btn',
+                  color: 'red lighten-1',
+                  wavesEffect: 'waves-effect',
+                  wavesLight: 'waves-light',
+                  btnSmall: 'btn-small',
                 });
                 btnEnd.append(iFinalizar);
-                btnEnd.setAttribute(
-                  "data-end",
-                  `${validateReserva.codigoReserva}`
-                );
+                btnEnd.setAttribute('data-end', `${validateReserva.codigoReserva}`);
                 tdAcciones.appendChild(btnEnd);
               }
             } catch (error) {
               console.log(error);
-              initAlert(`${error.message}`, "error", toastOptions);
+              initAlert(`${error.message}`, 'error', toastOptions);
             }
           }
         );
@@ -900,19 +890,26 @@ tbodyReservaConsult.addEventListener("click", (event) => {
   radioCancel.forEach((rlc) => {
     rlc.addEventListener('change', (e) => {
       e.stopPropagation();
-      if (e.target.value === "off") {
+      if (e.target.value === 'off') {
         inputObservacionCancel.readOnly = true;
-        inputObservacionCancel.value = "";
-        setObservacion({ baseText: "Observación", selector: observacionesLabelCancel, isRequired: false });
+        inputObservacionCancel.value = '';
+        setObservacion({
+          baseText: 'Observación',
+          selector: observacionesLabelCancel,
+          isRequired: false,
+        });
       } else {
         inputObservacionCancel.readOnly = false;
-        setObservacion({ baseText: "Observación", selector: observacionesLabelCancel, isRequired: true });
+        setObservacion({
+          baseText: 'Observación',
+          selector: observacionesLabelCancel,
+          isRequired: true,
+        });
       }
-    })
+    });
   });
-  const btnCancel = event.target.closest("button[data-cancel]");
+  const btnCancel = event.target.closest('button[data-cancel]');
   if (btnCancel) {
-
     // Borro el proceso de ejecución si ya existe uno creado.
     if (cancelarProceso) {
       formCancel.removeEventListener('submit', cancelarProceso);
@@ -923,19 +920,26 @@ tbodyReservaConsult.addEventListener("click", (event) => {
 
     mostrarConfirmacion(
       `Cancelar reserva # ${dataCodigo}`,
-      "¿Deseas cancelar la reserva?",
+      '¿Deseas cancelar la reserva?',
       (responseModal) => {
         try {
           if (!responseModal) {
             return;
           }
 
-          cancelarProceso = cancelarProcesoPreview(dataCodigo, modalCancel, toastOptions, sendData, initAlert, renderReservas, currentPage, valueSelect);
+          cancelarProceso = cancelarProcesoPreview(
+            dataCodigo,
+            modalCancel,
+            toastOptions,
+            sendData,
+            initAlert,
+            renderReservas,
+            currentPage,
+            valueSelect
+          );
 
           // Span para insertar el titulo del proceso.
-          const modalTitleCancel = document.querySelector(
-            "#modalCancel #modalTitleCancel"
-          );
+          const modalTitleCancel = document.querySelector('#modalCancel #modalTitleCancel');
           modalTitleCancel.innerText = `Cancelar reserva # ${dataCodigo}`;
           modalCancel.open();
 
@@ -996,16 +1000,13 @@ tbodyReservaConsult.addEventListener("click", (event) => {
           //   renderReservas({ page: currentPage, type: valueSelect });
           // });
 
-
           formCancel.addEventListener('submit', cancelarProceso);
-
         } catch (error) {
           console.warn(`Error de procedimiento ${error}`);
         }
       }
     );
   }
-
 });
 
 /**
@@ -1019,7 +1020,7 @@ closeModal(modalValidate, btnCloseValidte, () => {
       resetModalValidate(true);
 
       // Limpiar radios
-      document.querySelectorAll('#modalValidate input[name="radioValidate"]').forEach(radio => {
+      document.querySelectorAll('#modalValidate input[name="radioValidate"]').forEach((radio) => {
         radio.checked = false;
       });
 
@@ -1032,30 +1033,27 @@ closeModal(modalValidate, btnCloseValidte, () => {
       checkBoxValidate.checked = false;
 
       // Limpiar la tabla
-      BodydetailReserva.innerHTML = "";
-    }
+      BodydetailReserva.innerHTML = '';
+    },
   });
 });
 
 // Acciones del cancelar el prestamo luego de que se cierre el modal
 closeModal(modalCancel, btnCloseCancel, () => {
   // Limpiar radios
-  document
-    .querySelectorAll('#modalCancel input[name="radioCancel"]')
-    .forEach((radio) => {
-      radio.checked = false;
-    });
+  document.querySelectorAll('#modalCancel input[name="radioCancel"]').forEach((radio) => {
+    radio.checked = false;
+  });
 
   // Limpiar textarea y deshabilitar
-  const observacion = document.querySelector("#inputObservacionCancel");
-  observacion.value = "";
+  const observacion = document.querySelector('#inputObservacionCancel');
+  observacion.value = '';
   observacion.readOnly = true;
 
   if (cancelarProceso) {
-    formCancel.removeEventListener("submit", cancelarProceso);
+    formCancel.removeEventListener('submit', cancelarProceso);
     cancelarProceso = null;
   }
-
 });
 
 // Acciones de finalizar el prestamo luego de que se cierre el modal.
@@ -1065,17 +1063,16 @@ closeModal(modalSalida, closeModalBtnSalida, () => {
     formSalida.removeEventListener(finalizarPrestamo);
     finalizarPrestamo = null;
   }
-
 });
 
 /**
  * Paginación de los prestamos.
  *
  */
-const previewReserva = document.querySelector("#previewReservas");
-const nextReserva = document.querySelector("#nextReservas");
+const previewReserva = document.querySelector('#previewReservas');
+const nextReserva = document.querySelector('#nextReservas');
 
-previewReserva.addEventListener("click", (e) => {
+previewReserva.addEventListener('click', (e) => {
   e.stopPropagation();
   e.preventDefault();
   //Si es 1, el sale del evento y no ejecuta Más.
@@ -1087,14 +1084,13 @@ previewReserva.addEventListener("click", (e) => {
   // renderReservas({page:currentPage, type:valueSelect});
 });
 
-nextReserva.addEventListener("click", (e) => {
+nextReserva.addEventListener('click', (e) => {
   e.stopPropagation();
   e.preventDefault();
 
   //Si el numero de Páginas enviado es mayor o igual al numero de paginas que tiene los registros, no haga petición.
   if (pagesReserva >= pages) return;
   currentPage = currentPage + 1;
-
 
   renderReservas({ page: currentPage, type: valueSelect });
 
@@ -1114,24 +1110,21 @@ filtroTipoReserva.addEventListener('change', (e) => {
     currentPage = 1;
   }
   renderReservas({ page: currentPage, type: mapTypeLoan });
-
-
 });
 
-
 closeModal(modalDetail, btnCloseElements);
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   renderReservas();
   // Inicializar select
   M.FormSelect.init(filtroTipoReserva);
 
   // Inicializar modal, inicializó el modal confirmación.
-  const modals = document.querySelectorAll(".modal");
+  const modals = document.querySelectorAll('.modal');
   M.Modal.init(modals);
 
-  const helpEstados = document.querySelector("#helpEstados");
-  const helpPrestamos = document.querySelector("#helpPrestamos");
-  const helpFechaRegistro = document.querySelector("#helpFechaRegistro");
+  const helpEstados = document.querySelector('#helpEstados');
+  const helpPrestamos = document.querySelector('#helpPrestamos');
+  const helpFechaRegistro = document.querySelector('#helpFechaRegistro');
   initTooltip(
     helpEstados,
     tooltipOptions,
@@ -1141,7 +1134,7 @@ document.addEventListener("DOMContentLoaded", () => {
     - Finalizado: Los elementos han sido devueltos al almacén
     - Cancelado: Se cancelo por el usuario o el sistema ya que no se dió salida en la fecha esperada.
     `,
-    "top"
+    'top'
   );
   initTooltip(
     helpPrestamos,
@@ -1149,14 +1142,12 @@ document.addEventListener("DOMContentLoaded", () => {
     `Tipos de reservas:
 - Reserva Inmediata: Entrega inmediata al registrar el préstamo.
 - Reserva Previa: Elementos apartados para fecha futura.`,
-    "top"
+    'top'
   );
   initTooltip(
     helpFechaRegistro,
     tooltipOptions,
     `Fecha del proceso agregado a la base de datos`,
-    "top"
+    'top'
   );
-
-
 });

@@ -40,3 +40,6 @@ Listado de TODOS generales y específicos por cada módulo.
 - **Módulo areas**
 - [ ] Implementar feature de eliminar item, está el de habilitar e inhabilitar pero no eliminar registro.
 - [ ] Modificar color de fondo del modal
+- [ ] Refactorizar el javascript y transformar todo de ajax a fetch
+- [ ] Implementar paginado en front y en back
+- [ ] Implementar rastro de miga

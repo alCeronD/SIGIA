@@ -2,8 +2,6 @@
 
 //Este archivo se va a encargar de extraer los nombres de los documentos que tenemos en ciertas carpetas para poder traer sus respectivos assets.
 
-use function PHPSTORM_META\type;
-
 class ScanFiles
 {
 
@@ -23,39 +21,37 @@ class ScanFiles
 
         if (!is_string($module)) return;
 
-        $relativePathAssets = __DIR__ . "/../Modules/{$module}/Css/";
-        $fileAssets = glob($relativePathAssets . '*', GLOB_MARK);
+        $relativePathAssetsCss = __DIR__ . "/../Modules/{$module}/Css/";
+        $relativePathAssetsJs = __DIR__ . "/../Modules/{$module}/Js/";
+        $allFileAssets['css'] = glob($relativePathAssetsCss . "*", GLOB_MARK);
+        $allFileAssets['js'] = glob($relativePathAssetsJs . "*", GLOB_MARK);
+        $fileAssets = glob($relativePathAssetsCss . '*', GLOB_MARK);
         foreach ($fileAssets as $key => $value) {
             $filesAssets = basename($value);
-
-
             if (str_contains($filesAssets, '.css')) {
                 // guarde las urls en donde la key sea el nombre del modulo.
                 $this->nameAssetsFiles[$module] = $fileAssets[$key];
             }
         }
-    }
 
-    //Funcion que sirve para crear arreglo en donde puedo guardar los archivos css según su modulo.
-    public function addUrl(String $module = 'Dashboard')
-    {
+        $pruebaAssetsFiles = [];
+        // se cicla por la primera unidad que es la clave css y la clave js
+        foreach ($allFileAssets as $key => $value) {
+            // se ciclan las rutas.
+            foreach ($value as $key2 => $value2) {
+                $fileAssets = basename($value2);
+                $finalRoute = strstr($value2, 'Modules/');
 
-        //Se escanea los assets.
-        $this->mapAssets($module);
-
-        //Traigame los nombres de los archivos de esa ruta y guardelo en un arreglo.
-        $nameFiles = [];
-        foreach ($this->nameAssetsFiles as $key => $value) {
-            $rutaCarpeta = dirname($value) . '/';
-            $ruta = glob($rutaCarpeta . '/', GLOB_MARK);
-            $nameFiles[$module] = array_diff(scandir($rutaCarpeta), array('.', '..'));
-            $nameFiles[$module] = array_combine($nameFiles[$key], $nameFiles[$key]);
+                if (str_contains($fileAssets, '.css')) {
+                    $pruebaAssetsFiles['css'][$module][$fileAssets] = $finalRoute;
+                }
+                // Solo importamos el archivo que contenga el nombredelmodulo.js
+                if (str_contains($fileAssets, '.js') && str_contains($fileAssets, $module)) {
+                    $pruebaAssetsFiles['js'][$module][$fileAssets] = $finalRoute;
+                }
+            }
         }
 
-        $path = "Modules/$module/Css/";
-        $cssFile = reset($nameFiles[$module]);
-        $cssFile = key($nameFiles[$module]);
-
-        return $path . $cssFile;
+        return $pruebaAssetsFiles;
     }
 }

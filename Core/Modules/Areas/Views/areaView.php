@@ -63,4 +63,8 @@
 </div>
 
 <!-- En la vista importar si o si el archivo específico a cada modulo -->
-<script type="module" src="../public/assets/js/Areas/Areas.js"></script>
+
+<?php
+foreach ($_SESSION['js'] as $key => $url) { ?>
+    <script type="module" src="<?php echo htmlspecialchars("/../../Core/" . $url); ?>"></script>
+<?php } ?>
