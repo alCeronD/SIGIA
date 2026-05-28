@@ -15,7 +15,7 @@ class GeneralCrudController extends ConfigGeneralCrud
 
   public function renderGeneralView()
   {
-    return include_once __DIR__ . '/../view/generalView.php';
+    return include_once __DIR__ . '/../View/generalView.php';
   }
 
   public function selectData()

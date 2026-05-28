@@ -1,4 +1,4 @@
-/* Resolución para mobile 375x667 
+/* Resolución para mobile 375x667
 */
 
 .content {
@@ -60,12 +60,15 @@
 .div1 {
   grid-area: div1;
 }
+
 .div2 {
   grid-area: div2;
 }
+
 .div3 {
   grid-area: div3;
 }
+
 .div4 {
   grid-area: div4;
 }
@@ -133,11 +136,13 @@
 
 /* Tamaño superior a 768px */
 @media (min-width: 768px) {
+
   /* Estructura general de las cards */
   .option-card i.material-icons {
     font-size: 33pt;
     /* margin-bottom: 0.8rem; */
   }
+
   .option-card h5 {
     font-size: 2rem;
     margin: 0.5rem 0;

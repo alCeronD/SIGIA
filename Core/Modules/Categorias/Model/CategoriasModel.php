@@ -83,10 +83,10 @@ class CategoriasModel
 
         $categorias = [];
 
-        if ($result && $result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $categorias[] = $row;
-            }
+        $rows = $result->fetchAll(PDO::FETCH_ASSOC);
+
+        if (count($rows) > 0) {
+            return $categorias;
         }
 
         return $categorias;

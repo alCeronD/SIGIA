@@ -1,6 +1,7 @@
 <?php
 include_once __DIR__ . '/../../../Config/Conn.php';
-include_once __DIR__ . '/Autoload.php';
+include_once __DIR__ . '/../../../Helpers/Const.php';
+include_once BASE_URL . '/Autoload.php';
 
 class CategoriasController
 {
@@ -24,7 +25,7 @@ class CategoriasController
 
     public function consultCategoriasView()
     {
-        validatePermisos('categorias', 'consultCategoriasView');
+        // validatePermisos('categorias', 'consultCategoriasView');
         $modeloCategorias = new CategoriasModel($this->conn);
         $_SESSION['css'] = 'categorias/categorias.css';
         $categorias = $modeloCategorias->search();
@@ -93,7 +94,7 @@ class CategoriasController
 
                 // header('Location: ' . Router::createRoute('categorias', 'categorias', 'consultCategoriasView', false, 'dashboard'));
                 // header('Location: ' . Router::createRoute('categorias', 'categorias', 'consultCategoriasView', false, 'dashboard'));
-                Redirect::fast(Router::createRoute('Categorias', 'Categorias','consultCategoriasView', false,'dashboard'));
+                Rect::fast(Router::createRoute('Categorias', 'Categorias', 'consultCategoriasView', false, 'dashboard'));
 
                 exit();
             }
@@ -259,4 +260,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
     }
 }
-
