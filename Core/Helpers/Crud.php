@@ -177,7 +177,6 @@ abstract class Crud
     $select = explode(' ', $this->sql);
 
     $this->stmt = $this->conn->prepare($this->sql);
-
     #Extraigo la informacion
     $data = isset($datos['data']) ? ($datos['data']) : [];
 

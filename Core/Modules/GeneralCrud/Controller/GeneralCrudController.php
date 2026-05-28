@@ -63,20 +63,14 @@ class GeneralCrudController extends ConfigGeneralCrud
 
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
-
-    $gc_nombre = (string) $data['gc_nombre'];
-    $gc_descrip = (string) $data['gc_descrip'];
-
+    $data['gc_status'] = 1;
     $dataSql = [];
-
     $dataSql['data'] = $data;
 
     $this->modelGeneralCrud->insert($data);
     $resultInsert = $this->modelGeneralCrud->prepareSql($dataSql)->get();
-    var_dump($this->modelGeneralCrud->showSql());
-    var_dump($resultInsert);
-    // if (!$resultInsert) Response::fail('Error al ejecutar el procedimiento', [$resultInsert]);
-    // Response::success('Registro exitoso', [$resultInsert]);
+    if (!$resultInsert) Response::fail('Error al ejecutar el procedimiento', [$resultInsert]);
+    Response::success('Registro exitoso', [$resultInsert]);
   }
 
   public function update()
