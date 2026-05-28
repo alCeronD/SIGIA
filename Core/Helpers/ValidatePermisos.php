@@ -19,7 +19,7 @@ function validatePermisos(String $modulo, String $funcion)
     if (session_status() === PHP_SESSION_NONE || !isset($_SESSION['usuario'])) {
         if ($modulo === 'login') return;
 
-        if (isAjaxRequest()) {
+        if (UtilsFunctions::ajaxGeneral()) {
             header("Content-Type: application/json");
 
             Response::fail("Sesión no iniciada o expirada.", $dataResponse);
@@ -39,7 +39,7 @@ function validatePermisos(String $modulo, String $funcion)
     if (session_status() === PHP_SESSION_NONE || !isset($_SESSION['usuario'])) {
         if ($modulo === 'login') return;
 
-        if (isAjaxRequest()) {
+        if (UtilsFunctions::ajaxGeneral()) {
             Response::fail("Sesión no iniciada o expirada.");
         } else {
             Redirect::fast(Router::createRoute('Login', 'Login', 'index', false, 'index'));
@@ -51,28 +51,17 @@ function validatePermisos(String $modulo, String $funcion)
     $isValidate = $objPermisos->validateRolFuncion($rolId, $idFuncion);
 
     if (!$isValidate) {
-        if (isAjaxRequest()) {
+        if (UtilsFunctions::ajaxGeneral()) {
 
             // TODO: re hacer el response de la función fail y success.
             http_response_code(403);
-            echo json_encode($dataResponse,JSON_PRETTY_PRINT);
+            echo json_encode($dataResponse, JSON_PRETTY_PRINT);
             exit();
 
             // fail("No tienes permisos para esta acción.",$dataResponse);
         } else {
-            redirect(Router::createRoute('Login', 'Login', 'index', false, 'index'));
+            Rect::fast(Router::createRoute('Login', 'Login', 'index', false, 'index'));
         }
         exit();
     }
-}
-
-/**
- * Summary of isAjaxRequest - Sirve para validar que la petición enviada es mediante HTTP fue enviada por ajax.
- * Esto verifica que la cabecera enviada es una cabecera de una librería de javascript, en este caso, ajax o fetch.
- * Se transforma a minusculas porque es el estandar usado de XMLHttpRequest usado con fetch de javascript o ajax.
- * @return bool
- */
-function isAjaxRequest() {
-    return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-           strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 }

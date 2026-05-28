@@ -87,7 +87,7 @@ class LoginController
             echo json_encode([
                 'success' => true,
                 'message' => 'Conectado',
-                'url' => '/Core/dashboard.php?modulo=Dashboard&controlador=Dashboard&function=dashboard'
+                'url' => CR_ROUTE_DASHBOARD_LOGIN
             ]);
         } catch (Exception $e) {
             echo json_encode([
@@ -117,9 +117,6 @@ class LoginController
         }
 
         Rect::redirectTo(Router::createRoute('Login', 'Login', 'index', false, 'dashboard'));
-
-
-
         exit();
     }
 }
