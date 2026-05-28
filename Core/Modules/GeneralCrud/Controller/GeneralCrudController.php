@@ -21,17 +21,18 @@ class GeneralCrudController extends ConfigGeneralCrud
   public function selectData()
   {
     header(CONTENT_TYPE);
-    $paginaActual = $_GET[GC_PAGE] ?? 1;
+    $paginaActual = (int) $_GET[GC_PAGE] ?? 1;
+    $limit =  $_GET[GC_LIMIT] ?? LIMIT;
 
     // Cantidad de paginas
-    $resultCount = $this->modelGeneralCrud->count()->prepareSql()->get();
+    $resultCount = $this->modelGeneralCrud->getCount()->prepareSql()->get();
     // lógica paginado
-    $resultPaginate = UtilsFunctions::executePaginate($resultCount, LIMIT, $paginaActual);
+    $resultPaginate = UtilsFunctions::executePaginate($resultCount, $limit, $paginaActual);
     $dataSql = [];
 
     $dataSql['data'] = [
-      'limit'           => LIMIT,
-      'resultPaginated' => $resultPaginate[GC_OFFSET]
+      'limit'           => $limit,
+      'offset' => $resultPaginate[GC_OFFSET]
     ];
 
     $this->modelGeneralCrud->select()->orderBy('', true)->limit()->offset();
@@ -41,7 +42,7 @@ class GeneralCrudController extends ConfigGeneralCrud
     if (UtilsFunctions::validateContentString($this->modelGeneralCrud->showSql(), 'OFFSET') && UtilsFunctions::validateContentString($this->modelGeneralCrud->showSql(), 'LIMIT')) {
       $response =  [
         GC_ITEMS => $resultSelect,
-        GC_LIMIT => LIMIT,
+        GC_LIMIT => (int) $limit,
         GC_CANTIDAD_PAGINAS => $resultPaginate[GC_TOTAL_PAGINAS],
         GC_TOTAL_REGISTROS => $resultCount,
         GC_PAGINA_ACTUAL => $paginaActual
@@ -72,8 +73,10 @@ class GeneralCrudController extends ConfigGeneralCrud
 
     $this->modelGeneralCrud->insert($data);
     $resultInsert = $this->modelGeneralCrud->prepareSql($dataSql)->get();
-    if (!$resultInsert) Response::fail('Error al ejecutar el procedimiento', [$resultInsert]);
-    Response::success('Registro exitoso', [$resultInsert]);
+    var_dump($this->modelGeneralCrud->showSql());
+    var_dump($resultInsert);
+    // if (!$resultInsert) Response::fail('Error al ejecutar el procedimiento', [$resultInsert]);
+    // Response::success('Registro exitoso', [$resultInsert]);
   }
 
   public function update()

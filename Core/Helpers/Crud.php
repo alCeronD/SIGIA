@@ -23,10 +23,7 @@ abstract class Crud
   protected $table; # Nombre de la tabla, hereda su valor desde el modelo
   protected $campos; # Arreglo que contiene campos de la tabla, hereda su valor desde el modelo
   protected $id; # primary key de la tabla, hereda su valor desde el modelo
-  protected $typeCampos; # arreglo que tiene los tipos de datos de la tabla, su orden es igual orden de la tabla
-  protected $typedCasted; # String que me devuelve los tipos de datos casteados segun su estructura.
   protected $stmt; # en donde se guarda el mysqliprepared
-  protected $typeId; # tipo de dato del primary key
   protected $operators = [
     '=',
     '!=',
@@ -63,19 +60,11 @@ abstract class Crud
   {
     $string = "";
 
-
-    /**
-     * array(2){
-     * 	["gc_nombre"]=>string(6)"nombre"
-     * ["gc_descrip"]=>string(11)"descripcion"
-     * }
-     */
-
     // Concatenamos con signos de interrogacion para preparar la consulta.
     foreach ($datos as $key => $camp) {
       // valido que las keys esten en el modelo de las tablas;
       if (in_array($key, $this->campos)) {
-        $string .= "?" . ", ";
+        $string .= ":$key" . ", ";
       }
     }
 
@@ -94,7 +83,7 @@ abstract class Crud
     foreach ($datos as $key => $value) {
 
       if (in_array($key, $this->campos)) {
-        $sql .= "$key = ? ,";
+        $sql .= "$key = :{$key} ,";
       }
     }
     return trim($sql, ", ");
@@ -139,22 +128,10 @@ abstract class Crud
   {
     // necesito los datos, para validar que existen y asi validarlos, los operadores de comparacion
     if (array_key_exists($this->id, $datos)) {
-      $this->sql .= " WHERE $this->id = ?";
+      $this->sql .= " WHERE $this->id = :{$this->id}";
     }
     return $this;
   }
-
-  /**
-   * Function para devolver la cantidad de registros de una tabla
-   *
-   * @return $this
-   */
-  public function count()
-  {
-    $this->sql = "SELECT COUNT(*) FROM $this->table";
-    return $this;
-  }
-
   public function groupBy() {}
 
   /**
@@ -176,21 +153,19 @@ abstract class Crud
     if (in_array($campo, $this->campos)) {
       $campoValido = $campo;
     }
-
-
     $ASC = ($ASC) ? 'ASC' : 'DESC';
-    $this->sql .= " ORDER BY $campoValido $ASC";
+    $this->sql .= " ORDER BY {$campoValido} $ASC";
     return $this;
   }
   public function limit()
   {
-    $this->sql .= " LIMIT ?";
+    $this->sql .= " LIMIT :limit";
     return $this;
   }
 
   public function offset()
   {
-    $this->sql .= " OFFSET ?";
+    $this->sql .= " OFFSET :offset";
 
     return $this;
   }
@@ -201,22 +176,11 @@ abstract class Crud
   {
     $select = explode(' ', $this->sql);
 
-
     $this->stmt = $this->conn->prepare($this->sql);
-    $typesData = "";
-    if (substr_count($this->sql, "?") > 0) {
-      # Ejecuto el casteo de los datos.
-      $typesData = $this->castParam($datos, $this->typeCampos);
-    }
-
-
-    #Extraigo los tipos de datos
-    $types = $typesData ?? [];
-
 
     #Extraigo la informacion
-    // $data = empty($datos) ? [] : array_values($datos);
-    $data = isset($datos['data']) ? array_values($datos['data']) : [];
+    $data = isset($datos['data']) ? ($datos['data']) : [];
+
 
     // Si es un select, solamente preparamos la consulta y retornamos su resultado
     if ((strpos($this->sql, 'SELECT') === 0) && ($select[0] === "SELECT")) {
@@ -230,71 +194,30 @@ abstract class Crud
       // validar si el string contiene o WHERE u OFFSET O LIMIT
       $hasOffset = str_contains($this->sql, "OFFSET");
       $hasLimit = str_contains($this->sql, "LIMIT");
+
       # Validar si requiere paginación
       if ($hasOffset && $hasLimit) {
-        $this->stmt->bind_param($types, ...$data);
+        foreach ($data as $key => $value) {
+          $this->stmt->bindValue(":{$key}", $value, PDO::PARAM_INT);
+        }
       }
-
 
       return $this;
     } else {
 
+      foreach ($data as $key => $value) {
+        $marcador = ":" . $key;
+        if (str_contains($this->sql, $marcador)) {
+          $this->stmt->bindValue($marcador, $value);
+        }
+      }
 
-      # validamos los parámetros con el tipo de dato
-      $this->stmt->bind_param($types, ...$data);
       return $this;
     }
 
     return $this;
   }
-  /**
-   * function para castear los tipos de datos de las tablas y devolver un string con el tipo de dato: ejemplo: [s,s,s,i] = devolver un sssi
-   *
-   * @param array $datos
-   * @return string;
-   */
-  public function castParam(array $datos = [], array $tiposDatos = [])
-  {
-    # variable en donde vamos a adjuntar poco a poco la cantidad de tipos de datos basados en la consulta
-    $finalTypes = "";
 
-    # verificar primero cuantos argumentos hay
-    $cantidadParametros = substr_count($this->sql, "?");
-
-    # Retornamos el tipo del id que esta definido en el modelo
-    if (str_contains(strtoupper($this->sql), 'DELETE')) {
-      return $this->typedCasted .= $this->typeId;
-    }
-
-    # Validar si la consulta tiene un OFFSET o LIMIT
-    if (str_contains(strtoupper($this->sql), 'OFFSET') && str_contains(strtoupper($this->sql), 'LIMIT')) {
-      $this->typedCasted .= "ii";
-    }
-
-    // si la estructura tiene UPDATE,DELETE, IMPLEMENTAR EL WHERE
-    if (str_contains(strtoupper($this->sql), 'UPDATE')) {
-      foreach ($tiposDatos as $key => $value) {
-        if (isset($datos['data'][$key])) {
-          $this->typedCasted .= $tiposDatos[$key];
-        }
-      }
-    }
-
-    if (str_contains(strtoupper($this->sql), 'INSERT')) {
-      foreach ($tiposDatos as $key => $value) {
-        if (isset($datos['data'][$key])) {
-          $this->typedCasted .= $tiposDatos[$key];
-        }
-      }
-    }
-
-
-    // validar si hay un where para implementar el tipo de dato integer
-    if (str_contains(strtoupper($this->sql), 'WHERE')) {
-      $this->typedCasted .= $this->typeId;
-    }
-    return $this->typedCasted;
-  }
 
   # Obtener el resultado sql y devolverlo
   public function get()
@@ -305,28 +228,39 @@ abstract class Crud
 
       $this->stmt->execute();
 
-
       # Verificamos si es un select para solamente devolver un arreglo asociativo
       if ((strpos($this->sql, 'SELECT') === 0) && ($checkSelect[0] === "SELECT")) {
-        $result = $this->stmt->get_result();
-
         if (str_contains(strtoupper($this->sql), "COUNT")) {
-          return (int) $result->fetch_row()[0];
+          return (int) $this->stmt->fetchColumn();
         }
 
-        return $result->fetch_all(MYSQLI_ASSOC);
+        $result = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
       }
 
       if (str_contains(strtoupper($this->sql), "UPDATE")) {
-        return $this->stmt->affected_rows;
+        return $this->stmt->rowCount();
       }
       $this->sql = "";
       $this->stmt = null;
       return true;
-    } catch (\Exception $e) {
+    } catch (\PDOException $e) {
       return $e->getMessage();
     }
   }
+
+
+  /**
+   * Function para devolver la cantidad de registros de una tabla
+   *
+   * @return $this
+   */
+  public function getCount()
+  {
+    $this->sql = "SELECT COUNT(*) FROM $this->table";
+    return $this;
+  }
+
 
   public function getPrimaryKey()
   {

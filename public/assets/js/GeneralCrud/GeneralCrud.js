@@ -17,10 +17,11 @@ const addElementModal = instanceModal('#modalGeneralCrud', options);
 const btnPreview = document.createElement('button');
 const btnNext = document.createElement('button');
 const generalCrudUpdate = document.querySelector('#generalCrudUpdate');
+const limit = 10;
 let actualPage = 1;
 
 const render = async (pagina = 1) => {
-  const response = await getData(url, 'GET', { pagina: pagina }, false, {});
+  const response = await getData(url, 'GET', { pagina: pagina, limit: limit }, false, {});
   let totalPaginas = response.data.cantidadPaginas;
 
   let data = response.data.items;
