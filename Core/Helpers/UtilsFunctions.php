@@ -26,6 +26,7 @@ class UtilsFunctions
     {
         return [
             'Categorias',
+            'Areas',
             'ConfigModules',
             'Dashboard',
             'Elementos',

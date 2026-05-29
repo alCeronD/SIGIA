@@ -1,6 +1,5 @@
 <?php
 
-
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once BASE_URL . '/Autoload.php';
 require_once __DIR__ . '/../Const/ConstGeneralCrud.php';
@@ -15,6 +14,7 @@ class GeneralCrudController extends ConfigGeneralCrud
 
   public function renderGeneralView()
   {
+    Parent::createRoutes();
     return include_once __DIR__ . '/../View/generalView.php';
   }
 

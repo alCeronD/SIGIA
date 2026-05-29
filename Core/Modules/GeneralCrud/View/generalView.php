@@ -1,4 +1,5 @@
 <div class="contentGeneral contentLayout">
+
     <div class="titleArea menuTitle">
         <span id="textTitleAreas" class="textTitleSpan"><?PHP echo GC_TITLE_DEPARTAMENTO; ?></span>
         <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>"
@@ -79,4 +80,7 @@
 
 </div>
 
-<script type="module" src="../public/assets/js/GeneralCrud/GeneralCrud.js"></script>
+<?php
+foreach ($_SESSION['js'] as $key => $url) { ?>
+    <script type="module" src="<?php echo htmlspecialchars("/../../Core/" . $url); ?>"></script>
+<?php } ?>

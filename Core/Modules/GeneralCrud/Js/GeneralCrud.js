@@ -7,7 +7,7 @@ import {
   instanceModal,
   closeModal,
   options,
-} from '../utils/index.js';
+} from '../../../../public/assets/js/utils/index.js';
 const url = 'dashboard.php?modulo=GeneralCrud&controlador=GeneralCrud&function=selectData';
 const formGeneral = document.querySelector('#formGeneral');
 const tblBody = document.querySelector('#tblBodyGeneralCrud');

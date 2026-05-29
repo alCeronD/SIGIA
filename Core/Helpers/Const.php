@@ -21,7 +21,7 @@ define('CR_NO_EXISTE', 'No existe');
 define('CR_MODULO', 'modulo');
 define('CR_DASHBOARD', 'Dashboard');
 define('CR_DASHBOARD_LOWER_CASE', 'dashboard');
-
+define('CR_OFFSET', 'offset');
 
 // Urls
 define('CR_ROUTE_PERMISOS_CONTROLLER', '/../Modules/Permisos/Controller/PermisosController.php');
@@ -55,3 +55,8 @@ define('CR_AUTOLOAD', 'Autoload.php');
 
 // Msg (message)
 define('MSG_ERROR_SIN_PERMISOS', 'No tienes permisos para acceder');
+
+// variables
+define('CR_TOTAL_REGISTROS', 'totalRegistros');
+define('CR_PAGINA_ACTUAL', 'paginaActual');
+define('CR_REGISTROS', 'registros');
