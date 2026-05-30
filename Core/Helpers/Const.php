@@ -55,8 +55,13 @@ define('CR_AUTOLOAD', 'Autoload.php');
 
 // Msg (message)
 define('MSG_ERROR_SIN_PERMISOS', 'No tienes permisos para acceder');
+define('MSG_REGISTRO_ACTUALIZAOD', 'Registro actualizado correctamente');
+define('MSG_REGISTRO_CAMBIO_ESTADO', 'Cambio de estado correctamente.');
 
 // variables
 define('CR_TOTAL_REGISTROS', 'totalRegistros');
 define('CR_PAGINA_ACTUAL', 'paginaActual');
 define('CR_REGISTROS', 'registros');
+define('CR_CANTIDAD_PAGINAS', 'cantidadPaginas');
+define('CR_TOTAL_PAGINAS', 'totalPaginas');
+define('CR_DATA', 'data');

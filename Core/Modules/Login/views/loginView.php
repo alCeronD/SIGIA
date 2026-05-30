@@ -63,7 +63,7 @@ if (session_status() === PHP_SESSION_NONE) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
   <!-- JS personalizado -->
-  <script type="module" src="../public/assets/js/Login/Login.js"></script>
+  <script type="module" src="/Core/Modules/Login/Js/Login.js"></script>
 </body>
 
 </html>

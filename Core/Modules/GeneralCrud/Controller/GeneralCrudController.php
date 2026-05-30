@@ -96,7 +96,7 @@ class GeneralCrudController extends ConfigGeneralCrud
     $data[$primaryKey] = $keyData[$primaryKey];
     $dataUpdateSql[GC_DATA] = $data;
 
-    $this->modelGeneralCrud->update($data)->where($data);
+    $this->modelGeneralCrud->update($data)->where();
     $responseUpdate = $this->modelGeneralCrud->prepareSql($dataUpdateSql)->get();
 
     if ($responseUpdate) Response::success(GC_SUCCESS_UPDATE, [$responseUpdate]);
@@ -107,7 +107,7 @@ class GeneralCrudController extends ConfigGeneralCrud
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
     $deleteSql['data'] = $data;
-    $resultDelete = $this->modelGeneralCrud->delete()->where($data)->prepareSql($deleteSql)->get();
+    $resultDelete = $this->modelGeneralCrud->delete()->where()->prepareSql($deleteSql)->get();
     if ($resultDelete) {
       Response::success(GC_DELETE_SUCCESS, [$resultDelete]);
     }
@@ -135,7 +135,7 @@ class GeneralCrudController extends ConfigGeneralCrud
     #Agrego el primary key al final del arreglo para mantener la nomenclatura requerida para enviar los datos.
     $data[$primaryKey] = $keyData[$primaryKey];
     $dataUpdateSql[GC_DATA] = $data;
-    $resultChangeStatus = $this->modelGeneralCrud->update($data)->where($data)->prepareSql($dataUpdateSql)->get();
+    $resultChangeStatus = $this->modelGeneralCrud->update($data)->where()->prepareSql($dataUpdateSql)->get();
 
     if ($resultChangeStatus) Response::success(GC_SUCCESS_UPDATE, [$resultChangeStatus]);
   }

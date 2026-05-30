@@ -49,9 +49,7 @@ class UtilsFunctions
     public static function returnGetDecode()
     {
         if (ob_get_length()) ob_clean();
-
         $json = file_get_contents("php://input");
-
         $data = json_decode($json, true);
 
         return $data;
@@ -84,5 +82,22 @@ class UtilsFunctions
     public static function validateContentString(String $valor, String $key)
     {
         return str_contains(strtoupper($valor), $key);
+    }
+
+    /**
+     * Function para validar los campos y determinar cuales son obligatorios y cuales no.
+     *
+     * @param array $campos
+     * @param array $mapCapos
+     * @return void
+     */
+    public function validateCampos(array $campos = [], array $mapCapos = [])
+    {
+        foreach ($campos as $key => $value) {
+            if (in_array($key, $mapCapos)) {
+                $message = "El campo {$mapCapos} debe ser obligatorio";
+                return $message;
+            }
+        }
     }
 }

@@ -28,10 +28,10 @@ class Router
     $modulo = $_GET['modulo'] ?? $_POST['modulo'] ?? null;
     $controlador = $_GET['controlador'] ?? $_POST['controlador'] ?? null;
     $function = $_GET['function'] ?? $_POST['function'] ?? null;
-
     if (!$modulo || !$controlador || !$function) {
 
       header('Content-Type: application/json');
+
       echo json_encode(['success' => false, 'message' => "Faltan parámetros de ejecución"]);
       exit;
     }

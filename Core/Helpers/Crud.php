@@ -124,12 +124,28 @@ abstract class Crud
     $this->sql .= "UPDATE $this->table SET $valuesUpdate";
     return $this;
   }
+
+  /**
+   * Function para retornar la cadena where del mysql
+   * @param array $datos - ['columna', 'operador', 'valor'] - con esta estructura se define el where especifico.
+   * @param array $datos - [] arreglo vacio concatena con el primary key
+   * @return $this
+   */
   public function where(array $datos = [])
   {
-    // necesito los datos, para validar que existen y asi validarlos, los operadores de comparacion
-    if (array_key_exists($this->id, $datos)) {
+    if (!empty($datos)) {
+      $columna = $datos[0];
+      $operador = $datos[1];
+      $valor = $datos[2];
+
+      $this->sql .= " WHERE $columna $operador :$columna";
+    }
+
+    if (empty($datos)) {
+      // necesito los datos, para validar que existen y asi validarlos, los operadores de comparacion
       $this->sql .= " WHERE $this->id = :{$this->id}";
     }
+
     return $this;
   }
   public function groupBy() {}
@@ -170,6 +186,28 @@ abstract class Crud
     return $this;
   }
 
+  /**
+   * Metodo para armar una consulta between entre un rango especifico.
+   *
+   * @param string $campo - nombre del campo de la tabla
+   * @param array $valores - arreglo que contiene los valores a implementar
+   * @return $this;
+   */
+  public function whereBetween(string $campo, array $valores = [])
+  {
+    if (str_contains($this->sql, "WHERE")) {
+      $this->sql .= " AND {$campo} BETWEEN {$valores[0]} {$this->and()} {$valores[1]}";
+    } else {
+      $this->sql .= " WHERE {$campo} BETWEEN {$valores[0]} {$this->and()} {$valores[1]}";
+    }
+
+    return $this;
+  }
+
+  public function and()
+  {
+    return "AND";
+  }
 
   # Function para preparar la consulta y pasar los valores por referencia
   public function prepareSql(array $datos = [])
@@ -179,7 +217,6 @@ abstract class Crud
     $this->stmt = $this->conn->prepare($this->sql);
     #Extraigo la informacion
     $data = isset($datos['data']) ? ($datos['data']) : [];
-
 
     // Si es un select, solamente preparamos la consulta y retornamos su resultado
     if ((strpos($this->sql, 'SELECT') === 0) && ($select[0] === "SELECT")) {
@@ -197,15 +234,26 @@ abstract class Crud
       # Validar si requiere paginación
       if ($hasOffset && $hasLimit) {
         foreach ($data as $key => $value) {
-          $this->stmt->bindValue(":{$key}", $value, PDO::PARAM_INT);
+          $this->stmt->bindValue(":{$key}", $value);
         }
       }
+
+      foreach ($data as $key => $value) {
+        $marcador = ":" . $key;
+        // valido si el marcador enviado existe en los datos que enviamos, si existe, este lo agrega en su valor.
+        if (str_contains($this->sql, $marcador)) {
+          $this->stmt->bindValue(":{$key}", $value);
+        }
+      }
+
 
       return $this;
     } else {
 
+
       foreach ($data as $key => $value) {
         $marcador = ":" . $key;
+
         if (str_contains($this->sql, $marcador)) {
           $this->stmt->bindValue($marcador, $value);
         }
@@ -234,11 +282,16 @@ abstract class Crud
         }
 
         $result = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->sql = null;
+        $this->stmt = null;
         return $result;
       }
 
       if (str_contains(strtoupper($this->sql), "UPDATE")) {
-        return $this->stmt->rowCount();
+        $rowCounts = $this->stmt->rowCount();
+        $this->sql = "";
+        $this->stmt = null;
+        return $rowCounts;
       }
       $this->sql = "";
       $this->stmt = null;

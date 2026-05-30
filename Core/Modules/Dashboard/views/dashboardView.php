@@ -144,4 +144,7 @@
 
 </div>
 
-<script type="module" src="../public/assets/js/Dashboard/Dashboard.js"></script>
+<?php
+foreach ($_SESSION['js'] as $key => $url) { ?>
+    <script type="module" src="<?php echo htmlspecialchars("/../../Core/" . $url); ?>"></script>
+<?php } ?>

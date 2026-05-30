@@ -1,6 +1,6 @@
-import { initAlert, toastOptions } from '../utils/cases.js';
-import { validationRules } from '../utils/regex.js';
-import { Storage } from '../utils/Storage.js';
+import { initAlert, toastOptions } from '../../../../public/assets/js/utils/cases.js';
+import { validationRules } from '../../../../public/assets/js/utils/regex.js';
+import { Storage } from '../../../../public/assets/js/utils/Storage.js';
 
 // Proceso Storage para re direccionar inmediatamente al usuario en caso de que este tenga su inicio de sesión.
 window.addEventListener('storage', (g) => {
