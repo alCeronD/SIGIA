@@ -45,4 +45,5 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Implementar paginado en front y en back
 - [ ] Implementar cantidad de registros, boton de preview y next + mostrar la pagina, ejemplo: se muestran 0 de n registros
 - [ ] Implementar rastro de miga
-- [ ] Implementar eventos de actualizar, inhabilitar y eliminar pero la asignacion de evento sera en la tabla.
+- [X] Implementar backend de eventos de actualizar, inhabilitar y eliminar pero la asignacion de evento sera en la tabla
+- [ ] Implementar frontend de acciones
