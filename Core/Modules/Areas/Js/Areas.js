@@ -1,5 +1,11 @@
 import {
-  Ajax,
+  cancelProcess,
+  deleteSuccess,
+  successChangeStatusDisable,
+  successChangeStatusEnable,
+  titleEliminar,
+} from '../../../../public/assets/js/utils/const.js';
+import {
   createI,
   closeModal,
   openModal,
@@ -8,192 +14,17 @@ import {
   options,
   initAlert,
   toastOptions,
+  validateFormData,
+  sendData,
+  mostrarConfirmacion,
 } from '../../../../public/assets/js/utils/index.js';
 import renderData from './Functions.js';
 import * as s from './Selectors.js';
-const objAjax = new Ajax();
 let iPost = createI();
 iPost.innerText = 'send';
 s.btnAreaSend.append(iPost);
 
 //Modal
-const myModal = document.querySelector('#modalArea');
-//Creo la instancia del modal con las siguientes propiedades, Options es un objeto que está creado en el file cases.js
-const instanceMyModal = instanceModal('#modalArea', {
-  inDuration: options.inDuration,
-  outDuration: options.outDuration,
-  opacity: options.opacity,
-});
-
-let idPk;
-let nombreArea;
-let descripcion;
-
-// function fetchData() {
-//   s.tableBody.innerHTML = '';
-
-//   objAjax.request.open(
-//     'GET',
-//     s.url + `?tableName=${encodeURIComponent(s.table)}&status=${encodeURIComponent(s.status)}`
-//   );
-
-//   //Aca va la respuesta y el renderizado de los datos en la tabla.
-//   objAjax.request.onload = () => {
-//     //Capturo la respuesta
-//     // let response = JSON.parse(objAjax.request.responseText);
-//     let response = JSON.parse(objAjax.request.responseText);
-//     let data = response.data;
-
-//     if (data.length === 0) {
-//       const spanMessage = document.createElement('span');
-//       spanMessage.innerText = 'Sin registros';
-//       s.tableBody.appendChild(spanMessage);
-//     }
-
-//     if (objAjax.request.status) {
-//       if (data.length === 0) {
-//         const spanMessage = document.createElement('span');
-//         spanMessage.innerText = 'Sin registros';
-//         s.tableBody.appendChild(spanMessage);
-//       }
-
-//       data.forEach((dta) => {
-//         //Crear los elementos en primera instancia.
-//         //boton de acción
-//         const iSave = createI();
-//         const iDelete = createI();
-//         iDelete.setAttribute('class', 'material-icons');
-//         iSave.innerText = 'edit';
-//         const btnUpdate = createBtn();
-//         const btnDelete = createBtn();
-//         btnUpdate.setAttribute('class', 'btnUpdate');
-//         btnUpdate.setAttribute('class', 'waves-effect waves-light btn-small light-blue');
-//         btnUpdate.append(iSave);
-//         btnDelete.setAttribute('class', 'btnDelete');
-//         btnDelete.setAttribute('class', 'btn waves-effect waves-light btn-small modal-trigger red');
-
-//         const tr = document.createElement('tr');
-//         const tdId = document.createElement('td');
-//         const tdName = document.createElement('td');
-//         const tdDescript = document.createElement('td');
-//         const tdStatus = document.createElement('td');
-//         const tdAccion = document.createElement('td');
-//         // Asigno el botón a ambos elementos.
-
-//         s.tableBody.appendChild(tr);
-
-//         tdId.textContent = dta.ar_cod;
-//         tdName.textContent = dta.ar_nombre;
-//         tdDescript.textContent = dta.ar_descripcion;
-
-//         //Dependiendo del estatus, en html se verá visible activo o inactivo pero sabemos que 1 es activo y 0 inactivo.
-//         tdStatus.textContent = dta.ar_status === 1 ? 'Activo' : 'Inactivo';
-
-//         //Coloco el color rojo verde segun su estado.
-//         if (dta.ar_status === 1) {
-//           tdStatus.textContent = 'Activo';
-//           tdStatus.style.color = 'green';
-//           iDelete.innerText = 'delete';
-//           btnDelete.append(iDelete);
-//         } else {
-//           tdStatus.textContent = 'Inactivo';
-//           tdStatus.style.color = 'red';
-//           iDelete.innerText = 'loop';
-//           btnDelete.append(iDelete);
-//         }
-//         //Al texto activo o inactivo le aplico negrilla
-//         tdStatus.style.fontWeight = 'bold';
-
-//         tdAccion.append(btnUpdate, btnDelete);
-//         tr.appendChild(tdId);
-//         tr.appendChild(tdName);
-//         tr.appendChild(tdDescript);
-//         tr.appendChild(tdStatus);
-//         tr.appendChild(tdAccion);
-
-//         //Update Event
-//         btnUpdate.addEventListener('click', (f) => {
-//           //Guardo el botón
-//           let btndl = f.target;
-//           let row = btndl.closest('tr');
-//           const celda = row.querySelectorAll('td');
-
-//           //Capturo la información y la separo.
-//           idPk = celda[0].textContent;
-//           nombreArea = celda[1].textContent;
-//           descripcion = celda[2].textContent;
-
-//           //Inputs del modal
-//           let nombreAreaUpdate = document.querySelector('#nombreAreaUpdate');
-//           let descripcionAreaUpdate = document.querySelector('#descripcionAreaUpdate');
-//           //Adjunto los valores al input del modal.
-//           nombreAreaUpdate.value = nombreArea;
-//           descripcionAreaUpdate.value = descripcion;
-
-//           //Re inicializo los inputs de materialize ya que han sido modificados.
-//           M.updateTextFields();
-
-//           //Abro el modal de manera tradicional.
-//           instanceMyModal.open();
-//           const closeModalBtn = document.querySelector('.closeModalBtn');
-//           closeModal(instanceMyModal, closeModalBtn);
-//         });
-
-//         //Delete Event
-//         btnDelete.addEventListener('click', (e) => {
-//           e.stopPropagation();
-//           e.preventDefault();
-
-//           let btnDlt = e.target;
-//           let row = btnDlt.closest('tr');
-//           const celda = row.querySelectorAll('td');
-
-//           //Extraigo la información del query selector y guardo en variables.
-//           let idPk = celda[0].textContent;
-//           let status = celda[3].textContent;
-//           //Dependiendo del texto en html defino si es 0 para inactivo o 1 para activo para enviar a backend para actualizar.
-//           status = status === 'Activo' ? 1 : 0;
-
-//           if (confirm('¿Está seguro de inhabilitar este elemento?')) {
-//             const data = JSON.stringify({
-//               idPk: idPk,
-//               status: status,
-//               tableName: table,
-//             });
-
-//             objAjax.request.open('POST', url, true);
-//             objAjax.request.setRequestHeader('X-HTTP-Method-Override', 'DELETE');
-//             objAjax.request.setRequestHeader('Content-Type', 'application/json');
-
-//             objAjax.request.onload = () => {
-//               let dta = JSON.parse(objAjax.request.responseText);
-
-//               if (!dta.status) {
-//                 initAlert(`Respuesta del servidor: \n ${dta.message}`, 'error', toastOptions);
-//                 return;
-//               }
-//               initAlert(dta.message, 'success', toastOptions);
-//               fetchData(); // Refrescar tabla
-//             };
-
-//             objAjax.request.send(data);
-//           }
-//         });
-//       });
-//     } else {
-//       initAlert(`${error.message}`, 'warning', toastOptions);
-//       return;
-//     }
-//   };
-
-//   objAjax.request.setRequestHeader('Content-Type', 'application/json');
-//   //Establezco que su envio de solicitud es mediante un json.
-//   objAjax.request.setRequestHeader('Accept', 'application/json');
-//   //Enviar datos a get para visualziar las areas
-//   objAjax.request.send();
-// }
-
-// Enviar datos al formulario
 s.formulario.addEventListener('submit', (event) => {
   event.preventDefault();
   event.stopPropagation();
@@ -236,49 +67,137 @@ s.formulario.addEventListener('submit', (event) => {
   objAjax.request.send(data); // Esto debe ir fuera de onload
 });
 
-//Update del formulario
-s.areaUpdateForm.addEventListener('submit', (e) => {
-  e.stopPropagation();
-  e.preventDefault();
+s.tableBody.addEventListener('click', (e) => {
+  // evento editar
+  if (e.target.closest('.btnEdit')) {
+    // Abrir el modal.
+    let tr = e.target.closest('tr');
+    let td = tr.querySelectorAll('td');
+    let id = td[0].textContent;
+    let idUpdate = td[0].textContent;
+    let nombre = td[1].textContent;
+    let descripcion = td[2].textContent;
 
-  let form = new FormData(e.target);
-  let dta = Object.fromEntries(form);
+    // adicionar items a formulario de area.
+    let inputNombre = s.areaUpdateForm.querySelector('#nombreAreaUpdate');
+    let inputDescript = s.areaUpdateForm.querySelector('#descripcionAreaUpdate');
+    let inputId = document.querySelector('#idCodigo');
+    inputNombre.value = nombre;
+    inputDescript.value = descripcion;
+    inputId.value = idUpdate;
+    // habilitamos el modal
+    openModal(s.modalAreaUpdate);
+  }
+  // evento change status
+  if (e.target.closest('.btnChangeStatus')) {
+    e.stopPropagation();
+    e.preventDefault();
 
-  //Guardo la pk.
-  dta['ar_cod'] = idPk;
-  dta['tableName'] = table;
+    // capturar codigo y status
+    let actualStatus = e.target.value;
+    let cod = e.target.getAttribute('datacod');
 
-  let data = JSON.stringify(dta);
+    let message = actualStatus === 1 ? s.textEstaSeguroInhabilitar : s.textEstaSeguroHabilitar;
+    let title = actualStatus === 1 ? s.titleInhabilitar : s.titleHabilitar;
 
-  objAjax.request.open('PUT', url + `?data=${encodeURIComponent(data)}`);
-  objAjax.request.setRequestHeader('Content-Type', 'application/json');
-
-  objAjax.request.onload = () => {
-    //Transformo en un texto la respuesta.
-    let dataStatus = objAjax.request.responseText;
-    //Transformo en un json la respuesta.
-    dataStatus = JSON.parse(dataStatus);
     try {
-      if (dataStatus.status) {
-        //Cerrar el modal
-        closeModal(instanceMyModal);
-        initAlert('Registro actualizado', 'warning', toastOptions);
-        //Renderizo nuevamente la data.
-        fetchData();
-      } else {
-        initAlert(`${dataStatus.message}`, 'info', toastOptions);
-      }
+      mostrarConfirmacion(title, message, async (response) => {
+        if (!response) {
+          initAlert(cancelProcess, 'info', toastOptions);
+          return;
+        }
+
+        let data = {
+          ar_cod: cod,
+          ar_status: actualStatus,
+        };
+
+        const responseChangeStatus = await sendData(`${s.url}changeStatus`, 'PUT', data);
+        if (responseChangeStatus.status) {
+          let mesageStatus =
+            actualStatus === '1' ? successChangeStatusDisable : successChangeStatusEnable;
+          initAlert(mesageStatus, 'success', toastOptions);
+          renderData();
+          return;
+        }
+      });
     } catch (error) {
-      initAlert(`${error.message}`, 'warning', toastOptions);
+      console.log(error);
+    }
+  }
+
+  // evento eliminar
+  if (e.target.closest('.btnDelete')) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    // capturar el codigo y enviarlo al backend.
+    let ar_cod = e.target.value;
+    console.log(ar_cod);
+    let data = {
+      ar_cod: ar_cod,
+    };
+    try {
+      mostrarConfirmacion(titleEliminar, s.textEstaSeguroEliminar, async (response) => {
+        if (!response) {
+          initAlert(cancelProcess, 'info', toastOptions);
+          return;
+        }
+        const responseDelete = await sendData(`${s.url}deleteDepartment`, 'DELETE', data);
+        if (responseDelete.status === 204) {
+          initAlert(deleteSuccess, 'success', toastOptions);
+          renderData();
+          return;
+        }
+      });
+    } catch (error) {
+      console.log(error);
       return;
     }
-  };
-  objAjax.request.send(data);
+  }
 });
 
-// Apenas cargue la información, ejecutar la función fetchData para traer la info usando ajax.
+// Cerrar el boton
+closeModal(s.modalAreaUpdate, s.btnCloseModalUpdate, () => {});
+
+// Listener update
+s.areaUpdateForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  let formData = new FormData(e.target);
+  let data = Object.fromEntries(formData);
+  try {
+    mostrarConfirmacion(s.titleActualizar, s.textEstaSeguro, async (response) => {
+      if (!response) {
+        s.modalAreaUpdate.style.display = 'none';
+        initAlert(cancelProcess, 'info', toastOptions);
+        return;
+      }
+      // campos opcionales
+      let campos = ['ar_descripcion'];
+      // validar campos obligatorios
+      if (!validateFormData({ formData: formData, campos: campos, mapForm: s.mapCampos })) return;
+      let update = `${s.url}editDepartment`;
+
+      const responseUpdate = await sendData(update, 'PUT', data);
+      // hay un contexto en donde no me devuelve un cuerpo porque la cantidad de columnas afectadas puede ser 0.
+      if (responseUpdate.status === 204) {
+        s.modalAreaUpdate.style.display = 'none';
+        return;
+      }
+      if (responseUpdate.status) {
+        renderData();
+        s.modalAreaUpdate.style.display = 'none';
+        initAlert(responseUpdate.message, 'success', toastOptions);
+        return;
+      }
+    });
+  } catch (error) {
+    initAlert(error, 'info', toastOptions);
+    return;
+  }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
-  //Apenas cargue el documeento me renderiza la información.
-  // fetchData();
   renderData();
 });

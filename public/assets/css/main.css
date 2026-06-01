@@ -249,15 +249,7 @@ input[type="number"] {
 }
 
 /* ////////////Inicio estilos submenu para actualizar datos en HEADER////////////// */
-/* .submenu {
-  display: none;
-  background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  text-align: center !important;
-  border-radius: 4px;
-  width: 30px !important;
 
-} */
 
 .material-icons.left {
   font-size: 15px;
@@ -274,10 +266,40 @@ input[type="number"] {
   text-align: center !important;
 }
 
-/* Estilos del modal de confirmación */
+/* Estilos del modal, usare la clase modal-overlay generica para aplicar el proceso */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.5);
+}
 
+/* cuando el usuario de click se habilita esta propiedad */
+.modal-overlay.show {
+  display: block;
+}
 
-/* Fin estilos submenu */
+/* clase del boton para cerrar el modal */
+.modal-closebtn {
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  font-size: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* Estilo del modal de confirmacion */
+.content-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
 
 
 /* Para pantallas medianas en adelante. */

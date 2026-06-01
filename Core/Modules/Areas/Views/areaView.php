@@ -35,9 +35,9 @@
 </div>
 
 <!-- Modal -->
-<div id="modalArea" class="modal">
+<div id="modalArea" class="modal modal-overlay">
     <!-- Modal content -->
-    <div class="modalContentArea modal-content">
+    <div class="modalContentArea modal-content .modal-closebtn">
         <div class="titleSection">
             <span id="modalTitle">Actualizar registro</span>
             <button type="button" class="closeModalBtn">
@@ -46,6 +46,7 @@
         </div>
         <div class="formUpdate">
             <form id="areaUpdateForm" class="formLayout">
+                <input type="hidden" name="ar_cod" id="idCodigo">
                 <div class="input-field arNombreUpdate">
                     <label for="ar_nombre">Nombre:</label>
                     <input type="text" name="ar_nombre" id="nombreAreaUpdate">

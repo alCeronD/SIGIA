@@ -6,10 +6,6 @@ const headers = {
 
 //Función para establecer el fetch.
 const setFetch = (method = 'GET', data = {}) => {
-  // if (method === "GET" || method === "POST" || method === "PUT") {
-  //   data["action"] = action['action'];
-  // }
-
   let returnPrueba = {
     method,
     body: method != 'GET' ? JSON.stringify(data) : undefined,
@@ -22,16 +18,8 @@ const setFetch = (method = 'GET', data = {}) => {
 //Función para enviar el fetch
 export const sendData = async (url, method = 'POST', data = {}) => {
   try {
-    // const setParameter = new URLSearchParams();
-    // setParameter.append("action", parameters);
-
     let newUrl = url;
 
-    // if (Object.keys(parameters).length > 0) {
-    //   newUrl = `${url}&${setParameter}`;
-    // } else {
-    //   newUrl = url;
-    // }
     const optionsFetch = setFetch(method, data);
     const response = await fetch(newUrl, optionsFetch);
 
@@ -74,7 +62,6 @@ export const getData = async (url, method = 'GET', parameters = {}, asText = fal
 
       newUrl = JSON.stringify(parameters) === '{}' ? url : `${url}&${setParameters.toString()}`;
     }
-    console.log(newUrl);
 
     const bodyData = setFetch(method, parameters, data);
     const execute = await fetch(newUrl, bodyData);

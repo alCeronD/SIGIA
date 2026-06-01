@@ -6,7 +6,9 @@
     </div>
     <!-- el ! significa un elemento de referencia hacia javascript. -->
     <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn red" id="btnCancelar">Cancelar</a>
-        <a href="#!" class="modal-close waves-effect waves-red btn teal" id="btnAceptar">Aceptar</a>
+        <div class="content-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn red" id="btnCancelar">Cancelar</a>
+            <a href="#!" class="modal-close waves-effect waves-red btn teal" id="btnAceptar">Aceptar</a>
+        </div>
     </div>
 </div>

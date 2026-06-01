@@ -35,15 +35,18 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Ajustar la lectura de las rutas y permitir que se lean mas archivos css y javascript
 - [ ] Investigar e implementar rastro de miga.
 - [ ] Implementar variables ENV según el contexto, si es dev o producción, en caso de ser requerido.
+- [ ] Transformar en clase aquellas funcionalidades de javascript repetibles
+- [ ] Transformar en una clase el renderizado de datos
+- [X] EN PHP, AJUSTAR EL RESPONSE DE LA CLASE EN DONDE la funcion se puede transformar en una sola.
 
 ## Específicos
 
 - **Módulo areas**
-- [ ] Implementar feature de eliminar item, está el de habilitar e inhabilitar pero no eliminar registro.
-- [ ] Modificar color de fondo del modal
-- [ ] Refactorizar el javascript y transformar todo de ajax a fetch
+- [X] Implementar feature de eliminar item, está el de habilitar e inhabilitar pero no eliminar registro.
+- [X] Modificar color de fondo del modal
+- [X] Refactorizar el javascript y transformar todo de ajax a fetch
 - [X] Implementar paginado en front y en back
+- [X] Implementar backend de eventos de actualizar, inhabilitar y eliminar pero la asignacion de evento sera en la tabla
+- [X] Implementar frontend de acciones
 - [ ] Implementar cantidad de registros, boton de preview y next + mostrar la pagina, ejemplo: se muestran 0 de n registros
 - [ ] Implementar rastro de miga
-- [X] Implementar backend de eventos de actualizar, inhabilitar y eliminar pero la asignacion de evento sera en la tabla
-- [ ] Implementar frontend de acciones

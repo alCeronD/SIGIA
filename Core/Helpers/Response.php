@@ -1,65 +1,30 @@
 <?php
 
 /**
- *
- * Archivo que contiene 2 funciones para visualizar la respuesta del json y enviarlo al front y visualizarlo.
- * TODO: puedo mejorar estas 2 funciones en 1, en donde la estructura es la misma y solamente le paso el código de respuesta por parámetros, 200 para true, 400 para false.
+ * Clase para el envio de respuestas a las peticiones realizadas.
  */
+class Response
+{
 
-Class Response{
-
-/**
- * Función para enviar respuesta exitosa al front.
- *
- * @param string $message - mensaje de respuesta.
- * @param array $data - Arreglo con toda la data a enviar.
- * @return void
- */
-    public static function success(String $message = '', array $data = []){
+    /**
+     * Function para entregar respuesta cada vez que haya una nueva peticion.
+     *
+     * @param integer $codeResponse - Código de respuesta, sea 400, 200, etc
+     * @param boolean $status - TRUE OR FALSE, dependiendo de la logica
+     * @param string $message - mensaje de respuesta.
+     * @param array $data - Arreglo que devuelve datos en caso de ser necesario.
+     * @return void
+     */
+    public static function responseRequest(int $codeResponse = 1, bool $status = true, String $message = "", array $data = [])
+    {
         header('Content-Type: application/json; charset=utf-8');
         $result = [
-            'status' => true,
+            'status' => $status,
             'message' => $message,
             'data' => empty($data) ? [] : $data
         ];
-        http_response_code(200);
-        echo json_encode($result,JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        http_response_code($codeResponse);
+        echo json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         exit();
     }
-
-    public static function fail(String $value = '', array $data = []){
-    header('Content-Type: application/json');
-    $statusData = $data['status'];
-    $src = $data['data'];
-    if ((count($src) === 0) && (!$statusData)) {
-        $errorCode = 404;
-    }else{
-        $errorCode = 400;
-    }
-
-    $data = [
-        'status' => false,
-        'message' => $value,
-        'data' => $data
-    ];
-    http_response_code($errorCode);
-    echo json_encode($data,JSON_PRETTY_PRINT);
-    exit();
 }
-
-public static function noResponse($data){
-    http_response_code(204);
-
-    echo json_encode(
-        [
-            'status'=> true,
-            'message'=> 'elemento disponible para la fecha de reserva seleccionada',
-            'data'=>$data,
-        ]
-    ),JSON_PRETTY_PRINT;
-
-    exit();
-}
-
-}
-?>

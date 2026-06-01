@@ -39,6 +39,7 @@ export const closeModal = (modal, btn, onCloseCallback) => {
 };
 
 export const openModal = (modal) => {
+  modal.classList.add('show');
   modal.style.display = 'flex';
 };
 
@@ -82,7 +83,7 @@ export const instanceDateTime = (selector = '.timepicker', timePickerOptions = {
   return M.Timepicker.init(elems, options);
 };
 
-//Iniciar modales
+//Iniciar modales - FUNCITION PARA ELIMINAR, SIRVE PERO CAMBIAREMOS LOS MODALES DE MATERIALIZE A PUROS, SIN TRANSICION.
 export const instanceModal = (selector, options = {}) => {
   let elements = document.querySelector(selector);
   const existInstance = M.Modal.getInstance(elements);
@@ -461,19 +462,21 @@ export const createCheckboxGeneric = ({
 };
 
 /**
- * Description placeholder - Función para validar los campos obligatorios del formulario.
+ * Función para validar los campos obligatorios del formulario hayan sido diligenciados previo a su envio al backend
  *
  * @param {*} formData - new Form Data del formulario
  * @param {*} campos  - Campos opcionales en caso de que no sean obligatorios para el usuario
- * @param {*} mapForm - Objeto del formulario para validar que la información del Form Data tenga información.
+ * @param {*} mapForm - Objeto del formulario para validar que la información del Form Data tenga información, {"nombre del campo ": "place holder del usuario final"}
  * @returns {boolean}
  */
 export const validateFormData = ({ formData, campos, mapForm } = {}) => {
   for (const [key, value] of formData.entries()) {
+    console.log({ key: key, value: value });
     const isEmpty = !value || value.toString().trim() === '';
     // pasamos por referencia los valores opcionales.
     const camposOpcionales = campos;
     if (isEmpty && !camposOpcionales.includes(key)) {
+      console.log(camposOpcionales.includes(key));
       initAlert(`El campo "${mapForm[key]}" debe ser diligenciado`, 'info', toastOptions);
       return false;
     }
