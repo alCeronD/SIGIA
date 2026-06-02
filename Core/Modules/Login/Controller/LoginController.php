@@ -45,7 +45,7 @@ class LoginController
             if (!$this->regex->validarNumeros($documento)) throw new Exception("No se permiten caracteres especiales");
 
             if (empty($documento) || empty($password)) {
-                Response::fail('Todos los campos son obligatorios');
+                Response::responseRequest(HttpStatus::BAD_REQUEST, false, MSG_ERROR_CAMPOS, []);
             }
 
             if (!$this->conn) {
@@ -110,9 +110,8 @@ class LoginController
 
         if (UtilsFunctions::ajaxGeneral()) {
             header(CONTENT_TYPE);
-            Response::success('Sesión cerrada correctamente.', [
-                'redirect' => Router::createRoute('Login', 'Login', 'index', false, 'dashboard')
-            ]);
+            Response::responseRequest(HttpStatus::OK, true, '', ['redirect' => Router::createRoute('Login', 'Login', 'index', false, 'dashboard')]);
+
             exit();
         }
 

@@ -35,6 +35,7 @@ export const sendData = async (url, method = 'POST', data = {}) => {
     return json;
   } catch (error) {
     throw error;
+    return error;
   }
 };
 

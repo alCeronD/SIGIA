@@ -37,7 +37,8 @@ class UtilsFunctions
             'ReservaPrestamos',
             'Roles',
             'Usuarios',
-            'SolicitudPrestamos'
+            'SolicitudPrestamos',
+            'TipoDocumento'
         ];
     }
 

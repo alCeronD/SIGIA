@@ -13,59 +13,15 @@ import {
   instanceModal,
   options,
   initAlert,
-  toastOptions,
   validateFormData,
   sendData,
   mostrarConfirmacion,
 } from '../../../../public/assets/js/utils/index.js';
-import renderData from './Functions.js';
+import renderData, { renderPaginate } from './Functions.js';
 import * as s from './Selectors.js';
 let iPost = createI();
 iPost.innerText = 'send';
 s.btnAreaSend.append(iPost);
-
-//Modal
-s.formulario.addEventListener('submit', (event) => {
-  event.preventDefault();
-  event.stopPropagation();
-
-  let form = new FormData(event);
-  let dt = Object.fromEntries(form);
-
-  if (dt.ar_nombre === '') {
-    initAlert('El nombre del item debe ser obligatorio', 'info', toastOptions);
-    return;
-  }
-
-  let data = JSON.stringify({
-    ar_nombre: dt.ar_nombre,
-    ar_descripcion: dt.ar_descripcion,
-    tableName: table,
-  });
-
-  // Ajax POST
-  objAjax.request.open('POST', url, true);
-  objAjax.request.setRequestHeader('Content-Type', 'application/json');
-  objAjax.request.setRequestHeader('Accept', 'application/json');
-  objAjax.request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-  objAjax.request.onload = () => {
-    const response2 = objAjax.request.responseText;
-    const response = JSON.parse(objAjax.request.responseText);
-    if (response.status) {
-      const lastRow = response.data;
-      initAlert('Registro adicionado con exito', 'success', toastOptions);
-      // Reiniciar el formulario
-      s.formulario.reset();
-      //Recargo nuevamente, NO ES BUENA PRÁCTICA, arreglarlo..
-      fetchData();
-    } else {
-      initAlert(response.data.message, 'error', toastOptions);
-    }
-  };
-
-  objAjax.request.send(data); // Esto debe ir fuera de onload
-});
 
 s.tableBody.addEventListener('click', (e) => {
   // evento editar
@@ -100,10 +56,10 @@ s.tableBody.addEventListener('click', (e) => {
     let message = actualStatus === 1 ? s.textEstaSeguroInhabilitar : s.textEstaSeguroHabilitar;
     let title = actualStatus === 1 ? s.titleInhabilitar : s.titleHabilitar;
 
-    try {
-      mostrarConfirmacion(title, message, async (response) => {
+    mostrarConfirmacion(title, message, async (response) => {
+      try {
         if (!response) {
-          initAlert(cancelProcess, 'info', toastOptions);
+          initAlert(cancelProcess, 'info');
           return;
         }
 
@@ -116,14 +72,17 @@ s.tableBody.addEventListener('click', (e) => {
         if (responseChangeStatus.status) {
           let mesageStatus =
             actualStatus === '1' ? successChangeStatusDisable : successChangeStatusEnable;
-          initAlert(mesageStatus, 'success', toastOptions);
-          renderData();
+          initAlert(mesageStatus, 'success');
+          renderData(s.actualPage);
           return;
+        } else {
+          throw new Error(responseChangeStatus.message);
         }
-      });
-    } catch (error) {
-      console.log(error);
-    }
+      } catch (error) {
+        initAlert(error, 'error');
+        return;
+      }
+    });
   }
 
   // evento eliminar
@@ -133,7 +92,6 @@ s.tableBody.addEventListener('click', (e) => {
 
     // capturar el codigo y enviarlo al backend.
     let ar_cod = e.target.value;
-    console.log(ar_cod);
     let data = {
       ar_cod: ar_cod,
     };
@@ -146,7 +104,7 @@ s.tableBody.addEventListener('click', (e) => {
         const responseDelete = await sendData(`${s.url}deleteDepartment`, 'DELETE', data);
         if (responseDelete.status === 204) {
           initAlert(deleteSuccess, 'success', toastOptions);
-          renderData();
+          renderData(s.actualPage);
           return;
         }
       });
@@ -198,6 +156,34 @@ s.areaUpdateForm.addEventListener('submit', async (e) => {
   }
 });
 
+// Listener create
+s.formCreate.addEventListener('submit', (g) => {
+  g.preventDefault();
+  let formPost = new FormData(g.target);
+  let data = Object.fromEntries(formPost);
+
+  mostrarConfirmacion('Crear departamento', '', async (response) => {
+    try {
+      if (!response) {
+        initAlert(cancelProcess, 'info');
+        return;
+      }
+
+      let responsePost = await sendData(`${s.url}createDepartment`, 'POST', data);
+      if (responsePost.status) {
+        initAlert(responsePost.message, 'success');
+        renderData(s.actualPage);
+        return;
+      } else {
+        throw new Error(responsePost.message);
+      }
+    } catch (error) {
+      initAlert(error, 'error');
+      return;
+    }
+  });
+});
+
 document.addEventListener('DOMContentLoaded', () => {
-  renderData();
+  renderData(s.actualPage);
 });

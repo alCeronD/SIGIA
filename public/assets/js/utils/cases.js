@@ -310,7 +310,7 @@ export const toastOptions = {
  * @param {string} [type="info"] - Tipo de mensaje para una mejor experiencia de usuario
  * @param {{}} [options={}] - Objeto para enviar las opciones requeridas
  */
-export const initAlert = (message = '', type = 'info', options = {}) => {
+export const initAlert = (message = '', type = 'info') => {
   const toastElements = document.querySelectorAll('.toast');
   // Alertas Máximas, 3 en pantalla.
   const maxToast = 3;
@@ -318,7 +318,7 @@ export const initAlert = (message = '', type = 'info', options = {}) => {
   // Muestra la alerta.
   const alertInstance = M.toast({
     html: message,
-    ...options,
+    ...toastOptions,
   });
 
   // Coloco el valor de el, porque materialize devuelve una propiedad el HTML DEL DOOM, esta propiedad se llama el. que tecnicamente es la alerta en si.
@@ -471,12 +471,10 @@ export const createCheckboxGeneric = ({
  */
 export const validateFormData = ({ formData, campos, mapForm } = {}) => {
   for (const [key, value] of formData.entries()) {
-    console.log({ key: key, value: value });
     const isEmpty = !value || value.toString().trim() === '';
     // pasamos por referencia los valores opcionales.
     const camposOpcionales = campos;
     if (isEmpty && !camposOpcionales.includes(key)) {
-      console.log(camposOpcionales.includes(key));
       initAlert(`El campo "${mapForm[key]}" debe ser diligenciado`, 'info', toastOptions);
       return false;
     }

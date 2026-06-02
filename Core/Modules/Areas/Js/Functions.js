@@ -1,9 +1,9 @@
 import { createBtn, getData } from '../../../../public/assets/js/utils/index.js';
 import * as s from './Selectors.js';
 
-export const renderData = async () => {
+export const renderData = async (pageUser = 1) => {
   try {
-    const response = await getData(`${s.url}getData`, 'GET', { pagina: 1 });
+    const response = await getData(`${s.url}getData`, 'GET', { pagina: pageUser });
     let data = response.data.data;
     let paginaActual = response.data.paginaActual;
     let totalRegistros = response.data.totalRegistros;
@@ -51,6 +51,8 @@ export const renderData = async () => {
   }
 };
 
+let actualPage = 1;
+
 export const renderPaginate = (totalRegistros, paginaActual, cantidadPaginas) => {
   s.footerArea.innerHTML = '';
   let btnPreview = createBtn('btnPreview');
@@ -61,8 +63,36 @@ export const renderPaginate = (totalRegistros, paginaActual, cantidadPaginas) =>
   let paginas = `Pagina ${paginaActual} de ${cantidadPaginas}`;
   let fragment = document.createDocumentFragment();
   fragment.append(btnPreview, paginas, btnNext);
-
+  btnPreview.setAttribute('class', 'btnPaginate');
+  btnNext.setAttribute('class', 'btnPaginate');
+  btnPreview.classList.add('btnPreview');
+  btnNext.classList.add('btnNext');
   s.footerArea.appendChild(fragment);
+  let btns = document.querySelectorAll('.btnPaginate');
+  btns.forEach((element) => {
+    element.addEventListener('click', (g) => {
+      // evento boton next
+      if (g.target.classList.contains('btnNext')) {
+        actualPage++;
+        if (actualPage > cantidadPaginas) {
+          actualPage = cantidadPaginas;
+          return;
+        }
+      }
+
+      // evento para el boton preview
+      if (g.target.classList.contains('btnPreview')) {
+        actualPage--;
+        if (actualPage < 1) {
+          actualPage = 1;
+        }
+      }
+      if (actualPage < 1 || actualPage > cantidadPaginas) {
+        return;
+      }
+      renderData(actualPage);
+    });
+  });
 };
 
 export default renderData;

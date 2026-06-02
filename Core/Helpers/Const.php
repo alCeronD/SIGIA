@@ -58,6 +58,7 @@ define('MSG_ERROR_SIN_PERMISOS', 'No tienes permisos para acceder');
 define('MSG_REGISTRO_ACTUALIZAOD', 'Registro actualizado correctamente');
 define('MSG_REGISTRO_CAMBIO_ESTADO', 'Cambio de estado correctamente.');
 define('MSG_ERROR_EJECUTAR_PROCESO', 'Error al ejecutar el procedimiento.');
+define('MSG_ERROR_CAMPOS', 'Todos los campos son obligatorios');
 
 // variables
 define('CR_TOTAL_REGISTROS', 'totalRegistros');
