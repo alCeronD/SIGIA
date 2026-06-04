@@ -20,5 +20,14 @@ class TipoDocumentoController
   }
 
 
-  public function getData() {}
+  public function getData()
+  {
+    header(CONTENT_TYPE);
+    $data = UtilsFunctions::returnGetDecode();
+    $resultSelect = $this->tpModel->select()->prepareSql()->get();
+    // consulta select basica de momento.
+    if (count($resultSelect) > 0) {
+      Response::responseRequest(HttpStatus::OK, true, "Registros", $resultSelect);
+    }
+  }
 }

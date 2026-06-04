@@ -9,21 +9,21 @@
     <div class="formTpDocumento">
         <div class="card z-depth-2">
             <div class="card-content">
-        <p class="flow-text card-title">Registrar Documento</p>
-        <form id="formTp" class="formLayout">
-            <div class="input-field tpSiglaContent">
-                <input type="text" name="tp_sigla" id="tpSigla" value="">
-                <label for="tpSigla">Sigla:</label>
+                <p class="flow-text card-title">Registrar Documento</p>
+                <form id="formTp" class="formLayout">
+                    <div class="input-field tpSiglaContent">
+                        <input type="text" name="tp_sigla" id="tpSigla" value="">
+                        <label for="tpSigla">Sigla:</label>
+                    </div>
+                    <div class="input-field tpDescripcion">
+                        <textarea name="tp_nombre" id="descripcionTp" class="materialize-textarea" value=""></textarea>
+                        <label for="tp_nombre">Nombre:</label>
+                    </div>
+                    <div class="tpButton">
+                        <button type="submit" class="btnSubmit waves-effect waves-light btn" id="btnAreaUpdate"><i class="material-icons">send</i><button>
+                    </div>
+                </form>
             </div>
-            <div class="input-field tpDescripcion">
-                <textarea name="tp_nombre"  id="descripcionTp" class="materialize-textarea" value=""></textarea>
-                <label for="tp_nombre">Nombre:</label>
-            </div>
-            <div class="tpButton">
-                <button type="submit" class="btnSubmit waves-effect waves-light btn" id="btnAreaUpdate"><i class="material-icons">send</i><button>
-            </div>
-        </form>
-        </div>
         </div>
     </div>
     <div class="tblTpDocumento highlight striped responsive-table">
@@ -46,22 +46,25 @@
         <span id="modalTitle">Actualizar registro</span> -->
         <div class="formUpdateTp">
             <form id="tpUpdateForm">
-            <div class="input-field contentTpSigla">
-                <input type="text" name="tp_sigla" id="siglaTp_documento">
-                <label for="tp_sigla">Sigla:</label>
-            </div>
-            <div class="input-field contentTpNombre">
-                <textarea type="text" name="tp_nombre" class="materialize-textarea" id="descripcionTp_documento" ></textarea>
-                <label for="tp_nombre">Nombre:</label>
-            </div>
-            <div class="contentTpBtn">
-                <button type="click" id="btnTpUpdate" class="waves-effect waves-light btn"><i class="material-icons">save</i></button>
-            </div>
-        </form>
+                <div class="input-field contentTpSigla">
+                    <input type="text" name="tp_sigla" id="siglaTp_documento">
+                    <label for="tp_sigla">Sigla:</label>
+                </div>
+                <div class="input-field contentTpNombre">
+                    <textarea type="text" name="tp_nombre" class="materialize-textarea" id="descripcionTp_documento"></textarea>
+                    <label for="tp_nombre">Nombre:</label>
+                </div>
+                <div class="contentTpBtn">
+                    <button type="click" id="btnTpUpdate" class="waves-effect waves-light btn"><i class="material-icons">save</i></button>
+                </div>
+            </form>
         </div>
 
     </div>
 
 </div>
 
-<script type="module" src="../public/assets/js/ConfigModules/tpDocumento.js"></script>
+<?php
+foreach ($_SESSION['js'] as $key => $url) { ?>
+    <script type="module" src="<?php echo htmlspecialchars("/../../Core/" . $url); ?>"></script>
+<?php } ?>

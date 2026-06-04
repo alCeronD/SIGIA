@@ -1,4 +1,5 @@
-class HttpData {
+export class HttpData {
+  constructor() {}
   headers = {
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
