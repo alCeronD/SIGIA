@@ -12,4 +12,5 @@
     <tbody id="tableBodyTp">
         <!-- Renderizado con javascript. -->
     </tbody>
+    <tfoot id="footerTp"></tfoot>
 </table>

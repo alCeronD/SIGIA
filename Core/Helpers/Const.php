@@ -2,7 +2,7 @@
 
 //others
 define('BASE_URL', __DIR__);
-define('LIMIT', 7);
+define('LIMIT', 8);
 define('CONTENT_TYPE', 'Content-Type: application/json; charset=utf-8');
 
 //Name Modules

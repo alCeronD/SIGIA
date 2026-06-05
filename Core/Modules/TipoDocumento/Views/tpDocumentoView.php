@@ -46,6 +46,7 @@
         <span id="modalTitle">Actualizar registro</span> -->
         <div class="formUpdateTp">
             <form id="tpUpdateForm">
+                <input type="hidden" id="tp_id" value="" name="tp_id">
                 <div class="input-field contentTpSigla">
                     <input type="text" name="tp_sigla" id="siglaTp_documento">
                     <label for="tp_sigla">Sigla:</label>

@@ -9,6 +9,7 @@ export class Render extends HttpData {
     super();
 
     this.#objBotones = { ...buttons };
+    this.#actualPage = 1;
   }
 
   /**
@@ -21,15 +22,13 @@ export class Render extends HttpData {
    * @param {string} [id=''] - el id primario del recurso que vamos a acceder, esto requererido para renderizar los botones de acciones.
    * @returns {*}
    */
-  async renderData(url = '', bodyTbl = null, headerTable = null, id = '') {
+  async renderData(bodyTbl = null, headerTable = null, id = '', data) {
     // NECESITO EL FETCH para renderizar la data.
     try {
-      bodyTbl.innerHTML = '';
       let fragmentBody = document.createDocumentFragment();
 
-      const response = await this.getData(url, 'GET');
-      let data = response.data;
       this.#data = { ...data };
+      bodyTbl.innerHTML = '';
       data.forEach((element) => {
         let itemElement = element;
         let tr = document.createElement('tr');
@@ -48,7 +47,6 @@ export class Render extends HttpData {
         fragmentBody.appendChild(tr);
       });
       bodyTbl.appendChild(fragmentBody);
-      this.createPaginate();
       // buscar de la tabla extraer el header para conocer la cantidad de columnas y de ahi capturar la data.
     } catch (error) {
       console.error(error);
@@ -56,7 +54,7 @@ export class Render extends HttpData {
   }
 
   /**
-   * Function para renderizar los botones y habilitar un callback para ejecutar algun proceso.
+   * Function para renderizar los botones de acción y habilitar un callback para ejecutar algun proceso.
    *
    * @param {string} [idRow=''] - el id de cada fila para asi implementar el id en el boton en caso de ser requerido
    * @param {string} [fullRow={}] - toda la fila con la informacion del elemento, esto recibe un objeto
@@ -85,13 +83,32 @@ export class Render extends HttpData {
     return tdOptions;
   }
 
-  createPaginate() {}
+  /**
+   * Function para renderizar los botones del paginado en caso de ser requerido.
+   *
+   * @param {{}} [dataPaginate={}] - Objeto que contiene la informacion requerida para la paginacion como la cantidad de paginas que hay y cantidad de registros
+   * @param {*} [selector=null] - selector en donde debe de ir los botones.
+   */
+  renderPaginate(dataPaginate = {}, selector = null) {
+    selector.innerHTML = '';
+    let btnPreview = createBtn('btnPreview');
+    let btnNext = createBtn('btnNext');
+    btnPreview.setAttribute('class', 'btnPaginate');
+    btnNext.setAttribute('class', 'btnPaginate');
+
+    btnPreview.innerText = '<';
+    btnNext.innerText = '>';
+    btnNext.value = 'next';
+    btnPreview.value = 'preview';
+    let textInfo = `Página ${this.#actualPage} de ${dataPaginate.cantidadPaginas}`;
+    selector.append(btnPreview, textInfo, btnNext);
+  }
 
   get objBotones() {
     return this.#objBotones;
   }
 
-  set actualPage(page) {
+  actualPage(page) {
     this.#actualPage = page;
   }
 

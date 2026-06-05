@@ -83,7 +83,7 @@ export const instanceDateTime = (selector = '.timepicker', timePickerOptions = {
   return M.Timepicker.init(elems, options);
 };
 
-//Iniciar modales - FUNCITION PARA ELIMINAR, SIRVE PERO CAMBIAREMOS LOS MODALES DE MATERIALIZE A PUROS, SIN TRANSICION.
+//Iniciar modales - se deja porque nos sirve para crear el mensaje de alerta de pre confirmacion, sera su unico uso.
 export const instanceModal = (selector, options = {}) => {
   let elements = document.querySelector(selector);
   const existInstance = M.Modal.getInstance(elements);
