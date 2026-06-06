@@ -49,6 +49,20 @@ class TipoDocumentoController
     }
   }
 
+  public function createDepartment()
+  {
+    header(CONTENT_TYPE);
+    $data = UtilsFunctions::returnGetDecode();
+    $tp_status = 1;
+    $data['tp_status'] = $tp_status;
+    $insertData['data'] = $data;
+    $responseCreate = $this->tpModel->insert($data)->prepareSql($insertData)->get();
+
+    if ($responseCreate) {
+      Response::responseRequest(HttpStatus::CREATED, true, MSG_SUCCESS_CREATE, []);
+    }
+  }
+
   public function deleteItem()
   {
     header(CONTENT_TYPE);
@@ -65,12 +79,21 @@ class TipoDocumentoController
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
     $dataUpdate['data'] = $data;
-    // update data.
     $update = $this->tpModel->update($data)->where()->prepareSql($dataUpdate)->get();
-
-    // update devuelve la cantidad de filas afectadas, si es mayor a 0 significa que hubo un cambio de estado
     if ($update > 0) {
       Response::responseRequest(HttpStatus::OK, true, "Recurso actualizado con exito", []);
+    }
+  }
+
+  public function changeStatus()
+  {
+    header(CONTENT_TYPE);
+    $data = UtilsFunctions::returnGetDecode();
+    $dataUpdate['data'] = $data;
+    $changeStatus = $this->tpModel->update($data)->where()->prepareSql($dataUpdate)->get();
+    $responseMessage = $data['tp_status'] === 2 ? MSG_SUCCESS_DISABLED : MSG_SUCCESS_ENABLED;
+    if ($changeStatus > 0) {
+      Response::responseRequest(HttpStatus::OK, true, $responseMessage, []);
     }
   }
 }

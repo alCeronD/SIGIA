@@ -20,24 +20,31 @@ export class Render extends HttpData {
    * @param {*} [bodyTbl=null] - El document.querySelector del body de la tabla
    * @param {*} [headerTable=null] - El header de la tabla
    * @param {string} [id=''] - el id primario del recurso que vamos a acceder, esto requererido para renderizar los botones de acciones.
+   * @param {{}} [customText={}] - objeto clave valor que contiene el campo que queremos personalizar, ejemplo = tp_status, usamos ese campo para validar su existencia y colocar en texto si esta habilitado o inhabilitado.
    * @returns {*}
    */
-  async renderData(bodyTbl = null, headerTable = null, id = '', data) {
+  async renderData(bodyTbl = null, headerTable = null, id = '', data = {}, customText = {}) {
     // NECESITO EL FETCH para renderizar la data.
     try {
       let fragmentBody = document.createDocumentFragment();
-
       this.#data = { ...data };
       bodyTbl.innerHTML = '';
       data.forEach((element) => {
-        let itemElement = element;
         let tr = document.createElement('tr');
         let tdItem = null;
         let buttons = null;
-        let idRow = itemElement[id];
+        const itemElement = element;
+        const idRow = itemElement[id];
         for (const [clave, valor] of Object.entries(itemElement)) {
           tdItem = document.createElement('td');
-          tdItem.innerText = valor;
+
+          // validamos si el objeto tiene una clave igual a al objeto data para asi personalizar el texto
+          let newValor = null;
+          if (Object.hasOwn(customText, clave)) {
+            // console.log(clave);
+            newValor = valor === 1 ? 'Habilitado' : 'Inhabilitado';
+          }
+          tdItem.innerText = newValor != null ? newValor : valor;
 
           // Aca tiene que ir la opcion de los botones.
           tr.append(tdItem);
@@ -61,12 +68,17 @@ export class Render extends HttpData {
    * @returns {*}
    */
   createButtons(idRow = '', fullRow = {}) {
-    let botones = this.objBotones;
-
     let tdOptions = document.createElement('td');
     for (const [key, value] of Object.entries(this.objBotones)) {
       let buttons = createBtn(key);
-      buttons.innerText = value.value;
+
+      // validamos si el value es una function o en su defecto solo texto, si es una function, ejecutar.
+      if (typeof value.value === 'function') {
+        buttons.innerText = value.value(fullRow);
+      } else {
+        buttons.innerText = value.value;
+      }
+
       buttons.dataset.id = idRow;
       // definimos si es un tipo de function y vamos a ejecutar.
       tdOptions.append(buttons);
