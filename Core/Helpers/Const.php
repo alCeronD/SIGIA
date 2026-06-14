@@ -8,6 +8,7 @@ define('CONTENT_TYPE', 'Content-Type: application/json; charset=utf-8');
 //Name Modules
 define('CR_CONFIG_MODULES', 'ConfigModules');
 define('CR_AREAS', 'Areas');
+define('CR_MARCAS', 'Marcas');
 
 
 // Words
@@ -67,3 +68,5 @@ define('CR_REGISTROS', 'registros');
 define('CR_CANTIDAD_PAGINAS', 'cantidadPaginas');
 define('CR_TOTAL_PAGINAS', 'totalPaginas');
 define('CR_DATA', 'data');
+define('CR_WORD_LIMIT', 'limit');
+define('CR_PAGINA', 'pagina');

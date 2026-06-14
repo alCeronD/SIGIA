@@ -1,6 +1,7 @@
-<?php 
+<?php
 
-class ValidateData{
+class ValidateData
+{
 
     public function __construct() {}
 
@@ -12,32 +13,29 @@ class ValidateData{
      * @throws \Exception
      * @return array{data: array, message: string, status: bool}
      */
-    public static function validarCampos(array $data = [], array $obligatorios = [], array $keysMensaje = []){
+    public static function validarCampos(array $data = [], array $obligatorios = [], array $keysMensaje = [])
+    {
         try {
 
             // Recorro los campos obligatorios para validar si tienen información.
             foreach ($obligatorios as $value) {
-                if(!isset($data[$value]) || trim($data[$value]) === ''){
+                if (!isset($data[$value]) || trim($data[$value]) === '') {
                     $nombreCampo = $keysMensaje[$value] ?? $value;
                     throw new Exception("El campo {$nombreCampo} Es obligatorio");
                 }
             }
 
             return [
-                'status'=> true,
-                'message'=> "Campos validos", 
-                'data'=>[]
+                'status' => true,
+                'message' => "Campos validos",
+                'data' => []
             ];
-
         } catch (Exception $e) {
             return [
-                'status'=> false,
-                'message'=> $e->getMessage(),
-                'data'=>[]
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => []
             ];
         }
     }
 }
-
-
-?>

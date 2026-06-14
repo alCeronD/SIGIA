@@ -210,6 +210,7 @@ abstract class Crud
   }
 
   # Function para preparar la consulta y pasar los valores por referencia
+  //TODO:: AGREGAR TRY Y CATCH Y VALIDAR QUE SE HAYAN ENVIADO LOS PARAMETROS ADECUADOS PARA SU EJECUCION.
   public function prepareSql(array $datos = [])
   {
     $select = explode(' ', $this->sql);

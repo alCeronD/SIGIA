@@ -1,6 +1,14 @@
-// Clase para renderizar datos y ejecutar procesos transaccionales.
 import { HttpData } from '../../js/utils/HttpData.js';
 import { createBtn } from './cases.js';
+
+/**
+ * Clase para renderizar datos y ejecutar procesos transaccionales.
+ *
+ * @export - la clase se exporta para darle uso en otros modulos y/o tablas.
+ * @class Render
+ * @typedef {Render}
+ * @extends {HttpData} - Clase que extiende de httpData, esta clase tiene la forma de hacer envios de peticiones al backend.
+ */
 export class Render extends HttpData {
   #data = {};
   #actualPage = null;
@@ -41,7 +49,6 @@ export class Render extends HttpData {
           // validamos si el objeto tiene una clave igual a al objeto data para asi personalizar el texto
           let newValor = null;
           if (Object.hasOwn(customText, clave)) {
-            // console.log(clave);
             newValor = valor === 1 ? 'Habilitado' : 'Inhabilitado';
           }
           tdItem.innerText = newValor != null ? newValor : valor;
@@ -61,7 +68,7 @@ export class Render extends HttpData {
   }
 
   /**
-   * Function para renderizar los botones de acción y habilitar un callback para ejecutar algun proceso.
+   * Function INTERNA para renderizar los botones de acción y habilitar un callback para ejecutar algun proceso.
    *
    * @param {string} [idRow=''] - el id de cada fila para asi implementar el id en el boton en caso de ser requerido
    * @param {string} [fullRow={}] - toda la fila con la informacion del elemento, esto recibe un objeto

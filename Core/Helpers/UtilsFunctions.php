@@ -38,7 +38,8 @@ class UtilsFunctions
             'Roles',
             'Usuarios',
             'SolicitudPrestamos',
-            'TipoDocumento'
+            'TipoDocumento',
+            'Marcas'
         ];
     }
 

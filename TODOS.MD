@@ -49,12 +49,18 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Implementar backend de eventos de actualizar, inhabilitar y eliminar pero la asignacion de evento sera en la tabla
 - [X] Implementar post de crear area
 - [X] Implementar frontend de acciones
-- [ ] Ajustar renderizado de datos cuando edito o creo un nuevo elemento.
-- [ ] Implementar cantidad de registros, boton de preview y next + mostrar la pagina, ejemplo: se muestran 0 de n registros
+- [X] Ajustar renderizado de datos cuando edito o creo un nuevo elemento.
+- [X] Implementar cantidad de registros, boton de preview y next + mostrar la pagina, ejemplo: se muestran 0 de n registros
 - [ ] Implementar rastro de miga
 
 ---
 
 - **Módulo tipo de documento**
-- [ ] Crear clase js para renderizar y enviar datos.
-- [ ] Aplicar lo mismo que el modulo areas.
+- [X] Crear clase js para renderizar y enviar datos.
+- [X] Aplicar lo mismo que el modulo areas.
+
+---
+
+- **Módulo marcas**
+- [ ] Crear instancia de clase para renderizar datos
+- [ ] crear eventos de manipulacion de datos

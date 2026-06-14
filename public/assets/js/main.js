@@ -9,7 +9,7 @@ import {
 // Inicializar selects de materialize.
 document.addEventListener('DOMContentLoaded', function () {
   M.updateTextFields();
-  // //Definir el resize del textarea del campo descripción del modulo de roles.
+  //Definir el resize del textarea del campo descripción del modulo de roles.
   M.textareaAutoResize(document.getElementById('rol_descripcionInput'));
 
   //buscar los modales
@@ -36,11 +36,10 @@ btnClose.forEach((btnCerrarSesion) => {
   btnCerrarSesion.addEventListener('click', (e) => {
     e.stopPropagation();
     e.preventDefault();
-    console.log(e.target);
 
     mostrarConfirmacion('Cerrar sesión', '¿Deseas salir de la aplicación?', async (r) => {
       if (!r) {
-        initAlert('Proceso cancelado', 'info', toastOptions);
+        initAlert('Proceso cancelado', 'info');
         return;
       }
       try {
