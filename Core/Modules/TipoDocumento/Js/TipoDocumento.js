@@ -1,5 +1,6 @@
 import {
   closeModal,
+  fillDataForm,
   initAlert,
   mostrarConfirmacion,
   openModal,
@@ -65,21 +66,10 @@ const eliminarItem = (id = 0) => {
 };
 // function para editar el registro
 const editarDepartamento = (id = 0, row = {}) => {
-  openModal(modalUpdate);
-  let input = null;
-  // recorro el objeto con los datos, extraigo en clave valor, busco el selector con el nombre sabiendo que el nombre del input debe ser igual al key e implemento su valor.
-  for (const [key, value] of Object.entries(row)) {
-    input =
-      formUpdate.querySelector(`input[name="${key}"]`) ||
-      formUpdate.querySelector(`textarea[name="${key}"]`);
-
-    // validamos, para asi validar que encontro el selector e implementarle su valor.
-    if (input != null) {
-      input.value = value;
-    }
-  }
+  fillDataForm(row, formUpdate);
   // inicializar el input con materialize.
   M.updateTextFields();
+  openModal(modalUpdate);
 };
 // function para cambiar el estado del registro
 const changeStatus = (id, fullRow) => {

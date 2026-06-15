@@ -1,5 +1,7 @@
 let regex = new RegExp();
 
+// TODO:: ARREGLAR LA REGLA DE NEGOCIO DE LAS EXPRESIONES REGULARES, DEBE DE HABER UN LIMITE EN LA CANTIDAD DE CARACTERES PERMITIDOS.
+
 // Reglas
 export const validationRules = {
   documento: {

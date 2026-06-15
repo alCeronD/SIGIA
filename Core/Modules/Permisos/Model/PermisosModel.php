@@ -201,11 +201,14 @@ class PermisosModel
             $optionsMenuClasificado[$moduloNombre] = $resultOptions;
         }
 
+
         $data = [
             'modulos' => $modulosMenu,
             'vistas' => $optionsMenu,
             'subMenus' => $optionsMenuClasificado
         ];
+
+
 
         return [
             'status' => true,

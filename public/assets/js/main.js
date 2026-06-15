@@ -1,11 +1,5 @@
-import {
-  Storage,
-  mostrarConfirmacion,
-  initAlert,
-  initTooltip,
-  toastOptions,
-  sendData,
-} from './utils/index.js';
+import { cancelProcess } from './utils/const.js';
+import { Storage, mostrarConfirmacion, initAlert, initTooltip, sendData } from './utils/index.js';
 // Inicializar selects de materialize.
 document.addEventListener('DOMContentLoaded', function () {
   M.updateTextFields();
@@ -39,7 +33,7 @@ btnClose.forEach((btnCerrarSesion) => {
 
     mostrarConfirmacion('Cerrar sesión', '¿Deseas salir de la aplicación?', async (r) => {
       if (!r) {
-        initAlert('Proceso cancelado', 'info');
+        initAlert(cancelProcess, 'info');
         return;
       }
       try {

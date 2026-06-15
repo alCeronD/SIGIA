@@ -12,7 +12,7 @@
 
     <div class="tblRoles">
         <table class="table table-bordered table-striped table-responsive tblConfigModules">
-            <thead class="table-dark">
+            <thead class="table-dark" id="headerRoles">
                 <tr>
                     <th>ID</th>
                     <th>Nombre del Rol</th>
@@ -28,10 +28,14 @@
     </div>
 </div>
 
-<?php require_once 'modalEditar.php';?>
+<?php require_once 'modalEditar.php'; ?>
 <?php require_once 'modalAsing.php'; ?>
 
 <!-- modal de confirmación -->
-<?php require_once __DIR__ .'/../../../Helpers/modalConfirmation.php'; ?>
+<?php require_once __DIR__ . '/../../../Helpers/modalConfirmation.php'; ?>
 
-<script type="module" src="../public/assets/js/Roles/roles.js"></script>
+
+<?php
+foreach ($_SESSION['js'] as $key => $url) { ?>
+    <script type="module" src="<?php echo htmlspecialchars("/../../Core/" . $url); ?>"></script>
+<?php } ?>

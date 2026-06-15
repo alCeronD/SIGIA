@@ -9,7 +9,7 @@ define('CONTENT_TYPE', 'Content-Type: application/json; charset=utf-8');
 define('CR_CONFIG_MODULES', 'ConfigModules');
 define('CR_AREAS', 'Areas');
 define('CR_MARCAS', 'Marcas');
-
+define('CR_ROLES', 'Roles');
 
 // Words
 define('CR_CONTROLLER', 'Controller');
@@ -70,3 +70,7 @@ define('CR_TOTAL_PAGINAS', 'totalPaginas');
 define('CR_DATA', 'data');
 define('CR_WORD_LIMIT', 'limit');
 define('CR_PAGINA', 'pagina');
+
+
+// name Functions
+define('CR_EDITAR_ROL', 'editarRol');

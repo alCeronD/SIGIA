@@ -1,9 +1,9 @@
 import { HttpData } from '../../js/utils/HttpData.js';
-import { createBtn } from './cases.js';
+import { createBtn } from './index.js';
 
 /**
  * Clase para renderizar datos y ejecutar procesos transaccionales.
- *
+ * @constructor - el constructor recibe un objeto, este objeto tiene los botones especificos para la acción, tiene un value, una key y un action, value contiene toda la logica de personalizacion del boton, ya sea su color, asignacion de atributos, ids, datas, entre otros, key es la clase inicial y action es una function especifica que ejecuta el boton en el evento click.
  * @export - la clase se exporta para darle uso en otros modulos y/o tablas.
  * @class Render
  * @typedef {Render}
@@ -15,7 +15,7 @@ export class Render extends HttpData {
   #objBotones = {};
   constructor(buttons = {}) {
     super();
-
+    // aplicamos spread (copiamos) el objeto recibido y lo guardamos en la propiedad.
     this.#objBotones = { ...buttons };
     this.#actualPage = 1;
   }
@@ -81,7 +81,9 @@ export class Render extends HttpData {
 
       // validamos si el value es una function o en su defecto solo texto, si es una function, ejecutar.
       if (typeof value.value === 'function') {
-        buttons.innerText = value.value(fullRow);
+        // buttons.innerText = value.value(fullRow, buttons);
+        const textResult = value.value(fullRow, buttons);
+        if (textResult) buttons.innerText = textResult;
       } else {
         buttons.innerText = value.value;
       }
@@ -127,9 +129,8 @@ export class Render extends HttpData {
     return this.#objBotones;
   }
 
+  // void para guardar la pagina en la propiedad del objeto.
   actualPage(page) {
     this.#actualPage = page;
   }
-
-  // Los setters deben tener declarado la palabra set seguido del nombre de la function.
 }

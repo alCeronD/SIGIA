@@ -216,6 +216,7 @@ abstract class Crud
     $select = explode(' ', $this->sql);
 
     $this->stmt = $this->conn->prepare($this->sql);
+
     #Extraigo la informacion
     $data = isset($datos['data']) ? ($datos['data']) : [];
 
@@ -275,6 +276,7 @@ abstract class Crud
       $checkSelect = explode(' ', $this->sql);
 
       $this->stmt->execute();
+
 
       # Verificamos si es un select para solamente devolver un arreglo asociativo
       if ((strpos($this->sql, 'SELECT') === 0) && ($checkSelect[0] === "SELECT")) {

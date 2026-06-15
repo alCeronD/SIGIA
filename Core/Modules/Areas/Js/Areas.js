@@ -98,12 +98,12 @@ s.tableBody.addEventListener('click', (e) => {
     try {
       mostrarConfirmacion(titleEliminar, s.textEstaSeguroEliminar, async (response) => {
         if (!response) {
-          initAlert(cancelProcess, 'info', toastOptions);
+          initAlert(cancelProcess, 'info');
           return;
         }
         const responseDelete = await sendData(`${s.url}deleteDepartment`, 'DELETE', data);
         if (responseDelete.status === 204) {
-          initAlert(deleteSuccess, 'success', toastOptions);
+          initAlert(deleteSuccess, 'success');
           renderData(s.actualPage);
           return;
         }

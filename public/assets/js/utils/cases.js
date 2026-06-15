@@ -43,6 +43,12 @@ export const openModal = (modal) => {
   modal.style.display = 'flex';
 };
 
+/**
+ * Function para crear un icono (aplica solo para materialize.)
+ *
+ * @param {*} text
+ * @returns {*}
+ */
 export const createI = (text) => {
   const i = document.createElement('i');
   i.setAttribute('class', 'material-icons');
@@ -63,6 +69,12 @@ export const createBtn = (valueClass = '') => {
   return button;
 };
 
+/**
+ * Funcion para agregar una clase a un selector
+ *
+ * @param {*} item - Selector al cual se le va a asignar la clase
+ * @param {{}} [valuesClass={}] - objeto en donde se los valores a adicionar a la clase.
+ */
 export const addClassItem = (item, valuesClass = {}) => {
   if (!valuesClass) {
     return;
@@ -565,4 +577,24 @@ export const setDate = () => {
 export const setObservacion = ({ baseText = '', selector = null, isRequired = false } = {}) => {
   selector.innerText = '';
   selector.innerText = isRequired ? `${baseText} *` : baseText;
+};
+
+/**
+ * Function para llenar los datos en un formulario de manera dinámica.
+ * para que la informacion se llene en el formulario, el name del parametro debe ser igual al name del input del formulario.
+ * @param {*} row - Objeto clave valor con la informacion para llenar en el formulario.
+ * @param {selector} formulario - selector del formulario
+ */
+export const fillDataForm = (row, formulario) => {
+  let input = null;
+  for (const [key, value] of Object.entries(row)) {
+    input =
+      formulario.querySelector(`input[name="${key}"]`) ||
+      formulario.querySelector(`textarea[name="${key}"]`);
+
+    // en base a la información enviada, validamos que exista el input, solo los que tienen el mismo nombre que la key se asigna el valor.
+    if (input != null) {
+      input.value = value;
+    }
+  }
 };

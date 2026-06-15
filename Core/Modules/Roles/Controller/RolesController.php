@@ -1,20 +1,15 @@
 <?php
-
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once BASE_URL . '/' . CR_AUTOLOAD;
-require_once BASE_URL . CR_ROUTE_CONN;
-
 
 class RolesController
 {
-    private RolesModel $modeloRol;
-    private PermisosModel $permisosModel;
-    private Conn $conn;
+    protected RolesModel $modeloRol;
+    protected PermisosModel $permisosModel;
 
     public function __construct()
     {
-        // Debo de cambiar esto, si voy a usar varios modales en un controlador, implementar una interfaz.
-        $this->conn = new Conn();
+
         $this->modeloRol = new RolesModel();
         $this->permisosModel = new PermisosModel();
     }
@@ -23,78 +18,86 @@ class RolesController
     {
         return include_once __DIR__ . '../../views/rolesViews.php';
     }
-    public function registrarRol(array $data = [])
-    {
-
-        validatePermisos('Roles', 'registrarRol');
-        $objPermisosModel = new PermisosModel();
-
-        $rol_nombre = $data['rol_nombre'];
-        $rol_descripcion = $data['rol_descripcion'];
-        $exito = $this->modeloRol->insertarRoles($rol_nombre, $rol_descripcion);
-        if (!$exito['status']) {
-            REsponse::fail('Error al registrar rol', $exito);
-        }
-        REsponse::success('Proceso Ejecutado con exito', $exito);
-        // Cuando se ejecute el proceso de asignacion de permisos, debo si o si llamar nuevamente a la función de render menu
-        // $objPermisosModel->renderMenu($_SESSION['usuario']['rl_id']);
-    }
-    public function editarRol(array $data = [])
-    {
-
-        validatePermisos('Roles', 'editarRol');
-
-        $rol_id = (int) $data['rol_id'];
-        $rol_nombre = $data['modal_rol_nombre'];
-        $rol_descripcion = $data['rol_descripcion'];
-        $responseRol = $this->modeloRol->actualizarRol($rol_id, $rol_nombre, $rol_descripcion);
-
-
-        if (!$responseRol['status']) {
-            Response::fail('Error al actualizar el recurso', $responseRol);
-        }
-        Response::success('Recurso actualizado', $responseRol);
-    }
-    public function statusRoles(array $data = [])
-    {
-        validatePermisos('Roles', 'statusRoles');
-        $idRol = (int) $data['idRol'];
-        $status = (int) $data['statusRol'] == 1 ? 0 : 1;
-
-        $exito = $this->modeloRol->eliminarRol($idRol, $status);
-        if (!$exito['status']) {
-            Response::fail('error al actualizar el estado del elemento');
-        }
-        Response::success('recurso actualizado', $exito);
-    }
     public function getRoles()
     {
-
-        $roles = $this->modeloRol->obtenerRoles();
-
-        Response::success('roles', $roles);
-    }
-
-    public function assingRoles()
-    {
-        validatePermisos('Roles', 'assingRoles');
-        $dataResult = $this->modeloRol->getRolesPermisos();
-
-        if (!$dataResult['status']) {
-            Response::fail('error al procesar la data', $dataResult);
+        header(CONTENT_TYPE);
+        $roles = $this->modeloRol->select()->prepareSql()->get();
+        if (count($roles) > 0) {
+            Response::responseRequest(HttpStatus::OK, true, 'registros', $roles);
         }
-        Response::success('roles y permisos encontrados', $dataResult);
     }
 
-    public function getPermisosRolAsig(int $rolId = 0)
+    public function editarRol()
     {
-        $rolesResult = $this->modeloRol->getPermisosFuncion($rolId);
 
-        if (!$rolesResult['status']) {
-            Response::fail('No hay permisos asociadas a este rol', $rolesResult);
-        }
-        Response::success('roles asociados', $rolesResult);
+        header(CONTENT_TYPE);
+        $data = UtilsFunctions::returnGetDecode();
+        var_dump($data);
+        die();
+        // validatePermisos('Roles', 'editarRol');
+
+        // $rol_id = (int) $data['rol_id'];
+        // $rol_nombre = $data['modal_rol_nombre'];
+        // $rol_descripcion = $data['rol_descripcion'];
+        // $responseRol = $this->modeloRol->actualizarRol($rol_id, $rol_nombre, $rol_descripcion);
+
+
+        // if (!$responseRol['status']) {
+        // Response::fail('Error al actualizar el recurso', $responseRol);
+        // Response::success('Recurso actualizado', $responseRol);
     }
+
+    // public function registrarRol(array $data = [])
+    // {
+
+    //     validatePermisos('Roles', 'registrarRol');
+    //     $objPermisosModel = new PermisosModel();
+
+    //     $rol_nombre = $data['rol_nombre'];
+    //     $rol_descripcion = $data['rol_descripcion'];
+    //     $exito = $this->modeloRol->insertarRoles($rol_nombre, $rol_descripcion);
+    //     if (!$exito['status']) {
+    //         REsponse::fail('Error al registrar rol', $exito);
+    //     }
+    //     REsponse::success('Proceso Ejecutado con exito', $exito);
+    //     // Cuando se ejecute el proceso de asignacion de permisos, debo si o si llamar nuevamente a la función de render menu
+    //     // $objPermisosModel->renderMenu($_SESSION['usuario']['rl_id']);
+    // }
+
+    // public function statusRoles(array $data = [])
+    // {
+    //     validatePermisos('Roles', 'statusRoles');
+    //     $idRol = (int) $data['idRol'];
+    //     $status = (int) $data['statusRol'] == 1 ? 0 : 1;
+
+    //     $exito = $this->modeloRol->eliminarRol($idRol, $status);
+    //     if (!$exito['status']) {
+    //         Response::fail('error al actualizar el estado del elemento');
+    //     }
+    //     Response::success('recurso actualizado', $exito);
+    // }
+
+
+    // public function assingRoles()
+    // {
+    //     validatePermisos('Roles', 'assingRoles');
+    //     $dataResult = $this->modeloRol->getRolesPermisos();
+
+    //     if (!$dataResult['status']) {
+    //         Response::fail('error al procesar la data', $dataResult);
+    //     }
+    //     Response::success('roles y permisos encontrados', $dataResult);
+    // }
+
+    // public function getPermisosRolAsig(int $rolId = 0)
+    // {
+    //     $rolesResult = $this->modeloRol->getPermisosFuncion($rolId);
+
+    //     if (!$rolesResult['status']) {
+    //         Response::fail('No hay permisos asociadas a este rol', $rolesResult);
+    //     }
+    //     Response::success('roles asociados', $rolesResult);
+    // }
 
     public function setPermisos(array $data = [])
     {
