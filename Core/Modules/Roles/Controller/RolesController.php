@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../Helpers/Const.php';
+require_once __DIR__ . '/../Const/RolesConst.php';
 require_once BASE_URL . '/' . CR_AUTOLOAD;
 
 class RolesController
@@ -29,54 +30,65 @@ class RolesController
 
     public function editarRol()
     {
-
         header(CONTENT_TYPE);
         $data = UtilsFunctions::returnGetDecode();
-        var_dump($data);
-        die();
-        // validatePermisos('Roles', 'editarRol');
-
-        // $rol_id = (int) $data['rol_id'];
-        // $rol_nombre = $data['modal_rol_nombre'];
-        // $rol_descripcion = $data['rol_descripcion'];
-        // $responseRol = $this->modeloRol->actualizarRol($rol_id, $rol_nombre, $rol_descripcion);
-
-
-        // if (!$responseRol['status']) {
-        // Response::fail('Error al actualizar el recurso', $responseRol);
-        // Response::success('Recurso actualizado', $responseRol);
+        $data['rl_id'] = (int) $data['rl_id']; //transformarmos el id del rol en int.
+        $updateSql['data'] = $data;
+        $responseUpdate = $this->modeloRol->update($data)->where()->prepareSql($updateSql)->get();
+        $codeResponse = $responseUpdate > 0 ? HttpStatus::OK : HttpStatus::NOT_FOUNT;
+        $messageResponse = $responseUpdate ? MSG_REGISTRO_ACTUALIZAOD : MSG_ERROR_EJECUTAR_PROCESO;
+        Response::responseRequest($codeResponse, true, $messageResponse, []);
     }
 
-    // public function registrarRol(array $data = [])
-    // {
+    public function statusRoles()
+    {
+        header(CONTENT_TYPE);
+        $data = UtilsFunctions::returnGetDecode();
+        $dataUpdate['data'] = $data;
+        $responseChangeStatusRol = $this->modeloRol->update($data)->where()->prepareSql($dataUpdate)->get();
+        $message = null;
 
-    //     validatePermisos('Roles', 'registrarRol');
-    //     $objPermisosModel = new PermisosModel();
+        // valido dependiendo de la cantidad de filas afectadas.
+        if ($responseChangeStatusRol > 0) {
+            // dependiendo del estado enviado, personalizamos el mensaje enviado al cliente.
+            if ($data['rl_status'] === 1) {
+                $message = RL_MESSAGE_SUCCESS_ENABLED;
+            } else {
+                $message = RL_MESSAGE_SUCCESS_DISABLED;
+            }
+        }
 
-    //     $rol_nombre = $data['rol_nombre'];
-    //     $rol_descripcion = $data['rol_descripcion'];
-    //     $exito = $this->modeloRol->insertarRoles($rol_nombre, $rol_descripcion);
-    //     if (!$exito['status']) {
-    //         REsponse::fail('Error al registrar rol', $exito);
-    //     }
-    //     REsponse::success('Proceso Ejecutado con exito', $exito);
-    //     // Cuando se ejecute el proceso de asignacion de permisos, debo si o si llamar nuevamente a la función de render menu
-    //     // $objPermisosModel->renderMenu($_SESSION['usuario']['rl_id']);
-    // }
+        Response::responseRequest(HttpStatus::OK, true, $message, []);
+    }
 
-    // public function statusRoles(array $data = [])
-    // {
-    //     validatePermisos('Roles', 'statusRoles');
-    //     $idRol = (int) $data['idRol'];
-    //     $status = (int) $data['statusRol'] == 1 ? 0 : 1;
+    public function registrarRol(array $data = [])
+    {
+        header(CONTENT_TYPE);
+        $data = UtilsFunctions::returnGetDecode();
+        $data['rl_status'] = 1;
+        $dataInsert['data'] = $data;
+        $responseAddRol = $this->modeloRol->insert($data)->prepareSql($dataInsert)->get();
+        if ($responseAddRol) {
+            Response::responseRequest(HttpStatus::CREATED, true, RL_MESSAGE_CREATED_ROL, []);
+        }
+    }
 
-    //     $exito = $this->modeloRol->eliminarRol($idRol, $status);
-    //     if (!$exito['status']) {
-    //         Response::fail('error al actualizar el estado del elemento');
-    //     }
-    //     Response::success('recurso actualizado', $exito);
-    // }
+    public function deleteRol()
+    {
+        header(CONTENT_TYPE);
+        $data = UtilsFunctions::returnGetDecode();
+        $dataDelete['data'] = $data;
+        if ($data['rl_id'] === 1 || $data['rl_id'] === 2) {
+            Response::responseRequest(HttpStatus::UNAUTHORIZED, false, RL_MESSAGE_ERROR_DELETE, []);
+        }
 
+        // si mando un id relacionado con la tabla roles_funciones me va a devolver un error de foraneas: - tengo que borrar los roles de las funciones y de ahi si borrar el rol. si envio un id de rol que no este asociado a ninguna funcion, ahi si no marca error.
+        //Error: Cannot delete or update a parent row: a foreign key constraint fails (sigia.roles_funcionesCONSTRAINT fk_rol FOREIGN KEY (rlp_id_rl) REFERENCES roles (rl_id))
+        $responseDeleteRol = $this->modeloRol->delete()->where()->prepareSql($dataDelete)->get();
+        if ($responseDeleteRol) {
+            Response::responseRequest(HttpStatus::OK, true, RL_MESSAGE_SUCCESS_DELETE, []);
+        }
+    }
 
     // public function assingRoles()
     // {
@@ -99,120 +111,26 @@ class RolesController
     //     Response::success('roles asociados', $rolesResult);
     // }
 
-    public function setPermisos(array $data = [])
-    {
+    /**
+     * Function para establecer los permisos asociados al rol.
+     *
+     * @param array $data
+     * @return void
+     */
+    // public function setPermisos(array $data = [])
+    // {
 
-        $rolId = $_SESSION['usuario']['rol_id'];
+    //     $rolId = $_SESSION['usuario']['rol_id'];
 
-        $responsePermisos = $this->modeloRol->assocPermisos($data);
+    //     $responsePermisos = $this->modeloRol->assocPermisos($data);
 
-        if (!$responsePermisos['status']) {
-            Response::fail('error al ejecutar el proceso', $responsePermisos);
-        }
+    //     if (!$responsePermisos['status']) {
+    //         Response::fail('error al ejecutar el proceso', $responsePermisos);
+    //     }
 
-        $result = $this->permisosModel->renderMenu($rolId);
-        var_dump($result);
-        $_SESSION['renderMenu'] = $result['data'];
-        Response::success('Permisos Asociados correctamente', $responsePermisos);
-    }
-
-    public function prueba(String $value = 'hola')
-    {
-        Response::success('prueba exitosa', ['value' => $value]);
-    }
-}
-
-$objRolesController = new RolesController();
-
-if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
-    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-        $case = $_GET['action'] ?? '';
-        $pages = $_GET['pages'] ?? 1;
-
-        $codigo = $_GET['codigo'] ?? 0;
-        $codigo = (int) $codigo;
-        $dataIdRol = $_GET['idRol'] ?? null;
-
-        switch ($case) {
-            case 'getRoles':
-                if (method_exists($objRolesController, 'getRoles')) {
-                    $objRolesController->getRoles();
-                }
-                break;
-
-            // Obtengo todos las funciones y modulos a las cuales pertenecen
-            case 'getRolesPermisos':
-                if (method_exists($objRolesController, 'assingRoles')) {
-                    $objRolesController->assingRoles();
-                }
-
-            case 'getPermisosRolAsig':
-                if (method_exists($objRolesController, 'getPermisosRolAsig')) {
-                    $objRolesController->getPermisosRolAsig($dataIdRol);
-                }
-
-                break;
-
-            case 'prueba':
-                if (method_exists($objRolesController, 'prueba')) {
-                    $objRolesController->prueba();
-                }
-
-            default:
-
-                break;
-        }
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
-        $input = file_get_contents("php://input");
-        $data = json_decode($input, true);
-
-        $action = $data['action'];
-        unset($data['action']);
-
-        switch ($action) {
-            case 'updateRol':
-                if (method_exists($objRolesController, 'editarRol')) {
-                    $objRolesController->editarRol($data);
-                }
-
-                break;
-
-            case 'statusRol':
-                if (method_exists($objRolesController, 'statusRoles')) {
-                    $objRolesController->statusRoles($data);
-                }
-                break;
-
-            default:
-
-                break;
-        }
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $input = file_get_contents("php://input");
-        $dataAdd = json_decode($input, true);
-        $action = $dataAdd['action'];
-        unset($dataAdd['action']);
-        $newData = $dataAdd;
-        switch ($action) {
-            case 'addRol':
-                if (method_exists($objRolesController, 'registrarRol')) {
-                    $objRolesController->registrarRol($newData);
-                }
-                break;
-
-            case 'setPermisos':
-                if (method_exists($objRolesController, 'setPermisos')) {
-                    $objRolesController->setPermisos($newData);
-                }
-                break;
-
-            default:
-                # code...
-                break;
-        }
-    }
+    //     $result = $this->permisosModel->renderMenu($rolId);
+    //     var_dump($result);
+    //     $_SESSION['renderMenu'] = $result['data'];
+    //     Response::success('Permisos Asociados correctamente', $responsePermisos);
+    // }
 }

@@ -31,6 +31,20 @@ const headerRoles = document.querySelector('#headerRoles');
 // Botón de pre confirmación del elemento.
 const preconfirmButton = document.querySelector('#preconfirmButton');
 let rolId = null;
+// objetos para validar cuales son los campos opcionales
+const mapObj = {
+  rl_nombre: 'Nombre del Rol',
+  rl_descripcion: 'Descripción del Rol',
+  rl_id: 'ID del Rol',
+};
+
+const mapObjAdd = {
+  rl_nombre: 'Nombre del Rol',
+  rl_descripcion: 'Descripción del Rol',
+};
+
+// campos opcionales para validar los campos digitados por el usuario.
+const optionals = ['rol_descripcion'];
 let functionIdsAssoc = new Set();
 // Funciones descartadas para enviar a eliminar.
 let functionDesc = new Set();
@@ -76,7 +90,7 @@ const renderClass = new Render({
       button.appendChild(iconStatus);
     },
     key: 'btnStatus',
-    action: (idRow) => changeStatusRol(idRow),
+    action: (idRow, rowRol) => changeStatusRol(idRow, rowRol),
   },
 });
 let getRoles = null;
@@ -399,19 +413,50 @@ const editarInformacionRol = (id, rowRol) => {
   openModal(modalEditar);
 };
 
-// objetos para validar cuales son los campos opcionales
-const mapObj = {
-  rl_nombre: 'Nombre del Rol',
-  rl_descripcion: 'Descripción del Rol',
-  rl_id: 'ID del Rol',
-};
+/**
+ * Function para cambiar el estado del rol
+ * @param {*} idRow - id del registro
+ * @param {*} statusRow - objeto clave valor con la informacion del rol.
+ */
+const changeStatusRol = (idRow, statusRow) => {
+  const dataChangeStatus = {
+    rl_status: statusRow.rl_status === 1 ? 2 : 1,
+    rl_id: statusRow.rl_id,
+  };
 
-const mapObjAdd = {
-  rl_nombre: 'Nombre del Rol',
-  rl_descripcion: 'Descripción del Rol',
-};
+  let message = null;
+  let title = null;
+  if (statusRow.rl_status === 1) {
+    message =
+      '¿Esta seguro de inhabilitar este rol? Esto impedirá el acceso a los usuarios asociados a este rol';
+    title = 'Inhabilitar rol';
+  } else {
+    message =
+      '¿Esta seguro de habilitar este rol? Esto dará acceso a los modulos permitidos relacionados con el rol.';
+    title = 'Habilitar rol';
+  }
 
-const optionals = ['rol_descripcion'];
+  mostrarConfirmacion(title, message, async (response) => {
+    try {
+      if (!response) return;
+
+      const responseChangeStatusRol = await renderClass.sendData(
+        `${url}statusRoles`,
+        'PUT',
+        dataChangeStatus
+      );
+      if (responseChangeStatusRol.status) {
+        initAlert(responseChangeStatusRol.message, 'success');
+        renderRoles();
+      } else {
+        initAlert(responseChangeStatusRol.message, 'info');
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  });
+};
 
 // evento submit para editar informacion del rol.
 formEditarRol.addEventListener('submit', async (e) => {
@@ -429,21 +474,29 @@ formEditarRol.addEventListener('submit', async (e) => {
     return;
   }
 
-  // try {
-  //   const updateInfo = await sendData(
-  //     'modules/roles/controller/rolesController.php',
-  //     'PUT',
-  //     'updateRol',
-  //     objData
-  //   );
-  //   if (updateInfo.status) {
-  //     renderRoles();
-  //     initAlert('Recurso actualizado', 'success', toastOptions);
-  //     modalEditar.close();
-  //   }
-  // } catch (error) {
-  //   initAlert(`${error.message}`, 'error', `${error}`);
-  // }
+  mostrarConfirmacion('Actualizar rol', '¿Esta seguro de actualizar el rol?', async (response) => {
+    try {
+      if (!response) {
+        // ocultar modal
+        modalEditar.style.display = 'none';
+        return;
+      }
+
+      const updateInfo = await sendData(`${url}editarRol`, 'PUT', objData);
+      if (updateInfo.status) {
+        renderRoles();
+        initAlert(updateInfo.message, 'success');
+        modalEditar.style.display = 'none';
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  try {
+  } catch (error) {
+    initAlert(`${error.message}`, 'error', `${error}`);
+  }
 });
 
 // crear rol
@@ -458,19 +511,15 @@ formRol.addEventListener('submit', async (e) => {
       campos: optionals,
       mapForm: mapObjAdd,
     })
-  )
+  ) {
     return;
+  }
 
   try {
-    const responseAdd = await sendData(
-      'modules/roles/controller/rolesController.php',
-      'POST',
-      'addRol',
-      data
-    );
+    const responseAdd = await sendData(`${url}registrarRol`, 'POST', data);
 
     if (responseAdd.status) {
-      initAlert('Rol agregado a la base de datos con exito', 'success', toastOptions);
+      initAlert(responseAdd.message, 'success');
       renderRoles();
       formRol.reset();
     }
@@ -478,6 +527,7 @@ formRol.addEventListener('submit', async (e) => {
     initAlert(`${error.message}`, 'error', toastOptions);
   }
 });
+
 document.addEventListener('DOMContentLoaded', () => {
   renderRoles();
   closeModal(modalAsing, closeModalBtnAsing, () => {

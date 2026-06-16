@@ -11,25 +11,6 @@ class RolesModel extends Crud
         'rl_status'
     ];
 
-    // Método para obtener todos los roles
-    // public function obtenerRoles()
-    // {
-    //     $roles = [];
-
-    //     $conn = (new Conn())->getConnect();
-    //     $sql = "SELECT * FROM roles";
-    //     $resultado = $conn->query($sql);
-
-    //     if ($resultado) {
-    //         while ($fila = $resultado->fetch_array(MYSQLI_ASSOC)) {
-    //             $roles[] = $fila;
-    //         }
-    //     }
-
-    //     $conn->close();
-    //     return $roles;
-    // }
-
     // public function obtenerRol(int $id = 0)
     // {
     //     if (!is_int($id) || !$id) {
@@ -49,94 +30,6 @@ class RolesModel extends Crud
     //     return $rol;
     // }
 
-    // public function insertarRoles($rol_nombre, $rol_descripcion)
-    // {
-    //     try {
-    //         $conn = (new Conn())->getConnect();
-    //         $rol_status = 1;
-
-    //         $sql = "INSERT INTO roles (rl_nombre, rl_descripcion, rl_status)
-    //             VALUES (?, ?, ?)";
-
-    //         $stmtAddRol = $conn->prepare($sql);
-    //         if (!$stmtAddRol) {
-    //             $conn->close();
-    //             return [
-    //                 'message' => "Error al preparar la consulta: " . $conn->error,
-    //                 'status' => false,
-    //                 'data' => []
-    //             ];
-    //         }
-
-    //         // 'ssi': string, string, integer
-    //         $stmtAddRol->bind_param('ssi', $rol_nombre, $rol_descripcion, $rol_status);
-
-    //         if (!$stmtAddRol->execute()) {
-    //             $conn->close();
-    //             return [
-    //                 'message' => "Error al ejecutar la consulta: " . $stmtAddRol->error,
-    //                 'status' => false,
-    //                 'data' => []
-    //             ];
-    //         }
-
-    //         // Opcional: obtener el ID insertado si lo necesitas
-    //         $insertId = $stmtAddRol->insert_id;
-
-    //         $conn->close();
-    //         return [
-    //             'message' => "Rol insertado correctamente",
-    //             'status' => true,
-    //             'data' => [$insertId]
-    //         ];
-    //     } catch (\Throwable $th) {
-    //         return [
-    //             'status' => false,
-    //             'message' => $th,
-    //             'data' => []
-    //         ];
-    //     }
-    // }
-    // public function eliminarRol($rl_id, $status)
-    // {
-
-    //     try {
-    //         $conn = (new Conn())->getConnect();
-    //         $sql = "UPDATE roles SET rl_status = ? WHERE rl_id = ?";
-    //         $stmtRol = $conn->prepare($sql);
-    //         if (!$stmtRol) {
-    //             $conn->close();
-    //             return
-    //                 [
-    //                     'status' => false,
-    //                     'message' => "error al preparar consulta" . $conn->error,
-    //                     'data' => []
-    //                 ];
-    //         }
-
-    //         $stmtRol->bind_param('ii', $status, $rl_id);
-
-    //         if (!$stmtRol->execute()) {
-    //             $conn->close();
-    //             return [
-    //                 'message' => "error al ejecutar la consulta",
-    //                 'status' => false,
-    //                 'data' => []
-    //             ];
-    //         }
-    //         return [
-    //             'message' => 'recurso actualizado',
-    //             'status' => true,
-    //             'data' => []
-    //         ];
-    //     } catch (\Throwable $e) {
-    //         return [
-    //             'message' => "errror al ejecutar el procedimiento" . $e->getMessage(),
-    //             'status' => false,
-    //             'data' => []
-    //         ];
-    //     }
-    // }
 
     // // Actualizo rol del usuario
     // public function actRolUser($id_user, $rol_id)

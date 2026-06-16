@@ -1,5 +1,9 @@
 <?php
 
+use PhpParser\Node\Stmt\TryCatch;
+
+use function PHPUnit\Framework\throwException;
+
 require_once __DIR__ . '/../Helpers/Autoload.php';
 
 #Clase crud para crear toda la estructura general de consultas.
@@ -213,58 +217,62 @@ abstract class Crud
   //TODO:: AGREGAR TRY Y CATCH Y VALIDAR QUE SE HAYAN ENVIADO LOS PARAMETROS ADECUADOS PARA SU EJECUCION.
   public function prepareSql(array $datos = [])
   {
-    $select = explode(' ', $this->sql);
+    try {
 
-    $this->stmt = $this->conn->prepare($this->sql);
+      $select = explode(' ', $this->sql);
 
-    #Extraigo la informacion
-    $data = isset($datos['data']) ? ($datos['data']) : [];
 
-    // Si es un select, solamente preparamos la consulta y retornamos su resultado
-    if ((strpos($this->sql, 'SELECT') === 0) && ($select[0] === "SELECT")) {
+      $this->stmt = $this->conn->prepare($this->sql);
 
-      // validar si tiene un COUNT para solo devolver la consulta
-      $hasCount = str_contains($this->sql, "COUNT");
-      if ($hasCount) {
+      #Extraigo la informacion
+      $data = isset($datos['data']) ? ($datos['data']) : [];
+
+      // Si es un select, solamente preparamos la consulta y retornamos su resultado
+      if ((strpos($this->sql, 'SELECT') === 0) && ($select[0] === "SELECT")) {
+
+        // validar si tiene un COUNT para solo devolver la consulta
+        $hasCount = str_contains($this->sql, "COUNT");
+        if ($hasCount) {
+          return $this;
+        }
+
+        // validar si el string contiene o WHERE u OFFSET O LIMIT
+        $hasOffset = str_contains($this->sql, "OFFSET");
+        $hasLimit = str_contains($this->sql, "LIMIT");
+
+        # Validar si requiere paginación
+        if ($hasOffset && $hasLimit) {
+          foreach ($data as $key => $value) {
+            $this->stmt->bindValue(":{$key}", $value);
+          }
+        }
+        foreach ($data as $key => $value) {
+          $marcador = ":" . $key;
+          // valido si el marcador enviado existe en los datos que enviamos, si existe, este lo agrega en su valor.
+          if (str_contains($this->sql, $marcador)) {
+            $this->stmt->bindValue(":{$key}", $value);
+          }
+        }
+        return $this;
+      } else {
+        if (empty($datos)) throw new PDOException('Faltan datos de ejecuccion');
+
+
+        foreach ($data as $key => $value) {
+          $marcador = ":" . $key;
+
+          if (str_contains($this->sql, $marcador)) {
+            $this->stmt->bindValue($marcador, $value);
+          }
+        }
         return $this;
       }
-
-      // validar si el string contiene o WHERE u OFFSET O LIMIT
-      $hasOffset = str_contains($this->sql, "OFFSET");
-      $hasLimit = str_contains($this->sql, "LIMIT");
-
-      # Validar si requiere paginación
-      if ($hasOffset && $hasLimit) {
-        foreach ($data as $key => $value) {
-          $this->stmt->bindValue(":{$key}", $value);
-        }
-      }
-
-      foreach ($data as $key => $value) {
-        $marcador = ":" . $key;
-        // valido si el marcador enviado existe en los datos que enviamos, si existe, este lo agrega en su valor.
-        if (str_contains($this->sql, $marcador)) {
-          $this->stmt->bindValue(":{$key}", $value);
-        }
-      }
-
-
-      return $this;
-    } else {
-
-
-      foreach ($data as $key => $value) {
-        $marcador = ":" . $key;
-
-        if (str_contains($this->sql, $marcador)) {
-          $this->stmt->bindValue($marcador, $value);
-        }
-      }
-
-      return $this;
+    } catch (\PDOException $th) {
+      return [
+        'status' => false,
+        'message' => $th->getMessage(),
+      ];
     }
-
-    return $this;
   }
 
 
