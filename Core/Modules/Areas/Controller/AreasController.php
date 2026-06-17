@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../..' . CR_ROUTE_CONST;
 require_once __DIR__ . '/../Const/AreasConst.php';
 require_once BASE_URL . '/Autoload.php';
 
-class AreasController
+class AreasController implements CrudInterface
 {
   protected AreasModel $AreasModel;
 
@@ -41,7 +41,7 @@ class AreasController
       ]);
     }
   }
-  public function createDepartment()
+  public function store()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
@@ -87,7 +87,7 @@ class AreasController
       Response::responseRequest(HttpStatus::NO_CONTENT, true, '', []);
     }
   }
-  public function editDepartment()
+  public function save()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
@@ -113,7 +113,7 @@ class AreasController
       Response::responseRequest(HttpStatus::NO_CONTENT, true, '', []);
     }
   }
-  public function deleteDepartment()
+  public function delete()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();

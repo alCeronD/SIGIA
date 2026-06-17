@@ -1,0 +1,24 @@
+.contentRolesFunciones {
+  display: grid;
+  width: 100%;
+  grid-template-areas: "titleRolesRunciones"
+    "selectRol"
+    "tblRolesFunciones";
+  height: fit-content;
+}
+
+.titleRolesFunciones {
+  grid-area: titleRolesFunciones;
+  display: flex;
+  justify-content: space-between;
+}
+
+.selectRol {
+  display: flex;
+  align-items: left;
+  grid-area: selectRol
+}
+
+.tblRolesFunciones {
+  grid-area: tblRolesFunciones
+}

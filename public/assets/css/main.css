@@ -170,6 +170,9 @@ input[type="number"] {
 /* Esta estructura menu corresponde al titulo  */
 .menuTitle {
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /* Estilo a las tablas del modulo de configuración */

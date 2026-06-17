@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../..' . CR_ROUTE_CONST;
 require_once __DIR__ . '/../Const/TpConst.php';
 require_once BASE_URL . '/Autoload.php';
-class TipoDocumentoController
+class TipoDocumentoController implements CrudInterface
 {
   // implementar el modulo
   protected TipoDocumentoModel $tpModel;
@@ -18,7 +18,6 @@ class TipoDocumentoController
   {
     return include_once __DIR__ . '/../Views/tpDocumentoView.php';
   }
-
 
   public function getData()
   {
@@ -49,7 +48,7 @@ class TipoDocumentoController
     }
   }
 
-  public function createDepartment()
+  public function store()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
@@ -63,7 +62,7 @@ class TipoDocumentoController
     }
   }
 
-  public function deleteItem()
+  public function delete()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
@@ -74,7 +73,7 @@ class TipoDocumentoController
     }
   }
 
-  public function updateItem()
+  public function save()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();

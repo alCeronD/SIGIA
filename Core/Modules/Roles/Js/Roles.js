@@ -69,7 +69,7 @@ const renderClass = new Render({
     action: (id, rowRol) => editarInformacionRol(id, rowRol),
   },
   bntStatus: {
-    // propiedades del boton
+    // propiedades del boton como texto, color o en su defecto icono.
     value: (rowId, button) => {
       button.setAttribute('type', 'button');
       button.setAttribute('data-id', `${rowId.rl_id}`);
@@ -79,7 +79,7 @@ const renderClass = new Render({
       let iconStatus = null;
       let propertiesButton = null;
       if (rowId.rl_status === 1) {
-        propertiesButton = { btn: 'btn', waves: 'waves-red', red: 'red' };
+        propertiesButton = { btn: 'btn', waves: 'waves-orange', orange: 'orange' };
         iconStatus = createI('clear');
       } else {
         propertiesButton = { btn: 'btn', waves: 'waves-green', green: 'green' };
@@ -91,6 +91,21 @@ const renderClass = new Render({
     },
     key: 'btnStatus',
     action: (idRow, rowRol) => changeStatusRol(idRow, rowRol),
+  },
+  btnDelete: {
+    value: (rowId, button) => {
+      button.setAttribute('type', 'button');
+      button.setAttribute('data-id', `${rowId.rl_id}`);
+      button.setAttribute('class', 'btnStatus');
+      let iconStatus = null;
+      let propertiesButton = null;
+      propertiesButton = { btn: 'btn', waves: 'waves-red', red: 'red' };
+      iconStatus = createI('delete_forever');
+      addClassItem(button, propertiesButton);
+      button.appendChild(iconStatus);
+    },
+    key: 'btnDelete',
+    action: (idRow) => deleteRol(idRow),
   },
 });
 let getRoles = null;
@@ -194,6 +209,10 @@ const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
     contenedorModulo.appendChild(divFunciones);
     asigPermisosContent.appendChild(contenedorModulo);
   });
+};
+
+const deleteRol = (id) => {
+  console.log(id);
 };
 
 // Delegación de responsabilidad a las funciones asociados al rol.

@@ -52,18 +52,27 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Ajustar renderizado de datos cuando edito o creo un nuevo elemento.
 - [X] Implementar cantidad de registros, boton de preview y next + mostrar la pagina, ejemplo: se muestran 0 de n registros
 - [ ] Implementar rastro de miga
+- [X] implementar interfaz de crud al controlador
+- [ ] Crear logica que me permita definir cuales son los archivos que vamos a implementar en la vista, aplica para los css y javascript, esto se puede ejecutar cuando accedamos a la vista.
 
 ---
 
 - **Módulo tipo de documento**
 - [X] Crear clase js para renderizar y enviar datos.
 - [X] Aplicar lo mismo que el modulo areas.
+- [X] implementar interfaz de crud al controlador
 
 ---
 
 - **Módulo marcas**
-- [ ] Crear instancia de clase para renderizar datos
-- [ ] crear eventos de manipulacion de datos
+- [X] Crear instancia de clase para renderizar datos
+- [X] crear eventos de manipulacion de datos
+- [X] implementar interfaz de crud al controlador
+
+---
+
+- **Modulos roles**
+- [ ] Crear una vista tipo dashboard adicional que me permita seleccionar el accionar de ver las funciones asociadas al rol y la gestion de roles
 
 ---
 

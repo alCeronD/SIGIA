@@ -51,7 +51,7 @@ const eliminarItem = (id = 0) => {
           initAlert('Proceso cancelado', 'info');
           return;
         }
-        const responseDelete = await render.sendData(`${url}deleteItem`, 'DELETE', { tp_id: id });
+        const responseDelete = await render.sendData(`${url}delete`, 'DELETE', { tp_id: id });
         if (responseDelete.status) {
           initAlert(responseDelete.message, 'success');
           loadTable();
@@ -146,7 +146,7 @@ formUpdate.addEventListener('submit', (g) => {
             formUpdate.reset();
           });
         }
-        const responseUpdate = await render.sendData(`${url}updateItem`, 'PUT', dataUpdate);
+        const responseUpdate = await render.sendData(`${url}save`, 'PUT', dataUpdate);
         if (responseUpdate.status) {
           modalUpdate.style.display = 'none';
           formUpdate.reset();
@@ -179,7 +179,7 @@ formTp.addEventListener('submit', (f) => {
 
         let formData = new FormData(f.target);
         let dataForm = Object.fromEntries(formData);
-        let responseCreate = await render.sendData(`${url}createDepartment`, 'POST', dataForm);
+        let responseCreate = await render.sendData(`${url}store`, 'POST', dataForm);
 
         if (responseCreate.status) {
           initAlert(responseCreate.message, 'success');

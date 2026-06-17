@@ -39,7 +39,7 @@ class MarcasController
       Response::responseRequest(HttpStatus::OK, true, "Registros", $responseGetData);
     }
   }
-  public function updateMarca()
+  public function save()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
@@ -55,7 +55,7 @@ class MarcasController
       Response::responseRequest(HttpStatus::OK, true, MA_UPDATE_SUCCESS, []);
     }
   }
-  public function createMarca()
+  public function store()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
@@ -67,7 +67,7 @@ class MarcasController
       Response::responseRequest(HttpStatus::OK, true, MA_INSERT_SUCCESS, []);
     }
   }
-  public function deleteMarca()
+  public function delete()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();

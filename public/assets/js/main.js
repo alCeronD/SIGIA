@@ -1,15 +1,27 @@
 import { cancelProcess } from './utils/const.js';
-import { Storage, mostrarConfirmacion, initAlert, initTooltip, sendData } from './utils/index.js';
+import {
+  Storage,
+  mostrarConfirmacion,
+  initAlert,
+  initTooltip,
+  sendData,
+  optionsSelect,
+} from './utils/index.js';
+
 // Inicializar selects de materialize.
 document.addEventListener('DOMContentLoaded', function () {
-  M.updateTextFields();
+  // M.updateTextFields();
   //Definir el resize del textarea del campo descripción del modulo de roles.
-  M.textareaAutoResize(document.getElementById('rol_descripcionInput'));
+  // M.textareaAutoResize(document.getElementById('rol_descripcionInput'));
 
   //buscar los modales
   const elemsModals = document.querySelectorAll('.modal');
   //inicializar los modales
   M.Modal.init(elemsModals);
+
+  // inicializar selects
+  const selectsMaterialize = document.querySelectorAll('select');
+  let instances = M.FormSelect.init(selectsMaterialize, optionsSelect);
 });
 
 const responseStatus = Storage.getValue('sessionStatus');
@@ -24,8 +36,8 @@ window.addEventListener('storage', (f) => {
   }
 });
 
+// metodo para cerrar la sesion desde el header.
 const btnClose = document.querySelectorAll('[data-btnClose]');
-
 btnClose.forEach((btnCerrarSesion) => {
   btnCerrarSesion.addEventListener('click', (e) => {
     e.stopPropagation();

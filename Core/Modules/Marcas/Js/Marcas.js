@@ -80,7 +80,7 @@ const eliminarMarca = (id) => {
     if (!response) return;
 
     try {
-      let responseDelete = await marcas.sendData(`${url}deleteMarca`, 'DELETE', dataDelete);
+      let responseDelete = await marcas.sendData(`${url}delete`, 'DELETE', dataDelete);
       let allTds = tableBody.querySelectorAll('tr');
       if (!responseDelete.status) {
         initAlert(responseDelete.message, 'info');
@@ -169,7 +169,7 @@ marcaUpdateForm.addEventListener('submit', (g) => {
           return;
         }
 
-        const responseMarca = await marcas.sendData(`${url}updateMarca`, 'PUT', dataUpdate);
+        const responseMarca = await marcas.sendData(`${url}save`, 'PUT', dataUpdate);
         // 204 en caso de que el update nos devuelva un 0, significa que no hubo filas afectadas.
         if (responseMarca.status === 204) {
           modalMarca.style.display = 'none';
@@ -199,7 +199,7 @@ marcaInsertForm.addEventListener('submit', (e) => {
     mostrarConfirmacion('crear marca', '¿Esta seguro de crear esta marca?', async (response) => {
       if (!response) return;
 
-      let responseInsert = await marcas.sendData(`${url}createMarca`, 'POST', insertData);
+      let responseInsert = await marcas.sendData(`${url}store`, 'POST', insertData);
 
       if (responseInsert.status) {
         initAlert(responseInsert.message, 'success');

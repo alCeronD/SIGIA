@@ -214,7 +214,6 @@ abstract class Crud
   }
 
   # Function para preparar la consulta y pasar los valores por referencia
-  //TODO:: AGREGAR TRY Y CATCH Y VALIDAR QUE SE HAYAN ENVIADO LOS PARAMETROS ADECUADOS PARA SU EJECUCION.
   public function prepareSql(array $datos = [])
   {
     try {
@@ -275,7 +274,6 @@ abstract class Crud
     }
   }
 
-
   # Obtener el resultado sql y devolverlo
   public function get()
   {
@@ -284,7 +282,6 @@ abstract class Crud
       $checkSelect = explode(' ', $this->sql);
 
       $this->stmt->execute();
-
 
       # Verificamos si es un select para solamente devolver un arreglo asociativo
       if ((strpos($this->sql, 'SELECT') === 0) && ($checkSelect[0] === "SELECT")) {
@@ -308,10 +305,13 @@ abstract class Crud
       $this->stmt = null;
       return true;
     } catch (\PDOException $e) {
-      return $e->getMessage();
+      // devolvemos el estus en false y el error para asi crear en el controlador la lógica requerida dependiendo del código.
+      return  [
+        'status' => false,
+        'codeError' => $e->errorInfo[0]
+      ];
     }
   }
-
 
   /**
    * Function para devolver la cantidad de registros de una tabla

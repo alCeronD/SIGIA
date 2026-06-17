@@ -7,22 +7,41 @@ class RolesController
 {
     protected RolesModel $modeloRol;
     protected PermisosModel $permisosModel;
+    protected ServicesRoles $sRoles;
+    protected $message;
+    protected $codeResponse;
 
     public function __construct()
     {
 
         $this->modeloRol = new RolesModel();
         $this->permisosModel = new PermisosModel();
+        $this->sRoles = new ServicesRoles();
+    }
+    /**
+     * Vista principal del modulo roles
+     *
+     * @return void
+     */
+    public function rolesIndex()
+    {
+        return include_once __DIR__ . '../../views/rolesIndex.php';
     }
 
+    /**
+     * Vista que contiene el listado de los roles.
+     *
+     * @return void
+     */
     public function mostrarRoles()
     {
         return include_once __DIR__ . '../../views/rolesViews.php';
     }
+
     public function getRoles()
     {
         header(CONTENT_TYPE);
-        $roles = $this->modeloRol->select()->prepareSql()->get();
+        $roles = $this->sRoles->getAllRoles();
         if (count($roles) > 0) {
             Response::responseRequest(HttpStatus::OK, true, 'registros', $roles);
         }
@@ -81,13 +100,22 @@ class RolesController
         if ($data['rl_id'] === 1 || $data['rl_id'] === 2) {
             Response::responseRequest(HttpStatus::UNAUTHORIZED, false, RL_MESSAGE_ERROR_DELETE, []);
         }
-
-        // si mando un id relacionado con la tabla roles_funciones me va a devolver un error de foraneas: - tengo que borrar los roles de las funciones y de ahi si borrar el rol. si envio un id de rol que no este asociado a ninguna funcion, ahi si no marca error.
-        //Error: Cannot delete or update a parent row: a foreign key constraint fails (sigia.roles_funcionesCONSTRAINT fk_rol FOREIGN KEY (rlp_id_rl) REFERENCES roles (rl_id))
         $responseDeleteRol = $this->modeloRol->delete()->where()->prepareSql($dataDelete)->get();
-        if ($responseDeleteRol) {
-            Response::responseRequest(HttpStatus::OK, true, RL_MESSAGE_SUCCESS_DELETE, []);
+        $message = "";
+        $codigo = null;
+        // si el estatus es falso, validamos el codigo de error
+        if (!$responseDeleteRol['status']) {
+            $codigoError = (int) $responseDeleteRol['codeError'];
+            // codigo de error de constraint.
+            if ($codigoError === 23000) {
+                $message = RL_MESSAGE_ERROR_ENTITY_DATA;
+                $codigo = HttpStatus::UNPROCESSABLE_ENTITY;
+            }
+        } else {
+            $message = RL_MESSAGE_SUCCESS_DELETE;
+            $codigo = HttpStatus::OK;
         }
+        Response::responseRequest($codigo, true, $message, []);
     }
 
     // public function assingRoles()

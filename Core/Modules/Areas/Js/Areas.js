@@ -101,7 +101,7 @@ s.tableBody.addEventListener('click', (e) => {
           initAlert(cancelProcess, 'info');
           return;
         }
-        const responseDelete = await sendData(`${s.url}deleteDepartment`, 'DELETE', data);
+        const responseDelete = await sendData(`${s.url}delete`, 'DELETE', data);
         if (responseDelete.status === 204) {
           initAlert(deleteSuccess, 'success');
           renderData(s.actualPage);
@@ -135,7 +135,7 @@ s.areaUpdateForm.addEventListener('submit', async (e) => {
       let campos = ['ar_descripcion'];
       // validar campos obligatorios
       if (!validateFormData({ formData: formData, campos: campos, mapForm: s.mapCampos })) return;
-      let update = `${s.url}editDepartment`;
+      let update = `${s.url}save`;
 
       const responseUpdate = await sendData(update, 'PUT', data);
       // hay un contexto en donde no me devuelve un cuerpo porque la cantidad de columnas afectadas puede ser 0.
@@ -169,7 +169,7 @@ s.formCreate.addEventListener('submit', (g) => {
         return;
       }
 
-      let responsePost = await sendData(`${s.url}createDepartment`, 'POST', data);
+      let responsePost = await sendData(`${s.url}store`, 'POST', data);
       if (responsePost.status) {
         initAlert(responsePost.message, 'success');
         renderData(s.actualPage);
