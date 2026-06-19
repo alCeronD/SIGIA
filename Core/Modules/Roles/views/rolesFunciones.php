@@ -14,19 +14,20 @@
 
   <!-- tabla -->
   <div class="tblRolesFunciones">
-    <table class="table table-bordered table-striped table-responsive tblConfigModules">
+    <table class="table table-bordered table-striped table-responsive" id="tableRolesFunciones">
       <thead class="table-dark" id="headerRoles">
         <tr>
           <th>ID</th>
-          <th>Nombre de la funcion</th>
-          <th>Descripción</th>
-          <th>Status</th>
-          <th>Acciones</th>
+          <th>id función</th>
+          <th>nombre función</th>
+          <th>modulo asociado</th>
+          <th>acciones</th>
         </tr>
       </thead>
       <tbody id="bodyRolesFunciones">
         <!-- Renderizado con javascript -->
       </tbody>
+      <tfoot id="footerRolesFunciones"></tfoot>
     </table>
   </div>
 

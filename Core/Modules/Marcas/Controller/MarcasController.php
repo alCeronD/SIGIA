@@ -26,7 +26,7 @@ class MarcasController
       CR_OFFSET => (int) $resultPaginate[CR_OFFSET]
     ];
     // crear consulta de envio de datos.
-    $responseGetData = $this->mModel->select()->orderBy()->limit()->offset()->prepareSql($dataSql)->get();
+    $responseGetData = $this->mModel->select()->from()->orderBy()->limit()->offset()->prepareSql($dataSql)->get();
 
     if ($resultPaginate) {
       Response::responseRequest(HttpStatus::OK, true, "Registros", [

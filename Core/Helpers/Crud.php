@@ -99,10 +99,22 @@ abstract class Crud
    * @param boolean $campos - flag para determinar si hacemos un select con * o en su defecto con los campos de la tabla sin su id.
    * @return $this
    */
-  public function select(bool $campos = false)
+  public function select(array $sql = [], bool $campos = false)
   {
+
     $campos = ($campos) ? $this->campos : ["*"];
-    $this->sql = "SELECT " . $this->organizarCampos($campos) . " FROM " . $this->table;
+    if (empty($sql)) {
+      $this->sql .= "SELECT " . $this->organizarCampos($campos);
+    } else {
+
+      $this->sql .= "SELECT {$this->organizarCampos($sql)}";
+    }
+    return $this;
+  }
+  public function from(string $table = '')
+  {
+    // validamos si esta vacio el parametro, para o aplicar un select basico con la tabla o un select con la tabla y su respectivo alias.
+    $this->sql .= empty($table) ? " FROM {$this->table}" : " FROM {$table}";
     return $this;
   }
   public function insert(array $insertValue)
@@ -141,8 +153,15 @@ abstract class Crud
       $columna = $datos[0];
       $operador = $datos[1];
       $valor = $datos[2];
+      $columnaReference = null;
 
-      $this->sql .= " WHERE $columna $operador :$columna";
+      $hasPoint = str_contains($columna, '.');
+      if ($hasPoint) {
+        $columnaReference = str_replace('.', '_', $columna);
+      } else {
+        $columnaReference = $columna;
+      }
+      $this->sql .= " WHERE $columna $operador :$columnaReference";
     }
 
     if (empty($datos)) {
@@ -162,10 +181,11 @@ abstract class Crud
    */
   public function orderBy(string $campo = "", bool $ASC = true)
   {
-    #SELECT * FROM `GeneralCrud` ORDER BY gc_id ASC LIMIT 5 OFFSET 5;
     $campoValido = "";
     if (empty($campo)) {
       $campoValido = $this->id;
+    } else {
+      $campoValido = $campo;
     }
 
     // Function para definir el orden del campo, como parámetro se recomienda enviar el index de la tabla, por defecto, asigna el id.
@@ -211,6 +231,34 @@ abstract class Crud
   public function and()
   {
     return "AND";
+  }
+
+  // funciones joins
+
+  /**
+   * Function left join
+   * @param string $tabla -
+   * @param string $column1 -
+   * @param string $operador
+   * @param string $column2
+   * @return $this;
+   */
+  public function leftJoin(string $tabla = '', string $column1 = '', string $operador = '', string $column2 = '')
+  {
+    $this->sql .= " LEFT JOIN $tabla ON $column1 $operador $column2";
+    return $this;
+  }
+
+  public function innerJoin(string $tabla = '', string $column1 = '', string $operador = '', string $column2 = '')
+  {
+    $this->sql .= " INNER JOIN $tabla ON $column1 $operador $column2";
+    return $this;
+  }
+
+  public function rightJoin(string $tabla = '', string $column1 = '', string $operador = '', string $column2 = '')
+  {
+    $this->sql .= " RIGHT JOIN $tabla ON $column1 $operador $column2";
+    return $this;
   }
 
   # Function para preparar la consulta y pasar los valores por referencia
@@ -275,7 +323,7 @@ abstract class Crud
   }
 
   # Obtener el resultado sql y devolverlo
-  public function get()
+  public function get(): array
   {
     try {
       # Variable para verificar si es un select
@@ -286,29 +334,35 @@ abstract class Crud
       # Verificamos si es un select para solamente devolver un arreglo asociativo
       if ((strpos($this->sql, 'SELECT') === 0) && ($checkSelect[0] === "SELECT")) {
         if (str_contains(strtoupper($this->sql), "COUNT")) {
-          return (int) $this->stmt->fetchColumn();
+          $rowCounts = (int) $this->stmt->fetchColumn();
+          $this->cleanQuery();
+          return [
+            'rowCounts' => $rowCounts
+          ];
         }
 
         $result = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->sql = null;
-        $this->stmt = null;
+        $this->cleanQuery();
         return $result;
       }
 
       if (str_contains(strtoupper($this->sql), "UPDATE")) {
         $rowCounts = $this->stmt->rowCount();
-        $this->sql = "";
-        $this->stmt = null;
-        return $rowCounts;
+        $this->cleanQuery();
+        return [
+          'status' => true,
+          'rowCounts' => $rowCounts
+        ];
       }
-      $this->sql = "";
-      $this->stmt = null;
-      return true;
+      $this->cleanQuery();
+      return [
+        'status' => true
+      ];
     } catch (\PDOException $e) {
-      // devolvemos el estus en false y el error para asi crear en el controlador la lógica requerida dependiendo del código.
-      return  [
+      return [
         'status' => false,
-        'codeError' => $e->errorInfo[0]
+        'sqlState' => $e->errorInfo[0], //Codigo generico de error
+        'codeError' => $e->errorInfo[1]  //Codigo especifico del error
       ];
     }
   }
@@ -324,6 +378,16 @@ abstract class Crud
     return $this;
   }
 
+  /**
+   * function para limpiar la consulta luego de ejecutar todo el proceso.
+   *
+   * @return void
+   */
+  public function cleanQuery()
+  {
+    $this->sql = "";
+    $this->stmt = null;
+  }
 
   public function getPrimaryKey()
   {

@@ -17,6 +17,6 @@ class ServicesRoles
 
   public function getAllRoles()
   {
-    return $this->rlModel->select()->prepareSql()->get();
+    return $this->rlModel->select()->from()->prepareSql()->get();
   }
 }

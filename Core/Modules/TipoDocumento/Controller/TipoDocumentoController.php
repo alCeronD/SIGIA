@@ -33,7 +33,7 @@ class TipoDocumentoController implements CrudInterface
       'offset' => (int) $resultPaginate[CR_OFFSET]
     ];
 
-    $resultSelect = $this->tpModel->select()->orderBy()->limit()->offset()->prepareSql($dataSql)->get();
+    $resultSelect = $this->tpModel->select()->from()->orderBy()->limit()->offset()->prepareSql($dataSql)->get();
 
     // consulta select basica de momento.
     if ($resultPaginate) {

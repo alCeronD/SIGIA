@@ -70,6 +70,7 @@ define('CR_TOTAL_PAGINAS', 'totalPaginas');
 define('CR_DATA', 'data');
 define('CR_WORD_LIMIT', 'limit');
 define('CR_PAGINA', 'pagina');
+define('CR_STATUS', 'status');
 
 
 // name Functions

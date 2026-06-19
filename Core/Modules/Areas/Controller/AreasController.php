@@ -23,16 +23,16 @@ class AreasController implements CrudInterface
     $limit = (isset($_GET['limit'])) ? (int) $_GET['limit'] : LIMIT;
     $resultCount = $this->AreasModel->getCount()->prepareSql()->get();
     // execute paginate
-    $resultPaginate = UtilsFunctions::executePaginate($resultCount, $limit, $page);
+    $resultPaginate = UtilsFunctions::executePaginate($resultCount['rowCounts'], $limit, $page);
 
     $dataSql['data'] = [
       'limit'           => $limit,
       'offset' => (int) $resultPaginate[CR_OFFSET]
     ];
 
-    $resultSelect = $this->AreasModel->select()->orderBy()->limit()->offset()->prepareSql($dataSql)->get();
+    $resultSelect = $this->AreasModel->select()->from()->orderBy()->limit()->offset()->prepareSql($dataSql)->get();
 
-    if ($resultPaginate) {
+    if (count($resultPaginate) > 0) {
       Response::responseRequest(HttpStatus::OK, true, "Registros", [
         CR_TOTAL_REGISTROS => $resultCount,
         CR_PAGINA_ACTUAL => $page,
@@ -47,24 +47,31 @@ class AreasController implements CrudInterface
     $data = UtilsFunctions::returnGetDecode();
     $data[COLUMN_STATUS] = 1;
     $datosSelect[CR_DATA] = $data;
-    // Validar que el nombre del item no sea unico, devolver mensaje indicando que el valor ya existe.
-    $getDataExist = $this->AreasModel->select()->where([COLUMN_NOMBRE, "=", $data[COLUMN_NOMBRE]])->prepareSql($datosSelect)->get();
-    $nombre = (!empty($getDataExist)) ? $getDataExist[0][COLUMN_NOMBRE] : "";
-    if ($nombre === $data[COLUMN_NOMBRE]) {
-      Response::responseRequest(HttpStatus::BAD_REQUEST, false, AR_MESSAGE_INFO . $data[COLUMN_NOMBRE] . AR_MESSAGE_INFO_2, []);
+
+    // eliminamos espacios a los datos del arreglo
+    $data = UtilsFunctions::deleteSpace($data);
+    // validamos que el nombre del departamento no este vacio
+    if (empty($data[COLUMN_NOMBRE])) {
+      Response::responseRequest(HttpStatus::BAD_REQUEST, false, 'El nombre del departamento es obligatorio', []);
+      return;
     }
-    // Ejecutar insert y devolver mensaje de retorno.
+
     $resultInsert = $this->AreasModel->insert($data)->prepareSql($datosSelect)->get();
-    if ($resultInsert) {
-      Response::responseRequest(HttpStatus::CREATED, true, AR_MESSAGE_SUCCESS, []);
+    // validamos la respuesta y devolvemos el mensaje de respuesta amigable para el usuario.
+    if (!$resultInsert['status']) {
+      $dataResponse = DatabaseHandler::validateResponse($resultInsert);
+      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      return;
     }
+
+    Response::responseRequest(HttpStatus::CREATED, true, AR_MESSAGE_SUCCESS, []);
   }
   public function changeStatus()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
 
-    $dataUpdateSql['data'] = [
+    $dataUpdateSql[CR_DATA] = [
       "ar_cod" => (int) $data['ar_cod'],
       "ar_status" => ((int) $data['ar_status'] === 1) ? 2 : 1,
     ];
@@ -72,7 +79,7 @@ class AreasController implements CrudInterface
     if (empty($data['ar_cod'])) Response::responseRequest(HttpStatus::NO_CONTENT, false, AR_MESSAGE_INFO_ITEM, []);
 
     // validar si existe el elemento a actualizar.
-    $resultExists = $this->AreasModel->select()->where()->prepareSql($dataUpdateSql)->get();
+    $resultExists = $this->AreasModel->select()->from()->where()->prepareSql($dataUpdateSql)->get();
 
     if (empty($resultExists[0])) {
       Response::responseRequest(HttpStatus::NO_CONTENT, false, AR_MESSAGE_INFO_NO_CODIGO, []);
@@ -81,48 +88,55 @@ class AreasController implements CrudInterface
     // Devuelve la cantidad de filas afectadas, si es 0, es un error, si es mayor que 0 significa que la actualización se realizó correctamente.
     $updateResult = $this->AreasModel->update($data)->where()->prepareSql($dataUpdateSql)->get();
 
-    if ($updateResult > 0) {
-      Response::responseRequest(HttpStatus::OK, true, MSG_REGISTRO_CAMBIO_ESTADO, []);
-    } else {
-      Response::responseRequest(HttpStatus::NO_CONTENT, true, '', []);
+    if (!$updateResult[CR_STATUS]) {
+
+      $dataResponse = DatabaseHandler::validateResponse($updateResult);
+      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      return;
     }
+    Response::responseRequest(HttpStatus::OK, true, MSG_REGISTRO_CAMBIO_ESTADO, []);
   }
   public function save()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
-
-    $editDepartmentData['data'] = $data;
-
-    if (!isset($data['ar_cod'])) {
+    $data = UtilsFunctions::deleteSpace($data);
+    if (empty($data[COLUMN_NOMBRE])) {
       Response::responseRequest(HttpStatus::BAD_REQUEST, false, AR_MESSAGE_NO_COD_EXISTS, ['status' => false]);
+      return;
     }
 
-    $resultExists = $this->AreasModel->select()->where()->prepareSql($editDepartmentData)->get();
+    $editDepartmentData[CR_DATA] = $data;
+
+    $resultExists = $this->AreasModel->select()->from()->where()->prepareSql($editDepartmentData)->get();
     // Validar la existencia de la informacion que enviamos y el código exista en la bd.
     if (count($resultExists) === 0) {
       Response::responseRequest(HttpStatus::NOT_FOUNT, false, AR_MESSAGE_INFO_NO_CODIGO, []);
     }
 
-    // validar que el nombre no este vacio.
-    if (empty($data['ar_nombre']) || empty($data['ar_cod'])) Response::responseRequest(HttpStatus::BAD_REQUEST, true, AR_MESSAGE_NO_DEPARTMENT, []);
     $resultUpdate = $this->AreasModel->update($data)->where()->prepareSql($editDepartmentData)->get();
-    if ($resultUpdate > 0) {
-      Response::responseRequest(HttpStatus::OK, true, MSG_REGISTRO_ACTUALIZAOD, []);
-    } else {
-      Response::responseRequest(HttpStatus::NO_CONTENT, true, '', []);
+    if (!$resultUpdate[CR_STATUS]) {
+
+      $dataResponse = DatabaseHandler::validateResponse($resultUpdate);
+      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      return;
     }
+    Response::responseRequest(HttpStatus::OK, true, MSG_REGISTRO_ACTUALIZAOD, []);
   }
   public function delete()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
 
-    // Ejecutar proceso para eliminar el.
-    $dataDelete['data'] = $data;
+    $dataDelete[CR_DATA] = $data;
     $resultDelete = $this->AreasModel->delete()->where()->prepareSql($dataDelete)->get();
-    if ($resultDelete > 0) {
-      Response::responseRequest(HttpStatus::NO_CONTENT, true, AR_MESSAGE_DELETE_SUCESS, []);
+
+    if (!$resultDelete[CR_STATUS]) {
+
+      $dataResponse = DatabaseHandler::validateResponse($resultDelete);
+      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      return;
     }
+    Response::responseRequest(HttpStatus::OK, true, AR_MESSAGE_DELETE_SUCESS, []);
   }
 }

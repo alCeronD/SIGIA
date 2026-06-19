@@ -19,6 +19,8 @@
   grid-area: selectRol
 }
 
+/* div de la tabla */
 .tblRolesFunciones {
-  grid-area: tblRolesFunciones
+  grid-area: tblRolesFunciones;
+  width: 100%;
 }

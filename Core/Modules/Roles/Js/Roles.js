@@ -213,6 +213,17 @@ const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
 
 const deleteRol = (id) => {
   console.log(id);
+  mostrarConfirmacion('Eliminar rol', '¿Esta seguro de eliminar este rol?', async (response) => {
+    try {
+      if (!response) return;
+      let dataDelete = {
+        rl_id: id,
+      };
+      const responseDelete = await renderClass.sendData(`${url}deleteRol`, 'DELETE', dataDelete);
+    } catch (error) {
+      console.error(error);
+    }
+  });
 };
 
 // Delegación de responsabilidad a las funciones asociados al rol.

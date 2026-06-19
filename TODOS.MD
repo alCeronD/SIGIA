@@ -20,15 +20,18 @@ Listado de TODOS generales y específicos por cada módulo.
 - [ ] Crear el núcleo del proyecto que me permita crear escalar el proyecto según la necesidad.
 - [X] Re definir estructura de carpetas del proyecto para asi módularizar más los módulos.
 - [X] Crear constantes a cada modulo y si se puede al core principal para evitar redundancia en mensajes de alerta y/o textos.
-- [ ] Crear CRUD
+- [X] Crear CRUD
   - [X] Crear consulta basica select
   - [X] Crear consulta insert basica
   - [X] Crear estructura paginada
   - [X] Crear update
   - [X] Crear delete
   - [X] Crear where
-    - [ ] ajustar where para hacer consulta con mas opciones and y or
-  - [ ] Crear join
+    - [X] ajustar where para hacer consulta con mas opciones and y or
+  - [X] Crear joins
+    - [X] Inner join
+    - [X] Left Join
+    - [X] Right Join
   - [X] Crear count
 - [X] Mover archivos css a cada modulo correspondiente.
 - [X] Mover archivos javascript a cada modulo correspondiente
@@ -36,8 +39,9 @@ Listado de TODOS generales y específicos por cada módulo.
 - [ ] Investigar e implementar rastro de miga.
 - [ ] Implementar variables ENV según el contexto, si es dev o producción, en caso de ser requerido.
 - [ ] Transformar en clase aquellas funcionalidades de javascript repetibles
-- [ ] Transformar en una clase el renderizado de datos
+- [X] Transformar en una clase el renderizado de datos
 - [X] EN PHP, AJUSTAR EL RESPONSE DE LA CLASE EN DONDE la funcion se puede transformar en una sola.
+- [ ] Crear logica que me permita definir cuales son los archivos que vamos a implementar en la vista, aplica para los css y javascript, esto se puede ejecutar cuando accedamos a la vista.
 
 ## Específicos
 
@@ -53,7 +57,6 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Implementar cantidad de registros, boton de preview y next + mostrar la pagina, ejemplo: se muestran 0 de n registros
 - [ ] Implementar rastro de miga
 - [X] implementar interfaz de crud al controlador
-- [ ] Crear logica que me permita definir cuales son los archivos que vamos a implementar en la vista, aplica para los css y javascript, esto se puede ejecutar cuando accedamos a la vista.
 
 ---
 
@@ -72,7 +75,9 @@ Listado de TODOS generales y específicos por cada módulo.
 ---
 
 - **Modulos roles**
-- [ ] Crear una vista tipo dashboard adicional que me permita seleccionar el accionar de ver las funciones asociadas al rol y la gestion de roles
+- [X] Crear una vista tipo dashboard adicional que me permita seleccionar el accionar de ver las funciones asociadas al rol y la gestion de roles
+- [X] Crear el controlador roles_funciones para poder ver las funciones asociadas a los roles y asi poder eliminarlos.
+- [X] Crear clase servicio para el consumo de los roles
 
 ---
 

@@ -36,6 +36,11 @@
 
 
 <?php
-foreach ($_SESSION['js'] as $key => $url) { ?>
-    <script type="module" src="<?php echo htmlspecialchars("/../../Core/" . $url); ?>"></script>
-<?php } ?>
+//foreach ($_SESSION['js'] as $key => $url) { 
+?>
+<!-- <script type="module" src="<?php //echo htmlspecialchars("/../../Core/" . $url); 
+                                ?>"></script> -->
+<?php // } 
+?>
+
+<script type="module" src="/../../Core/Modules/Roles/Js/Roles.js"></script>

@@ -89,17 +89,34 @@ class UtilsFunctions
     /**
      * Function para validar los campos y determinar cuales son obligatorios y cuales no.
      *
-     * @param array $campos
-     * @param array $mapCapos
+     * @param array $campos - arreglo con datos a comparar
+     * @param array $mapCapos - arreglo clave valor en donde la clave debe ser la misma que la clave del parametro campos y su valor debe ser un nombre amigable para el usuario - ['ar_nombre' => 'nombre departamento']
      * @return void
      */
-    public function validateCampos(array $campos = [], array $mapCapos = [])
+    public static function validateCampos(array $campos = [], array $mapCapos = [])
     {
         foreach ($campos as $key => $value) {
-            if (in_array($key, $mapCapos)) {
-                $message = "El campo {$mapCapos} debe ser obligatorio";
-                return $message;
+            if (key_exists($key, $mapCapos) && empty($value)) {
+                $message = "El campo {$mapCapos[$key]} debe ser obligatorio";
+                Response::responseRequest(HttpStatus::BAD_REQUEST, false, $message, []);
+                return;
             }
+            break;
         }
+    }
+
+    /**
+     * Function para recorrer los datos y eliminar todos los espacios al inicio y al final de cada valor.
+     *
+     * @param array $datos
+     * @return array
+     */
+    public static function deleteSpace(array $datos = []): array
+    {
+        foreach ($datos as $key => $value) {
+            $datos[$key] = trim($value);
+        }
+
+        return $datos;
     }
 }

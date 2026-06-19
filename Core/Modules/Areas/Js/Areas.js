@@ -102,8 +102,8 @@ s.tableBody.addEventListener('click', (e) => {
           return;
         }
         const responseDelete = await sendData(`${s.url}delete`, 'DELETE', data);
-        if (responseDelete.status === 204) {
-          initAlert(deleteSuccess, 'success');
+        if (responseDelete.status) {
+          initAlert(responseDelete.message, 'success');
           renderData(s.actualPage);
           return;
         }
@@ -128,7 +128,7 @@ s.areaUpdateForm.addEventListener('submit', async (e) => {
     mostrarConfirmacion(s.titleActualizar, s.textEstaSeguro, async (response) => {
       if (!response) {
         s.modalAreaUpdate.style.display = 'none';
-        initAlert(cancelProcess, 'info', toastOptions);
+        initAlert(cancelProcess, 'info');
         return;
       }
       // campos opcionales
@@ -146,12 +146,12 @@ s.areaUpdateForm.addEventListener('submit', async (e) => {
       if (responseUpdate.status) {
         renderData();
         s.modalAreaUpdate.style.display = 'none';
-        initAlert(responseUpdate.message, 'success', toastOptions);
+        initAlert(responseUpdate.message, 'success');
         return;
       }
     });
   } catch (error) {
-    initAlert(error, 'info', toastOptions);
+    initAlert(error, 'info');
     return;
   }
 });
@@ -159,6 +159,7 @@ s.areaUpdateForm.addEventListener('submit', async (e) => {
 // Listener create
 s.formCreate.addEventListener('submit', (g) => {
   g.preventDefault();
+  g.stopPropagation();
   let formPost = new FormData(g.target);
   let data = Object.fromEntries(formPost);
 
@@ -172,6 +173,7 @@ s.formCreate.addEventListener('submit', (g) => {
       let responsePost = await sendData(`${s.url}store`, 'POST', data);
       if (responsePost.status) {
         initAlert(responsePost.message, 'success');
+        g.target.reset();
         renderData(s.actualPage);
         return;
       } else {

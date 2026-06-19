@@ -27,17 +27,14 @@ class GeneralCrudController extends ConfigGeneralCrud
     // Cantidad de paginas
     $resultCount = $this->modelGeneralCrud->getCount()->prepareSql()->get();
     // lógica paginado
-    $resultPaginate = UtilsFunctions::executePaginate($resultCount, $limit, $paginaActual);
+    $resultPaginate = UtilsFunctions::executePaginate($resultCount['rowCounts'], $limit, $paginaActual);
     $dataSql = [];
-
     $dataSql['data'] = [
       'limit'           => $limit,
       'offset' => $resultPaginate[GC_OFFSET]
     ];
 
-    $this->modelGeneralCrud->select()->orderBy('', true)->limit()->offset();
-    $resultSelect = $this->modelGeneralCrud->prepareSql($dataSql)->get();
-
+    $resultSelect = $this->modelGeneralCrud->select()->from()->orderBy()->limit()->offset()->prepareSql($dataSql)->get();
     $response =  [
       GC_ITEMS => $resultSelect,
       GC_LIMIT => (int) $limit,
@@ -60,7 +57,7 @@ class GeneralCrudController extends ConfigGeneralCrud
 
     $this->modelGeneralCrud->insert($data);
     $resultInsert = $this->modelGeneralCrud->prepareSql($dataSql)->get();
-    if (!$resultInsert) Response::responseRequest(HttpStatus::INTERNAL_SERVER_ERROR, false, MSG_ERROR_EJECUTAR_PROCESO, []);
+    if (!$resultInsert['status']) Response::responseRequest(HttpStatus::INTERNAL_SERVER_ERROR, false, MSG_ERROR_EJECUTAR_PROCESO, []);
     Response::responseRequest(HttpStatus::CREATED, true, 'Registro exitoso',  [$resultInsert]);
   }
 
@@ -90,7 +87,7 @@ class GeneralCrudController extends ConfigGeneralCrud
     $this->modelGeneralCrud->update($data)->where();
     $responseUpdate = $this->modelGeneralCrud->prepareSql($dataUpdateSql)->get();
 
-    if ($responseUpdate) Response::responseRequest(HttpStatus::OK, true, GC_SUCCESS_UPDATE, [$responseUpdate]);
+    if ($responseUpdate['status']) Response::responseRequest(HttpStatus::OK, true, GC_SUCCESS_UPDATE, [$responseUpdate]);
   }
 
   public function delete()
@@ -99,7 +96,7 @@ class GeneralCrudController extends ConfigGeneralCrud
     $data = UtilsFunctions::returnGetDecode();
     $deleteSql['data'] = $data;
     $resultDelete = $this->modelGeneralCrud->delete()->where()->prepareSql($deleteSql)->get();
-    if ($resultDelete) {
+    if ($resultDelete['status']) {
       Response::responseRequest(HttpStatus::NO_CONTENT, true, GC_DELETE_SUCCESS, [$resultDelete]);
     }
   }
@@ -127,7 +124,6 @@ class GeneralCrudController extends ConfigGeneralCrud
     $data[$primaryKey] = $keyData[$primaryKey];
     $dataUpdateSql[GC_DATA] = $data;
     $resultChangeStatus = $this->modelGeneralCrud->update($data)->where()->prepareSql($dataUpdateSql)->get();
-
-    if ($resultChangeStatus) Response::responseRequest(HttpStatus::NO_CONTENT, true, GC_SUCCESS_UPDATE, [$resultChangeStatus]);
+    if ($resultChangeStatus['status']) Response::responseRequest(HttpStatus::OK, true, GC_SUCCESS_UPDATE, [$resultChangeStatus]);
   }
 }
