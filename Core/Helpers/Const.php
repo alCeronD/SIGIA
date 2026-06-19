@@ -55,6 +55,7 @@ define('CR_AUTOLOAD', 'Autoload.php');
 
 
 // Msg (message)
+define('MSG_REGISTRO_ELIMINADO', 'Recurso eliminado con exito');
 define('MSG_ERROR_SIN_PERMISOS', 'No tienes permisos para acceder');
 define('MSG_REGISTRO_ACTUALIZAOD', 'Registro actualizado correctamente');
 define('MSG_REGISTRO_CAMBIO_ESTADO', 'Cambio de estado correctamente.');
@@ -71,6 +72,7 @@ define('CR_DATA', 'data');
 define('CR_WORD_LIMIT', 'limit');
 define('CR_PAGINA', 'pagina');
 define('CR_STATUS', 'status');
+define('CR_ROW_COUNTS', 'rowCounts');
 
 
 // name Functions

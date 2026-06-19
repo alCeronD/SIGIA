@@ -183,10 +183,10 @@ formTp.addEventListener('submit', (f) => {
 
         if (responseCreate.status) {
           initAlert(responseCreate.message, 'success');
+          formTp.reset();
           loadTable();
           return;
         }
-        f.target.reset();
       }
     );
   } catch (error) {

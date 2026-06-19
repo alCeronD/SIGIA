@@ -23,28 +23,28 @@ class TipoDocumentoController implements CrudInterface
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
-    $page = (isset($_GET['pagina'])) ? (int) $_GET['pagina'] : 1;
+    $page = (isset($_GET[CR_PAGINA])) ? (int) $_GET[CR_PAGINA] : 1;
     $limit = (isset($_GET['limit'])) ? (int) $_GET['limit'] : LIMIT;
     $resultCount = $this->tpModel->getCount()->prepareSql()->get();
-    $resultPaginate = UtilsFunctions::executePaginate($resultCount, $limit, $page);
+    $resultPaginate = UtilsFunctions::executePaginate($resultCount[CR_ROW_COUNTS], $limit, $page);
 
-    $dataSql['data'] = [
+    $dataSql[CR_DATA] = [
       'limit'           => $limit,
-      'offset' => (int) $resultPaginate[CR_OFFSET]
+      CR_OFFSET => (int) $resultPaginate[CR_OFFSET]
     ];
 
     $resultSelect = $this->tpModel->select()->from()->orderBy()->limit()->offset()->prepareSql($dataSql)->get();
 
     // consulta select basica de momento.
-    if ($resultPaginate) {
-      Response::responseRequest(HttpStatus::OK, true, "Registros", [
+    if (count($resultSelect) > 0) {
+      Response::responseRequest(HttpStatus::OK, true, CR_REGISTROS, [
         CR_TOTAL_REGISTROS => $resultCount,
         CR_PAGINA_ACTUAL => $page,
         CR_CANTIDAD_PAGINAS => $resultPaginate[CR_TOTAL_PAGINAS],
         CR_DATA => $resultSelect
       ]);
     } else if (count($resultSelect) > 0) {
-      Response::responseRequest(HttpStatus::OK, true, "Registros", $resultSelect);
+      Response::responseRequest(HttpStatus::OK, true, CR_REGISTROS, $resultSelect);
     }
   }
 
@@ -52,14 +52,19 @@ class TipoDocumentoController implements CrudInterface
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
+    $data = UtilsFunctions::deleteSpace($data);
     $tp_status = 1;
-    $data['tp_status'] = $tp_status;
-    $insertData['data'] = $data;
+    $data[VAR_TP_STATUS] = $tp_status;
+    $insertData[CR_DATA] = $data;
     $responseCreate = $this->tpModel->insert($data)->prepareSql($insertData)->get();
 
-    if ($responseCreate) {
-      Response::responseRequest(HttpStatus::CREATED, true, MSG_SUCCESS_CREATE, []);
+    if (!$responseCreate[CR_STATUS]) {
+
+      $dataResponse = DatabaseHandler::validateResponse($responseCreate);
+      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      return;
     }
+    Response::responseRequest(HttpStatus::OK, true, MSG_SUCCESS_CREATE, []);
   }
 
   public function delete()
@@ -68,31 +73,40 @@ class TipoDocumentoController implements CrudInterface
     $data = UtilsFunctions::returnGetDecode();
     $dataDelete['data'] = $data;
     $responseDelete = $this->tpModel->delete()->where()->prepareSql($dataDelete)->get();
-    if ($responseDelete) {
-      Response::responseRequest(HttpStatus::OK, true, "Recurso eliminado con exito", []);
+    if (!$responseDelete[CR_STATUS]) {
+      $dataResponse = DatabaseHandler::validateResponse($responseDelete);
+      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      return;
     }
+    Response::responseRequest(HttpStatus::OK, true, MSG_REGISTRO_ELIMINADO, []);
   }
 
   public function save()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
-    $dataUpdate['data'] = $data;
+    $dataUpdate[CR_DATA] = $data;
     $update = $this->tpModel->update($data)->where()->prepareSql($dataUpdate)->get();
-    if ($update > 0) {
-      Response::responseRequest(HttpStatus::OK, true, "Recurso actualizado con exito", []);
+    if (!$update[CR_STATUS]) {
+      $dataResponse = DatabaseHandler::validateResponse($update);
+      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      return;
     }
+    Response::responseRequest(HttpStatus::OK, true, MSG_TP_SUCCESS_UPDATE, []);
   }
 
   public function changeStatus()
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
-    $dataUpdate['data'] = $data;
+    $dataUpdate[CR_DATA] = $data;
     $changeStatus = $this->tpModel->update($data)->where()->prepareSql($dataUpdate)->get();
-    $responseMessage = $data['tp_status'] === 2 ? MSG_SUCCESS_DISABLED : MSG_SUCCESS_ENABLED;
-    if ($changeStatus > 0) {
-      Response::responseRequest(HttpStatus::OK, true, $responseMessage, []);
+    $responseMessage = $data[VAR_TP_STATUS] === 2 ? MSG_SUCCESS_DISABLED : MSG_SUCCESS_ENABLED;
+    if (!$changeStatus[CR_STATUS]) {
+      $dataResponse = DatabaseHandler::validateResponse($changeStatus);
+      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      return;
     }
+    Response::responseRequest(HttpStatus::OK, true, $responseMessage, []);
   }
 }
