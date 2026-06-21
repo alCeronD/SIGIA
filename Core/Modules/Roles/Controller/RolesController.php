@@ -7,16 +7,21 @@ class RolesController
 {
     protected RolesModel $modeloRol;
     protected PermisosModel $permisosModel;
+    protected FuncionesModel $fModel;
     protected ServicesRoles $sRoles;
-    protected $message;
-    protected $codeResponse;
+    protected ServicesModulos $sModulos;
+    protected ServicesFunciones $sFunciones;
+
 
     public function __construct()
     {
 
         $this->modeloRol = new RolesModel();
         $this->permisosModel = new PermisosModel();
+        $this->fModel = new FuncionesModel();
         $this->sRoles = new ServicesRoles();
+        $this->sModulos = new ServicesModulos();
+        $this->sFunciones = new ServicesFunciones();
     }
     /**
      * Vista principal del modulo roles
@@ -101,21 +106,78 @@ class RolesController
             Response::responseRequest(HttpStatus::UNAUTHORIZED, false, RL_MESSAGE_ERROR_DELETE, []);
         }
         $responseDeleteRol = $this->modeloRol->delete()->where()->prepareSql($dataDelete)->get();
-        $message = "";
-        $codigo = null;
         // si el estatus es falso, validamos el codigo de error
         if (!$responseDeleteRol['status']) {
-            $codigoError = (int) $responseDeleteRol['codeError'];
-            // codigo de error de constraint.
-            if ($codigoError === 23000) {
-                $message = RL_MESSAGE_ERROR_ENTITY_DATA;
-                $codigo = HttpStatus::UNPROCESSABLE_ENTITY;
-            }
-        } else {
-            $message = RL_MESSAGE_SUCCESS_DELETE;
-            $codigo = HttpStatus::OK;
+
+            $dataResponse = DatabaseHandler::validateResponse($responseDeleteRol);
+            // ese error de codigo representa un error en las relaciones producto de que este registro esta asociado en otra tabla.
+            $message = $responseDeleteRol['codeError'] === 1451 ? 'El rol tiene funciones asociadas, si desea eliminar el rol, primero elimine las funciones asociados en el el modulo "funciones roles"' : $dataResponse['message'];
+            Response::responseRequest($dataResponse['codeResponse'], false, $message, []);
+            return;
         }
-        Response::responseRequest($codigo, true, $message, []);
+        Response::responseRequest(HttpStatus::OK, true, RL_MESSAGE_SUCCESS_DELETE, []);
+    }
+
+    /**
+     * Function para obtener los permisos que YA ESTAN ASOCIADOS AL ROL
+     * @return void
+     */
+    public function getPermisosRolAsig()
+    {
+
+        /**
+         * OBJETIVOS
+         * 1- TRAER LAS FUNCIONES YA ASOCIADAS AL ROL, ESTO PARA MARCAR INMEDIATAMENTE APENAS EL USUARIO DE CLICK EN LA TUERCA
+         * 2 - TRAER TODAS LAS FUNCIONES QUE PERTENECEN AL MODULO PARA ASI RENDERIZAR LAS FUNCIONES EN EL MODULO.
+         */
+
+        header(CONTENT_TYPE);
+        $data['rl_id'] = isset($_GET['rl_id']) ? (int) $_GET['rl_id'] : null;
+
+        // OBJETIVO #1
+        $functionsAlreadyAssocRol = $this->sRoles->getSetRolesFunciones($data['rl_id']); //capturamos las funciones asociadas al rol desde el servicio, esto para cuando el usuario de click, las funciones ya establecidas esten seleccionadas.
+
+        /**
+         * OBJETIVO #2
+         *
+         * este paso esta basado en la funcion comentada llamada getRolesPermisos que esta en el modelo
+         * PASO1 - TRAER EL LISTADO DE LOS MODULOS
+         * PASO2 - TRAER EL LISTADO DE TODAS LAS FUNCIONES
+         * PASO3 - UNIFICAR EN UN SOLO ARREGLO LAS FUNCIONES EN DONDE LA KEY DEL ARREGLO TIENE QUE SER EL NOMBRE DEL MODULO
+         */
+
+
+        $allModulos = $this->sModulos->getAllModulos(); //PASO #1
+        $allFunctions = $this->sFunciones->getAllFunctions(); //PASO #2
+
+
+        //PASO #3
+        $finalFunctionsModules = [];
+        foreach ($allModulos as $value) {
+            $finalFunctionsModules[$value['nombre_modulo']] = [];
+        }
+
+        foreach ($allFunctions as $key =>  $funcion) {
+            // var_dump($value['id_modulo']);;
+            foreach ($allModulos as $key2 => $value2) {
+                if ($value2['id_m'] === $funcion['id_modulo']) {
+                    $finalFunctionsModules[$value2['nombre_modulo']][] = [
+                        'idFuncion'     => $funcion['id_funcion'],
+                        'nmFuncion'     => $funcion['nombre_funcion'],
+                        'idModulo'      => $funcion['id_modulo'],
+                        'nmFuncionUser' => $funcion['nombre_funcion_user']
+                    ];
+                    break;
+                }
+            }
+        }
+        $dataResponse = [
+            'allFunctions' => $finalFunctionsModules,
+            'functionsAllreadyAssoc' => $functionsAlreadyAssocRol,
+            'allModulos' => $allModulos
+        ];
+
+        Response::responseRequest(HttpStatus::OK, true, CR_REGISTROS, $dataResponse);
     }
 
     // public function assingRoles()
@@ -129,15 +191,7 @@ class RolesController
     //     Response::success('roles y permisos encontrados', $dataResult);
     // }
 
-    // public function getPermisosRolAsig(int $rolId = 0)
-    // {
-    //     $rolesResult = $this->modeloRol->getPermisosFuncion($rolId);
 
-    //     if (!$rolesResult['status']) {
-    //         Response::fail('No hay permisos asociadas a este rol', $rolesResult);
-    //     }
-    //     Response::success('roles asociados', $rolesResult);
-    // }
 
     /**
      * Function para establecer los permisos asociados al rol.

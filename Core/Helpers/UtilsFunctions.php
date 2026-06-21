@@ -39,7 +39,8 @@ class UtilsFunctions
             'Usuarios',
             'SolicitudPrestamos',
             'TipoDocumento',
-            'Marcas'
+            'Marcas',
+            'Modulos'
         ];
     }
 

@@ -23,7 +23,6 @@ class RolesFuncionesController
     return include_once __DIR__ . '../../views/rolesFunciones.php';
   }
 
-
   /**
    * funcion para enviar la data al cliente para renderizar en el select.
    *
@@ -61,14 +60,23 @@ class RolesFuncionesController
       "f.nombre_funcion AS 'nombreFuncion'",
       "rf.rlp_id_rl AS 'idRol'",
       "r.rl_nombre AS 'nombreRol'",
-      "m.cod_nombre_m AS 'moduloAsociado'"
+      "m.nombre_modulo AS 'moduloAsociado'"
     ];
     // cuando hay alias, poo no lee el punto, asi que si o si debemos de enviar el arreglo en vez de un punto, un guion.
     $dataSelect['data'] = [
       'rf_rlp_id_rl' => $idRol
     ];
 
-    $countData = $this->rfModel->select($columns)->from('roles_funciones rf')->leftJoin('roles r', 'r.rl_id', '=', 'rf.rlp_id_rl')->leftJoin('funciones f', 'rf.rlp_id_funcion', '=', 'f.id_funcion')->leftJoin('modulos m', 'f.id_modulo', '=', 'm.id_m')->where(['rf.rlp_id_rl', '=', $idRol])->prepareSql($dataSelect)->get();
+    $countData = $this->rfModel
+      ->select($columns)
+      ->from('roles_funciones rf')
+      ->leftJoin('roles r', 'r.rl_id', '=', 'rf.rlp_id_rl')
+      ->leftJoin('funciones f', 'rf.rlp_id_funcion', '=', 'f.id_funcion')
+      ->leftJoin('modulos m', 'f.id_modulo', '=', 'm.id_m')
+      ->where(['rf.rlp_id_rl', '=', $idRol])
+      ->prepareSql($dataSelect)->get();
+
+
 
     $paginate = UtilsFunctions::executePaginate(count($countData), $limit, $actualPage);
 
@@ -78,7 +86,18 @@ class RolesFuncionesController
       'offset' => (int) $paginate[CR_OFFSET]
     ];
 
-    $resultQuery = $this->rfModel->select($columns)->from('roles_funciones rf')->leftJoin('roles r', 'r.rl_id', '=', 'rf.rlp_id_rl')->leftJoin('funciones f', 'rf.rlp_id_funcion', '=', 'f.id_funcion')->leftJoin('modulos m', 'f.id_modulo', '=', 'm.id_m')->where(['rf.rlp_id_rl', '=', $idRol])->orderBy('rf.rlp_id')->limit()->offset()->prepareSql($dataSql)->get();
+    $resultQuery = $this->rfModel
+      ->select($columns)
+      ->from('roles_funciones rf')
+      ->leftJoin('roles r', 'r.rl_id', '=', 'rf.rlp_id_rl')
+      ->leftJoin('funciones f', 'rf.rlp_id_funcion', '=', 'f.id_funcion')
+      ->leftJoin('modulos m', 'f.id_modulo', '=', 'm.id_m')
+      ->where(['rf.rlp_id_rl', '=', $idRol])
+      ->orderBy('rf.rlp_id')
+      ->limit()
+      ->offset()
+      ->prepareSql($dataSql)
+      ->get();
 
     if (count($resultQuery) > 0) {
       $dataQuery = [
@@ -94,5 +113,25 @@ class RolesFuncionesController
       ];
       Response::responseRequest(HttpStatus::OK, true, RL_MESSAGE_WITHOUT_ROLES, $dataQuery);
     }
+  }
+
+  /**
+   * Function para eliminar las funciones asociadas al rol.
+   *
+   * @return void
+   */
+  public function deleteRoleFuncion()
+  {
+    header(CONTENT_TYPE);
+    $data = UtilsFunctions::returnGetDecode();
+    $data = UtilsFunctions::deleteSpace($data);
+    $dataDelete[CR_DATA] = $data;
+    $responseDeleteFunciones = $this->rfModel->delete()->where()->prepareSql($dataDelete)->get();
+    if (!$responseDeleteFunciones[CR_STATUS]) {
+      $dataResponse = DatabaseHandler::validateResponse($responseDeleteFunciones);
+      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      return;
+    }
+    Response::responseRequest(HttpStatus::OK, true, RLF_MESSAGE_SUCCESS_DELETE, []);
   }
 }

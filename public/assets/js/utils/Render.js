@@ -81,7 +81,12 @@ export class Render extends HttpData {
 
       // validamos si el value es una function o en su defecto solo texto, si es una function, ejecutar.
       if (typeof value.value === 'function') {
-        // buttons.innerText = value.value(fullRow, buttons);
+        /**
+         * Ejecuta el renderizado de la fila y maneja los elementos del DOM.
+         * * @param {object} fullRow - Los datos completos de la fila actual.
+         * @param {HTMLElement} buttons - El contenedor de botones del DOM.
+         * @returns {string|HTMLElement} El resultado del renderizado.
+         */
         const textResult = value.value(fullRow, buttons);
         if (textResult) buttons.innerText = textResult;
       } else {

@@ -3,6 +3,8 @@
 /**
  * Archivo para validar cada función ejecutada en los archivos.
  * Necesito traer la sessión, el getUrl y el response del para enviar la respuesta al front.
+ * en esta clase requiero los modelos de usuarios, modelos de roles
+ * y los modelos de roles_funciones para validar que exista el usuario
  */
 require_once __DIR__ . "/Session.php";
 require_once __DIR__ . '/Response.php';

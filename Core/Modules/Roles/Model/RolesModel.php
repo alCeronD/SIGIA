@@ -11,42 +11,6 @@ class RolesModel extends Crud
         'rl_status'
     ];
 
-    // public function obtenerRol(int $id = 0)
-    // {
-    //     if (!is_int($id) || !$id) {
-    //         return null;
-    //     }
-
-    //     $conn = (new Conn())->getConnect();
-    //     $query = "SELECT * FROM roles WHERE rl_id = $id";
-    //     $resultado = $conn->query($query);
-
-    //     $rol = null;
-    //     if ($resultado && $resultado->num_rows > 0) {
-    //         $rol = $resultado->fetch_assoc();
-    //     }
-
-    //     $conn->close();
-    //     return $rol;
-    // }
-
-
-    // // Actualizo rol del usuario
-    // public function actRolUser($id_user, $rol_id)
-    // {
-    //     $conn = (new Conn())->getConnect();
-    //     $query = "UPDATE usuarios_roles SET usr_rl_id = '$rol_id' WHERE usr_usu_id = '$id_user'";
-    //     $resultado = $conn->query($query);
-
-    //     if ($resultado) {
-    //         $conn->close();
-    //         return true;
-    //     } else {
-    //         echo "Error al actualizar el rol del usuario: " . $conn->error;
-    //         $conn->close();
-    //         return false;
-    //     }
-    // }
 
     // // Función para capturar los modulos y las funciones que pertenecen al modulo
     // public function getRolesPermisos()
@@ -168,63 +132,7 @@ class RolesModel extends Crud
     //     }
     // }
 
-    // // Función para capturar las funciones que están asociadas al rol.
-    // public function getPermisosFuncion(int $rolId = 0)
-    // {
-    //     try {
-    //         $conn = (new Conn())->getConnect();
-    //         // Con esta función valido que el ROL PUEDA ACCEDER A ESA FUNCIÓN, que hace parte del modulo.
-    //         $sql = "SELECT
-    //             fu.id_funcion as 'idFuncion', fu.nombre_funcion as 'nombreFunción'
-    //         FROM funciones fu
-    //             INNER JOIN roles_funciones rf ON
-    //             fu.id_funcion = rf.rlp_id_funcion
-    //             INNER JOIN roles ro ON
-    //             ro.rl_id = rf.rlp_id_rl
-    //             INNER JOIN modulos mo ON
-    //             mo.id_m = fu.id_modulo
-    //             WHERE ro.rl_id = ?";
 
-    //         $stmtGetPermisoFuncion = $conn->prepare($sql);
-
-    //         if (!$stmtGetPermisoFuncion) {
-    //             return [
-    //                 'message' => 'error al preparar la consulta',
-    //                 'status' => false,
-    //                 'data' => []
-    //             ];
-    //         }
-
-    //         $stmtGetPermisoFuncion->bind_param('i', $rolId);
-    //         if (!$stmtGetPermisoFuncion->execute()) {
-    //             return [
-    //                 'message' => "error al preparar la consulta",
-    //                 'status' => false,
-    //                 'data' => []
-    //             ];
-    //         }
-
-    //         $result = $stmtGetPermisoFuncion->get_result();
-    //         // Funciones asociadas al rol
-    //         $funcionAssoc = [];
-    //         while ($row = $result->fetch_assoc()) {
-    //             $funcionAssoc[] = $row;
-    //         }
-
-
-    //         return [
-    //             'status' => true,
-    //             'message' => "función y rol asociado",
-    //             'data' => $funcionAssoc
-    //         ];
-    //     } catch (\Throwable $th) {
-    //         return [
-    //             'message' => 'error al ejecutar el procedimiento' . $th->getMessage(),
-    //             'status' => false,
-    //             'data' => []
-    //         ];
-    //     }
-    // }
     // /**
     //  * Summary of assocPermisos - Esta función agrega los permisos al rol específico.
     //  * @param array $data

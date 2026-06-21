@@ -394,9 +394,28 @@ abstract class Crud
     return $this->id;
   }
 
+  public function setSql($newSql)
+  {
+    $this->sql = $newSql;
+  }
   # Funcion de prueba para verificar como esta armada la sql
   public function showSql()
   {
     return $this->sql;
+  }
+
+  public function beginTransaction()
+  {
+    $this->conn->beginTransaction();
+  }
+
+  public function commit()
+  {
+    $this->conn->commit();
+  }
+
+  public function rollback()
+  {
+    $this->conn->rollBack();
   }
 }

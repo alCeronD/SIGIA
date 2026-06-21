@@ -7,7 +7,7 @@ define('RL_MESSAGE_SUCCESS_DELETE', 'Rol Eliminado correctamente');
 define('RL_MESSAGE_ERROR_ENTITY_DATA', 'Primero debes desvincular las funciones asociadas de este rol antes de eliminarlo');
 define('RL_MESSAGE_NO_ROL', 'El rol no es correcto');
 define('RL_MESSAGE_WITHOUT_ROLES', 'No se encontraron funciones asociadas al rol');
-
+define('RLF_MESSAGE_SUCCESS_DELETE', 'Función asociada al rol eliminada exitosamente');
 
 // name files
 define('RL_FILE_ROLES_CONTROLLER', 'Roles');

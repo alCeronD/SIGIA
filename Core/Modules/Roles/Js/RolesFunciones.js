@@ -4,6 +4,7 @@ import {
   Render,
   createI,
   addClassItem,
+  mostrarConfirmacion,
 } from '../../../../public/assets/js/utils/index.js';
 
 const selectRol = document.querySelector('#selectRol');
@@ -32,7 +33,12 @@ let dataPaginate = {};
 let actualPage = 1;
 let responseRolesFunciones = null; //variable que se usa para guardar los registros de las funciones asociadas al rol
 let rolIdSelect = null; //variable en donde se guarda el id del rol seleccionado por el usuario
-const executeRolesFunciones = async (idRol, actualPage) => {
+const executeRolesFunciones = async (idRol = '', actualPage) => {
+  // si no se envia nada, este solamente limpia la tabla y retorna el proceso
+  if (!idRol) {
+    bodyRolesFunciones.innerHTML = '';
+    return;
+  }
   responseRolesFunciones = await RolesFunciones.getData(`${url}getFuncionesAssocRoles`, 'GET', {
     idRol: idRol,
     limit: 4,
@@ -63,7 +69,34 @@ const executeRolesFunciones = async (idRol, actualPage) => {
 
 // acciones de la vista
 const eliminarFuncion = (id) => {
-  console.log(id);
+  try {
+    mostrarConfirmacion(
+      'Eliminar funcion',
+      '¿Está seguro de eliminar esta funcion asociada al rol?',
+      async (response) => {
+        if (!response) return;
+
+        const responseDeleteRlF = await RolesFunciones.sendData(
+          `${url}deleteRoleFuncion`,
+          'DELETE',
+          {
+            rlp_id: id,
+          }
+        );
+
+        if (!responseDeleteRlF.status) {
+          initAlert(responseDeleteRlF.message, 'info');
+          return;
+        }
+
+        initAlert(responseDeleteRlF.message, 'success');
+        executeRolesFunciones(rolIdSelect);
+        return;
+      }
+    );
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 // evento para seleccionar el rol y visualizar los roles.
