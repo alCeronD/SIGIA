@@ -135,7 +135,7 @@ class PermisosModel
         $coon = (new Conn)->getConnect();
         $sqlMenu = "SELECT DISTINCT
             mo.id_m AS 'idModulo',
-            mo.cod_nombre_m AS 'nombreModulo',
+            mo.nombre_modulo AS 'nombreModulo',
             mo.icono AS 'iconModulo'
             FROM modulos mo
             INNER JOIN funciones fu ON
@@ -172,7 +172,7 @@ class PermisosModel
             fu.nombre_funcion_user AS 'nombreFuncionUser',
             fu.id_funcion AS 'idFunción',
             fu.nombre_funcion AS 'nombreFuncionController',
-            mo.cod_nombre_m AS 'nombreModulo'
+            mo.nombre_modulo AS 'nombreModulo'
             FROM funciones fu
             INNER JOIN tipo_funcion tpf ON
             tpf.id_tp_funcion = fu.tp_funcion
