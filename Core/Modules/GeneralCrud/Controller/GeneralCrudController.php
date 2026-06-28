@@ -55,6 +55,7 @@ class GeneralCrudController extends ConfigGeneralCrud
     $dataSql = [];
     $dataSql['data'] = $data;
 
+
     $this->modelGeneralCrud->insert($data);
     $resultInsert = $this->modelGeneralCrud->prepareSql($dataSql)->get();
     if (!$resultInsert['status']) Response::responseRequest(HttpStatus::INTERNAL_SERVER_ERROR, false, MSG_ERROR_EJECUTAR_PROCESO, []);

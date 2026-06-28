@@ -28,6 +28,7 @@ Listado de TODOS generales y específicos por cada módulo.
   - [X] Crear delete
   - [X] Crear where
     - [X] ajustar where para hacer consulta con mas opciones and y or
+    - [ ] Crear whereIn
   - [X] Crear joins
     - [X] Inner join
     - [X] Left Join
@@ -42,7 +43,7 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Transformar en una clase el renderizado de datos
 - [X] EN PHP, AJUSTAR EL RESPONSE DE LA CLASE EN DONDE la funcion se puede transformar en una sola.
 - [ ] Crear logica que me permita definir cuales son los archivos que vamos a implementar en la vista, aplica para los css y javascript, esto se puede ejecutar cuando accedamos a la vista.
-- [ ] Arreglar paginacion a los elementos cuando este se encuentra en una pagina x o cuando se elimina un registro en la ultima pagina.
+- [ ] Arreglar paginacion a los elementos cuando este se encuentra en una pagina x o cuando se **elimina** un registro en la ultima pagina.
 
 ## Específicos
 

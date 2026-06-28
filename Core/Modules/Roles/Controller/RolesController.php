@@ -6,12 +6,12 @@ require_once BASE_URL . '/' . CR_AUTOLOAD;
 class RolesController
 {
     protected RolesModel $modeloRol;
-    protected PermisosModel $permisosModel;
+    protected RolesFuncionesModel $rfModel;
     protected FuncionesModel $fModel;
     protected ServicesRoles $sRoles;
     protected ServicesModulos $sModulos;
     protected ServicesFunciones $sFunciones;
-
+    protected PermisosModel $permisosModel;
 
     public function __construct()
     {
@@ -20,6 +20,7 @@ class RolesController
         $this->permisosModel = new PermisosModel();
         $this->fModel = new FuncionesModel();
         $this->sRoles = new ServicesRoles();
+        $this->rfModel = new RolesFuncionesModel();
         $this->sModulos = new ServicesModulos();
         $this->sFunciones = new ServicesFunciones();
     }
@@ -158,7 +159,6 @@ class RolesController
         }
 
         foreach ($allFunctions as $key =>  $funcion) {
-            // var_dump($value['id_modulo']);;
             foreach ($allModulos as $key2 => $value2) {
                 if ($value2['id_m'] === $funcion['id_modulo']) {
                     $finalFunctionsModules[$value2['nombre_modulo']][] = [
@@ -180,39 +180,103 @@ class RolesController
         Response::responseRequest(HttpStatus::OK, true, CR_REGISTROS, $dataResponse);
     }
 
-    // public function assingRoles()
-    // {
-    //     validatePermisos('Roles', 'assingRoles');
-    //     $dataResult = $this->modeloRol->getRolesPermisos();
-
-    //     if (!$dataResult['status']) {
-    //         Response::fail('error al procesar la data', $dataResult);
-    //     }
-    //     Response::success('roles y permisos encontrados', $dataResult);
-    // }
-
-
-
     /**
      * Function para establecer los permisos asociados al rol.
      *
      * @param array $data
      * @return void
      */
-    // public function setPermisos(array $data = [])
-    // {
+    public function setPermisos(array $data = [])
+    {
+        header(CONTENT_TYPE);
+        $data = UtilsFunctions::returnGetDecode();
+        $rolId = $data['rolId'];
+        $funcionesPorEliminar = $data['funcionesPorEliminar'];
+        // var_dump($data);
+        // die();
 
-    //     $rolId = $_SESSION['usuario']['rol_id'];
+        $funcionesPorAsociar = $data['funcionesPorAsociar'];
+        /**
+         * PASOS PARA EJECUTAR LA ASIGNACION DE PERMISOS AL ROL.
+         *
+         * 1 - Extraer todas las funciones ya asignadas dependiendo del rol para asi comparar con las que el usuario envia y las que ya estan registradas.
+         * 2 - comparar las funciones ya registradas con las por asignar para asi juntar las que no estan repetidas, asi evitamos duplicidad.
+         * 3 - Eliminar las funciones que se van a desasociar por el usuario
+         */
 
-    //     $responsePermisos = $this->modeloRol->assocPermisos($data);
+        //PASO1
+        $allFunctionsAssoc = $this->sRoles->getSetRolesFunciones($data['rolId']);
 
-    //     if (!$responsePermisos['status']) {
-    //         Response::fail('error al ejecutar el proceso', $responsePermisos);
-    //     }
 
-    //     $result = $this->permisosModel->renderMenu($rolId);
-    //     var_dump($result);
-    //     $_SESSION['renderMenu'] = $result['data'];
-    //     Response::success('Permisos Asociados correctamente', $responsePermisos);
-    // }
+        //PASO2 - comparar las funciones que tengo con las ya recibidas, se define cual es la longitud las funciones ya asociadas y las funciones por asociar para asi determinar cual va a ciclarse.
+        $functionsToLoop = []; //los datos a ciclar
+        $functionsValidate = []; //Los datos re validados
+        if (count($allFunctionsAssoc) > count($funcionesPorAsociar)) {
+            // se cicla allFunctionsAssoc
+            $functionsToLoop = $allFunctionsAssoc;
+            $functionsValidate = $funcionesPorAsociar;
+            // var_dump(array_column($allFunctionsAssoc, ));
+        } else {
+            // se cicla funcionesPorAsociar
+            $functionsToLoop = $funcionesPorAsociar;
+            $functionsValidate = array_column($allFunctionsAssoc, 'idFuncion');
+        }
+
+        // functions para agregar como permisos.
+        $functionsToAdd = [];
+        foreach ($functionsToLoop as $key => $value) {
+            if (!in_array($value, $functionsValidate)) {
+                $functionsToAdd[] = $value;
+            }
+        }
+
+        // PASO 3 - ELIMINAR LAS FUNCIONES DESASOACIADAS.
+        // $resultDeleteRolesFunciones = $this->rfModel->delete()->from()->where(['rlp_id_rl', '=', $rolId])->where(['rlp_id_funcion', '=', '']);
+
+        // ejecutar el proceso para eliminar las funciones asociadas al rol.
+        if (count($funcionesPorEliminar) > 0) {
+            $prepareFunctions = [];
+            foreach ($funcionesPorEliminar as $key => $value) {
+                $prepareFunctions["rlp_id_funcion" . $key] = $value;
+                // $prepareFunctions["rlp_id_rl" . $key] = $rolId;
+            }
+            // var_dump($prepareFunctions);
+            // adicionamos el id del rol
+            // $prepareFunctions[CR_DATA]['rlp_id_rl'] = $rolId;
+            $dtaPDFunctions[CR_DATA] = $prepareFunctions;
+            $dtaPDFunctions[CR_DATA]['rlp_id_rl'] = $rolId;
+
+            var_dump($dtaPDFunctions);
+            // die();
+
+            // var_dump($prepareFunctions);
+            $resultDeleteRolesFunciones = $this->rfModel->delete()->where(['rlp_id_rl', '=', $rolId])->whereIn($prepareFunctions, 'rlp_id_funcion');
+
+            var_dump($resultDeleteRolesFunciones);
+            die();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        // PROCESO ANTIGUO
+        // $responsePermisos = $this->modeloRol->assocPermisos();
+
+        // if (!$responsePermisos['status']) {
+        //     Response::fail('error al ejecutar el proceso', $responsePermisos);
+        // }
+
+        // $result = $this->permisosModel->renderMenu($rolId);
+        // var_dump($result);
+        // $_SESSION['renderMenu'] = $result['data'];
+        // Response::success('Permisos Asociados correctamente', $responsePermisos);
+    }
 }

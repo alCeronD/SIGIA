@@ -22,6 +22,8 @@ require_once __DIR__ . '/../Helpers/Autoload.php';
 
 abstract class Crud
 {
+  protected $countLastMethod = 0;
+  protected $lastMethod = "";
   protected $conn; # En donde se guarda la conexion
   protected $sql; # String que crea la consulta sql
   protected $table; # Nombre de la tabla, hereda su valor desde el modelo
@@ -149,6 +151,18 @@ abstract class Crud
    */
   public function where(array $datos = [])
   {
+    $function = "";
+    $this->lastMethod = __FUNCTION__;
+    if (__FUNCTION__ === "where") {
+      $this->countLastMethod++;
+    }
+
+    if ($this->countLastMethod > 1 and __FUNCTION__ === 'where') {
+      $function = "AND";
+    } else {
+      $function = "WHERE";
+    }
+
     if (!empty($datos)) {
       $columna = $datos[0];
       $operador = $datos[1];
@@ -161,13 +175,13 @@ abstract class Crud
       } else {
         $columnaReference = $columna;
       }
-      $this->sql .= " WHERE $columna $operador :$columnaReference";
+      $this->sql .= " $function $columna $operador :$columnaReference";
+    } else {
+
+      // necesito los datos, para validar que existen y asi validarlos, los operadores de comparacion
+      $this->sql .= " $function $this->id = :{$this->id}";
     }
 
-    if (empty($datos)) {
-      // necesito los datos, para validar que existen y asi validarlos, los operadores de comparacion
-      $this->sql .= " WHERE $this->id = :{$this->id}";
-    }
 
     return $this;
   }
@@ -228,12 +242,39 @@ abstract class Crud
     return $this;
   }
 
+
+  /**
+   * Function para crear estructura string con la condicional In seguido de los valores requeridos.
+   *
+   * @param array $valores - [] listado de valores clave valor
+   * @return $this;
+   */
+  public function whereIn(array $valores = [], string $columna = "",)
+  {
+    $funcion = "";
+    if ($this->lastMethod === 'where') {
+      $funcion = "AND";
+    } else {
+      $funcion = "WHERE";
+    }
+
+    $this->sql .= " $funcion ";
+    $string = "";
+    foreach ($valores as $key => $value) {
+      $string .= ":{$key},";
+    }
+    // eliminamos la coma del final
+    $string = trim($string, ", ");
+    $string = "(" . $string . ")";
+    $this->sql .= "{$columna} IN $string";
+    return $this;
+  }
+
   public function and()
   {
     return "AND";
   }
 
-  // funciones joins
 
   /**
    * Function left join

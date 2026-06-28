@@ -19,8 +19,6 @@ import {
 const closeModalBtnAsing = document.querySelector('#closeModalBtnAsing');
 const closeModalBtnEdit = document.querySelector('#closeModalBtnEdit');
 const modalEditar = document.querySelector('#modalEditar');
-// const modalEditar = instanceModal('#modalEditar', options);
-// const modalAsing = instanceModal('#modalAsingPermisos', options);
 const modalAsing = document.querySelector('#modalAsingPermisos');
 // Div contenedor en donde se va a renderizar toda la información.
 const asigPermisosContent = document.querySelector('#asigPermisosContent');
@@ -230,11 +228,9 @@ asigPermisosContent.addEventListener('change', (e) => {
       updateFunctionSelection(parseInt(valueCheckbox), false);
     }
   }
-
   // Ejecutar el proceso basado en el checkbox del modulo.
   if (evento.classList.contains('checkboxModule')) {
     const idModulo = evento.value;
-
     // Todos los checkbox asociados al modulo, otra forma es también leer la data usando dataset.
     const checkboxesFuncion = Array.from(document.querySelectorAll('.checkboxFunciones')).filter(
       (cbFuncion) => cbFuncion.getAttribute('data-idModulo') === idModulo
@@ -267,15 +263,13 @@ preconfirmButton.addEventListener('click', (e) => {
         return;
       }
       try {
-        const rolesPorAsociar = Array.from(functionIdsAssoc).sort();
-        const rolesDesleccionados = Array.from(functionDesc).sort();
-        const responsePost = await sendData(
-          'modules/roles/controller/rolesController.php',
-          'POST',
-          'setPermisos',
-          { rolesPorAsociar, rolesDesleccionados, rolId }
-        );
-
+        const funcionesPorAsociar = Array.from(functionIdsAssoc).sort();
+        const funcionesPorEliminar = Array.from(functionDesc).sort();
+        const responsePost = await renderClass.sendData(`${url}setPermisos`, 'POST', {
+          funcionesPorAsociar: funcionesPorAsociar,
+          funcionesPorEliminar: funcionesPorEliminar,
+          rolId,
+        });
         if (!responsePost.status) {
           initAlert(error.message, 'error', toastOptions);
           modalConfirmacion.close();
@@ -400,7 +394,6 @@ const showPermisosRol = async (id, rowRol) => {
   // console.log(permisosAsignados);
   renderRolesFunciones({ rolesPermisos: permisosAsignados });
   openModal(modalAsing);
-  openModal(modalAsing);
 };
 
 // evento submit para editar informacion del rol.
@@ -469,7 +462,7 @@ formRol.addEventListener('submit', async (e) => {
       formRol.reset();
     }
   } catch (error) {
-    initAlert(`${error.message}`, 'error', toastOptions);
+    initAlert(`${error.message}`, 'error');
   }
 });
 
@@ -477,6 +470,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderRoles();
   closeModal(modalAsing, closeModalBtnAsing, () => {
     rolId = null;
+    functionIdsAssoc.clear();
+    functionDesc.clear();
   });
 
   closeModal(modalEditar, closeModalBtnEdit);
