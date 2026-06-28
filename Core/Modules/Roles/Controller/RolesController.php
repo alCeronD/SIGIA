@@ -183,77 +183,78 @@ class RolesController
     /**
      * Function para establecer los permisos asociados al rol.
      *
-     * @param array $data
      * @return void
      */
-    public function setPermisos(array $data = [])
+    public function setPermisos()
     {
-        header(CONTENT_TYPE);
-        $data = UtilsFunctions::returnGetDecode();
-        $rolId = $data['rolId'];
-        $funcionesPorEliminar = $data['funcionesPorEliminar'];
-        // var_dump($data);
-        // die();
+        try {
+            $this->rfModel->beginTransaction();
+            header(CONTENT_TYPE);
+            $data = UtilsFunctions::returnGetDecode();
+            $rolId = $data['rolId'];
+            $funcionesPorEliminar = $data['funcionesPorEliminar'];
 
-        $funcionesPorAsociar = $data['funcionesPorAsociar'];
-        /**
-         * PASOS PARA EJECUTAR LA ASIGNACION DE PERMISOS AL ROL.
-         *
-         * 1 - Extraer todas las funciones ya asignadas dependiendo del rol para asi comparar con las que el usuario envia y las que ya estan registradas.
-         * 2 - comparar las funciones ya registradas con las por asignar para asi juntar las que no estan repetidas, asi evitamos duplicidad.
-         * 3 - Eliminar las funciones que se van a desasociar por el usuario
-         */
+            $funcionesPorAsociar = $data['funcionesPorAsociar'];
+            /**
+             * PASOS PARA EJECUTAR LA ASIGNACION DE PERMISOS AL ROL.
+             *
+             * 1 - Extraer todas las funciones ya asignadas dependiendo del rol para asi comparar con las que el usuario envia y las que ya estan registradas.
+             * 2 - comparar las funciones ya registradas con las por asignar para asi juntar las que no estan repetidas, asi evitamos duplicidad.
+             * 3 - Eliminar las funciones que se van a desasociar por el usuario
+             */
 
-        //PASO1
-        $allFunctionsAssoc = $this->sRoles->getSetRolesFunciones($data['rolId']);
+            //PASO1
+            $allFunctionsAssoc = $this->sRoles->getSetRolesFunciones($data['rolId']);
 
 
-        //PASO2 - comparar las funciones que tengo con las ya recibidas, se define cual es la longitud las funciones ya asociadas y las funciones por asociar para asi determinar cual va a ciclarse.
-        $functionsToLoop = []; //los datos a ciclar
-        $functionsValidate = []; //Los datos re validados
-        if (count($allFunctionsAssoc) > count($funcionesPorAsociar)) {
-            // se cicla allFunctionsAssoc
-            $functionsToLoop = $allFunctionsAssoc;
-            $functionsValidate = $funcionesPorAsociar;
-            // var_dump(array_column($allFunctionsAssoc, ));
-        } else {
-            // se cicla funcionesPorAsociar
-            $functionsToLoop = $funcionesPorAsociar;
-            $functionsValidate = array_column($allFunctionsAssoc, 'idFuncion');
-        }
-
-        // functions para agregar como permisos.
-        $functionsToAdd = [];
-        foreach ($functionsToLoop as $key => $value) {
-            if (!in_array($value, $functionsValidate)) {
-                $functionsToAdd[] = $value;
+            //PASO2 - comparar las funciones que tengo con las ya recibidas, se define cual es la longitud las funciones ya asociadas y las funciones por asociar para asi determinar cual va a ciclarse.
+            $functionsToLoop = []; //los datos a ciclar
+            $functionsValidate = []; //Los datos re validados
+            if (count($allFunctionsAssoc) > count($funcionesPorAsociar)) {
+                // se cicla allFunctionsAssoc
+                $functionsToLoop = $allFunctionsAssoc;
+                $functionsValidate = $funcionesPorAsociar;
+                // var_dump(array_column($allFunctionsAssoc, ));
+            } else {
+                // se cicla funcionesPorAsociar
+                $functionsToLoop = $funcionesPorAsociar;
+                $functionsValidate = array_column($allFunctionsAssoc, 'idFuncion');
             }
-        }
 
-        // PASO 3 - ELIMINAR LAS FUNCIONES DESASOACIADAS.
-        // $resultDeleteRolesFunciones = $this->rfModel->delete()->from()->where(['rlp_id_rl', '=', $rolId])->where(['rlp_id_funcion', '=', '']);
-
-        // ejecutar el proceso para eliminar las funciones asociadas al rol.
-        if (count($funcionesPorEliminar) > 0) {
-            $prepareFunctions = [];
-            foreach ($funcionesPorEliminar as $key => $value) {
-                $prepareFunctions["rlp_id_funcion" . $key] = $value;
-                // $prepareFunctions["rlp_id_rl" . $key] = $rolId;
+            // functions para agregar como permisos.
+            $functionsToAdd = [];
+            foreach ($functionsToLoop as $key => $value) {
+                if (!in_array($value, $functionsValidate)) {
+                    $functionsToAdd[] = $value;
+                }
             }
-            // var_dump($prepareFunctions);
-            // adicionamos el id del rol
-            // $prepareFunctions[CR_DATA]['rlp_id_rl'] = $rolId;
-            $dtaPDFunctions[CR_DATA] = $prepareFunctions;
-            $dtaPDFunctions[CR_DATA]['rlp_id_rl'] = $rolId;
 
-            var_dump($dtaPDFunctions);
-            // die();
+            // PASO 3 - ejecutar el proceso para eliminar las funciones asociadas al rol.
+            if (count($funcionesPorEliminar) > 0) {
+                $prepareFunctions = [];
+                foreach ($funcionesPorEliminar as $key => $value) {
+                    $prepareFunctions["rlp_id_funcion" . $key] = $value;
+                }
+                $dtaPDFunctions[CR_DATA] = $prepareFunctions;
+                // adicionamos el id del rol
+                $dtaPDFunctions[CR_DATA]['rlp_id_rl'] = $rolId;
 
-            // var_dump($prepareFunctions);
-            $resultDeleteRolesFunciones = $this->rfModel->delete()->where(['rlp_id_rl', '=', $rolId])->whereIn($prepareFunctions, 'rlp_id_funcion');
 
-            var_dump($resultDeleteRolesFunciones);
-            die();
+                $resultDeleteRolesFunciones = $this->rfModel->delete()->where(['rlp_id_rl', '=', $rolId])->whereIn($prepareFunctions, 'rlp_id_funcion')->prepareSql($dtaPDFunctions)->get();
+
+
+                if (!$resultDeleteRolesFunciones[CR_STATUS]) {
+                    $dataResponse = DatabaseHandler::validateResponse($resultDeleteRolesFunciones);
+                    Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+                    return;
+                }
+
+                $this->rfModel->commit();
+                Response::responseRequest(HttpStatus::OK, true, 'proceso ejecutado correctamente', []);
+            }
+        } catch (\PDOException $th) {
+            $this->rfModel->rollback();
+            Response::responseRequest(HttpStatus::BAD_REQUEST, false, $th, []);
         }
 
 

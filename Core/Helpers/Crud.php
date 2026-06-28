@@ -242,7 +242,6 @@ abstract class Crud
     return $this;
   }
 
-
   /**
    * Function para crear estructura string con la condicional In seguido de los valores requeridos.
    *
