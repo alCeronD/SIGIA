@@ -67,12 +67,27 @@ abstract class Crud
     $string = "";
 
     // Concatenamos con signos de interrogacion para preparar la consulta.
+    // foreach ($datos as $key => $camp) {
+    //   // valido que las keys esten en el modelo de las tablas;
+    //   if (in_array($key, $this->campos)) {
+    //     $string .= ":$key" . ", ";
+    //   }
+    // }
+
     foreach ($datos as $key => $camp) {
       // valido que las keys esten en el modelo de las tablas;
       if (in_array($key, $this->campos)) {
-        $string .= ":$key" . ", ";
+
+        // validamos que una de las claves sea key
+        if (array_key_exists('__index', $datos)) {
+          $indexKey = $datos['__index'];
+          $string .= ":{$key}{$indexKey}" . ", ";
+        } else {
+          $string .= ":$key" . ", ";
+        }
       }
     }
+
 
     return trim($string, ", ");
   }
@@ -121,7 +136,29 @@ abstract class Crud
   }
   public function insert(array $insertValue)
   {
+    $resultValidate = $this->validateArrays($insertValue);
+    // validamos si es un arreglo con arreglos internos.
+    if ($resultValidate) {
+
+
+      $this->sql = "INSERT INTO " . $this->table . " (" . $this->organizarCampos($this->campos) . ") ";
+
+      $newRow = [];
+      foreach ($insertValue as $key => $value) {
+        $newRow[] = "(" . $this->organizarDatos($value) . ")";
+      }
+
+
+      $this->sql .= "VALUES ";
+
+      $this->sql .= implode(", ", $newRow);
+
+      return $this;
+    }
+
+    // opction por defecto
     $this->sql = "INSERT INTO " . $this->table . " (" . $this->organizarCampos($this->campos) . ") VALUES (" . $this->organizarDatos($insertValue) . ")";
+
     return $this;
   }
   public function delete()
@@ -151,16 +188,13 @@ abstract class Crud
    */
   public function where(array $datos = [])
   {
-    $function = "";
     $this->lastMethod = __FUNCTION__;
-    if (__FUNCTION__ === "where") {
+    $function = "WHERE";
+    if ($this->lastMethod === "where") {
       $this->countLastMethod++;
-    }
-
-    if ($this->countLastMethod > 1 and __FUNCTION__ === 'where') {
-      $function = "AND";
-    } else {
-      $function = "WHERE";
+      if ($this->countLastMethod > 1) {
+        $function = "AND";
+      }
     }
 
     if (!empty($datos)) {
@@ -371,6 +405,7 @@ abstract class Crud
 
       $this->stmt->execute();
 
+
       # Verificamos si es un select para solamente devolver un arreglo asociativo
       if ((strpos($this->sql, 'SELECT') === 0) && ($checkSelect[0] === "SELECT")) {
         if (str_contains(strtoupper($this->sql), "COUNT")) {
@@ -394,11 +429,22 @@ abstract class Crud
           'rowCounts' => $rowCounts
         ];
       }
+      // VALIDAMOS SI EXISTE UNA TRANSACCION, EN CASO DE SER ASI, SIMPLEMENTE RETORNAMOS EL ESTATUS Y EN EL CONTROLADOR APLICAMOS EL COMMIT Y EL CLEAN QUERY.
+      if ($this->conn->inTransaction()) {
+        return [
+          'status' => true,
+          'message' => $this->conn->inTransaction()
+        ];
+      }
+
       $this->cleanQuery();
       return [
         'status' => true
       ];
     } catch (\PDOException $e) {
+      if ($this->conn->inTransaction()) {
+        $this->conn->rollBack();
+      }
       return [
         'status' => false,
         'sqlState' => $e->errorInfo[0], //Codigo generico de error
@@ -427,6 +473,19 @@ abstract class Crud
   {
     $this->sql = "";
     $this->stmt = null;
+    $this->countLastMethod = 0;
+  }
+
+  /**
+   * Function para validar si los arreglos son multiples. o uno plano
+   *
+   * @return bool
+   */
+  public function validateArrays(array $datos = []): bool
+  {
+    $primerElemento = reset($datos);
+
+    return is_array($primerElemento);
   }
 
   public function getPrimaryKey()
@@ -434,28 +493,39 @@ abstract class Crud
     return $this->id;
   }
 
-  public function setSql($newSql)
-  {
-    $this->sql = $newSql;
-  }
-  # Funcion de prueba para verificar como esta armada la sql
-  public function showSql()
+  /**
+   * Function que devuelve consulta en forma de string
+   *
+   * @return string
+   */
+  public function showSql(): string
   {
     return $this->sql;
   }
 
   public function beginTransaction()
   {
-    $this->conn->beginTransaction();
+    if ($this->conn && !$this->conn->inTransaction()) {
+      $this->conn->beginTransaction();
+    }
   }
+
+
 
   public function commit()
   {
-    $this->conn->commit();
+    $result = false;
+    if ($this->conn && $this->conn->inTransaction()) {
+      $result = $this->conn->commit();
+    }
+    $this->cleanQuery();
+    return $result;
   }
 
   public function rollback()
   {
-    $this->conn->rollBack();
+    if ($this->conn->inTransaction()) {
+      $this->conn->rollBack();
+    }
   }
 }

@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once __DIR__ . '/../Const/RolesConst.php';
 require_once BASE_URL . '/' . CR_AUTOLOAD;
 
-class RolesController
+class RolesController implements CrudInterface
 {
     protected RolesModel $modeloRol;
     protected RolesFuncionesModel $rfModel;
@@ -44,7 +44,7 @@ class RolesController
         return include_once __DIR__ . '../../views/rolesViews.php';
     }
 
-    public function getRoles()
+    public function getData()
     {
         header(CONTENT_TYPE);
         $roles = $this->sRoles->getAllRoles();
@@ -53,7 +53,7 @@ class RolesController
         }
     }
 
-    public function editarRol()
+    public function save()
     {
         header(CONTENT_TYPE);
         $data = UtilsFunctions::returnGetDecode();
@@ -86,7 +86,7 @@ class RolesController
         Response::responseRequest(HttpStatus::OK, true, $message, []);
     }
 
-    public function registrarRol(array $data = [])
+    public function store()
     {
         header(CONTENT_TYPE);
         $data = UtilsFunctions::returnGetDecode();
@@ -98,7 +98,7 @@ class RolesController
         }
     }
 
-    public function deleteRol()
+    public function delete()
     {
         header(CONTENT_TYPE);
         $data = UtilsFunctions::returnGetDecode();
@@ -193,7 +193,6 @@ class RolesController
             $data = UtilsFunctions::returnGetDecode();
             $rolId = $data['rolId'];
             $funcionesPorEliminar = $data['funcionesPorEliminar'];
-
             $funcionesPorAsociar = $data['funcionesPorAsociar'];
             /**
              * PASOS PARA EJECUTAR LA ASIGNACION DE PERMISOS AL ROL.
@@ -201,6 +200,7 @@ class RolesController
              * 1 - Extraer todas las funciones ya asignadas dependiendo del rol para asi comparar con las que el usuario envia y las que ya estan registradas.
              * 2 - comparar las funciones ya registradas con las por asignar para asi juntar las que no estan repetidas, asi evitamos duplicidad.
              * 3 - Eliminar las funciones que se van a desasociar por el usuario
+             * 4 - Guardar las nuevas funciones asociadas al rol.
              */
 
             //PASO1
@@ -214,7 +214,6 @@ class RolesController
                 // se cicla allFunctionsAssoc
                 $functionsToLoop = $allFunctionsAssoc;
                 $functionsValidate = $funcionesPorAsociar;
-                // var_dump(array_column($allFunctionsAssoc, ));
             } else {
                 // se cicla funcionesPorAsociar
                 $functionsToLoop = $funcionesPorAsociar;
@@ -225,7 +224,11 @@ class RolesController
             $functionsToAdd = [];
             foreach ($functionsToLoop as $key => $value) {
                 if (!in_array($value, $functionsValidate)) {
-                    $functionsToAdd[] = $value;
+                    $functionsToAdd[] = [
+                        'rlp_id_rl'  => $rolId,
+                        'rlp_id_funcion'  => $value,
+                        '__index' => $key
+                    ];
                 }
             }
 
@@ -242,42 +245,42 @@ class RolesController
 
                 $resultDeleteRolesFunciones = $this->rfModel->delete()->where(['rlp_id_rl', '=', $rolId])->whereIn($prepareFunctions, 'rlp_id_funcion')->prepareSql($dtaPDFunctions)->get();
 
-
                 if (!$resultDeleteRolesFunciones[CR_STATUS]) {
                     $dataResponse = DatabaseHandler::validateResponse($resultDeleteRolesFunciones);
                     Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
                     return;
                 }
-
-                $this->rfModel->commit();
-                Response::responseRequest(HttpStatus::OK, true, 'proceso ejecutado correctamente', []);
             }
+
+            // PASO 4 Guardar funciones asociadas en rol.
+            /**
+             * Pasos para ejecutar el 4to paso
+             * 1- en el arreglo anterior le adjuntamos el index para validar la data, aca vamos a extraer esos arreglos multiples y lo transformaremos en un arreglo plano PERO, con las mismas claves para poder referenciarlas usando el bindparam.
+             */
+            $functionsToAddPrepare = [];
+            foreach ($functionsToAdd as $key => $value) {
+                foreach ($value as $key2 => $value2) {
+                    if ($key2 != '__index') {
+                        $functionsToAddPrepare[CR_DATA]['rlp_id_funcion' . "{$value['__index']}"] = $value2;
+                        $functionsToAddPrepare[CR_DATA]['rlp_id_rl' . "{$value['__index']}"] = $rolId;
+                    }
+                }
+            }
+            $resultSetPermisos = $this->rfModel->insert($functionsToAdd)->prepareSql($functionsToAddPrepare)->get();
+            $this->rfModel->commit();
+            if (!$resultSetPermisos[CR_STATUS]) {
+                $dataResponse = DatabaseHandler::validateResponse($resultSetPermisos);
+                Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+                return;
+            }
+
+            $result = $this->permisosModel->renderMenu($rolId);
+            $_SESSION['renderMenu'] = $result['data'];
+
+            Response::responseRequest(HttpStatus::OK, true, 'Permisos asociados correctamente', []);
         } catch (\PDOException $th) {
             $this->rfModel->rollback();
             Response::responseRequest(HttpStatus::BAD_REQUEST, false, $th, []);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-        // PROCESO ANTIGUO
-        // $responsePermisos = $this->modeloRol->assocPermisos();
-
-        // if (!$responsePermisos['status']) {
-        //     Response::fail('error al ejecutar el proceso', $responsePermisos);
-        // }
-
-        // $result = $this->permisosModel->renderMenu($rolId);
-        // var_dump($result);
-        // $_SESSION['renderMenu'] = $result['data'];
-        // Response::success('Permisos Asociados correctamente', $responsePermisos);
     }
 }

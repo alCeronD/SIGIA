@@ -271,19 +271,19 @@ preconfirmButton.addEventListener('click', (e) => {
           rolId,
         });
         if (!responsePost.status) {
-          initAlert(error.message, 'error', toastOptions);
+          initAlert(error.message, 'error');
           modalConfirmacion.close();
         }
+        modalAsing.style.display = 'none';
         modalConfirmacion.close();
-        modalAsing.close();
-        initAlert(responsePost.message, 'success', toastOptions);
+        initAlert(responsePost.message, 'success');
         // Esto lo hago para recargar la página y así ver los últimos cambios de la página del menú, buscar como hacerlo de una mejor manera.
         setTimeout(() => {
           location.reload();
         }, 400);
         return;
       } catch (error) {
-        initAlert(error.message, 'info', toastOptions);
+        initAlert(error.message, 'info');
         return;
       }
     }
@@ -292,7 +292,7 @@ preconfirmButton.addEventListener('click', (e) => {
 
 // Renderizar la vista de la tabla roles.
 const renderRoles = async () => {
-  getRoles = await renderClass.getData(`${url}getRoles`, 'GET');
+  getRoles = await renderClass.getData(`${url}getData`, 'GET');
 
   const dataRoles = getRoles.data;
   renderClass.renderData(tableBodyRoles, headerRoles, 'rl_id', dataRoles, {
@@ -367,7 +367,7 @@ const deleteRol = (id) => {
       let dataDelete = {
         rl_id: id,
       };
-      const responseDelete = await renderClass.sendData(`${url}deleteRol`, 'DELETE', dataDelete);
+      const responseDelete = await renderClass.sendData(`${url}delete`, 'DELETE', dataDelete);
 
       if (!responseDelete.status) {
         initAlert(responseDelete.message, 'success');
@@ -420,7 +420,7 @@ formEditarRol.addEventListener('submit', async (e) => {
         return;
       }
 
-      const updateInfo = await sendData(`${url}editarRol`, 'PUT', objData);
+      const updateInfo = await sendData(`${url}save`, 'PUT', objData);
       if (updateInfo.status) {
         renderRoles();
         initAlert(updateInfo.message, 'success');
@@ -454,7 +454,7 @@ formRol.addEventListener('submit', async (e) => {
   }
 
   try {
-    const responseAdd = await sendData(`${url}registrarRol`, 'POST', data);
+    const responseAdd = await sendData(`${url}store`, 'POST', data);
 
     if (responseAdd.status) {
       initAlert(responseAdd.message, 'success');
