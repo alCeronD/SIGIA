@@ -14,7 +14,7 @@ Listado de TODOS generales y específicos por cada módulo.
 
 ## Generales
 
-- [ ] Implementar variables ENV según el contexto, si es dev o producción, en caso de ser requerido.
+- [X] Implementar variables ENV según el contexto, si es dev o producción, en caso de ser requerido.
 - [ ] Crear logica que me permita definir cuales son los archivos que vamos a implementar en la vista, aplica para los css y javascript, esto se puede ejecutar cuando accedamos a la vista.
 - [ ] Arreglar paginacion a los elementos cuando este se encuentra en una pagina x o cuando se **elimina** un registro en la ultima pagina.
 - [ ] Transformar en clase aquellas funcionalidades de javascript repetibles

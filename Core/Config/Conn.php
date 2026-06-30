@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/Config.php';
+require_once __DIR__ . '/../Helpers/Autoload.php';
 
 
 class Conn
@@ -29,7 +30,13 @@ class Conn
 
             $this->conn = new PDO($dns, DB_USER, DB_PASS, options: $options);
         } catch (\PDOException $e) {
-            die('Fallo en la conexión' . $e->getMessage());
+
+            // si el entorno es local o produccion, mostramos un mensaje generico.
+            if (defined('APP_DEBUG') && APP_DEBUG === true) {
+                die('Fallo en la conexión: ' . $e->getMessage());
+            } else {
+                die('Lo sentimos, servicio temporalmente no disponible. Inténtelo más tarde.');
+            }
         }
     }
 

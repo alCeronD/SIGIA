@@ -29,7 +29,6 @@ class UtilsFunctions
             'Areas',
             'Dashboard',
             'Elementos',
-            'GeneralCrud',
             'Login',
             'Permisos',
             'Reportes',
