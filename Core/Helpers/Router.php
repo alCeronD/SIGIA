@@ -39,7 +39,6 @@ class Router
     $controladorFile = ucfirst($controlador) . "Controller.php";
 
     $rutaFile = __DIR__ . "/../Modules/$modulo/Controller/$controladorFile";
-
     if (!is_file($rutaFile)) {
       echo json_encode(['success' => false, 'message' => "No existe el controlador en $rutaFile"]);
       exit;

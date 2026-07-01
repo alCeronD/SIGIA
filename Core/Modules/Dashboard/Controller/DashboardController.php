@@ -2,26 +2,29 @@
 <?php
 require_once BASE_URL . CR_ROUTE_CONN;
 require_once BASE_URL . '/Autoload.php';
+require_once __DIR__ . '/../Const/DashboardConst.php';
 
-
-class DashboardController
+class DashboardController extends ConfigController
 {
 
-    private $conn;
+    protected array $files = [
+        "css" => [
+            'dashboard' => ['Dashboard.css']
+        ],
+        "js"  => [
+            'dashboard' => ['Dashboard.js']
+        ]
+    ];
+
+    public function createRoutes() {} //Function abstract
 
     public function __construct() {}
 
+    // function de vista
     public function dashboard()
     {
-        $nombre = $_SESSION['usuario']['nombre'];
-        $apellido = $_SESSION['usuario']['apellido'];
-        $nombreCompleto = $nombre . ' ' . $apellido;
-        $rol_nombre = $_SESSION['usuario']['rol_nombre'];
-        $id = $_SESSION['usuario']['id'];
-
-        $prestamoModel = new DashboardModel();
-        $prestamos = $prestamoModel->search($id);
-        include __DIR__ . '/../views/dashboardView.php';
+        $path = BASE_URL . DS_ROUTE_DASHBOARD_VIEW;
+        Parent::renderView($path, __FUNCTION__);
     }
 }
 

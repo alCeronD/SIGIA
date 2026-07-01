@@ -9,53 +9,50 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="../public/assets/libraries/materialize/css/materialize.css">
   <link rel="stylesheet" href="../public/assets/css/main.css">
-
   <?php
-  // Implementamos los css dinamicamente dependiendo del modulo.
-  if (!empty($_SESSION['css']) && is_array($_SESSION['css'])) {
-    foreach ($_SESSION['css'] as $key => $url) {
-  ?>
-      <link rel="stylesheet" href="<?php echo htmlspecialchars("/../../Core/" . $url); ?>">
-  <?php }
-  } ?>
-
+  // la variable routesCss esta definida en el controlador de cada vista.
+  if (isset($routesCss) && is_array($routesCss)): ?>
+    <?php foreach ($routesCss as $styleUrl): ?>
+      <link rel="stylesheet" href="<?= $styleUrl; ?>">
+    <?php endforeach; ?>
+  <?php endif; ?>
 
 </head>
-<nav class="header">
-  <div class="nav-wrapper">
-    <a href="<?php echo Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>" class="brand-logo logo center">
-    </a>
-    <!-- Icono de usuario -->
-    <ul id="" class="right">
-      <li class="user-dropdown">
-        <div class="contentUser" id="userDropdownToggle">
-          <a href="<?php echo Router::createRoute('Usuarios', 'Usuarios', 'actualizarDatosView', false, 'dashboard'); ?>">
-            <i class="material-icons large">account_circle</i>
-          </a>
-          <span id="rolText"> <?php echo $_SESSION['usuario']['rol_nombre']; ?> </span> <i class="material-icons">arrow_drop_down</i>
-        </div>
-        <ul class="submenu" id="userDropdownMenu">
-          <li>
-            <a href="<?php echo Router::createRoute('Usuarios', 'Usuarios', 'actualizarDatosView', false, 'dashboard'); ?>">
-              <i class="material-icons left">edit</i>Actualizar datos
-            </a>
-          </li>
-        </ul>
-      </li>
-    </ul>
-    <!-- Botón de cerrar sesión -->
-    <ul id="" class="left">
-      <li class="user-dropdown">
-        <div class="contentUser" id="userDropdownToggle">
-          <span id="btnCerrarSesion" data-logOut='logOut' data-Url='<?php echo Router::createRoute('Login', 'Login', 'logout', false, 'dashboard') ?>' data-btnClose="dataBtnClose">
-            Salir
-          </span>
-          <br>
-        </div>
-      </li>
-    </ul>
-  </div>
-</nav>
 
 <body>
+  <nav class="header">
+    <div class="nav-wrapper">
+      <a href="<?php echo Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>" class="brand-logo logo center">
+      </a>
+      <!-- Icono de usuario -->
+      <ul id="" class="right">
+        <li class="user-dropdown">
+          <div class="contentUser" id="userDropdownToggle">
+            <a href="<?php echo Router::createRoute('Usuarios', 'Usuarios', 'actualizarDatosView', false, 'dashboard'); ?>">
+              <i class="material-icons large">account_circle</i>
+            </a>
+            <span id="rolText"> <?php echo $_SESSION['usuario']['rol_nombre']; ?> </span> <i class="material-icons">arrow_drop_down</i>
+          </div>
+          <ul class="submenu" id="userDropdownMenu">
+            <li>
+              <a href="<?php echo Router::createRoute('Usuarios', 'Usuarios', 'actualizarDatosView', false, 'dashboard'); ?>">
+                <i class="material-icons left">edit</i>Actualizar datos
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <!-- Botón de cerrar sesión -->
+      <ul id="" class="left">
+        <li class="user-dropdown">
+          <div class="contentUser" id="userDropdownToggle">
+            <span id="btnCerrarSesion" data-logOut='logOut' data-Url='<?php echo Router::createRoute('Login', 'Login', 'logout', false, 'dashboard') ?>' data-btnClose="dataBtnClose">
+              Salir
+            </span>
+            <br>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
   <?php require_once __DIR__ . '/../../Core/Helpers/modalConfirmation.php'; ?>

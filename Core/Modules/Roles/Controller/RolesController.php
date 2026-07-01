@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once __DIR__ . '/../Const/RolesConst.php';
 require_once BASE_URL . '/' . CR_AUTOLOAD;
 
-class RolesController implements CrudInterface
+class RolesController extends ConfigController implements CrudInterface
 {
     protected RolesModel $modeloRol;
     protected RolesFuncionesModel $rfModel;
@@ -12,10 +12,26 @@ class RolesController implements CrudInterface
     protected ServicesModulos $sModulos;
     protected ServicesFunciones $sFunciones;
     protected PermisosModel $permisosModel;
+    /**
+     * Arreglo con el listado de los recursos asociados a las vistas en donde la clave es css o javascript e internamente tienen mas claves y valores, las claves mas internas son los nombres de las funciones del controlador.
+     *
+     * @var array
+     */
+    protected array $files = [
+        'css' => [
+            'rolesIndex' => ['RolexIndex.css'],
+            'mostrarRoles' => ['Roles.css'],
+            'mostrarFuncionesAssoc' => ['RolesFunciones.css']
+        ],
+        'js' => [
+            'mostrarRoles' => ['Roles.js'],
+            'rolesIndex' => [],
+            'mostrarFuncionesAssoc' => ['RolesFunciones.js']
+        ]
+    ];
 
     public function __construct()
     {
-
         $this->modeloRol = new RolesModel();
         $this->permisosModel = new PermisosModel();
         $this->fModel = new FuncionesModel();
@@ -24,27 +40,32 @@ class RolesController implements CrudInterface
         $this->sModulos = new ServicesModulos();
         $this->sFunciones = new ServicesFunciones();
     }
+    public function createRoutes()
+    {
+        throw new \Exception('Not implemented');
+    }
     /**
      * Vista principal del modulo roles
      *
      * @return void
      */
-    public function rolesIndex()
+    public function rolesIndex(): void
     {
-        return include_once __DIR__ . '../../views/rolesIndex.php';
+        $path = BASE_URL . RL_ROUTES_ROLES_INDEX;
+        Parent::renderView($path, __FUNCTION__);
     }
-
     /**
      * Vista que contiene el listado de los roles.
      *
      * @return void
      */
-    public function mostrarRoles()
+    public function mostrarRoles(): void
     {
-        return include_once __DIR__ . '../../views/rolesViews.php';
+        $path = BASE_URL . RL_ROUTES_MOSTRAR_ROLES;
+        Parent::renderView($path, __FUNCTION__);
     }
 
-    public function getData()
+    public function getData(): void
     {
         header(CONTENT_TYPE);
         $roles = $this->sRoles->getAllRoles();
@@ -53,7 +74,7 @@ class RolesController implements CrudInterface
         }
     }
 
-    public function save()
+    public function save(): void
     {
         header(CONTENT_TYPE);
         $data = UtilsFunctions::returnGetDecode();
@@ -65,7 +86,7 @@ class RolesController implements CrudInterface
         Response::responseRequest($codeResponse, true, $messageResponse, []);
     }
 
-    public function statusRoles()
+    public function statusRoles(): void
     {
         header(CONTENT_TYPE);
         $data = UtilsFunctions::returnGetDecode();
@@ -86,7 +107,7 @@ class RolesController implements CrudInterface
         Response::responseRequest(HttpStatus::OK, true, $message, []);
     }
 
-    public function store()
+    public function store(): void
     {
         header(CONTENT_TYPE);
         $data = UtilsFunctions::returnGetDecode();
@@ -98,7 +119,7 @@ class RolesController implements CrudInterface
         }
     }
 
-    public function delete()
+    public function delete(): void
     {
         header(CONTENT_TYPE);
         $data = UtilsFunctions::returnGetDecode();
@@ -123,7 +144,7 @@ class RolesController implements CrudInterface
      * Function para obtener los permisos que YA ESTAN ASOCIADOS AL ROL
      * @return void
      */
-    public function getPermisosRolAsig()
+    public function getPermisosRolAsig(): void
     {
 
         /**
@@ -185,7 +206,7 @@ class RolesController implements CrudInterface
      *
      * @return void
      */
-    public function setPermisos()
+    public function setPermisos(): void
     {
         try {
             $this->rfModel->beginTransaction();

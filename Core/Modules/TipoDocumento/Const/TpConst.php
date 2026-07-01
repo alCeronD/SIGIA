@@ -11,3 +11,6 @@ define('MSG_TP_SUCCESS_UPDATE', 'Datos del tipo de documento actualizados correc
 
 // variables
 define('VAR_TP_STATUS', 'tp_status');
+
+// routes
+define('TP_ROUTE_MAIN_VIEW', '/../Modules/TipoDocumento/Views/tpDocumentoView.php');

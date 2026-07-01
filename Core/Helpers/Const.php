@@ -37,9 +37,9 @@ define('CR_ROUTE_CONFIG_MODULES_CONTROLLER', '/Modules/ConfigModules/controller/
 define('CR_ROUT_SOLICITUD_PRESTAMOS_MODEL', '/../model/solicitudPrestamosModel.php');
 define('CR_ROUTE_SERVICES_RESERVA', '/Modules/ReservaPrestamos/services/ServicesReservas.php');
 define('CR_ROUTE_SERVICES_SOLICITUD', '/Modules/SolicitudPrestamos/services/ServicesSolicitudPrestamos.php');
-define('CR_ROUTE_HEADER', '../public/partials/header.php');
-define('CR_ROUTE_FOOTER', '../public/partials/footer.php');
 define('CR_ROUTE_DASHBOARD_LOGIN', '/../../../Core/dashboard.php?modulo=Dashboard&controlador=Dashboard&function=dashboard');
+define('CR_ROUTE_HEADER', '/../../public/partials/header.php');
+define('CR_ROUTE_FOOTER', '/../../public/partials/footer.php');
 
 
 //Files

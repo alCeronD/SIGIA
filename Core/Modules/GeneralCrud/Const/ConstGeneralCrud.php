@@ -32,3 +32,7 @@ define('GC_FAIL', 'ERROR AL EJECUTAR EL PROCEDIMIENTO');
 define('GC_CHANGE_STATUS_SUCCESS', 'RECURSO INHABILITADO EXITOSAMENTE');
 define('GC_SUCCESS_UPDATE', 'Registro actualizado correctamente');
 define('GC_DELETE_SUCCESS', 'registro eliminado exitosamente');
+
+
+# ROUTES
+define('GC_ROUTE_MAIN_VIEW', '/../Modules/GeneralCrud/View/generalView.php');

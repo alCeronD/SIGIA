@@ -2,10 +2,18 @@
 require_once __DIR__ . '/../../..' . CR_ROUTE_CONST;
 require_once __DIR__ . '/../Const/TpConst.php';
 require_once BASE_URL . '/Autoload.php';
-class TipoDocumentoController implements CrudInterface
+class TipoDocumentoController extends ConfigController implements CrudInterface
 {
   // implementar el modulo
   protected TipoDocumentoModel $tpModel;
+  protected array $files = [
+    "css" => [
+      'renderViewTp' => ['TipoDocumento.css']
+    ],
+    "js"  => [
+      'renderViewTp' => ['TipoDocumento.js']
+    ]
+  ];
 
   // constructor
   public function __construct()
@@ -13,10 +21,16 @@ class TipoDocumentoController implements CrudInterface
     $this->tpModel = new TipoDocumentoModel();
   }
 
-  // Vista
+  public function createRoutes()
+  {
+    throw new \Exception('Not implemented');
+  }
+
+  // Vista principal
   public function renderViewTp()
   {
-    return include_once __DIR__ . '/../Views/tpDocumentoView.php';
+    $path = BASE_URL . TP_ROUTE_MAIN_VIEW;
+    Parent::renderView($path, __FUNCTION__);
   }
 
   public function getData()

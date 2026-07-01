@@ -3,9 +3,17 @@
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once BASE_URL . '/Autoload.php';
 require_once __DIR__ . '/../Const/ConstGeneralCrud.php';
-class GeneralCrudController extends ConfigGeneralCrud
+class GeneralCrudController extends ConfigController
 {
   protected GeneralCrudModel $modelGeneralCrud;
+  protected array $files = [
+    "css" => [
+      'renderGeneralView' => ['GeneralCrud.css']
+    ],
+    "js"  => [
+      'renderGeneralView' => ['GeneralCrud.js']
+    ]
+  ];
   # Incluimos todos los modelos que vamos a usar
   public function __construct()
   {
@@ -14,10 +22,13 @@ class GeneralCrudController extends ConfigGeneralCrud
 
   public function renderGeneralView()
   {
-    Parent::createRoutes();
-    return include_once __DIR__ . '/../View/generalView.php';
+    $path = BASE_URL . GC_ROUTE_MAIN_VIEW;
+    Parent::renderView($path, __FUNCTION__);
   }
-
+  public function createRoutes()
+  {
+    throw new \Exception('Not implemented');
+  }
   public function selectData()
   {
     header(CONTENT_TYPE);

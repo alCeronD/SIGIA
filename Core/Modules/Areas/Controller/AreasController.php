@@ -3,9 +3,18 @@ require_once __DIR__ . '/../../..' . CR_ROUTE_CONST;
 require_once __DIR__ . '/../Const/AreasConst.php';
 require_once BASE_URL . '/Autoload.php';
 
-class AreasController implements CrudInterface
+class AreasController extends ConfigController implements CrudInterface
 {
   protected AreasModel $AreasModel;
+  protected array $files = [
+    "css" => [
+      'renderViewArea' => ['Areas.css']
+    ],
+    "js"  => [
+      'renderViewArea' => ['Areas.js', 'Functions.js', 'Selectors.js']
+    ]
+  ];
+  public function createRoutes() {}
 
   public function __construct()
   {
@@ -14,7 +23,8 @@ class AreasController implements CrudInterface
 
   public function renderViewArea()
   {
-    return include_once __DIR__ . URL_MAIN_VIEW;
+    $path = BASE_URL . URL_MAIN_VIEW;
+    Parent::renderView($path, __FUNCTION__);
   }
   public function getData()
   {
@@ -77,10 +87,8 @@ class AreasController implements CrudInterface
     ];
 
     if (empty($data['ar_cod'])) Response::responseRequest(HttpStatus::NO_CONTENT, false, AR_MESSAGE_INFO_ITEM, []);
-
     // validar si existe el elemento a actualizar.
     $resultExists = $this->AreasModel->select()->from()->where()->prepareSql($dataUpdateSql)->get();
-
     if (empty($resultExists[0])) {
       Response::responseRequest(HttpStatus::NO_CONTENT, false, AR_MESSAGE_INFO_NO_CODIGO, []);
     }

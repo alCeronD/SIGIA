@@ -15,10 +15,14 @@ Listado de TODOS generales y específicos por cada módulo.
 ## Generales
 
 - [X] Implementar variables ENV según el contexto, si es dev o producción, en caso de ser requerido.
-- [ ] Crear logica que me permita definir cuales son los archivos que vamos a implementar en la vista, aplica para los css y javascript, esto se puede ejecutar cuando accedamos a la vista.
+- [X] Crear logica que me permita definir cuales son los archivos que vamos a implementar en la vista, aplica para los css y javascript, esto se puede ejecutar cuando accedamos a la vista.
+- [X] Ajustar la vista al modulo de configuraciones.
 - [ ] Arreglar paginacion a los elementos cuando este se encuentra en una pagina x o cuando se **elimina** un registro en la ultima pagina.
 - [ ] Transformar en clase aquellas funcionalidades de javascript repetibles
 - [ ] Investigar e implementar rastro de miga.
+- [ ] RE factorizar el menu del footer
+- [ ] enviar los estilos y el javascript de footer.php a archivos independientes.
+- [ ] ajustar renderizado de menu (ver si se puede implementar por peticiones) y no por variables de session(usar localstorage).
 - [X] Arreglar palabras reservada para el levantamiento de la aplicación en linux
 - [X] adicionar el tag de cuando se entrego el producto a la entidad de formación + tabla para visualizar la versión entregada.
 - [X] Arreglar rutas para verificar el correcto funcionamiento del sistema como la re direccionamiento al login, o a otros módulos de acceso.

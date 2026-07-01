@@ -2,11 +2,20 @@
 
 ---
 
-## 📝 Descripción
+## Menú principal
+
+- [Modulo Areas](#modulo-areas)
+  - [Menú principal](#menú-principal)
+  - [Descripción](#descripción)
+  - [Arquitectura Interna (Pre-documentación)](#arquitectura-interna-pre-documentación)
+  - [Dependencias de Base de Datos](#dependencias-de-base-de-datos)
+    - [TODOS ESPECÍFICOS](#todos-específicos)
+
+## Descripción
 
 Breve explicación de qué necesidad de negocio resuelve este módulo en el sistema (ej: "Gestiona el flujo de solicitudes, aprobación y salida de bienes consumibles y devolutivos...").
 
-## 🛠️ Arquitectura Interna (Pre-documentación)
+## Arquitectura Interna (Pre-documentación)
 
 - **Controlador Principal:** `Controller/ReservaPrestamosController.php` -> Maneja las peticiones HTTP y respuestas JSON para fetch.
 - **Servicios:** `Services/ServicesReservas.php` -> Contiene la lógica de negocio pesada extraída del controlador.
@@ -14,7 +23,7 @@ Breve explicación de qué necesidad de negocio resuelve este módulo en el sist
 - **Vistas Clave:** - `views/reservaView.php` -> Panel principal del usuario.
   - `views/modalAddReserva.php` -> Formulario dinámico de inserción.
 
-## 🗄️ Dependencias de Base de Datos
+## Dependencias de Base de Datos
 
 - Tabla principal: `reservas`
 - Relaciones: `usuarios (id)`, `elementos (id)`

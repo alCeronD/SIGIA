@@ -3,16 +3,29 @@ include_once __DIR__ . '/../../../Helpers/Const.php';
 include_once __DIR__ . '/../Const/MarcasConst.php';
 include_once BASE_URL . '/Autoload.php';
 
-class MarcasController
+class MarcasController extends ConfigController implements CrudInterface
 {
   protected MarcasModel $mModel;
+  protected array $files = [
+    "css" => [
+      'renderViewMarca' => ['Marcas.css']
+    ],
+    "js"  => [
+      'renderViewMarca' => ['Marcas.js']
+    ]
+  ];
   public function __construct()
   {
     $this->mModel = new MarcasModel();
   }
+  public function createRoutes()
+  {
+    throw new \Exception('Not implemented');
+  }
   public function renderViewMarca()
   {
-    return include_once BASE_URL . MA_URL_MAIN_VIEW;
+    $path = BASE_URL . MA_URL_MAIN_VIEW;
+    Parent::renderView($path, __FUNCTION__);
   }
   public function getData()
   {

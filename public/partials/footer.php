@@ -7,7 +7,6 @@ $modulos = $_SESSION['renderMenu']['modulos'];
 $vistasModulos = $_SESSION['renderMenu']['vistas'];
 $subItems = $_SESSION['renderMenu']['subMenus'];
 
-
 ?>
 
 <div class="fixed-action-btn direction-top">

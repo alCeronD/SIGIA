@@ -1,6 +1,6 @@
 <?php
 
-define('URL_MAIN_VIEW', '/../Views/areaView.php');
+define('URL_MAIN_VIEW', '/../Modules/Areas/Views/areaView.php');
 
 
 // variables

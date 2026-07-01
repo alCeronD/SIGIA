@@ -1,12 +1,23 @@
 <?php
 
-use ZipStream\Test\Util;
+require_once __DIR__ . '/../../../Helpers/Const.php';
+require_once __DIR__ . '/../Const/RolesConst.php';
+require_once BASE_URL . '/' . CR_AUTOLOAD;
 
-class RolesFuncionesController
+
+class RolesFuncionesController extends ConfigController
 {
   protected ServicesRoles $sRoles; // servicio para solicitar la data entre un los controladores roles y roles_funciones.
   protected RolesFuncionesModel $rfModel; // tabla roles_funciones
   protected array $allRoles;
+  protected array $files = [
+    'css' => [
+      'mostrarFuncionesAssoc' => ['RolesFunciones.css']
+    ],
+    'js' => [
+      'mostrarFuncionesAssoc' => ['RolesFunciones.js']
+    ]
+  ];
   public function __construct()
   {
     $this->sRoles = new ServicesRoles();
@@ -18,9 +29,15 @@ class RolesFuncionesController
    *
    * @return void
    */
-  public function mostrarFuncionesAssoc()
+  public function mostrarFuncionesAssoc(): void
   {
-    return include_once __DIR__ . '../../views/rolesFunciones.php';
+    $path = BASE_URL . RL_ROUTES_ROLES_FUNCIONES;
+    Parent::renderView($path, __FUNCTION__);
+  }
+
+  public function createRoutes()
+  {
+    throw new \Exception('Not implemented');
   }
 
   /**

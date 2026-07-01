@@ -22,11 +22,17 @@ class UtilsFunctions
         return $_GET['modulo'] ?? null;
     }
 
+    /**
+     * Function para devolver los nombres de los modulos, esto lo usamos en el autoload
+     *
+     * @return array
+     */
     public static function getModulesNames()
     {
         return [
             'Categorias',
             'Areas',
+            'GeneralCrud',
             'Dashboard',
             'Elementos',
             'Login',

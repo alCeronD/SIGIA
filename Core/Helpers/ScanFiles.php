@@ -5,7 +5,7 @@
 class ScanFiles
 {
 
-    protected array $nameAssetsFiles = [];
+    protected static array $nameAssetsFiles = [];
     protected array $nameFilesCss = [];
     protected $modulo;
     protected $file;
@@ -16,7 +16,7 @@ class ScanFiles
     }
 
     //Función que sirve para mapear los css o javascript, solo mapea hasta que llegue a la carpeta.
-    public function mapAssets(String $module = 'Dashboard')
+    public static function mapAssets(String $module = 'Dashboard', array $files = [])
     {
 
         if (!is_string($module)) return;
@@ -30,10 +30,9 @@ class ScanFiles
             $filesAssets = basename($value);
             if (str_contains($filesAssets, '.css')) {
                 // guarde las urls en donde la key sea el nombre del modulo.
-                $this->nameAssetsFiles[$module] = $fileAssets[$key];
+                self::$nameAssetsFiles[$module] = $fileAssets[$key];
             }
         }
-
         $pruebaAssetsFiles = [];
         // se cicla por la primera unidad que es la clave css y la clave js
         foreach ($allFileAssets as $key => $value) {
@@ -53,5 +52,46 @@ class ScanFiles
         }
 
         return $pruebaAssetsFiles;
+    }
+
+    /**
+     * Function para renderizar los recursos css y javascript.
+     *
+     * @param string $modulo - nombre del modulo al cual se requieren los recursos
+     * @param array $filesjs - arreglo con los nombres de los archivos js requeridos para ser renderizados con el contenedor
+     * @param array $filescss - arreglo con los nombres de los archivos css requeridos para ser renderizados con el contenedor.
+     * @return void
+     */
+    public static function renderJs(String $modulo = '', array $filesjs = [])
+    {
+        // limpiar primero la variable de session.
+        $files = self::mapAssets($modulo);
+        $jsFiles = $files['js'][$modulo];
+
+        foreach ($jsFiles as $key => $value) {
+            if (in_array("{$key}", $filesjs)) {
+                $rutaLimpia = htmlspecialchars("/../../Core/Modules/$modulo/Js/{$key}", ENT_QUOTES, 'UTF-8');
+                echo '<script type="module" src="' . $rutaLimpia . '"></script>' . PHP_EOL;
+            }
+        }
+    }
+
+    public static function renderCss(string $modulo = "", array $filesView = [])
+    {
+        $files = self::mapAssets($modulo);
+        // var_dump($files);
+        $cssFiles = $files['css'][$modulo] ?? [];
+        // $cssFiles = $files['css'] ?? [];
+        $cssToLoad = [];
+
+        foreach ($cssFiles as $key => $value) {
+            // Buscamos si el archivo de la vista actual está configurado
+            if (in_array("{$key}", $filesView)) {
+                $rutaLimpia = htmlspecialchars("/Core/Modules/$modulo/Css/{$key}", ENT_QUOTES, 'UTF-8');
+                $cssToLoad[] = $rutaLimpia;
+            }
+        }
+
+        return $cssToLoad; // Retornamos el array con los CSS que sí corresponden
     }
 }
