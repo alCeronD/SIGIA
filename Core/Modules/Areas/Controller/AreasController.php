@@ -41,11 +41,10 @@ class AreasController extends ConfigController implements CrudInterface
     ];
 
     $resultSelect = $this->AreasModel->select()->from()->orderBy()->limit()->offset()->prepareSql($dataSql)->get();
-
     if (count($resultPaginate) > 0) {
       Response::responseRequest(HttpStatus::OK, true, "Registros", [
         CR_TOTAL_REGISTROS => $resultCount,
-        CR_PAGINA_ACTUAL => $page,
+        CR_PAGINA_ACTUAL => ($page > $resultPaginate[CR_TOTAL_PAGINAS]) ? $resultPaginate[CR_TOTAL_PAGINAS] : $page, //Aca devolvemos la pagina, pero cuando se borra el ultimo registro de una pagina estamos devolviendo la pagina que recibimos desde la peticion, cuando hacemos la paginacion, si la pagina ES MAYOR A LA CANTIDAD DE PAGINAS TOTALES, NO DEVOLVEMOS LA PAGINA RECIBIDA, SINO LA ULTIMA PAGINA. esto para poder renderizar de forma correcta la informacion.
         CR_CANTIDAD_PAGINAS => $resultPaginate[CR_TOTAL_PAGINAS],
         CR_DATA => $resultSelect
       ]);

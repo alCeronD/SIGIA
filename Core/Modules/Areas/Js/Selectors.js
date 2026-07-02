@@ -9,6 +9,8 @@ export const btnCloseModalUpdate = document.querySelector('.closeModalBtn');
 export const modalAreaUpdate = document.querySelector('#modalArea');
 export const btnPaginate = document.querySelectorAll('.btnPaginate');
 export const formCreate = document.querySelector('#formArea');
+export const formUpdate = document.querySelector('#areaUpdateForm');
+export const tableHeadArea = document.querySelector('#tableHeadArea');
 // mapeo del formulario para guardar cambios y/o adicionar un nuevo registro.
 export const mapCampos = {
   ar_nombre: 'Nombre',
