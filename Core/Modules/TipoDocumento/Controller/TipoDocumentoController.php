@@ -53,7 +53,7 @@ class TipoDocumentoController extends ConfigController implements CrudInterface
     if (count($resultSelect) > 0) {
       Response::responseRequest(HttpStatus::OK, true, CR_REGISTROS, [
         CR_TOTAL_REGISTROS => $resultCount,
-        CR_PAGINA_ACTUAL => $page,
+        CR_PAGINA_ACTUAL => ($page > $resultPaginate[CR_TOTAL_PAGINAS]) ? $resultPaginate[CR_TOTAL_PAGINAS] : $page,
         CR_CANTIDAD_PAGINAS => $resultPaginate[CR_TOTAL_PAGINAS],
         CR_DATA => $resultSelect
       ]);

@@ -1,5 +1,7 @@
 import {
+  addClassItem,
   closeModal,
+  createI,
   fillDataForm,
   initAlert,
   mostrarConfirmacion,
@@ -11,7 +13,6 @@ const bodyTbl = document.querySelector('#tableBodyTp');
 const tableConfigTp = document.querySelector('#tHeadTP');
 const footerTp = document.querySelector('#footerTp');
 let actualPage = 1;
-let responseGetData = null;
 let data = {};
 let dataPaginate = {};
 let allBtnPaginate;
@@ -23,17 +24,57 @@ let btnCloseModal = document.querySelector('.closeModalBtn');
 // Instancia de la clase render.
 const render = new Render({
   btnChangeStatus: {
-    value: (row) => (row.tp_status === 1 ? 'inhabilitar' : 'habilitar'),
+    value: (row, button) => {
+      button.setAttribute('type', 'button');
+      button.setAttribute('data-id', `${row.tp_id}`);
+      button.setAttribute('data-status', `${row.tp_status}`);
+      button.setAttribute('class', 'btnStatus');
+
+      let iconStatus = null;
+      let propertiesButton = null;
+      if (row.tp_status === 1) {
+        propertiesButton = { btn: 'btn', waves: 'waves-orange', orange: 'orange' };
+        iconStatus = createI('clear');
+      } else {
+        propertiesButton = { btn: 'btn', waves: 'waves-green', green: 'green' };
+        iconStatus = createI('check');
+      }
+
+      addClassItem(button, propertiesButton);
+      button.appendChild(iconStatus);
+    },
     key: 'btnChangeStatus',
     action: (id, fullRow) => changeStatus(id, fullRow),
   },
   btnEdit: {
-    value: 'Editar',
+    value: (row, button) => {
+      button.setAttribute('data-id', `${row.tp_id}`);
+      button.setAttribute('data-nombre', `${row.tp_nombre}`);
+      button.setAttribute('data-sigla', `${row.tp_sigla}`);
+      let iconEditar = createI('border_color');
+      button.appendChild(iconEditar);
+      addClassItem(button, {
+        btn: 'btn',
+        waves: 'waves-effect',
+        hoover: 'waves-yellow',
+        cyan: 'cyan', //button color.
+      });
+    },
     key: 'btnEdit',
     action: (id, row) => editarDepartamento(id, row),
   },
   btnDelete: {
-    value: 'eliminar',
+    value: (row, button) => {
+      button.setAttribute('type', 'button');
+      button.setAttribute('data-id', `${row.tp_id}`);
+      button.setAttribute('class', 'btnStatus');
+      let iconStatus = null;
+      let propertiesButton = null;
+      propertiesButton = { btn: 'btn', waves: 'waves-red', red: 'red' };
+      iconStatus = createI('delete_forever');
+      addClassItem(button, propertiesButton);
+      button.appendChild(iconStatus);
+    },
     key: 'btnDelete',
     action: (id) => eliminarItem(id),
   },
@@ -42,6 +83,8 @@ const render = new Render({
 // function para eliminar el registro
 const eliminarItem = (id = 0) => {
   // function para eliminar el item
+  let valueLenght = bodyTbl.querySelectorAll('tr').length;
+
   mostrarConfirmacion(
     'Eliminar Elemento',
     '¿Esta seguro de eliminar este registro?',
@@ -52,9 +95,12 @@ const eliminarItem = (id = 0) => {
           return;
         }
         const responseDelete = await render.sendData(`${url}delete`, 'DELETE', { tp_id: id });
+        if (valueLenght <= 1 && actualPage > 1) {
+          actualPage--;
+        }
         if (responseDelete.status) {
           initAlert(responseDelete.message, 'success');
-          loadTable();
+          loadTable({ pagina: actualPage });
           return;
         }
       } catch (error) {
@@ -94,7 +140,7 @@ const changeStatus = (id, fullRow) => {
     if (responseChangeStatus.status) {
       console.log(responseChangeStatus.message);
       initAlert(responseChangeStatus.message, 'success');
-      loadTable();
+      loadTable({ pagina: actualPage });
       return;
     }
   });
@@ -106,16 +152,19 @@ const changeStatus = (id, fullRow) => {
  * @async
  * @returns {*}
  */
-const loadTable = async () => {
+const loadTable = async ({ pagina: actualPage }) => {
+  let responseGetData = null;
   responseGetData = await render.getData(`${url}getData`, 'GET', {
     pagina: actualPage,
     limit: 4,
   });
+  const realPage = responseGetData.data.paginaActual;
 
   data = responseGetData.data.data;
   dataPaginate = {};
+  render.actualPage(realPage);
   dataPaginate['totalRegistros'] = responseGetData.data.totalRegistros;
-  dataPaginate['paginaActual'] = responseGetData.data.paginaActual;
+  dataPaginate['paginaActual'] = realPage;
   dataPaginate['cantidadPaginas'] = responseGetData.data.cantidadPaginas;
   render.renderData(bodyTbl, tableConfigTp, 'tp_id', data, { tp_status: 'tp_status' });
   render.renderPaginate(dataPaginate, footerTp);
@@ -151,7 +200,7 @@ formUpdate.addEventListener('submit', (g) => {
           modalUpdate.style.display = 'none';
           formUpdate.reset();
           initAlert(responseUpdate.message, 'success');
-          loadTable();
+          loadTable({ pagina: actualPage });
           return;
         }
       }
@@ -184,7 +233,7 @@ formTp.addEventListener('submit', (f) => {
         if (responseCreate.status) {
           initAlert(responseCreate.message, 'success');
           formTp.reset();
-          loadTable();
+          loadTable({ pagina: actualPage });
           return;
         }
       }
@@ -196,20 +245,7 @@ formTp.addEventListener('submit', (f) => {
 
 // ejecutar justo cuando cargue el archivo.
 document.addEventListener('DOMContentLoaded', async () => {
-  // Logica para solicitar la data y redenderizarla.
-  responseGetData = await render.getData(`${url}getData`, 'GET', {
-    pagina: actualPage,
-    limit: 4,
-  });
-  data = responseGetData.data.data;
-  dataPaginate = {};
-  dataPaginate['totalRegistros'] = responseGetData.data.totalRegistros;
-  dataPaginate['paginaActual'] = responseGetData.data.paginaActual;
-  dataPaginate['cantidadPaginas'] = responseGetData.data.cantidadPaginas;
-  render.renderData(bodyTbl, tableConfigTp, 'tp_id', data, { tp_status: 'tp_status' });
-  render.renderPaginate(dataPaginate, footerTp);
-
-  allBtnPaginate = footerTp.querySelectorAll('.btnPaginate');
+  loadTable({ pagina: 1 });
 
   // renderizado del footerPaginado
   footerTp.addEventListener('click', async (f) => {
@@ -237,15 +273,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
     }
-    // guardo el valor de la pagina en la propiedad de la clase.
-    render.actualPage(actualPage);
-    responseGetData = await render.getData(`${url}getData`, 'GET', {
-      pagina: actualPage,
-      limit: 4,
-    });
-    render.renderData(bodyTbl, tableConfigTp, 'tp_id', responseGetData.data.data, {
-      tp_status: 'tp_status',
-    });
-    render.renderPaginate(dataPaginate, footerTp);
+    loadTable({ pagina: actualPage });
   });
 });

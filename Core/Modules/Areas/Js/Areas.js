@@ -50,7 +50,6 @@ const Areas = new Render({
   },
   btnEdit: {
     value: (row, button) => {
-      console.log(row);
       button.setAttribute('data-id', `${row.ar_cod}`);
       button.setAttribute('data-nombre', `${row.ar_nombre}`);
       button.setAttribute('data-desc', `${row.ar_descripcion}`);
