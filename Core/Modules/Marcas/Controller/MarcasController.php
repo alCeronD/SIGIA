@@ -44,7 +44,7 @@ class MarcasController extends ConfigController implements CrudInterface
     if ($resultPaginate) {
       Response::responseRequest(HttpStatus::OK, true, "Registros", [
         CR_TOTAL_REGISTROS => $countMarcas,
-        CR_PAGINA_ACTUAL => $page,
+        CR_PAGINA_ACTUAL => ($page > $resultPaginate[CR_TOTAL_PAGINAS]) ? $resultPaginate[CR_TOTAL_PAGINAS] : $page,
         CR_CANTIDAD_PAGINAS => $resultPaginate[CR_TOTAL_PAGINAS],
         CR_DATA => $responseGetData
       ]);

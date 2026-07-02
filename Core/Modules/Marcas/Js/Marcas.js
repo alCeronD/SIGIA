@@ -1,5 +1,7 @@
 import {
+  addClassItem,
   closeModal,
+  createI,
   initAlert,
   mostrarConfirmacion,
   openModal,
@@ -8,21 +10,58 @@ import {
 
 const marcas = new Render({
   btnEdit: {
-    value: 'editar',
+    value: (row, button) => {
+      button.setAttribute('data-id', `${row.ma_id}`);
+      button.setAttribute('data-nombre', `${row.ma_nombre}`);
+      button.setAttribute('data-sigla', `${row.ma_sigla}`);
+      let iconEditar = createI('border_color');
+      button.appendChild(iconEditar);
+      addClassItem(button, {
+        btn: 'btn',
+        waves: 'waves-effect',
+        hoover: 'waves-yellow',
+        cyan: 'cyan', //button color.
+      });
+    },
     key: 'btnEdit',
     action: (row, id) => editarMarca(row, id),
   },
-  btnDelete: {
-    value: 'eliminar',
-    key: 'btnDelete',
-    action: (id) => eliminarMarca(id),
-  },
   btnChangeStatus: {
-    value: (row) => {
-      return row.ma_status === 1 ? 'Inhabilitar' : 'Habilitar';
+    value: (row, button) => {
+      button.setAttribute('type', 'button');
+      button.setAttribute('data-id', `${row.ma_id}`);
+      button.setAttribute('data-status', `${row.ma_status}`);
+      button.setAttribute('class', 'btnStatus');
+      let iconStatus = null;
+      let propertiesButton = null;
+      if (row.tp_status === 1) {
+        propertiesButton = { btn: 'btn', waves: 'waves-orange', orange: 'orange' };
+        iconStatus = createI('clear');
+      } else {
+        propertiesButton = { btn: 'btn', waves: 'waves-green', green: 'green' };
+        iconStatus = createI('check');
+      }
+
+      addClassItem(button, propertiesButton);
+      button.appendChild(iconStatus);
     },
     key: 'btnChangeStatus',
     action: (id, row) => changeStatus(id, row),
+  },
+  btnDelete: {
+    value: (row, button) => {
+      button.setAttribute('type', 'button');
+      button.setAttribute('data-id', `${row.tp_id}`);
+      button.setAttribute('class', 'btnStatus');
+      let iconStatus = null;
+      let propertiesButton = null;
+      propertiesButton = { btn: 'btn', waves: 'waves-red', red: 'red' };
+      iconStatus = createI('delete_forever');
+      addClassItem(button, propertiesButton);
+      button.appendChild(iconStatus);
+    },
+    key: 'btnDelete',
+    action: (id) => eliminarMarca(id),
   },
 });
 let headerTable = document.querySelector('#tblHeaderMarca');
@@ -33,19 +72,21 @@ let closeModalBtn = document.querySelector('.closeModalBtn');
 let marcaUpdateForm = document.querySelector('#marcaUpdateForm');
 let marcaInsertForm = document.querySelector('#marcaForm');
 const url = 'dashboard.php?modulo=Marcas&controlador=Marcas&function=';
-let responseMarcas = null;
 let actualPage = 1;
 let dataPaginate = {};
 let data = null;
 
 // function para cargar la tabla.
 const loadTable = async (actualPage) => {
+  let responseMarcas = null;
   // si la cantidad de registros reduce a 0 ir a la pagina anterior.
   responseMarcas = await marcas.getData(`${url}getData`, 'GET', { pagina: actualPage, limit: 4 });
   data = responseMarcas.data.data;
   dataPaginate = {};
+  const realActualPage = responseMarcas.data.paginaActual;
+  marcas.actualPage(realActualPage); //asignar pagina real a la propiedad de la clase
   dataPaginate['cantidadPaginas'] = responseMarcas.data.cantidadPaginas;
-  dataPaginate['paginaActual'] = responseMarcas.data.paginaActual;
+  dataPaginate['paginaActual'] = realActualPage;
   dataPaginate['totalRegistros'] = responseMarcas.data.totalRegistros;
 
   // enviamos la respuesta a renderizar.
@@ -76,12 +117,16 @@ const eliminarMarca = (id) => {
   let dataDelete = {
     ma_id: id,
   };
+  let valueLenght = tableBody.querySelectorAll('tr').length;
+
   mostrarConfirmacion('Eliminar marca', '¿Esta seguro de eliminar este item?', async (response) => {
     if (!response) return;
 
     try {
       let responseDelete = await marcas.sendData(`${url}delete`, 'DELETE', dataDelete);
-      let allTds = tableBody.querySelectorAll('tr');
+      if (valueLenght <= 1 && actualPage > 1) {
+        actualPage--;
+      }
       if (!responseDelete.status) {
         initAlert(responseDelete.message, 'info');
         return;

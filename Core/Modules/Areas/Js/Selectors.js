@@ -26,3 +26,5 @@ export const textEstaSeguroHabilitar = '¿Está seguro de habilitar este registr
 export const textEstaSeguroInhabilitar = '¿Está seguro de Inhabilitar este registro?';
 export const textEstaSeguroEliminar = '¿Está seguro de eliminar este registro?';
 export const textDepartamentoRequired = 'El nombre del item debe ser obligatorio';
+
+export const buttons = {};

@@ -23,6 +23,23 @@ let btnCloseModal = document.querySelector('.closeModalBtn');
 
 // Instancia de la clase render.
 const render = new Render({
+  btnEdit: {
+    value: (row, button) => {
+      button.setAttribute('data-id', `${row.tp_id}`);
+      button.setAttribute('data-nombre', `${row.tp_nombre}`);
+      button.setAttribute('data-sigla', `${row.tp_sigla}`);
+      let iconEditar = createI('border_color');
+      button.appendChild(iconEditar);
+      addClassItem(button, {
+        btn: 'btn',
+        waves: 'waves-effect',
+        hoover: 'waves-yellow',
+        cyan: 'cyan', //button color.
+      });
+    },
+    key: 'btnEdit',
+    action: (id, row) => editarDepartamento(id, row),
+  },
   btnChangeStatus: {
     value: (row, button) => {
       button.setAttribute('type', 'button');
@@ -45,23 +62,6 @@ const render = new Render({
     },
     key: 'btnChangeStatus',
     action: (id, fullRow) => changeStatus(id, fullRow),
-  },
-  btnEdit: {
-    value: (row, button) => {
-      button.setAttribute('data-id', `${row.tp_id}`);
-      button.setAttribute('data-nombre', `${row.tp_nombre}`);
-      button.setAttribute('data-sigla', `${row.tp_sigla}`);
-      let iconEditar = createI('border_color');
-      button.appendChild(iconEditar);
-      addClassItem(button, {
-        btn: 'btn',
-        waves: 'waves-effect',
-        hoover: 'waves-yellow',
-        cyan: 'cyan', //button color.
-      });
-    },
-    key: 'btnEdit',
-    action: (id, row) => editarDepartamento(id, row),
   },
   btnDelete: {
     value: (row, button) => {
