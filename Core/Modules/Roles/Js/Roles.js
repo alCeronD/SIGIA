@@ -14,36 +14,13 @@ import {
   sendData,
   Render,
   fillDataForm,
+  Validator,
 } from '../../../../public/assets/js/utils/index.js';
-
-const closeModalBtnAsing = document.querySelector('#closeModalBtnAsing');
-const closeModalBtnEdit = document.querySelector('#closeModalBtnEdit');
-const modalEditar = document.querySelector('#modalEditar');
-const modalAsing = document.querySelector('#modalAsingPermisos');
-// Div contenedor en donde se va a renderizar toda la información.
-const asigPermisosContent = document.querySelector('#asigPermisosContent');
-const tableBodyRoles = document.querySelector('#tableBodyRoles');
-const formEditarRol = document.querySelector('#formEditarRol');
-const modalConfirmacion = instanceModal('#modalConfirmacion', options);
-const formRol = document.querySelector('#formRol');
-const headerRoles = document.querySelector('#headerRoles');
-// Botón de pre confirmación del elemento.
-const preconfirmButton = document.querySelector('#preconfirmButton');
+import { rolesConfig, rolesUI } from './SelectorsRoles.js';
+const modalConfirmacion = instanceModal(rolesUI.modals.confirm, options);
 let rolId = null;
-// objetos para validar cuales son los campos opcionales
-const mapObj = {
-  rl_nombre: 'Nombre del Rol',
-  rl_descripcion: 'Descripción del Rol',
-  rl_id: 'ID del Rol',
-};
-
-const mapObjAdd = {
-  rl_nombre: 'Nombre del Rol',
-  rl_descripcion: 'Descripción del Rol',
-};
-
 // campos opcionales para validar los campos digitados por el usuario.
-const optionals = ['rol_descripcion'];
+const optionals = ['rl_descripcion'];
 let functionIdsAssoc = new Set();
 // Funciones descartadas para enviar a eliminar.
 let functionDesc = new Set();
@@ -144,12 +121,11 @@ const updateFunctionSelection = (idFuncion = null, isAdd = true) => {
     functionDesc.add(idFuncion);
   }
 };
-
 // Función para traer los roles y las funciones junto a su modulo.
 const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
   const rolesYFunciones = rolesPermisos.allFunctions;
   const modulos = rolesPermisos.allModulos;
-  asigPermisosContent.innerHTML = '';
+  rolesUI.containers.content.innerHTML = '';
   Object.entries(rolesYFunciones).forEach(([nombreModulo, funcionesModulo]) => {
     // Contenedor del modulo, Acá va toda la estructura, la de la las funciones y el modulo.
     const contenedorModulo = document.createElement('div');
@@ -212,12 +188,12 @@ const renderRolesFunciones = async ({ rolesPermisos = [] } = {}) => {
 
     // Estructura de los contenedores.
     contenedorModulo.appendChild(divFunciones);
-    asigPermisosContent.appendChild(contenedorModulo);
+    rolesUI.containers.content.appendChild(contenedorModulo);
   });
 };
 
 // Delegación de responsabilidad a las funciones asociados al rol.
-asigPermisosContent.addEventListener('change', (e) => {
+rolesUI.containers.content.addEventListener('change', (e) => {
   const evento = e.target;
   // Ejecutar la el proceso basado en las funciones del checkbox
   if (evento.classList.contains('checkboxFunciones')) {
@@ -248,7 +224,7 @@ asigPermisosContent.addEventListener('change', (e) => {
 });
 
 // Evento de pre confirmación de eventos.
-preconfirmButton.addEventListener('click', (e) => {
+rolesUI.buttons.preconfirm.addEventListener('click', (e) => {
   e.stopPropagation();
   e.preventDefault();
 
@@ -274,7 +250,7 @@ preconfirmButton.addEventListener('click', (e) => {
           initAlert(error.message, 'error');
           modalConfirmacion.close();
         }
-        modalAsing.style.display = 'none';
+        rolesUI.modals.assign.style.display = 'none';
         modalConfirmacion.close();
         initAlert(responsePost.message, 'success');
         // Esto lo hago para recargar la página y así ver los últimos cambios de la página del menú, buscar como hacerlo de una mejor manera.
@@ -303,7 +279,7 @@ const renderRoles = async () => {
   getRoles = await renderClass.getData(`${url}getData`, 'GET');
 
   const dataRoles = getRoles.data;
-  renderClass.renderData(tableBodyRoles, headerRoles, 'rl_id', dataRoles, {
+  renderClass.renderData(rolesUI.tables.body, rolesUI.containers.content, 'rl_id', dataRoles, {
     rl_status: 'rl_status',
   });
 };
@@ -315,10 +291,10 @@ const renderRoles = async () => {
  */
 const editarInformacionRol = (id, rowRol) => {
   // function para agregar la data al formulario
-  fillDataForm(rowRol, formEditarRol);
+  fillDataForm(rowRol, rolesUI.forms.edit);
   // reiniciamos los inputs
   M.updateTextFields();
-  openModal(modalEditar);
+  openModal(rolesUI.modals.edit);
 };
 
 /**
@@ -400,11 +376,11 @@ const showPermisosRol = async (id, rowRol) => {
   });
   let permisosAsignados = responseData.data;
   renderRolesFunciones({ rolesPermisos: permisosAsignados });
-  openModal(modalAsing);
+  openModal(rolesUI.modals.assign);
 };
 
 // evento submit para editar informacion del rol.
-formEditarRol.addEventListener('submit', async (e) => {
+rolesUI.forms.edit.addEventListener('submit', async (e) => {
   e.preventDefault();
   e.stopPropagation();
   const formEdit = new FormData(e.target);
@@ -413,7 +389,7 @@ formEditarRol.addEventListener('submit', async (e) => {
     !validateFormData({
       formData: formEdit,
       campos: optionals,
-      mapForm: mapObj,
+      mapForm: rolesConfig.mapObj,
     })
   ) {
     return;
@@ -423,7 +399,7 @@ formEditarRol.addEventListener('submit', async (e) => {
     try {
       if (!response) {
         // ocultar modal
-        modalEditar.style.display = 'none';
+        rolesUI.modals.edit.style.display = 'none';
         return;
       }
 
@@ -431,7 +407,7 @@ formEditarRol.addEventListener('submit', async (e) => {
       if (updateInfo.status) {
         renderRoles();
         initAlert(updateInfo.message, 'success');
-        modalEditar.style.display = 'none';
+        rolesUI.modals.edit.style.display = 'none';
       }
     } catch (error) {
       console.error(error);
@@ -445,7 +421,7 @@ formEditarRol.addEventListener('submit', async (e) => {
 });
 
 // crear rol
-formRol.addEventListener('submit', async (e) => {
+rolesUI.forms.add.addEventListener('submit', async (e) => {
   e.preventDefault();
   e.stopPropagation();
   const formAdd = new FormData(e.target);
@@ -454,9 +430,22 @@ formRol.addEventListener('submit', async (e) => {
     !validateFormData({
       formData: formAdd,
       campos: optionals,
-      mapForm: mapObjAdd,
+      mapForm: rolesConfig.mapObjAdd,
     })
   ) {
+    return;
+  }
+
+  if (!Validator.validateRule({ value: data.rl_nombre, rule: 'letras' })) {
+    initAlert(
+      `${Validator.getMessage({ rule: 'letras' })} ${rolesConfig.mapObj.rl_nombre}`,
+      'info'
+    );
+    return;
+  }
+
+  if (!Validator.validateLeght({ value: data.rl_nombre, maxLenght: 15 })) {
+    initAlert(`Limite de caracteres permitido al campo ${rolesConfig.mapObj.rl_nombre}`, 'info');
     return;
   }
 
@@ -466,7 +455,7 @@ formRol.addEventListener('submit', async (e) => {
     if (responseAdd.status) {
       initAlert(responseAdd.message, 'success');
       renderRoles();
-      formRol.reset();
+      rolesUI.forms.add.reset();
     }
   } catch (error) {
     initAlert(`${error.message}`, 'error');
@@ -475,11 +464,11 @@ formRol.addEventListener('submit', async (e) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   renderRoles();
-  closeModal(modalAsing, closeModalBtnAsing, () => {
+  closeModal(rolesUI.modals.assign, rolesUI.buttons.closeAssign, () => {
     rolId = null;
     functionIdsAssoc.clear();
     functionDesc.clear();
   });
 
-  closeModal(modalEditar, closeModalBtnEdit);
+  closeModal(rolesUI.modals.edit, rolesUI.buttons.closeEdit);
 });

@@ -344,6 +344,7 @@ export const initAlert = (message = '', type = 'info') => {
   }
 };
 
+// ESTO DEBE DE IR EN UN ARCHIVO AUXILIAR DEL MODULO DE PRESTAMOS.
 /**
  * Estados de los prestamos
  * @property string - el nombre del estado
@@ -357,12 +358,14 @@ export const statusLoans = {
   cancelado: 5,
 };
 
+// ESTO DEBE DE IR EN UN ARCHIVO AUXILIAR DEL MODULO DE PRESTAMOS.
 export const typeLoans = {
   inmediata: 1,
   solicitud: 2,
 };
 
 //Con esta función defino la estructura para FINALIZAR EL PRESTAMO y VALIDAR LA SOLICITUD., es cuando el prestamo me ya va a ser devuelto.
+// ESTO DEBE DE IR EN UN ARCHIVO AUXILIAR DEL MODULO DE PRESTAMOS.
 export const setReserva = (
   attribute = '',
   data = {},
