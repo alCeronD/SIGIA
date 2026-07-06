@@ -381,7 +381,6 @@ abstract class Crud
 
         foreach ($data as $key => $value) {
           $marcador = ":" . $key;
-
           if (str_contains($this->sql, $marcador)) {
             $this->stmt->bindValue($marcador, $value);
           }

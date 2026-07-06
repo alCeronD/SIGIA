@@ -281,8 +281,16 @@ preconfirmButton.addEventListener('click', (e) => {
         setTimeout(() => {
           location.reload();
         }, 400);
+
+        //limpiamos los sets de los datos enviados al cliente.
+        functionIdsAssoc.clear();
+        functionDesc.clear();
         return;
       } catch (error) {
+        //limpiamos los sets de los datos enviados al cliente.
+        functionIdsAssoc.clear();
+        functionDesc.clear();
+
         initAlert(error.message, 'info');
         return;
       }
@@ -391,7 +399,6 @@ const showPermisosRol = async (id, rowRol) => {
     rl_id: rolId,
   });
   let permisosAsignados = responseData.data;
-  // console.log(permisosAsignados);
   renderRolesFunciones({ rolesPermisos: permisosAsignados });
   openModal(modalAsing);
 };

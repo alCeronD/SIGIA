@@ -17,7 +17,7 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Implementar variables ENV según el contexto, si es dev o producción, en caso de ser requerido.
 - [X] Crear logica que me permita definir cuales son los archivos que vamos a implementar en la vista, aplica para los css y javascript, esto se puede ejecutar cuando accedamos a la vista.
 - [X] Ajustar la vista al modulo de configuraciones.
-- [ ] Arreglar paginacion a los elementos cuando este se encuentra en una pagina x o cuando se **elimina** un registro en la ultima pagina.
+- [X] Arreglar paginacion a los elementos cuando este se encuentra en una pagina x o cuando se **elimina** un registro en la ultima pagina.
 - [ ] Transformar en clase aquellas funcionalidades de javascript repetibles
 - [ ] Investigar e implementar rastro de miga.
 - [ ] RE factorizar el menu del footer

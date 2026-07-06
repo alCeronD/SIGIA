@@ -209,12 +209,13 @@ class RolesController extends ConfigController implements CrudInterface
     public function setPermisos(): void
     {
         try {
-            $this->rfModel->beginTransaction();
             header(CONTENT_TYPE);
             $data = UtilsFunctions::returnGetDecode();
             $rolId = $data['rolId'];
+            $message = "Proceso ejecutado correctamente";
             $funcionesPorEliminar = $data['funcionesPorEliminar'];
             $funcionesPorAsociar = $data['funcionesPorAsociar'];
+
             /**
              * PASOS PARA EJECUTAR LA ASIGNACION DE PERMISOS AL ROL.
              *
@@ -226,35 +227,21 @@ class RolesController extends ConfigController implements CrudInterface
 
             //PASO1
             $allFunctionsAssoc = $this->sRoles->getSetRolesFunciones($data['rolId']);
+            // Extramos solamente los ids de las funciones
+            $allFunctionsAssoc = array_column($allFunctionsAssoc, 'idFuncion');
+            sort($allFunctionsAssoc);
+            sort($funcionesPorAsociar);
+
+            // PASO2
+            # Comparamos los ids ya asociados con los ids que nos envia el cliente
+            // FILTRAMOS LAS FUNCIONES QUE VAMOS A INSERTAR Y QUE NO ESTEN EN LA BASE DE DATOS.
+            $filterFinalFunctions = array_diff($funcionesPorAsociar, $allFunctionsAssoc);
 
 
-            //PASO2 - comparar las funciones que tengo con las ya recibidas, se define cual es la longitud las funciones ya asociadas y las funciones por asociar para asi determinar cual va a ciclarse.
-            $functionsToLoop = []; //los datos a ciclar
-            $functionsValidate = []; //Los datos re validados
-            if (count($allFunctionsAssoc) > count($funcionesPorAsociar)) {
-                // se cicla allFunctionsAssoc
-                $functionsToLoop = $allFunctionsAssoc;
-                $functionsValidate = $funcionesPorAsociar;
-            } else {
-                // se cicla funcionesPorAsociar
-                $functionsToLoop = $funcionesPorAsociar;
-                $functionsValidate = array_column($allFunctionsAssoc, 'idFuncion');
-            }
-
-            // functions para agregar como permisos.
-            $functionsToAdd = [];
-            foreach ($functionsToLoop as $key => $value) {
-                if (!in_array($value, $functionsValidate)) {
-                    $functionsToAdd[] = [
-                        'rlp_id_rl'  => $rolId,
-                        'rlp_id_funcion'  => $value,
-                        '__index' => $key
-                    ];
-                }
-            }
-
-            // PASO 3 - ejecutar el proceso para eliminar las funciones asociadas al rol.
-            if (count($funcionesPorEliminar) > 0) {
+            //  PROCESO FINAL.
+            $this->rfModel->beginTransaction();
+            // PROCESO DELETE.
+            if (!empty($funcionesPorEliminar)) {
                 $prepareFunctions = [];
                 foreach ($funcionesPorEliminar as $key => $value) {
                     $prepareFunctions["rlp_id_funcion" . $key] = $value;
@@ -263,7 +250,6 @@ class RolesController extends ConfigController implements CrudInterface
                 // adicionamos el id del rol
                 $dtaPDFunctions[CR_DATA]['rlp_id_rl'] = $rolId;
 
-
                 $resultDeleteRolesFunciones = $this->rfModel->delete()->where(['rlp_id_rl', '=', $rolId])->whereIn($prepareFunctions, 'rlp_id_funcion')->prepareSql($dtaPDFunctions)->get();
 
                 if (!$resultDeleteRolesFunciones[CR_STATUS]) {
@@ -271,34 +257,47 @@ class RolesController extends ConfigController implements CrudInterface
                     Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
                     return;
                 }
+                $message = "Permisos eliminados del rol correctamente";
             }
 
-            // PASO 4 Guardar funciones asociadas en rol.
-            /**
-             * Pasos para ejecutar el 4to paso
-             * 1- en el arreglo anterior le adjuntamos el index para validar la data, aca vamos a extraer esos arreglos multiples y lo transformaremos en un arreglo plano PERO, con las mismas claves para poder referenciarlas usando el bindparam.
-             */
-            $functionsToAddPrepare = [];
-            foreach ($functionsToAdd as $key => $value) {
-                foreach ($value as $key2 => $value2) {
-                    if ($key2 != '__index') {
-                        $functionsToAddPrepare[CR_DATA]['rlp_id_funcion' . "{$value['__index']}"] = $value2;
-                        $functionsToAddPrepare[CR_DATA]['rlp_id_rl' . "{$value['__index']}"] = $rolId;
+            if (!empty($filterFinalFunctions)) {
+                # preparamos las funciones para adicionar al rol.
+                $functionsToAdd = [];
+                foreach ($filterFinalFunctions as $key => $value) {
+                    # valido si las funciones enviadas con el cliente, no hay alguna que no este en las funciones ya asociadas por el cliente.
+                    if (!in_array($value, $allFunctionsAssoc)) {
+                        $functionsToAdd[] = [
+                            'rlp_id_rl'  => $rolId,
+                            'rlp_id_funcion'  => $value,
+                            '__index' => $key
+                        ];
                     }
                 }
+
+                $functionsToAddPrepare = [];
+                // ANTES DE ESO COMPARAMOS LAS FUNCIONES POR
+                foreach ($functionsToAdd as $key => $value) {
+                    foreach ($value as $key2 => $value2) {
+                        if ($key2 != '__index') {
+                            $functionsToAddPrepare[CR_DATA]['rlp_id_funcion' . "{$value['__index']}"] = $value2;
+                            $functionsToAddPrepare[CR_DATA]['rlp_id_rl' . "{$value['__index']}"] = $rolId;
+                        }
+                    }
+                }
+                $resultSetPermisos = $this->rfModel->insert($functionsToAdd)->prepareSql($functionsToAddPrepare)->get();
+
+                if (!$resultSetPermisos[CR_STATUS]) {
+                    $dataResponse = DatabaseHandler::validateResponse($resultSetPermisos);
+                    Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+                    return;
+                }
+                $message = "Permisos asociados correctamente.";
             }
-            $resultSetPermisos = $this->rfModel->insert($functionsToAdd)->prepareSql($functionsToAddPrepare)->get();
+
             $this->rfModel->commit();
-            if (!$resultSetPermisos[CR_STATUS]) {
-                $dataResponse = DatabaseHandler::validateResponse($resultSetPermisos);
-                Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
-                return;
-            }
-
             $result = $this->permisosModel->renderMenu($rolId);
-            $_SESSION['renderMenu'] = $result['data'];
-
-            Response::responseRequest(HttpStatus::OK, true, 'Permisos asociados correctamente', []);
+            $_SESSION['renderMenu'] = $result[CR_DATA];
+            Response::responseRequest(HttpStatus::OK, true, $message, []);
         } catch (\PDOException $th) {
             $this->rfModel->rollback();
             Response::responseRequest(HttpStatus::BAD_REQUEST, false, $th, []);
