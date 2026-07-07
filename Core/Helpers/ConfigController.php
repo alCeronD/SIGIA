@@ -8,9 +8,10 @@ abstract class ConfigController implements ConfigInterface
     'css' => [],
     'js' => []
   ];
+  protected array $routes = [];
 
   // haremos que el controlador que herede tenga si o si esta funcionalidad para asi poder implementar el rastro de miga.
-  abstract public function createRoutes();
+  // abstract public function createRoutes();
 
 
   public function getFilesCss(): array
@@ -21,6 +22,11 @@ abstract class ConfigController implements ConfigInterface
   public function getFilesJs(): array
   {
     return $this->files['js'] ?? [];
+  }
+
+  public function getAllRoutes(): array
+  {
+    return $this->routes;
   }
   /**
    * Funcion generica para renderizar la vista
@@ -34,6 +40,15 @@ abstract class ConfigController implements ConfigInterface
     if (ob_get_length()) ob_clean();
     $allJs = $this->getFilesJs();
     $allCss = $this->getFilesCss();
+    $routes = $this->getAllRoutes();
+
+    $breadCrumbData = $this->renderBreadCrumb($nameFunction);
+
+
+    $modulesAndFunctions = $routes['modulesRoutes'] ?? [];
+    $routesPlaceHolders = $routes['placeholders'] ?? [];
+    $setRoutes = $routes['setFunctions'] ?? [];
+
 
     // Extraemos los recursos dependiendo de la function ejecutada.
     $specificCss = $allCss[$nameFunction] ?? [];
@@ -45,5 +60,12 @@ abstract class ConfigController implements ConfigInterface
     ScanFiles::renderJs($_GET[CR_MODULO], $specificJs); //Renderizamos los js
     include_once BASE_URL . CR_ROUTE_FOOTER;
     exit;
+  }
+
+  public function renderBreadCrumb(string $nameFunction = ''): array
+  {
+
+
+    return [];
   }
 }

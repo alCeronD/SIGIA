@@ -18,8 +18,14 @@
 /* MODULO AREAS */
 .contentArea {
   grid-template-areas:
+    "breadCrumbs breadCrumbs"
     "titleArea titleArea"
     "formAr tblAreas";
+  height: fit-content;
+}
+
+.breadCrumbs {
+  grid-area: breadCrumbs;
 }
 
 .titleArea {
@@ -30,9 +36,7 @@
   justify-content: space-between;
 }
 
-.textTitleSpan {
-  font-size: 20pt;
-}
+
 
 .formAr {
   grid-area: formAr;
@@ -90,18 +94,36 @@
 
 .tblAreas {
   grid-area: tblAreas;
+  width: 100%;
+  min-width: 0;
+  /* tamaño de la tabla. */
+  height: 350px;
+  /* crea un scroll interno solo para la tabla. */
+  overflow-x: auto;
 }
 
-#tableConfigMarca,
-#tableConfigArea,
-#tableConfigTp {
+#tableConfigArea {
   width: 100%;
+  /* con esta propiedad hago que respete el tamaño del contendor. */
+  table-layout: fixed;
+  /* evita que los bordes consuman pixeles. */
+  border-collapse: collapse;
 }
 
 #tableBodyArea tr td:last-child {
   display: flex;
   flex-direction: row;
   gap: 0.6rem;
+}
+
+#tableConfigArea th,
+#tableConfigArea td {
+  /* Esconde lo que se salga */
+  overflow: hidden;
+  /* Agrega los tres puntos (...) si el texto es muy largo */
+  text-overflow: ellipsis;
+  /* Evita que el texto salte de línea rompiendo el alto (Opcional) */
+  white-space: nowrap;
 }
 
 #btnAreaUpdate {

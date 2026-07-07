@@ -18,8 +18,9 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Crear logica que me permita definir cuales son los archivos que vamos a implementar en la vista, aplica para los css y javascript, esto se puede ejecutar cuando accedamos a la vista.
 - [X] Ajustar la vista al modulo de configuraciones.
 - [X] Arreglar paginacion a los elementos cuando este se encuentra en una pagina x o cuando se **elimina** un registro en la ultima pagina.
-- [ ] Transformar en clase aquellas funcionalidades de javascript repetibles
-- [ ] Investigar e implementar rastro de miga.
+- [X] Transformar en clase aquellas funcionalidades de javascript repetibles
+- [X] Investigar e implementar rastro de miga.
+  - [ ] Ajustar rastro de miga, debemos crear la logica en un solo arreglo en el configController.
 - [ ] RE factorizar el menu del footer
 - [ ] enviar los estilos y el javascript de footer.php a archivos independientes.
 - [ ] ajustar renderizado de menu (ver si se puede implementar por peticiones) y no por variables de session(usar localstorage).

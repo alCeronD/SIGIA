@@ -127,7 +127,7 @@ body {
   font-size: 3rem;
 }
 
-/* Tamaño de subtitlo de modulo */
+/* esta clase corresponde a los titulos del modulo de configuración, se puede usar para los demás modulos */
 .textTitleSpan {
   font-size: 20pt;
 }
@@ -195,10 +195,7 @@ input[type="number"] {
   background-color: #f1f1f1;
 }
 
-/* esta clase corresponde a los titulos del modulo de configuración, se puede usar para los demás modulos */
-.textTitleSpan {
-  font-size: 20pt;
-}
+
 
 /* ------------------------------------------ */
 
@@ -228,19 +225,19 @@ input[type="number"] {
 }
 
 .toast-info {
-  border-left: 8px solid var(--info);
+  border-left: 10px solid var(--info);
 }
 
 .toast-warning {
-  border-left: 8px solid var(--warning);
+  border-left: 10px solid var(--warning);
 }
 
 .toast-error {
-  border-left: 8px solid var(--info);
+  border-left: 10px solid var(--info);
 }
 
 .toast-success {
-  border-left: 8px solid var(--success);
+  border-left: 10px solid var(--btnEdit);
 }
 
 /* Fin estilos de alertas */
@@ -250,9 +247,6 @@ input[type="number"] {
 .material-icons {
   pointer-events: none;
 }
-
-/* ////////////Inicio estilos submenu para actualizar datos en HEADER////////////// */
-
 
 .material-icons.left {
   font-size: 15px;
@@ -303,6 +297,13 @@ input[type="number"] {
   justify-content: flex-end;
 }
 
+/* PROPIEDAD Y ESTILO DEL RASTRO DE MIGA */
+
+#breadCrumbs {
+  width: 100%;
+  height: 1.5rem;
+  background-color: var(--btnEdit);
+}
 
 
 /* Para pantallas medianas en adelante. */

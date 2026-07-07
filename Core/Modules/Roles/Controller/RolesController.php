@@ -19,7 +19,7 @@ class RolesController extends ConfigController implements CrudInterface
      */
     protected array $files = [
         'css' => [
-            'rolesIndex' => ['RolexIndex.css'],
+            'rolesIndex' => ['RolesIndex.css'],
             'mostrarRoles' => ['Roles.css'],
             'mostrarFuncionesAssoc' => ['RolesFunciones.css']
         ],
@@ -39,10 +39,32 @@ class RolesController extends ConfigController implements CrudInterface
         $this->rfModel = new RolesFuncionesModel();
         $this->sModulos = new ServicesModulos();
         $this->sFunciones = new ServicesFunciones();
+        $this->createRoutes();
     }
     public function createRoutes()
     {
-        throw new \Exception('Not implemented');
+        $this->routes  = [
+            // MODULES & ROUTES
+            'modulesRoutes' => [
+                'Dashboard' => ['dashboard' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
+                'Roles' => [
+                    'rolesIndex' => Router::createRoute('Roles', 'Roles', 'rolesIndex', false, 'dashboard'),
+                    'mostrarRoles' => Router::createRoute('Roles', 'Roles', 'mostrarRoles', false, 'dashboard'),
+                    'mostrarFuncionesAssoc' => Router::createRoute('Roles', 'RolesFunciones', 'mostrarFuncionesAssoc', false, 'dashboard')
+                ]
+            ],
+            // FUNCIONES && PLACEHOLDERS
+            'placeholders' => [
+                'Dashboard' => ['dashboard' => 'Inicio'],
+                // Si hay una vista adional, crearla dentro de otra clave y ahi colocar el nombre de la funcion y la key
+                'Roles' =>  ['mostrarRoles' => 'Ver Roles', 'mostrarFuncionesAssoc' => 'Funciones Asociadas']
+
+            ],
+            // FUNCIONES FIJAS
+            'setFunctions' => [
+                'primaryFunction' => ['url' => Router::createRoute('Roles', 'Roles', 'rolesIndex', false, 'dashboard'), 'placeholder' => 'Roles', 'namePrimaryFunction' => 'rolesIndex'],
+            ]
+        ];
     }
     /**
      * Vista principal del modulo roles

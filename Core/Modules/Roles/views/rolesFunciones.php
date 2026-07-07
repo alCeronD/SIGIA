@@ -1,6 +1,6 @@
 <div class="container">
-
   <div class="contentRolesFunciones">
+    <?php include_once BASE_URL . '/../../public/partials/breadCrumbs.php'; ?>
     <div class="titleRolesRunciones menuTitle">
       <span id="textTitleAreas" class="textTitleSpan">Gestión de funciones asociadas al rol</span>
       <a href="<?php echo Router::createRoute('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"

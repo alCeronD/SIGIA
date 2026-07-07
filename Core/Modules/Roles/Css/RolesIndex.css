@@ -1,0 +1,21 @@
+.content {
+  grid-template-areas: "breadCrumbs"
+    "cards";
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+  width: 100%;
+  height: fit-content;
+}
+
+.breadCrumbs {
+  grid-area: breadCrumbs;
+  width: 100%;
+  height: 1.5rem;
+}
+
+.cards {
+  width: fit-content;
+  height: fit-content;
+  grid-area: cards;
+}

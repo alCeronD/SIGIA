@@ -124,4 +124,14 @@ class UtilsFunctions
 
         return $datos;
     }
+
+    public static function getActualFunction(): string
+    {
+        return $_GET['function'];
+    }
+
+    public static function getActualModule(): string
+    {
+        return $_GET['modulo'];
+    }
 }
