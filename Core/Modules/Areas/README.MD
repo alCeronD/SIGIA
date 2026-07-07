@@ -40,5 +40,6 @@ Breve explicación de qué necesidad de negocio resuelve este módulo en el sist
 - [X] Implementar frontend de acciones
 - [X] Ajustar renderizado de datos cuando edito o creo un nuevo elemento.
 - [X] Implementar cantidad de registros, boton de preview y next + mostrar la pagina, ejemplo: se muestran 0 de n registros
-- [ ] Implementar rastro de miga
+- [X] Implementar rastro de miga
 - [X] implementar interfaz de crud al controlador
+- [ ] Modificar css responsive, implementar estilos a botones preview y next.

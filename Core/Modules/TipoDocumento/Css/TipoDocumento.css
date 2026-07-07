@@ -1,7 +1,12 @@
  .contentTpDocumento {
    grid-template-areas:
+     "breadCrumbs breadCrumbs"
      "titleTp titleTp"
      "formTpDocumento tableTpDocumento";
+ }
+
+ .breadCrumbs {
+   grid-area: breadCrumbs;
  }
 
  .titleTp {

@@ -38,27 +38,17 @@ class RolesFuncionesController extends ConfigController
 
   public function createRoutes()
   {
-
-    $this->routes  = [
-      // MODULES & ROUTES
-      'modulesRoutes' => [
-        'Dashboard' => ['dashboard' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
-        'Roles' => [
-          'rolesIndex' => Router::createRoute('Roles', 'Roles', 'rolesIndex', false, 'dashboard'),
-          'mostrarRoles' => Router::createRoute('Roles', 'Roles', 'mostrarRoles', false, 'dashboard'),
-          'mostrarFuncionesAssoc' => Router::createRoute('Roles', 'RolesFunciones', 'mostrarFuncionesAssoc', false, 'dashboard')
-        ]
+    $this->routes = [
+      'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
+      'rolesIndex' => [
+        'label' => 'Roles',
+        'url' => Router::createRoute('Roles', 'Roles', 'rolesIndex', false, 'dashboard'),
+        'parent' => 'dashboard'
       ],
-      // FUNCIONES && PLACEHOLDERS
-      'placeholders' => [
-        'Dashboard' => ['dashboard' => 'Inicio'],
-        // Si hay una vista adional, crearla dentro de otra clave y ahi colocar el nombre de la funcion y la key
-        'Roles' =>  ['mostrarRoles' => 'Ver Roles', 'mostrarFuncionesAssoc' => 'Funciones Asociadas']
-
-      ],
-      // FUNCIONES FIJAS
-      'setFunctions' => [
-        'primaryFunction' => ['url' => Router::createRoute('Roles', 'Roles', 'rolesIndex', false, 'dashboard'), 'placeholder' => 'Roles', 'namePrimaryFunction' => 'rolesIndex'],
+      'mostrarFuncionesAssoc' => [
+        'label' => 'Funciones asociadas',
+        'url' => Router::createRoute('Roles', 'RolesFunciones', 'mostrarFuncionesAssoc', false, 'dashboard'),
+        'parent' => 'rolesIndex'
       ]
     ];
   }

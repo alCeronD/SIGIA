@@ -20,4 +20,5 @@ se realiza la re factorización de las función select del modelo.
 - [X] Ajustar proceso de asociacion de permisos - validar si las funciones por asociar ya existen en la base de datos.
 - [X] Ajustar proceso de definir si se ejecutan 3 pasos o 4, en donde uno de esos pasos puede ser solamente de eliminar los permisos porque vamos a quitarlos o en su defecto, solo guardar permisos.
 - [ ] Implementar feature de all check en el modulo para asociar todos los permisos que pertenecen al modulo
+- [ ] Ajustar css
 - [X] Implementar rastro de miga

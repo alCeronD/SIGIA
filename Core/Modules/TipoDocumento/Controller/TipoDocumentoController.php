@@ -19,11 +19,19 @@ class TipoDocumentoController extends ConfigController implements CrudInterface
   public function __construct()
   {
     $this->tpModel = new TipoDocumentoModel();
+    $this->createRoutes();
   }
 
   public function createRoutes()
   {
-    throw new \Exception('Not implemented');
+    $this->routes = [
+      'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
+      'renderViewTp' => [
+        'label' => 'Tipo de documento',
+        'url' => Router::createRoute('TipoDocumento', 'TipoDocumento', 'renderViewTp', false, 'dashboard'),
+        'parent' => 'dashboard'
+      ]
+    ];
   }
 
   // Vista principal

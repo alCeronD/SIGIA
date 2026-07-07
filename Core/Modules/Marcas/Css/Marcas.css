@@ -1,10 +1,13 @@
-/* MODULO MARCAS */
-
 /* ---- */
 .contentMarca {
   grid-template-areas:
+    "breadCrumbs breadCrumbs"
     "titleMarca titleMarca"
     "formMarca tblMarca";
+}
+
+.breadCrumbs {
+  grid-area: breadCrumbs;
 }
 
 .titleMarca {

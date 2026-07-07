@@ -1,6 +1,7 @@
 <div class="container">
 
     <div class="contentTpDocumento contentLayout">
+        <?php include_once BASE_URL . '/../../public/partials/breadCrumbs.php'; ?>
         <div class="titleTp menuTitle">
             <span id="textTitleAreas" class="textTitleSpan">Tipos de documento</span>
             <a href="<?php echo Router::createRoute('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"

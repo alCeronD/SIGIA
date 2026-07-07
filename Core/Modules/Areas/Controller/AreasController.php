@@ -23,26 +23,15 @@ class AreasController extends ConfigController implements CrudInterface
   }
   public function createRoutes()
   {
-
-    $this->routes  = [
-      // MODULES & ROUTES
-      'modulesRoutes' => [
-        'Dashboard' => ['dashboard' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
-        'Areas' => [
-          'renderViewArea' => Router::createRoute('Areas', 'Areas', 'renderViewArea', false, 'dashboard'),
-        ]
-      ],
-      // FUNCIONES && PLACEHOLDERS
-      'placeholders' => [
-        'Dashboard' => ['dashboard' => 'Inicio'],
-        // Si hay una vista adional, crearla dentro de otra clave y ahi colocar el nombre de la funcion y la key
-        // 'Areas' =>  ['renderViewArea' => 'Ver Departamentos']
-
-      ],
-      'setFunctions' => [
-        'primaryFunction' => ['url' => Router::createRoute('Areas', 'Areas', 'renderViewArea', false, 'dashboard'), 'placeholder' => 'Areas', 'namePrimaryFunction' => 'renderViewArea'],
+    $this->routes = [
+      // inicio
+      'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
+      // funciones
+      'renderViewArea' => [
+        'label' => 'Areas',
+        'url' => Router::createRoute('Areas', 'Areas', 'renderViewArea', false, 'dashboard'),
+        'parent' => 'dashboard'
       ]
-
     ];
   }
 

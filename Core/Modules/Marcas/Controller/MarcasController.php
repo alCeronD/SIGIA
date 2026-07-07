@@ -17,10 +17,18 @@ class MarcasController extends ConfigController implements CrudInterface
   public function __construct()
   {
     $this->mModel = new MarcasModel();
+    $this->createRoutes();
   }
   public function createRoutes()
   {
-    throw new \Exception('Not implemented');
+    $this->routes = [
+      'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
+      'renderViewMarca' => [
+        'label' => 'Marcas',
+        'url' => Router::createRoute('Marcas', 'Marcas', 'renderViewMarca', false, 'dashboard'),
+        'parent' => 'dashboard'
+      ],
+    ];
   }
   public function renderViewMarca()
   {

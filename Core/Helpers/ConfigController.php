@@ -11,7 +11,7 @@ abstract class ConfigController implements ConfigInterface
   protected array $routes = [];
 
   // haremos que el controlador que herede tenga si o si esta funcionalidad para asi poder implementar el rastro de miga.
-  // abstract public function createRoutes();
+  abstract public function createRoutes();
 
 
   public function getFilesCss(): array
@@ -64,8 +64,30 @@ abstract class ConfigController implements ConfigInterface
 
   public function renderBreadCrumb(string $nameFunction = ''): array
   {
+    $routes = $this->getAllRoutes();
+    $breadCrumb = [];
 
+    if (!isset($routes[$nameFunction])) {
+      return [['label' => 'inicio', 'url' => '#']];
+    }
 
-    return [];
+    $step = $nameFunction;
+
+    while ($step !== null) {
+      // si en las rutas existe la funcion actual, entonces cambiamos las posiciones del arreglo.
+      if (isset($routes[$step])) {
+        array_unshift($breadCrumb, [
+          'label' => $routes[$step]['label'],
+          'url' => $routes[$step]['url'],
+          'key' => $step
+        ]);
+        $step = $routes[$step]['parent'] ?? null;
+      } else {
+        // detenemos el ciclo while.
+        $step = null;
+        break;
+      }
+    }
+    return $breadCrumb;
   }
 }
