@@ -1,0 +1,1 @@
+<!-- vista de auditorias de las acciones que ejecuto el usuario -->

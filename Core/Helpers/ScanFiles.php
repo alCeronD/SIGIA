@@ -40,12 +40,14 @@ class ScanFiles
             foreach ($value as $key2 => $value2) {
                 $fileAssets = basename($value2);
                 $finalRoute = strstr($value2, 'Modules/');
+                // var_dump($fileAssets);
 
                 if (str_contains($fileAssets, '.css')) {
                     $pruebaAssetsFiles['css'][$module][$fileAssets] = $finalRoute;
                 }
                 // Solo importamos el archivo que contenga el nombredelmodulo.js
-                if (str_contains($fileAssets, '.js') && str_contains($fileAssets, $module)) {
+                if (str_contains($fileAssets, '.js')) {
+                    // var_dump($fileAssets);
                     $pruebaAssetsFiles['js'][$module][$fileAssets] = $finalRoute;
                 }
             }
@@ -71,6 +73,7 @@ class ScanFiles
         foreach ($jsFiles as $key => $value) {
             if (in_array("{$key}", $filesjs)) {
                 $rutaLimpia = htmlspecialchars("/../../Core/Modules/$modulo/Js/{$key}", ENT_QUOTES, 'UTF-8');
+                // var_dump($rutaLimpia);
                 echo '<script type="module" src="' . $rutaLimpia . '"></script>' . PHP_EOL;
             }
         }

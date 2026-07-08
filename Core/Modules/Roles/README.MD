@@ -22,3 +22,4 @@ se realiza la re factorización de las función select del modelo.
 - [ ] Implementar feature de all check en el modulo para asociar todos los permisos que pertenecen al modulo
 - [ ] Ajustar css
 - [X] Implementar rastro de miga
+- [ ] Revisar el limite de caracteres en el input de registrar rol, debido a que este me marca un limite, error en la lógica de negocio.

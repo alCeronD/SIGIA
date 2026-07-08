@@ -1,3 +1,4 @@
+import { addClassItem } from './index.js';
 export class Validator {
   static #rules = {
     documento: {
@@ -26,6 +27,10 @@ export class Validator {
       regex: /^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s]+$/,
       message: 'Solo se permiten letras en el campo',
     },
+    numeros: {
+      regex: /^\d+$/,
+      message: 'Solo se permiten datos de tipos numericos',
+    },
   };
 
   /**
@@ -42,6 +47,15 @@ export class Validator {
     return validateRule.regex.test(value);
   }
 
+  /**
+   * Function para validar la longitud de un string y determinar si es correcto o no para su respectiva validacion.
+   *
+   * @static
+   * @param {{ value: any; maxLenght: any; }} param0
+   * @param {*} param0.value: value
+   * @param {*} param0.maxLenght: lenght
+   * @returns {boolean}
+   */
   static validateLeght({ value: value, maxLenght: lenght }) {
     let minLenght = 0;
 
@@ -56,6 +70,50 @@ export class Validator {
     return true;
   }
 
+  static validateInput({ input: input, rule: rule = '' }) {
+    // usamos el metodo blur para validar el input.
+    input.addEventListener('blur', (e) => {
+      let valueInput = e.target.value;
+
+      let spanElement = e.target.parentElement.querySelector('.helper-text');
+
+      // validamos si esta vacio para enviar otro mensaje.
+      if (valueInput === '') {
+        if (e.target.classList.contains('valid')) {
+          e.target.classList.remove('valid');
+        }
+        console.log(spanElement);
+        spanElement.dataset.error = 'El campo es obligatorio';
+        addClassItem(e.target, { valid: 'invalid' });
+        return;
+      }
+
+      let responseValidateInput = this.validateRule({ value: valueInput, rule: rule });
+      // SI NOS DA FALSE, ENTONCES AL INPUT LE IMPLEMENTAMOS LA CLASE INVALID, EN CASO CONTRARIO LA CLASE VALID.
+      if (!responseValidateInput) {
+        if (e.target.classList.contains('valid')) {
+          e.target.classList.remove('valid');
+        }
+        // obtenemos el mensaje establecido por la regla de la expresion regular y lo dibujamos en el input.
+        spanElement.dataset.error = this.getMessage({ rule: rule });
+        addClassItem(e.target, { valid: 'invalid' });
+      } else {
+        if (e.target.classList.contains('invalid')) {
+          e.target.classList.remove('invalid');
+        }
+        addClassItem(e.target, { valid: 'valid' });
+      }
+    });
+  }
+
+  /**
+   * Function para obtener el mensaje dependiendo de la regla.
+   *
+   * @static
+   * @param {{ rule: any; }} param0
+   * @param {*} param0.rule: rule
+   * @returns {*}
+   */
   static getMessage({ rule: rule }) {
     return this.#rules[rule].message;
   }

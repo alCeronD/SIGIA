@@ -54,6 +54,7 @@ abstract class ConfigController implements ConfigInterface
     $specificCss = $allCss[$nameFunction] ?? [];
     $specificJs = $allJs[$nameFunction] ?? [];
 
+
     $routesCss = ScanFiles::renderCss($_GET[CR_MODULO], $specificCss); //Renderizamos los css y lo usamos en header.php
     include_once BASE_URL . CR_ROUTE_HEADER;
     include_once $pathView; //Ruta relativa de la vista

@@ -2,7 +2,7 @@
 
 // ------------------------ DE ANTERIOR ENRUTADOR ------------------
 
-include_once __DIR__ .'/Core/Helpers/Autoload.php';
+include_once __DIR__ . '/Core/Helpers/Autoload.php';
 
 if (UtilsFunctions::ajaxGeneral()) {
     Router::ExecuteFunction();

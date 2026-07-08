@@ -33,15 +33,17 @@
                 </div>
                 <div class="option-card z-depth-1 div3">
                     <div class="icons">
-                        <i class="material-icons small green-text text-darken-2 center-align">person</i>
+                        <a href="<?php echo Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'usuariosIndex', false, CR_DASHBOARD_LOWER_CASE); ?>">
+                            <i class="material-icons small green-text text-darken-2 center-align">person</i>
+                        </a>
                     </div>
                     <div class="modalName">
                         <h5>Usuarios</h5>
                         <p>Crea o busca usuarios.</p>
                     </div>
                     <div class="buttons">
-                        <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('Usuarios', 'Usuarios', 'userView', false, 'dashboard'); ?>">Crear usuario</a>
-                        <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute('Usuarios', 'Usuarios', 'consultUser', false, 'dashboard'); ?>">Consultar usuario</a>
+                        <a class="btn green btnGetUrl" href="<?php echo Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'usuariosIndex', false, CR_DASHBOARD_LOWER_CASE); ?>">Crear usuario</a>
+                        <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'consultUser', false, CR_DASHBOARD_LOWER_CASE); ?>">Consultar usuario</a>
                     </div>
                 </div>
                 <div class="option-card z-depth-1 div4">
