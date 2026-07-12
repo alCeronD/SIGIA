@@ -74,11 +74,13 @@ class LoginController
             $result = $permisosModel->renderMenu((int) $usuario['rl_id']);
             $_SESSION['usuario'] = [
                 'id' => $usuario['usu_id'],
+                'documento' => $usuario['usu_docum'],
                 'nombre' => $usuario['usu_nombres'],
                 'apellido' => $usuario['usu_apellidos'],
                 'rol_id' => $usuario['rl_id'],
                 'rol_nombre' => $usuario['rl_nombre'],
                 'email' => $usuario['usu_email']
+
             ];
 
 

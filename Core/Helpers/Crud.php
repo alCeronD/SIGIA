@@ -24,25 +24,12 @@ abstract class Crud
 {
   protected $countLastMethod = 0;
   protected $lastMethod = "";
-  protected $conn; # En donde se guarda la conexion
-  protected $sql; # String que crea la consulta sql
-  protected $table; # Nombre de la tabla, hereda su valor desde el modelo
-  protected $campos; # Arreglo que contiene campos de la tabla, hereda su valor desde el modelo
-  protected $id; # primary key de la tabla, hereda su valor desde el modelo
+  protected PDO $conn; # En donde se guarda la conexion
+  protected  $sql; # String que crea la consulta sql
+  protected  $table; # Nombre de la tabla, hereda su valor desde el modelo
+  protected  $campos; # Arreglo que contiene campos de la tabla, hereda su valor desde el modelo
+  protected  $id; # primary key de la tabla, hereda su valor desde el modelo
   protected $stmt; # en donde se guarda el mysqliprepared
-  protected $operators = [
-    '=',
-    '!=',
-    '<>',
-    '<',
-    '>',
-    '<=',
-    '>=',
-    'BETWEEN',
-    'IN',
-    'IS NULL',
-    'LIKE'
-  ]; # arreglo para validar e implementar las condicionales
 
   public function __construct()
   {
@@ -66,14 +53,6 @@ abstract class Crud
   {
     $string = "";
 
-    // Concatenamos con signos de interrogacion para preparar la consulta.
-    // foreach ($datos as $key => $camp) {
-    //   // valido que las keys esten en el modelo de las tablas;
-    //   if (in_array($key, $this->campos)) {
-    //     $string .= ":$key" . ", ";
-    //   }
-    // }
-
     foreach ($datos as $key => $camp) {
       // valido que las keys esten en el modelo de las tablas;
       if (in_array($key, $this->campos)) {
@@ -87,8 +66,6 @@ abstract class Crud
         }
       }
     }
-
-
     return trim($string, ", ");
   }
 
@@ -137,9 +114,11 @@ abstract class Crud
   public function insert(array $insertValue)
   {
     $resultValidate = $this->validateArrays($insertValue);
+
+
+    $orderArray = $this->ordenarArreglo($insertValue);
     // validamos si es un arreglo con arreglos internos.
     if ($resultValidate) {
-
 
       $this->sql = "INSERT INTO " . $this->table . " (" . $this->organizarCampos($this->campos) . ") ";
 
@@ -157,7 +136,7 @@ abstract class Crud
     }
 
     // opction por defecto
-    $this->sql = "INSERT INTO " . $this->table . " (" . $this->organizarCampos($this->campos) . ") VALUES (" . $this->organizarDatos($insertValue) . ")";
+    $this->sql = "INSERT INTO " . $this->table . " (" . $this->organizarCampos($this->campos) . ") VALUES (" . $this->organizarDatos($orderArray) . ")";
 
     return $this;
   }
@@ -347,7 +326,6 @@ abstract class Crud
 
       #Extraigo la informacion
       $data = isset($datos['data']) ? ($datos['data']) : [];
-
       // Si es un select, solamente preparamos la consulta y retornamos su resultado
       if ((strpos($this->sql, 'SELECT') === 0) && ($select[0] === "SELECT")) {
 
@@ -374,11 +352,13 @@ abstract class Crud
             $this->stmt->bindValue(":{$key}", $value);
           }
         }
+
         return $this;
       } else {
         if (empty($datos)) throw new PDOException('Faltan datos de ejecuccion');
 
 
+        // en un contexto en donde no tengo el arreglo ordenado
         foreach ($data as $key => $value) {
           $marcador = ":" . $key;
           if (str_contains($this->sql, $marcador)) {
@@ -403,7 +383,7 @@ abstract class Crud
       $checkSelect = explode(' ', $this->sql);
 
       $this->stmt->execute();
-
+      $lastId = str_contains(strtoupper($this->sql), 'INSERT') ? $this->conn->lastInsertId() : '';
 
       # Verificamos si es un select para solamente devolver un arreglo asociativo
       if ((strpos($this->sql, 'SELECT') === 0) && ($checkSelect[0] === "SELECT")) {
@@ -431,6 +411,7 @@ abstract class Crud
       // VALIDAMOS SI EXISTE UNA TRANSACCION, EN CASO DE SER ASI, SIMPLEMENTE RETORNAMOS EL ESTATUS Y EN EL CONTROLADOR APLICAMOS EL COMMIT Y EL CLEAN QUERY.
       if ($this->conn->inTransaction()) {
         return [
+          'lastId' => $lastId,
           'status' => true,
           'message' => $this->conn->inTransaction()
         ];
@@ -438,9 +419,11 @@ abstract class Crud
 
       $this->cleanQuery();
       return [
-        'status' => true
+        'status' => true,
+        'lastId' => $lastId
       ];
     } catch (\PDOException $e) {
+      // var_dump($e);
       if ($this->conn->inTransaction()) {
         $this->conn->rollBack();
       }
@@ -509,7 +492,26 @@ abstract class Crud
     }
   }
 
+  /**
+   * Esta funcionalidad se usa para ordenar el arreglo de los datos basado en el orden de los campos del modelo a usar.
+   *
+   * @return array
+   */
+  public function ordenarArreglo(array $datos = []): array
+  {
+    $newOrder = [];
 
+    foreach ($this->campos as $value) {
+      if (array_key_exists($value, $datos)) {
+        $newOrder[] = [
+          $value => $datos[$value]
+        ];
+      }
+    }
+    $finalOrder = [];
+    $finalOrder = array_merge(...$newOrder);
+    return $finalOrder;
+  }
 
   public function commit()
   {

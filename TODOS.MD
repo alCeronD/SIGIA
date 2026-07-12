@@ -20,10 +20,12 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Arreglar paginacion a los elementos cuando este se encuentra en una pagina x o cuando se **elimina** un registro en la ultima pagina.
 - [X] Transformar en clase aquellas funcionalidades de javascript repetibles
 - [X] Investigar e implementar rastro de miga.
-  - [ ] Ajustar rastro de miga, debemos crear la logica en un solo arreglo en el configController.
+  - [X] Ajustar rastro de miga, debemos crear la logica en un solo arreglo en el configController.
+- [ ] Crear los campos created_at y updated_at a todas las tablas.
 - [ ] RE factorizar el menu del footer
 - [ ] enviar los estilos y el javascript de footer.php a archivos independientes.
 - [ ] ajustar renderizado de menu (ver si se puede implementar por peticiones) y no por variables de session(usar localstorage).
+- [ ] Analizar posibles causas de lentitud de la aplicacion a medida que pasa el tiempo.
 - [X] Arreglar palabras reservada para el levantamiento de la aplicación en linux
 - [X] adicionar el tag de cuando se entrego el producto a la entidad de formación + tabla para visualizar la versión entregada.
 - [X] Arreglar rutas para verificar el correcto funcionamiento del sistema como la re direccionamiento al login, o a otros módulos de acceso.

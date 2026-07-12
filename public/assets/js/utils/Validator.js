@@ -1,4 +1,4 @@
-import { addClassItem } from './index.js';
+import { addClassItem, initAlert, messages } from './index.js';
 export class Validator {
   static #rules = {
     documento: {
@@ -30,6 +30,10 @@ export class Validator {
     numeros: {
       regex: /^\d+$/,
       message: 'Solo se permiten datos de tipos numericos',
+    },
+    empty: {
+      regex: '',
+      message: 'Seleccione el campo',
     },
   };
 
@@ -82,7 +86,6 @@ export class Validator {
         if (e.target.classList.contains('valid')) {
           e.target.classList.remove('valid');
         }
-        console.log(spanElement);
         spanElement.dataset.error = 'El campo es obligatorio';
         addClassItem(e.target, { valid: 'invalid' });
         return;
@@ -102,6 +105,43 @@ export class Validator {
           e.target.classList.remove('invalid');
         }
         addClassItem(e.target, { valid: 'valid' });
+      }
+    });
+  }
+
+  /**
+   * Function para validar que selector haya seleccionado el elemento adecuado.
+   *
+   * @static
+   * @param {{ input: any; }} param0
+   * @param {*} param0.input: input
+   */
+  static validateSelect({ input: input }) {
+    input.addEventListener('change', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      const select = e.target;
+      const container = select.closest('.input-field');
+      const visibleInput = container.querySelector('input.select-dropdown');
+      const spanElement = container.querySelector('.helper-text');
+
+      if (!visibleInput || !spanElement) return;
+
+      if (select.value === '') {
+        spanElement.dataset.error = 'El campo es obligatorio';
+        visibleInput.classList.remove('valid');
+        spanElement.classList.remove('valid');
+        addClassItem(spanElement, { invalid: 'invalid' });
+        addClassItem(visibleInput, { valid: 'invalid' });
+
+        spanElement.textContent = 'El campo es obligatorio';
+        return;
+      } else {
+        spanElement.classList.remove('invalid');
+        visibleInput.classList.remove('invalid');
+        addClassItem(visibleInput, { valid: 'valid' });
+        addClassItem(spanElement, { valid: 'valid' });
       }
     });
   }

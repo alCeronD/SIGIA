@@ -147,11 +147,3 @@
         <?php endif; ?>
     </div>
 </div>
-
-<?php
-//foreach ($_SESSION['js'] as $key => $url) {
-?>
-<!-- <script type="module" src="<?php //echo htmlspecialchars("/../../Core/" . $url);
-                                ?>"></script> -->
-<!-- <?php //}
-        ?> -->

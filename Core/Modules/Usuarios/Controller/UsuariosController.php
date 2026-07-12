@@ -14,18 +14,26 @@ class UsuariosController extends ConfigController
     public $usu_telefono;
     public $usu_id_estado;
     protected RolesModel $rolesModel;
+    protected ServicesTipoDocumento $stp;
+    protected ServicesRoles $sRoles;
     // protected ConfigModulesModel $configModules;
     protected UsuariosModel $usuariosModel;
+    protected UsuariosRolesModel $usuariosRModel;
+    protected UsuariosServices $sUser;
     protected array $files = [
         "css" => [
             'usuariosIndex' => ['UsuariosIndex.css'],
             'createUserView' => ['CreateUser.css'],
-            'auditoriaUserView' => ['AuditoriasUsuarios.css']
+            'auditoriaUserView' => ['AuditoriasUsuarios.css'],
+            'usuariosView' => ['UsuariosView.css'],
+            'actualizarDatosView' => ['updatePersonalData.css']
         ],
         "js" => [
             'usuariosIndex' => [],
             'createUserView' => ['CreateUser.js'],
-            'auditoriaUserView' => ['AuditoriasUsuarios.css']
+            'auditoriaUserView' => ['AuditoriasUsuarios.js'],
+            'usuariosView' => ['UsuariosView.js'],
+            'actualizarDatosView' => ['updatePersonalData.js']
         ]
     ];
     public function __construct()
@@ -33,6 +41,10 @@ class UsuariosController extends ConfigController
         $this->rolesModel = new RolesModel(); //esto creo que nos puede servir para extraer el listado de los roles, en este caso, no hacemos composicion al modelo sino al servicio.
         // $this->configModules = new ConfigModulesModel();
         $this->usuariosModel = new UsuariosModel();
+        $this->usuariosRModel = new UsuariosRolesModel();
+        $this->stp = new ServicesTipoDocumento();
+        $this->sRoles = new ServicesRoles();
+        $this->sUser = new UsuariosServices();
         $this->createRoutes();
     }
     public function createRoutes()
@@ -51,8 +63,22 @@ class UsuariosController extends ConfigController
                 'label' => 'Crear usuario',
                 'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'createUserView', false, CR_DASHBOARD_LOWER_CASE),
                 'parent' => 'usuariosIndex'
+            ],
+            'auditoriaUserView' => [
+                'label' => 'Auditorias de usuario',
+                'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'auditoriaUserView', false, CR_DASHBOARD_LOWER_CASE),
+                'parent' => 'usuariosIndex'
+            ],
+            'usuariosView' => [
+                'label' => 'Usuarios registrados',
+                'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'usuariosView', false, CR_DASHBOARD_LOWER_CASE),
+                'parent' => 'usuariosIndex'
+            ],
+            'actualizarDatosView' => [
+                'label' => 'Actualizar datos personales',
+                'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'updatePersonalDataView', false, CR_DASHBOARD_LOWER_CASE),
+                'parent' => 'usuariosIndex'
             ]
-
         ];
     }
     /**
@@ -73,83 +99,163 @@ class UsuariosController extends ConfigController
      */
     public function createUserView()
     {
+        $this->stp->getAllTps();
+        $path = BASE_URL . US_ROUTE_USUARIOS_CREATE_VIEW;
+        Parent::renderView($path, __FUNCTION__);
+    }
+    /**
+     * Vista para ver las acciones que el usuario ha realizado.
+     *
+     * @return void
+     */
+    public function auditoriaUserView()
+    {
+        $path = BASE_URL . US_ROUTE_AUDITORIAS_VIEW;
+        Parent::renderView($path, __FUNCTION__);
+    }
+
+    public function usuariosView()
+    {
         $path = BASE_URL . US_ROUTE_USUARIOS_LIST_VIEW;
         Parent::renderView($path, __FUNCTION__);
     }
-    public function auditoriaUserView() {}
 
-    // public function createUser(array $data = [])
-    // {
-    //     validatePermisos('Usuarios', 'createUser');
-
-    //     header('Content-Type: application/json; charset=utf-8');
-
-    //     if (!isset($data['usu_email']) || !isset($data['usu_docum'])) {
-    //         http_response_code(200);
-    //         echo json_encode([
-    //             "status" => "error",
-    //             "message" => "No se recibieron datos válidos para crear el usuario."
-    //         ]);
-    //         exit;
-    //     }
-
-
-    //     $emailExists = $this->usuariosModel->validateEmail($data['usu_email'], $data['usu_docum'], false);
-
+    /**
+     * Vista para actualizar los datos personales del usuario logueado.
+     *
+     * @return void
+     */
+    public function actualizarDatosView()
+    {
+        // validamos si accedemos a esta function mediante una peticion http o en su defecto como renderizado puro.
+        if (UtilsFunctions::ajaxGeneral()) {
+            header(CONTENT_TYPE);
+            $idUsuario = $_SESSION['usuario']['id'];
+            $documento = $_SESSION['usuario']['documento'];
+            $dataGetUsu[CR_DATA] = [
+                'usu_id' => $idUsuario
+            ];
+            // coloco 0 porque me devuelve en forma de arreglo asociativo.
+            $dataResult = $this->sUser->getUserByDocum($documento)[0];
 
 
-    //     if ($emailExists) {
-    //         http_response_code(409);
-    //         echo json_encode([
-    //             "status" => "error",
-    //             "message" => "El correo ya está registrado."
-    //         ]);
-    //         // return;
-    //         exit;
-    //     }
-    //     $documentExists = $this->usuariosModel->validateDocumento($data['usu_docum']);
-    //     if ($documentExists) {
-    //         http_response_code(409);
-    //         echo json_encode([
-    //             "status" => "error",
-    //             "message" => "El número de documento ya está registrado."
-    //         ]);
-    //         exit;
-    //     }
+            if (empty($dataResult)) {
+                Response::responseRequest(HttpStatus::INTERNAL_SERVER_ERROR, false, MSG_ERROR_EJECUTAR_PROCESO, []);
+            }
+            Response::responseRequest(HttpStatus::OK, true, US_MESSAGE_DATA_USER, $dataResult);
+        }
+        // renderizado de la vista con backend puro.
+        $path = BASE_URL . US_ROUTE_USUARIO_UPDATE;
+        Parent::renderView($path, __FUNCTION__);
+    }
 
-    //     $datos = [
-    //         'usu_docum'       => $data['usu_docum'],
-    //         'usu_nombres'     => $data['usu_nombres'],
-    //         'usu_apellidos'   => $data['usu_apellidos'],
-    //         'usu_password'    => $data['usu_password'],
-    //         'usu_email'       => $data['usu_email'],
-    //         'usu_direccion'   => $data['usu_direccion'],
-    //         'usu_telefono'    => $data['usu_telefono'],
-    //         'usu_id_estado'   => 1,
-    //         'usu_tp_id'       => $data['usu_tp_id'],
-    //         'rol_id'          => $data['rol_id'],
-    //         'usu_observacion' => $data['usu_observacion']
-    //     ];
+    /**
+     * Function para obtener los tipos de documento requeridos en la vista crearUserView.Los datos del tipo de documento al javascript, lo pedimos desde el servicio
+     *
+     * @return void
+     */
+    public function getDataSelects()
+    {
+        header(CONTENT_TYPE);
+        $dataTipoDocumento = $this->stp->getAllTps(false);
+        $dataRoles = $this->sRoles->getAllRoles();
 
-    //     $resultado = $this->usuariosModel->create($datos);
+        $data = [
+            'tipoDocumento' => $dataTipoDocumento,
+            'roles' => $dataRoles
+        ];
 
-    //     if (!$resultado) {
-    //         http_response_code(500);
-    //         echo json_encode([
-    //             "status" => "error",
-    //             "message" => "Error al crear el usuario."
-    //         ]);
-    //         exit;
-    //     }
+        Response::responseRequest(HttpStatus::OK, true, CR_REGISTROS, $data);
+    }
 
-    //     http_response_code(200);
-    //     echo json_encode([
-    //         "status" => "success",
-    //         "message" => "Usuario creado exitosamente.",
-    //         "data" => $datos
-    //     ]);
-    //     exit;
-    // }
+    public function store()
+    {
+        // debo de crear el usuario y el rol en la tabla usuarios_roles
+        header(CONTENT_TYPE);
+        $data = UtilsFunctions::returnGetDecode();
+        // eliminar el rol
+        $rolData = $data['usr_rl_id'];
+        unset($data['usr_rl_id']);
+        $data['usu_id_estado'] = 1; #Activo
+        $data['usu_password'] = password_hash($data['usu_password'], PASSWORD_DEFAULT); #hash a la contraseña
+
+        try {
+            $this->usuariosModel->beginTransaction();
+            $dataInsertUsu[CR_DATA] = $data; #Datos para la tabla usuarios;
+
+            // verificar si el usuario con el nro de documento ya esta registrado
+            $verifyExist = $this->sUser->getUserByDocum($data['usu_docum']);
+            if (count($verifyExist) > 0) {
+                throw new PDOException("El usuario identificado con el nro {$data['usu_docum']} ya esta registrado en el sistema.", 1);
+            }
+
+            $resultStoreUsuarios = $this->usuariosModel->insert($data)->prepareSql($dataInsertUsu)->get();
+
+            if (!$resultStoreUsuarios['status']) {
+                $this->usuariosModel->rollback();
+                $dataResponse = DatabaseHandler::validateResponse($resultStoreUsuarios);
+                Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
+                return;
+            }
+            $lastId = (int) $resultStoreUsuarios['lastId'];
+            $dataInsertUsuRoles[CR_DATA] = [
+                'usr_usu_id' => (int) $lastId,
+                'usr_rl_id' => (int) $rolData
+            ]; #Datos para la tabla usuarios_roles;
+            $resultStoreUsuariosRoles = $this->usuariosRModel->insert($dataInsertUsuRoles[CR_DATA])->prepareSql($dataInsertUsuRoles)->get();
+            if (!$resultStoreUsuariosRoles['status']) {
+                $this->usuariosModel->rollback();
+                $dataResponse = DatabaseHandler::validateResponse($resultStoreUsuarios);
+                Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
+                return;
+            }
+            $this->usuariosModel->commit();
+
+            Response::responseRequest(HttpStatus::CREATED, true, US_MESSAGE_CREATE_USER_STORE, []);
+        } catch (\PDOException $th) {
+            $this->usuariosModel->rollback();
+            Response::responseRequest(HttpStatus::BAD_REQUEST, false, $th->getMessage(), []);
+        }
+    }
+
+    public function save() {}
+
+    public function savePersonalData()
+    {
+        // extraer la informacion del usuario basada en el documento
+        header(CONTENT_TYPE);
+        $data = UtilsFunctions::returnGetDecode();
+        var_dump($data);
+        die();
+
+
+
+        // FUNCTION PARA ACTUALIZAR LOS DATOS DEL USUARIO REGISTRADO EN LA BASE DE DATOS
+        // public function updatePersonalData()
+        // {
+        //     $id = $_POST['usu_id'];
+        //     unset($_POST['usu_id']);
+
+        //     $data = $_POST;
+        //     foreach ($data as $key => $value) {
+        //         if (empty($value)) {
+        //             echo "<script>alert('El campo \"$key\" debe ser diligenciado.'); window.history.back();</script>";
+        //             return;
+        //         }
+        //     }
+
+        //     $dato = new UsuariosModel();
+        //     $dato->update($data, $id);
+
+        //     $modeloUsuarios = new UsuariosModel();
+        //     $usuarios = $modeloUsuarios->search();
+
+        //     $loginObj = new loginController($this->conn);
+
+        //     echo "<script>alert('Usuario actualizado exitosamente, vuelve a iniciar la sesión.'); window.location.href = '" . Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard') . "';</script>";
+        //     $loginObj->logout();
+        // }
+    }
     // public function consultUser()
     // {
 
@@ -222,6 +328,22 @@ class UsuariosController extends ConfigController
 
     //     include_once __DIR__ . '/../../usuarios/views/updateView.php';
     // }
+
+    // VISTA PARA ACTUALIZAR LOS DATOS PERSONALES DEL USUARIO.
+    // public function actualizarDatosView()
+    // {
+    //     $_SESSION['css'] = 'usuarios/usuarios.css';
+    //     $id = $_SESSION['usuario']['id'];
+    //     $datos = new UsuariosModel();
+    //     $data = $datos->searchU($id);
+    //     // Este valor es usado en la vista para dar visualizar su información.
+    //     $usuarioUpdate = $data['data'];
+
+    //     include_once __DIR__ . '/../../Usuarios/views/updateUserDate.php';
+    // }
+
+
+
     // public function deleteUserView()
     // {
     //     include_once '../proyecto_sigia/app/modules/usuarios/views/deleteView.php';
@@ -257,41 +379,10 @@ class UsuariosController extends ConfigController
     //         ]);
     //     }
     // }
-    // public function actualizarDatosView()
-    // {
-    //     $_SESSION['css'] = 'usuarios/usuarios.css';
-    //     $id = $_SESSION['usuario']['id'];
-    //     $datos = new UsuariosModel();
-    //     $data = $datos->searchU($id);
-    //     // Este valor es usado en la vista para dar visualizar su información.
-    //     $usuarioUpdate = $data['data'];
 
-    //     include_once __DIR__ . '/../../Usuarios/views/updateUserDate.php';
-    // }
-    // public function updateUserInfo()
-    // {
-    //     $id = $_POST['usu_id'];
-    //     unset($_POST['usu_id']);
 
-    //     $data = $_POST;
-    //     foreach ($data as $key => $value) {
-    //         if (empty($value)) {
-    //             echo "<script>alert('El campo \"$key\" debe ser diligenciado.'); window.history.back();</script>";
-    //             return;
-    //         }
-    //     }
 
-    //     $dato = new UsuariosModel();
-    //     $dato->update($data, $id);
 
-    //     $modeloUsuarios = new UsuariosModel();
-    //     $usuarios = $modeloUsuarios->search();
-
-    //     $loginObj = new loginController($this->conn);
-
-    //     echo "<script>alert('Usuario actualizado exitosamente, vuelve a iniciar la sesión.'); window.location.href = '" . Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard') . "';</script>";
-    //     $loginObj->logout();
-    // }
 }
 
 // $objUsuarios = new usuariosController();

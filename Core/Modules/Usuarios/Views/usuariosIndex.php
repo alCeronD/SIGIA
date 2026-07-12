@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="content">
+  <div class="contentUsuariosIndex">
     <!-- rastro de miga. -->
     <?php include_once BASE_URL . '/../../public/partials/breadCrumbs.php'; ?>
     <div class="cards">
@@ -29,7 +29,7 @@
       </div>
       <div class="option-card  z-depth-1 div4">
         <div class="icons">
-          <a class="btnGetUrl" href="<?php echo Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'actualizarDatosView', false, CR_DASHBOARD_LOWER_CASE); ?>">
+          <a class="btnGetUrl" href="<?php echo Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'usuariosView', false, CR_DASHBOARD_LOWER_CASE); ?>">
             <i class="material-icons small green-text text-darken-2 center-align">group
             </i>
           </a>
@@ -41,7 +41,7 @@
       </div>
       <div class="option-card  z-depth-1 div4">
         <div class="icons">
-          <a class="btnGetUrl" href="<?php echo Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'actualizarDatosView', false, CR_DASHBOARD_LOWER_CASE); ?>">
+          <a class="btnGetUrl" href="<?php echo Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'auditoriaUserView', false, CR_DASHBOARD_LOWER_CASE); ?>">
             <i class="material-icons small green-text text-darken-2 center-align">functions
             </i>
           </a>

@@ -73,6 +73,8 @@ define('CR_WORD_LIMIT', 'limit');
 define('CR_PAGINA', 'pagina');
 define('CR_STATUS', 'status');
 define('CR_ROW_COUNTS', 'rowCounts');
+define('CR_CODE_RESPONSE', 'codeResponse');
+define('CR_MESSAGE', 'message');
 
 
 // name Functions

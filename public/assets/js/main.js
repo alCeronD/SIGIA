@@ -5,23 +5,15 @@ import {
   initAlert,
   initTooltip,
   sendData,
-  optionsSelect,
+  InitComponents,
 } from './utils/index.js';
 
 // Inicializar selects de materialize.
 document.addEventListener('DOMContentLoaded', function () {
-  // M.updateTextFields();
-  //Definir el resize del textarea del campo descripción del modulo de roles.
-  // M.textareaAutoResize(document.getElementById('rol_descripcionInput'));
-
-  //buscar los modales
-  const elemsModals = document.querySelectorAll('.modal');
-  //inicializar los modales
-  M.Modal.init(elemsModals);
-
   // inicializar selects
-  const selectsMaterialize = document.querySelectorAll('select');
-  let instances = M.FormSelect.init(selectsMaterialize, optionsSelect);
+  InitComponents.initSelect();
+  //inicializar los modales
+  InitComponents.initModals();
 });
 
 const responseStatus = Storage.getValue('sessionStatus');

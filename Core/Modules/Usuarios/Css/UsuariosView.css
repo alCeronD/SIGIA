@@ -1,0 +1,210 @@
+/* MODULO USUARIOS */
+.contentUsuarios {
+  display: grid;
+  width: 100%;
+  height: fit-content;
+  grid-template-areas:
+    "breadCrumbs breadCrumbs"
+    "filtroUsuarios titleUsuarios "
+    "tblUsuarios tblUsuarios";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto 1fr;
+  gap: 0.3rem;
+  padding: 1rem;
+}
+
+.breadCrumbs {
+  grid-area: breadCrumbs;
+  width: 100%;
+  height: 1.5rem;
+}
+
+.titleUsuarios {
+  grid-area: titleUsuarios;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.registrarUsuario {
+  display: flex;
+  width: 80%;
+  align-items: center;
+  margin-left: 10%;
+  margin-bottom: 10%;
+  /* overflow: auto; */
+}
+
+.tblUsuarios {
+  grid-area: tblUsuarios;
+  height: fit-content;
+}
+
+#textTitle {
+  font-size: 20pt;
+}
+
+.filtroUsuarios {
+  display: flex;
+  align-items: center;
+  height: fit-content;
+}
+
+#contenedorInputFiltro {
+  display: none;
+}
+
+
+
+#tableConfig {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+
+}
+
+#tableConfig thead {
+  background-color: #f2f2f2;
+}
+
+#tableConfig th,
+#tableConfig td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+#tableConfig tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+#tableConfig tr:hover {
+  background-color: #f1f1f1;
+}
+
+.close {
+  cursor: pointer;
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: #039be5 !important;
+}
+
+/* MODAL Y FORMULARIO DE ACTUALIZACIÓN */
+
+#modalEditarUsuario {
+  display: none;
+}
+
+#formUpdateUser {
+  /* display: grid; */
+  grid-template-areas:
+    "docum docum"
+    "nombres apellidos"
+    "email telefono"
+    "direccion rol"
+    "password password"
+    "btn-update btn-update";
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.modal-custom {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  /* padding: 1rem; */
+  overflow: auto;
+  /* max-height: 400px; */
+  /* min-height: 400px; */
+}
+
+.modal-content-custom {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 550px !important;
+  min-width: 320px !important;
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.docum {
+  grid-area: docum;
+}
+
+.nombres {
+  grid-area: nombres;
+}
+
+.apellidos {
+  grid-area: apellidos;
+}
+
+.email {
+  grid-area: email;
+}
+
+.telefono {
+  grid-area: telefono;
+}
+
+.direccion {
+  grid-area: direccion;
+}
+
+.password {
+  grid-area: password;
+}
+
+.rol {
+  grid-area: rol;
+}
+
+.btn-update {
+  grid-area: btn-update;
+  text-align: center;
+}
+
+
+
+
+/* responsive */
+@media (max-width: 768px) {
+  #formUpdateUser {
+    grid-template-areas:
+      "docum"
+      "nombres"
+      "apellidos"
+      "email"
+      "telefono"
+      "direccion"
+      "rol"
+      "password"
+      "btn-update";
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content-custom {
+    width: 90%;
+    /* max-width: 450px; */
+  }
+
+  .table {
+    overflow-x: auto;
+  }
+
+  #tableConfig {
+    min-width: 600px;
+  }
+
+
+}

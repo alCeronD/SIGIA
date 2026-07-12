@@ -55,4 +55,5 @@
       </ul>
     </div>
   </nav>
-  <?php require_once __DIR__ . '/../../Core/Helpers/modalConfirmation.php'; ?>
+  <?php require_once __DIR__ . '/../../Core/Helpers/modalConfirmation.php';
+  ?>

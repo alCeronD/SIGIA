@@ -28,6 +28,7 @@ export const closeModal = (modal, btn, onCloseCallback) => {
     if (typeof onCloseCallback === 'function') {
       onCloseCallback();
     }
+    btn.removeEventListener('click', handleClick);
   };
 
   btn.addEventListener('click', (e) => {
@@ -594,10 +595,16 @@ export const fillDataForm = (row, formulario) => {
     input =
       formulario.querySelector(`input[name="${key}"]`) ||
       formulario.querySelector(`textarea[name="${key}"]`);
-
     // en base a la información enviada, validamos que exista el input, solo los que tienen el mismo nombre que la key se asigna el valor.
     if (input != null) {
       input.value = value;
     }
   }
 };
+
+/**
+ * Function para comparar la dimension y valores de objetos
+ *
+ * @type {*}
+ */
+export const compareObjects = (a, b) => {};

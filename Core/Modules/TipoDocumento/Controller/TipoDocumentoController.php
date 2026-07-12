@@ -6,6 +6,7 @@ class TipoDocumentoController extends ConfigController implements CrudInterface
 {
   // implementar el modulo
   protected TipoDocumentoModel $tpModel;
+  protected ServicesTipoDocumento $stp;
   protected array $files = [
     "css" => [
       'renderViewTp' => ['TipoDocumento.css']
@@ -19,6 +20,7 @@ class TipoDocumentoController extends ConfigController implements CrudInterface
   public function __construct()
   {
     $this->tpModel = new TipoDocumentoModel();
+    $this->stp = new ServicesTipoDocumento();
     $this->createRoutes();
   }
 
@@ -46,16 +48,18 @@ class TipoDocumentoController extends ConfigController implements CrudInterface
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
     $page = (isset($_GET[CR_PAGINA])) ? (int) $_GET[CR_PAGINA] : 1;
-    $limit = (isset($_GET['limit'])) ? (int) $_GET['limit'] : LIMIT;
+    $limit = (isset($_GET[CR_WORD_LIMIT])) ? (int) $_GET[CR_WORD_LIMIT] : LIMIT;
     $resultCount = $this->tpModel->getCount()->prepareSql()->get();
     $resultPaginate = UtilsFunctions::executePaginate($resultCount[CR_ROW_COUNTS], $limit, $page);
 
     $dataSql[CR_DATA] = [
-      'limit'           => $limit,
+      CR_WORD_LIMIT           => $limit,
       CR_OFFSET => (int) $resultPaginate[CR_OFFSET]
     ];
 
-    $resultSelect = $this->tpModel->select()->from()->orderBy()->limit()->offset()->prepareSql($dataSql)->get();
+    // capturamos la data o creamos la consulta desde el servicio
+    $getAllTps = $this->stp->getAllTps(true);
+    $resultSelect = $getAllTps->prepareSql($dataSql)->get();
 
     // consulta select basica de momento.
     if (count($resultSelect) > 0) {

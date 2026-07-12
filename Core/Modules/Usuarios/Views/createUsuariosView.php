@@ -5,15 +5,14 @@
       <span id="textTitle" class="teal-text text-darken-4">Registrar usuario</span>
       <a href="<?= Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
     </div>
-
     <div class="registrarUsuario">
-      <form id="formSolicitudPrestamo">
+      <form id="formCreateUser">
         <div class="inputContent tipoDocumento input-field">
           <i class="material-icons prefix">badge</i>
-          <select name="usu_tp_id" id="usu_tp_id" required>
-            <option value="" disabled selected>Seleccione tipo de documento</option>
+          <select name="usu_tp_id" id="usu_tp_id" class="validate">
           </select>
           <label for="usu_tp_id">Tipo documento: <span class="red-text">*</span></label>
+          <span class="helper-text" data-error="" data-success=""></span>
         </div>
 
         <div class="inputContent cedula input-field">
@@ -25,10 +24,10 @@
 
         <div class="inputContent rol input-field">
           <i class="material-icons prefix">admin_panel_settings</i>
-          <select name="rol_id" id="rol_id" required>
-            <option value="" disabled selected>Seleccione un rol</option>
+          <select name="usr_rl_id" id="usr_rl_id" class="validate">
           </select>
-          <label for="rol_id">Rol: <span class="red-text">*</span></label>
+          <label for="usr_rl_id">Rol: <span class="red-text">*</span></label>
+          <span class="helper-text" data-error="" data-success=""></span>
         </div>
 
         <div class="inputContent nombres input-field">
@@ -74,8 +73,8 @@
 
         <div class="inputContent observaciones input-field">
           <i class="material-icons prefix">edit_note</i>
-          <textarea name="usu_observacion" id="observaciones" class="materialize-textarea"></textarea>
-          <label for="observaciones">Notas adicionales al usuario:</label>
+          <textarea name="usu_observacion" id="usu_observacion" class="materialize-textarea"></textarea>
+          <label for="usu_observacion">Notas adicionales al usuario:</label>
         </div>
 
         <div class="inputBtn">

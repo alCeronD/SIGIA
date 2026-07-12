@@ -63,4 +63,7 @@
             </div>
         </div>
     </div>
+
+    <?php require_once __DIR__ . '/../../../Helpers/modalConfirmation.php'; ?>
+
 </div>

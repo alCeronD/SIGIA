@@ -444,10 +444,10 @@ rolesUI.forms.add.addEventListener('submit', async (e) => {
     return;
   }
 
-  if (!Validator.validateLeght({ value: data.rl_nombre, maxLenght: 15 })) {
-    initAlert(`Limite de caracteres permitido al campo ${rolesConfig.mapObj.rl_nombre}`, 'info');
-    return;
-  }
+  // if (!Validator.validateLeght({ value: data.rl_nombre, maxLenght: 15 })) {
+  //   initAlert(`Limite de caracteres permitido al campo ${rolesConfig.mapObj.rl_nombre}`, 'info');
+  //   return;
+  // }
 
   try {
     const responseAdd = await sendData(`${url}store`, 'POST', data);

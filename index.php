@@ -10,7 +10,6 @@ if (UtilsFunctions::ajaxGeneral()) {
 }
 
 if (isset($_GET['modulo'])) {
-    // echo "<div class='container'>";
     Router::ExecuteFunction();
     exit;
 }

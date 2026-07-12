@@ -130,7 +130,6 @@ const eliminarItem = (id) => {
 };
 
 const editarArea = (id, row) => {
-  console.log(row);
   fillDataForm(row, s.areaUpdateForm);
   // inicializar el input con materialize.
   M.updateTextFields();

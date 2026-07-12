@@ -357,7 +357,7 @@ if (formUpdateUser) {
       !data.usu_direccion ||
       !data.rol_id
     ) {
-      initAlert('Por favor complete todos los campos obligatorios', 'error', toastOptions);
+      initAlert('Por favor complete todos los campos obligatorios', 'error');
       return;
     }
 
@@ -370,16 +370,16 @@ if (formUpdateUser) {
       );
 
       if (result.status === 'success') {
-        initAlert(result.message, 'success', toastOptions);
+        initAlert(result.message, 'success');
         cerrarModalUsuario();
         setTimeout(() => {
           location.reload(); // Recargar para ver cambios
         }, 1500);
       } else {
-        initAlert(result.message || 'Error al actualizar', 'error', toastOptions);
+        initAlert(result.message || 'Error al actualizar', 'error');
       }
     } catch (error) {
-      initAlert(error.message || 'Error en la solicitud', 'error', toastOptions);
+      initAlert(error.message || 'Error en la solicitud', 'error');
     }
   });
 }
