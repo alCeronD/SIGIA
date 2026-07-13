@@ -35,39 +35,6 @@ class UsuariosModel extends Crud
     // private $campos = ['usu_docum', 'usu_nombres', 'usu_apellidos', 'usu_email', 'usu_telefono'];
     // private $conn;
 
-    // public function __construct()
-    // {
-
-    // $objConn = new Conn();
-    // $this->conn = $objConn->getConnect();
-    // $this->conn = $objConn;
-    // }
-
-
-    // public function update(array $datos = [], int $id = 0)
-    // {
-
-    //     // $rolModel =
-    //     $conn = $this->conn->getConnect();
-    //     unset($datos['rol_id']);
-    //     $datos;
-    //     $cadena = "";
-
-    //     foreach ($datos as $campo => $value) {
-    //         $cadena .= "$campo = '$value' ,";
-    //     }
-
-    //     $cadena = trim($cadena, ",");
-    //     $query = "UPDATE usuarios SET $cadena WHERE usu_id = '$id'";
-    //     $resultado = $conn->query($query);
-
-    //     if ($resultado) {
-    //         return true;
-    //     } else {
-    //         $conn->close();
-    //         return "Error al actualizar: " . $conn->error;
-    //     }
-    // }
     // public function organization($datos)
     // {
 

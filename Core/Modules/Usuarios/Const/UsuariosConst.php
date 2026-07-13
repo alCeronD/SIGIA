@@ -11,3 +11,4 @@ define('US_ROUTE_USUARIO_UPDATE', '/../Modules/Usuarios/Views/updatePersonalData
 // message
 define('US_MESSAGE_CREATE_USER_STORE', 'Usuario creado exitosamente');
 define('US_MESSAGE_DATA_USER', 'Datos de usuario');
+define('US_MESSAGE_UPDATE_PERSONAL_DATA', ' Actualizados con exito');

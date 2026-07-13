@@ -33,7 +33,7 @@ class UsuariosController extends ConfigController
             'createUserView' => ['CreateUser.js'],
             'auditoriaUserView' => ['AuditoriasUsuarios.js'],
             'usuariosView' => ['UsuariosView.js'],
-            'actualizarDatosView' => ['updatePersonalData.js']
+            'actualizarDatosView' => ['updatePersonalData.js', 'Functions-updatePersonalData.js']
         ]
     ];
     public function __construct()
@@ -225,36 +225,17 @@ class UsuariosController extends ConfigController
         // extraer la informacion del usuario basada en el documento
         header(CONTENT_TYPE);
         $data = UtilsFunctions::returnGetDecode();
-        var_dump($data);
-        die();
 
+        $updateData[CR_DATA] = $data;
+        // Update.
+        $resulUpdatePersonalData = $this->usuariosModel->update($data)->where()->prepareSql($updateData)->get();
 
+        if (!$resulUpdatePersonalData) {
+            $dataResponse = DatabaseHandler::validateResponse($resulUpdatePersonalData);
+            Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
+        }
 
-        // FUNCTION PARA ACTUALIZAR LOS DATOS DEL USUARIO REGISTRADO EN LA BASE DE DATOS
-        // public function updatePersonalData()
-        // {
-        //     $id = $_POST['usu_id'];
-        //     unset($_POST['usu_id']);
-
-        //     $data = $_POST;
-        //     foreach ($data as $key => $value) {
-        //         if (empty($value)) {
-        //             echo "<script>alert('El campo \"$key\" debe ser diligenciado.'); window.history.back();</script>";
-        //             return;
-        //         }
-        //     }
-
-        //     $dato = new UsuariosModel();
-        //     $dato->update($data, $id);
-
-        //     $modeloUsuarios = new UsuariosModel();
-        //     $usuarios = $modeloUsuarios->search();
-
-        //     $loginObj = new loginController($this->conn);
-
-        //     echo "<script>alert('Usuario actualizado exitosamente, vuelve a iniciar la sesión.'); window.location.href = '" . Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard') . "';</script>";
-        //     $loginObj->logout();
-        // }
+        Response::responseRequest(HttpStatus::OK, true, US_MESSAGE_DATA_USER . US_MESSAGE_UPDATE_PERSONAL_DATA, []);
     }
     // public function consultUser()
     // {
