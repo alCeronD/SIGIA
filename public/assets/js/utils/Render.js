@@ -1,5 +1,5 @@
 import { HttpData } from '../../js/utils/HttpData.js';
-import { createBtn } from './index.js';
+import { addClassItem, createBtn, createI } from './index.js';
 
 /**
  * Clase para renderizar datos y ejecutar procesos transaccionales.
@@ -116,22 +116,70 @@ export class Render extends HttpData {
   /**
    * Function para renderizar los botones del paginado en caso de ser requerido.
    *
+   * @param {HTMLElement|HTMLTableSectionElement} [selector=null] - Selector en donde se renderizara la informacion
    * @param {{}} [dataPaginate={}] - Objeto que contiene la informacion requerida para la paginacion como la cantidad de paginas que hay y cantidad de registros
-   * @param {*} [selector=null] - selector en donde debe de ir los botones.
    */
   renderPaginate(dataPaginate = {}, selector = null) {
     selector.innerHTML = '';
-    let btnPreview = createBtn('btnPreview');
-    let btnNext = createBtn('btnNext');
-    btnPreview.setAttribute('class', 'btnPaginate');
-    btnNext.setAttribute('class', 'btnPaginate');
+    const fragmentContainer = document.createDocumentFragment();
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.setAttribute('colspan', '6');
+    tr.append(td);
 
-    btnPreview.innerText = '<';
-    btnNext.innerText = '>';
-    btnNext.value = 'next';
-    btnPreview.value = 'preview';
-    let textInfo = `Página ${this.#actualPage} de ${dataPaginate.cantidadPaginas}`;
-    selector.append(btnPreview, textInfo, btnNext);
+    const containerPaginate = document.createElement('div');
+    addClassItem(containerPaginate, { container: 'containerPaginate' });
+    const ul = document.createElement('ul');
+
+    let iBtnPreview = createI('chevron_left');
+    let iBtnNext = createI('chevron_right');
+    addClassItem(iBtnNext, { materialIcon: 'material-icons' });
+    addClassItem(iBtnPreview, { materialIcon: 'material-icons' });
+
+    iBtnNext.style.pointerEvents = 'none';
+    iBtnPreview.style.pointerEvents = 'none';
+    // si la cantidad de paginas es mayor a 10 entonces se renderiza todos los numeros, en caso contrario se hace un calculo para extraer las impares o pares.
+    if (dataPaginate.cantidadPaginas >= 5) {
+      let actualPage = 1;
+      const liPreview = document.createElement('li');
+      liPreview.style.cursor = 'pointer'; //hacemos que el li tenga pointerevent para dar click
+      liPreview.style.pointerEvents = 'auto'; //hacemos que el li tenga pointerevent para dar click
+      addClassItem(liPreview, { btnPaginate: 'btnPaginate' });
+      liPreview.dataset.action = 'preview';
+      if (this.#actualPage === 1) liPreview.setAttribute('disabled', 'disabled'); //si no funciona asi al hacer la pagina 2, eliminar la propiedad.
+      liPreview.append(iBtnPreview);
+
+      ul.append(liPreview);
+      while (actualPage <= dataPaginate.cantidadPaginas) {
+        const li = document.createElement('li');
+        li.innerText = actualPage;
+        addClassItem(li, { wavesEffect: 'waves-effect' });
+
+        // si estas en la pagina actual entonces agregarle la clase para determinar que esta activa.
+        if (actualPage === this.#actualPage) {
+          addClassItem(li, { active: 'active' });
+        } else {
+          ul.classList.remove('active');
+        }
+
+        ul.append(li);
+        if (actualPage > dataPaginate.cantidadPaginas) break;
+        actualPage++;
+      }
+      const liNext = document.createElement('li');
+      addClassItem(liNext, { btnPaginate: 'btnPaginate' });
+      liNext.dataset.action = 'next';
+      if (actualPage === dataPaginate.cantidadPaginas) liNext.setAttribute('disabled', 'disabled');
+      liNext.append(iBtnNext);
+      liNext.style.cursor = 'pointer'; //hacemos que el li tenga pointerevent para dar click
+      liNext.style.pointerEvents = 'auto'; //hacemos que el li tenga pointerevent para dar click
+
+      ul.append(liNext);
+      containerPaginate.append(ul);
+    }
+    td.append(containerPaginate);
+
+    selector.append(tr);
   }
 
   get objBotones() {

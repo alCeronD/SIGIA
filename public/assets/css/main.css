@@ -306,5 +306,42 @@ input[type="number"] {
 }
 
 
+
+/* PROPIEDAD Y ESTILO DEL COMPONENTE DE RENDERIZADO, se renderiza dinamicamente en la clase Render.js */
+.containerPaginate {
+  justify-content: center;
+  align-items: center;
+  height: fit-content;
+  width: inherit;
+  display: flex;
+
+  ul {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  li {
+    width: 2rem;
+    text-align: center;
+  }
+
+  /* clase de los botones preview y next de la paginacion */
+  .btnPaginate {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  .active {
+    background-color: var(--btnEdit);
+    color: var(--white);
+  }
+
+}
+
+
 /* Para pantallas medianas en adelante. */
 @media (min-width: 768px) {}

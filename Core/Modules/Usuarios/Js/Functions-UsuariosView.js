@@ -132,8 +132,6 @@ export const renderFilters = () => {
             valueFilter: newValue,
           };
 
-          console.log(event);
-
           // validamos usando la clase validator con el metodo blur en caso de que el usuario no digite ningun valor y asi, no enviar la peticion.
           if (inputFiltro && tipo === keysType[0] && inputFiltro.value != '') {
             Validator.validateInput({ input: inputFiltro, rule: 'empty' });
@@ -150,8 +148,6 @@ export const renderFilters = () => {
             return;
           }
 
-          const actualType = e.target.type === 'number' ? 'numeros' : 'letras';
-
           if (event === events.input && String(newValue).length >= 2) {
             renderUsers(dataFilter);
           }
@@ -162,7 +158,7 @@ export const renderFilters = () => {
           if (event === events.input && e.target.value === '') {
             renderUsers();
           }
-        }, 500)
+        }, 700)
       );
     });
   }

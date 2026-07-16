@@ -174,7 +174,7 @@ let actualPage = 1;
 s.footerArea.addEventListener('click', (e) => {
   e.stopPropagation();
   e.preventDefault();
-  let btnValue = e.target.closest('.btnPaginate') ? e.target.value : null;
+  let btnValue = e.target.closest('.btnPaginate') ? e.target.dataset.action : null;
   if (!btnValue) return;
   if (btnValue === 'preview') {
     actualPage--;
