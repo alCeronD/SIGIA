@@ -40,7 +40,7 @@ define('CR_ROUTE_SERVICES_SOLICITUD', '/Modules/SolicitudPrestamos/services/Serv
 define('CR_ROUTE_DASHBOARD_LOGIN', '/../../../Core/dashboard.php?modulo=Dashboard&controlador=Dashboard&function=dashboard');
 define('CR_ROUTE_HEADER', '/../../public/partials/header.php');
 define('CR_ROUTE_FOOTER', '/../../public/partials/footer.php');
-
+define('CR_ROUTE_BREADCRUMBS', '/../../public/partials/breadCrumbs.php'); # RASTRO DE MIGA
 
 //Files
 define('CR_FILE_CONST', 'Const.php');

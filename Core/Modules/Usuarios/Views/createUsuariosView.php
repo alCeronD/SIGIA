@@ -2,7 +2,7 @@
   <div class="contentCreateUsuarios">
     <?php include_once BASE_URL . '/../../public/partials/breadCrumbs.php'; ?>
     <div class="titleUsuarios">
-      <span id="textTitle" class="teal-text text-darken-4">Registrar usuario</span>
+      <span id="textTitle" class="teal-text text-darken-4"><?php echo US_REGISTRAR_USUARIO; ?></span>
       <a href="<?= Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
     </div>
     <div class="registrarUsuario">
@@ -11,7 +11,7 @@
           <i class="material-icons prefix">badge</i>
           <select name="usu_tp_id" id="usu_tp_id" class="validate">
           </select>
-          <label for="usu_tp_id">Tipo documento: <span class="red-text">*</span></label>
+          <label for="usu_tp_id">Tipo documento:<span class="red-text">*</span></label>
           <span class="helper-text" data-error="" data-success=""></span>
         </div>
 

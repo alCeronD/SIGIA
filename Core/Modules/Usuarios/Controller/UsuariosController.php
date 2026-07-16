@@ -1,4 +1,7 @@
 <?php
+
+use ZipStream\Test\Util;
+
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once __DIR__ . '/../Const/UsuariosConst.php';
 require_once BASE_URL . '/' . CR_AUTOLOAD;
@@ -19,7 +22,7 @@ class UsuariosController extends ConfigController
     // protected ConfigModulesModel $configModules;
     protected UsuariosModel $usuariosModel;
     protected UsuariosRolesModel $usuariosRModel;
-    protected UsuariosServices $sUser;
+    protected ServicesUsuarios $sUser;
     protected array $files = [
         "css" => [
             'usuariosIndex' => ['UsuariosIndex.css'],
@@ -44,7 +47,7 @@ class UsuariosController extends ConfigController
         $this->usuariosRModel = new UsuariosRolesModel();
         $this->stp = new ServicesTipoDocumento();
         $this->sRoles = new ServicesRoles();
-        $this->sUser = new UsuariosServices();
+        $this->sUser = new ServicesUsuarios();
         $this->createRoutes();
     }
     public function createRoutes()
@@ -237,19 +240,66 @@ class UsuariosController extends ConfigController
 
         Response::responseRequest(HttpStatus::OK, true, US_MESSAGE_DATA_USER . US_MESSAGE_UPDATE_PERSONAL_DATA, []);
     }
-    // public function consultUser()
-    // {
+    public function consultUser()
+    {
+        header(CONTENT_TYPE);
+        // extraer las claves de acceso para la consulta de los usuarios usando filtros.
+        $filter = empty($_GET['keyFilter']) ? '' : $_GET['keyFilter'];
+        $valueFilter = empty($_GET['valueFilter']) ? '' : $_GET['valueFilter'];
+        $page = (isset($_GET[CR_PAGINA])) ? (int) $_GET[CR_PAGINA] : 1;
+        $limit = (isset($_GET[CR_WORD_LIMIT])) ? (int) $_GET[CR_WORD_LIMIT] : LIMIT;
 
-    //     $modeloUsuarios = new UsuariosModel();
+        if (empty($filter)) {
+            $filter = "";
+        } else if ($filter === 'nombre') {
+            $filter = 'usu_nombres';
+        } else if ($filter === 'documento') {
+            $filter = 'usu_docum';
+        } else {
+            $filter = 'usu_id_estado';
+        }
 
-    //     $usuarios = $modeloUsuarios->search();
-    //     $resultado = $this->rolesModel->obtenerRoles();
-    //     $rowTp = $this->configModules->select("SELECT * FROM tipo_documento");
+        if ($filter === 'usu_id_estado') {
+            $valueFilter = $valueFilter === 'activo' ? 1 : 2;
+        }
 
-    //     $path = __DIR__ . '/../views/consultView.php';
-    //     $_SESSION['css'] = 'usuarios/usuarios.css';
-    //     return include $path;
-    // }
+        if ($filter === 'usu_docum') $valueFilter = (int) $valueFilter;
+
+        // creamos el arreglo con los valores o en su defecto vacio para ejecutar el count para obtener su paginacion.
+        if (!empty($filter) && !empty($valueFilter)) {
+            $dataCountSql[CR_DATA] = [
+                $filter => "%$valueFilter%"
+            ];
+        } else {
+            $dataCountSql[CR_DATA] = [];
+        }
+
+        // accedemos al count en el servicio
+        $countUsers = $this->sUser->getCount($filter, $valueFilter)->prepareSql($dataCountSql)->get();
+
+        $paginate = UtilsFunctions::executePaginate($countUsers['rowCounts'], $limit, $page);
+
+
+        $dataSql[CR_DATA] = [
+            CR_WORD_LIMIT           => $limit,
+            CR_OFFSET => (int) $paginate[CR_OFFSET],
+        ];
+
+        if (!empty($filter) && !empty($valueFilter)) {
+            $dataSql[CR_DATA][$filter] = "%$valueFilter%";
+        }
+
+        $queryAllUsers = $this->sUser->getAllUsers($filter, $valueFilter)->prepareSql($dataSql)->get();
+
+        if (count($paginate) > 0) {
+            Response::responseRequest(HttpStatus::OK, true, "Registros", [
+                CR_TOTAL_REGISTROS => $countUsers['rowCounts'],
+                CR_PAGINA_ACTUAL => ($page > $paginate[CR_TOTAL_PAGINAS]) ? $paginate[CR_TOTAL_PAGINAS] : $page, //Aca devolvemos la pagina, pero cuando se borra el ultimo registro de una pagina estamos devolviendo la pagina que recibimos desde la peticion, cuando hacemos la paginacion, si la pagina ES MAYOR A LA CANTIDAD DE PAGINAS TOTALES, NO DEVOLVEMOS LA PAGINA RECIBIDA, SINO LA ULTIMA PAGINA. esto para poder renderizar de forma correcta la informacion.
+                CR_CANTIDAD_PAGINAS => $paginate[CR_TOTAL_PAGINAS],
+                CR_DATA => $queryAllUsers
+            ]);
+        }
+    }
     // public function updateUserJSON(array $data)
     // {
     //     // validatePermisos('usuarios','updateUserJSON');

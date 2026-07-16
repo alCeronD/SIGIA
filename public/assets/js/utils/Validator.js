@@ -32,7 +32,7 @@ export class Validator {
       message: 'Solo se permiten datos de tipos numericos',
     },
     empty: {
-      regex: '',
+      regex: /^$/,
       message: 'Seleccione el campo',
     },
   };
@@ -46,6 +46,7 @@ export class Validator {
    * @param {*} param0.rule: tipo de regla a validar, sea de correo electronico, numeros, caracteres especiales, entre otros.
    */
   static validateRule({ value: value, rule: rule }) {
+    if (!value) return; //si el valor esta vacio.
     let validateRule = this.#rules[rule];
     if (!validateRule) return;
     return validateRule.regex.test(value);
@@ -80,7 +81,6 @@ export class Validator {
       let valueInput = e.target.value;
 
       let spanElement = e.target.parentElement.querySelector('.helper-text');
-
       // validamos si esta vacio para enviar otro mensaje.
       if (valueInput === '') {
         if (e.target.classList.contains('valid')) {

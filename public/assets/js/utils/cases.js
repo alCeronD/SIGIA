@@ -603,8 +603,16 @@ export const fillDataForm = (row, formulario) => {
 };
 
 /**
- * Function para comparar la dimension y valores de objetos
+ * Function para aplicar un delay a la funcionalidad que vamos a ejecutar para evitar ejecutar más peticiones.
  *
  * @type {*}
  */
-export const compareObjects = (a, b) => {};
+export const debounce = (func, delay) => {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer); //se usa para cancelar una tarea ya existia con setTimeOut.
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+};

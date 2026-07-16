@@ -7,6 +7,8 @@ define('US_ROUTE_AUDITORIAS_VIEW', '/../Modules/Usuarios/Views/auditoriasView.ph
 define('US_ROUTE_USUARIOS_LIST_VIEW', '/../Modules/Usuarios/Views/usuariosView.php');
 define('US_ROUTE_USUARIO_UPDATE', '/../Modules/Usuarios/Views/updatePersonalData.php');
 
+// titles
+define('US_REGISTRAR_USUARIO', 'Registrar usuario');
 
 // message
 define('US_MESSAGE_CREATE_USER_STORE', 'Usuario creado exitosamente');

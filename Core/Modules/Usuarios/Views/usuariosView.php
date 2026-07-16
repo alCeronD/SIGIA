@@ -1,23 +1,26 @@
 <div class="container">
   <div class="contentUsuarios">
-    <?php include_once BASE_URL . '/../../public/partials/breadCrumbs.php'; ?>
+    <?php include_once BASE_URL . CR_ROUTE_BREADCRUMBS; ?>
     <div class="titleUsuarios">
       <span id="textTitle"></span>
-      <a href="<?= Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
+      <a href="<?= Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
     </div>
 
     <div class="filtroUsuarios">
       <div class="input-field col s4">
-        <select id="tipoFiltro" class="browser-default">
-          <option value="">-- Filtro usuarios --</option>
+        <select id="tipoFiltro" class="">
+          <option value="">Filtro usuarios</option>
           <option value="documento">Filtrar por Documento</option>
           <option value="nombre">Filtrar por Nombre</option>
           <option value="estado">Filtrar por Estado</option>
         </select>
+        <!-- <label for="tipoFiltro">Filtros<span class="red-text">*</span></label> -->
+        <span>Filtros</span>
       </div>
 
       <div class="input-field col s4" id="contenedorInputFiltro">
         <!-- Aquí se agregará dinámicamente el input/select -->
+
       </div>
     </div>
 
@@ -33,54 +36,12 @@
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody>
-          <?php if (!empty($usuarios)): ?>
-            <?php foreach ($usuarios as $usuario): ?>
-              <tr>
-                <td><?= htmlspecialchars($usuario['usu_docum']) ?></td>
-                <td><?= htmlspecialchars($usuario['usu_nombres']) ?></td>
-                <td><?= htmlspecialchars($usuario['usu_apellidos']) ?></td>
-                <td><?= htmlspecialchars($usuario['rl_nombre']) ?></td>
-                <td><?= htmlspecialchars($usuario['estado_usuario']) ?></td>
-                <td>
-                  <div class="center-align">
-                    <a href="#"
-                      class="btnEdit btn btnEditarUsuario white-text waves-effect waves-red"
-                      data-id="<?= $usuario['usu_id'] ?>"
-                      data-nombres="<?= htmlspecialchars($usuario['usu_nombres']) ?>"
-                      data-apellidos="<?= htmlspecialchars($usuario['usu_apellidos']) ?>"
-                      data-email="<?= htmlspecialchars($usuario['usu_email']) ?>"
-                      data-telefono="<?= htmlspecialchars($usuario['usu_telefono']) ?>"
-                      data-documento="<?= htmlspecialchars($usuario['usu_docum']) ?>"
-                      data-direccion="<?= htmlspecialchars($usuario['usu_direccion'] ?? '') ?>"
-                      data-rol="<?= htmlspecialchars($usuario['rolIdUser']) ?>">
-                      <i class="material-icons">edit</i>
-                    </a>
-                    <button
-                      class="btn toggleEstadoBtn white-text waves-effect waves-dark"
-                      data-id="<?= $usuario['usu_id'] ?>"
-                      onclick="cambiarEstadoUsuario(this)">
-                      <i class="material-icons">autorenew</i>
-                    </button>
-
-
-
-
-                  </div>
-                </td>
-              </tr>
-
-            <?php endforeach; ?>
-          <?php else: ?>
-            <tr>
-              <td colspan="4">No hay usuarios registrados.</td>
-            </tr>
-          <?php endif; ?>
+        <!-- renderizar los datos del usuario. -->
+        <tbody id="tbodyUsuarios">
         </tbody>
+        <!-- se renderiza la paginacion -->
+        <tfoot id="tfooterUsuarios"></tfoot>
       </table>
-      <div class="pagination-container center-align">
-        <ul id="paginacion-usuarios" class="pagination"></ul>
-      </div>
     </div>
   </div>
 </div>
@@ -89,7 +50,7 @@
 <!-- Modal -->
 <div id="modalEditarUsuario" class="modal-custom card z-depth-3">
   <div class="modal-content-custom card-content">
-    <span class="close-modal btn-flat red-text right" onclick="cerrarModalUsuario()" title="Cerrar" style="font-size: 1.5rem;">&times;</span>
+    <span class="close-modal btn-flat red-text right" title="Cerrar">&times;</span>
     <h5 class="teal-text text-darken-3">Editar Informacion Usuario</h5>
 
     <form id="formUpdateUser">
@@ -133,10 +94,8 @@
       <div class="input-field rol">
         <label for="rol_id" class="active">Rol</label>
         <select name="rol_id" id="rol_id" class="browser-default">
+          <!-- renderizado con javascript -->
           <option value="">Seleccione un rol</option>
-          <?php foreach ($resultado as $rol): ?>
-            <option value="<?= $rol['rl_id'] ?>"><?= htmlspecialchars($rol['rl_nombre']) ?></option>
-          <?php endforeach; ?>
         </select>
       </div>
 

@@ -329,11 +329,25 @@ abstract class Crud
       // Si es un select, solamente preparamos la consulta y retornamos su resultado
       if ((strpos($this->sql, 'SELECT') === 0) && ($select[0] === "SELECT")) {
 
-        // validar si tiene un COUNT para solo devolver la consulta
-        $hasCount = str_contains($this->sql, "COUNT");
-        if ($hasCount) {
-          return $this;
+        if (str_contains($this->sql, "COUNT")) {
+          if (!empty($data)) {
+            foreach ($data as $key => $value) {
+              $this->stmt->bindValue(":{$key}", $value);
+            }
+            return $this;
+          } else {
+            return $this;
+          }
         }
+
+        // // sentencia count pero con parametro
+        // if (str_contains($this->sql, "COUNT") && !empty($data)) {
+        // }
+
+        // // Sentencia count sin parametro.
+        // if (str_contains($this->sql, "COUNT")) {
+        //   return $this;
+        // }
 
         // validar si el string contiene o WHERE u OFFSET O LIMIT
         $hasOffset = str_contains($this->sql, "OFFSET");
@@ -423,7 +437,6 @@ abstract class Crud
         'lastId' => $lastId
       ];
     } catch (\PDOException $e) {
-      // var_dump($e);
       if ($this->conn->inTransaction()) {
         $this->conn->rollBack();
       }
@@ -443,6 +456,14 @@ abstract class Crud
   public function getCount()
   {
     $this->sql = "SELECT COUNT(*) FROM $this->table";
+    return $this;
+  }
+
+  public function count(String $column = "", String $alias = "")
+  {
+    if (empty($column)) $column = "*";
+    if (empty($alias)) $alias = "totalRegistros";
+    $this->sql .= "SELECT COUNT($column) AS $alias";
     return $this;
   }
 
