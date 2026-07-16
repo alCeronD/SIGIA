@@ -105,7 +105,7 @@
 #tableConfigArea {
   width: 100%;
   /* con esta propiedad hago que respete el tamaño del contendor. */
-  table-layout: fixed;
+  /* table-layout: fixed; */
   /* evita que los bordes consuman pixeles. */
   border-collapse: collapse;
 }

@@ -26,9 +26,17 @@ export const vars = {
 
 export const selectors = {
   inputFiltro: document.querySelector('#inputFiltro'),
+  tbodyUsuarios: document.querySelector('#tbodyUsuarios'),
+  tHeaderUsuarios: document.querySelector('#tHeadUsuarios'),
+  footerUsers: document.querySelector('#tFooterUsers'),
 };
 
 export const typeInput = {
   nombre: 'text',
   documento: 'number',
+};
+
+export const events = {
+  change: 'change',
+  input: 'input',
 };

@@ -54,10 +54,11 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - **Módulo Usuario**
 - [X] Re factorizar estructura de carpetas inicial
 - [X] Desarrollar historia de usuario # HU-U00
-- [ ] Desarrollar historia de usuario # HU-U01 (Registrar usuario).
+- [X] Desarrollar historia de usuario # HU-U01 (Registrar usuario).
+- [ ] Desarrollar historia de usuario de paginacion de usuario y consulta con filtros.
 - [ ] Re factorizar css
 - [ ] Re factorizar js
-- [ ] Crear componente de paginacion en los registros de los usuarios.
+- [X] Crear componente de paginacion en los registros de los usuarios.
 - [ ] Re factorizar backend moviendo todo lo de modelo a las acciones del controlador
 - [ ] Implementar y arreglar las funcionales ya definidas, estas funcionalidades estan en las historias de usuario de la documentación en el drive
 - [ ] Limpiar los datos de los nuevos usuarios usando DIRTY DATA (PYTHON)

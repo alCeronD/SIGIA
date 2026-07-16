@@ -29,14 +29,14 @@ class UsuariosController extends ConfigController
             'createUserView' => ['CreateUser.css'],
             'auditoriaUserView' => ['AuditoriasUsuarios.css'],
             'usuariosView' => ['UsuariosView.css'],
-            'actualizarDatosView' => ['updatePersonalData.css']
+            'actualizarDatosView' => ['UpdatePersonalData.css']
         ],
         "js" => [
             'usuariosIndex' => [],
             'createUserView' => ['CreateUser.js'],
             'auditoriaUserView' => ['AuditoriasUsuarios.js'],
             'usuariosView' => ['UsuariosView.js'],
-            'actualizarDatosView' => ['updatePersonalData.js', 'Functions-updatePersonalData.js']
+            'actualizarDatosView' => ['UpdatePersonalData.js', 'Functions-updatePersonalData.js']
         ]
     ];
     public function __construct()

@@ -9,7 +9,7 @@
     <div class="filtroUsuarios">
       <div class="input-field col s4">
         <select id="tipoFiltro" class="">
-          <option value="">Filtro usuarios</option>
+          <option value="" selected disabled>Filtro usuarios</option>
           <option value="documento">Filtrar por Documento</option>
           <option value="nombre">Filtrar por Nombre</option>
           <option value="estado">Filtrar por Estado</option>
@@ -26,21 +26,21 @@
 
     <div class="tblUsuarios">
       <table id="tableConfig">
-        <thead>
+        <thead id="tHeadUsuarios">
           <tr>
-            <th>No documento</th>
-            <th>Nombres</th>
-            <th>Apellidos</th>
-            <th>Rol</th>
-            <th>Estado</th>
-            <th>Acciones</th>
+            <th id="nroDocumento">No documento</th>
+            <th id="nombreCompleto">Nombres</th>
+            <th id="apellidos">Apellidos</th>
+            <th id="rl_nombre">Rol</th>
+            <th id="estado_usuario">Estado</th>
+            <th id="">Acciones</th>
           </tr>
         </thead>
         <!-- renderizar los datos del usuario. -->
         <tbody id="tbodyUsuarios">
         </tbody>
         <!-- se renderiza la paginacion -->
-        <tfoot id="tfooterUsuarios"></tfoot>
+        <tfoot id="tFooterUsers"></tfoot>
       </table>
     </div>
   </div>

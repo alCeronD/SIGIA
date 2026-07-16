@@ -44,17 +44,22 @@ export class Render extends HttpData {
         const itemElement = element;
         const idRow = itemElement[id];
         for (const [clave, valor] of Object.entries(itemElement)) {
-          tdItem = document.createElement('td');
+          // uso el encadenamiento opcional, si no encuentra nada, devuelve undefined.
+          const thElement = headerTable?.querySelector(`#${clave}`)?.getAttribute('id');
+          // vamos a renderizar solo lo que esta en la tabla con sus respectivos ids validanto que el id de los encabezados sean iguales a las claves de la data a renderizar
+          if (thElement === clave) {
+            tdItem = document.createElement('td');
 
-          // validamos si el objeto tiene una clave igual a al objeto data para asi personalizar el texto
-          let newValor = null;
-          if (Object.hasOwn(customText, clave)) {
-            newValor = valor === 1 ? 'Habilitado' : 'Inhabilitado';
+            // validamos si el objeto tiene una clave igual a al objeto data para asi personalizar el texto
+            let newValor = null;
+            if (Object.hasOwn(customText, clave)) {
+              newValor = valor === 1 ? 'Habilitado' : 'Inhabilitado';
+            }
+            tdItem.innerText = newValor != null ? newValor : valor;
+
+            // Aca tiene que ir la opcion de los botones.
+            tr.append(tdItem);
           }
-          tdItem.innerText = newValor != null ? newValor : valor;
-
-          // Aca tiene que ir la opcion de los botones.
-          tr.append(tdItem);
         }
         buttons = this.createButtons(idRow, element);
         tr.append(buttons);

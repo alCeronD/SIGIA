@@ -1,12 +1,12 @@
 <!-- Tabla para incluir en las diferentes vistas de area, tipo de documento, rol y marca -->
-<table class="tableConfig tblConfigModules z-depth-2" id="tableConfigArea">
+<table class="tableConfig tblConfigModules " id="tableConfigArea">
     <thead id="tableHeadArea">
         <tr>
-            <th>Código</th>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Estatus</th>
-            <th>Opción</th>
+            <th id="ar_cod">Código</th>
+            <th id="ar_nombre">Nombre</th>
+            <th id="ar_descripcion">Descripción</th>
+            <th id="ar_status">Estatus</th>
+            <th id="">Acciones</th>
         </tr>
     </thead>
     <tbody id="tableBodyArea">

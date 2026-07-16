@@ -6,7 +6,7 @@ import {
   Render,
   Validator,
 } from '../../../../public/assets/js/utils/index.js';
-import { selectors, typeInput, vars } from './Selectors-UsuariosView.js';
+import { events, selectors, typeInput, vars } from './Selectors-UsuariosView.js';
 // actualizar usuario
 const updateUser = () => {
   const formUpdateUser = document.getElementById('formUpdateUser');
@@ -132,6 +132,8 @@ export const renderFilters = () => {
             valueFilter: newValue,
           };
 
+          console.log(event);
+
           // validamos usando la clase validator con el metodo blur en caso de que el usuario no digite ningun valor y asi, no enviar la peticion.
           if (inputFiltro && tipo === keysType[0] && inputFiltro.value != '') {
             Validator.validateInput({ input: inputFiltro, rule: 'empty' });
@@ -150,11 +152,15 @@ export const renderFilters = () => {
 
           const actualType = e.target.type === 'number' ? 'numeros' : 'letras';
 
-          if (event === 'input' && String(newValue).length >= 2) {
+          if (event === events.input && String(newValue).length >= 2) {
             renderUsers(dataFilter);
           }
-          if (event === 'change' && e.target != '') {
+          if (event === events.change && e.target.value != '') {
             renderUsers(dataFilter);
+          }
+
+          if (event === events.input && e.target.value === '') {
+            renderUsers();
           }
         }, 500)
       );
@@ -163,13 +169,25 @@ export const renderFilters = () => {
 };
 
 const Usuarios = new Render();
-export const renderUsers = (params = {}) => {
+export const renderUsers = async (params = {}) => {
   // si el filtro esta vacio, debemos de enviar la peticion sin parametros, en caso contrario, con el parametro especificado.
-  if (params.keyFilter === '') {
-    const responseData = Usuarios.getData(`${vars.url}consultUser`, 'GET');
-  } else {
-    const responseData = Usuarios.getData(`${vars.url}consultUser`, 'GET', params);
-  }
+  const responseUsers = await Usuarios.getData(`${vars.url}consultUser`, 'GET', params);
+  let dataResponse = responseUsers.data;
+  let realPage = responseUsers.data.paginaActual;
+
+  Usuarios.actualPage(realPage);
+  let dataPaginate = {};
+  dataPaginate['totalRegistros'] = dataResponse.totalRegistros;
+  dataPaginate['paginaActual'] = dataResponse.paginaActual;
+  dataPaginate['cantidadPaginas'] = dataResponse.cantidadPaginas;
+
+  Usuarios.renderData(
+    selectors.tbodyUsuarios,
+    selectors.tHeaderUsuarios,
+    'IdUsuario',
+    dataResponse.data
+  );
+  Usuarios.renderPaginate(dataPaginate, selectors.footerUsers);
 };
 
 //Cambiar estado de inactivar el usuario
