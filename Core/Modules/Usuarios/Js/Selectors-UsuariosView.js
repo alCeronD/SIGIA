@@ -29,6 +29,7 @@ export const selectors = {
   tbodyUsuarios: document.querySelector('#tbodyUsuarios'),
   tHeaderUsuarios: document.querySelector('#tHeadUsuarios'),
   footerUsers: document.querySelector('#tFooterUsers'),
+  btnPaginate: document.querySelectorAll('.btnPaginate'),
 };
 
 export const typeInput = {
@@ -40,3 +41,5 @@ export const events = {
   change: 'change',
   input: 'input',
 };
+
+export const dataPaginate = {};

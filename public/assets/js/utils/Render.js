@@ -98,9 +98,9 @@ export class Render extends HttpData {
         buttons.innerText = value.value;
       }
       buttons.dataset.id = idRow;
-      // definimos si es un tipo de function y vamos a ejecutar.
       tdOptions.append(buttons);
 
+      // definimos si es un tipo de function y ejecutamos.
       if (typeof value.action === 'function') {
         buttons.addEventListener('click', (f) => {
           f.preventDefault();
@@ -138,9 +138,11 @@ export class Render extends HttpData {
 
     iBtnNext.style.pointerEvents = 'none';
     iBtnPreview.style.pointerEvents = 'none';
-    // si la cantidad de paginas es mayor a 10 entonces se renderiza todos los numeros, en caso contrario se hace un calculo para extraer las impares o pares.
-    if (dataPaginate.cantidadPaginas >= 5) {
-      let actualPage = 1;
+    // INICIAMOS EN 1 y lo extraemos porque lo usaremos en el if y else.
+    let actualPage = 1;
+
+    // validamos mostrar los numeros de paginas entre 1 a 5, en caso contrario, hacer un calculo y mostrar las paginas de 2 o de 3 en 3.
+    if (dataPaginate.cantidadPaginas >= 1 && dataPaginate.cantidadPaginas <= 5) {
       const liPreview = document.createElement('li');
       liPreview.style.cursor = 'pointer'; //hacemos que el li tenga pointerevent para dar click
       liPreview.style.pointerEvents = 'auto'; //hacemos que el li tenga pointerevent para dar click
@@ -153,7 +155,8 @@ export class Render extends HttpData {
       while (actualPage <= dataPaginate.cantidadPaginas) {
         const li = document.createElement('li');
         li.innerText = actualPage;
-        addClassItem(li, { wavesEffect: 'waves-effect' });
+        addClassItem(li, { wavesEffect: 'waves-effect', liPaginate: 'liPaginate' });
+        li.dataset.actualpage = actualPage;
 
         // si estas en la pagina actual entonces agregarle la clase para determinar que esta activa.
         if (actualPage === this.#actualPage) {
@@ -176,6 +179,62 @@ export class Render extends HttpData {
 
       ul.append(liNext);
       containerPaginate.append(ul);
+    } else {
+      // renderizar si son mas de 5 paginas de 2 en 2.
+      const fragmentCustomPage = document.createDocumentFragment();
+      // BOTON PREVIEW
+      const liPreview = document.createElement('li');
+      liPreview.style.cursor = 'pointer'; //hacemos que el li tenga pointerevent para dar click
+      liPreview.style.pointerEvents = 'auto'; //hacemos que el li tenga pointerevent para dar click
+      addClassItem(liPreview, { btnPaginate: 'btnPaginate' });
+      liPreview.dataset.action = 'preview';
+      if (this.#actualPage === 1) liPreview.setAttribute('disabled', 'disabled');
+      liPreview.append(iBtnPreview);
+      ul.append(liPreview);
+
+      fragmentCustomPage.append(ul);
+
+      for (let actualPage = 1; actualPage <= dataPaginate.cantidadPaginas; actualPage++) {
+        if (
+          actualPage === 1 ||
+          actualPage === dataPaginate.cantidadPaginas ||
+          actualPage % 3 === 0
+        ) {
+          // PAGINAS ESPECIFICAS.
+          const liActualPage = document.createElement('li');
+          liActualPage.style.cursor = 'pointer';
+          liActualPage.style.pointerEvents = 'auto';
+          addClassItem(liActualPage, { btnPaginate: 'btnPaginate', liPaginate: 'liPaginate' });
+          liActualPage.dataset.actualpage = actualPage;
+          liActualPage.innerText = actualPage;
+
+          // si estas en la pagina actual entonces agregarle la clase para determinar que esta activa.
+          if (actualPage === this.#actualPage) {
+            addClassItem(liActualPage, { active: 'active' });
+          } else {
+            ul.classList.remove('active');
+          }
+
+          ul.append(liActualPage);
+
+          fragmentContainer.append(ul);
+        }
+      }
+
+      // BOTON NEXT
+      const liNext = document.createElement('li');
+      addClassItem(liNext, { btnPaginate: 'btnPaginate' });
+      liNext.dataset.action = 'next';
+      if (actualPage === dataPaginate.cantidadPaginas) liNext.setAttribute('disabled', 'disabled');
+      liNext.append(iBtnNext);
+      liNext.style.cursor = 'pointer'; //hacemos que el li tenga pointerevent para dar click
+      liNext.style.pointerEvents = 'auto'; //hacemos que el li tenga pointerevent para dar click
+
+      ul.append(liNext);
+
+      fragmentContainer.append(ul);
+
+      containerPaginate.append(fragmentContainer);
     }
     td.append(containerPaginate);
 

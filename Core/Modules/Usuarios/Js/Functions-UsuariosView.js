@@ -1,12 +1,13 @@
 import {
   addClassItem,
+  createI,
   debounce,
   initAlert,
   InitComponents,
   Render,
   Validator,
 } from '../../../../public/assets/js/utils/index.js';
-import { events, selectors, typeInput, vars } from './Selectors-UsuariosView.js';
+import { events, selectors, typeInput, vars, dataPaginate } from './Selectors-UsuariosView.js';
 // actualizar usuario
 const updateUser = () => {
   const formUpdateUser = document.getElementById('formUpdateUser');
@@ -164,15 +165,34 @@ export const renderFilters = () => {
   }
 };
 
-const Usuarios = new Render();
-export const renderUsers = async (params = {}) => {
+const Usuarios = new Render({
+  btnInfo: {
+    /**
+     * @param {Object} row
+     * @param {HTMLButtonElement} button - boton propio para asi acceder a las propiedades del elemento.
+     */
+    value: (row, button) => {
+      button.setAttribute('data-id', `${row.IdUsuario}`);
+      let iconEditar = createI('info');
+      button.appendChild(iconEditar);
+      addClassItem(button, {
+        btn: 'btn',
+        waves: 'waves-effect',
+        hoover: 'waves-orange',
+        cyan: 'cyan darken-2', //button color.
+      });
+    },
+    key: 'btnInfo',
+    action: (id, fullRow) => verDetalle(id, fullRow),
+  },
+});
+export const renderUsers = async (params = { pagina: 1 }) => {
   // si el filtro esta vacio, debemos de enviar la peticion sin parametros, en caso contrario, con el parametro especificado.
   const responseUsers = await Usuarios.getData(`${vars.url}consultUser`, 'GET', params);
   let dataResponse = responseUsers.data;
   let realPage = responseUsers.data.paginaActual;
 
   Usuarios.actualPage(realPage);
-  let dataPaginate = {};
   dataPaginate['totalRegistros'] = dataResponse.totalRegistros;
   dataPaginate['paginaActual'] = dataResponse.paginaActual;
   dataPaginate['cantidadPaginas'] = dataResponse.cantidadPaginas;
@@ -184,6 +204,52 @@ export const renderUsers = async (params = {}) => {
     dataResponse.data
   );
   Usuarios.renderPaginate(dataPaginate, selectors.footerUsers);
+};
+
+export const executePaginate = () => {
+  let actualPage = 1;
+  // aplicamos la paginacion en la responsabilidad del footer.
+  selectors.footerUsers.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let btnValue = e.target.closest('.btnPaginate') ? e.target.dataset.action : null;
+
+    // ejecutamos el evento para una pagina en especifico.
+    if (e.target.closest('.liPaginate')) {
+      let actualPageData = e.target.closest('.liPaginate') ? e.target.dataset.actualpage : 1;
+      renderUsers({ pagina: actualPageData });
+      return;
+    }
+
+    // EJECUTAMOS LOS EVENTOS PARA LOS BOTONES BTNPAGINATE
+    if (e.target.closest('.btnPaginate')) {
+      if (!btnValue) return;
+      if (btnValue === 'preview') {
+        // re asignamos la pagina recibida por la peticion para asi reducir el valor y re enviar la peticion con la pagina anterior.
+        actualPage = dataPaginate.paginaActual;
+        actualPage--;
+        if (actualPage < 1) {
+          actualPage = 1;
+          return;
+        }
+      }
+      if (btnValue === 'next') {
+        actualPage++;
+        if (actualPage > dataPaginate.cantidadPaginas) {
+          actualPage = dataPaginate.cantidadPaginas;
+          return;
+        }
+      }
+
+      renderUsers({ pagina: actualPage });
+    }
+  });
+};
+
+const verDetalle = (idRow, fullRow) => {
+  // re direccionamos eliminando el historial de la pagina anterior
+  window.location.replace(`${vars.url}detailUser`);
 };
 
 //Cambiar estado de inactivar el usuario

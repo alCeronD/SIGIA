@@ -8,6 +8,8 @@ class RolesModel extends Crud
     protected $campos = [
         'rl_nombre',
         'rl_descripcion',
-        'rl_status'
+        'rl_status',
+        'created_at',
+        'updated_at'
     ];
 }

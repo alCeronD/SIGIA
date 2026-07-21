@@ -7,6 +7,8 @@ class MarcasModel extends Crud
   protected $campos = [
     'ma_nombre',
     'ma_descripcion',
-    'ma_status'
+    'ma_status',
+    'created_at',
+    'updated_at'
   ];
 }

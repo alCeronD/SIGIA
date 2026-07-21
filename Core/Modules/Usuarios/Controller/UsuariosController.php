@@ -81,6 +81,11 @@ class UsuariosController extends ConfigController
                 'label' => 'Actualizar datos personales',
                 'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'updatePersonalDataView', false, CR_DASHBOARD_LOWER_CASE),
                 'parent' => 'usuariosIndex'
+            ],
+            'detailUser' => [
+                'label' => 'Detalle del usuario',
+                'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'detailUser', false, CR_DASHBOARD_LOWER_CASE),
+                'parent' => 'usuariosView'
             ]
         ];
     }
@@ -249,15 +254,12 @@ class UsuariosController extends ConfigController
         $page = (isset($_GET[CR_PAGINA])) ? (int) $_GET[CR_PAGINA] : 1;
         $limit = (isset($_GET[CR_WORD_LIMIT])) ? (int) $_GET[CR_WORD_LIMIT] : LIMIT;
 
-        if (empty($filter)) {
-            $filter = "";
-        } else if ($filter === 'nombre') {
-            $filter = 'usu_nombres';
-        } else if ($filter === 'documento') {
-            $filter = 'usu_docum';
-        } else {
-            $filter = 'usu_id_estado';
-        }
+        $filter = match ($filter ?? '') {
+            'nombre'    => 'usu_nombres',
+            'documento' => 'usu_docum',
+            ''          => '',
+            default     => 'usu_id_estado',
+        };
 
         if ($filter === 'usu_id_estado') {
             $valueFilter = $valueFilter === 'activo' ? 1 : 2;
@@ -299,6 +301,18 @@ class UsuariosController extends ConfigController
                 CR_DATA => $queryAllUsers
             ]);
         }
+    }
+
+    /**
+     * Function para ver el detalle completo del usuario
+     *
+     * @return void
+     */
+    public function detailUser()
+    {
+        // header(CONTENT_TYPE);
+        $path = BASE_URL . US_ROUTE_DETAIL_USER;
+        Parent::renderView($path, __FUNCTION__);
     }
     // public function updateUserJSON(array $data)
     // {

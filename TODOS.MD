@@ -8,7 +8,7 @@ Listado de TODOS generales y específicos por cada módulo.
   - [Menú principal](#menú-principal)
   - [Generales](#generales)
   - [Específicos](#específicos)
-  - [📦 Estado de Módulos](#-estado-de-módulos)
+  - [Estado de Módulos](#estado-de-módulos)
   - [Archivos especificos](#archivos-especificos)
   - [Documentación](#documentación)
 
@@ -21,16 +21,16 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Transformar en clase aquellas funcionalidades de javascript repetibles
 - [X] Investigar e implementar rastro de miga.
   - [X] Ajustar rastro de miga, debemos crear la logica en un solo arreglo en el configController.
-- [ ] Crear los campos created_at y updated_at a todas las tablas.
+- [X] Crear los campos created_at y updated_at a todas las tablas.
 - [ ] RE factorizar el menu del footer
 - [ ] enviar los estilos y el javascript de footer.php a archivos independientes.
 - [ ] ajustar renderizado de menu (ver si se puede implementar por peticiones) y no por variables de session(usar localstorage).
-- [ ] Analizar posibles causas de lentitud de la aplicacion a medida que pasa el tiempo.
+- [ ] Analizar posibles causas de lentitud de la aplicacion EN EL login a medida que pasa el tiempo.
+- [ ] **Documentación** = Colocar requisitos del sistema implementados y diagramas que se usaron para el proceso de creación del producto.
 - [X] Arreglar palabras reservada para el levantamiento de la aplicación en linux
 - [X] adicionar el tag de cuando se entrego el producto a la entidad de formación + tabla para visualizar la versión entregada.
 - [X] Arreglar rutas para verificar el correcto funcionamiento del sistema como la re direccionamiento al login, o a otros módulos de acceso.
 - [X] Implementar la validacion de los permisos en el executeFunction antes del renderizado
-- [ ] **Documentación** = Colocar requisitos del sistema implementados y diagramas que se usaron para el proceso de creación del producto.
 - [X] Cambiar estructura de carpetas del proyecto, cambiar la carpeta app a core y core debe de tener solo config, helpers, adicionar la carpeta mod que esa tendrá los módulos del proyecto
 - [X] Crear el núcleo del proyecto que me permita crear escalar el proyecto según la necesidad.
 - [X] Re definir estructura de carpetas del proyecto para asi módularizar más los módulos.
@@ -57,14 +57,15 @@ Listado de TODOS generales y específicos por cada módulo.
 
 ## Específicos
 
-## 📦 Estado de Módulos
+## Estado de Módulos
 
-| Módulo               | Progreso | Documentación | Enlace a Detalles                                       |
-| :------------------- | :------: | :-----------: | :------------------------------------------------------ |
-| **Areas**            |   90%    | 🔄 En proceso  | [Ver README](./Core/Modules/Areas/README.MD)            |
-| **Categorias**       |   80%    |  ❌ Pendiente  | [Ver README](./Core/Modules/Categorias/README.MD)       |
-| **ReservaPrestamos** |   40%    |    Diseño     | [Ver README](./Core/Modules/ReservaPrestamos/README.MD) |
-| **Modulos**          |    0%    |  ❌ Pendiente  | [Ver README](./Core/Modules/Modulos/README.MD)          |
+| Módulo               | Progreso | Documentación |                    Enlace a Detalles                    |
+| :------------------- | :------: | :-----------: | :-----------------------------------------------------: |
+| **Areas**            |   100%   | 🔄 Finalizado  |      [Ver README](./Core/Modules/Areas/README.MD)       |
+| **Categorias**       |   20%    |  ❌ Pendiente  |    [Ver README](./Core/Modules/Categorias/README.MD)    |
+| **ReservaPrestamos** |   20%    |    Diseño     | [Ver README](./Core/Modules/ReservaPrestamos/README.MD) |
+| **Modulos**          |    0%    |  ❌ Pendiente  |     [Ver README](./Core/Modules/Modulos/README.MD)      |
+| **Usuarios**         |   30%    |   Pendiente   |     [Ver README](./Core/Modules/Usuarios/README.MD)     |
 
 ## Archivos especificos
 
@@ -74,7 +75,7 @@ Listado de TODOS generales y específicos por cada módulo.
 
 -**Clase loginController**
 
-- [ ] Ajustar la logica de inicio de sesion implementando los modales
+- [ ] Ajustar la logica de inicio de sesion implementando los modelos
 
 -**Clase dashboardController**
 
@@ -85,7 +86,7 @@ Listado de TODOS generales y específicos por cada módulo.
 ## Documentación
 
 - [ ] Ajustar diagrama de clases
-- [ ] Crear historias de usuario
-- [ ] Adicionar requisitos requeridos para el documento.
+- [ ] Crear Y/o ajustar historias de usuario
+- [ ] Adicionar requisitos requeridos para cada modulo.
 - [ ] Referenciar toda la documentación mediante un link de google drive para observar la documentación del producto
 - [ ] Adicionar archivo README.MD A cada modulo para presentar que hace cada producto.

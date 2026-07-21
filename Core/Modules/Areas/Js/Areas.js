@@ -175,24 +175,34 @@ s.footerArea.addEventListener('click', (e) => {
   e.stopPropagation();
   e.preventDefault();
   let btnValue = e.target.closest('.btnPaginate') ? e.target.dataset.action : null;
-  if (!btnValue) return;
-  if (btnValue === 'preview') {
-    actualPage--;
-    if (actualPage < 1) {
-      actualPage = 1;
-      return;
+
+  // EJECUTAMOS LOS EVENTOS PARA LOS BOTONES BTNPAGINATE
+  if (e.target.closest('.btnPaginate')) {
+    if (!btnValue) return;
+    if (btnValue === 'preview') {
+      actualPage--;
+      if (actualPage < 1) {
+        actualPage = 1;
+        return;
+      }
     }
+    if (btnValue === 'next') {
+      actualPage++;
+      if (actualPage > dataPaginate.cantidadPaginas) {
+        actualPage = dataPaginate.cantidadPaginas;
+        return;
+      }
+    }
+
+    loadTable({ pagina: actualPage });
   }
 
-  if (btnValue === 'next') {
-    actualPage++;
-    if (actualPage > dataPaginate.cantidadPaginas) {
-      actualPage = dataPaginate.cantidadPaginas;
-      return;
-    }
+  // EJECUTAMOS LOS EVENTOS PARA LOS LI PAGINATE
+  if (e.target.closest('.liPaginate')) {
+    let actualPageData = e.target.closest('.liPaginate') ? e.target.dataset.actualpage : 1;
+    loadTable({ pagina: actualPageData });
+    return;
   }
-
-  loadTable({ pagina: actualPage });
 });
 
 // Listener update

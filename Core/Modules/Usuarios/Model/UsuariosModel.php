@@ -19,7 +19,9 @@ class UsuariosModel extends Crud
         'usu_telefono',
         'usu_observacion',
         'usu_id_estado',
-        'usu_tp_id'
+        'usu_tp_id',
+        'created_at',
+        'updated_at'
     ];
 
 

@@ -7,6 +7,8 @@ class UsuariosRolesModel extends Crud
   protected $table = "usuarios_roles";
   protected $campos = [
     'usr_usu_id',
-    'usr_rl_id'
+    'usr_rl_id',
+    'created_at',
+    'updated_at'
   ];
 }

@@ -55,7 +55,7 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [X] Re factorizar estructura de carpetas inicial
 - [X] Desarrollar historia de usuario # HU-U00
 - [X] Desarrollar historia de usuario # HU-U01 (Registrar usuario).
-- [ ] Desarrollar historia de usuario de paginacion de usuario y consulta con filtros.
+- [X] Ajustar historia de usuario de paginacion de usuario y consulta con filtros # HU -U02.
 - [ ] Re factorizar css
 - [ ] Re factorizar js
 - [X] Crear componente de paginacion en los registros de los usuarios.
@@ -67,3 +67,4 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [ ] Investigar como implementar el anterior todo
 - [ ] Crear historia de usuario de carga de datos mediante excel.
 - [ ] Desarrollar feature de historia de usuario carga de datos.
+- [ ] Desarrollar mockup de auditoria de usuarios e historia de usuario de auditoria.
