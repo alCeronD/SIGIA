@@ -11,14 +11,14 @@
           <i class="material-icons prefix">badge</i>
           <select name="usu_tp_id" id="usu_tp_id" class="validate">
           </select>
-          <label for="usu_tp_id">Tipo documento:<span class="red-text">*</span></label>
+          <label for="usu_tp_id"><?php echo US_WORD_TIPO_DOCUMENTO; ?><span class="red-text">*</span></label>
           <span class="helper-text" data-error="" data-success=""></span>
         </div>
 
         <div class="inputContent cedula input-field">
           <i class="material-icons prefix">badge</i>
           <input type="text" id="usu_docum" name="usu_docum" class="validate" required>
-          <label for="usu_docum">Número de identificación: <span class="red-text">*</span></label>
+          <label for="usu_docum"><?php echo US_WORD_NRO_IDENTIFICACION; ?><span class="red-text">*</span></label>
           <span class="helper-text" data-error="" data-success=""></span>
         </div>
 

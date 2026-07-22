@@ -1,14 +1,12 @@
 <?php
 
-
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once __DIR__ . '/../Const/UsuariosConst.php';
 require_once BASE_URL . '/' . CR_AUTOLOAD;
 
-class UsuariosController extends ConfigController
+class UsuariosController extends ConfigController implements CrudInterface
 {
 
-    protected RolesModel $rolesModel;
     protected ServicesTipoDocumento $stp;
     protected ServicesRoles $sRoles;
     protected UsuariosModel $usuariosModel;
@@ -33,8 +31,6 @@ class UsuariosController extends ConfigController
     ];
     public function __construct()
     {
-        $this->rolesModel = new RolesModel(); //esto creo que nos puede servir para extraer el listado de los roles, en este caso, no hacemos composicion al modelo sino al servicio.
-        // $this->configModules = new ConfigModulesModel();
         $this->usuariosModel = new UsuariosModel();
         $this->usuariosRModel = new UsuariosRolesModel();
         $this->stp = new ServicesTipoDocumento();
@@ -99,7 +95,20 @@ class UsuariosController extends ConfigController
      */
     public function createUserView()
     {
-        $this->stp->getAllTps();
+        // accedemos a la function mediante peticion para solicitar los roles y tipos de documento
+        if (UtilsFunctions::ajaxGeneral()) {
+            header(CONTENT_TYPE);
+            $dataTipoDocumento = $this->stp->getAllTps(false);
+            $dataRoles = $this->sRoles->getAllRoles();
+
+            $data = [
+                'tipoDocumento' => $dataTipoDocumento,
+                'roles' => $dataRoles
+            ];
+
+            Response::responseRequest(HttpStatus::OK, true, CR_REGISTROS, $data);
+        }
+        // renderizamos la vista
         $path = BASE_URL . US_ROUTE_USUARIOS_CREATE_VIEW;
         Parent::renderView($path, __FUNCTION__);
     }
@@ -119,6 +128,17 @@ class UsuariosController extends ConfigController
         // solicitamos los tipos de documento para renderizar los
 
         $path = BASE_URL . US_ROUTE_USUARIOS_LIST_VIEW;
+        Parent::renderView($path, __FUNCTION__);
+    }
+
+    /**
+     * Function para ver el detalle completo del usuario
+     *
+     * @return void
+     */
+    public function detailUserView()
+    {
+        $path = BASE_URL . US_ROUTE_DETAIL_USER;
         Parent::renderView($path, __FUNCTION__);
     }
 
@@ -212,25 +232,6 @@ class UsuariosController extends ConfigController
         // renderizado de la vista con backend puro.
         $path = BASE_URL . US_ROUTE_USUARIO_UPDATE;
         Parent::renderView($path, __FUNCTION__);
-    }
-
-    /**
-     * Function para obtener los tipos de documento requeridos en la vista crearUserView.Los datos del tipo de documento al javascript, lo pedimos desde el servicio
-     *
-     * @return void
-     */
-    public function getDataSelects()
-    {
-        header(CONTENT_TYPE);
-        $dataTipoDocumento = $this->stp->getAllTps(false);
-        $dataRoles = $this->sRoles->getAllRoles();
-
-        $data = [
-            'tipoDocumento' => $dataTipoDocumento,
-            'roles' => $dataRoles
-        ];
-
-        Response::responseRequest(HttpStatus::OK, true, CR_REGISTROS, $data);
     }
 
     public function store()
@@ -329,52 +330,43 @@ class UsuariosController extends ConfigController
         Response::responseRequest(HttpStatus::OK, true, US_MESSAGE_DATA_USER . US_MESSAGE_UPDATE_PERSONAL_DATA, []);
     }
 
+    public function changeStatusUser()
+    {
+
+        try {
+            header(CONTENT_TYPE);
+            $data = UtilsFunctions::returnGetDecode();
+
+            if (empty($data[US_VAR_USU_ID_ESTADO]) || empty($data[US_VAR_USU_ID])) throw new Exception(US_MESSAGE_ERROR_ENTITY, HttpStatus::UNPROCESSABLE_ENTITY);
+
+            $data[US_VAR_USU_ID_ESTADO] = (int) $data[US_VAR_USU_ID_ESTADO];
+            $data[US_VAR_USU_ID] = (int) $data[US_VAR_USU_ID];
+            $dataChangeStatus[CR_DATA] = $data;
+
+
+            $finalMessage = match ($data[US_VAR_USU_ID_ESTADO] ?? 1) {
+                1 => US_MESSAGE_USER_ENABLED,
+                2 => US_MESSAGE_USER_DISABLED
+            };
+
+            $changeStatusResponse = $this->usuariosModel->update($data)->where()->prepareSql($dataChangeStatus)->get();
+
+            if (!$changeStatusResponse[CR_STATUS]) {
+                $responseHanlder = DatabaseHandler::validateResponse($changeStatusResponse[CR_RESPONSE]);
+                throw new Exception($responseHanlder[CR_MESSAGE], $responseHanlder['codeResponse']);
+            }
+
+
+            Response::responseRequest(HttpStatus::OK, true, $finalMessage, []);
+        } catch (\Exception $e) {
+            Response::responseRequest($e->getCode(), false, $e->getMessage(), []);
+        }
+    }
 
     /**
-     * Function para ver el detalle completo del usuario
+     * Funcionalidad para eliminar el usuario, se deja vacia por la logica actual y los requerimientos e historia de usuario definidos previamente.
      *
      * @return void
      */
-    public function detailUser()
-    {
-        $path = BASE_URL . US_ROUTE_DETAIL_USER;
-        Parent::renderView($path, __FUNCTION__);
-    }
-
-    // public function deleteUserView()
-    // {
-    //     include_once '../proyecto_sigia/app/modules/usuarios/views/deleteView.php';
-    // }
-
-    // public function cambiarEstadoUsuarioJSON($data)
-    // {
-    //     validatePermisos('usuarios', 'cambiarEstadoUsuarioJSON');
-    //     if (!isset($data['usu_id'])) {
-    //         http_response_code(400);
-    //         echo json_encode([
-    //             "status" => "error",
-    //             "message" => "ID de usuario no proporcionado"
-    //         ]);
-    //         return;
-    //     }
-
-    //     $usu_id = (int)$data['usu_id'];
-
-    //     // Llamamos al modelo que ya tienes
-    //     $resultado = $this->usuariosModel->inhabilitarUsuario($usu_id);
-
-    //     if ($resultado['status']) {
-    //         echo json_encode([
-    //             "status" => "success",
-    //             "message" => $resultado['message']
-    //         ]);
-    //     } else {
-    //         http_response_code(500);
-    //         echo json_encode([
-    //             "status" => "error",
-    //             "message" => $resultado['message']
-    //         ]);
-    //     }
-    // }
-
+    public function delete() {}
 }

@@ -55,3 +55,13 @@ export const events = {
 };
 
 export const dataPaginate = {};
+
+export const messagesUser = {
+  activeUser: '¿Esta seguro de activar el usuario?',
+  inactiveUser: '¿Esta seguro de inactivar este usuario? el usuario no podrá acceder al sistema',
+};
+
+export const titlesUsers = {
+  inactiveUser: 'Inactivar usuario',
+  activeUser: 'Activar usuario',
+};

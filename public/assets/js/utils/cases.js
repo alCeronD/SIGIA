@@ -83,7 +83,7 @@ export const addClassItem = (item, valuesClass = {}) => {
 
   //Como objeto, puedo buscar una forma de hacerlo con arreglo.
   Object.values(valuesClass).forEach((val) => {
-    // item.classList.add(val);
+    val.trim();
     val.split(' ').forEach((cl) => item.classList.add(cl));
   });
 };

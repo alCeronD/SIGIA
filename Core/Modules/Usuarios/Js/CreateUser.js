@@ -33,7 +33,7 @@ let responseDataSelects = null;
 let rolesResponse = null;
 let rolesData = null;
 const getAndRenderSelects = async () => {
-  responseDataSelects = await CreateUser.getData(`${vars.url}getDataSelects`, 'GET', {});
+  responseDataSelects = await CreateUser.getData(`${vars.url}createUserView`, 'GET', {});
   // selector
   let tpDocumentoData = responseDataSelects.data.tipoDocumento;
   let rolesData = responseDataSelects.data.roles;

@@ -75,6 +75,7 @@ define('CR_STATUS', 'status');
 define('CR_ROW_COUNTS', 'rowCounts');
 define('CR_CODE_RESPONSE', 'codeResponse');
 define('CR_MESSAGE', 'message');
+define('CR_RESPONSE', 'response');
 
 
 // name Functions

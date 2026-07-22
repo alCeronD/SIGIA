@@ -23,6 +23,7 @@ Listado de TODOS generales y específicos por cada módulo.
   - [X] Ajustar rastro de miga, debemos crear la logica en un solo arreglo en el configController.
 - [X] Crear los campos created_at y updated_at a todas las tablas.
 - [ ] RE factorizar el menu del footer
+- [X] Arreglar archivo README.MD de los modulos que ya han sido ajustados (areas, tipo documento, marcas, roles, usuarios).
 - [ ] enviar los estilos y el javascript de footer.php a archivos independientes.
 - [ ] ajustar renderizado de menu (ver si se puede implementar por peticiones) y no por variables de session(usar localstorage).
 - [ ] Analizar posibles causas de lentitud de la aplicacion EN EL login a medida que pasa el tiempo.
@@ -59,13 +60,22 @@ Listado de TODOS generales y específicos por cada módulo.
 
 ## Estado de Módulos
 
-| Módulo               | Progreso | Documentación |                    Enlace a Detalles                    |
-| :------------------- | :------: | :-----------: | :-----------------------------------------------------: |
-| **Areas**            |   100%   | 🔄 Finalizado  |      [Ver README](./Core/Modules/Areas/README.MD)       |
-| **Categorias**       |   20%    |  ❌ Pendiente  |    [Ver README](./Core/Modules/Categorias/README.MD)    |
-| **ReservaPrestamos** |   20%    |    Diseño     | [Ver README](./Core/Modules/ReservaPrestamos/README.MD) |
-| **Modulos**          |    0%    |  ❌ Pendiente  |     [Ver README](./Core/Modules/Modulos/README.MD)      |
-| **Usuarios**         |   30%    |   Pendiente   |     [Ver README](./Core/Modules/Usuarios/README.MD)     |
+| Módulo                 | Progreso | Documentación |                     Enlace a Detalles                     |
+| :--------------------- | :------: | :-----------: | :-------------------------------------------------------: |
+| **Areas**              |   90%    |  Completado   |       [Ver README](./Core/Modules/Areas/README.MD)        |
+| **Tipo Documento**     |   90%    |  Completado   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
+| **Marcas**             |   90%    |  Completado   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
+| **Roles**              |   90%    |  Completado   |       [Ver README](./Core/Modules/Roles/README.MD)        |
+| **Usuarios**           |   70%    |  En Proceso   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |
+| **Categorias**         |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Categorias/README.MD)     |
+| **Dashboard**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Dashboard/README.MD)      |
+| **Elementos**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Elementos/README.MD)      |
+| **Login**              |    0%    |   Pendiente   |       [Ver README](./Core/Modules/Login/README.MD)        |
+| **Reportes**           |    0%    |   Pendiente   |      [Ver README](./Core/Modules/Reportes/README.MD)      |
+| **SolicitudPrestamos** |    0%    |   Pendiente   | [Ver README](./Core/Modules/SolicitudPrestamos/README.MD) |
+| **ReservaPrestamos**   |    0%    |   Pendiente   |  [Ver README](./Core/Modules/ReservaPrestamos/README.MD)  |
+| **Modulos**            |    0%    |   Pendiente   |      [Ver README](./Core/Modules/Modulos/README.MD)       |
+| **GeneralCrud**        |    0%    |   Pendiente   |    [Ver README](./Core/Modules/GeneralCrud/README.MD)     |
 
 ## Archivos especificos
 

@@ -6,6 +6,8 @@ import {
   fillDataForm,
   initAlert,
   InitComponents,
+  messages,
+  mostrarConfirmacion,
   openModal,
   Render,
   Storage,
@@ -23,6 +25,8 @@ import {
   forms,
   inputOptionals,
   mapForm,
+  messagesUser,
+  titlesUsers,
 } from './Selectors-UsuariosView.js';
 
 /** Function para renderizar los filtros de la vista usuariosView */
@@ -171,6 +175,32 @@ const Usuarios = new Render({
     key: 'btnEdit',
     action: (id, fullRow) => editData(id, fullRow),
   },
+  btnChangeStatus: {
+    /**
+     * @param {Object} fullRow = {}
+     * @param {HTMLButtonElement} button
+     */
+    value: (fullRow, button) => {
+      // implementamos el estado del usuario.
+
+      let icon =
+        fullRow['estado_usuario'] === 'Activo' ? createI('check') : createI('do_not_disturb');
+
+      let cyan = fullRow['estado_usuario'] === 'Activo' ? 'cyan darken-4' : 'red darken-3';
+      let hoover = fullRow['estado_usuario'] === 'Activo' ? 'waves-green' : 'waves-teal';
+
+      addClassItem(button, {
+        btn: 'btn',
+        waves: 'waves-effect',
+        hoover: hoover,
+        cyan: cyan, //button color.
+      });
+
+      button.appendChild(icon);
+    },
+    key: 'btnChangeStatus',
+    action: (id, fullRow) => changeStatusUser(id, fullRow),
+  },
 });
 export const renderUsers = async (params = { pagina: 1 }) => {
   // si el filtro esta vacio, debemos de enviar la peticion sin parametros, en caso contrario, con el parametro especificado.
@@ -192,6 +222,7 @@ export const renderUsers = async (params = { pagina: 1 }) => {
   Usuarios.renderPaginate(dataPaginate, selectors.footerUsers);
 };
 
+/** Logica de la paginación. */
 export const executePaginate = () => {
   let actualPage = 1;
   // aplicamos la paginacion en la responsabilidad del footer.
@@ -236,7 +267,7 @@ export const executePaginate = () => {
 const verDetalle = (idRow, fullRow) => {
   // Guardamos los datos en localstorage y cuando estemos en el archivo lo recibimos y lo consultamos.
   Storage.addValue({ key: 'detailUSer', item: JSON.stringify(fullRow) });
-  window.location.replace(`${vars.url}detailUser`);
+  window.location.replace(`${vars.url}detailUserView`);
 };
 
 const editData = (id, fullRow) => {
@@ -267,10 +298,39 @@ const editData = (id, fullRow) => {
 
 closeModal(modals.modalEditarUsuario, buttons.btnCloseModalEditarUsuario);
 
-const changeStatusUser = () => {};
+const changeStatusUser = (id, fullRow) => {
+  try {
+    const status = fullRow['estado_usuario'] === 'Activo' ? '2' : '1';
+    const message = status === '2' ? titlesUsers.inactiveUser : titlesUsers.activeUser;
+    const text = status === '2' ? messagesUser.inactiveUser : messagesUser.activeUser;
+
+    mostrarConfirmacion(message, text, async (response) => {
+      if (!response) return;
+
+      let dataStatus = {
+        usu_id_estado: status,
+        usu_id: id,
+      };
+
+      const responseChangeStatus = await Usuarios.sendData(
+        `${vars.url}changeStatusUser `,
+        'PUT',
+        dataStatus
+      );
+
+      if (responseChangeStatus.status) {
+        initAlert(responseChangeStatus.message, 'success');
+        renderUsers({ pagina: dataPaginate.paginaActual });
+        return;
+      }
+    });
+  } catch (error) {
+    initAlert(error.message, 'error');
+    return;
+  }
+};
 
 // evento para actualizar el usuario.
-// actualizar usuario
 export const updateUser = () => {
   if (forms.formUpdateDataUser) {
     forms.formUpdateDataUser.addEventListener('submit', async (e) => {
@@ -305,39 +365,3 @@ export const updateUser = () => {
     });
   }
 };
-
-//Cambiar estado de inactivar el usuario
-document.querySelectorAll('.toggleEstadoBtn').forEach((button) => {
-  button.addEventListener('click', async () => {
-    const id = button.dataset.id;
-
-    const confirmacion = confirm('¿Estás seguro de que deseas cambiar el estado del usuario?');
-    if (!confirmacion) return;
-
-    try {
-      const payload = {
-        action: 'cambiarEstado',
-        usu_id: id,
-      };
-
-      const response = await fetch('modules/usuarios/controller/usuariosController.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-
-      if (result.status === 'success') {
-        initAlert(result.message, 'success', toastOptions);
-        setTimeout(() => location.reload(), 150); // Recargar para reflejar cambios
-      } else {
-        initAlert(result.message || 'Error al cambiar el estado', 'error', toastOptions);
-      }
-    } catch (error) {
-      initAlert(error.message || 'Error en la solicitud', 'error', toastOptions);
-    }
-  });
-});

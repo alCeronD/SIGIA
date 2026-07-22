@@ -115,19 +115,6 @@ class RolesFuncionesController extends ConfigController
       'offset' => (int) $paginate[CR_OFFSET]
     ];
 
-    // $resultQuery = $this->rfModel
-    //   ->select($columns)
-    //   ->from('roles_funciones rf')
-    //   ->leftJoin('roles r', 'r.rl_id', '=', 'rf.rlp_id_rl')
-    //   ->leftJoin('funciones f', 'rf.rlp_id_funcion', '=', 'f.id_funcion')
-    //   ->leftJoin('modulos m', 'f.id_modulo', '=', 'm.id_m')
-    //   ->where(['rf.rlp_id_rl', '=', $idRol])
-    //   ->orderBy('rf.rlp_id')
-    //   ->limit()
-    //   ->offset()
-    //   ->prepareSql($dataSql)
-    //   ->get();
-
     $resultQuery = $this->rfModel
       ->select($columns)
       ->from('roles_funciones rf')
@@ -139,8 +126,6 @@ class RolesFuncionesController extends ConfigController
       ->limit()
       ->offset()
       ->prepareSql($dataSql)->get();
-
-
 
     if (count($resultQuery) > 0) {
       $dataQuery = [

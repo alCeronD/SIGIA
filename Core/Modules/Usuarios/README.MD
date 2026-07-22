@@ -42,12 +42,13 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 ## Dependencias de Base de Datos
 
 - **Tabla principal:** `usuarios`
-- **Tablas asociadas:** `auditorias`, `estados_usuarios`, `tipo_documento`, `roles`
-- **Conexión con otros módulos:** `roles`, `tip_documento`
+- **Tablas asociadas:** `auditorias`, `estados_usuarios`, `tipo_documento`, `roles`, `usuarios_roles`
+- **Conexión con otros módulos:** `roles`, `tipo_documento`
 - **Relaciones:**
   - `estados_usuarios (id)` -> Llave foránea en `usuarios` para controlar si el usuario está activo, inactivo o suspendido.
   - `tipos_documento (id)` -> Llave foránea en `usuarios` para asociar el tipo de identificación (C.C., T.I., C.E., etc.).
   - `roles (id)` -> Relación para definir los permisos y el nivel de acceso del usuario dentro de SIGIA.
+  - `roles_funciones (rlp_id)` -> Relacion con la tabla usuarios para guardar el rol al cual pertenece el usuario.
 
 ### TODOS ESPECÍFICOS
 
@@ -60,10 +61,11 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [ ] Re factorizar js
 - [X] Crear componente de paginacion en los registros de los usuarios.
 - [X] Implementar update
-- [ ] Re factorizar backend moviendo todo lo de modelo a las acciones del controlador
+- [X] Implementar changeStatus a los usuarios.
+- [X] Re factorizar backend moviendo todo lo de modelo a las acciones del controlador
+- [X] Implementar y arreglar las funcionales ya definidas, estas funcionalidades estan en las historias de usuario de la documentación en el drive
 - [ ] Buscar cual es la mejor forma de implementar el actualizar la contraseña de un usuario
 - [ ] solicitar los datos de tipo de documento y roles y guardarlo en localstorage para su re utilizacion, hacerlo en el archivo usuariosIndex.js
-- [ ] Implementar y arreglar las funcionales ya definidas, estas funcionalidades estan en las historias de usuario de la documentación en el drive
 - [ ] Limpiar los datos de los nuevos usuarios usando DIRTY DATA (PYTHON)
 - [ ] Cargar datos limpios a la tabla de usuario
 - [ ] Crear mockup e historia de usuario del feature: CARGA MASIVA DE REGISTROS.
