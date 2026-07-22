@@ -1,61 +1,29 @@
 import {
   addClassItem,
+  closeModal,
   createI,
   debounce,
+  fillDataForm,
   initAlert,
   InitComponents,
+  openModal,
   Render,
+  Storage,
+  validateFormData,
   Validator,
 } from '../../../../public/assets/js/utils/index.js';
-import { events, selectors, typeInput, vars, dataPaginate } from './Selectors-UsuariosView.js';
-// actualizar usuario
-const updateUser = () => {
-  const formUpdateUser = document.getElementById('formUpdateUser');
-
-  if (formUpdateUser) {
-    formUpdateUser.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const formData = new FormData(formUpdateUser);
-      const data = Object.fromEntries(formData.entries());
-      // data.action = "updateUser";
-
-      // Validaciones mínimas (puedes usar validateFormData si gustas)
-      if (
-        !data.usu_nombres ||
-        !data.usu_apellidos ||
-        !data.usu_email ||
-        !data.usu_telefono ||
-        !data.usu_direccion ||
-        !data.rol_id
-      ) {
-        initAlert('Por favor complete todos los campos obligatorios', 'error');
-        return;
-      }
-
-      try {
-        const result = await sendData(
-          'modules/usuarios/controller/usuariosController.php',
-          'POST',
-          'updateUser',
-          data
-        );
-
-        if (result.status === 'success') {
-          initAlert(result.message, 'success');
-          cerrarModalUsuario();
-          setTimeout(() => {
-            location.reload(); // Recargar para ver cambios
-          }, 1500);
-        } else {
-          initAlert(result.message || 'Error al actualizar', 'error');
-        }
-      } catch (error) {
-        initAlert(error.message || 'Error en la solicitud', 'error');
-      }
-    });
-  }
-};
+import {
+  events,
+  selectors,
+  typeInput,
+  vars,
+  dataPaginate,
+  modals,
+  buttons,
+  forms,
+  inputOptionals,
+  mapForm,
+} from './Selectors-UsuariosView.js';
 
 /** Function para renderizar los filtros de la vista usuariosView */
 export const renderFilters = () => {
@@ -173,8 +141,8 @@ const Usuarios = new Render({
      */
     value: (row, button) => {
       button.setAttribute('data-id', `${row.IdUsuario}`);
-      let iconEditar = createI('info');
-      button.appendChild(iconEditar);
+      let iconInfo = createI('info');
+      button.appendChild(iconInfo);
       addClassItem(button, {
         btn: 'btn',
         waves: 'waves-effect',
@@ -185,10 +153,28 @@ const Usuarios = new Render({
     key: 'btnInfo',
     action: (id, fullRow) => verDetalle(id, fullRow),
   },
+  btnEdit: {
+    /**
+     * @param {Object} row = {}
+     * @param {HTMLButtonElement} button - boton propio para asi acceder a las propiedades del elemento.
+     */
+    value: (row, button) => {
+      let iconEditar = createI('edit');
+      button.appendChild(iconEditar);
+      addClassItem(button, {
+        btn: 'btn',
+        waves: 'waves-effect',
+        hoover: 'waves-orange',
+        cyan: 'green darken-2', //button color.
+      });
+    },
+    key: 'btnEdit',
+    action: (id, fullRow) => editData(id, fullRow),
+  },
 });
 export const renderUsers = async (params = { pagina: 1 }) => {
   // si el filtro esta vacio, debemos de enviar la peticion sin parametros, en caso contrario, con el parametro especificado.
-  const responseUsers = await Usuarios.getData(`${vars.url}consultUser`, 'GET', params);
+  const responseUsers = await Usuarios.getData(`${vars.url}getData`, 'GET', params);
   let dataResponse = responseUsers.data;
   let realPage = responseUsers.data.paginaActual;
 
@@ -248,8 +234,76 @@ export const executePaginate = () => {
 };
 
 const verDetalle = (idRow, fullRow) => {
-  // re direccionamos eliminando el historial de la pagina anterior
+  // Guardamos los datos en localstorage y cuando estemos en el archivo lo recibimos y lo consultamos.
+  Storage.addValue({ key: 'detailUSer', item: JSON.stringify(fullRow) });
   window.location.replace(`${vars.url}detailUser`);
+};
+
+const editData = (id, fullRow) => {
+  // re asignamos las keys del objeto correspondiente al nombre del input y eliminamos las propiedades nuevas.
+  fullRow['usu_docum'] = fullRow.nroDocumento;
+  fullRow['usu_id'] = fullRow.IdUsuario;
+  fullRow['usu_apellidos'] = fullRow.apellidos;
+  fullRow['usu_nombres'] = fullRow.nombreCompleto;
+  fullRow['usu_email'] = fullRow.email;
+  fullRow['usu_telefono'] = fullRow.telefono;
+  fullRow['usu_direccion'] = fullRow.direccion;
+  fullRow['usu_password'] = fullRow.password;
+  delete fullRow.nroDocumento;
+  delete fullRow.apellidos;
+  delete fullRow.nombreCompleto;
+  delete fullRow.email;
+  delete fullRow.telefono;
+  delete fullRow.direccion;
+  delete fullRow.password;
+  delete fullRow.IdUsuario;
+
+  fillDataForm(fullRow, forms.formUpdateDataUser);
+  InitComponents.initInputs(); // re iniciamos los inputs.
+
+  // abrir el modal.
+  openModal(modals.modalEditarUsuario);
+};
+
+closeModal(modals.modalEditarUsuario, buttons.btnCloseModalEditarUsuario);
+
+const changeStatusUser = () => {};
+
+// evento para actualizar el usuario.
+// actualizar usuario
+export const updateUser = () => {
+  if (forms.formUpdateDataUser) {
+    forms.formUpdateDataUser.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      let usu_observacion = data.usu_observacion;
+
+      if (String(usu_observacion).length > 100) {
+        initAlert('limite de caracteres superado en el campo de observacion', 'info');
+        return;
+      }
+      // esto esta comentado hasta que solucione el rol
+      // if (!validateFormData({ formData: formData, campos: inputOptionals, mapForm: mapForm }))
+      //   return;
+
+      try {
+        const result = await Usuarios.sendData(`${vars.url}save`, 'PUT', data);
+
+        if (result.status) {
+          initAlert(result.message, 'success');
+          modals.modalEditarUsuario.style.display = 'none';
+          // renderizar nuevamente la pagina.
+          renderUsers({ pagina: dataPaginate.paginaActual });
+          return;
+        }
+      } catch (error) {
+        initAlert(error.message || 'Error en la solicitud', 'error');
+      }
+    });
+  }
 };
 
 //Cambiar estado de inactivar el usuario

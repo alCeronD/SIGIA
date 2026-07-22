@@ -485,7 +485,7 @@ export const createCheckboxGeneric = ({
  * @param {*} mapForm - Objeto del formulario para validar que la información del Form Data tenga información, {"nombre del campo ": "place holder del usuario final"}
  * @returns {boolean}
  */
-export const validateFormData = ({ formData, campos, mapForm } = {}) => {
+export const validateFormData = ({ formData = null, campos = {}, mapForm = {} } = {}) => {
   for (const [key, value] of formData.entries()) {
     const isEmpty = !value || value.toString().trim() === '';
     // pasamos por referencia los valores opcionales.
@@ -495,6 +495,7 @@ export const validateFormData = ({ formData, campos, mapForm } = {}) => {
       return false;
     }
   }
+
   return true;
 };
 

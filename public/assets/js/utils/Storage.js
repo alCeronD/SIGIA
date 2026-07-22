@@ -11,3 +11,11 @@ export const Storage = {
     return window.localStorage.getItem(key);
   },
 };
+
+export const getValue = (key) => {
+  return JSON.parse(window.localStorage.getItem(key));
+};
+
+export const deleteDataStorage = (key) => {
+  sessionStorage.removeItem(key);
+};

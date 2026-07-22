@@ -12,12 +12,24 @@ export const mapForm = {
   usu_observacion: 'Notas adicionales al usuario',
 };
 
-export const formSelectosUpdate = {
+export const forms = {
   formUpdateUser: document.querySelector('#formUpdateUser'),
+  formUpdateDataUser: document.querySelector('#formUpdateDataUser'),
+};
+
+// inputs de los formularios
+export const inputForms = {
+  formUpdateDataUser: {
+    observacion: forms.formUpdateDataUser.querySelector('#usu_observacion'),
+  },
 };
 
 export const modals = {
   modalEditarUsuario: document.querySelector('#modalEditarUsuario'),
+};
+
+export const buttons = {
+  btnCloseModalEditarUsuario: document.querySelector('.close-modal'),
 };
 
 export const vars = {

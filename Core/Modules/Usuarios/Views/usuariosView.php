@@ -53,7 +53,7 @@
     <span class="close-modal btn-flat red-text right" title="Cerrar">&times;</span>
     <h5 class="teal-text text-darken-3">Editar Informacion Usuario</h5>
 
-    <form id="formUpdateUser">
+    <form id="formUpdateDataUser">
       <input type="hidden" name="usu_id" id="usu_id">
 
       <div class="input-field docum">
@@ -82,8 +82,13 @@
       </div>
 
       <div class="input-field direccion">
-        <label for="usu_direccion" class="active">Dirección *</label>
+        <label for="usu_direccion" class="active">Dirección </label>
         <input type="text" name="usu_direccion" id="usu_direccion">
+      </div>
+
+      <div class="input-field observacion">
+        <textarea name="usu_observacion" id="usu_observacion" class="materialize-textarea"></textarea>
+        <label for="usu_observacion">Notas adicionales al usuario:</label>
       </div>
 
       <div class="input-field password">
@@ -100,7 +105,7 @@
       </div>
 
       <div class="inputBtn btn-update">
-        <button type="submit" class="btn  waves-effect  btnInfo">
+        <button type="submit" class="btn  waves-effect btnInfo">
           <i class="material-icons">save</i>
         </button>
       </div>

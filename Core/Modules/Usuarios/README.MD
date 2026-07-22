@@ -59,7 +59,10 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [ ] Re factorizar css
 - [ ] Re factorizar js
 - [X] Crear componente de paginacion en los registros de los usuarios.
+- [X] Implementar update
 - [ ] Re factorizar backend moviendo todo lo de modelo a las acciones del controlador
+- [ ] Buscar cual es la mejor forma de implementar el actualizar la contraseña de un usuario
+- [ ] solicitar los datos de tipo de documento y roles y guardarlo en localstorage para su re utilizacion, hacerlo en el archivo usuariosIndex.js
 - [ ] Implementar y arreglar las funcionales ya definidas, estas funcionalidades estan en las historias de usuario de la documentación en el drive
 - [ ] Limpiar los datos de los nuevos usuarios usando DIRTY DATA (PYTHON)
 - [ ] Cargar datos limpios a la tabla de usuario

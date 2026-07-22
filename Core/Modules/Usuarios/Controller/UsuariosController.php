@@ -1,6 +1,5 @@
 <?php
 
-use ZipStream\Test\Util;
 
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once __DIR__ . '/../Const/UsuariosConst.php';
@@ -9,17 +8,9 @@ require_once BASE_URL . '/' . CR_AUTOLOAD;
 class UsuariosController extends ConfigController
 {
 
-    public $usu_docum;
-    public $usu_nombres;
-    public $usu_apellidos;
-    public $usu_password;
-    public $usu_email;
-    public $usu_telefono;
-    public $usu_id_estado;
     protected RolesModel $rolesModel;
     protected ServicesTipoDocumento $stp;
     protected ServicesRoles $sRoles;
-    // protected ConfigModulesModel $configModules;
     protected UsuariosModel $usuariosModel;
     protected UsuariosRolesModel $usuariosRModel;
     protected ServicesUsuarios $sUser;
@@ -36,7 +27,8 @@ class UsuariosController extends ConfigController
             'createUserView' => ['CreateUser.js'],
             'auditoriaUserView' => ['AuditoriasUsuarios.js'],
             'usuariosView' => ['UsuariosView.js'],
-            'actualizarDatosView' => ['UpdatePersonalData.js', 'Functions-updatePersonalData.js']
+            'actualizarDatosView' => ['UpdatePersonalData.js', 'Functions-updatePersonalData.js'],
+            'detailUser' => ['detailUser.js']
         ]
     ];
     public function __construct()
@@ -124,8 +116,73 @@ class UsuariosController extends ConfigController
 
     public function usuariosView()
     {
+        // solicitamos los tipos de documento para renderizar los
+
         $path = BASE_URL . US_ROUTE_USUARIOS_LIST_VIEW;
         Parent::renderView($path, __FUNCTION__);
+    }
+
+    /**
+     * Function para traer los usuarios.
+     *
+     * @return void
+     */
+    public function getData()
+    {
+        header(CONTENT_TYPE);
+        // extraer las claves de acceso para la consulta de los usuarios usando filtros.
+        $filter = empty($_GET['keyFilter']) ? '' : $_GET['keyFilter'];
+        $valueFilter = empty($_GET['valueFilter']) ? '' : $_GET['valueFilter'];
+        $page = (isset($_GET[CR_PAGINA])) ? (int) $_GET[CR_PAGINA] : 1;
+        $limit = (isset($_GET[CR_WORD_LIMIT])) ? (int) $_GET[CR_WORD_LIMIT] : LIMIT;
+
+        $filter = match ($filter ?? '') {
+            'nombre'    => 'usu_nombres',
+            'documento' => 'usu_docum',
+            ''          => '',
+            default     => 'usu_id_estado',
+        };
+
+        if ($filter === 'usu_id_estado') {
+            $valueFilter = $valueFilter === 'activo' ? 1 : 2;
+        }
+
+        if ($filter === 'usu_docum') $valueFilter = (int) $valueFilter;
+
+        // creamos el arreglo con los valores o en su defecto vacio para ejecutar el count para obtener su paginacion.
+        if (!empty($filter) && !empty($valueFilter)) {
+            $dataCountSql[CR_DATA] = [
+                $filter => "%$valueFilter%"
+            ];
+        } else {
+            $dataCountSql[CR_DATA] = [];
+        }
+
+        // accedemos al count en el servicio
+        $countUsers = $this->sUser->getCount($filter, $valueFilter)->prepareSql($dataCountSql)->get();
+
+        $paginate = UtilsFunctions::executePaginate($countUsers['rowCounts'], $limit, $page);
+
+
+        $dataSql[CR_DATA] = [
+            CR_WORD_LIMIT           => $limit,
+            CR_OFFSET => (int) $paginate[CR_OFFSET],
+        ];
+
+        if (!empty($filter) && !empty($valueFilter)) {
+            $dataSql[CR_DATA][$filter] = "%$valueFilter%";
+        }
+
+        $queryAllUsers = $this->sUser->getAllUsers($filter, $valueFilter)->prepareSql($dataSql)->get();
+
+        if (count($paginate) > 0) {
+            Response::responseRequest(HttpStatus::OK, true, "Registros", [
+                CR_TOTAL_REGISTROS => $countUsers['rowCounts'],
+                CR_PAGINA_ACTUAL => ($page > $paginate[CR_TOTAL_PAGINAS]) ? $paginate[CR_TOTAL_PAGINAS] : $page, //Aca devolvemos la pagina, pero cuando se borra el ultimo registro de una pagina estamos devolviendo la pagina que recibimos desde la peticion, cuando hacemos la paginacion, si la pagina ES MAYOR A LA CANTIDAD DE PAGINAS TOTALES, NO DEVOLVEMOS LA PAGINA RECIBIDA, SINO LA ULTIMA PAGINA. esto para poder renderizar de forma correcta la informacion.
+                CR_CANTIDAD_PAGINAS => $paginate[CR_TOTAL_PAGINAS],
+                CR_DATA => $queryAllUsers
+            ]);
+        }
     }
 
     /**
@@ -226,7 +283,33 @@ class UsuariosController extends ConfigController
         }
     }
 
-    public function save() {}
+    // function para actualizar informacion del usuario
+    public function save()
+    {
+        try {
+            header(CONTENT_TYPE);
+            $data = UtilsFunctions::returnGetDecode();
+
+            $usu_observacion = $data['usu_observacion'] ?? '';
+            if (strlen($usu_observacion) > 100) {
+                throw new Exception('Caracteres máximos permitidos en el campo de observacion: 100', HttpStatus::UNPROCESSABLE_ENTITY);
+            }
+
+            $dataUpdate[CR_DATA] = $data;
+            // actualizar datos.
+            $responseUpdate = $this->usuariosModel->update($data)->where()->prepareSql($dataUpdate)->get();
+
+            if (!$responseUpdate['status']) {
+                $messageResponse = DatabaseHandler::validateResponse($responseUpdate);
+                Response::responseRequest($messageResponse['codeResponse'], false, $messageResponse['message'], []);
+                return;
+            }
+
+            Response::responseRequest(HttpStatus::OK, true, US_MESSAGE_DATA_USER . US_MESSAGE_UPDATE_PERSONAL_DATA, []);
+        } catch (\Throwable $e) {
+            Response::responseRequest($e->getCode(), false, $e->getMessage(), []);
+        }
+    }
 
     public function savePersonalData()
     {
@@ -245,63 +328,7 @@ class UsuariosController extends ConfigController
 
         Response::responseRequest(HttpStatus::OK, true, US_MESSAGE_DATA_USER . US_MESSAGE_UPDATE_PERSONAL_DATA, []);
     }
-    public function consultUser()
-    {
-        header(CONTENT_TYPE);
-        // extraer las claves de acceso para la consulta de los usuarios usando filtros.
-        $filter = empty($_GET['keyFilter']) ? '' : $_GET['keyFilter'];
-        $valueFilter = empty($_GET['valueFilter']) ? '' : $_GET['valueFilter'];
-        $page = (isset($_GET[CR_PAGINA])) ? (int) $_GET[CR_PAGINA] : 1;
-        $limit = (isset($_GET[CR_WORD_LIMIT])) ? (int) $_GET[CR_WORD_LIMIT] : LIMIT;
 
-        $filter = match ($filter ?? '') {
-            'nombre'    => 'usu_nombres',
-            'documento' => 'usu_docum',
-            ''          => '',
-            default     => 'usu_id_estado',
-        };
-
-        if ($filter === 'usu_id_estado') {
-            $valueFilter = $valueFilter === 'activo' ? 1 : 2;
-        }
-
-        if ($filter === 'usu_docum') $valueFilter = (int) $valueFilter;
-
-        // creamos el arreglo con los valores o en su defecto vacio para ejecutar el count para obtener su paginacion.
-        if (!empty($filter) && !empty($valueFilter)) {
-            $dataCountSql[CR_DATA] = [
-                $filter => "%$valueFilter%"
-            ];
-        } else {
-            $dataCountSql[CR_DATA] = [];
-        }
-
-        // accedemos al count en el servicio
-        $countUsers = $this->sUser->getCount($filter, $valueFilter)->prepareSql($dataCountSql)->get();
-
-        $paginate = UtilsFunctions::executePaginate($countUsers['rowCounts'], $limit, $page);
-
-
-        $dataSql[CR_DATA] = [
-            CR_WORD_LIMIT           => $limit,
-            CR_OFFSET => (int) $paginate[CR_OFFSET],
-        ];
-
-        if (!empty($filter) && !empty($valueFilter)) {
-            $dataSql[CR_DATA][$filter] = "%$valueFilter%";
-        }
-
-        $queryAllUsers = $this->sUser->getAllUsers($filter, $valueFilter)->prepareSql($dataSql)->get();
-
-        if (count($paginate) > 0) {
-            Response::responseRequest(HttpStatus::OK, true, "Registros", [
-                CR_TOTAL_REGISTROS => $countUsers['rowCounts'],
-                CR_PAGINA_ACTUAL => ($page > $paginate[CR_TOTAL_PAGINAS]) ? $paginate[CR_TOTAL_PAGINAS] : $page, //Aca devolvemos la pagina, pero cuando se borra el ultimo registro de una pagina estamos devolviendo la pagina que recibimos desde la peticion, cuando hacemos la paginacion, si la pagina ES MAYOR A LA CANTIDAD DE PAGINAS TOTALES, NO DEVOLVEMOS LA PAGINA RECIBIDA, SINO LA ULTIMA PAGINA. esto para poder renderizar de forma correcta la informacion.
-                CR_CANTIDAD_PAGINAS => $paginate[CR_TOTAL_PAGINAS],
-                CR_DATA => $queryAllUsers
-            ]);
-        }
-    }
 
     /**
      * Function para ver el detalle completo del usuario
@@ -310,84 +337,9 @@ class UsuariosController extends ConfigController
      */
     public function detailUser()
     {
-        // header(CONTENT_TYPE);
         $path = BASE_URL . US_ROUTE_DETAIL_USER;
         Parent::renderView($path, __FUNCTION__);
     }
-    // public function updateUserJSON(array $data)
-    // {
-    //     // validatePermisos('usuarios','updateUserJSON');
-    //     header('Content-Type: application/json; charset=utf-8');
-
-    //     if (!isset($data['usu_id']) || empty($data['usu_id'])) {
-    //         http_response_code(400);
-    //         echo json_encode(["status" => "error", "message" => "ID de usuario requerido."]);
-    //         exit;
-    //     }
-
-    //     $id = $data['usu_id'];
-    //     $rol_id = $data['rol_id'];
-    //     $contrasena = $data['usu_password'] ?? null;
-
-    //     unset($data['usu_id'], $data['rol_id'], $data['usu_password']);
-
-    //     $userData = $this->usuariosModel->searchU($id);
-    //     $correoActual = $userData['data']['usu_email'];
-
-    //     if ($correoActual !== $data['usu_email']) {
-    //         $email = $this->usuariosModel->validateEmail($data['usu_email'], $id, false);
-    //         if ($email) {
-    //             http_response_code(409);
-    //             echo json_encode(["status" => "error", "message" => "El correo ya está en uso."]);
-    //             exit;
-    //         }
-    //     }
-
-    //     foreach ($data as $key => $value) {
-    //         if (empty($value)) {
-    //             http_response_code(422);
-    //             echo json_encode(["status" => "error", "message" => "El campo \"$key\" es obligatorio."]);
-    //             exit;
-    //         }
-    //     }
-
-    //     $this->usuariosModel->update($data, $id);
-
-    //     if (!empty($contrasena)) {
-    //         $hash = password_hash($contrasena, PASSWORD_DEFAULT);
-    //         $this->usuariosModel->actualizarContrasena($id, $hash);
-    //     }
-
-    //     $this->rolesModel->actRolUser($id, $rol_id);
-
-    //     http_response_code(200);
-    //     echo json_encode(["status" => "success", "message" => "Usuario actualizado exitosamente."]);
-    //     exit;
-    // }
-    // public function updateUserView()
-    // {
-    //     $id = $_GET['usu_id'];
-    //     $_SESSION['css'] = 'usuarios/usuarios.css';
-    //     $datos = new UsuariosModel();
-    //     $usuarioUpdate = $datos->searchU($id);
-
-    //     include_once __DIR__ . '/../../usuarios/views/updateView.php';
-    // }
-
-    // VISTA PARA ACTUALIZAR LOS DATOS PERSONALES DEL USUARIO.
-    // public function actualizarDatosView()
-    // {
-    //     $_SESSION['css'] = 'usuarios/usuarios.css';
-    //     $id = $_SESSION['usuario']['id'];
-    //     $datos = new UsuariosModel();
-    //     $data = $datos->searchU($id);
-    //     // Este valor es usado en la vista para dar visualizar su información.
-    //     $usuarioUpdate = $data['data'];
-
-    //     include_once __DIR__ . '/../../Usuarios/views/updateUserDate.php';
-    // }
-
-
 
     // public function deleteUserView()
     // {
@@ -425,48 +377,4 @@ class UsuariosController extends ConfigController
     //     }
     // }
 
-
-
-
 }
-
-// $objUsuarios = new usuariosController();
-
-// if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-//     $input = file_get_contents("php://input");
-//     $data = json_decode($input, true);
-
-//     if (is_array($data) && isset($data['action'])) {
-//         $action = $data['action'];
-//         unset($data['action']);
-
-//         switch ($action) {
-//             case 'addUser':
-//                 $objUsuarios->createUser($data);
-//                 break;
-
-//             case 'updateUser':
-//                 $objUsuarios->updateUserJSON($data); // método nuevo que creamos abajo
-//                 break;
-
-//             case 'cambiarEstado':
-//                 $objUsuarios->cambiarEstadoUsuarioJSON($data);
-//                 break;
-
-
-//             default:
-//                 http_response_code(400);
-//                 echo json_encode([
-//                     "status" => "error",
-//                     "message" => "Acción no válida"
-//                 ]);
-//                 break;
-//         }
-//     } else {
-//         http_response_code(400);
-//         echo json_encode([
-//             "status" => "error",
-//             "message" => "No se recibió una acción válida"
-//         ]);
-//     }
-// }

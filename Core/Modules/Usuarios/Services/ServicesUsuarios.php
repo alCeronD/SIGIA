@@ -38,6 +38,7 @@ class ServicesUsuarios
       'u.usu_email as "email"',
       'u.usu_telefono as "telefono"',
       'u.usu_direccion as "direccion"',
+      'u.usu_password AS "password"',
       'COALESCE(r.rl_nombre, "No asociado a rol") AS "rl_nombre"', #en caso de que me devuelva null, devolver el texto
       'COALESCE(ur.usr_rl_id, "Sin asignar") AS "rolIdUser"',
       'COALESCE(eu.est_nombre, "Sin estado") AS "estado_usuario"'

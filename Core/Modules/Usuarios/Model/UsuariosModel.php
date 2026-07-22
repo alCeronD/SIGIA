@@ -25,38 +25,6 @@ class UsuariosModel extends Crud
     ];
 
 
-    // public $usu_id;
-    // public $usu_docum;
-    // public $usu_nombres;
-    // public $usu_apellidos;
-    // public $usu_password;
-    // public $usu_email;
-    // public $usu_telefono;
-    // public $usu_id_estado;
-    // public $usu_tp_id;
-    // private $campos = ['usu_docum', 'usu_nombres', 'usu_apellidos', 'usu_email', 'usu_telefono'];
-    // private $conn;
-
-
-    // public function validateEmail(string $email = "", $identifier = 0, bool $isId = true): bool
-    // {
-    //     $conn = $this->conn->getConnect();
-    //     $query = $isId
-    //         ? "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_id != ?"
-    //         : "SELECT usu_id FROM usuarios WHERE usu_email = ? AND usu_docum != ?";
-
-
-    //     $stmt = $conn->prepare($query);
-    //     $paramType = $isId ? "si" : "ss";
-    //     $stmt->bind_param($paramType, $email, $identifier);
-
-    //     if (!$stmt->execute()) {
-    //         return false;
-    //     }
-    //     $result = $stmt->get_result();
-
-    //     return $result->num_rows > 0;
-    // }
     // public function actualizarContrasena($id, $hashContrasena)
     // {
 
@@ -71,46 +39,7 @@ class UsuariosModel extends Crud
     //         return false;
     //     }
     // }
-    // public function searchU(int $id = 0, $isCedula = false)
-    // {
-    //     $conn = $this->conn->getConnect();
 
-    //     if (!is_int($id)) {
-    //         return [
-    //             'message' => "id no definido",
-    //             'status' => false
-    //         ];
-    //     }
-
-    //     $query = $isCedula
-    //         ? "SELECT usu_id FROM usuarios WHERE usu_docum = ?"
-    //         : "SELECT usu_id, usu_docum, usu_nombres, usu_apellidos, usu_email, usu_direccion, usu_telefono FROM usuarios WHERE usu_id = ?";
-
-    //     $stmtUser = $conn->prepare($query);
-    //     $stmtUser->bind_param("i", $id);
-    //     if (!$stmtUser->execute()) {
-    //         return [
-    //             'message' => 'error al ejecutar la consulta',
-    //             'status' => false
-    //         ];
-    //     }
-
-    //     $result = $stmtUser->get_result();
-
-    //     if ($result && $result->num_rows > 0) {
-    //         return [
-    //             'data' => $result->fetch_assoc(),
-    //             'message' => 'registro encontrado',
-    //             'status' => true
-    //         ];
-    //     } else {
-    //         return [
-    //             'data' => [],
-    //             'message' => "no hay registro",
-    //             'status' => false
-    //         ];
-    //     }
-    // }
     // public function validateDocumento($documento)
     // {
     //     $documento = trim($documento);
