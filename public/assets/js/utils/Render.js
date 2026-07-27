@@ -46,6 +46,7 @@ export class Render extends HttpData {
         for (const [clave, valor] of Object.entries(itemElement)) {
           // uso el encadenamiento opcional, si no encuentra nada, devuelve undefined.
           const thElement = headerTable?.querySelector(`#${clave}`)?.getAttribute('id');
+
           // vamos a renderizar solo lo que esta en la tabla con sus respectivos ids validanto que el id de los encabezados sean iguales a las claves de la data a renderizar
           if (thElement === clave) {
             tdItem = document.createElement('td');
@@ -240,6 +241,8 @@ export class Render extends HttpData {
 
     selector.append(tr);
   }
+
+  executePaginates(pagina = 1, renderData = () => {}) {}
 
   get objBotones() {
     return this.#objBotones;

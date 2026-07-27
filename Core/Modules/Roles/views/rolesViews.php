@@ -16,11 +16,11 @@
             <table class="table table-bordered table-striped table-responsive tblConfigModules">
                 <thead class="table-dark" id="headerRoles">
                     <tr>
-                        <th>ID</th>
-                        <th>Nombre del Rol</th>
-                        <th>Descripción</th>
-                        <th>Status</th>
-                        <th>Acciones</th>
+                        <th id="rl_id">ID</th>
+                        <th id="rl_nombre">Nombre del Rol</th>
+                        <th id="rl_descripcion">Descripción</th>
+                        <th id="rl_status">Status</th>
+                        <th id="">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tableBodyRoles">

@@ -9,7 +9,7 @@ class RolesController extends ConfigController implements CrudInterface
     protected RolesFuncionesModel $rfModel;
     protected FuncionesModel $fModel;
     protected ServicesRoles $sRoles;
-    protected ServicesModulos $sModulos;
+    protected ServicesGestionModulos $sModulos;
     protected ServicesFunciones $sFunciones;
     protected PermisosModel $permisosModel;
     /**
@@ -37,7 +37,7 @@ class RolesController extends ConfigController implements CrudInterface
         $this->fModel = new FuncionesModel();
         $this->sRoles = new ServicesRoles();
         $this->rfModel = new RolesFuncionesModel();
-        $this->sModulos = new ServicesModulos();
+        $this->sModulos = new ServicesGestionModulos();
         $this->sFunciones = new ServicesFunciones();
         $this->createRoutes();
     }
@@ -47,16 +47,15 @@ class RolesController extends ConfigController implements CrudInterface
         $this->routes = [
             // inicio
             'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
-            // funciones
-            'rolesIndex' => [
-                'label' => 'Roles',
-                'url' => Router::createRoute('Roles', 'Roles', 'rolesIndex', false, 'dashboard'),
+            'permisosIndexView' => [
+                'label' => 'Seguridad del sistema',
+                'url' => Router::createRoute('Permisos', 'Permisos', 'permisosIndexView', false, CR_DASHBOARD_LOWER_CASE),
                 'parent' => 'dashboard'
             ],
             'mostrarRoles' => [
                 'label' => 'Ver Roles',
                 'url' => Router::createRoute('Roles', 'Roles', 'mostrarRoles', false, 'dashboard'),
-                'parent' => 'rolesIndex'
+                'parent' => 'permisosIndexView'
             ],
             'mostrarFuncionesAssoc' => [
                 'label' => 'Funciones asociadas',
@@ -290,7 +289,7 @@ class RolesController extends ConfigController implements CrudInterface
                         $functionsToAdd[] = [
                             'rlp_id_rl'  => $rolId,
                             'rlp_id_funcion'  => $value,
-                            '__index' => $key
+                            '__index' => $key,
                         ];
                     }
                 }

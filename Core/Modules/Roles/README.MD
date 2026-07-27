@@ -63,7 +63,7 @@ Gestiona los roles de usuario dentro del sistema, permitiendo su creación, edic
 - [X] Crear clase servicio para el consumo de los roles
 - [X] Ajustar proceso de asociacion de permisos - validar si las funciones por asociar ya existen en la base de datos.
 - [X] Ajustar proceso de definir si se ejecutan 3 pasos o 4, en donde uno de esos pasos puede ser solamente de eliminar los permisos porque vamos a quitarlos o en su defecto, solo guardar permisos.
+- [X] Implementar rastro de miga
 - [ ] Implementar feature de all check en el modulo para asociar todos los permisos que pertenecen al modulo
 - [ ] Ajustar css
-- [X] Implementar rastro de miga
 - [ ] Revisar el limite de caracteres en el input de registrar rol, debido a que este me marca un limite, error en la lógica de negocio.

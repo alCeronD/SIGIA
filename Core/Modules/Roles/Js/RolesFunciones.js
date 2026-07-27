@@ -56,7 +56,7 @@ const executeRolesFunciones = async (idRol = '', actualPage) => {
     id: element.id,
     idFuncion: element.idFuncion,
     nombreFuncion: element.nombreFuncion,
-    modulo: element.moduloAsociado,
+    moduloAsociado: element.moduloAsociado,
   }));
 
   dataPaginate = {};

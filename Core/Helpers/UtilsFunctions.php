@@ -44,7 +44,7 @@ class UtilsFunctions
             'SolicitudPrestamos',
             'TipoDocumento',
             'Marcas',
-            'Modulos'
+            'GestionModulos'
         ];
     }
 
@@ -96,18 +96,24 @@ class UtilsFunctions
      *
      * @param array $campos - arreglo con datos a comparar
      * @param array $mapCapos - arreglo clave valor en donde la clave debe ser la misma que la clave del parametro campos y su valor debe ser un nombre amigable para el usuario - ['ar_nombre' => 'nombre departamento']
-     * @return void
+     * @return array
      */
     public static function validateCampos(array $campos = [], array $mapCapos = [])
     {
         foreach ($campos as $key => $value) {
-            if (key_exists($key, $mapCapos) && empty($value)) {
+            if (key_exists($key, $mapCapos) && empty(trim($value))) {
                 $message = "El campo {$mapCapos[$key]} debe ser obligatorio";
-                Response::responseRequest(HttpStatus::BAD_REQUEST, false, $message, []);
-                return;
+                return [
+                    'message' => $message,
+                    'codeResponse' => HttpStatus::BAD_REQUEST,
+                    'status' => false
+                ];
             }
-            break;
         }
+
+        return [
+            'status' => true
+        ];
     }
 
     /**

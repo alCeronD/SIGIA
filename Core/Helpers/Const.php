@@ -1,7 +1,7 @@
 <?php
 
 //others
-define('BASE_URL', __DIR__);
+define('BASE_URL', __DIR__); // cambiar por BASE_PATH.
 define('LIMIT', 8);
 define('CONTENT_TYPE', 'Content-Type: application/json; charset=utf-8');
 
@@ -11,6 +11,7 @@ define('CR_AREAS', 'Areas');
 define('CR_MARCAS', 'Marcas');
 define('CR_ROLES', 'Roles');
 define('CR_USUARIOS', 'Usuarios');
+define('CR_GESTION_MODULOS', 'GestionModulos');
 // Words
 define('CR_CONTROLLER', 'Controller');
 define('CR_USER', 'usuario');
@@ -20,6 +21,7 @@ define('CR_ROL_ID', 'rol_id');
 define('CR_LA_FUNCION', 'Función');
 define('CR_NO_EXISTE', 'No existe');
 define('CR_MODULO', 'modulo');
+define('CR_ICONO', 'Icono');
 define('CR_DASHBOARD', 'Dashboard');
 define('CR_DASHBOARD_LOWER_CASE', 'dashboard');
 define('CR_OFFSET', 'offset');

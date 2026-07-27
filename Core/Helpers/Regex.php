@@ -8,8 +8,7 @@ class Regex
 
     public const SOLO_NUMEROS = '/^\d+$/';
     public const SERIE = '/^\d+-\d+$/';
-
-    public const SOLO_LETRAS = '/[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]/';
+    public const SOLO_LETRAS = '/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+$/';
 
     public static function validarNumeros($value)
     {

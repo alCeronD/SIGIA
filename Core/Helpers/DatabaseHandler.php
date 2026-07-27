@@ -10,7 +10,8 @@ class DatabaseHandler
       22001 => 'Datos de cadena o binarios truncados (El texto enviado es demasiado largo)',
       '42S02' => 'La tabla base o vista especificada no fue encontrada en el sistema',
       '42S22' => 'Columna no encontrada en la tabla especificada',
-      '08S01' => 'Fallo en el enlace de comunicación (Pérdida de conexión con el servidor de BD)'
+      '08S01' => 'Fallo en el enlace de comunicación (Pérdida de conexión con el servidor de BD)',
+      '22007' => 'Formato de fechas incorrecto'
     ],
     'codeError' => [
       1062 => 'Registro duplicado en índice UNIQUE o PRIMARY KEY',
@@ -41,6 +42,10 @@ class DatabaseHandler
       1406 => [
         'status_http' => HttpStatus::BAD_REQUEST, // 400
         'message'     => 'Error de capacidad: Uno de los campos supera el límite máximo de caracteres permitido.'
+      ],
+      1366 => [
+        'status_http' => HttpStatus::UNPROCESSABLE_ENTITY,
+        'message' => "Error en el formato de fechas definido."
       ]
     ]
   ]; //

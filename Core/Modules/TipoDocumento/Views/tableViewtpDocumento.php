@@ -2,11 +2,11 @@
 <table class="tblConfigModules" id="tableConfigTp">
     <thead id="tHeadTP">
         <tr>
-            <th>Código</th>
-            <th>Sigla</th>
-            <th>Tipo documento</th>
-            <th>Estatus</th>
-            <th>Opción</th>
+            <th id="tp_id">Código</th>
+            <th id="tp_sigla">Sigla</th>
+            <th id="tp_nombre">Tipo documento</th>
+            <th id="tp_status">Estatus</th>
+            <th id="">Opción</th>
         </tr>
     </thead>
     <tbody id="tableBodyTp">

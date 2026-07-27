@@ -18,11 +18,11 @@
       <table class="table table-bordered table-striped table-responsive" id="tableRolesFunciones">
         <thead class="table-dark" id="headerRoles">
           <tr>
-            <th>ID</th>
-            <th>id función</th>
-            <th>nombre función</th>
-            <th>modulo asociado</th>
-            <th>acciones</th>
+            <th id="id">ID</th>
+            <th id="idFuncion">id función</th>
+            <th id="nombreFuncion">nombre función</th>
+            <th id="moduloAsociado">modulo asociado</th>
+            <th id="">acciones</th>
           </tr>
         </thead>
         <tbody id="bodyRolesFunciones">

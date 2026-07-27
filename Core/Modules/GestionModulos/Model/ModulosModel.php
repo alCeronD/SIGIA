@@ -7,6 +7,7 @@ class ModulosModel extends Crud
   protected $campos = [
     'nombre_modulo', //nombre del modulo
     'icono', // icono representativo del modulo
-    'descripcion' // descripcion previa del modulo
+    'descripcion', // descripcion previa del modulo,
+    'status_modulo' //estado del modulo (se usa tinyint (1) true, (0) false)
   ];
 }

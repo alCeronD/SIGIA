@@ -115,18 +115,15 @@ abstract class Crud
   {
     $resultValidate = $this->validateArrays($insertValue);
 
-
     $orderArray = $this->ordenarArreglo($insertValue);
     // validamos si es un arreglo con arreglos internos.
     if ($resultValidate) {
 
       $this->sql = "INSERT INTO " . $this->table . " (" . $this->organizarCampos($this->campos) . ") ";
-
       $newRow = [];
       foreach ($insertValue as $key => $value) {
         $newRow[] = "(" . $this->organizarDatos($value) . ")";
       }
-
 
       $this->sql .= "VALUES ";
 

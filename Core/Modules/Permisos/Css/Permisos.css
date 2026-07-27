@@ -1,0 +1,37 @@
+:root {
+  --primary: #3a6c52;
+  --secundary: #004034;
+  --other: #ccc;
+  --white: #f0f0f0;
+  --btnEdit: #007d78;
+  --teal: #4db6ac;
+  --blue: #42a5f5;
+  --red: #ef5350;
+  --yellow: #ffa000;
+}
+
+/* Botón para ir al dashboard. */
+.close {
+  cursor: pointer;
+}
+
+.contentPermisos {
+  grid-template-areas:
+    "breadCrumbs breadCrumbs"
+    "titlePermisos titlePermisos"
+    "cards cards";
+
+  width: 100%;
+}
+
+.breadCrumbs {
+  grid-area: breadCrumbs;
+}
+
+.titlePermisos {
+  grid-area: titlePermisos;
+}
+
+.cards {
+  grid-area: cards;
+}

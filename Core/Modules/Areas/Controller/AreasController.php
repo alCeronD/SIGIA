@@ -49,9 +49,9 @@ class AreasController extends ConfigController implements CrudInterface
     // execute paginate
     $resultPaginate = UtilsFunctions::executePaginate($resultCount['rowCounts'], $limit, $page);
 
-    $dataSql['data'] = [
-      'limit'           => $limit,
-      'offset' => (int) $resultPaginate[CR_OFFSET]
+    $dataSql[CR_DATA] = [
+      CR_WORD_LIMIT           => $limit,
+      CR_OFFSET => (int) $resultPaginate[CR_OFFSET]
     ];
 
     $resultSelect = $this->AreasModel->select()->from()->orderBy()->limit()->offset()->prepareSql($dataSql)->get();

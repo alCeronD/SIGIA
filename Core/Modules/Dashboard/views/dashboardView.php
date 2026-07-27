@@ -60,6 +60,8 @@
                         <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute(CR_ROLES, CR_ROLES, 'rolesIndex', false, CR_DASHBOARD_LOWER_CASE); ?>">Roles</a>
                         <a class="btn green btnGetUrl" href="<?php echo Router::createRoute(CR_MARCAS, CR_MARCAS, 'renderViewMarca', false, CR_DASHBOARD_LOWER_CASE); ?>">Marcas</a>
                         <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('GeneralCrud', 'GeneralCrud', 'renderGeneralView', false, CR_DASHBOARD_LOWER_CASE); ?>">GeneralCrud</a>
+                        <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('Permisos', 'Permisos', 'permisosIndexView', false, CR_DASHBOARD_LOWER_CASE); ?>">Seguridad del sistema</a>
+
                     </div>
                 </div>
             </div>
