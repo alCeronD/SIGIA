@@ -89,7 +89,16 @@ class GestionModulosController extends ConfigController implements CrudInterface
       header(CONTENT_TYPE);
       $data = UtilsFunctions::returnGetDecode();
 
-      if (empty($data)) throw new Exception("Datos enviados incorrectamente, proceso cancelado", HttpStatus::BAD_REQUEST);
+      if (empty($data)) throw new Exception(GM_MESSAGE_MODULE_EMPTY, HttpStatus::BAD_REQUEST);
+
+      // validamos si los campos obligatorios no estan vacios.
+      $mapCampos = [
+        GM_VAR_NOMBRE_MODULO => GM_WORDS_NOMBRE_MODULO,
+        GM_VAR_ICONO => GM_ICONO_MODULO
+      ];
+      $validateCampos = UtilsFunctions::validateCampos($data, $mapCampos);
+      //validamos los campos obligatorios y capturamos el catch en caso de que los campos obligatorios no se registren.
+      if (!$validateCampos[CR_STATUS]) throw new Exception($validateCampos[CR_MESSAGE], $validateCampos[CR_CODE_RESPONSE]);
 
       $nameModule = (string) ucfirst(strtolower(trim($data[GM_VAR_NOMBRE_MODULO])));
       $data[GM_VAR_NOMBRE_MODULO] = $nameModule;
@@ -178,11 +187,31 @@ class GestionModulosController extends ConfigController implements CrudInterface
     throw new \Exception('Not implemented');
   }
 
-  public function changeStatus() {}
+  public function changeStatus()
+  {
+    try {
+      header(CONTENT_TYPE);
+      $data = UtilsFunctions::returnGetDecode();
+      if (empty($data)) throw new Exception(GM_MESSAGE_MODULE_EMPTY, HttpStatus::BAD_REQUEST);
+      $finalMessage = ((int) $data['status_modulo'] === 1) ? GM_MESSAGE_MODULE_ENABLED : GM_MESSAGE_MODULE_DISABLED;
+
+      $dataChangeStatusPrepare[CR_DATA] = $data;
+      $responseChangeStatus = $this->modulosModel->update($data)->where()->prepareSql($dataChangeStatusPrepare)->get();
+
+      if (!$responseChangeStatus[CR_STATUS]) {
+        $responseHandler = DatabaseHandler::validateResponse($responseChangeStatus);
+        throw new Exception($responseHandler['message'], $responseHandler['codeResponse']);
+      }
+
+      Response::responseRequest(HttpStatus::OK, true, $finalMessage, []);
+    } catch (Exception $th) {
+      Response::responseRequest($th->getCode(), false, $th->getMessage(), []);
+    }
+  }
 
 
   /**
-   * Function para validar si el modulo enviado existe, se crea en forma de function para re validar en la function store.
+   * Function para validar si el modulo enviado existe, se crea en forma de function para re validar en la function store y save
    *
    * @param string $nameModule
    * @return array

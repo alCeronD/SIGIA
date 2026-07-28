@@ -18,7 +18,9 @@ define('GM_ROUTES_MODULES_VIEW', '/../Modules/GestionModulos/Views/ModulosView.p
 // message
 define('GM_MESSAGE_MODULE_CREATE', 'Módulo creado correctamente');
 define('GM_MESSAGE_MODULE_UPDATE', 'Datos del módulo actualizados correctamente');
-
+define('GM_MESSAGE_MODULE_EMPTY', 'Datos enviados incorrectamente, proceso cancelado');
+define('GM_MESSAGE_MODULE_ENABLED', 'Modulo Habilitado exitosamente');
+define('GM_MESSAGE_MODULE_DISABLED', 'Modulo Inhabilitado exitosamente');
 
 // vars
 define('GM_VAR_ICONO', 'icono');
