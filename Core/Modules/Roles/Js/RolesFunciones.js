@@ -5,6 +5,7 @@ import {
   createI,
   addClassItem,
   mostrarConfirmacion,
+  InitComponents,
 } from '../../../../public/assets/js/utils/index.js';
 
 const selectRol = document.querySelector('#selectRol');
@@ -109,29 +110,50 @@ selectRol.addEventListener('change', (e) => {
   executeRolesFunciones(rolIdSelect);
 });
 
-footerRolesFunciones.addEventListener('click', (f) => {
-  let button = f.target.tagName.toLowerCase();
-  // si en donde el usuario dio click el tag es de tipo button, dejecutar ciertas instrucciones.
-  if (button === 'button') {
-    if (f.target.value === 'preview') {
-      actualPage--;
-      if (actualPage < 1) {
-        actualPage = 1;
-        return;
-      }
+/** Logica de la paginación. */
+const executePaginate = () => {
+  let actualPage = 1;
+  // aplicamos la paginacion en la responsabilidad del footer.
+  footerRolesFunciones.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let btnValue = e.target.closest('.btnPaginate') ? e.target.dataset.action : null;
+    // ejecutamos el evento para una pagina en especifico.
+    if (e.target.closest('.liPaginate')) {
+      let pageLi = e.target.closest('.liPaginate') ? e.target.dataset.actualpage : 1;
+      actualPage = parseInt(pageLi); //parseamos el dato porque se requiere de tipo int para renderizar la pagina.
+
+      RolesFunciones.actualPage(actualPage); //setter para asignar el valor de la pagina a la propiedad de la instancia
+      executeRolesFunciones(rolIdSelect, actualPage);
+      return;
     }
-    if (f.target.value === 'next') {
-      actualPage++;
-      // si el valor de la pagina que presiona el usuario es mayor a las que hay en la tabla, dejar el de la tabla
-      if (actualPage > responseRolesFunciones.data.cantidadPaginas) {
-        actualPage = responseRolesFunciones.data.cantidadPaginas;
-        return;
+
+    // EJECUTAMOS LOS EVENTOS PARA LOS BOTONES BTNPAGINATE
+    if (e.target.closest('.btnPaginate')) {
+      if (!btnValue) return;
+      if (btnValue === 'preview') {
+        // re asignamos la pagina recibida por la peticion para asi reducir el valor y re enviar la peticion con la pagina anterior.
+        actualPage = dataPaginate.paginaActual;
+        actualPage--;
+        if (actualPage < 1) {
+          actualPage = 1;
+          return;
+        }
       }
+      if (btnValue === 'next') {
+        actualPage++;
+        if (actualPage > dataPaginate.cantidadPaginas) {
+          actualPage = dataPaginate.cantidadPaginas;
+          return;
+        }
+      }
+
+      RolesFunciones.actualPage(actualPage); //setter para asignar el valor de la pagina a la propiedad de la instancia
+      executeRolesFunciones(rolIdSelect, actualPage);
     }
-    RolesFunciones.actualPage(actualPage); //setter para asignar el valor de la pagina a la propiedad de la instancia
-    executeRolesFunciones(rolIdSelect, actualPage);
-  }
-});
+  });
+};
 
 document.addEventListener('DOMContentLoaded', async () => {
   // bodyRolesFunciones.innerHTML = 'seleccione el rol para visualizar las funciones asociadas';
@@ -156,6 +178,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   selectRol.appendChild(fragment);
 
   // inicializar selects
-  const selectsMaterialize = document.querySelectorAll('select');
-  let instances = M.FormSelect.init(selectsMaterialize, optionsSelect);
+  InitComponents.initSelect();
+  // ejecutamos function de paginacion
+  executePaginate();
 });

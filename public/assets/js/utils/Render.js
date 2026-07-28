@@ -145,6 +145,7 @@ export class Render extends HttpData {
     // validamos mostrar los numeros de paginas entre 1 a 5, en caso contrario, hacer un calculo y mostrar las paginas de 2 o de 3 en 3.
     if (dataPaginate.cantidadPaginas >= 1 && dataPaginate.cantidadPaginas <= 5) {
       const liPreview = document.createElement('li');
+      let li = null; // lo creamos por fuera porque una vez renderizemos. vamos a validar aplicar el estilo active cuando el usuario haga click.
       liPreview.style.cursor = 'pointer'; //hacemos que el li tenga pointerevent para dar click
       liPreview.style.pointerEvents = 'auto'; //hacemos que el li tenga pointerevent para dar click
       addClassItem(liPreview, { btnPaginate: 'btnPaginate' });
@@ -154,16 +155,15 @@ export class Render extends HttpData {
 
       ul.append(liPreview);
       while (actualPage <= dataPaginate.cantidadPaginas) {
-        const li = document.createElement('li');
+        li = document.createElement('li');
         li.innerText = actualPage;
         addClassItem(li, { wavesEffect: 'waves-effect', liPaginate: 'liPaginate' });
         li.dataset.actualpage = actualPage;
-
         // si estas en la pagina actual entonces agregarle la clase para determinar que esta activa.
         if (actualPage === this.#actualPage) {
           addClassItem(li, { active: 'active' });
         } else {
-          ul.classList.remove('active');
+          li.classList.remove('active');
         }
 
         ul.append(li);
@@ -177,7 +177,6 @@ export class Render extends HttpData {
       liNext.append(iBtnNext);
       liNext.style.cursor = 'pointer'; //hacemos que el li tenga pointerevent para dar click
       liNext.style.pointerEvents = 'auto'; //hacemos que el li tenga pointerevent para dar click
-
       ul.append(liNext);
       containerPaginate.append(ul);
     } else {
