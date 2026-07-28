@@ -166,7 +166,12 @@ const loadTable = async ({ pagina: actualPage }) => {
   dataPaginate['totalRegistros'] = responseGetData.data.totalRegistros;
   dataPaginate['paginaActual'] = realPage;
   dataPaginate['cantidadPaginas'] = responseGetData.data.cantidadPaginas;
-  render.renderData(bodyTbl, tableConfigTp, 'tp_id', data, { tp_status: 'tp_status' });
+  render.renderData({
+    bodyTbl: bodyTbl,
+    headerTable: tableConfigTp,
+    id: 'tp_id',
+    data: data,
+  });
   render.renderPaginate(dataPaginate, footerTp);
 };
 

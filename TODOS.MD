@@ -24,6 +24,7 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Crear los campos created_at y updated_at a todas las tablas.
 - [ ] RE factorizar el menu del footer
 - [X] Arreglar archivo README.MD de los modulos que ya han sido ajustados (areas, tipo documento, marcas, roles, usuarios).
+- [ ] Clase render - al renderizar un dato en una tabla renderizar exclusivamente el valor que esta en el id de la tabla, asi haya espacios entre ellas.
 - [ ] Crear funcionalidad para ejecutar la paginacion de manera dinamica, ya se hizo su renderizado, ahora se ejecutara su renderizado desde la clase propia.
 - [ ] enviar los estilos y el javascript de footer.php a archivos independientes.
 - [ ] ajustar renderizado de menu (ver si se puede implementar por peticiones) y no por variables de session(usar localstorage).

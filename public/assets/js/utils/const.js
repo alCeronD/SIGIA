@@ -12,3 +12,10 @@ export const messages = {
   deleteSuccess: 'Recirso eliminado',
   titleEliminar: 'Eliminar regitro',
 };
+
+export const METHOD = {
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT',
+  DELETE: 'DELETE',
+};

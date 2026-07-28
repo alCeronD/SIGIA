@@ -31,7 +31,13 @@ export class Render extends HttpData {
    * @param {Object.<string, string>} [customText={}] - objeto clave valor que contiene el campo que queremos personalizar, ejemplo = tp_status, usamos ese campo para validar su existencia y colocar en texto si esta habilitado o inhabilitado.
    * @returns {Promise<void>} No retorna nada
    */
-  async renderData(bodyTbl = null, headerTable = null, id = '', data = {}, customText = {}) {
+  async renderData({
+    bodyTbl = null,
+    headerTable = null,
+    id = '',
+    data = {},
+    customText = {},
+  } = {}) {
     // NECESITO EL FETCH para renderizar la data.
     try {
       let fragmentBody = document.createDocumentFragment();

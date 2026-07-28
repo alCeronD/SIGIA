@@ -71,15 +71,22 @@ class GestionModulosController extends ConfigController implements CrudInterface
     ];
 
     $sql = [
-      'nombre_modulo AS `nombreModulo`',
+      'id_m AS `id_m`',
+      'nombre_modulo AS `nombre_modulo`',
       'icono AS `icono`',
       'descripcion AS `descripcion`',
-      'IF(status_modulo = 1, "Activo", "Inactivo" ) AS `estadoModulo`'
+      'IF(status_modulo = 1, "Activo", "Inactivo" ) AS `status_modulo`'
     ];
 
     $queryModules = ($this->sModulos->getAllModulos(true, $sql))->prepareSql($dataSql)->get(); //enviamos flag true para continuar con la consulta, false para devolver el arreglo con todos los modulos.
-
-    Response::responseRequest(HttpStatus::OK, true, 'Registros', $queryModules);
+    if (count($resultPaginate) > 0) {
+      Response::responseRequest(HttpStatus::OK, true, "Registros", [
+        CR_TOTAL_REGISTROS => count($countModules),
+        CR_PAGINA_ACTUAL => ($page > $resultPaginate[CR_TOTAL_PAGINAS]) ? $resultPaginate[CR_TOTAL_PAGINAS] : $page, //Aca devolvemos la pagina, pero cuando se borra el ultimo registro de una pagina estamos devolviendo la pagina que recibimos desde la peticion, cuando hacemos la paginacion, si la pagina ES MAYOR A LA CANTIDAD DE PAGINAS TOTALES, NO DEVOLVEMOS LA PAGINA RECIBIDA, SINO LA ULTIMA PAGINA. esto para poder renderizar de forma correcta la informacion.
+        CR_CANTIDAD_PAGINAS => $resultPaginate[CR_TOTAL_PAGINAS],
+        CR_DATA => $queryModules
+      ]);
+    }
   }
 
   // update
@@ -90,6 +97,7 @@ class GestionModulosController extends ConfigController implements CrudInterface
       $data = UtilsFunctions::returnGetDecode();
 
       if (empty($data)) throw new Exception(GM_MESSAGE_MODULE_EMPTY, HttpStatus::BAD_REQUEST);
+
 
       // validamos si los campos obligatorios no estan vacios.
       $mapCampos = [
@@ -109,6 +117,7 @@ class GestionModulosController extends ConfigController implements CrudInterface
       // validar que el nombre del modulo no exista en la base de datos usando el valor diferente, es decir, excluir nuestro propio registro, para asi validar el directorio.
       $dataSelect[CR_DATA] = $data;
       $resultExistModule = $this->modulosModel->select()->from()->where([GM_VAR_NOMBRE_MODULO, '=', $nameModule])->where([GM_ID_MODULO, '<>', $id_m])->prepareSql($dataSelect)->get();
+
 
       // como el sistema encontro que ya existe el nombre de ese modulo y esta con OTRO ID, entonces lo marcamos como error.
       if (!empty($resultExistModule)) {
@@ -193,14 +202,15 @@ class GestionModulosController extends ConfigController implements CrudInterface
       header(CONTENT_TYPE);
       $data = UtilsFunctions::returnGetDecode();
       if (empty($data)) throw new Exception(GM_MESSAGE_MODULE_EMPTY, HttpStatus::BAD_REQUEST);
-      $finalMessage = ((int) $data['status_modulo'] === 1) ? GM_MESSAGE_MODULE_ENABLED : GM_MESSAGE_MODULE_DISABLED;
+      $finalMessage = ((int) $data[GM_STATUS_MODULO] === 1) ? GM_MESSAGE_MODULE_ENABLED : GM_MESSAGE_MODULE_DISABLED;
+      $data[GM_STATUS_MODULO] = $data[GM_STATUS_MODULO] === 1 ? 0 : 1; //invertimos los estados recibidos por el usuario para asi validarlo y ejecutarlo.
 
       $dataChangeStatusPrepare[CR_DATA] = $data;
       $responseChangeStatus = $this->modulosModel->update($data)->where()->prepareSql($dataChangeStatusPrepare)->get();
 
       if (!$responseChangeStatus[CR_STATUS]) {
         $responseHandler = DatabaseHandler::validateResponse($responseChangeStatus);
-        throw new Exception($responseHandler['message'], $responseHandler['codeResponse']);
+        throw new Exception($responseHandler[CR_MESSAGE], $responseHandler[CR_CODE_RESPONSE]);
       }
 
       Response::responseRequest(HttpStatus::OK, true, $finalMessage, []);

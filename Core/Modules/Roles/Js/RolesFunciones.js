@@ -64,7 +64,12 @@ const executeRolesFunciones = async (idRol = '', actualPage) => {
   dataPaginate['totalRegistros'] = responseRolesFunciones.data.totalRegistros;
   dataPaginate['paginaActual'] = responseRolesFunciones.data.paginaActual;
   dataPaginate['cantidadPaginas'] = responseRolesFunciones.data.cantidadPaginas;
-  RolesFunciones.renderData(bodyRolesFunciones, headerRoles, 'id', dataReduce);
+  RolesFunciones.renderData({
+    bodyTbl: bodyRolesFunciones,
+    headerTable: headerRoles,
+    id: 'id',
+    data: dataReduce,
+  });
   RolesFunciones.renderPaginate(dataPaginate, footerRolesFunciones);
 };
 

@@ -94,7 +94,12 @@ const loadTable = async ({ pagina: actualPage }) => {
   dataPaginate['paginaActual'] = realPage;
   dataPaginate['cantidadPaginas'] = responseGetData.data.cantidadPaginas;
 
-  Areas.renderData(s.tableBody, s.tableHeadArea, 'ar_cod', dataAreas);
+  Areas.renderData({
+    bodyTbl: s.tableBody,
+    headerTable: s.tableHeadArea,
+    id: 'ar_cod',
+    data: dataAreas,
+  });
   Areas.renderPaginate(dataPaginate, s.footerArea);
 };
 

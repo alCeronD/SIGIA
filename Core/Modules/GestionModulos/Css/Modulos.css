@@ -15,11 +15,14 @@
   cursor: pointer;
 }
 
+
+/* MODULO AREAS */
 .contentModulos {
   grid-template-areas:
     "breadCrumbs breadCrumbs"
     "titleModulos titleModulos"
-    "contentFormModulos .";
+    "contentFormModulos contentTableModulos";
+  height: fit-content;
   width: 100%;
 }
 
@@ -27,13 +30,43 @@
   grid-area: breadCrumbs;
 }
 
-.titlePermisos {
-  grid-area: titlePermisos;
+.titleModulos {
+  grid-area: titleModulos;
+  width: 100%;
 }
 
+
 .contentFormModulos {
+  grid-area: contentFormModulos;
   width: 100%;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+}
+
+.contentTableModulos {
+  grid-area: contentTableModulos;
+  width: 100%;
+  overflow-y: auto;
+  height: auto;
+}
+
+.modalContentModulos {
+  background-color: var(--white);
+  margin: 10% auto;
+  /* 15% from the top and centered */
+  padding: 20px;
+  width: 30%;
+  height: fit-content;
+  display: grid;
+  grid-template-areas:
+    "titleSection"
+    "formUpdate";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+}
+
+.titleSection {
+  grid-area: titleSection;
+}
+
+.formUpdate {
+  grid-area: formUpdate;
 }
