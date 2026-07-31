@@ -1,6 +1,5 @@
 <?php
 
-// ------------------------ DE ANTERIOR ENRUTADOR ------------------
 
 include_once __DIR__ . '/Core/Helpers/Autoload.php';
 

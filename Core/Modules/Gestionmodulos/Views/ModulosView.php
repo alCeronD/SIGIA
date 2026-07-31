@@ -85,5 +85,4 @@
     </div>
   </div>
 
-  <div id="modalAsingModulo" class="modal modal-overlay"></div>
 </div>

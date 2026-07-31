@@ -97,4 +97,28 @@ class ScanFiles
 
         return $cssToLoad; // Retornamos el array con los CSS que sí corresponden
     }
+
+    /**
+     * Funcion para buscar en los directorios del core los controladores pertenecientes a un modulo
+     *
+     * @param string $modulo
+     * @return array
+     */
+    public static function getControllers(String $modulo = ''): array
+    {
+        $ruta = realpath(BASE_URL . "/../Modules/{$modulo}/Controller/");
+
+        $controllers = array_diff(scandir($ruta), array('.', '..'));
+
+        // asignamos la misma value a la key, porque la necesitamos para validar su dato.
+        $controlls = [];
+        foreach ($controllers as $key => $value) {
+            $valueParse =  str_replace(".php", "", $value);
+            $controlls[$valueParse] = $valueParse;
+        }
+
+
+
+        return $controlls;
+    }
 }

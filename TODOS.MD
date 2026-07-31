@@ -24,7 +24,28 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Crear los campos created_at y updated_at a todas las tablas.
 - [ ] RE factorizar el menu del footer
 - [X] Arreglar archivo README.MD de los modulos que ya han sido ajustados (areas, tipo documento, marcas, roles, usuarios).
-- [ ] Clase render - al renderizar un dato en una tabla renderizar exclusivamente el valor que esta en el id de la tabla, asi haya espacios entre ellas.
+- [ ] Buscar como implementar mensajes de error a errores genericos de codigo, no de sintaxis., ejemplo: del error
+
+  ```php
+  // este error se genero porque no adicione la funcionalidad get()
+      # incorrecto
+      $dataInsert = $this->fModel->insert($data)->prepareSql($dataPrepare);
+      #correcto
+      $dataInsert = $this->fModel->insert($data)->prepareSql($dataPrepare)->get();
+
+  <br />
+  <b>Fatal error</b>:  Uncaught Error: Cannot use object of type FuncionesModel as array in /var/www/html/SIGIA/Core/Modules/Gestionmodulos/Controller/FuncionesController.php:60
+  Stack trace:
+  #0 /var/www/html/SIGIA/Core/Helpers/Router.php(55): FuncionesController-&gt;store()
+  #1 /var/www/html/SIGIA/Core/dashboard.php(13): Router::ExecuteFunction()
+  #2 {main}
+    thrown in <b>/var/www/html/SIGIA/Core/Modules/Gestionmodulos/Controller/FuncionesController.php</b> on line <b>60</b><br />
+  ```
+
+- [ ] Eliminar el parametro "PARAMETER" DE LA FUNCIONALIDAD ROUTER:URL
+- [ ] Cuando me quede sin internet el sistema no funcionaba producto de la conexion a los material icons de google, buscar una forma de evitar que el sistema se detenga cuando no haya conectividad a internet y requerir de librerias externas mediante url, una opcion es ver si podemos descargar los iconos e implementarlos en el sistema como libreria, similiar a lo que ocurre con materialize css.
+- [ ] BUSCAR UNA FORMA DE COMO GUARDAR DE MANERA ADECUADA TODOS LOS MODELOS QUE NO REQUEIREN CONTROLADORES, POR EJEMPLO EN UNA CARPETA LLAMADA MODELS DENTRO DE HELPERS.
+- [ ] Clase render - al renderizar un dato en una tabla renderizar exclusivamente el valor que esta en el id de la tabla, asi haya espacios entre ellas, si voy a cambiar la posicion de la tabla, cambiar también en donde se ubican los registros y los tds.
 - [ ] Crear funcionalidad para ejecutar la paginacion de manera dinamica, ya se hizo su renderizado, ahora se ejecutara su renderizado desde la clase propia.
 - [ ] enviar los estilos y el javascript de footer.php a archivos independientes.
 - [ ] ajustar renderizado de menu (ver si se puede implementar por peticiones) y no por variables de session(usar localstorage).

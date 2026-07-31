@@ -1,17 +1,17 @@
-import { initAlert, toastOptions } from '../../../../public/assets/js/utils/cases.js';
-import { validationRules } from '../../../../public/assets/js/utils/regex.js';
-import { Storage } from '../../../../public/assets/js/utils/Storage.js';
+import {
+  initAlert,
+  toastOptions,
+  validationRules,
+  StorageHelper,
+} from '../../../../public/assets/js/utils/index.js';
 
 // Proceso Storage para re direccionar inmediatamente al usuario en caso de que este tenga su inicio de sesión.
 window.addEventListener('storage', (g) => {
   const newValue = g.newValue;
   const key = g.key;
   if (key === 'sessionStatus' && newValue === 'true') {
-    console.log('if storage');
     window.location.href =
       '/Core/dashboard.php?modulo=Dashboard&controlador=Dashboard&function=dashboard';
-  } else {
-    console.log('else storage');
   }
 });
 
@@ -68,8 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .then((response) => response.json())
       .then((data) => {
         if (data.success && data.url) {
-          Storage.addValue({ key: 'sessionStatus', item: 'true' });
-
+          StorageHelper.addValue({ key: 'sessionStatus', item: 'true' });
           window.location.href = data.url;
         } else {
           initAlert(data.message, 'info', toastOptions);

@@ -1,11 +1,11 @@
 import { cancelProcess } from './utils/const.js';
 import {
-  Storage,
   mostrarConfirmacion,
   initAlert,
   initTooltip,
   sendData,
   InitComponents,
+  StorageHelper,
 } from './utils/index.js';
 
 // Inicializar selects de materialize.
@@ -16,7 +16,9 @@ document.addEventListener('DOMContentLoaded', function () {
   InitComponents.initModals();
 });
 
-const responseStatus = Storage.getValue('sessionStatus');
+// const responseStatus = Storage.getValue('sessionStatus');
+const responseStatus = StorageHelper.getValue('sessionStatus');
+
 // Uso este evento para validar el estado de la sessión, si es falso, cierro la sesión de las ventanas.
 window.addEventListener('storage', (f) => {
   const newValueStorage = f.newValue;
@@ -50,7 +52,7 @@ btnClose.forEach((btnCerrarSesion) => {
         const response = await sendData(url, 'POST', data);
 
         if (response.status) {
-          Storage.addValue({ key: 'sessionStatus', item: 'false' });
+          StorageHelper.addValue({ key: 'sessionStatus', item: 'false' });
           window.location.href = response.data.redirect;
         }
       } catch (error) {

@@ -12,7 +12,8 @@ define('GM_ICONO_MODULO', 'Icono del módulo');
 
 
 // urls
-define('GM_ROUTES_MODULES_VIEW', '/../Modules/GestionModulos/Views/ModulosView.php');
+define('GM_ROUTES_MODULES_VIEW', '/../Modules/Gestionmodulos/Views/ModulosView.php');
+define('GM_ROUTES_FUNCTIONS_ASSOC_VIEW', '/../Modules/Gestionmodulos/Views/FunctionsAssoc.php');
 
 
 // message

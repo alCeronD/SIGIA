@@ -453,6 +453,9 @@ abstract class Crud
   public function getCount()
   {
     $this->sql = "SELECT COUNT(*) FROM $this->table";
+    // $this->prepareSql();
+    // $this->get();
+    // return $this->get();
     return $this;
   }
 
@@ -501,6 +504,16 @@ abstract class Crud
   public function showSql(): string
   {
     return $this->sql;
+  }
+
+  /**
+   * Function para retornar el nombre de la tabla del modelo.
+   *
+   * @return string
+   */
+  public function getTable(): string
+  {
+    return $this->table;
   }
 
   public function beginTransaction()

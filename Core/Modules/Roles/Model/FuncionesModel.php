@@ -9,7 +9,7 @@ class FuncionesModel extends Crud
     'nombre_funcion_user', //Nombre de la funcion para el usuario final.
     'id_modulo', // id del modulo al que pertenece la funcion
     'tp_funcion', // tipo de la funcion
-    'created_at',
-    'updated_at'
+    // 'created_at',
+    // 'updated_at'
   ];
 }

@@ -424,6 +424,23 @@ export const createCheckbox = (seriales, placa) => {
   return p;
 };
 
+/** Funcionalidad para crear checkbox genericos de materialize. */
+export const createCheckboxex = () => {
+  let p = document.createElement('p');
+  let label = document.createElement('label');
+  let input = document.createElement('input');
+  let span = document.createElement('span');
+
+  input.setAttribute('type', 'checkbox');
+  input.classList.add('filled-in');
+
+  label.appendChild(input);
+  label.appendChild(span);
+  p.appendChild(label);
+
+  return p;
+};
+
 /**
  * Description Función para capturar el selector y devolver su selector.
  *

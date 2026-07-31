@@ -7,4 +7,9 @@
 - [ ]crear logica de negocio que me permita visualizar si la funcion existe o no en el archivo del controlador
 - [X] Implementar feature create, updated, changeStatus, verDetalle del modulo.
 - [] **Feature detalle modulo** - El detalle del modulo debera hacerse en otra vista en la que se debera de visualizar la informacion completa del modulo, el estado, y el listado de funcionalidades asociadas al modulo como tambien que roles tienen acceso al modulo.
-- [ ] **Feature update** actualizar los nombres de los modulos, el error esta en si escribo GeneralCrud me lo valida, si escribo Generalcrud no.
+- [X] **Feature update** actualizar los nombres de los modulos, el error esta en si escribo GeneralCrud me lo valida, si escribo Generalcrud no.
+- [ ] Implementar **funciones asociadas**
+  - [X] **funciones asociadas** select - implementar vista de las funciones asociadas al modulo
+  - [ ] **funciones asociadas** insert - implementar modal para crear nueva funcionalidad de crear funcion
+  - [ ] **funciones asociadas** update - implementar edicion del nombre de la base de datos
+  - [ ] **Implementar cambiar tipo de la base de datos** - (analizar alcance, si es del todo viable o no.)

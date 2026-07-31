@@ -24,4 +24,12 @@ class ServicesGestionModulos
       return $this->mModel->select($query)->from()->orderBy()->limit()->offset();
     }
   }
+
+  public function getNameModule(int $id_m = 0)
+  {
+    $dataPrepare[CR_DATA] = [
+      'id_m' => $id_m
+    ];
+    return $this->mModel->select(["nombre_modulo"])->from()->where()->prepareSql($dataPrepare)->get();
+  }
 }

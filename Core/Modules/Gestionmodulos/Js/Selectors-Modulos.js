@@ -7,7 +7,7 @@ export const table = {
   footer: document.querySelector('#tFooterModulos'),
 };
 export const vars = {
-  url: 'dashboard.php?modulo=GestionModulos&controlador=GestionModulos&function=',
+  url: 'dashboard.php?modulo=Gestionmodulos&controlador=Gestionmodulos&function=',
   dataModulos: null,
   actualPage: 1,
 };

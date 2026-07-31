@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once BASE_URL . '/Autoload.php';
 require_once __DIR__ . '/../Const/ConstGeneralCrud.php';
-class GeneralCrudController extends ConfigController
+class GeneralcrudController extends ConfigController
 {
   protected GeneralCrudModel $modelGeneralCrud;
   protected array $files = [

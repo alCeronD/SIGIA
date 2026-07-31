@@ -10,10 +10,12 @@ import {
   mostrarConfirmacion,
   openModal,
   Render,
+  StorageHelper,
   successChangeStatusDisable,
   successChangeStatusEnable,
   validateFormData,
 } from '../../../../public/assets/js/utils/index.js';
+import { selectors } from './Selectors-FunctionsAssoc.js';
 const Modulos = new Render({
   btnChangeStatus: {
     value: (fullRow, button) => {
@@ -53,6 +55,22 @@ const Modulos = new Render({
     },
     key: 'btnEdit',
     action: (id, row) => editarModulo(id, row),
+  },
+  btnAssingFunction: {
+    value: (row, button) => {
+      button.setAttribute('data-id', `${row.id_m}`);
+      button.setAttribute('data-nombre', `${row.nombre_modulo}`);
+      let iconEditar = createI('apps');
+      button.appendChild(iconEditar);
+      addClassItem(button, {
+        btn: 'btn',
+        waves: 'waves-effect',
+        hoover: 'waves-teal',
+        cyan: 'teal darken-1', //button color.
+      });
+    },
+    key: 'btnAssingFunction',
+    action: (id, row) => showFunctionsAssoc(id, row),
   },
 });
 let dataPaginate = {};
@@ -94,6 +112,7 @@ const executePaginate = () => {
     // ejecutamos el evento para una pagina en especifico.
     if (e.target.closest('.liPaginate')) {
       let actualPageData = e.target.closest('.liPaginate') ? e.target.dataset.actualpage : 1;
+      vars.actualPage = actualPageData;
       renderData({ pagina: actualPageData });
       return;
     }
@@ -128,6 +147,18 @@ const editarModulo = (id, row) => {
   // inicializar el input con materialize.
   InitComponents.initInputs();
   openModal(modals.modalEdit);
+};
+
+const showFunctionsAssoc = (id, row) => {
+  const dataKeyStorage = StorageHelper.getValue('dataModulo');
+  // si ya existe datos con esa clave, la eliminamos para luego re asignarla.
+  if (dataKeyStorage !== null) StorageHelper.deleteData('dataModulo');
+
+  // asignar el valor a localstorage, validar primero si ya existe una clave para asi borrarla.
+  StorageHelper.addValue({ key: 'dataModulo', item: JSON.stringify(row) });
+  // implementamos inmediatamente el texto antes de redireccionar.
+
+  window.location.href = `${vars.url}functionsAssocByModulosView`;
 };
 
 const changeStatus = (id, dataRow) => {
@@ -180,8 +211,8 @@ forms.formUpdate.addEventListener('submit', (e) => {
 
         if (responseUpdate.status) {
           initAlert(responseUpdate.message, 'success');
-          Modulos.actualPage(parseInt(vars.actualPage));
-          renderData({ pagina: parseInt(vars.actualPage) });
+          Modulos.actualPage(vars.actualPage);
+          renderData({ pagina: vars.actualPage });
           return;
         }
         if (!responseUpdate.status) throw new Error(responseUpdate.message);

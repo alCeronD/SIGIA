@@ -19,7 +19,7 @@ if (session_status() === PHP_SESSION_NONE) {
   <title>Login SIGIA</title>
 
   <!-- Materialize CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
   <!-- Estilos personalizados -->
   <link rel="stylesheet" href='Core/Modules/Login/Css/Login.css'>
   <link rel="icon" type="image/x-icon" href="/SIGIA/public/assets/image/sSigia.ico">
@@ -36,8 +36,6 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
         <h5 class="center-align">Iniciar sesión</h5>
 
-        <!-- <form id="loginForm" action="<?php //echo createRoute("Login","Login","login");
-                                          ?>"> -->
         <form id="loginForm" action="index.php?modulo=Login&controlador=Login&function=login">
           <div class="input-field">
             <input id="docum" name="docum" type="number" min="0" class="validate">
@@ -60,7 +58,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 
   <!-- Materialize JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
 
   <!-- JS personalizado -->
   <script type="module" src="/Core/Modules/Login/Js/Login.js"></script>

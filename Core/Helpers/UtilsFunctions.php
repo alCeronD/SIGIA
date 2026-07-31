@@ -32,19 +32,19 @@ class UtilsFunctions
         return [
             'Categorias',
             'Areas',
-            'GeneralCrud',
+            'Generalcrud',
             'Dashboard',
             'Elementos',
             'Login',
             'Permisos',
             'Reportes',
-            'ReservaPrestamos',
+            'Reservaprestamos',
             'Roles',
             'Usuarios',
-            'SolicitudPrestamos',
-            'TipoDocumento',
+            'Solicitudprestamos',
+            'Tipodocumento',
             'Marcas',
-            'GestionModulos'
+            'Gestionmodulos'
         ];
     }
 

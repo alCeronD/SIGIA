@@ -184,7 +184,6 @@ class CategoriasController
         ]);
     }
 
-
     public function cambiarEstadoJSON($data)
     {
         validatePermisos('Categorias', 'cambiarEstadoJSON');
@@ -217,46 +216,16 @@ class CategoriasController
             ]);
         }
     }
-}
 
-include_once __DIR__ . '/../../../Config/Conn.php';
-$conn = new Conn();
-$conexion = $conn->getConnect();
-$objCategorias = new categoriasController($conexion);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Procesar formulario de registro (FormData)
-    if (!empty($_POST) && isset($_POST['ca_nombre'])) {
-        $objCategorias->createCategoria();
-        exit();
-    }
-
-    // Procesar peticiones AJAX con JSON
-    $input = file_get_contents("php://input");
-    $data = json_decode($input, true);
-
-    if (is_array($data) && isset($data['action'])) {
-        $action = $data['action'];
-        unset($data['action']);
-
-        switch ($action) {
-            case 'cambiarEstado':
-                $objCategorias->cambiarEstadoJSON($data);
-                break;
-
-            default:
-                http_response_code(400);
-                echo json_encode([
-                    "success" => false,
-                    "message" => "Acción no válida."
-                ]);
-                break;
+    public function store()
+    {
+        try {
+            header(CONTENT_TYPE);
+            $data = UtilsFunctions::returnGetDecode();
+            var_dump($data);
+            die();
+        } catch (\Exception $th) {
+            Response::responseRequest($th->getCode(), false, $th->getMessage());
         }
-    } else {
-        http_response_code(400);
-        echo json_encode([
-            "success" => false,
-            "message" => "No se recibió una acción válida."
-        ]);
     }
 }

@@ -6,12 +6,11 @@ define('LIMIT', 8);
 define('CONTENT_TYPE', 'Content-Type: application/json; charset=utf-8');
 
 //Name Modules
-define('CR_CONFIG_MODULES', 'ConfigModules');
 define('CR_AREAS', 'Areas');
 define('CR_MARCAS', 'Marcas');
 define('CR_ROLES', 'Roles');
 define('CR_USUARIOS', 'Usuarios');
-define('CR_GESTION_MODULOS', 'GestionModulos');
+define('CR_GESTION_MODULOS', 'Gestionmodulos');
 // Words
 define('CR_CONTROLLER', 'Controller');
 define('CR_USER', 'usuario');

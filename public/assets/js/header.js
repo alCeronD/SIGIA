@@ -1,4 +1,4 @@
-import { initAlert, toastOptions, sendData, Storage, InitComponents } from './utils/index.js';
+import { initAlert, toastOptions, sendData, InitComponents } from './utils/index.js';
 const btnCerrarSesion = document.querySelector('#btnCerrarSesion');
 
 document.addEventListener('DOMContentLoaded', () => {

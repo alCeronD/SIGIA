@@ -1,23 +1,26 @@
 <?php
 
+use PhpOffice\PhpSpreadsheet\Calculation\Web\Service;
 use ZipStream\Test\Util;
-
-use function PHPUnit\Framework\throwException;
 
 require_once __DIR__ . '/../../..' . CR_ROUTE_CONST;
 require_once __DIR__ . '/../Const/GestionModulosConst.php';
 require_once BASE_URL . '/Autoload.php';
 
-class GestionModulosController extends ConfigController implements CrudInterface
+class GestionmodulosController extends ConfigController implements CrudInterface
 {
   protected ServicesGestionModulos $sModulos;
+  protected ServicesFunciones $sFunciones;
   protected ModulosModel $modulosModel;
+  protected FuncionesModel $funcionesModel;
   protected array $files = [
     "css" => [
-      'modulosView' => ['Modulos.css']
+      'modulosView' => ['Modulos.css'],
+      'functionsAssocByModulosView' => ['FunctionsAssoc.css']
     ],
     "js"  => [
-      'modulosView' => ['Modulos.js', 'Selectors-Modulos.js']
+      'modulosView' => ['Modulos.js', 'Selectors-Modulos.js'],
+      'functionsAssocByModulosView' => ['FunctionsAssoc.js', 'Selectors-FunctionsAssoc.js']
     ]
   ];
 
@@ -25,6 +28,8 @@ class GestionModulosController extends ConfigController implements CrudInterface
   {
     $this->sModulos = new ServicesGestionModulos();
     $this->modulosModel = new ModulosModel();
+    $this->funcionesModel = new FuncionesModel();
+    $this->sFunciones = new ServicesFunciones();
 
     $this->createRoutes();
   }
@@ -32,24 +37,46 @@ class GestionModulosController extends ConfigController implements CrudInterface
   {
     $this->routes = [
       // inicio
-      'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
+      'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE)],
       'permisosIndexView' => [
         'label' => 'Seguridad del sistema',
-        'url' => Router::createRoute('Permisos', 'Permisos', 'permisosIndexView', false, 'dashboard'),
+        'url' => Router::createRoute('Permisos', 'Permisos', 'permisosIndexView', false, CR_DASHBOARD_LOWER_CASE),
         'parent' => 'dashboard'
       ],
-      // funciones
+      // vista de modulo
       'modulosView' => [
         'label' => 'Gestión de modulos',
-        'url' => Router::createRoute(CR_GESTION_MODULOS, CR_GESTION_MODULOS, 'modulosView', false, 'dashboard'),
+        'url' => Router::createRoute(CR_GESTION_MODULOS, CR_GESTION_MODULOS, 'modulosView', false, CR_DASHBOARD_LOWER_CASE),
         'parent' => 'permisosIndexView'
+      ],
+      // vista de funciones asociadas al modulo
+      'functionsAssocByModulosView' => [
+        'label' => 'Funciones asociadas',
+        'url' => Router::createRoute(CR_GESTION_MODULOS, CR_GESTION_MODULOS, 'getFunctionsAssoc', false, CR_DASHBOARD_LOWER_CASE),
+        'parent' => 'modulosView'
       ]
     ];
   }
 
+  /**
+   * Vista principal que contiene el listado de los modulos.
+   *
+   * @return void
+   */
   public function modulosView()
   {
     $path = BASE_URL . GM_ROUTES_MODULES_VIEW;
+    Parent::renderView($path, __FUNCTION__);
+  }
+
+  /**
+   * Vista en la que se visualizan las funciones asociadas al modulo, se accede desde modulosView.
+   *
+   * @return void
+   */
+  public function functionsAssocByModulosView()
+  {
+    $path = BASE_URL . GM_ROUTES_FUNCTIONS_ASSOC_VIEW;
     Parent::renderView($path, __FUNCTION__);
   }
 
@@ -111,6 +138,7 @@ class GestionModulosController extends ConfigController implements CrudInterface
       $nameModule = (string) ucfirst(strtolower(trim($data[GM_VAR_NOMBRE_MODULO])));
       $data[GM_VAR_NOMBRE_MODULO] = $nameModule;
       // extramos el id para validar si ya existe un registro diferente pero con el mismo nombre del modulo
+
       $id_m = (int) $data['id_m'];
 
 
@@ -244,5 +272,64 @@ class GestionModulosController extends ConfigController implements CrudInterface
       'status' => true,
       'message' => "",
     ];
+  }
+
+  /**
+   * Function para solicitar los datos de las funcionalidades
+   *
+   * @return void
+   */
+  public function getFunctionsAssoc(): void
+  {
+    try {
+      header(CONTENT_TYPE);
+      $page = (isset($_GET[CR_PAGINA])) ? (int) $_GET[CR_PAGINA] : 1;
+      $limit = (isset($_GET[CR_WORD_LIMIT])) ? (int) $_GET[CR_WORD_LIMIT] : LIMIT;
+      $id_m = (isset($_GET['idModulo'])) ? (int) $_GET['idModulo'] : null;
+      //obtener el nombre del modulo.
+      $moduloName = (isset($_GET['nombreModulo'])) ? (string) $_GET['nombreModulo'] : null;
+      // obtenemos los nombres de los controladores del sistema
+      $filesControllers = ScanFiles::getControllers($moduloName);
+      $filesControllers = str_replace(".php", "", $filesControllers);
+      if (empty($id_m)) throw new Exception("id del modulo incorrecto", HttpStatus::UNPROCESSABLE_ENTITY);
+
+      $sql = [
+        "f.id_funcion AS 'idFuncion'",
+        "f.id_modulo AS 'nombreModulo'",
+        "f.nombre_funcion AS 'nombreFuncion'",
+        "f.nombre_funcion_user AS 'nombreFuncionLabel'",
+        "f.tp_funcion AS 'tipoFuncion'",
+        "tpf.nombre_tp_funcion AS 'tipoDeFuncion'"
+      ];
+      $conditions = ["f.id_modulo",  "=", $id_m];
+      $data = [
+        'f_id_modulo' => $id_m
+      ];
+      $dataPrepare[CR_DATA] = $data;
+      // aplicamos el count a la funcionalidad del servicio porque este nos devuelve el modelo, el motivo es porque necesitamos hacer paginacion a la cantidad de registros basada en el modulo, no a todo el registro de la tabla.
+      $countFunciones = count($this->sFunciones->getAllFunctionsFromModule($sql, $conditions)->prepareSql($dataPrepare)->get());
+      $paginateFunctions = UtilsFunctions::executePaginate($countFunciones, $limit, $page);
+      $data = [
+        'f_id_modulo' => $id_m,
+        CR_OFFSET => $paginateFunctions[CR_OFFSET],
+        CR_WORD_LIMIT => $limit
+      ];
+      $dataPrepare[CR_DATA] = $data;
+
+      // aca implementamos el limite y offset porque usamos la misma funcion previamente para contar las funciones basadas en el modulo.
+      $getSelectFunctions = $this->sFunciones->getAllFunctionsFromModule($sql, $conditions)->limit()->offset()->prepareSql($dataPrepare)->get();
+
+      if (count($getSelectFunctions) > 0) {
+        Response::responseRequest(HttpStatus::OK, true, "Registros", [
+          CR_TOTAL_REGISTROS => $countFunciones,
+          CR_PAGINA_ACTUAL => ($page > $paginateFunctions[CR_TOTAL_PAGINAS]) ? $paginateFunctions[CR_TOTAL_PAGINAS] : $page, //Aca devolvemos la pagina, pero cuando se borra el ultimo registro de una pagina estamos devolviendo la pagina que recibimos desde la peticion, cuando hacemos la paginacion, si la pagina ES MAYOR A LA CANTIDAD DE PAGINAS TOTALES, NO DEVOLVEMOS LA PAGINA RECIBIDA, SINO LA ULTIMA PAGINA. esto para poder renderizar de forma correcta la informacion.
+          CR_CANTIDAD_PAGINAS => $paginateFunctions[CR_TOTAL_PAGINAS],
+          CR_DATA => $getSelectFunctions,
+          'files' => $filesControllers
+        ]);
+      }
+    } catch (\Exception $th) {
+      Response::responseRequest($th->getCode(), false, $th->getMessage(), []);
+    }
   }
 }

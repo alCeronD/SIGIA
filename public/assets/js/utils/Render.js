@@ -247,6 +247,46 @@ export class Render extends HttpData {
     selector.append(tr);
   }
 
+  /**
+   * Crea y renderiza de forma dinámica un elemento `<select>` con sus opciones dentro de un contenedor DOM.
+   *
+   * @param {Object} [options={}] - Objeto de configuración.
+   * @param {HTMLElement|null} [options.container=null] - Elemento del DOM donde se insertará el elemento `<select>`.
+   * @param {Record<string, string>} [options.data={}] - Objeto clave-valor para generar las opciones (`key` para el atributo ID/value, `value` para el texto visible).
+   * @param {string} [options.textLabel=''] - Texto visible de la etiqueta `<label>`.
+   * @param {string} [options.textOption=''] - Texto visible para la opción por defecto (deshabilitada y seleccionada).
+   *
+
+   */
+  renderSelects({ container = null, data = {}, textLabel = '', textOption = '', name = '' } = {}) {
+    let fragmentSelect = document.createDocumentFragment();
+    let label = document.createElement('label');
+    let option = document.createElement('option');
+    let select = document.createElement('select');
+    select.setAttribute('name', name);
+    option.disabled = true;
+    option.selected = true;
+    option.innerText = textOption;
+    label.innerText = textLabel;
+
+    // implementamos el optiondisabled.
+    select.append(option);
+
+    for (const [key, value] of Object.entries(data)) {
+      const optionItem = document.createElement('option');
+      optionItem.innerText = value;
+      optionItem.value = key;
+      optionItem.id = key;
+      select.appendChild(optionItem);
+    }
+    fragmentSelect.append(label);
+    fragmentSelect.append(select);
+
+    if (container instanceof HTMLElement) {
+      container.append(fragmentSelect);
+    }
+  }
+
   executePaginates(pagina = 1, renderData = () => {}) {}
 
   get objBotones() {
