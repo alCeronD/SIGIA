@@ -14,7 +14,7 @@ const formUpdatePersonalData = document.querySelector('#formUpdateUserView');
 const textAreaPersonalData = document.querySelector('#usu_observacion');
 let personalData = null;
 const getPersonalData = async () => {
-  personalData = await UpdatePersonalData.getData(`${url}actualizarDatosView`, 'GET');
+  personalData = await UpdatePersonalData.getData(`${url}actualizarPersonalData`, 'GET');
   let rows = personalData.data;
   // renderizar la data en el formulario
   fillDataForm(rows, formUpdatePersonalData);

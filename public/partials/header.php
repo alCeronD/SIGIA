@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SIGIA</title>
   <link rel="icon" type="image/x-icon" href="../public/assets/image/sSigia.ico">
-  <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="../public/assets/libraries/materialize/css/materialize.min.css">
   <link rel="stylesheet" href="../public/assets/css/main.css">
   <?php

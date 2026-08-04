@@ -158,7 +158,9 @@ const showFunctionsAssoc = (id, row) => {
   StorageHelper.addValue({ key: 'dataModulo', item: JSON.stringify(row) });
   // implementamos inmediatamente el texto antes de redireccionar.
 
+  // la segunda forma en si no me sirve por como esta creada el enrutador.
   window.location.href = `${vars.url}functionsAssocByModulosView`;
+  // window.location.href = `${vars.url}functionsAssocByModulosView?idModulo=${row.id_m}&nombreModulo=${encodeURIComponent(row.nombre_modulo)}`;
 };
 
 const changeStatus = (id, dataRow) => {

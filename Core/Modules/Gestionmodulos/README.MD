@@ -10,6 +10,6 @@
 - [X] **Feature update** actualizar los nombres de los modulos, el error esta en si escribo GeneralCrud me lo valida, si escribo Generalcrud no.
 - [ ] Implementar **funciones asociadas**
   - [X] **funciones asociadas** select - implementar vista de las funciones asociadas al modulo
-  - [ ] **funciones asociadas** insert - implementar modal para crear nueva funcionalidad de crear funcion
-  - [ ] **funciones asociadas** update - implementar edicion del nombre de la base de datos
-  - [ ] **Implementar cambiar tipo de la base de datos** - (analizar alcance, si es del todo viable o no.)
+  - [X] **funciones asociadas** insert - implementar modal para crear nueva funcionalidad de crear funcion, solo se deben de registrar las funcionalidades publicas.
+  - [X] **funciones asociadas** update - implementar edicion del nombre de la base de datos
+  - [X] **Funciones asociadas** Delete - implementar eliminar la funcionalidad.

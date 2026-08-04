@@ -37,7 +37,7 @@ class GestionmodulosController extends ConfigController implements CrudInterface
   {
     $this->routes = [
       // inicio
-      'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE)],
+      'dashboard' => ['label' => 'Inicio', 'url' => Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE)],
       'permisosIndexView' => [
         'label' => 'Seguridad del sistema',
         'url' => Router::createRoute('Permisos', 'Permisos', 'permisosIndexView', false, CR_DASHBOARD_LOWER_CASE),
@@ -325,7 +325,13 @@ class GestionmodulosController extends ConfigController implements CrudInterface
           CR_PAGINA_ACTUAL => ($page > $paginateFunctions[CR_TOTAL_PAGINAS]) ? $paginateFunctions[CR_TOTAL_PAGINAS] : $page, //Aca devolvemos la pagina, pero cuando se borra el ultimo registro de una pagina estamos devolviendo la pagina que recibimos desde la peticion, cuando hacemos la paginacion, si la pagina ES MAYOR A LA CANTIDAD DE PAGINAS TOTALES, NO DEVOLVEMOS LA PAGINA RECIBIDA, SINO LA ULTIMA PAGINA. esto para poder renderizar de forma correcta la informacion.
           CR_CANTIDAD_PAGINAS => $paginateFunctions[CR_TOTAL_PAGINAS],
           CR_DATA => $getSelectFunctions,
-          'files' => $filesControllers
+          CR_FILES => $filesControllers
+        ]);
+      } else {
+        Response::responseRequest(HttpStatus::OK, true, "NO hay registros", [
+          CR_TOTAL_REGISTROS => $countFunciones,
+          CR_DATA => $getSelectFunctions,
+          CR_FILES => $filesControllers
         ]);
       }
     } catch (\Exception $th) {

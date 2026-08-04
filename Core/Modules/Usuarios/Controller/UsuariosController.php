@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once __DIR__ . '/../Const/UsuariosConst.php';
 require_once BASE_URL . '/' . CR_AUTOLOAD;
-
+// las funciones protected son funciones logicas del sistema que no deben de ser registradas en la base de datos.
 class UsuariosController extends ConfigController implements CrudInterface
 {
 
@@ -82,7 +82,7 @@ class UsuariosController extends ConfigController implements CrudInterface
      *
      * @return void
      */
-    public function usuariosIndex()
+    public function usuariosIndexView()
     {
         $path = BASE_URL . US_ROUTE_USUARIOS_INDEX;
         Parent::renderView($path, __FUNCTION__);
@@ -125,8 +125,6 @@ class UsuariosController extends ConfigController implements CrudInterface
 
     public function usuariosView()
     {
-        // solicitamos los tipos de documento para renderizar los
-
         $path = BASE_URL . US_ROUTE_USUARIOS_LIST_VIEW;
         Parent::renderView($path, __FUNCTION__);
     }
@@ -210,7 +208,7 @@ class UsuariosController extends ConfigController implements CrudInterface
      *
      * @return void
      */
-    public function actualizarDatosView()
+    public function actualizarPersonalData()
     {
         // validamos si accedemos a esta function mediante una peticion http o en su defecto como renderizado puro.
         if (UtilsFunctions::ajaxGeneral()) {

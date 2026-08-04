@@ -17,7 +17,6 @@ class CategoriasController
 
         $this->conn = (new Conn)->getConnect();
     }
-
     public function categoriaView()
     {
         $this->consultCategoriasView();

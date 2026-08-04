@@ -610,11 +610,27 @@ export const setObservacion = ({ baseText = '', selector = null, isRequired = fa
 export const fillDataForm = (row, formulario) => {
   let input = null;
   for (const [key, value] of Object.entries(row)) {
-    input =
+    const input =
       formulario.querySelector(`input[name="${key}"]`) ||
-      formulario.querySelector(`textarea[name="${key}"]`);
-    // en base a la información enviada, validamos que exista el input, solo los que tienen el mismo nombre que la key se asigna el valor.
-    if (input != null) {
+      formulario.querySelector(`textarea[name="${key}"]`) ||
+      formulario.querySelector(`select[name="${key}"]`);
+
+    if (!input) continue;
+
+    // si el tipo de input es un radio, seleccionar el radio basado en el value recibido.
+    if (input.type === 'radio') {
+      // por precaución, eliminamos todos los check del formulario.
+      const radios = formulario.querySelectorAll(`input[name="${key}"]`);
+      radios.forEach((radio) => (radio.checked = false));
+      // habilitamos la opcion checked basada en el valor recibido.
+      const radioCheck = formulario.querySelector(`input[name="${key}"][value="${value}"]`);
+      if (radioCheck) {
+        // console.log(radioCheck);
+        radioCheck.checked = true;
+      }
+    } else if (input.type === 'checkbox') {
+      input.checked = Boolean(value);
+    } else {
       input.value = value;
     }
   }

@@ -255,19 +255,28 @@ export class Render extends HttpData {
    * @param {Record<string, string>} [options.data={}] - Objeto clave-valor para generar las opciones (`key` para el atributo ID/value, `value` para el texto visible).
    * @param {string} [options.textLabel=''] - Texto visible de la etiqueta `<label>`.
    * @param {string} [options.textOption=''] - Texto visible para la opción por defecto (deshabilitada y seleccionada).
-   *
+   * @param {bool} [options.isRequired = false] - flag para determinar si el selector es obligatorio o no.
 
    */
-  renderSelects({ container = null, data = {}, textLabel = '', textOption = '', name = '' } = {}) {
+  renderSelects({
+    container = null,
+    data = {},
+    textLabel = '',
+    textOption = '',
+    name = '',
+    isRequired = true,
+  } = {}) {
+    container.innerHTML = '';
     let fragmentSelect = document.createDocumentFragment();
     let label = document.createElement('label');
     let option = document.createElement('option');
     let select = document.createElement('select');
     select.setAttribute('name', name);
-    option.disabled = true;
+    // option.disabled = true;
     option.selected = true;
+    option.value = '';
     option.innerText = textOption;
-    label.innerText = textLabel;
+    label.innerText = isRequired === true ? `${textLabel} *` : textLabel;
 
     // implementamos el optiondisabled.
     select.append(option);

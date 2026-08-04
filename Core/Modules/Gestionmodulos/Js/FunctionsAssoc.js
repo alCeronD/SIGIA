@@ -1,5 +1,8 @@
 import {
+  addClassItem,
   closeModal,
+  createI,
+  fillDataForm,
   initAlert,
   InitComponents,
   METHOD,
@@ -7,17 +10,53 @@ import {
   openModal,
   Render,
   StorageHelper,
+  validateFormData,
 } from '../../../../public/assets/js/utils/index.js';
 import {
   buttons,
   formAddFunctions,
+  formUpdateFunctions,
+  mapConfigFunctions,
   modals,
+  optionals,
   selectors,
   tableFunctions,
   vars,
 } from './Selectors-FunctionsAssoc.js';
 vars.dataModule = StorageHelper.getParsedValue({ key: 'dataModulo' }); //Obtenemos los datos del modulo de localstorage
-const Funciones = new Render();
+const Funciones = new Render({
+  btnEdit: {
+    value: (row, button) => {
+      let iconEditar = createI('border_color');
+      button.appendChild(iconEditar);
+      addClassItem(button, {
+        btn: 'btn',
+        waves: 'waves-effect',
+        hoover: 'waves-yellow',
+        cyan: 'cyan', //button color.
+      });
+    },
+    key: 'btnEdit',
+    action: (id, row) => editFunction(id, row),
+  },
+  btnDelete: {
+    value: (fullRow, button) => {
+      button.setAttribute('type', 'button');
+      button.setAttribute('data-id', `${fullRow.id_m}`);
+      button.setAttribute('data-status', `${fullRow.status_modulo}`);
+      button.setAttribute('class', 'btnStatus');
+      let iconStatus = null;
+      let propertiesButton = null;
+      propertiesButton = { btn: 'btn', waves: 'waves-red', red: 'red' };
+      iconStatus = createI('delete');
+
+      addClassItem(button, propertiesButton);
+      button.appendChild(iconStatus);
+    },
+    key: 'btnChangeStatus',
+    action: (id, fullRow) => deleteFunction(id, fullRow),
+  },
+});
 const renderData = async ({ pagina = 1 } = {}) => {
   let idModulo = vars.dataModule['id_m'];
   let nombreModulo = vars.dataModule['nombre_modulo'];
@@ -28,19 +67,11 @@ const renderData = async ({ pagina = 1 } = {}) => {
   });
   let data = vars.dataFunctions.data.data;
   vars.files = vars.dataFunctions.data.files;
-  console.log(vars.files);
   const paginaActual = vars.dataFunctions.data.paginaActual;
   vars.dataPaginate['totalRegistros'] = vars.dataFunctions.data.totalRegistros;
   vars.dataPaginate['paginaActual'] = paginaActual;
   vars.dataPaginate['cantidadPaginas'] = vars.dataFunctions.data.cantidadPaginas;
   Funciones.actualPage(pagina);
-  Funciones.renderData({
-    bodyTbl: tableFunctions.body,
-    headerTable: tableFunctions.header,
-    id: data['idFuncion'],
-    data: data,
-  });
-  Funciones.renderPaginate(vars.dataPaginate, tableFunctions.footer);
 
   // renderizamos selects de manera dinamica al formulario de crear funcion
   Funciones.renderSelects({
@@ -52,6 +83,74 @@ const renderData = async ({ pagina = 1 } = {}) => {
   });
   // inicializamos los selects.
   InitComponents.initSelect();
+
+  if (Object.keys(data).length > 0) {
+    Funciones.renderData({
+      bodyTbl: tableFunctions.body,
+      headerTable: tableFunctions.header,
+      id: data['idFuncion'],
+      data: data,
+    });
+    Funciones.renderPaginate(vars.dataPaginate, tableFunctions.footer);
+    return;
+  } else {
+    tableFunctions.body.innerHTML = 'No hay registros';
+    return;
+  }
+};
+
+const editFunction = (id, row) => {
+  let rowObj = {};
+  rowObj['id_funcion'] = row.idFuncion;
+  rowObj['nombre_funcion'] = row.nombreFuncion;
+  rowObj['nombre_funcion_user'] = row.nombreFuncionLabel;
+  rowObj['tp_funcion'] = String(row.tipoDeFuncion).toLocaleLowerCase();
+
+  // container files del formularioUpdateFunctions
+  const filesUpdateFunction = formUpdateFunctions.form.querySelector('.files');
+  Funciones.renderSelects({
+    container: filesUpdateFunction,
+    data: vars.files,
+    textLabel: 'Seleccione una opción',
+    textOption: 'Archivo asociado',
+    name: 'file',
+    isRequired: true,
+  });
+  fillDataForm(rowObj, formUpdateFunctions.form);
+  // inicializamos los selects.
+  InitComponents.initInputs();
+  InitComponents.initSelect();
+
+  openModal(modals.modalEditFunction);
+};
+
+const deleteFunction = (id, fullRow) => {
+  const objDelete = {};
+  objDelete['id_funcion'] = fullRow.idFuncion;
+
+  try {
+    mostrarConfirmacion(
+      'Eliminar función',
+      '¿Está seguro de eliminar esta funcionalidad? esta funcionalidad no estará disponible para la asignación de permisos al rol del usuario.',
+      async (response) => {
+        if (!response) return;
+        const responseDelete = await Funciones.sendData(
+          `${vars.urlsFunciones}delete`,
+          METHOD.DELETE,
+          objDelete
+        );
+
+        if (!responseDelete.status) throw new Error(responseDelete.message);
+
+        // exito.
+        initAlert(responseDelete.message, 'success');
+        Funciones.actualPage(vars.actualPage);
+        renderData({ pagina: vars.actualPage });
+      }
+    );
+  } catch (error) {
+    console.error(error.message);
+  }
 };
 
 buttons.btnAddFunction.addEventListener('click', (e) => {
@@ -63,12 +162,22 @@ formAddFunctions.form.addEventListener('submit', (e) => {
   e.stopPropagation();
   const url = e.target.action;
   const formData = new FormData(e.target);
+
   let data = Object.fromEntries(formData);
+
+  if (
+    !validateFormData({
+      formData: formData,
+      campos: optionals,
+      mapForm: mapConfigFunctions.mapObjAdd,
+    })
+  ) {
+    return;
+  }
+
   data['id_modulo'] = vars.dataModule['id_m'];
   data['tp_funcion'] = data['tp_funcion'] === 'render' ? 1 : 2;
-  console.log(data);
-  let message =
-    '¿Está seguro de crear la funcionalidad \n asegurese que la funcionalidad ya este registrada en el controlador de la clase';
+  let message = `¿Está seguro de crear la funcionalidad? \n asegurese que la funcionalidad ya este registrada en el controlador de la clase`;
   mostrarConfirmacion('Crear funcion', message, async (response) => {
     try {
       if (!response) return;
@@ -77,7 +186,7 @@ formAddFunctions.form.addEventListener('submit', (e) => {
 
       // en caso de que el estado sea false.
       if (!responseAddFunction.status) throw new Error(responseAddFunction.message);
-
+      e.target.reset();
       renderData({ pagina: vars.actualPage });
       initAlert(responseAddFunction.message, 'success');
       return;
@@ -89,10 +198,56 @@ formAddFunctions.form.addEventListener('submit', (e) => {
   });
 });
 
-closeModal(modals.modalAddFunction, buttons.btnCloseModalFunction);
+formUpdateFunctions.form.addEventListener('submit', (f) => {
+  f.preventDefault();
+  f.stopPropagation();
+  const formData = new FormData(f.target);
+  const url = f.target.action;
+
+  let data = Object.fromEntries(formData);
+  data['id_modulo'] = vars.dataModule['id_m'];
+  if (
+    !validateFormData({
+      formData: formData,
+      campos: optionals,
+      mapForm: mapConfigFunctions.mapObjEdit,
+    })
+  ) {
+    return;
+  }
+
+  mostrarConfirmacion(
+    'Editar función',
+    '¿Está seguro de editar la funcionalidad?',
+    async (response) => {
+      try {
+        if (!response) return;
+
+        const responseUpdateFunction = await Funciones.sendData(url, METHOD.PUT, data);
+
+        if (!responseUpdateFunction.status) throw new Error(responseUpdateFunction.message);
+
+        initAlert(responseUpdateFunction.message, 'success');
+        Funciones.actualPage(vars.actualPage);
+        modals.modalEditFunction.style.display = 'none';
+        renderData({ pagina: vars.actualPage });
+      } catch (error) {
+        console.error(error.message);
+      }
+    }
+  );
+});
+
+closeModal(modals.modalAddFunction, buttons.btnCloseModalFunctionInsert, () => {
+  formAddFunctions.form.reset();
+});
+closeModal(modals.modalEditFunction, buttons.btnCloseModalFunctionEdit, () => {
+  formUpdateFunctions.form.reset();
+});
+
+// PAGINACION
 
 document.addEventListener('DOMContentLoaded', () => {
   selectors.textTitleFunctions.innerHTML = `Funciones asociadas módulo - ${vars.dataModule['nombre_modulo']}`;
-
   renderData();
 });

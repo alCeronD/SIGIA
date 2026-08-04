@@ -5,11 +5,29 @@ export const selectors = {
 export const vars = {
   dataModule: null,
   url: 'dashboard.php?modulo=Gestionmodulos&controlador=Gestionmodulos&function=',
+  urlsFunciones: 'dashboard.php?modulo=Gestionmodulos&controlador=Funciones&function=',
   dataFunctions: null,
   actualPage: 1,
   dataPaginate: {},
   files: null,
 };
+
+export const mapConfigFunctions = {
+  mapObjAdd: {
+    nombre_funcion: 'Nombre de la funcion',
+    nombre_funcion_user: 'Nombre de la función del usuario',
+    tp_funcion: 'Tipo de la función',
+  },
+  mapObjEdit: {
+    id_funcion: 'Identificador de la función',
+    nombre_funcion: 'Nombre de la funcion',
+    nombre_funcion_user: 'Nombre de la función del usuario',
+    tp_funcion: 'Tipo de la función',
+    file: 'Archivo asociado',
+  },
+};
+
+export const optionals = [];
 
 export const tableFunctions = {
   header: document.querySelector('#tblHeaderFunctions'),
@@ -20,16 +38,26 @@ export const tableFunctions = {
 
 export const buttons = {
   btnAddFunction: document.querySelector('#btnAddFunction'),
-  btnCloseModalFunction: document.querySelector('.closeModalBtn'),
+  btnCloseModalFunctionEdit: document.querySelector('#closeModalBtnEdit'),
+  btnCloseModalFunctionInsert: document.querySelector('#closeModalBtnInsert'),
 };
 
 export const modals = {
   modalAddFunction: document.querySelector('#modalAddFunction'),
+  modalEditFunction: document.querySelector('#modalEditFunction'),
 };
 
 export const formAddFunctions = {
   form: document.querySelector('#formInsertFunction'),
   radio: document.querySelectorAll('input[name="tp_funcion"]'),
+  divs: {
+    tipoFuncion: document.querySelector('.tipoFuncion'),
+    files: document.querySelector('.files'),
+  },
+};
+
+export const formUpdateFunctions = {
+  form: document.querySelector('#formUpdateFunction'),
   divs: {
     tipoFuncion: document.querySelector('.tipoFuncion'),
     files: document.querySelector('.files'),

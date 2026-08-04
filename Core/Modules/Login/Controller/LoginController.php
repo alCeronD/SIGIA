@@ -112,6 +112,7 @@ class LoginController
 
         if (UtilsFunctions::ajaxGeneral()) {
             header(CONTENT_TYPE);
+            // debo re direccionar y ahi eliminar los datos de localStorage con clear().
             Response::responseRequest(HttpStatus::OK, true, '', ['redirect' => Router::createRoute('Login', 'Login', 'index', false, 'dashboard')]);
 
             exit();

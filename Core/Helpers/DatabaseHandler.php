@@ -18,7 +18,8 @@ class DatabaseHandler
       1451 => 'Restricción de borrado: El registro tiene filas hijas vinculadas (Foreign Key)',
       1452 => 'Restricción de inserción/actualización: La llave foránea no existe en la tabla padre',
       1048 => 'Columna obligatoria recibió un valor NULL',
-      1406 => 'El valor de la columna es demasiado largo para el tipo de dato'
+      1406 => 'El valor de la columna es demasiado largo para el tipo de dato',
+      1306 => 'Tipo de datos enviados incorrectamente'
     ]
   ]; //
   public static array $mensajesCodeErrors = [
