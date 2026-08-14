@@ -129,7 +129,8 @@ const executePaginate = () => {
       let pageLi = e.target.closest('.liPaginate') ? e.target.dataset.actualpage : 1;
       actualPage = parseInt(pageLi); //parseamos el dato porque se requiere de tipo int para renderizar la pagina.
 
-      RolesFunciones.actualPage(actualPage); //setter para asignar el valor de la pagina a la propiedad de la instancia
+      //setter para asignar el valor de la pagina a la propiedad de la instancia
+      RolesFunciones.actualPage = actualPage;
       executeRolesFunciones(rolIdSelect, actualPage);
       return;
     }
@@ -153,8 +154,8 @@ const executePaginate = () => {
           return;
         }
       }
-
-      RolesFunciones.actualPage(actualPage); //setter para asignar el valor de la pagina a la propiedad de la instancia
+      // setter para asignar la pagina actual a la instancia.s
+      RolesFunciones.actualPage = actualPage;
       executeRolesFunciones(rolIdSelect, actualPage);
     }
   });

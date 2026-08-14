@@ -15,7 +15,6 @@ import {
   successChangeStatusEnable,
   validateFormData,
 } from '../../../../public/assets/js/utils/index.js';
-import { selectors } from './Selectors-FunctionsAssoc.js';
 const Modulos = new Render({
   btnChangeStatus: {
     value: (fullRow, button) => {
@@ -86,8 +85,7 @@ const renderData = async ({ pagina = 1 } = {}) => {
     dataPaginate['cantidadPaginas'] = vars.dataModulos.data.cantidadPaginas;
 
     // asignamos la pagina actual a la propiedad de la instancia.
-    Modulos.actualPage(paginaActual);
-
+    Modulos.actualPage = paginaActual;
     Modulos.renderData({
       bodyTbl: table.body,
       headerTable: table.header,
@@ -167,7 +165,6 @@ const changeStatus = (id, dataRow) => {
   // capturar codigo y status
   let message = dataRow.estatus_modulo === 1 ? titlesModulo.inactiveUser : titlesModulo.activeUser;
   let title = dataRow.estatus_modulo === 1 ? titlesModulo.inactiveUser : titlesModulo.activeUser;
-  console.log(dataRow);
   mostrarConfirmacion(title, message, async (response) => {
     try {
       if (!response) return;
@@ -176,8 +173,6 @@ const changeStatus = (id, dataRow) => {
         id_m: dataRow.id_m,
         status_modulo: dataRow.status_modulo === 'Activo' ? 1 : 0,
       };
-
-      console.log(data);
 
       const responseChangeStatus = await Modulos.sendData(
         `${vars.url}changeStatus`,
@@ -213,7 +208,38 @@ forms.formUpdate.addEventListener('submit', (e) => {
 
         if (responseUpdate.status) {
           initAlert(responseUpdate.message, 'success');
-          Modulos.actualPage(vars.actualPage);
+          Modulos.actualPage = vars.actualPage;
+          renderData({ pagina: vars.actualPage });
+          return;
+        }
+        if (!responseUpdate.status) throw new Error(responseUpdate.message);
+      } catch (error) {
+        initAlert(error.message);
+        return;
+      }
+    }
+  );
+});
+
+forms.formCreate.addEventListener('submit', (f) => {
+  f.preventDefault();
+  f.stopPropagation();
+
+  const formData = new FormData(f.target);
+  const data = Object.fromEntries(formData);
+
+  mostrarConfirmacion(
+    'Crear Módulo',
+    '¿Está seguro de crear este módulo? El modulo debe de existir en el directorio fisico del sistema',
+    async (response) => {
+      try {
+        if (!response) return;
+        const responseUpdate = await Modulos.sendData(`${vars.url}store`, METHOD.POST, data);
+
+        if (responseUpdate.status) {
+          f.target.reset(); //Reiniciamos el formulario
+          initAlert(responseUpdate.message, 'success');
+          Modulos.actualPage = vars.actualPage;
           renderData({ pagina: vars.actualPage });
           return;
         }

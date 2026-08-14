@@ -41,6 +41,7 @@ abstract class Crud
   {
     $cadena = "";
     foreach ($datos as $dta) {
+      if ($dta === 'created_at' || $dta === 'updated_at') continue;
       // echo $datos;
       $cadena .= $dta . ", ";
     }
@@ -337,15 +338,6 @@ abstract class Crud
           }
         }
 
-        // // sentencia count pero con parametro
-        // if (str_contains($this->sql, "COUNT") && !empty($data)) {
-        // }
-
-        // // Sentencia count sin parametro.
-        // if (str_contains($this->sql, "COUNT")) {
-        //   return $this;
-        // }
-
         // validar si el string contiene o WHERE u OFFSET O LIMIT
         $hasOffset = str_contains($this->sql, "OFFSET");
         $hasLimit = str_contains($this->sql, "LIMIT");
@@ -368,7 +360,6 @@ abstract class Crud
       } else {
         if (empty($datos)) throw new PDOException('Faltan datos de ejecuccion');
 
-
         // en un contexto en donde no tengo el arreglo ordenado
         foreach ($data as $key => $value) {
           $marcador = ":" . $key;
@@ -379,9 +370,16 @@ abstract class Crud
         return $this;
       }
     } catch (\PDOException $th) {
+      // var_dump($tsh);
+      // return [
+      //   'status' => false,
+      //   'message' => $th->getMessage(),
+      // ];
+
       return [
         'status' => false,
-        'message' => $th->getMessage(),
+        'sqlState' => $th->errorInfo[0], //Codigo generico de error
+        'codeError' => $th->errorInfo[1]  //Codigo especifico del error
       ];
     }
   }
@@ -393,7 +391,8 @@ abstract class Crud
       # Variable para verificar si es un select
       $checkSelect = explode(' ', $this->sql);
 
-      $this->stmt->execute();
+      if (!$this->stmt->execute()) throw new PDOException($this->conn->errorInfo()[0], $this->conn->errorCode());
+
       $lastId = str_contains(strtoupper($this->sql), 'INSERT') ? $this->conn->lastInsertId() : '';
 
       # Verificamos si es un select para solamente devolver un arreglo asociativo

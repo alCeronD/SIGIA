@@ -101,6 +101,7 @@ const renderClass = new Render({
     action: (idRow) => deleteRol(idRow),
   },
 });
+
 let getRoles = null;
 
 /**

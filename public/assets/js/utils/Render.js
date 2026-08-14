@@ -37,11 +37,21 @@ export class Render extends HttpData {
     id = '',
     data = {},
     customText = {},
+    footer = null,
   } = {}) {
-    // NECESITO EL FETCH para renderizar la data.
     try {
+      const params = {
+        bodyTbl: bodyTbl,
+        headerTable: headerTable,
+        id: id,
+        data: data,
+        customText: customText,
+        footer: footer,
+      };
+
       let fragmentBody = document.createDocumentFragment();
       this.#data = { ...data };
+      this.objRenderData = params;
       bodyTbl.innerHTML = '';
       data.forEach((element) => {
         let tr = document.createElement('tr');
@@ -156,7 +166,11 @@ export class Render extends HttpData {
       liPreview.style.pointerEvents = 'auto'; //hacemos que el li tenga pointerevent para dar click
       addClassItem(liPreview, { btnPaginate: 'btnPaginate' });
       liPreview.dataset.action = 'preview';
-      if (this.#actualPage === 1) liPreview.setAttribute('disabled', 'disabled'); //si no funciona asi al hacer la pagina 2, eliminar la propiedad.
+
+      if (parseInt(this.actualPage) === 1) {
+        liPreview.classList.add('disabled');
+      }
+
       liPreview.append(iBtnPreview);
 
       ul.append(liPreview);
@@ -166,7 +180,7 @@ export class Render extends HttpData {
         addClassItem(li, { wavesEffect: 'waves-effect', liPaginate: 'liPaginate' });
         li.dataset.actualpage = actualPage;
         // si estas en la pagina actual entonces agregarle la clase para determinar que esta activa.
-        if (actualPage === this.#actualPage) {
+        if (actualPage === parseInt(this.actualPage)) {
           addClassItem(li, { active: 'active' });
         } else {
           li.classList.remove('active');
@@ -179,7 +193,10 @@ export class Render extends HttpData {
       const liNext = document.createElement('li');
       addClassItem(liNext, { btnPaginate: 'btnPaginate' });
       liNext.dataset.action = 'next';
-      if (actualPage === dataPaginate.cantidadPaginas) liNext.setAttribute('disabled', 'disabled');
+      if (actualPage === dataPaginate.cantidadPaginas) {
+        liNext.classList.add('disabled');
+      }
+
       liNext.append(iBtnNext);
       liNext.style.cursor = 'pointer'; //hacemos que el li tenga pointerevent para dar click
       liNext.style.pointerEvents = 'auto'; //hacemos que el li tenga pointerevent para dar click
@@ -194,8 +211,10 @@ export class Render extends HttpData {
       liPreview.style.pointerEvents = 'auto'; //hacemos que el li tenga pointerevent para dar click
       addClassItem(liPreview, { btnPaginate: 'btnPaginate' });
       liPreview.dataset.action = 'preview';
-      if (this.#actualPage === 1) liPreview.setAttribute('disabled', 'disabled');
+      if (this.actualPage === 1) liPreview.classList.add('disabled');
+
       liPreview.append(iBtnPreview);
+
       ul.append(liPreview);
 
       fragmentCustomPage.append(ul);
@@ -213,9 +232,8 @@ export class Render extends HttpData {
           addClassItem(liActualPage, { btnPaginate: 'btnPaginate', liPaginate: 'liPaginate' });
           liActualPage.dataset.actualpage = actualPage;
           liActualPage.innerText = actualPage;
-
           // si estas en la pagina actual entonces agregarle la clase para determinar que esta activa.
-          if (actualPage === this.#actualPage) {
+          if (actualPage === parseInt(this.actualPage)) {
             addClassItem(liActualPage, { active: 'active' });
           } else {
             ul.classList.remove('active');
@@ -231,7 +249,7 @@ export class Render extends HttpData {
       const liNext = document.createElement('li');
       addClassItem(liNext, { btnPaginate: 'btnPaginate' });
       liNext.dataset.action = 'next';
-      if (actualPage === dataPaginate.cantidadPaginas) liNext.setAttribute('disabled', 'disabled');
+      if (actualPage === dataPaginate.cantidadPaginas) liNext.classList.add('disabled');
       liNext.append(iBtnNext);
       liNext.style.cursor = 'pointer'; //hacemos que el li tenga pointerevent para dar click
       liNext.style.pointerEvents = 'auto'; //hacemos que el li tenga pointerevent para dar click
@@ -296,14 +314,16 @@ export class Render extends HttpData {
     }
   }
 
-  executePaginates(pagina = 1, renderData = () => {}) {}
+  // void para guardar la pagina en la propiedad del objeto.
+  set actualPage(page) {
+    this.#actualPage = page;
+  }
 
   get objBotones() {
     return this.#objBotones;
   }
 
-  // void para guardar la pagina en la propiedad del objeto.
-  actualPage(page) {
-    this.#actualPage = page;
+  get actualPage() {
+    return this.#actualPage;
   }
 }

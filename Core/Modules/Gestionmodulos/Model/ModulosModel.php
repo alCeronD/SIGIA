@@ -8,6 +8,8 @@ class ModulosModel extends Crud
     'nombre_modulo', //nombre del modulo
     'icono', // icono representativo del modulo
     'descripcion', // descripcion previa del modulo,
-    'status_modulo' //estado del modulo (se usa tinyint (1) true, (0) false)
+    'status_modulo', //estado del modulo (se usa tinyint (1) true, (0) false),
+    'created_at',
+    'updated_at'
   ];
 }

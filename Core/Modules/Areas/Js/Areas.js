@@ -14,7 +14,6 @@ import {
   options,
   initAlert,
   validateFormData,
-  sendData,
   mostrarConfirmacion,
   Render,
   fillDataForm,
@@ -158,7 +157,7 @@ const changeStatus = (id, dataRow) => {
         ar_status: dataRow.ar_status,
       };
 
-      const responseChangeStatus = await sendData(`${s.url}changeStatus`, 'PUT', data);
+      const responseChangeStatus = await Areas.sendData(`${s.url}changeStatus`, 'PUT', data);
       if (responseChangeStatus.status) {
         let mesageStatus =
           dataRow.ar_status === 1 ? successChangeStatusDisable : successChangeStatusEnable;
@@ -229,7 +228,7 @@ s.areaUpdateForm.addEventListener('submit', async (e) => {
       if (!validateFormData({ formData: formData, campos: campos, mapForm: s.mapCampos })) return;
       let update = `${s.url}save`;
 
-      const responseUpdate = await sendData(update, 'PUT', data);
+      const responseUpdate = await Areas.sendData(update, 'PUT', data);
       // hay un contexto en donde no me devuelve un cuerpo porque la cantidad de columnas afectadas puede ser 0.
       if (responseUpdate.status === 204) {
         s.modalAreaUpdate.style.display = 'none';
@@ -262,7 +261,7 @@ s.formCreate.addEventListener('submit', (g) => {
         return;
       }
 
-      let responsePost = await sendData(`${s.url}store`, 'POST', data);
+      let responsePost = await Areas.sendData(`${s.url}store`, 'POST', data);
       if (responsePost.status) {
         initAlert(responsePost.message, 'success');
         g.target.reset();

@@ -14,6 +14,7 @@ import {
 } from '../../../../public/assets/js/utils/index.js';
 import {
   buttons,
+  footer,
   formAddFunctions,
   formUpdateFunctions,
   mapConfigFunctions,
@@ -23,7 +24,7 @@ import {
   tableFunctions,
   vars,
 } from './Selectors-FunctionsAssoc.js';
-vars.dataModule = StorageHelper.getParsedValue({ key: 'dataModulo' }); //Obtenemos los datos del modulo de localstorage
+
 const Funciones = new Render({
   btnEdit: {
     value: (row, button) => {
@@ -71,7 +72,7 @@ const renderData = async ({ pagina = 1 } = {}) => {
   vars.dataPaginate['totalRegistros'] = vars.dataFunctions.data.totalRegistros;
   vars.dataPaginate['paginaActual'] = paginaActual;
   vars.dataPaginate['cantidadPaginas'] = vars.dataFunctions.data.cantidadPaginas;
-  Funciones.actualPage(pagina);
+  Funciones.actualPage = pagina;
 
   // renderizamos selects de manera dinamica al formulario de crear funcion
   Funciones.renderSelects({
@@ -90,11 +91,13 @@ const renderData = async ({ pagina = 1 } = {}) => {
       headerTable: tableFunctions.header,
       id: data['idFuncion'],
       data: data,
+      footer: footer,
     });
     Funciones.renderPaginate(vars.dataPaginate, tableFunctions.footer);
     return;
   } else {
     tableFunctions.body.innerHTML = 'No hay registros';
+    footer.innerHTML = '';
     return;
   }
 };
@@ -144,7 +147,7 @@ const deleteFunction = (id, fullRow) => {
 
         // exito.
         initAlert(responseDelete.message, 'success');
-        Funciones.actualPage(vars.actualPage);
+        Funciones.actualPage = vars.actualPage;
         renderData({ pagina: vars.actualPage });
       }
     );
@@ -228,7 +231,7 @@ formUpdateFunctions.form.addEventListener('submit', (f) => {
         if (!responseUpdateFunction.status) throw new Error(responseUpdateFunction.message);
 
         initAlert(responseUpdateFunction.message, 'success');
-        Funciones.actualPage(vars.actualPage);
+        Funciones.actualPage = vars.actualPage;
         modals.modalEditFunction.style.display = 'none';
         renderData({ pagina: vars.actualPage });
       } catch (error) {
@@ -245,9 +248,49 @@ closeModal(modals.modalEditFunction, buttons.btnCloseModalFunctionEdit, () => {
   formUpdateFunctions.form.reset();
 });
 
-// PAGINACION
+footer.addEventListener('click', (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+
+  let btnValue = e.target.closest('.btnPaginate') ? e.target.dataset.action : null;
+
+  // ejecutamos el evento para una pagina en especifico.
+  if (e.target.closest('.liPaginate')) {
+    let actualPageData = e.target.closest('.liPaginate') ? e.target.dataset.actualpage : 1;
+    // valido si en la pagina en la que nos encontramos es igual a la pagina del valor seleccionado, en caso de ser asi, retornamos y no renderizamos datos.
+    if (actualPageData === vars.actualPage) return;
+    vars.actualPage = actualPageData;
+    renderData({ pagina: actualPageData });
+    return;
+  }
+
+  // EJECUTAMOS LOS EVENTOS PARA LOS BOTONES BTNPAGINATE
+  if (e.target.closest('.btnPaginate')) {
+    if (!btnValue) return;
+    if (btnValue === 'preview') {
+      // re asignamos la pagina recibida por la peticion para asi reducir el valor y re enviar la peticion con la pagina anterior.
+      vars.actualPage = vars.dataPaginate.paginaActual;
+      vars.actualPage--;
+      if (vars.actualPage < 1) {
+        vars.actualPage = 1;
+        return;
+      }
+    }
+    if (btnValue === 'next') {
+      vars.actualPage++;
+      if (vars.actualPage > vars.dataPaginate.cantidadPaginas) {
+        vars.actualPage = vars.dataPaginate.cantidadPaginas;
+        return;
+      }
+    }
+
+    renderData({ pagina: vars.actualPage });
+    return;
+  }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
+  vars.dataModule = StorageHelper.getParsedValue({ key: 'dataModulo' }); //Obtenemos los datos del modulo de localstorage
   selectors.textTitleFunctions.innerHTML = `Funciones asociadas módulo - ${vars.dataModule['nombre_modulo']}`;
   renderData();
 });

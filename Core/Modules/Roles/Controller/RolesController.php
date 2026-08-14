@@ -1,4 +1,7 @@
 <?php
+
+use function PHPUnit\Framework\throwException;
+
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once __DIR__ . '/../Const/RolesConst.php';
 require_once BASE_URL . '/' . CR_AUTOLOAD;
@@ -129,13 +132,19 @@ class RolesController extends ConfigController implements CrudInterface
 
     public function store(): void
     {
-        header(CONTENT_TYPE);
-        $data = UtilsFunctions::returnGetDecode();
-        $data['rl_status'] = 1;
-        $dataInsert['data'] = $data;
-        $responseAddRol = $this->modeloRol->insert($data)->prepareSql($dataInsert)->get();
-        if ($responseAddRol) {
-            Response::responseRequest(HttpStatus::CREATED, true, RL_MESSAGE_CREATED_ROL, []);
+        try {
+            header(CONTENT_TYPE);
+            $data = UtilsFunctions::returnGetDecode();
+            $data['rl_status'] = 1;
+            $dataInsert[CR_DATA] = $data;
+            $responseAddRol = $this->modeloRol->insert($data)->prepareSql($dataInsert)->get();
+            if (!$responseAddRol[CR_STATUS]) {
+                $responseHandler = DatabaseHandler::validateResponse($responseAddRol);
+                throw new Exception($responseHandler['message'], $responseHandler['codeResponse']);
+            }
+            Response::responseRequest(HttpStatus::CREATED, true, "Rol creado exitosamente", []);
+        } catch (\Exception $th) {
+            Response::responseRequest($th->getCode(), false, $th->getMessage(), []);
         }
     }
 
@@ -189,9 +198,25 @@ class RolesController extends ConfigController implements CrudInterface
          */
 
 
-        $allModulos = $this->sModulos->getAllModulos(); //PASO #1
+        $modulos = $this->sModulos->getAllModulos(); //PASO #1
         $allFunctions = $this->sFunciones->getAllFunctions(); //PASO #2
 
+        // validar si el id del rol es diferente de super administrador, en caso que lo sea, borrar el modulo super administrador.
+        $nombreRol = $this->sRoles->getNameRol($data['rl_id'])[0]['rl_nombre'];
+        $nombreRol = str_replace(' ', '', $nombreRol);
+
+        // validamos si el nombre del rol es diferente de super administrador para eliminar las funciones y los modulos y asi evitar envio de datos erroneos.
+        $allModulos = [];
+        if (strtoupper($nombreRol) != 'SUPERADMINISTRADOR') {
+            foreach ($modulos as $key => $value) {
+                if ($value['nombre_modulo'] === 'Generalcrud' || $value['nombre_modulo'] === 'Gestionmodulos') {
+                    continue;
+                }
+                $allModulos[] = $value;
+            }
+        } else {
+            $allModulos = array_merge($modulos, $allModulos);
+        }
 
         //PASO #3
         $finalFunctionsModules = [];

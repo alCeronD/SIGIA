@@ -22,6 +22,12 @@ class ServicesRoles
     return $this->rlModel->select()->from()->prepareSql()->get();
   }
 
+  public function getNameRol(int $rolId)
+  {
+    $dataPrepare[CR_DATA] = ['rl_id' => $rolId];
+    return $this->rlModel->select(['rl_nombre'])->from()->where(['rl_id', '=', $rolId])->prepareSql($dataPrepare)->get();
+  }
+
   /**
    * Funcion para obtener las funciones ya asociadas al rol.
    *

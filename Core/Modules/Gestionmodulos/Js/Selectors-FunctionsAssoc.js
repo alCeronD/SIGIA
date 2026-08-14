@@ -63,3 +63,5 @@ export const formUpdateFunctions = {
     files: document.querySelector('.files'),
   },
 };
+
+export const footer = document.querySelector('#tFooterFunciones');

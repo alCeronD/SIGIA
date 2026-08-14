@@ -11,7 +11,8 @@ class DatabaseHandler
       '42S02' => 'La tabla base o vista especificada no fue encontrada en el sistema',
       '42S22' => 'Columna no encontrada en la tabla especificada',
       '08S01' => 'Fallo en el enlace de comunicación (Pérdida de conexión con el servidor de BD)',
-      '22007' => 'Formato de fechas incorrecto'
+      '22007' => 'Formato de fechas incorrecto',
+      '21S01' => 'El numero de columnas no coincide con los valores enviados'
     ],
     'codeError' => [
       1062 => 'Registro duplicado en índice UNIQUE o PRIMARY KEY',
@@ -19,7 +20,8 @@ class DatabaseHandler
       1452 => 'Restricción de inserción/actualización: La llave foránea no existe en la tabla padre',
       1048 => 'Columna obligatoria recibió un valor NULL',
       1406 => 'El valor de la columna es demasiado largo para el tipo de dato',
-      1306 => 'Tipo de datos enviados incorrectamente'
+      1306 => 'Tipo de datos enviados incorrectamente',
+      1136 => 'Los datos enviados no coinciden con las columnas'
     ]
   ]; //
   public static array $mensajesCodeErrors = [
@@ -47,6 +49,10 @@ class DatabaseHandler
       1366 => [
         'status_http' => HttpStatus::UNPROCESSABLE_ENTITY,
         'message' => "Error en el formato de fechas definido."
+      ],
+      1136 => [
+        'status_http' => HttpStatus::BAD_REQUEST,
+        'message' => 'Ha ocurrido un error en la estructura de datos definida'
       ]
     ]
   ]; //
