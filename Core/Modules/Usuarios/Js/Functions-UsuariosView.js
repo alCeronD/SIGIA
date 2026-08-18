@@ -10,7 +10,7 @@ import {
   mostrarConfirmacion,
   openModal,
   Render,
-  Storage,
+  StorageHelper,
   validateFormData,
   Validator,
 } from '../../../../public/assets/js/utils/index.js';
@@ -208,17 +208,17 @@ export const renderUsers = async (params = { pagina: 1 }) => {
   let dataResponse = responseUsers.data;
   let realPage = responseUsers.data.paginaActual;
 
-  Usuarios.actualPage(realPage);
+  Usuarios.actualPage = realPage;
   dataPaginate['totalRegistros'] = dataResponse.totalRegistros;
   dataPaginate['paginaActual'] = dataResponse.paginaActual;
   dataPaginate['cantidadPaginas'] = dataResponse.cantidadPaginas;
 
-  Usuarios.renderData(
-    selectors.tbodyUsuarios,
-    selectors.tHeaderUsuarios,
-    'IdUsuario',
-    dataResponse.data
-  );
+  Usuarios.renderData({
+    bodyTbl: selectors.tbodyUsuarios,
+    headerTable: selectors.tHeaderUsuarios,
+    id: 'IdUsuario',
+    data: dataResponse.data,
+  });
   Usuarios.renderPaginate(dataPaginate, selectors.footerUsers);
 };
 
@@ -266,7 +266,7 @@ export const executePaginate = () => {
 
 const verDetalle = (idRow, fullRow) => {
   // Guardamos los datos en localstorage y cuando estemos en el archivo lo recibimos y lo consultamos.
-  Storage.addValue({ key: 'detailUSer', item: JSON.stringify(fullRow) });
+  StorageHelper.addValue({ key: 'detailUSer', item: JSON.stringify(fullRow) });
   window.location.replace(`${vars.url}detailUserView`);
 };
 

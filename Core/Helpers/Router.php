@@ -29,16 +29,13 @@ class Router
     $controlador = $_GET['controlador'] ?? $_POST['controlador'] ?? null;
     $function = $_GET['function'] ?? $_POST['function'] ?? null;
     if (!$modulo || !$controlador || !$function) {
-
-      header('Content-Type: application/json');
-
+      header(CONTENT_TYPE);
       echo json_encode(['success' => false, 'message' => "Faltan parámetros de ejecución"]);
       exit;
     }
 
     $controladorFile = ucfirst($controlador) . "Controller.php";
-
-    $rutaFile = __DIR__ . "/../Modules/$modulo/Controller/$controladorFile";
+    $rutaFile = realpath(BASE_URL . "/../Modules/$modulo/Controller/$controladorFile");
     if (!is_file($rutaFile)) {
       echo json_encode(['success' => false, 'message' => "No existe el controlador en $rutaFile"]);
       exit;
@@ -50,6 +47,19 @@ class Router
     $nameController = $controlador . "Controller";
 
     $objController = new $nameController();
+
+    // if (($modulo !== 'Login' && $function !== 'logout') && ($modulo !== 'Login' && $function !== 'login') || $function !== 'index' || $function === 'dashboard') {
+
+    //   var_dump($modulo, $function);
+    //   (new ValidatePermisos())->validateAccess($modulo, $function);
+    // }
+
+
+    // if (($function !== 'logout' && $modulo !== 'Login') || $function !== 'index' || $function === 'dashboard') {
+    // (new ValidatePermisos())->validateAccess($modulo, $function);
+
+    // return;
+    // }
 
     if (method_exists($objController, $function)) {
       $objController->$function();

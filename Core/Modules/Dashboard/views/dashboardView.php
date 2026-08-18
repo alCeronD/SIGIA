@@ -33,7 +33,7 @@
                 </div>
                 <div class="option-card z-depth-1 div3">
                     <div class="icons">
-                        <a href="<?php echo Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'usuariosIndex', false, CR_DASHBOARD_LOWER_CASE); ?>">
+                        <a href="<?php echo Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'usuariosIndexView', false, CR_DASHBOARD_LOWER_CASE); ?>">
                             <i class="material-icons small green-text text-darken-2 center-align">person</i>
                         </a>
                     </div>
@@ -56,7 +56,7 @@
                     </div>
                     <div class="buttons">
                         <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute(CR_AREAS, CR_AREAS, 'renderViewArea', false, CR_DASHBOARD_LOWER_CASE); ?>">Áreas</a>
-                        <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('TipoDocumento', 'TipoDocumento', 'renderViewTp', false, CR_DASHBOARD_LOWER_CASE); ?>">Tipo documento</a>
+                        <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('Tipodocumento', 'TipoDocumento', 'renderViewTp', false, CR_DASHBOARD_LOWER_CASE); ?>">Tipo documento</a>
                         <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute(CR_ROLES, CR_ROLES, 'rolesIndex', false, CR_DASHBOARD_LOWER_CASE); ?>">Roles</a>
                         <a class="btn green btnGetUrl" href="<?php echo Router::createRoute(CR_MARCAS, CR_MARCAS, 'renderViewMarca', false, CR_DASHBOARD_LOWER_CASE); ?>">Marcas</a>
                         <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('Generalcrud', 'Generalcrud', 'renderGeneralView', false, CR_DASHBOARD_LOWER_CASE); ?>">GeneralCrud</a>

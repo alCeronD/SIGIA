@@ -66,14 +66,7 @@ export class Render extends HttpData {
           // vamos a renderizar solo lo que esta en la tabla con sus respectivos ids validanto que el id de los encabezados sean iguales a las claves de la data a renderizar
           if (thElement === clave) {
             tdItem = document.createElement('td');
-
-            // validamos si el objeto tiene una clave igual a al objeto data para asi personalizar el texto
-            let newValor = null;
-            if (Object.hasOwn(customText, clave)) {
-              newValor = valor === 1 ? 'Habilitado' : 'Inhabilitado';
-            }
-            tdItem.innerText = newValor != null ? newValor : valor;
-
+            tdItem.innerText = valor;
             // Aca tiene que ir la opcion de los botones.
             tr.append(tdItem);
           }

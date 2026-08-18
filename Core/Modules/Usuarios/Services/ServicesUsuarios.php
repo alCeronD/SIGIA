@@ -43,7 +43,10 @@ class ServicesUsuarios
       'COALESCE(ur.usr_rl_id, "Sin asignar") AS "rolIdUser"',
       'COALESCE(eu.est_nombre, "Sin estado") AS "estado_usuario"'
     ];
-    $query = $this->userModel->select($columns)->from('usuarios u')->leftJoin('usuarios_roles ur', 'u.usu_id', '=', 'ur.usr_usu_id')->leftJoin('roles r', 'ur.usr_rl_id', '=', 'r.rl_id')->leftJoin('estados_usuarios eu', 'u.usu_id_estado', '=', 'eu.est_id');
+    $query = $this->userModel->select($columns)->from('usuarios u')
+      ->leftJoin('usuarios_roles ur', 'u.usu_id', '=', 'ur.usr_usu_id')
+      ->leftJoin('roles r', 'ur.usr_rl_id', '=', 'r.rl_id')
+      ->leftJoin('estados_usuarios eu', 'u.usu_id_estado', '=', 'eu.est_id');
 
     if (empty($filter) && empty($valueFilter)) {
       $responseUser = $query->orderBy()->limit()->offset();
@@ -66,9 +69,18 @@ class ServicesUsuarios
   {
 
     if (empty($filter) && empty($valueFilter)) {
-      return $this->userModel->count()->from('usuarios u')->leftJoin('usuarios_roles ur', 'u.usu_id', '=', 'ur.usr_usu_id')->leftJoin('roles r', 'ur.usr_rl_id', '=', 'r.rl_id')->leftJoin('estados_usuarios eu', 'u.usu_id_estado', '=', 'eu.est_id')->orderBy();
+      return $this->userModel->count()->from('usuarios u')
+        ->leftJoin('usuarios_roles ur', 'u.usu_id', '=', 'ur.usr_usu_id')
+        ->leftJoin('roles r', 'ur.usr_rl_id', '=', 'r.rl_id')
+        ->leftJoin('estados_usuarios eu', 'u.usu_id_estado', '=', 'eu.est_id')
+        ->orderBy();
     } else {
-      return $this->userModel->count()->from('usuarios u')->leftJoin('usuarios_roles ur', 'u.usu_id', '=', 'ur.usr_usu_id')->leftJoin('roles r', 'ur.usr_rl_id', '=', 'r.rl_id')->leftJoin('estados_usuarios eu', 'u.usu_id_estado', '=', 'eu.est_id')->where([$filter, 'LIKE', "%$valueFilter%"])->orderBy($filter, true);;
+      return $this->userModel->count()->from('usuarios u')
+        ->leftJoin('usuarios_roles ur', 'u.usu_id', '=', 'ur.usr_usu_id')
+        ->leftJoin('roles r', 'ur.usr_rl_id', '=', 'r.rl_id')
+        ->leftJoin('estados_usuarios eu', 'u.usu_id_estado', '=', 'eu.est_id')
+        ->where([$filter, 'LIKE', "%$valueFilter%"])
+        ->orderBy($filter, true);
     }
   }
 }

@@ -78,7 +78,7 @@ class GeneralcrudController extends ConfigController
     header(CONTENT_TYPE);
 
     $data = UtilsFunctions::returnGetDecode();
-    $primaryKey = $this->modelGeneralCrud->getPrimaryKey();
+    $primaryKey = $this->modelGeneralCrud->getKeyName();
     $dataUpdateSql = [];
 
     $keyData = [];
@@ -119,7 +119,7 @@ class GeneralcrudController extends ConfigController
 
     // traer la data
     $data = UtilsFunctions::returnGetDecode();
-    $primaryKey = $this->modelGeneralCrud->getPrimaryKey();
+    $primaryKey = $this->modelGeneralCrud->getKeyName();
 
     $keyData = [];
     # extraigo el primary key del arreglo.

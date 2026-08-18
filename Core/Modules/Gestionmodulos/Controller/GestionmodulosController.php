@@ -317,7 +317,10 @@ class GestionmodulosController extends ConfigController implements CrudInterface
       $dataPrepare[CR_DATA] = $data;
 
       // aca implementamos el limite y offset porque usamos la misma funcion previamente para contar las funciones basadas en el modulo.
-      $getSelectFunctions = $this->sFunciones->getAllFunctionsFromModule($sql, $conditions)->limit()->offset()->prepareSql($dataPrepare)->get();
+      $getSelectFunctions = $this->sFunciones->getAllFunctionsFromModule($sql, $conditions)
+        ->limit()
+        ->offset()
+        ->prepareSql($dataPrepare)->get();
 
       if (count($getSelectFunctions) > 0) {
         Response::responseRequest(HttpStatus::OK, true, "Registros", [

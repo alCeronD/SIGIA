@@ -10,12 +10,7 @@ class PermisosController extends ConfigController
             'permisosIndexView' => ['Permisos.css']
         ]
     ];
-    // private $modelPermisos;
 
-    // public function __construct() {
-    //     $this->modelPermisos = new PermisosModel();
-
-    // }
 
     // public function gidIdModulo(String $nameModule = ""){
     //     $result = $this->modelPermisos->getModuleName($nameModule);

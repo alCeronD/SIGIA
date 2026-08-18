@@ -78,6 +78,7 @@ define('CR_CODE_RESPONSE', 'codeResponse');
 define('CR_MESSAGE', 'message');
 define('CR_RESPONSE', 'response');
 define('CR_FILES', 'files');
+define('CR_USUARIO', 'usuario');
 
 
 // name Functions

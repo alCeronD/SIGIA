@@ -44,12 +44,13 @@ btnClose.forEach((btnCerrarSesion) => {
       }
       try {
         const url = e.target.getAttribute('data-Url');
-        let dta = e.target.getAttribute('data-logOut');
+        let dta = e.target.getAttribute('data-logout');
         let data = {
           action: dta,
         };
 
         const response = await sendData(url, 'POST', data);
+        console.log(response);
 
         if (response.status) {
           StorageHelper.addValue({ key: 'sessionStatus', item: 'false' });

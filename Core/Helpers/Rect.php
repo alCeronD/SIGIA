@@ -1,5 +1,6 @@
 <?php
-Class Rect{
+class Rect
+{
 
     public static function redirectTo($url)
     {
@@ -8,9 +9,9 @@ Class Rect{
             . "</script>";
     }
 
-    public static function fast(string $url) {
+    public static function fast(string $url)
+    {
         header("Location: $url");
         exit;
     }
 }
-?>

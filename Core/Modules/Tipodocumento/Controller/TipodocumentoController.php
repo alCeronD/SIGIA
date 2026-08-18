@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../..' . CR_ROUTE_CONST;
 require_once __DIR__ . '/../Const/TpConst.php';
 require_once BASE_URL . '/Autoload.php';
-class TipoDocumentoController extends ConfigController implements CrudInterface
+class TipodocumentoController extends ConfigController implements CrudInterface
 {
   // implementar el modulo
   protected TipoDocumentoModel $tpModel;
@@ -30,7 +30,7 @@ class TipoDocumentoController extends ConfigController implements CrudInterface
       'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
       'renderViewTp' => [
         'label' => 'Tipo de documento',
-        'url' => Router::createRoute('TipoDocumento', 'TipoDocumento', 'renderViewTp', false, 'dashboard'),
+        'url' => Router::createRoute('Tipodocumento', 'TipoDocumento', 'renderViewTp', false, 'dashboard'),
         'parent' => 'dashboard'
       ]
     ];

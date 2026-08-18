@@ -86,7 +86,7 @@ const loadTable = async ({ pagina: actualPage }) => {
   const realPage = responseGetData.data.paginaActual;
 
   // guardamos la pagina actual en la propiedad de la clase para el correcto renderizado del usuario final.
-  Areas.actualPage(realPage);
+  Areas.actualPage = realPage;
   dataAreas = responseGetData.data.data;
   dataPaginate = {};
   dataPaginate['totalRegistros'] = responseGetData.data.totalRegistros;

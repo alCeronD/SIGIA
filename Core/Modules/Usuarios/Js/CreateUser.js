@@ -7,7 +7,7 @@ import {
   Validator,
   InitComponents,
   mostrarConfirmacion,
-  Storage,
+  StorageHelper,
 } from '../../../../public/assets/js/utils/index.js';
 import { inputOptionals, mapForm, formSelectors, vars } from './Selectors-CreateUser.js';
 

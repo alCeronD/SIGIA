@@ -5,6 +5,7 @@ require_once BASE_URL . CR_ROUTE_CONN;
 
 Session::validateSession();
 
+
 // $modulo = $_GET[CR_MODULO] ?? CR_DASHBOARD;
 // $assetsFiles = (new ScanFiles($modulo))->mapAssets($modulo);
 // Ejecutar actualización automática de estados de prestamos

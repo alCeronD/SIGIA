@@ -204,7 +204,6 @@ class RolesController extends ConfigController implements CrudInterface
         // validar si el id del rol es diferente de super administrador, en caso que lo sea, borrar el modulo super administrador.
         $nombreRol = $this->sRoles->getNameRol($data['rl_id'])[0]['rl_nombre'];
         $nombreRol = str_replace(' ', '', $nombreRol);
-
         // validamos si el nombre del rol es diferente de super administrador para eliminar las funciones y los modulos y asi evitar envio de datos erroneos.
         $allModulos = [];
         if (strtoupper($nombreRol) != 'SUPERADMINISTRADOR') {

@@ -45,30 +45,30 @@ class UsuariosController extends ConfigController implements CrudInterface
                 'label' => 'inicio',
                 'url' => Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE)
             ],
-            'usuariosIndex' => [
+            'usuariosIndexView' => [
                 'label' => 'Usuarios',
-                'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'usuariosIndex', false, CR_DASHBOARD_LOWER_CASE),
+                'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'usuariosIndexView', false, CR_DASHBOARD_LOWER_CASE),
                 'parent' => 'dashboard'
             ],
             'createUserView' => [
                 'label' => 'Crear usuario',
                 'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'createUserView', false, CR_DASHBOARD_LOWER_CASE),
-                'parent' => 'usuariosIndex'
+                'parent' => 'usuariosIndexView'
             ],
             'auditoriaUserView' => [
                 'label' => 'Auditorias de usuario',
                 'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'auditoriaUserView', false, CR_DASHBOARD_LOWER_CASE),
-                'parent' => 'usuariosIndex'
+                'parent' => 'usuariosIndexView'
             ],
             'usuariosView' => [
                 'label' => 'Usuarios registrados',
                 'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'usuariosView', false, CR_DASHBOARD_LOWER_CASE),
-                'parent' => 'usuariosIndex'
+                'parent' => 'usuariosIndexView'
             ],
             'actualizarDatosView' => [
                 'label' => 'Actualizar datos personales',
                 'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'updatePersonalDataView', false, CR_DASHBOARD_LOWER_CASE),
-                'parent' => 'usuariosIndex'
+                'parent' => 'usuariosIndexView'
             ],
             'detailUser' => [
                 'label' => 'Detalle del usuario',

@@ -332,6 +332,7 @@ abstract class Crud
             foreach ($data as $key => $value) {
               $this->stmt->bindValue(":{$key}", $value);
             }
+
             return $this;
           } else {
             return $this;
@@ -370,12 +371,6 @@ abstract class Crud
         return $this;
       }
     } catch (\PDOException $th) {
-      // var_dump($tsh);
-      // return [
-      //   'status' => false,
-      //   'message' => $th->getMessage(),
-      // ];
-
       return [
         'status' => false,
         'sqlState' => $th->errorInfo[0], //Codigo generico de error
@@ -490,7 +485,7 @@ abstract class Crud
     return is_array($primerElemento);
   }
 
-  public function getPrimaryKey()
+  public function getKeyName()
   {
     return $this->id;
   }

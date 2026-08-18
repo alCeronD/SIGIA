@@ -8,7 +8,7 @@ import {
   openModal,
 } from '../../../../public/assets/js/utils/index.js';
 import { Render } from '../../../../public/assets/js/utils/Render.js';
-const url = 'dashboard.php?modulo=TipoDocumento&controlador=TipoDocumento&function=';
+const url = 'dashboard.php?modulo=Tipodocumento&controlador=Tipodocumento&function=';
 const bodyTbl = document.querySelector('#tableBodyTp');
 const tableConfigTp = document.querySelector('#tHeadTP');
 const footerTp = document.querySelector('#footerTp');
@@ -162,7 +162,7 @@ const loadTable = async ({ pagina: actualPage }) => {
 
   data = responseGetData.data.data;
   dataPaginate = {};
-  render.actualPage(realPage);
+  render.actualPage = realPage;
   dataPaginate['totalRegistros'] = responseGetData.data.totalRegistros;
   dataPaginate['paginaActual'] = realPage;
   dataPaginate['cantidadPaginas'] = responseGetData.data.cantidadPaginas;
