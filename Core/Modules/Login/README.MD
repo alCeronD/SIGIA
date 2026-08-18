@@ -7,7 +7,6 @@
   - [Descripción](#descripción)
   - [Arquitectura Interna (Pre-documentación)](#arquitectura-interna-pre-documentación)
   - [Dependencias de Base de Datos](#dependencias-de-base-de-datos)
-    - [TODOS ESPECÍFICOS](#todos-específicos)
 
 ## Descripción
 
@@ -24,17 +23,9 @@ Modulo de inicio sesión que nos permite validar la existencia de nuestro usuari
 - **SQL (Estructura):** `Mysql/tables.sql` -> Definición base y scripts de creación de tablas (`CREATE TABLE`) requeridas por el módulo.
 - **Documentación:** `README.MD` -> Documentación técnica general y especificaciones operativas del módulo.
 - **Vistas Clave:**
-  - `Views/loginView.php` -> Template principal para renderizar la vista de inicio de sesion
+  - `Views/LoginView.php` -> Template principal para renderizar la vista de inicio de sesion
 
 ## Dependencias de Base de Datos
 
 - Tabla principal: `usuarios`
-- Tabla secundaria: `roles`
-
----
-
-### TODOS ESPECÍFICOS
-
-- [ ] Ajustar controlador del login para dar el acceso mediante los modelos
-- [ ] usar la funcionalidad window.location.replace(url) para asi poder re direccionar de manera correcta y evitar el uso del boton de atras, eso permite que el historial se elimine.
-- [ ] Al cerrar la sesion re direccionar y eliminar los datos de localstorage usando clear
+- Tablas secundarias: `roles`, `usuarios_roles`

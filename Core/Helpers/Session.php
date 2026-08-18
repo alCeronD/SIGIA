@@ -14,13 +14,12 @@ class Session
             session_start();
         }
 
-
         if (!isset($_SESSION['usuario'])) {
             Rect::fast('/index.php');
         }
 
-        $usuario = $_SESSION['usuario'];
-        $rol = $usuario['rol_id'];
+        $rol = $usuario['rol_id'] ?? '';
+        $usuario = $_SESSION['usuario'] ?? '';
     }
 
     public static function getRol()

@@ -1,4 +1,3 @@
 <?php
 
-
-class LoginModel {}
+class LoginModel extends Crud {}

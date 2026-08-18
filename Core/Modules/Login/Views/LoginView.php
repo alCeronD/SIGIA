@@ -9,6 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
   }
 }
 
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -54,11 +55,6 @@ if (session_status() === PHP_SESSION_NONE) {
       </div>
     </div>
   </div>
-
-
-
-  <!-- Materialize JS -->
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
 
   <!-- JS personalizado -->
   <script src="public/assets/libraries/materialize/js/materialize.min.js"></script>

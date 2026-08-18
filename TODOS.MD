@@ -89,15 +89,16 @@ Listado de TODOS generales y específicos por cada módulo.
 | **Tipo Documento**     |   90%    |  Completado   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
 | **Marcas**             |   90%    |  Completado   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
 | **Roles**              |   90%    |  Completado   |       [Ver README](./Core/Modules/Roles/README.MD)        |
+| **Permisos**           |   50%    |  Completado   |      [Ver README](./Core/Modules/Permisos/README.MD)      |
 | **Usuarios**           |   70%    |  En Proceso   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |
 | **Categorias**         |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Categorias/README.MD)     |
 | **Dashboard**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Dashboard/README.MD)      |
 | **Elementos**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Elementos/README.MD)      |
-| **Login**              |    0%    |   Pendiente   |       [Ver README](./Core/Modules/Login/README.MD)        |
+| **Login**              |   100%   |   Pendiente   |       [Ver README](./Core/Modules/Login/README.MD)        |
 | **Reportes**           |    0%    |   Pendiente   |      [Ver README](./Core/Modules/Reportes/README.MD)      |
 | **SolicitudPrestamos** |    0%    |   Pendiente   | [Ver README](./Core/Modules/SolicitudPrestamos/README.MD) |
 | **ReservaPrestamos**   |    0%    |   Pendiente   |  [Ver README](./Core/Modules/ReservaPrestamos/README.MD)  |
-| **Modulos**            |    0%    |   Pendiente   |      [Ver README](./Core/Modules/Modulos/README.MD)       |
+| **Gestionmodulos**     |    0%    |   Pendiente   |   [Ver README](./Core/Modules/Gestionmodulos/README.MD)   |
 | **GeneralCrud**        |    0%    |   Pendiente   |    [Ver README](./Core/Modules/GeneralCrud/README.MD)     |
 
 ## Archivos especificos
@@ -108,7 +109,7 @@ Listado de TODOS generales y específicos por cada módulo.
 
 -**Clase loginController**
 
-- [ ] Ajustar la logica de inicio de sesion implementando los modelos
+- [X] Ajustar la logica de inicio de sesion implementando los modelos
 
 -**Clase dashboardController**
 
@@ -122,4 +123,4 @@ Listado de TODOS generales y específicos por cada módulo.
 - [ ] Crear Y/o ajustar historias de usuario
 - [ ] Adicionar requisitos requeridos para cada modulo.
 - [ ] Referenciar toda la documentación mediante un link de google drive para observar la documentación del producto
-- [ ] Adicionar archivo README.MD A cada modulo para presentar que hace cada producto.
+- [X] Adicionar archivo README.MD A cada modulo para presentar que hace cada producto.

@@ -140,4 +140,9 @@ class UtilsFunctions
     {
         return $_GET['modulo'];
     }
+
+    public static function hashPassword(mixed $password)
+    {
+        return password_hash($password, PASSWORD_DEFAULT);
+    }
 }

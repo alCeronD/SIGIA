@@ -155,7 +155,6 @@ class LoginController extends ConfigController
 
     public function logout()
     {
-
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -163,20 +162,25 @@ class LoginController extends ConfigController
         $_SESSION = [];
         session_destroy();
 
-
         if (UtilsFunctions::ajaxGeneral()) {
             header(CONTENT_TYPE);
             // debo re direccionar y ahi eliminar los datos de localStorage con clear().
             Response::responseRequest(HttpStatus::OK, true, '', ['redirect' => Router::createRoute('Login', 'Login', 'index', false, 'dashboard')]);
-
-            exit();
         }
 
+        // se coloca tambien la opcion para re direccionar de manera directa como alternativa.
         Rect::redirectTo(Router::createRoute('Login', 'Login', 'index', false, 'dashboard'));
         exit();
     }
 
-    public function validatePassword($passWordBD, $passwordUser): bool
+    /**
+     * Function para validar que la password enviada por el usuario y la registrada en la base de datos sea la correcta.
+     *
+     * @param mixed $passWordBD
+     * @param mixed $passwordUser
+     * @return boolean
+     */
+    public function validatePassword(mixed $passWordBD, mixed  $passwordUser): bool
     {
 
         return password_verify($passwordUser, $passWordBD);

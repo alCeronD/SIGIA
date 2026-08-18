@@ -1,9 +1,9 @@
-import { cancelProcess } from './utils/const.js';
+import { cancelProcess, METHOD } from './utils/const.js';
 import {
   mostrarConfirmacion,
   initAlert,
   initTooltip,
-  sendData,
+  HttpData,
   InitComponents,
   StorageHelper,
 } from './utils/index.js';
@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
   InitComponents.initModals();
 });
 
+const Http = new HttpData();
+
 // const responseStatus = Storage.getValue('sessionStatus');
 const responseStatus = StorageHelper.getValue('sessionStatus');
 
@@ -25,7 +27,7 @@ window.addEventListener('storage', (f) => {
   const oldValueStorage = f.oldValue;
 
   if (newValueStorage === 'false') {
-    localStorage.removeItem('sessionStatus');
+    localStorage.clear();
     window.location.href = '/index.php';
   }
 });
@@ -38,26 +40,18 @@ btnClose.forEach((btnCerrarSesion) => {
     e.preventDefault();
 
     mostrarConfirmacion('Cerrar sesión', '¿Deseas salir de la aplicación?', async (r) => {
-      if (!r) {
-        initAlert(cancelProcess, 'info');
-        return;
-      }
       try {
+        if (!r) return;
+
         const url = e.target.getAttribute('data-Url');
-        let dta = e.target.getAttribute('data-logout');
-        let data = {
-          action: dta,
-        };
-
-        const response = await sendData(url, 'POST', data);
-        console.log(response);
-
-        if (response.status) {
-          StorageHelper.addValue({ key: 'sessionStatus', item: 'false' });
-          window.location.href = response.data.redirect;
-        }
+        const response = await Http.sendData(url, METHOD.POST);
+        if (!response.status)
+          throw new Error('Error al cerrar la sesion, seras re dirigido al inicio', response.url);
+        localStorage.clear(); //Eliminamos todos los datos de localStorage
+        window.location.replace(response.data.redirect);
       } catch (error) {
-        console.log(error);
+        initAlert(error.message, 'info');
+        window.location.replace(error.url);
       }
     });
   });

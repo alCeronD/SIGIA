@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       StorageHelper.addValue({ key: 'sessionStatus', item: 'true' });
-      window.location.href = responseLogin.data.url;
+      window.location.replace(responseLogin.data.url); //usamos replace para evitar el uso del boton de atras del navegador.
     } catch (error) {
       initAlert(error.message, 'error');
       return;
