@@ -10,7 +10,13 @@ class Regex
     public const SERIE = '/^\d+-\d+$/';
     public const SOLO_LETRAS = '/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+$/';
 
-    public static function validarNumeros($value)
+    /**
+     * Function para validar si el dato a evaluar es de tipo numerico
+     *
+     * @param [type] $value
+     * @return bool
+     */
+    public static function validarNumeros($value): bool
     {
 
         return preg_match(self::SOLO_NUMEROS, $value) === 1;

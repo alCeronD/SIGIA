@@ -62,6 +62,7 @@ define('MSG_REGISTRO_ACTUALIZAOD', 'Registro actualizado correctamente');
 define('MSG_REGISTRO_CAMBIO_ESTADO', 'Cambio de estado correctamente.');
 define('MSG_ERROR_EJECUTAR_PROCESO', 'Error al ejecutar el procedimiento.');
 define('MSG_ERROR_CAMPOS', 'Todos los campos son obligatorios');
+define('MSG_ERROR_NO_LETRAS', 'No se permiten letras');
 
 // variables
 define('CR_TOTAL_REGISTROS', 'totalRegistros');
@@ -79,6 +80,7 @@ define('CR_MESSAGE', 'message');
 define('CR_RESPONSE', 'response');
 define('CR_FILES', 'files');
 define('CR_USUARIO', 'usuario');
+define('CR_RENDER_MENU', 'renderMenu');
 
 
 // name Functions

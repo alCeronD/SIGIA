@@ -20,9 +20,9 @@ if (session_status() === PHP_SESSION_NONE) {
 
   <!-- Materialize CSS -->
   <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
-  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="public/assets/libraries/materialize/css/materialize.min.css">
   <link rel="stylesheet" href='Core/Modules/Login/Css/Login.css'>
-  <link rel="icon" type="image/x-icon" href="/SIGIA/public/assets/image/sSigia.ico">
+  <link rel="icon" type="image/x-icon" href="public/assets/image/sSigia.ico">
 </head>
 
 <body>
@@ -61,7 +61,9 @@ if (session_status() === PHP_SESSION_NONE) {
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
 
   <!-- JS personalizado -->
+  <script src="public/assets/libraries/materialize/js/materialize.min.js"></script>
   <script type="module" src="/Core/Modules/Login/Js/Login.js"></script>
+
 </body>
 
 </html>
