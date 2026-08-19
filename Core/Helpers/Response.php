@@ -27,4 +27,28 @@ class Response
         echo json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         exit();
     }
+
+    /**
+     * Function para responder al usuario usando template en vez de una peticion
+     *
+     * @param integer $codeResponse
+     * @param string $message
+     * @param array $data
+     * @return void
+     */
+    public static function responseTemplate(int $codeResponse = 1, String $message = "", array $data = [])
+    {
+        try {
+            $nameTemplate = "{$codeResponse}.php";
+            $routeRemplate = realpath(BASE_URL . "/../../public/templates/$nameTemplate");
+
+            if (!file_exists($routeRemplate)) throw new Exception($message, 404);
+            $codeResponseTemplate = $codeResponse;
+            $messageToTemplate = $message;
+            include_once $routeRemplate;
+        } catch (\Exception $th) {
+            // fallback en caso de que no se encuentre el codigo de respuesta.
+            include_once realpath(BASE_URL . "/../../public/templates/404.php");
+        }
+    }
 }

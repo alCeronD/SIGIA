@@ -60,6 +60,10 @@ class TipodocumentoController extends ConfigController implements CrudInterface
     // capturamos la data o creamos la consulta desde el servicio
     $getAllTps = $this->stp->getAllTps(true);
     $resultSelect = $getAllTps->prepareSql($dataSql)->get();
+    // var_dump($tpData);
+
+    // var_dump($resultSelect);
+    // die();
 
     // consulta select basica de momento.
     if (count($resultSelect) > 0) {

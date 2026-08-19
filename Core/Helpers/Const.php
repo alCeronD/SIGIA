@@ -82,7 +82,10 @@ define('CR_RESPONSE', 'response');
 define('CR_FILES', 'files');
 define('CR_USUARIO', 'usuario');
 define('CR_RENDER_MENU', 'renderMenu');
-
+define('CR_ROL_SUPER_ADMIN', 'Super Administrador');
+define('CR_ROL_ADMIN', 'Administrador');
+define('CR_TIPO_DOCUMENTO', 'tipoDocumento');
+define('CR_ROLES_LOWER_CASE', 'roles');
 
 // name Functions
 define('CR_EDITAR_ROL', 'editarRol');

@@ -1,0 +1,5 @@
+# Módulo Permisos
+
+---
+
+## Menú principal

@@ -247,10 +247,11 @@ rolesUI.buttons.preconfirm.addEventListener('click', (e) => {
           funcionesPorEliminar: funcionesPorEliminar,
           rolId,
         });
+
         if (!responsePost.status) {
-          initAlert(error.message, 'error');
-          modalConfirmacion.close();
+          throw new Error(responsePost.message);
         }
+
         rolesUI.modals.assign.style.display = 'none';
         modalConfirmacion.close();
         initAlert(responsePost.message, 'success');
@@ -267,6 +268,7 @@ rolesUI.buttons.preconfirm.addEventListener('click', (e) => {
         //limpiamos los sets de los datos enviados al cliente.
         functionIdsAssoc.clear();
         functionDesc.clear();
+        console.log(error);
 
         initAlert(error.message, 'info');
         return;
@@ -280,6 +282,7 @@ const renderRoles = async () => {
   getRoles = await renderClass.getData(`${url}getData`, 'GET');
 
   const dataRoles = getRoles.data;
+  console.log(getRoles);
   renderClass.renderData({
     bodyTbl: rolesUI.tables.body,
     headerTable: rolesUI.containers.header,
@@ -447,11 +450,6 @@ rolesUI.forms.add.addEventListener('submit', async (e) => {
     );
     return;
   }
-
-  // if (!Validator.validateLeght({ value: data.rl_nombre, maxLenght: 15 })) {
-  //   initAlert(`Limite de caracteres permitido al campo ${rolesConfig.mapObj.rl_nombre}`, 'info');
-  //   return;
-  // }
 
   try {
     const responseAdd = await sendData(`${url}store`, 'POST', data);

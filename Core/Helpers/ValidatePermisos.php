@@ -23,6 +23,14 @@ class ValidatePermisos
     protected ModulosModel $mModel;
     protected RolesFuncionesModel $rfModel;
     protected RolesModel $rModel;
+    private array $publicFunctions = [
+        'Login' => ['login', 'logout', 'index'],
+        'Dashboard' => ['dashboard'],
+        'Areas' => ['getData'],
+        'Tipodocumento' => ['getData'],
+        'Permisos' => ['permisosIndexView'],
+        'Roles' => ['mostrarRoles', 'getData', 'getPermisosRolAsig'],
+    ];
     public function __construct()
     {
         $this->fModelo = new FuncionesModel();
@@ -32,6 +40,28 @@ class ValidatePermisos
     }
 
     public function validateAccess(String $modulo = '', String $funcion = '')
+    {
+        // validamos si la funcionalidad no debe de ser validada
+        if ($this->isValidate($funcion, $modulo)) {
+            return ['status' => true];
+        }
+
+        // devolvemos el resultado de la validacion de la funcionalidad
+        return $this->checkDbPermission($funcion, $modulo);
+    }
+
+    /**
+     * Funcionalidad para validar si la funcion a enviar debe de ser validada o no en la base de datos
+     *
+     * @param string $function
+     * @return boolean
+     */
+    public function isValidate(String $function = '', String $modulo = '')
+    {
+        return isset($this->publicFunctions[$modulo]) && in_array($function, $this->publicFunctions[$modulo], true);
+    }
+
+    public function checkDbPermission(String $funcion = '', String $modulo = '')
     {
         try {
             // rolId de la sesion actual del usuario:
@@ -52,17 +82,28 @@ class ValidatePermisos
             # paso 2 - traer id del modulo
             $prepareData[CR_DATA] = ['nombre_modulo' => $modulo];
 
-            $idModulo = $this->mModel->select(['id_m'])->from()->where(['nombre_modulo', '=', $modulo])->prepareSql($prepareData)->get()[0]['id_m'] ?? "";
+            $idModulo = $this->mModel->select(['id_m'])
+                ->from()
+                ->where(['nombre_modulo', '=', $modulo])
+                ->prepareSql($prepareData)
+                ->get()[0]['id_m'] ?? "";
+
 
             $dataPrepare[CR_DATA] = ['nombre_funcion' => $funcion];
 
-            if (empty($idModulo)) throw new Exception("El identificador del módulo no existe", HttpStatus::BAD_REQUEST);
+            if (empty($idModulo)) throw new Exception("El identificador del módulo no existe", HttpStatus::NOT_FOUND);
 
             # paso 2 - saber el id del modulo asociado al id del modulo en la tabla funciones
             $dataPrepareidFuncion[CR_DATA] = ['nombre_modulo' => $modulo, 'nombre_funcion' => $funcion];
-            $idFuncion = $this->fModelo->select(['id_funcion'])->from()->innerJoin($this->mModel->getTable(), 'id_m', '=', 'id_modulo')->where(['nombre_modulo', '=', $modulo])->where(['nombre_funcion', '=', $funcion])->prepareSql($dataPrepareidFuncion)->get();
+            $idFuncion = $this->fModelo->select(['id_funcion'])
+                ->from()
+                ->innerJoin($this->mModel->getTable(), 'id_m', '=', 'id_modulo')
+                ->where(['nombre_modulo', '=', $modulo])
+                ->where(['nombre_funcion', '=', $funcion])
+                ->prepareSql($dataPrepareidFuncion)
+                ->get();
 
-            if (empty($idFuncion)) throw new Exception("La funcionalidad no existe en la base de datos", HttpStatus::BAD_REQUEST);
+            if (empty($idFuncion)) throw new Exception("La funcionalidad no existe en la base de datos", HttpStatus::NOT_FOUND);
 
 
             # paso 3 - validar que el rol pueda acceder a esa funcion.
@@ -104,21 +145,28 @@ class ValidatePermisos
                 ->where([$rolesTable['primaryKey'], '=', $rolId])
                 ->where([$rolesFuncionesTable['foreingKeyFuncion'], '=', $idFuncion[0]['id_funcion']])->prepareSql($dataPrepareIsValid)->get();
 
-
-
-            // var_dump(count($funcionAssocModule));
             if (count($isValidate) === 0) {
                 throw new Exception("No tienes permisos para acceder a esta funcionalidad. Por seguridad, seras re direccionado al inicio de sesión", HttpStatus::UNAUTHORIZED);
             }
+            return [
+                CR_STATUS => true,
+                CR_MESSAGE => "",
+                CR_CODE_RESPONSE => 0
+            ];
         } catch (\Exception $th) {
             if (UtilsFunctions::ajaxGeneral()) {
                 header(CONTENT_TYPE);
-                Response::responseRequest($th->getCode(), false, $th->getMessage(), []);
+                return [
+                    CR_STATUS => false,
+                    CR_MESSAGE => $th->getMessage(),
+                    CR_CODE_RESPONSE => $th->getCode()
+                ];
             }
-            // re direccionamos al index.
-            Rect::redirectTo(Router::createRoute(CR_LOGIN, CR_LOGIN, 'index', 'false', 'index'));
-            // Response::responseRequest($th->getCode(), false, $th->getMessage(), []);
-
+            return [
+                CR_STATUS => false,
+                CR_MESSAGE => $th->getMessage(),
+                CR_CODE_RESPONSE => $th->getCode()
+            ];
         }
     }
 }

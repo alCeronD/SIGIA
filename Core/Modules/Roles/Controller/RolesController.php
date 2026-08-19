@@ -91,7 +91,27 @@ class RolesController extends ConfigController implements CrudInterface
     public function getData(): void
     {
         header(CONTENT_TYPE);
-        $roles = $this->sRoles->getAllRoles();
+        $dtaRoles = $this->sRoles->getAllRoles();
+        $dataRol = Session::getRol();
+
+        // dependiendo del rol actual pasamos los datos del usuario
+        // if ($dataRol['rol_nombre'] === CR_ROL_ADMIN) {
+        //     $roles = array_values(array_filter($dtaRoles, fn($r) => $r['rl_id'] !== $dataRol['rol_id'] && $r['rl_nombre'] !== CR_ROL_SUPER_ADMIN));
+        // } else {
+        //     $roles = $dtaRoles;
+        // }
+
+        if ($dataRol['rol_nombre'] === CR_ROL_ADMIN) {
+            // El Admin NO ve su propio rol ni el de Super Admin
+            $roles = array_values(array_filter(
+                $dtaRoles,
+                fn($r) => $r['rl_id'] !== $dataRol['rol_id'] && $r['rl_nombre'] !== CR_ROL_SUPER_ADMIN
+            ));
+        } else {
+            // El Super Admin ve TODOS los roles (ya aseguramos que si llegó aquí es Super Admin)
+            $roles = array_values($dtaRoles);
+        }
+
         if (count($roles) > 0) {
             Response::responseRequest(HttpStatus::OK, true, 'registros', $roles);
         }
@@ -104,7 +124,7 @@ class RolesController extends ConfigController implements CrudInterface
         $data['rl_id'] = (int) $data['rl_id']; //transformarmos el id del rol en int.
         $updateSql['data'] = $data;
         $responseUpdate = $this->modeloRol->update($data)->where()->prepareSql($updateSql)->get();
-        $codeResponse = $responseUpdate > 0 ? HttpStatus::OK : HttpStatus::NOT_FOUNT;
+        $codeResponse = $responseUpdate > 0 ? HttpStatus::OK : HttpStatus::NOT_FOUND;
         $messageResponse = $responseUpdate ? MSG_REGISTRO_ACTUALIZAOD : MSG_ERROR_EJECUTAR_PROCESO;
         Response::responseRequest($codeResponse, true, $messageResponse, []);
     }

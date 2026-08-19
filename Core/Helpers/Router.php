@@ -25,46 +25,60 @@ class Router
   public static function ExecuteFunction()
   {
 
-    $modulo = $_GET['modulo'] ?? $_POST['modulo'] ?? null;
-    $controlador = $_GET['controlador'] ?? $_POST['controlador'] ?? null;
-    $function = $_GET['function'] ?? $_POST['function'] ?? null;
-    if (!$modulo || !$controlador || !$function) {
-      header(CONTENT_TYPE);
-      echo json_encode(['success' => false, 'message' => "Faltan parámetros de ejecución"]);
-      exit;
-    }
+    try {
+      $modulo = $_GET['modulo'] ?? $_POST['modulo'] ?? null;
+      $controlador = $_GET['controlador'] ?? $_POST['controlador'] ?? null;
+      $function = $_GET['function'] ?? $_POST['function'] ?? null;
+      if (!$modulo || !$controlador || !$function) {
+        header(CONTENT_TYPE);
+        echo json_encode(['success' => false, 'message' => "Faltan parámetros de ejecución"]);
+        exit;
+      }
 
-    $controladorFile = ucfirst($controlador) . "Controller.php";
-    $rutaFile = realpath(BASE_URL . "/../Modules/$modulo/Controller/$controladorFile");
-    if (!is_file($rutaFile)) {
-      echo json_encode(['success' => false, 'message' => "No existe el controlador en $rutaFile"]);
-      exit;
-    }
+      $controladorFile = ucfirst($controlador) . "Controller.php";
+      $rutaFile = realpath(BASE_URL . "/../Modules/$modulo/Controller/$controladorFile");
+      if (!is_file($rutaFile)) {
+        throw new Exception("No existe el controlador", HttpStatus::NOT_FOUND);
+      }
 
-    include_once $rutaFile;
+      include_once $rutaFile;
 
-    // Crear el nombre de la clase
-    $nameController = $controlador . "Controller";
+      // Crear el nombre de la clase
+      $nameController = $controlador . "Controller";
 
-    $objController = new $nameController();
+      $objController = new $nameController();
 
-    // if (($modulo !== 'Login' && $function !== 'logout') && ($modulo !== 'Login' && $function !== 'login') || $function !== 'index' || $function === 'dashboard') {
+      $reflectionClass = new ReflectionClass($objController);
 
-    //   var_dump($modulo, $function);
-    //   (new ValidatePermisos())->validateAccess($modulo, $function);
-    // }
+      // hacemos un reflection para validar si el metodo existe.
+      if (!$reflectionClass->hasMethod($function)) {
+        // throw new Exception("La función '{$function}' no existe en el controlador '{$nameController}'", HttpStatus::NOT_FOUND);
+        throw new Exception("La acción solicitada no existe", HttpStatus::NOT_FOUND);
+      }
 
+      $instanceItem = $reflectionClass->getMethod($function);
+      // validamos que sea publico
+      if (!$instanceItem->isPublic()) {
+        throw new Exception("No se puede ejecutar esta acción porque es una acción interna del sistema", HttpStatus::UNAUTHORIZED);
+      }
 
-    // if (($function !== 'logout' && $modulo !== 'Login') || $function !== 'index' || $function === 'dashboard') {
-    // (new ValidatePermisos())->validateAccess($modulo, $function);
+      $validatePermisos = (new ValidatePermisos())->validateAccess($modulo, $function);
 
-    // return;
-    // }
+      if (!$validatePermisos['status']) {
+        throw new Exception($validatePermisos[CR_MESSAGE], $validatePermisos[CR_CODE_RESPONSE]);
+        // Response::responseRequest(HttpStatus::UNAUTHORIZED, false, "No tienes permisos para esta funcionalidad", []);
+      }
 
-    if (method_exists($objController, $function)) {
       $objController->$function();
-    } else {
-      echo json_encode(['success' => false, 'message' => "La función $function no existe en el controlador"]);
+    } catch (\Throwable $th) {
+
+
+      // validamos si es una peticion http mediante fetch o ajax o en su defecto una re direccion directa.
+      if (UtilsFunctions::ajaxGeneral()) {
+        Response::responseRequest($th->getCode(), false, $th->getMessage());
+      } else {
+        Response::responseTemplate($th->getCode(), $th->getMessage());
+      }
     }
   }
 }

@@ -56,7 +56,7 @@
                     </div>
                     <div class="buttons">
                         <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute(CR_AREAS, CR_AREAS, 'renderViewArea', false, CR_DASHBOARD_LOWER_CASE); ?>">Áreas</a>
-                        <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('Tipodocumento', 'TipoDocumento', 'renderViewTp', false, CR_DASHBOARD_LOWER_CASE); ?>">Tipo documento</a>
+                        <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('Tipodocumento', 'Tipodocumento', 'renderViewTp', false, CR_DASHBOARD_LOWER_CASE); ?>">Tipo documento</a>
                         <a class="btn grey btnGetUrl" href="<?php echo Router::createRoute(CR_ROLES, CR_ROLES, 'rolesIndex', false, CR_DASHBOARD_LOWER_CASE); ?>">Roles</a>
                         <a class="btn green btnGetUrl" href="<?php echo Router::createRoute(CR_MARCAS, CR_MARCAS, 'renderViewMarca', false, CR_DASHBOARD_LOWER_CASE); ?>">Marcas</a>
                         <a class="btn green btnGetUrl" href="<?php echo Router::createRoute('Generalcrud', 'Generalcrud', 'renderGeneralView', false, CR_DASHBOARD_LOWER_CASE); ?>">GeneralCrud</a>

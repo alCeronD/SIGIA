@@ -100,10 +100,11 @@ class UsuariosController extends ConfigController implements CrudInterface
             header(CONTENT_TYPE);
             $dataTipoDocumento = $this->stp->getAllTps(false);
             $dataRoles = $this->sRoles->getAllRoles();
+            $tpData = array_values(array_filter($dataTipoDocumento, fn($tp) => $tp['tp_status'] === 1));
 
             $data = [
-                'tipoDocumento' => $dataTipoDocumento,
-                'roles' => $dataRoles
+                CR_TIPO_DOCUMENTO => $tpData,
+                CR_ROLES_LOWER_CASE => $dataRoles
             ];
 
             Response::responseRequest(HttpStatus::OK, true, CR_REGISTROS, $data);
@@ -220,7 +221,6 @@ class UsuariosController extends ConfigController implements CrudInterface
             ];
             // coloco 0 porque me devuelve en forma de arreglo asociativo.
             $dataResult = $this->sUser->getUserByDocum($documento)[0];
-
 
             if (empty($dataResult)) {
                 Response::responseRequest(HttpStatus::INTERNAL_SERVER_ERROR, false, MSG_ERROR_EJECUTAR_PROCESO, []);
