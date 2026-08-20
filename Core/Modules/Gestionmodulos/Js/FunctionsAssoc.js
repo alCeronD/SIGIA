@@ -66,8 +66,8 @@ const renderData = async ({ pagina = 1 } = {}) => {
     idModulo,
     nombreModulo,
   });
-  let data = vars.dataFunctions.data.data;
-  vars.files = vars.dataFunctions.data.files;
+  let data = vars.dataFunctions.data.data ?? null; //devolver null en caso de que no exista
+  vars.files = vars.dataFunctions.data.files ?? null; //Devolver null en caso de que no exista
   const paginaActual = vars.dataFunctions.data.paginaActual;
   vars.dataPaginate['totalRegistros'] = vars.dataFunctions.data.totalRegistros;
   vars.dataPaginate['paginaActual'] = paginaActual;
@@ -75,30 +75,35 @@ const renderData = async ({ pagina = 1 } = {}) => {
   Funciones.actualPage = pagina;
 
   // renderizamos selects de manera dinamica al formulario de crear funcion
-  Funciones.renderSelects({
-    container: formAddFunctions.divs.files,
-    data: vars.files,
-    textLabel: 'Seleccione una opción',
-    textOption: 'Archivo asociado',
-    name: 'file',
-  });
+  if (vars.files !== null) {
+    Funciones.renderSelects({
+      container: formAddFunctions.divs.files,
+      data: vars.files,
+      textLabel: 'Seleccione una opción',
+      textOption: 'Archivo asociado',
+      name: 'file',
+    });
+  }
+
   // inicializamos los selects.
   InitComponents.initSelect();
-
-  if (Object.keys(data).length > 0) {
-    Funciones.renderData({
-      bodyTbl: tableFunctions.body,
-      headerTable: tableFunctions.header,
-      id: data['idFuncion'],
-      data: data,
-      footer: footer,
-    });
-    Funciones.renderPaginate(vars.dataPaginate, tableFunctions.footer);
-    return;
-  } else {
-    tableFunctions.body.innerHTML = 'No hay registros';
-    footer.innerHTML = '';
-    return;
+  console.log(data);
+  if (data !== null) {
+    if (Object.keys(data).length > 0) {
+      Funciones.renderData({
+        bodyTbl: tableFunctions.body,
+        headerTable: tableFunctions.header,
+        id: data['idFuncion'],
+        data: data,
+        footer: footer,
+      });
+      Funciones.renderPaginate(vars.dataPaginate, tableFunctions.footer);
+      return;
+    } else {
+      tableFunctions.body.innerHTML = 'No hay registros';
+      footer.innerHTML = '';
+      return;
+    }
   }
 };
 
@@ -157,6 +162,10 @@ const deleteFunction = (id, fullRow) => {
 };
 
 buttons.btnAddFunction.addEventListener('click', (e) => {
+  if (vars.files === null) {
+    initAlert('no hay archivos fisicos para implementar la funcionalidad');
+    return;
+  }
   openModal(modals.modalAddFunction);
 });
 

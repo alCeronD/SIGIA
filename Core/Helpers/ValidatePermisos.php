@@ -102,7 +102,6 @@ class ValidatePermisos
                 ->where(['nombre_funcion', '=', $funcion])
                 ->prepareSql($dataPrepareidFuncion)
                 ->get();
-
             if (empty($idFuncion)) throw new Exception("La funcionalidad no existe en la base de datos", HttpStatus::NOT_FOUND);
 
 
@@ -144,6 +143,7 @@ class ValidatePermisos
                 ->innerJoin($modulosTable['table'], $modulosTable['primaryKey'], '=', $funcionesTable['foreignKeyModulo'])
                 ->where([$rolesTable['primaryKey'], '=', $rolId])
                 ->where([$rolesFuncionesTable['foreingKeyFuncion'], '=', $idFuncion[0]['id_funcion']])->prepareSql($dataPrepareIsValid)->get();
+
 
             if (count($isValidate) === 0) {
                 throw new Exception("No tienes permisos para acceder a esta funcionalidad. Por seguridad, seras re direccionado al inicio de sesión", HttpStatus::UNAUTHORIZED);

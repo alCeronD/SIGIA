@@ -78,6 +78,9 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Ajustar la lectura de las rutas y permitir que se lean mas archivos css y javascript
 - [X] Transformar en una clase el renderizado de datos
 - [X] EN PHP, AJUSTAR EL RESPONSE DE LA CLASE EN DONDE la funcion se puede transformar en una sola.
+- [ ] Ajustar la seccion de seguridad de sistema en el modulo de funciones, crear l nuevo modulo.
+- [ ] En el modulo **ROLES** crear otra vista interna y otro controlador para definir plantilla por defecto del sistema.
+- [ ] Crear modulo de **Funciones** Y ajustar lo de funcionesRoles, entre otros al mismo modulo de funciones.
 
 ## Específicos
 
@@ -100,6 +103,7 @@ Listado de TODOS generales y específicos por cada módulo.
 | **ReservaPrestamos**   |    0%    |   Pendiente   |  [Ver README](./Core/Modules/ReservaPrestamos/README.MD)  |
 | **Gestionmodulos**     |    0%    |   Pendiente   |   [Ver README](./Core/Modules/Gestionmodulos/README.MD)   |
 | **GeneralCrud**        |    0%    |   Pendiente   |    [Ver README](./Core/Modules/GeneralCrud/README.MD)     |
+| **Funciones**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Funciones/README.MD)      |
 
 ## Archivos especificos
 
@@ -114,6 +118,8 @@ Listado de TODOS generales y específicos por cada módulo.
 -**Clase dashboardController**
 
 - [ ] Todo lo relacionado a lo que este en el escritorio como las tareas automaticas, implementarlas en el dashboard controller.
+
+- [ ] Exceptiones - cuando ocurre un fallo, reportar el fallo y visualizarlo en pantalla principal para visualizar el error y hacer seguimiento, hacer seguimiento dependiendo de si es local o produccion.
 
 ---
 

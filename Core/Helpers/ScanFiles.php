@@ -98,27 +98,36 @@ class ScanFiles
         return $cssToLoad; // Retornamos el array con los CSS que sí corresponden
     }
 
-    /**
-     * Funcion para buscar en los directorios del core los controladores pertenecientes a un modulo
-     *
-     * @param string $modulo
-     * @return array
-     */
-    public static function getControllers(String $modulo = ''): array
+    //Funcion para buscar en los directorios del core los controladores pertenecientes a un modulo
+
+
+    public static function getControllers(String $modulo = '')
     {
-        $ruta = realpath(BASE_URL . "/../Modules/{$modulo}/Controller/");
+        try {
+            $ruta = realpath(BASE_URL . "/../Modules/{$modulo}/Controller/");
 
-        $controllers = array_diff(scandir($ruta), array('.', '..'));
+            // se valida si la ruta existe, en caso de que no exista, capturar exception
+            if (!$ruta) {
+                throw new Exception("El módulo especificado no existe o la ruta es inválida.", HttpStatus::BAD_REQUEST);
+            }
 
-        // asignamos la misma value a la key, porque la necesitamos para validar su dato.
-        $controlls = [];
-        foreach ($controllers as $key => $value) {
-            $valueParse =  str_replace(".php", "", $value);
-            $controlls[$valueParse] = $valueParse;
+            $controllers = array_diff(scandir($ruta), array('.', '..'));
+            if (empty($controllers)) {
+                throw new Exception("No hay controladores disponibles", HttpStatus::BAD_REQUEST);
+            }
+
+
+            // asignamos la misma value a la key, porque la necesitamos para validar su dato.
+            $controlls = [];
+            foreach ($controllers as $key => $value) {
+                $valueParse =  str_replace(".php", "", $value);
+                $controlls[$valueParse] = $valueParse;
+            }
+            // return $controlls;
+            return ['status' => true, 'controlls' => $controlls];
+        } catch (\Exception $th) {
+            // throw $th;
+            return ['status' => false, 'throw' => $th];
         }
-
-
-
-        return $controlls;
     }
 }

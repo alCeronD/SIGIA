@@ -30,9 +30,12 @@
           <h2><?php echo $messageToTemplate ?></h2>
         </div>
 
-        <button type="submit" class="btn waves-effect waves-light green darken-1" style="width: 100%;">
+        <a href="<?php echo $_SESSION['url_anterior']; ?>" class="btn waves-effect waves-light green darken-1">
           Volver
-        </button>
+        </a>
+        <!-- <button type="submit" class="btn waves-effect waves-light green darken-1" style="width: 100%;">
+          Volver
+        </button> -->
       </div>
     </div>
   </div>

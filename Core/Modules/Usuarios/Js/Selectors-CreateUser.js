@@ -7,7 +7,7 @@ export const inputOptionals = ['usu_observacion', 'usu_direccion'];
 export const mapForm = {
   usu_tp_id: 'Tipo de documento',
   usu_docum: 'Número de identificación',
-  rol_id: 'Rol',
+  usr_rl_id: 'Rol',
   usu_nombres: 'Nombres',
   usu_apellidos: 'Apellidos',
   usu_telefono: 'Teléfono',

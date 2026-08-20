@@ -17,7 +17,7 @@ class Response
      */
     public static function responseRequest(int $codeResponse = 1, bool $status = true, String $message = "", array $data = [])
     {
-        header('Content-Type: application/json; charset=utf-8');
+        header(CONTENT_TYPE);
         $result = [
             'status' => $status,
             'message' => $message,
@@ -41,7 +41,7 @@ class Response
         try {
             $nameTemplate = "{$codeResponse}.php";
             $routeRemplate = realpath(BASE_URL . "/../../public/templates/$nameTemplate");
-
+            $previewRoute = $data['previewRoute'];
             if (!file_exists($routeRemplate)) throw new Exception($message, 404);
             $codeResponseTemplate = $codeResponse;
             $messageToTemplate = $message;

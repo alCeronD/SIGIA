@@ -11,7 +11,9 @@ require_once __DIR__ . '/../../vendor/autoload.php'; #El autoload de composer
 $dotEnv = Dotenv::createImmutable(__DIR__ . '/../../');
 $dotEnv->load();
 
-$appDebug = filter_var($_ENV['APP_DEBUG'] ?? false, FILTER_VALIDATE_BOOLEAN);
+// validamos si el entorno es local o produccion.
+$appDebug = UtilsFunctions::validateEnvironment();
+
 if ($appDebug) {
   // si es local, se informa cualquier error o advertencia en pantalla.
   ini_set('display_errors', 1);
@@ -27,7 +29,6 @@ spl_autoload_register(function ($className) {
   // Url del archivo para crear la clase
   $moduleNames = UtilsFunctions::getModulesNames();
   $moduleName = UtilsFunctions::getNameModule();
-
 
   $dir = [
     BASE_URL . '/',

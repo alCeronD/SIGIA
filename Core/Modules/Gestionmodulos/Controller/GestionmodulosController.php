@@ -76,6 +76,7 @@ class GestionmodulosController extends ConfigController implements CrudInterface
    */
   public function functionsAssocByModulosView()
   {
+
     $path = BASE_URL . GM_ROUTES_FUNCTIONS_ASSOC_VIEW;
     Parent::renderView($path, __FUNCTION__);
   }
@@ -254,7 +255,7 @@ class GestionmodulosController extends ConfigController implements CrudInterface
    * @param string $nameModule
    * @return array
    */
-  public static function validateDir(string $nameModule = ""): array
+  protected static function validateDir(string $nameModule = ""): array
   {
     // usamos realpath para eliminar los saltos de directorios como /../
     $routeModules =  realpath(BASE_URL . "/../Modules/{$nameModule}");
@@ -290,7 +291,15 @@ class GestionmodulosController extends ConfigController implements CrudInterface
       $moduloName = (isset($_GET['nombreModulo'])) ? (string) $_GET['nombreModulo'] : null;
       // obtenemos los nombres de los controladores del sistema
       $filesControllers = ScanFiles::getControllers($moduloName);
-      $filesControllers = str_replace(".php", "", $filesControllers);
+      if (!$filesControllers['status']) {
+        // capturo la exception que me devuelve y la encadeno al router.
+        /** @var \Exception $th */
+        $th = $filesControllers['throw'];
+        throw new Exception($th->getMessage(), $th->getCode());
+      }
+
+      // accedo a los controladores escaneados y elimino ciertos caracteres innecesarios.
+      $filesControllers = str_replace(".php", "", $filesControllers['controlls']);
       if (empty($id_m)) throw new Exception("id del modulo incorrecto", HttpStatus::UNPROCESSABLE_ENTITY);
 
       $sql = [

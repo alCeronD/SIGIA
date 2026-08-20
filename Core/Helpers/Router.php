@@ -29,6 +29,7 @@ class Router
       $modulo = $_GET['modulo'] ?? $_POST['modulo'] ?? null;
       $controlador = $_GET['controlador'] ?? $_POST['controlador'] ?? null;
       $function = $_GET['function'] ?? $_POST['function'] ?? null;
+      $_SESSION['url_anterior'] = $_SERVER['HTTP_REFERER'] ?? '';
       if (!$modulo || !$controlador || !$function) {
         header(CONTENT_TYPE);
         echo json_encode(['success' => false, 'message' => "Faltan parámetros de ejecución"]);
@@ -66,18 +67,38 @@ class Router
 
       if (!$validatePermisos['status']) {
         throw new Exception($validatePermisos[CR_MESSAGE], $validatePermisos[CR_CODE_RESPONSE]);
-        // Response::responseRequest(HttpStatus::UNAUTHORIZED, false, "No tienes permisos para esta funcionalidad", []);
       }
 
       $objController->$function();
     } catch (\Throwable $th) {
+      $appDebug = UtilsFunctions::validateEnvironment();
 
-
+      if ($appDebug) {
+        // local
+        $message = $th->getMessage();
+        $trace = $th->getTrace();
+      } else {
+        // produccion
+        $message = "Ha ocurrido un error interno en el servidor. Por favor contacte al soporte.";
+        $trace = null;
+        error_log("[ERROR SIGIA] " . $th->getMessage() . " en " . $th->getFile() . ":" . $th->getLine() . "\n" . $th->getTraceAsString());
+      }
       // validamos si es una peticion http mediante fetch o ajax o en su defecto una re direccion directa.
       if (UtilsFunctions::ajaxGeneral()) {
-        Response::responseRequest($th->getCode(), false, $th->getMessage());
+        $data =  ['previewRoute' => $_SESSION['url_anterior']];
+        // validamos si mostramos el error siendo una peticion
+        if ($appDebug) {
+          $data['trace'] = $trace;
+        }
+
+        Response::responseRequest(
+          $th->getCode(),
+          false,
+          $message,
+          $data
+        );
       } else {
-        Response::responseTemplate($th->getCode(), $th->getMessage());
+        Response::responseTemplate($th->getCode(), $message, ['previewRoute' => $_SESSION['url_anterior']]);
       }
     }
   }

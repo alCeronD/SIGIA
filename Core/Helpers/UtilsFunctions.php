@@ -44,7 +44,8 @@ class UtilsFunctions
             'Solicitudprestamos',
             'Tipodocumento',
             'Marcas',
-            'Gestionmodulos'
+            'Gestionmodulos',
+            'Funciones'
         ];
     }
 
@@ -144,5 +145,10 @@ class UtilsFunctions
     public static function hashPassword(mixed $password)
     {
         return password_hash($password, PASSWORD_DEFAULT);
+    }
+
+    public static function validateEnvironment()
+    {
+        return filter_var($_ENV['APP_DEBUG'] ?? false, FILTER_VALIDATE_BOOLEAN);
     }
 }
