@@ -1,0 +1,1 @@
+<!-- vista para listar todas las funcionalidades. -->

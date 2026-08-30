@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404</title>
+  <title>401</title>
 
   <!-- Materialize CSS -->
   <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
@@ -26,8 +26,8 @@
 
         <div class="input-field">
           <!-- <h1>Error 404</h1> -->
-          <h5 class="center-align">Not found - <?php echo $codeResponseTemplate ?? 404; ?></h5>
-          <h2><?php echo $messageToTemplate ?? "No se ha encontrado el recurso"; ?></h2>
+          <h5 class="center-align">Sin autorizacion - <?php echo $codeResponseTemplate ?? 401; ?></h5>
+          <h2><?php echo $messageToTemplate ?? "Faltan credenciales para acceder a este sitio" ?></h2>
         </div>
 
         <a href="<?php echo $_SESSION['url_anterior']; ?>" class="btn waves-effect waves-light green darken-1">

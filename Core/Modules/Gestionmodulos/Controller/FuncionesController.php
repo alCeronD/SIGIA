@@ -73,7 +73,6 @@ class FuncionesController implements CrudInterface
       $dataPrepare[CR_DATA] = $data;
 
       $dataInsert = $this->fModel->insert($data)->prepareSql($dataPrepare)->get();
-
       if (!$dataInsert['status']) {
         $responseHander = DatabaseHandler::validateResponse($dataInsert);
         throw new Exception($responseHander[CR_MESSAGE], $responseHander[CR_CODE_RESPONSE]);
@@ -92,7 +91,6 @@ class FuncionesController implements CrudInterface
       $data['tp_funcion'] = $data['tp_funcion'] === "render" ? (int) 1 : (int) 2;
       if (empty($data)) throw new Exception("Faltan datos para procesar la solicitud", HttpStatus::BAD_REQUEST);
       $responseValidateFunction = $this->validateFunction($data['id_modulo'], $data['file'], $data['nombre_funcion']);
-
       if (!$responseValidateFunction['status']) {
         throw new Exception($responseValidateFunction['message'], $responseValidateFunction['codeResponse']);
       }
@@ -122,17 +120,15 @@ class FuncionesController implements CrudInterface
   protected function validateFunction(int $idModulo, String $file = '', String $nombreFunction = ''): array
   {
     try {
+
       $moduleName = $this->sgM->getNameModule($idModulo)[0]['nombre_modulo'];
       if (empty($moduleName)) throw new Exception("Modulo incorrecto", HttpStatus::BAD_REQUEST);
-
       $classFile = realpath(BASE_URL . "/../Modules/{$moduleName}/Controller/{$file}.php");
-
       if (!$classFile || !is_file($classFile)) {
         throw new Exception("El archivo del controlador no existe físicamente", HttpStatus::BAD_REQUEST);
       }
 
       if (!class_exists($file)) throw new Exception("La clase no existe en el sistema", HttpStatus::BAD_REQUEST);
-
       if (!method_exists($file, $nombreFunction)) throw new Exception("La funcionalidad no está disponible", HttpStatus::INTERNAL_SERVER_ERROR);
 
       // hacemos una instancia previa del metodo, validamos si es publico para poder implementarlo en la base de datos.

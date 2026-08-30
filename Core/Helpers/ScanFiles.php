@@ -66,14 +66,16 @@ class ScanFiles
      */
     public static function renderJs(String $modulo = '', array $filesjs = [])
     {
-        // limpiar primero la variable de session.
         $files = self::mapAssets($modulo);
-        $jsFiles = $files['js'][$modulo];
+        // si no encuentra archivos basados en el modulo, retornar, significa que no estan creados
+        $jsFiles = $files['js'][$modulo] ?? []; #Devolver arreglo vacio en caso de que no haya una clave llamada js
+
+        // no renderizar si no hay archivos javascript para la vista.
+        if (empty($jsFiles)) return;
 
         foreach ($jsFiles as $key => $value) {
             if (in_array("{$key}", $filesjs)) {
                 $rutaLimpia = htmlspecialchars("/../../Core/Modules/$modulo/Js/{$key}", ENT_QUOTES, 'UTF-8');
-                // var_dump($rutaLimpia);
                 echo '<script type="module" src="' . $rutaLimpia . '"></script>' . PHP_EOL;
             }
         }
@@ -104,7 +106,7 @@ class ScanFiles
     public static function getControllers(String $modulo = '')
     {
         try {
-            $ruta = realpath(BASE_URL . "/../Modules/{$modulo}/Controller/");
+            $ruta = realpath(BASE_PATH . "/../Modules/{$modulo}/Controller/");
 
             // se valida si la ruta existe, en caso de que no exista, capturar exception
             if (!$ruta) {

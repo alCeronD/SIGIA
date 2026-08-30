@@ -1,7 +1,4 @@
 <?php
-require_once __DIR__ . '/../../../Helpers/Const.php';
-require_once BASE_URL . '/' . CR_AUTOLOAD;
-include_once BASE_URL . '/' . CR_ROUTE_CONN;
 
 class UsuariosModel extends Crud
 {

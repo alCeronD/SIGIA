@@ -1,10 +1,9 @@
 <?php
 
-use function PHPUnit\Framework\throwException;
 
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once __DIR__ . '/../Const/RolesConst.php';
-require_once BASE_URL . '/' . CR_AUTOLOAD;
+require_once BASE_PATH . '/' . CR_AUTOLOAD;
 
 class RolesController extends ConfigController implements CrudInterface
 {
@@ -74,7 +73,7 @@ class RolesController extends ConfigController implements CrudInterface
      */
     public function rolesIndex(): void
     {
-        $path = BASE_URL . RL_ROUTES_ROLES_INDEX;
+        $path = BASE_PATH . RL_ROUTES_ROLES_INDEX;
         Parent::renderView($path, __FUNCTION__);
     }
     /**
@@ -84,7 +83,7 @@ class RolesController extends ConfigController implements CrudInterface
      */
     public function mostrarRoles(): void
     {
-        $path = BASE_URL . RL_ROUTES_MOSTRAR_ROLES;
+        $path = BASE_PATH . RL_ROUTES_MOSTRAR_ROLES;
         Parent::renderView($path, __FUNCTION__);
     }
 
@@ -93,13 +92,6 @@ class RolesController extends ConfigController implements CrudInterface
         header(CONTENT_TYPE);
         $dtaRoles = $this->sRoles->getAllRoles();
         $dataRol = Session::getRol();
-
-        // dependiendo del rol actual pasamos los datos del usuario
-        // if ($dataRol['rol_nombre'] === CR_ROL_ADMIN) {
-        //     $roles = array_values(array_filter($dtaRoles, fn($r) => $r['rl_id'] !== $dataRol['rol_id'] && $r['rl_nombre'] !== CR_ROL_SUPER_ADMIN));
-        // } else {
-        //     $roles = $dtaRoles;
-        // }
 
         if ($dataRol['rol_nombre'] === CR_ROL_ADMIN) {
             // El Admin NO ve su propio rol ni el de Super Admin
@@ -226,9 +218,10 @@ class RolesController extends ConfigController implements CrudInterface
         $nombreRol = str_replace(' ', '', $nombreRol);
         // validamos si el nombre del rol es diferente de super administrador para eliminar las funciones y los modulos y asi evitar envio de datos erroneos.
         $allModulos = [];
+
         if (strtoupper($nombreRol) != 'SUPERADMINISTRADOR') {
             foreach ($modulos as $key => $value) {
-                if ($value['nombre_modulo'] === 'Generalcrud' || $value['nombre_modulo'] === 'Gestionmodulos') {
+                if ($value['nombre_modulo'] === 'Generalcrud' || $value['nombre_modulo'] === 'Gestionmodulos' || $value['nombre_modulo'] === 'Funciones') {
                     continue;
                 }
                 $allModulos[] = $value;

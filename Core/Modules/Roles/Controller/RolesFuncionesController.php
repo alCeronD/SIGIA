@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once __DIR__ . '/../Const/RolesConst.php';
-require_once BASE_URL . '/' . CR_AUTOLOAD;
+require_once BASE_PATH . '/' . CR_AUTOLOAD;
 
 
 class RolesFuncionesController extends ConfigController
@@ -32,7 +32,7 @@ class RolesFuncionesController extends ConfigController
    */
   public function mostrarFuncionesAssoc(): void
   {
-    $path = BASE_URL . RL_ROUTES_ROLES_FUNCIONES;
+    $path = BASE_PATH . RL_ROUTES_ROLES_FUNCIONES;
     Parent::renderView($path, __FUNCTION__);
   }
 

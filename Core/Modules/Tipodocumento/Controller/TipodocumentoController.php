@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../..' . CR_ROUTE_CONST;
 require_once __DIR__ . '/../Const/TpConst.php';
-require_once BASE_URL . '/Autoload.php';
+require_once BASE_PATH . '/Autoload.php';
 class TipodocumentoController extends ConfigController implements CrudInterface
 {
   // implementar el modulo
@@ -39,7 +39,7 @@ class TipodocumentoController extends ConfigController implements CrudInterface
   // Vista principal
   public function renderViewTp()
   {
-    $path = BASE_URL . TP_ROUTE_MAIN_VIEW;
+    $path = BASE_PATH . TP_ROUTE_MAIN_VIEW;
     Parent::renderView($path, __FUNCTION__);
   }
 
@@ -60,10 +60,7 @@ class TipodocumentoController extends ConfigController implements CrudInterface
     // capturamos la data o creamos la consulta desde el servicio
     $getAllTps = $this->stp->getAllTps(true);
     $resultSelect = $getAllTps->prepareSql($dataSql)->get();
-    // var_dump($tpData);
 
-    // var_dump($resultSelect);
-    // die();
 
     // consulta select basica de momento.
     if (count($resultSelect) > 0) {

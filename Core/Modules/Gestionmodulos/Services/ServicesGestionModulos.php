@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../..' . CR_ROUTE_CONST;
-require_once BASE_URL . '/Autoload.php';
+require_once BASE_PATH . '/Autoload.php';
 
 class ServicesGestionModulos
 {

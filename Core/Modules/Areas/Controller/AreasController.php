@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../..' . CR_ROUTE_CONST;
 require_once __DIR__ . '/../Const/AreasConst.php';
-require_once BASE_URL . '/Autoload.php';
+require_once BASE_PATH . '/Autoload.php';
 
 class AreasController extends ConfigController implements CrudInterface
 {
@@ -37,7 +37,7 @@ class AreasController extends ConfigController implements CrudInterface
 
   public function renderViewArea()
   {
-    $path = BASE_URL . URL_MAIN_VIEW;
+    $path = BASE_PATH . URL_MAIN_VIEW;
     Parent::renderView($path, __FUNCTION__);
   }
   public function getData()
@@ -132,7 +132,7 @@ class AreasController extends ConfigController implements CrudInterface
     $resultExists = $this->AreasModel->select()->from()->where()->prepareSql($editDepartmentData)->get();
     // Validar la existencia de la informacion que enviamos y el código exista en la bd.
     if (count($resultExists) === 0) {
-      Response::responseRequest(HttpStatus::NOT_FOUNT, false, AR_MESSAGE_INFO_NO_CODIGO, []);
+      Response::responseRequest(HttpStatus::NOT_FOUND, false, AR_MESSAGE_INFO_NO_CODIGO, []);
     }
 
     $resultUpdate = $this->AreasModel->update($data)->where()->prepareSql($editDepartmentData)->get();

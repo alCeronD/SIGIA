@@ -44,7 +44,6 @@ abstract class ConfigController implements ConfigInterface
 
     $breadCrumbData = $this->renderBreadCrumb($nameFunction);
 
-
     $modulesAndFunctions = $routes['modulesRoutes'] ?? [];
     $routesPlaceHolders = $routes['placeholders'] ?? [];
     $setRoutes = $routes['setFunctions'] ?? [];
@@ -53,6 +52,7 @@ abstract class ConfigController implements ConfigInterface
     // Extraemos los recursos dependiendo de la function ejecutada.
     $specificCss = $allCss[$nameFunction] ?? [];
     $specificJs = $allJs[$nameFunction] ?? [];
+
 
 
     $routesCss = ScanFiles::renderCss($_GET[CR_MODULO], $specificCss); //Renderizamos los css y lo usamos en header.php
@@ -66,17 +66,17 @@ abstract class ConfigController implements ConfigInterface
       // ScanFiles::renderJs($_GET[CR_MODULO], $specificJs); //Renderizamos los js
     } else {
       $routesCss = ScanFiles::renderCss($_GET[CR_MODULO], $specificCss); //Renderizamos los css y lo usamos en header.php
-      include_once BASE_URL . CR_ROUTE_HEADER;
+      include_once BASE_PATH . CR_ROUTE_HEADER;
       include_once $pathView; //Ruta relativa de la vista
       // ScanFiles::renderJs($_GET[CR_MODULO], $specificJs); //Renderizamos los js
-      include_once BASE_URL . CR_ROUTE_FOOTER;
+      include_once BASE_PATH . CR_ROUTE_FOOTER;
     }
 
 
     exit;
   }
 
-  public function renderBreadCrumb(string $nameFunction = ''): array
+  protected function renderBreadCrumb(string $nameFunction = ''): array
   {
     $routes = $this->getAllRoutes();
     $breadCrumb = [];

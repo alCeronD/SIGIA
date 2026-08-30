@@ -1,7 +1,7 @@
 <?php
 include_once __DIR__ . '/../../../Helpers/Const.php';
 include_once __DIR__ . '/../Const/MarcasConst.php';
-include_once BASE_URL . '/Autoload.php';
+include_once BASE_PATH . '/Autoload.php';
 
 class MarcasController extends ConfigController implements CrudInterface
 {
@@ -32,7 +32,7 @@ class MarcasController extends ConfigController implements CrudInterface
   }
   public function renderViewMarca()
   {
-    $path = BASE_URL . MA_URL_MAIN_VIEW;
+    $path = BASE_PATH . MA_URL_MAIN_VIEW;
     Parent::renderView($path, __FUNCTION__);
   }
   public function getData()

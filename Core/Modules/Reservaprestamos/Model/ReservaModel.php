@@ -1,7 +1,7 @@
 <?php
-require_once BASE_URL . '/' . CR_FILE_CONST;
-require_once BASE_URL . CR_ROUTE_CONN;
-require_once BASE_URL . '/' . CR_AUTOLOAD;
+require_once BASE_PATH . '/' . CR_FILE_CONST;
+require_once BASE_PATH . CR_ROUTE_CONN;
+require_once BASE_PATH . '/' . CR_AUTOLOAD;
 
 
 //TODO: en los mensajes de retorno, definir una estructura de retorno específica, así evitar devolver o valores null, o un string, la idea es que devuelva un array con su status y mensaje, en todos los retornos.

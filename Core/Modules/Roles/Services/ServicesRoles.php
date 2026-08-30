@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once __DIR__ . '/../Const/RolesConst.php';
-require_once BASE_URL . '/' . CR_AUTOLOAD;
+require_once BASE_PATH . '/' . CR_AUTOLOAD;
 
 /**
  * Clase de servicio para conectar con otro controlador, en este caso, para solicitar unos datos.

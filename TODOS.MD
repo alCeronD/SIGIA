@@ -78,9 +78,10 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Ajustar la lectura de las rutas y permitir que se lean mas archivos css y javascript
 - [X] Transformar en una clase el renderizado de datos
 - [X] EN PHP, AJUSTAR EL RESPONSE DE LA CLASE EN DONDE la funcion se puede transformar en una sola.
-- [ ] Ajustar la seccion de seguridad de sistema en el modulo de funciones, crear l nuevo modulo.
+- [X] Ajustar la seccion de seguridad de sistema en el modulo de funciones, crear l nuevo modulo.
 - [ ] En el modulo **ROLES** crear otra vista interna y otro controlador para definir plantilla por defecto del sistema.
-- [ ] Crear modulo de **Funciones** Y ajustar lo de funcionesRoles, entre otros al mismo modulo de funciones.
+- [x] Crear modulo de **Funciones** Y ajustar lo de funcionesRoles, entre otros al mismo modulo de funciones.
+- [ ] Crear las vistas personalizadas del menu basadas en el rol del usuario
 
 ## Específicos
 

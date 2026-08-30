@@ -1,7 +1,7 @@
 <div class="container">
 
     <div class="contentMarca contentLayout">
-        <?php include_once BASE_URL . '/../../public/partials/breadCrumbs.php'; ?>
+        <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
 
         <div class="titleMarca menuTitle">
             <span id="textTitleAreas" class="textTitleSpan"><?php echo MA_TITLE; ?></span>

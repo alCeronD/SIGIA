@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404</title>
+  <title>500</title>
 
   <!-- Materialize CSS -->
   <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
@@ -26,7 +26,7 @@
 
         <div class="input-field">
           <!-- <h1>Error 404</h1> -->
-          <h5 class="center-align">Not found - <?php echo $codeResponseTemplate ?? 404; ?></h5>
+          <h5 class="center-align">Error internal - <?php echo $codeResponseTemplate ?? 500; ?></h5>
           <h2><?php echo $messageToTemplate ?? "No se ha encontrado el recurso"; ?></h2>
         </div>
 

@@ -1,15 +1,17 @@
 <?php
 require_once __DIR__ . '/../../../Helpers/Const.php';
-require_once BASE_URL . '/'.CR_AUTOLOAD;
+require_once BASE_PATH . '/' . CR_AUTOLOAD;
 
 
 /**
  * Summary of ServicesReservas - Clase que me permite ejecutar tareas programadas con relación al modulo de reserva, este proceso aplico el valor final para indicar que esta clase no debe ser heredada
  */
-final class ServicesReservas {
+final class ServicesReservas
+{
 
     private ReservaModel $ModeloReserva;
-    public function __construct() {
+    public function __construct()
+    {
 
         $this->ModeloReserva = new ReservaModel();
     }
@@ -18,10 +20,8 @@ final class ServicesReservas {
      * Summary of callTask - Función para ejecutar las táreas programadas
      * @return void
      */
-    public function callTask(){
+    public function callTask()
+    {
         $this->ModeloReserva->cancelarPrestamosFecha();
     }
 }
-
-
-?>

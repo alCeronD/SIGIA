@@ -26,18 +26,18 @@ class Router
   {
 
     try {
+      if (ob_get_length()) ob_clean();
       $modulo = $_GET['modulo'] ?? $_POST['modulo'] ?? null;
       $controlador = $_GET['controlador'] ?? $_POST['controlador'] ?? null;
       $function = $_GET['function'] ?? $_POST['function'] ?? null;
       $_SESSION['url_anterior'] = $_SERVER['HTTP_REFERER'] ?? '';
       if (!$modulo || !$controlador || !$function) {
         header(CONTENT_TYPE);
-        echo json_encode(['success' => false, 'message' => "Faltan parámetros de ejecución"]);
-        exit;
+        Response::responseRequest(HttpStatus::BAD_REQUEST, false, "Faltan parámetros de ejecución");
       }
 
       $controladorFile = ucfirst($controlador) . "Controller.php";
-      $rutaFile = realpath(BASE_URL . "/../Modules/$modulo/Controller/$controladorFile");
+      $rutaFile = realpath(BASE_PATH . "/../Modules/$modulo/Controller/$controladorFile");
       if (!is_file($rutaFile)) {
         throw new Exception("No existe el controlador", HttpStatus::NOT_FOUND);
       }
@@ -68,14 +68,18 @@ class Router
       if (!$validatePermisos['status']) {
         throw new Exception($validatePermisos[CR_MESSAGE], $validatePermisos[CR_CODE_RESPONSE]);
       }
-
+      // Ejecutamos la función
       $objController->$function();
     } catch (\Throwable $th) {
       $appDebug = UtilsFunctions::validateEnvironment();
-
       if ($appDebug) {
-        // local
-        $message = $th->getMessage();
+        // personalizamos el mensaje visible para el usuario dependiendo del código de respuesta
+        $message = match ($th->getCode()) {
+          401 => "{$th->getMessage()}",
+          404 => "{$th->getMessage()} - {$th->getFile()} - {$th->getLine()}",
+          500 => "{$th->getMessage()} - {$th->getFile()} - {$th->getLine()}",
+          default => "{$th->getMessage()}",
+        };
         $trace = $th->getTrace();
       } else {
         // produccion
@@ -83,6 +87,10 @@ class Router
         $trace = null;
         error_log("[ERROR SIGIA] " . $th->getMessage() . " en " . $th->getFile() . ":" . $th->getLine() . "\n" . $th->getTraceAsString());
       }
+      // capturamos el codigo de respuesta de la exception, definimos un 500 en caso de que este vacio, es decir, que sea un error propio de php como errores de sintaxis.
+      $codeResponse = empty($th->getCode()) ? 500 : $th->getCode();
+
+
       // validamos si es una peticion http mediante fetch o ajax o en su defecto una re direccion directa.
       if (UtilsFunctions::ajaxGeneral()) {
         $data =  ['previewRoute' => $_SESSION['url_anterior']];
@@ -92,13 +100,13 @@ class Router
         }
 
         Response::responseRequest(
-          $th->getCode(),
+          $codeResponse,
           false,
           $message,
           $data
         );
       } else {
-        Response::responseTemplate($th->getCode(), $message, ['previewRoute' => $_SESSION['url_anterior']]);
+        Response::responseTemplate($codeResponse, $message, ['previewRoute' => $_SESSION['url_anterior']]);
       }
     }
   }

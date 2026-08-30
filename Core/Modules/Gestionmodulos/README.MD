@@ -13,3 +13,5 @@
   - [X] **funciones asociadas** insert - implementar modal para crear nueva funcionalidad de crear funcion, solo se deben de registrar las funcionalidades publicas.
   - [X] **funciones asociadas** update - implementar edicion del nombre de la base de datos
   - [X] **Funciones asociadas** Delete - implementar eliminar la funcionalidad.
+- [ ] Implementar caracteristica de guardado de RUTA DE ACCESO - ESTO CONSISTE EN GUARDAR LOS VALORES DE LA RUTA DEL PARA ACCEDER A LA VISTA, ES DECIR, MEDIANTE MODELO, VISTA, CONTROLADOR.
+- [ ] Implementar mejora de icono - al cambiar el icono hacer una preview del icono de como se observaria, buscar como hacerlo.

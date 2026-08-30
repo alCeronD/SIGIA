@@ -40,7 +40,7 @@ class Response
     {
         try {
             $nameTemplate = "{$codeResponse}.php";
-            $routeRemplate = realpath(BASE_URL . "/../../public/templates/$nameTemplate");
+            $routeRemplate = realpath(BASE_PATH . "/../../public/templates/$nameTemplate");
             $previewRoute = $data['previewRoute'];
             if (!file_exists($routeRemplate)) throw new Exception($message, 404);
             $codeResponseTemplate = $codeResponse;
@@ -48,7 +48,7 @@ class Response
             include_once $routeRemplate;
         } catch (\Exception $th) {
             // fallback en caso de que no se encuentre el codigo de respuesta.
-            include_once realpath(BASE_URL . "/../../public/templates/404.php");
+            include_once realpath(BASE_PATH . "/../../public/templates/404.php");
         }
     }
 }

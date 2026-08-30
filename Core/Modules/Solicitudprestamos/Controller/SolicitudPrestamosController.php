@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../Helpers/Const.php';
-require_once BASE_URL . CR_ROUTE_CONN;
-require_once BASE_URL . '/' . CR_AUTOLOAD;
+require_once BASE_PATH . CR_ROUTE_CONN;
+require_once BASE_PATH . '/' . CR_AUTOLOAD;
 
 
 class SolicitudPrestamosController
@@ -58,8 +58,6 @@ class SolicitudPrestamosController
     {
         validatePermisos('solicitudPrestamos', 'registrarPrestamo');
         header('Content-Type: application/json; charset=utf-8');
-        // var_dump($data);
-        // dd($data);
         try {
             if (!$data) {
                 http_response_code(405);

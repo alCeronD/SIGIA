@@ -60,7 +60,7 @@ class PermisosController extends ConfigController
 
     public function permisosIndexView()
     {
-        $path = BASE_URL . '/../Modules/Permisos/View/PermisosView.php';
+        $path = BASE_PATH . '/../Modules/Permisos/View/PermisosView.php';
         Parent::renderView($path, __FUNCTION__);
     }
 }

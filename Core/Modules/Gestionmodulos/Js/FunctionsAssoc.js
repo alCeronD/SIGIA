@@ -87,7 +87,6 @@ const renderData = async ({ pagina = 1 } = {}) => {
 
   // inicializamos los selects.
   InitComponents.initSelect();
-  console.log(data);
   if (data !== null) {
     if (Object.keys(data).length > 0) {
       Funciones.renderData({
@@ -195,7 +194,7 @@ formAddFunctions.form.addEventListener('submit', (e) => {
       if (!response) return;
 
       const responseAddFunction = await Funciones.sendData(`${url}`, METHOD.POST, data);
-
+      console.log(url);
       // en caso de que el estado sea false.
       if (!responseAddFunction.status) throw new Error(responseAddFunction.message);
       e.target.reset();

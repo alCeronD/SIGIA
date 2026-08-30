@@ -1,10 +1,9 @@
 <?php
 
-use ZipStream\Test\Util;
 
 require_once __DIR__ . '/../../../Config/Conn.php';
 require_once __DIR__ . '/../../../Helpers/Const.php';
-require_once BASE_URL . '/../Modules/Login/Const/LoginConst.php';
+require_once BASE_PATH . '/../Modules/Login/Const/LoginConst.php';
 
 class LoginController extends ConfigController
 {
@@ -29,7 +28,7 @@ class LoginController extends ConfigController
 
     public function index()
     {
-        $path = realpath(BASE_URL . ROUTE_MAIN_ROUTE);
+        $path = realpath(BASE_PATH . ROUTE_MAIN_ROUTE);
         parent::renderView($path);
     }
 

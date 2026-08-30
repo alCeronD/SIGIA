@@ -1,11 +1,9 @@
 <?php
 
-use PhpOffice\PhpSpreadsheet\Calculation\Web\Service;
-use ZipStream\Test\Util;
 
 require_once __DIR__ . '/../../..' . CR_ROUTE_CONST;
 require_once __DIR__ . '/../Const/GestionModulosConst.php';
-require_once BASE_URL . '/Autoload.php';
+require_once BASE_PATH . '/Autoload.php';
 
 class GestionmodulosController extends ConfigController implements CrudInterface
 {
@@ -30,7 +28,6 @@ class GestionmodulosController extends ConfigController implements CrudInterface
     $this->modulosModel = new ModulosModel();
     $this->funcionesModel = new FuncionesModel();
     $this->sFunciones = new ServicesFunciones();
-
     $this->createRoutes();
   }
   public function createRoutes()
@@ -65,7 +62,7 @@ class GestionmodulosController extends ConfigController implements CrudInterface
    */
   public function modulosView()
   {
-    $path = BASE_URL . GM_ROUTES_MODULES_VIEW;
+    $path = BASE_PATH . GM_ROUTES_MODULES_VIEW;
     Parent::renderView($path, __FUNCTION__);
   }
 
@@ -77,7 +74,7 @@ class GestionmodulosController extends ConfigController implements CrudInterface
   public function functionsAssocByModulosView()
   {
 
-    $path = BASE_URL . GM_ROUTES_FUNCTIONS_ASSOC_VIEW;
+    $path = BASE_PATH . GM_ROUTES_FUNCTIONS_ASSOC_VIEW;
     Parent::renderView($path, __FUNCTION__);
   }
 
@@ -258,7 +255,7 @@ class GestionmodulosController extends ConfigController implements CrudInterface
   protected static function validateDir(string $nameModule = ""): array
   {
     // usamos realpath para eliminar los saltos de directorios como /../
-    $routeModules =  realpath(BASE_URL . "/../Modules/{$nameModule}");
+    $routeModules =  realpath(BASE_PATH . "/../Modules/{$nameModule}");
 
     // validar que el nombre del modulo exista en fisico EN EL SISTEMA.
     if (!is_dir($routeModules) || !$nameModule) {

@@ -31,14 +31,14 @@ spl_autoload_register(function ($className) {
   $moduleName = UtilsFunctions::getNameModule();
 
   $dir = [
-    BASE_URL . '/',
+    BASE_PATH . '/',
 
   ];
 
   // Creamos las rutas y las guardamos en el arreglo.
   foreach ($moduleNames as $nm) {
     // carpeta modulos
-    $moduleFolder = BASE_URL . '/../Modules/' . $nm . '/';
+    $moduleFolder = BASE_PATH . '/../Modules/' . $nm . '/';
     $dir[] = $moduleFolder . 'Services/';
     $dir[] = $moduleFolder . 'Controller/';
     $dir[] = $moduleFolder . 'Model/';

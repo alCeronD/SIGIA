@@ -84,14 +84,17 @@ const loadTable = async (actualPage) => {
   data = responseMarcas.data.data;
   dataPaginate = {};
   const realActualPage = responseMarcas.data.paginaActual;
-  marcas.actualPage(realActualPage); //asignar pagina real a la propiedad de la clase
+  marcas.actualPage = realActualPage;
+  // marcas.actualPage(realActualPage); //asignar pagina real a la propiedad de la clase
   dataPaginate['cantidadPaginas'] = responseMarcas.data.cantidadPaginas;
   dataPaginate['paginaActual'] = realActualPage;
   dataPaginate['totalRegistros'] = responseMarcas.data.totalRegistros;
-
-  // enviamos la respuesta a renderizar.
-  marcas.renderData(tableBody, headerTable, 'ma_id', data, {
-    ma_status: 'ma_status',
+  marcas.renderData({
+    bodyTbl: tableBody,
+    headerTable: headerTable,
+    id: 'ma_id',
+    data: data,
+    footer: marcaTblFooter,
   });
   // creamos la estructura del paginado.
   marcas.renderPaginate(dataPaginate, marcaTblFooter);
