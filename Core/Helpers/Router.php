@@ -5,7 +5,8 @@
  */
 class Router
 {
-  public static function createRoute(String $modulo = "Login", String $controller = "Login", String $function = "prueba", Bool $parameters = false, String $pagina = 'index')
+
+  public static function createRoute(String $modulo = "Login", String $controller = "Login", String $function = "index", Bool $parameters = false, String $pagina = "index")
   {
 
     // Valida tipos de datos
@@ -26,7 +27,6 @@ class Router
   {
 
     try {
-      if (ob_get_length()) ob_clean();
       $modulo = $_GET['modulo'] ?? $_POST['modulo'] ?? null;
       $controlador = $_GET['controlador'] ?? $_POST['controlador'] ?? null;
       $function = $_GET['function'] ?? $_POST['function'] ?? null;
@@ -77,6 +77,7 @@ class Router
         $message = match ($th->getCode()) {
           401 => "{$th->getMessage()}",
           404 => "{$th->getMessage()} - {$th->getFile()} - {$th->getLine()}",
+          403 => "{$th->getMessage()}",
           500 => "{$th->getMessage()} - {$th->getFile()} - {$th->getLine()}",
           default => "{$th->getMessage()}",
         };

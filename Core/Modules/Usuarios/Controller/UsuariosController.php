@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once __DIR__ . '/../Const/UsuariosConst.php';
-require_once BASE_URL . '/' . CR_AUTOLOAD;
+require_once BASE_PATH . '/' . CR_AUTOLOAD;
 // las funciones protected son funciones logicas del sistema que no deben de ser registradas en la base de datos.
 class UsuariosController extends ConfigController implements CrudInterface
 {
@@ -84,7 +84,7 @@ class UsuariosController extends ConfigController implements CrudInterface
      */
     public function usuariosIndexView()
     {
-        $path = BASE_URL . US_ROUTE_USUARIOS_INDEX;
+        $path = BASE_PATH . US_ROUTE_USUARIOS_INDEX;
         Parent::renderView($path, __FUNCTION__);
     }
 
@@ -110,7 +110,7 @@ class UsuariosController extends ConfigController implements CrudInterface
             Response::responseRequest(HttpStatus::OK, true, CR_REGISTROS, $data);
         }
         // renderizamos la vista
-        $path = BASE_URL . US_ROUTE_USUARIOS_CREATE_VIEW;
+        $path = BASE_PATH . US_ROUTE_USUARIOS_CREATE_VIEW;
         Parent::renderView($path, __FUNCTION__);
     }
     /**
@@ -120,13 +120,13 @@ class UsuariosController extends ConfigController implements CrudInterface
      */
     public function auditoriaUserView()
     {
-        $path = BASE_URL . US_ROUTE_AUDITORIAS_VIEW;
+        $path = BASE_PATH . US_ROUTE_AUDITORIAS_VIEW;
         Parent::renderView($path, __FUNCTION__);
     }
 
     public function usuariosView()
     {
-        $path = BASE_URL . US_ROUTE_USUARIOS_LIST_VIEW;
+        $path = BASE_PATH . US_ROUTE_USUARIOS_LIST_VIEW;
         Parent::renderView($path, __FUNCTION__);
     }
 
@@ -137,7 +137,7 @@ class UsuariosController extends ConfigController implements CrudInterface
      */
     public function detailUserView()
     {
-        $path = BASE_URL . US_ROUTE_DETAIL_USER;
+        $path = BASE_PATH . US_ROUTE_DETAIL_USER;
         Parent::renderView($path, __FUNCTION__);
     }
 
@@ -228,7 +228,7 @@ class UsuariosController extends ConfigController implements CrudInterface
             Response::responseRequest(HttpStatus::OK, true, US_MESSAGE_DATA_USER, $dataResult);
         }
         // renderizado de la vista con backend puro.
-        $path = BASE_URL . US_ROUTE_USUARIO_UPDATE;
+        $path = BASE_PATH . US_ROUTE_USUARIO_UPDATE;
         Parent::renderView($path, __FUNCTION__);
     }
 

@@ -18,7 +18,7 @@ if (UtilsFunctions::ajaxGeneral()) {
 $solicitudService = new ServicesSolicitudPrestamos();
 $solicitudService->callTask();
 
-$prestamoController = new SolicitudPrestamosController($conn);
+$prestamoController = new SolicitudprestamosController($conn);
 // $prestamoController->actualizarEstadosPorFecha();
 $reservaServices = new ServicesReservas();
 $reservaServices->callTask();

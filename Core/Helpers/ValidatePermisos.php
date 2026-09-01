@@ -30,6 +30,7 @@ class ValidatePermisos
         'Tipodocumento' => ['getData'],
         'Permisos' => ['permisosIndexView'],
         'Roles' => ['mostrarRoles', 'getData', 'getPermisosRolAsig'],
+        'Funciones' => ['getData']
     ];
     public function __construct()
     {
@@ -82,18 +83,26 @@ class ValidatePermisos
             # paso 2 - traer id del modulo
             $prepareData[CR_DATA] = ['nombre_modulo' => $modulo];
 
-            $idModulo = $this->mModel->select(['id_m'])
+            $dataModulo = $this->mModel->select()
                 ->from()
                 ->where(['nombre_modulo', '=', $modulo])
                 ->prepareSql($prepareData)
-                ->get()[0]['id_m'] ?? "";
+                ->get()[0];
 
+            $idModulo = $dataModulo['id_m'];
 
             $dataPrepare[CR_DATA] = ['nombre_funcion' => $funcion];
 
             if (empty($idModulo)) throw new Exception("El identificador del módulo no existe", HttpStatus::NOT_FOUND);
 
-            # paso 2 - saber el id del modulo asociado al id del modulo en la tabla funciones
+            # paso 3 - validar si el modulo esta disponible para su acceso, es decir, su estado.
+            $estadoModulo = $dataModulo['status_modulo'];
+
+
+            if ($estadoModulo === 0) throw new Exception("El módulo se encuentra inhabilitado temporalmente", HttpStatus::FORBIDDEN);
+
+
+            # paso 3 - saber el id del modulo asociado al id del modulo en la tabla funciones
             $dataPrepareidFuncion[CR_DATA] = ['nombre_modulo' => $modulo, 'nombre_funcion' => $funcion];
             $idFuncion = $this->fModelo->select(['id_funcion'])
                 ->from()

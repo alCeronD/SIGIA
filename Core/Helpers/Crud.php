@@ -434,7 +434,8 @@ abstract class Crud
       return [
         'status' => false,
         'sqlState' => $e->errorInfo[0], //Codigo generico de error
-        'codeError' => $e->errorInfo[1]  //Codigo especifico del error
+        'codeError' => $e->errorInfo[1],  //Codigo especifico del error
+        'messageError' => $e->getMessage()
       ];
     }
   }

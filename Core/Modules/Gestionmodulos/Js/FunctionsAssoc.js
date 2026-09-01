@@ -61,11 +61,13 @@ const Funciones = new Render({
 const renderData = async ({ pagina = 1 } = {}) => {
   let idModulo = vars.dataModule['id_m'];
   let nombreModulo = vars.dataModule['nombre_modulo'];
-  vars.dataFunctions = await Funciones.getData(`${vars.url}getFunctionsAssoc`, METHOD.GET, {
+
+  vars.dataFunctions = await Funciones.getData(`${vars.urlsFunciones}getData`, METHOD.GET, {
     pagina,
     idModulo,
     nombreModulo,
   });
+
   let data = vars.dataFunctions.data.data ?? null; //devolver null en caso de que no exista
   vars.files = vars.dataFunctions.data.files ?? null; //Devolver null en caso de que no exista
   const paginaActual = vars.dataFunctions.data.paginaActual;
@@ -81,7 +83,7 @@ const renderData = async ({ pagina = 1 } = {}) => {
       data: vars.files,
       textLabel: 'Seleccione una opción',
       textOption: 'Archivo asociado',
-      name: 'file',
+      name: 'nameController',
     });
   }
 
@@ -120,7 +122,7 @@ const editFunction = (id, row) => {
     data: vars.files,
     textLabel: 'Seleccione una opción',
     textOption: 'Archivo asociado',
-    name: 'file',
+    name: 'nameController',
     isRequired: true,
   });
   fillDataForm(rowObj, formUpdateFunctions.form);
@@ -193,8 +195,13 @@ formAddFunctions.form.addEventListener('submit', (e) => {
     try {
       if (!response) return;
 
-      const responseAddFunction = await Funciones.sendData(`${url}`, METHOD.POST, data);
-      console.log(url);
+      // const responseAddFunction = await Funciones.sendData(`${url}`, METHOD.POST, data);
+      const responseAddFunction = await Funciones.sendData(
+        `${vars.urlsFunciones}store`,
+        METHOD.POST,
+        data
+      );
+
       // en caso de que el estado sea false.
       if (!responseAddFunction.status) throw new Error(responseAddFunction.message);
       e.target.reset();
@@ -234,7 +241,7 @@ formUpdateFunctions.form.addEventListener('submit', (f) => {
       try {
         if (!response) return;
 
-        const responseUpdateFunction = await Funciones.sendData(url, METHOD.PUT, data);
+        const responseUpdateFunction = await Funciones.sendData(`${url}`, METHOD.PUT, data);
 
         if (!responseUpdateFunction.status) throw new Error(responseUpdateFunction.message);
 
@@ -243,7 +250,8 @@ formUpdateFunctions.form.addEventListener('submit', (f) => {
         modals.modalEditFunction.style.display = 'none';
         renderData({ pagina: vars.actualPage });
       } catch (error) {
-        console.error(error.message);
+        initAlert(error.message);
+        return;
       }
     }
   );

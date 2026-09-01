@@ -1,23 +1,16 @@
 <?php
 
 require_once __DIR__ . '/../../../Helpers/Const.php';
-require_once __DIR__ . '/../Const/RolesConst.php';
+require_once __DIR__ . '/../Const/FuncionesConst.php';
 require_once BASE_PATH . '/' . CR_AUTOLOAD;
 
 
-class RolesFuncionesController extends ConfigController
+class FuncionesAsociadasController extends ConfigController
 {
   protected ServicesRoles $sRoles; // servicio para solicitar la data entre un los controladores roles y roles_funciones.
   protected RolesFuncionesModel $rfModel; // tabla roles_funciones
   protected array $allRoles;
-  protected array $files = [
-    'css' => [
-      'mostrarFuncionesAssoc' => ['RolesFunciones.css']
-    ],
-    'js' => [
-      'mostrarFuncionesAssoc' => ['RolesFunciones.js']
-    ]
-  ];
+
   public function __construct()
   {
     $this->sRoles = new ServicesRoles();
@@ -25,16 +18,6 @@ class RolesFuncionesController extends ConfigController
     $this->createRoutes();
   }
 
-  /**
-   * Vista de las funciones asociadas a los roles.
-   *
-   * @return void
-   */
-  public function mostrarFuncionesAssoc(): void
-  {
-    $path = BASE_PATH . RL_ROUTES_ROLES_FUNCIONES;
-    Parent::renderView($path, __FUNCTION__);
-  }
 
   public function createRoutes()
   {

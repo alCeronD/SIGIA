@@ -2,15 +2,18 @@
 require_once __DIR__ . '/../../..' . CR_ROUTE_CONST;
 require_once __DIR__ . '/../Const/FuncionesConst.php';
 require_once BASE_PATH . '/Autoload.php';
-class FuncionesDosController extends ConfigController
+// Controlador en donde se muestran solo las vistas del modulo de funciones
+class FuncionesMainController extends ConfigController
 {
   protected array $files = [
     'css' => [
       'mostrarFuncionesAssoc' => ['RolesFunciones.css'],
-      'funcionesIndex' => ['funcionesIndex.css']
+      'funcionesIndexView' => ['funcionesIndexView.css'],
+      'funcionesAsociadasView' => ['RolesFunciones.css']
     ],
     'js' => [
-      'mostrarFuncionesAssoc' => ['RolesFunciones.js']
+      'mostrarFuncionesAssoc' => ['RolesFunciones.js'],
+      'funcionesAsociadasView' => ['RolesFunciones.js',]
     ]
   ];
   public function __construct()
@@ -26,10 +29,15 @@ class FuncionesDosController extends ConfigController
         'url' => Router::createRoute('Permisos', 'Permisos', 'permisosIndexView', false, CR_DASHBOARD_LOWER_CASE),
         'parent' => 'dashboard'
       ],
-      'funcionesIndex' => [
+      'funcionesIndexView' => [
         'label' => 'Funciones',
-        'url' => Router::createRoute(CR_FUNCIONES, 'FuncionesDos', 'funcionesIndex', false, 'dashboard'),
+        'url' => Router::createRoute(CR_FUNCIONES, 'FuncionesMain', 'funcionesIndexView', false, 'dashboard'),
         'parent' => 'permisosIndexView'
+      ],
+      'funcionesAsociadasView' => [
+        'label' => 'Funciones Asociadas',
+        'url' => Router::createRoute(CR_FUNCIONES, 'FuncionesMain', 'funcionesAsociadasView', false, 'dashboard'),
+        'parent' => 'funcionesIndexView'
       ]
     ];
   }
@@ -39,7 +47,7 @@ class FuncionesDosController extends ConfigController
    *
    * @return void
    */
-  public function funcionesIndex()
+  public function funcionesIndexView()
   {
 
     $path = BASE_PATH . F_ROUTE_FUNCIONES_MAIN_VIEW;
@@ -51,7 +59,7 @@ class FuncionesDosController extends ConfigController
    *
    * @return void
    */
-  public function mostrarFuncionesAssoc(): void
+  public function funcionesAsociadasView(): void
   {
 
     $path = BASE_PATH . RL_ROUTES_ROLES_FUNCIONES;

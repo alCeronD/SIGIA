@@ -1,7 +1,7 @@
 <?php
 include_once __DIR__ . '/../../../Config/Conn.php';
 include_once __DIR__ . '/../../../Helpers/Const.php';
-include_once BASE_URL . '/Autoload.php';
+include_once BASE_PATH . '/Autoload.php';
 
 class CategoriasController
 {
@@ -34,7 +34,7 @@ class CategoriasController
 
     public function updateCategoriaView()
     {
-        validatePermisos('Categorias', 'updateCategoriaView');
+        // validatePermisos('Categorias', 'updateCategoriaView');
 
         $categoria = $_GET['ca_id'];
         $_SESSION['css'] = 'categorias/categorias.css';
@@ -48,7 +48,7 @@ class CategoriasController
 
     public function updateCategoria()
     {
-        validatePermisos('Categorias', 'updateCategoria');
+        // validatePermisos('Categorias', 'updateCategoria');
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -110,7 +110,7 @@ class CategoriasController
     public function createCategoria()
     {
 
-        validatePermisos('Categorias', 'createCategoria');
+        // validatePermisos('Categorias', 'createCategoria');
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header('Content-Type: application/json');
@@ -157,7 +157,7 @@ class CategoriasController
 
     public function listarCategoriasAjax()
     {
-        validatePermisos('Categorias', 'listarCategoriasAjax');
+        // validatePermisos('Categorias', 'listarCategoriasAjax');
 
         // Validar y obtener parámetros de paginación
         $pagina = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
@@ -185,7 +185,7 @@ class CategoriasController
 
     public function cambiarEstadoJSON($data)
     {
-        validatePermisos('Categorias', 'cambiarEstadoJSON');
+        // validatePermisos('Categorias', 'cambiarEstadoJSON');
 
         header('Content-Type: application/json');
 

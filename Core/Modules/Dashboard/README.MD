@@ -21,3 +21,4 @@ Modulo principal del sistema en donde se alojaran las tareas como alertas o vist
 - [ ] Re factorizar los servicios de dashboard.php y moverlos al controlador.
 - [ ] Implementar formato de alertas
 - [ ] Re factorizar dashboard.js
+- [ ] Buscar una forma de renderizar el menu y ocultar y/o mostrar iconos dependiendo de si el usuario tiene acceso al modulo

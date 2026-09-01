@@ -9,6 +9,7 @@ class ModulosModel extends Crud
     'icono', // icono representativo del modulo
     'descripcion', // descripcion previa del modulo,
     'status_modulo', //estado del modulo (se usa tinyint (1) true, (0) false),
+    'vars', // campo de variables de tipo json
     'created_at',
     'updated_at'
   ];

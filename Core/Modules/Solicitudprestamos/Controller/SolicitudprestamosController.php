@@ -14,6 +14,9 @@ class SolicitudPrestamosController
         $this->conn = $conexion;
     }
 
+    // funcion en donde sera la VISTA PRINCIPAL DEL MODULO
+    public function solicitudesPrestamosMain() {}
+
     public function registrarPrestamosView()
     {
 
@@ -121,7 +124,6 @@ class SolicitudPrestamosController
                     $elementoModel->actualizarEstadoElemento($elemento_id, 1);
                 }
             }
-
 
             // Convertir array de objetos a array asociativo
             $cantidades_consumibles = [];

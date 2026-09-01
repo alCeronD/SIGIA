@@ -100,10 +100,21 @@ class GestionmodulosController extends ConfigController implements CrudInterface
       'nombre_modulo AS `nombre_modulo`',
       'icono AS `icono`',
       'descripcion AS `descripcion`',
-      'IF(status_modulo = 1, "Activo", "Inactivo" ) AS `status_modulo`'
+      'IF(status_modulo = 1, "Activo", "Inactivo" ) AS `status_modulo`',
+      'vars AS `ruta`'
     ];
 
     $queryModules = ($this->sModulos->getAllModulos(true, $sql))->prepareSql($dataSql)->get(); //enviamos flag true para continuar con la consulta, false para devolver el arreglo con todos los modulos.
+
+
+    // a los datos que tengan la key ruta y este tenga informacion, se hace la destructuracion
+    foreach ($queryModules as $key => $value) {
+      if (!empty($value['ruta'])) {
+        $queryModules[$key]['ruta'] = json_decode($value['ruta'], true);
+      }
+    }
+
+
     if (count($resultPaginate) > 0) {
       Response::responseRequest(HttpStatus::OK, true, "Registros", [
         CR_TOTAL_REGISTROS => count($countModules),
@@ -122,8 +133,6 @@ class GestionmodulosController extends ConfigController implements CrudInterface
       $data = UtilsFunctions::returnGetDecode();
 
       if (empty($data)) throw new Exception(GM_MESSAGE_MODULE_EMPTY, HttpStatus::BAD_REQUEST);
-
-
       // validamos si los campos obligatorios no estan vacios.
       $mapCampos = [
         GM_VAR_NOMBRE_MODULO => GM_WORDS_NOMBRE_MODULO,
@@ -159,9 +168,25 @@ class GestionmodulosController extends ConfigController implements CrudInterface
 
       if (!$moduleDir['status']) throw new Exception($moduleDir[CR_MESSAGE], $moduleDir[CR_CODE_RESPONSE]);
 
+      $modulo = $data['modulo'];
+      $controlador = $data['controlador'];
+      $funcion = $data['funcion'];
+
+      unset($data['modulo'], $data['controlador'], $data['funcion']);
+
+      // estructuramos el json que esta dentro del campo vars.
+      $dataVars = [
+        'route' => [
+          'modulo' => $modulo,
+          'controlador' => $controlador,
+          'funcion' => $funcion
+        ]
+      ];
+
+      $data['vars'] = json_encode($dataVars, true);
+
       $dataUpdatePrepare[CR_DATA] = $data;
       $responseUpdateModule = $this->modulosModel->update($data)->where()->prepareSql($dataUpdatePrepare)->get();
-
       if (!$responseUpdateModule['status']) {
         $dbaMessageHandler = DatabaseHandler::validateResponse($responseUpdateModule);
         throw new Exception($dbaMessageHandler[CR_MESSAGE], $dbaMessageHandler[CR_CODE_RESPONSE]);
@@ -182,9 +207,21 @@ class GestionmodulosController extends ConfigController implements CrudInterface
       $data = UtilsFunctions::returnGetDecode();
       $data[GM_STATUS_MODULO] = 1; //Estado 1.
       $nameModule = (string) ucfirst(strtolower(trim($data[GM_VAR_NOMBRE_MODULO])));
+
+      // creamos el arreglo establecido para guardar el modulo, el controlador y la funcion de la vista, eliminamos lso datos de $data y lo parseamos en json encode para despues volver a implementar en route con la variable route.
+      $route['route']['modulo'] = $data['modulo'];
+      $route['route']['controlador'] = $data['controlador'];
+      $route['route']['funcion']  = $data['funcion'];
+      $route = json_encode($route);
+      unset($data['modulo']);
+      unset($data['controlador']);
+      unset($data['funcion']);
+      $data['vars'] = $route;
+
       $data[GM_VAR_NOMBRE_MODULO] = $nameModule;
       $dataInsert[CR_DATA] = $data;
       if (empty($data)) throw new Exception("Datos vacios", HttpStatus::UNPROCESSABLE_ENTITY);
+
 
       // mapeamos los campos obligatorios para validar en caso de que esten vacios.
       $mapCampos = [
@@ -270,81 +307,5 @@ class GestionmodulosController extends ConfigController implements CrudInterface
       'status' => true,
       'message' => "",
     ];
-  }
-
-  /**
-   * Function para solicitar los datos de las funcionalidades
-   *
-   * @return void
-   */
-  public function getFunctionsAssoc(): void
-  {
-    try {
-      header(CONTENT_TYPE);
-      $page = (isset($_GET[CR_PAGINA])) ? (int) $_GET[CR_PAGINA] : 1;
-      $limit = (isset($_GET[CR_WORD_LIMIT])) ? (int) $_GET[CR_WORD_LIMIT] : LIMIT;
-      $id_m = (isset($_GET['idModulo'])) ? (int) $_GET['idModulo'] : null;
-      //obtener el nombre del modulo.
-      $moduloName = (isset($_GET['nombreModulo'])) ? (string) $_GET['nombreModulo'] : null;
-      // obtenemos los nombres de los controladores del sistema
-      $filesControllers = ScanFiles::getControllers($moduloName);
-      if (!$filesControllers['status']) {
-        // capturo la exception que me devuelve y la encadeno al router.
-        /** @var \Exception $th */
-        $th = $filesControllers['throw'];
-        throw new Exception($th->getMessage(), $th->getCode());
-      }
-
-      // accedo a los controladores escaneados y elimino ciertos caracteres innecesarios.
-      $filesControllers = str_replace(".php", "", $filesControllers['controlls']);
-      if (empty($id_m)) throw new Exception("id del modulo incorrecto", HttpStatus::UNPROCESSABLE_ENTITY);
-
-      $sql = [
-        "f.id_funcion AS 'idFuncion'",
-        "f.id_modulo AS 'nombreModulo'",
-        "f.nombre_funcion AS 'nombreFuncion'",
-        "f.nombre_funcion_user AS 'nombreFuncionLabel'",
-        "f.tp_funcion AS 'tipoFuncion'",
-        "tpf.nombre_tp_funcion AS 'tipoDeFuncion'"
-      ];
-      $conditions = ["f.id_modulo",  "=", $id_m];
-      $data = [
-        'f_id_modulo' => $id_m
-      ];
-      $dataPrepare[CR_DATA] = $data;
-      // aplicamos el count a la funcionalidad del servicio porque este nos devuelve el modelo, el motivo es porque necesitamos hacer paginacion a la cantidad de registros basada en el modulo, no a todo el registro de la tabla.
-      $countFunciones = count($this->sFunciones->getAllFunctionsFromModule($sql, $conditions)->prepareSql($dataPrepare)->get());
-      $paginateFunctions = UtilsFunctions::executePaginate($countFunciones, $limit, $page);
-      $data = [
-        'f_id_modulo' => $id_m,
-        CR_OFFSET => $paginateFunctions[CR_OFFSET],
-        CR_WORD_LIMIT => $limit
-      ];
-      $dataPrepare[CR_DATA] = $data;
-
-      // aca implementamos el limite y offset porque usamos la misma funcion previamente para contar las funciones basadas en el modulo.
-      $getSelectFunctions = $this->sFunciones->getAllFunctionsFromModule($sql, $conditions)
-        ->limit()
-        ->offset()
-        ->prepareSql($dataPrepare)->get();
-
-      if (count($getSelectFunctions) > 0) {
-        Response::responseRequest(HttpStatus::OK, true, "Registros", [
-          CR_TOTAL_REGISTROS => $countFunciones,
-          CR_PAGINA_ACTUAL => ($page > $paginateFunctions[CR_TOTAL_PAGINAS]) ? $paginateFunctions[CR_TOTAL_PAGINAS] : $page, //Aca devolvemos la pagina, pero cuando se borra el ultimo registro de una pagina estamos devolviendo la pagina que recibimos desde la peticion, cuando hacemos la paginacion, si la pagina ES MAYOR A LA CANTIDAD DE PAGINAS TOTALES, NO DEVOLVEMOS LA PAGINA RECIBIDA, SINO LA ULTIMA PAGINA. esto para poder renderizar de forma correcta la informacion.
-          CR_CANTIDAD_PAGINAS => $paginateFunctions[CR_TOTAL_PAGINAS],
-          CR_DATA => $getSelectFunctions,
-          CR_FILES => $filesControllers
-        ]);
-      } else {
-        Response::responseRequest(HttpStatus::OK, true, "NO hay registros", [
-          CR_TOTAL_REGISTROS => $countFunciones,
-          CR_DATA => $getSelectFunctions,
-          CR_FILES => $filesControllers
-        ]);
-      }
-    } catch (\Exception $th) {
-      Response::responseRequest($th->getCode(), false, $th->getMessage(), []);
-    }
   }
 }

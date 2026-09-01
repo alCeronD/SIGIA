@@ -1,0 +1,11 @@
+ALTER TABLE funciones
+ADD COLUMN nameController VARCHAR(100) NOT NULL AFTER nombre_funcion_user;
+
+# Permitir nulos en el campo NameController
+ALTER TABLE funciones MODIFY nameController VARCHAR(255) NULL;
+
+ALTER TABLE funciones
+ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE funciones
+ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;

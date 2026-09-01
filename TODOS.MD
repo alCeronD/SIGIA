@@ -82,6 +82,7 @@ Listado de TODOS generales y específicos por cada módulo.
 - [ ] En el modulo **ROLES** crear otra vista interna y otro controlador para definir plantilla por defecto del sistema.
 - [x] Crear modulo de **Funciones** Y ajustar lo de funcionesRoles, entre otros al mismo modulo de funciones.
 - [ ] Crear las vistas personalizadas del menu basadas en el rol del usuario
+- [ ] Crear funcion para crear un arreglo encodeado para insertar o eliminar valores en un campo de tipo json
 
 ## Específicos
 

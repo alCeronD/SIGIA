@@ -1,7 +1,7 @@
 <div class="container">
   <div class="content">
     <!-- rastro de miga. -->
-    <?php include_once BASE_URL . '/../../public/partials/breadCrumbs.php'; ?>
+    <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
     <div class="cards">
       <div class="option-card  z-depth-1 div4">
         <div class="icons">

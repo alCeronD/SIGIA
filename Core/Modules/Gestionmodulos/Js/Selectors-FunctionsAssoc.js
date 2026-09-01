@@ -5,7 +5,7 @@ export const selectors = {
 export const vars = {
   dataModule: null,
   url: 'dashboard.php?modulo=Gestionmodulos&controlador=Gestionmodulos&function=',
-  urlsFunciones: 'dashboard.php?modulo=Gestionmodulos&controlador=Funciones&function=',
+  urlsFunciones: 'dashboard.php?modulo=Funciones&controlador=FuncionesModulo&function=',
   dataFunctions: null,
   actualPage: 1,
   dataPaginate: {},

@@ -84,6 +84,19 @@ const renderData = async ({ pagina = 1 } = {}) => {
     dataPaginate['paginaActual'] = paginaActual;
     dataPaginate['cantidadPaginas'] = vars.dataModulos.data.cantidadPaginas;
 
+    // ciclo el objeto para eliminar el nivel del la ruta para llenar la informacion en el formulario.
+    dataModulos.forEach((dta) => {
+      if (dta.ruta) {
+        const modulo = dta.ruta.route.modulo;
+        const controlador = dta.ruta.route.controlador;
+        const funcion = dta.ruta.route.funcion;
+
+        dta['modulo'] = modulo;
+        dta['controlador'] = controlador;
+        dta['funcion'] = funcion;
+      }
+    });
+
     // asignamos la pagina actual a la propiedad de la instancia.
     Modulos.actualPage = paginaActual;
     Modulos.renderData({
@@ -197,7 +210,6 @@ forms.formUpdate.addEventListener('submit', (e) => {
   e.preventDefault();
   const formData = new FormData(e.target);
   const dataUpdate = Object.fromEntries(formData);
-
   mostrarConfirmacion(
     'Actualizar módulo',
     '¿Está seguro de actualizar la información de este módulo?',
@@ -207,6 +219,7 @@ forms.formUpdate.addEventListener('submit', (e) => {
         const responseUpdate = await Modulos.sendData(`${vars.url}save`, METHOD.PUT, dataUpdate);
 
         if (responseUpdate.status) {
+          e.target.reset(); //Limpiamos el formulario
           initAlert(responseUpdate.message, 'success');
           Modulos.actualPage = vars.actualPage;
           renderData({ pagina: vars.actualPage });
@@ -255,5 +268,7 @@ forms.formCreate.addEventListener('submit', (f) => {
 document.addEventListener('DOMContentLoaded', () => {
   renderData();
   executePaginate();
-  closeModal(modals.modalEdit, buttons.btnCloseModal);
+  closeModal(modals.modalEdit, buttons.btnCloseModal, () => {
+    forms.formUpdate.reset();
+  });
 });

@@ -12,7 +12,8 @@ class DatabaseHandler
       '42S22' => 'Columna no encontrada en la tabla especificada',
       '08S01' => 'Fallo en el enlace de comunicación (Pérdida de conexión con el servidor de BD)',
       '22007' => 'Formato de fechas incorrecto',
-      '21S01' => 'El numero de columnas no coincide con los valores enviados'
+      '21S01' => 'El numero de columnas no coincide con los valores enviados',
+      'HY000' => 'Uno de los campos de la tabla no debe quedar vacio'
     ],
     'codeError' => [
       1062 => 'Registro duplicado en índice UNIQUE o PRIMARY KEY',
@@ -21,7 +22,8 @@ class DatabaseHandler
       1048 => 'Columna obligatoria recibió un valor NULL',
       1406 => 'El valor de la columna es demasiado largo para el tipo de dato',
       1306 => 'Tipo de datos enviados incorrectamente',
-      1136 => 'Los datos enviados no coinciden con las columnas'
+      1136 => 'Los datos enviados no coinciden con las columnas',
+      1364 => 'Verifique que una de las columnas enviadas tenga valores'
     ]
   ]; //
   public static array $mensajesCodeErrors = [

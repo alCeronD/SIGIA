@@ -39,6 +39,14 @@
 .contentFormModulos {
   grid-area: contentFormModulos;
   width: 100%;
+
+  .contentRoute {
+    display: flex;
+    gap: 0.3rem;
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+
 }
 
 .contentTableModulos {

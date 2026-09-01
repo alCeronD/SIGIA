@@ -1,3 +1,4 @@
+/* ARCHIVO QUE MUESTRA El JAVASCRIPT DE LA VISTA DE FUNCIONES ASOCIADAS AL ROL */
 import {
   initAlert,
   optionsSelect,
@@ -12,7 +13,7 @@ const selectRol = document.querySelector('#selectRol');
 const bodyRolesFunciones = document.querySelector('#bodyRolesFunciones');
 const headerRoles = document.querySelector('#headerRoles');
 const footerRolesFunciones = document.querySelector('#footerRolesFunciones');
-const url = 'dashboard.php?modulo=Roles&controlador=RolesFunciones&function=';
+const url = 'dashboard.php?modulo=Funciones&controlador=FuncionesAsociadas&function=';
 const RolesFunciones = new Render({
   btnEliminar: {
     value: (rowFunctions, button) => {

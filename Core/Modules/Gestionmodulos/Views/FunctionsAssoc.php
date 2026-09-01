@@ -1,6 +1,6 @@
 <div class="container">
   <div class="contentFunctions">
-    <?php include_once BASE_URL . '/../../public/partials/breadCrumbs.php'; ?>
+    <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
     <div class="titleModulos menuTitle">
       <!-- implementamos el texto con javascript. -->
       <span id="textTitleFunctions" class="textTitleSpan"></span>
@@ -16,6 +16,7 @@
             <th id="idFuncion">Id de funcion</th>
             <th id="nombreFuncion">Nombre Función (function tecnica)</th>
             <th id="nombreFuncionLabel">Nombre Función (usuario final)</th>
+            <th id="controladorAsociado">Controlador asociado</th>
             <th id="tipoDeFuncion">Tipo de función (visual o logica)</th>
             <th id="">Acciones</th>
           </tr>
@@ -39,7 +40,7 @@
         </button>
       </div>
       <div class="formInsert">
-        <form id="formInsertFunction" class="formLayout" action="<?php echo Router::createRoute(CR_GESTION_MODULOS, 'Funciones', 'store', false, CR_DASHBOARD_LOWER_CASE); ?>">
+        <form id="formInsertFunction" class="formLayout" action="<?php echo Router::createRoute(CR_FUNCIONES, 'Funciones', 'store', false, CR_DASHBOARD_LOWER_CASE); ?>">
           <div class="input-field mNombreUpdate">
             <label for="nombre_funcion">Nombre funcion técnica: *</label>
             <input type="text" name="nombre_funcion" id="nombre_funcion">
@@ -84,7 +85,7 @@
         </button>
       </div>
       <div class="formUpdate">
-        <form id="formUpdateFunction" class="formLayout" action="<?php echo Router::createRoute(CR_GESTION_MODULOS, 'Funciones', 'save', false, CR_DASHBOARD_LOWER_CASE); ?>">
+        <form id="formUpdateFunction" class="formLayout" action="<?php echo Router::createRoute(CR_FUNCIONES, 'FuncionesModulo', 'save', false, CR_DASHBOARD_LOWER_CASE); ?>">
           <input type="hidden" name="id_funcion" id="id_funcion">
           <div class="input-field mNombreUpdate">
             <label for="nombre_funcion">Nombre funcion técnica: *</label>
