@@ -17,6 +17,7 @@ export const mapConfigFunctions = {
     nombre_funcion: 'Nombre de la funcion',
     nombre_funcion_user: 'Nombre de la función del usuario',
     tp_funcion: 'Tipo de la función',
+    is_main_view: 'Tipo de vista',
   },
   mapObjEdit: {
     id_funcion: 'Identificador de la función',
@@ -24,6 +25,7 @@ export const mapConfigFunctions = {
     nombre_funcion_user: 'Nombre de la función del usuario',
     tp_funcion: 'Tipo de la función',
     file: 'Archivo asociado',
+    is_main_view: 'Tipo de vista',
   },
 };
 
@@ -50,18 +52,23 @@ export const modals = {
 export const formAddFunctions = {
   form: document.querySelector('#formInsertFunction'),
   radio: document.querySelectorAll('input[name="tp_funcion"]'),
+  radio_is_main_view: document.querySelectorAll('input[name="is_main_view"]'),
   divs: {
     tipoFuncion: document.querySelector('.tipoFuncion'),
     files: document.querySelector('.files'),
+    contentIsMain: document.querySelector('.contentIsMain'),
   },
 };
 
 export const formUpdateFunctions = {
   form: document.querySelector('#formUpdateFunction'),
+  radio: document.querySelector('#formUpdateFunction').querySelectorAll('input[name="tp_funcion"]'),
   divs: {
     tipoFuncion: document.querySelector('.tipoFuncion'),
     files: document.querySelector('.files'),
+    contentIsMain: document.querySelector('.contentIsMainUpdate'),
   },
+  radio_is_main_view: document.querySelectorAll('.is_main_view_update'),
 };
 
 export const footer = document.querySelector('#tFooterFunciones');

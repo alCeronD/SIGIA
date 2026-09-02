@@ -38,4 +38,53 @@
     "formUpdate";
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
+
+  /* formulario de insert */
+  .formInsert,
+  #formInsertFunction {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    .tipoFuncion {
+      display: grid;
+      grid-template-areas: "contentTipoFuncion"
+        "contentIsMain";
+
+      .contentIsMain {
+        grid-area: contentIsMain;
+        /* se cambia la visibilidad del elemento dependiendo de la opcion seleccionada por el usuario, siendo render la opción para visualizar el elemento. */
+        display: none;
+      }
+
+      .contentTipoFuncion {
+        grid-area: contentTipoFuncion;
+      }
+    }
+  }
+
+  /* formulario de update */
+  .formUpdate #formUpdateFunction {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    .tipoFuncion {
+      display: grid;
+      grid-template-areas: "contentTipoFuncion"
+        "contentIsMainUpdate";
+
+      .contentIsMainUpdate {
+        grid-area: contentIsMainUpdate;
+        /* se cambia la visibilidad del elemento dependiendo de la opcion seleccionada por el usuario, siendo render la opción para visualizar el elemento. */
+        display: none;
+      }
+
+      .contentTipoFuncion {
+        grid-area: contentTipoFuncion;
+      }
+    }
+  }
 }

@@ -113,7 +113,11 @@ const editFunction = (id, row) => {
   rowObj['id_funcion'] = row.idFuncion;
   rowObj['nombre_funcion'] = row.nombreFuncion;
   rowObj['nombre_funcion_user'] = row.nombreFuncionLabel;
-  rowObj['tp_funcion'] = String(row.tipoDeFuncion).toLocaleLowerCase();
+  // en mi base de datos he unificado elt ipo de funcion con otro campo, por ende, aplicamos el split y solo extraemos la primera palabra que es la que necesitamos
+  let tpFuncion = String(row.tipoDeFuncion).toLocaleLowerCase().split(' ')[0];
+  // validamos si tiene tilde la palabra logica.
+  rowObj['tp_funcion'] = tpFuncion === 'lógica' ? 'logica' : tpFuncion;
+  rowObj['isMainView'] = String(row.isMainView);
 
   // container files del formularioUpdateFunctions
   const filesUpdateFunction = formUpdateFunctions.form.querySelector('.files');
@@ -125,7 +129,23 @@ const editFunction = (id, row) => {
     name: 'nameController',
     isRequired: true,
   });
+
   fillDataForm(rowObj, formUpdateFunctions.form);
+
+  // SELECCIONAR EL CAMPO Y MOSTRAR SI ES RENDER PRINCIPAL O SECUNDARIO.
+  if (rowObj.tp_funcion === 'render') {
+    formUpdateFunctions.divs.contentIsMain.style.display = 'block';
+
+    // formUpdateFunctions.radio_is_main_view.value = rowObj.isMainView;
+    formUpdateFunctions.radio_is_main_view.forEach((el) => {
+      if (el.value === rowObj.isMainView) {
+        el.checked = true;
+      }
+    });
+  } else {
+    formUpdateFunctions.divs.contentIsMain.style.display = 'none';
+  }
+
   // inicializamos los selects.
   InitComponents.initInputs();
   InitComponents.initSelect();
@@ -162,12 +182,61 @@ const deleteFunction = (id, fullRow) => {
   }
 };
 
+/**
+ * Description HTMLElement - input - radiobutton implementado
+ *
+ * @param {HTMLElement | NodeList} [input=null]
+ */
+const changeRadioButton = (input = null, isClose = false) => {
+  if (!input) return;
+
+  const valueInput = input.value ?? null;
+
+  if (!valueInput) return;
+
+  // muestrame el radiobutton de is_main_view si su valor es render, en caso contrario, ocultalo
+  if (valueInput === 'render') {
+    formAddFunctions.divs.contentIsMain.style.display = 'block';
+  } else {
+    // elimino los valores seleccionados
+    formAddFunctions.radio_is_main_view.forEach((el) => {
+      el.checked = false;
+    });
+    formAddFunctions.divs.contentIsMain.style.display = 'none';
+  }
+
+  // flag para eliminar valores seleccionados
+  if (isClose) {
+    input.forEach((el) => {
+      el.checked = false;
+    });
+  }
+};
+
 buttons.btnAddFunction.addEventListener('click', (e) => {
   if (vars.files === null) {
     initAlert('no hay archivos fisicos para implementar la funcionalidad');
     return;
   }
   openModal(modals.modalAddFunction);
+});
+
+// mostrar valor elemento
+
+formAddFunctions.radio.forEach((el) => {
+  el.addEventListener('change', (e) => {
+    changeRadioButton(e.target);
+  });
+});
+
+formUpdateFunctions.radio.forEach((el) => {
+  el.addEventListener('change', (f) => {
+    if (f.target.value === 'logica') {
+      formUpdateFunctions.divs.contentIsMain.style.display = 'none';
+    } else {
+      formUpdateFunctions.divs.contentIsMain.style.display = 'block';
+    }
+  });
 });
 
 formAddFunctions.form.addEventListener('submit', (e) => {
@@ -188,13 +257,17 @@ formAddFunctions.form.addEventListener('submit', (e) => {
     return;
   }
 
+  if (data['tp_funcion'] === 'render' && !data['is_main_view']) {
+    initAlert('El tipo de vista debe ser obligatorio', 'info');
+    return;
+  }
+
   data['id_modulo'] = vars.dataModule['id_m'];
   data['tp_funcion'] = data['tp_funcion'] === 'render' ? 1 : 2;
   let message = `¿Está seguro de crear la funcionalidad? \n asegurese que la funcionalidad ya este registrada en el controlador de la clase`;
   mostrarConfirmacion('Crear funcion', message, async (response) => {
     try {
       if (!response) return;
-
       // const responseAddFunction = await Funciones.sendData(`${url}`, METHOD.POST, data);
       const responseAddFunction = await Funciones.sendData(
         `${vars.urlsFunciones}store`,
@@ -205,6 +278,7 @@ formAddFunctions.form.addEventListener('submit', (e) => {
       // en caso de que el estado sea false.
       if (!responseAddFunction.status) throw new Error(responseAddFunction.message);
       e.target.reset();
+      changeRadioButton(formAddFunctions.radio_is_main_view, true);
       renderData({ pagina: vars.actualPage });
       initAlert(responseAddFunction.message, 'success');
       return;
@@ -224,6 +298,7 @@ formUpdateFunctions.form.addEventListener('submit', (f) => {
 
   let data = Object.fromEntries(formData);
   data['id_modulo'] = vars.dataModule['id_m'];
+
   if (
     !validateFormData({
       formData: formData,
@@ -231,6 +306,11 @@ formUpdateFunctions.form.addEventListener('submit', (f) => {
       mapForm: mapConfigFunctions.mapObjEdit,
     })
   ) {
+    return;
+  }
+
+  if (data['tp_funcion'] === 'render' && !data['is_main_view']) {
+    initAlert('El tipo de vista debe ser obligatorio', 'info');
     return;
   }
 
@@ -262,6 +342,7 @@ closeModal(modals.modalAddFunction, buttons.btnCloseModalFunctionInsert, () => {
 });
 closeModal(modals.modalEditFunction, buttons.btnCloseModalFunctionEdit, () => {
   formUpdateFunctions.form.reset();
+  changeRadioButton(formUpdateFunctions.radio_is_main_view, true);
 });
 
 footer.addEventListener('click', (e) => {

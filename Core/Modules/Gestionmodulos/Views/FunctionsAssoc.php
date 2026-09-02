@@ -50,17 +50,33 @@
             <input type="text" name="nombre_funcion_user" id="nombre_funcion_user">
           </div>
           <div class="input-field tipoFuncion">
-            <span>Tipo de funcion: *</span>
-            <p>
-              <label>
-                <input class="with-gap" name="tp_funcion" type="radio" id="tp_funcion_logica" value="logica" />
-                <span>Logica</span>
-              </label>
-              <label>
-                <input class="with-gap" name="tp_funcion" type="radio" id="tp_funcion_render" value="render" />
-                <span>Render</span>
-              </label>
-            </p>
+
+            <div class="contentTipoFuncion">
+              <span>Tipo de funcion: *</span>
+              <p>
+                <label>
+                  <input class="with-gap" name="tp_funcion" type="radio" id="tp_funcion_logica" value="logica" />
+                  <span>Logica</span>
+                </label>
+                <label>
+                  <input class="with-gap" name="tp_funcion" type="radio" id="tp_funcion_render" value="render" />
+                  <span>Render</span>
+                </label>
+              </p>
+            </div>
+            <div class="contentIsMain">
+              <span>Tipo de vista: *</span>
+              <p>
+                <label>
+                  <input class="with-gap" name="is_main_view" type="radio" id="is_main_view" value="1" />
+                  <span>Primaria</span>
+                </label>
+                <label>
+                  <input class="with-gap" name="is_main_view" type="radio" id="is_main_view" value="0" />
+                  <span>Secundaria</span>
+                </label>
+              </p>
+            </div>
           </div>
           <div class="input-fiel files">
             <!-- selector en donde van los los selects, se renderiza por javascript en la funcion RENDER SELECTS. -->
@@ -96,17 +112,32 @@
             <input type="text" name="nombre_funcion_user" id="nombre_funcion_user">
           </div>
           <div class="input-field tipoFuncion">
-            <span>Tipo de funcion: *</span>
-            <p>
-              <label>
-                <input class="with-gap" name="tp_funcion" type="radio" id="tp_funcion_logica" value="logica" />
-                <span>Logica</span>
-              </label>
-              <label>
-                <input class="with-gap" name="tp_funcion" type="radio" id="tp_funcion_render" value="render" />
-                <span>Render</span>
-              </label>
-            </p>
+            <div class="contentTipoFuncion">
+              <span>Tipo de funcion: *</span>
+              <p>
+                <label>
+                  <input class="with-gap" name="tp_funcion" type="radio" id="tp_funcion_logica" value="logica" />
+                  <span>Logica</span>
+                </label>
+                <label>
+                  <input class="with-gap" name="tp_funcion" type="radio" id="tp_funcion_render" value="render" />
+                  <span>Render</span>
+                </label>
+              </p>
+            </div>
+            <div class="contentIsMainUpdate">
+              <span>Tipo de vista: *</span>
+              <p>
+                <label>
+                  <input class="with-gap is_main_view_update" name="is_main_view" type="radio" id="is_main_view" value="1" />
+                  <span>Primaria</span>
+                </label>
+                <label>
+                  <input class="with-gap is_main_view_update" name="is_main_view" type="radio" id="is_main_view" value="0" />
+                  <span>Secundaria</span>
+                </label>
+              </p>
+            </div>
           </div>
           <div class="input-fiel files">
             <!-- selector en donde van los los selects, se renderiza por javascript en la funcion RENDER SELECTS. -->

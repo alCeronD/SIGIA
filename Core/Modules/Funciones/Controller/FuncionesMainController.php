@@ -9,11 +9,13 @@ class FuncionesMainController extends ConfigController
     'css' => [
       'mostrarFuncionesAssoc' => ['RolesFunciones.css'],
       'funcionesIndexView' => ['funcionesIndexView.css'],
-      'funcionesAsociadasView' => ['RolesFunciones.css']
+      'funcionesAsociadasView' => ['RolesFunciones.css'],
+      'funcionesView' => ['Funciones.js', 'VarsFunciones.js']
     ],
     'js' => [
       'mostrarFuncionesAssoc' => ['RolesFunciones.js'],
-      'funcionesAsociadasView' => ['RolesFunciones.js',]
+      'funcionesAsociadasView' => ['RolesFunciones.js',],
+      'funcionesView' => ['Funciones.css']
     ]
   ];
   public function __construct()
@@ -37,6 +39,11 @@ class FuncionesMainController extends ConfigController
       'funcionesAsociadasView' => [
         'label' => 'Funciones Asociadas',
         'url' => Router::createRoute(CR_FUNCIONES, 'FuncionesMain', 'funcionesAsociadasView', false, 'dashboard'),
+        'parent' => 'funcionesIndexView'
+      ],
+      'funcionesView' => [
+        'label' => 'Listado de funciones',
+        'url' => Router::createRoute(CR_FUNCIONES, 'FuncionesMain', 'funcionesView', false, 'dashboard'),
         'parent' => 'funcionesIndexView'
       ]
     ];
@@ -63,6 +70,17 @@ class FuncionesMainController extends ConfigController
   {
 
     $path = BASE_PATH . RL_ROUTES_ROLES_FUNCIONES;
+    Parent::renderView($path, __FUNCTION__);
+  }
+
+  /**
+   * Function para renderizar las funciones registradas en el sistema y manipular sus respectivos
+   *
+   * @return void
+   */
+  public function funcionesView()
+  {
+    $path = BASE_PATH . F_ROUTE_FUNCIONES;
     Parent::renderView($path, __FUNCTION__);
   }
 }

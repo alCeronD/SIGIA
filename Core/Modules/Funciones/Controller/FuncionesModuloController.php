@@ -43,9 +43,13 @@ class FuncionesModuloController implements CrudInterface
         "f.id_modulo AS 'nombreModulo'",
         "f.nombre_funcion AS 'nombreFuncion'",
         "f.nombre_funcion_user AS 'nombreFuncionLabel'",
-        "f.tp_funcion AS 'tipoFuncion'",
         "COALESCE(NULLIF(f.nameController, ''), 'No asociado') AS 'controladorAsociado'",
-        "tpf.nombre_tp_funcion AS 'tipoDeFuncion'"
+        "IF(tpf.nombre_tp_funcion = 'Render', CONCAT(
+          'Render - ', IF(
+          f.is_main_view = 1, 'Principal', 'Secundaria'
+          )
+          ), 'Lógica') AS 'tipoDeFuncion'",
+        "f.is_main_view AS 'isMainView'"
       ];
       $conditions = ["f.id_modulo",  "=", $id_m];
       $data = [
@@ -133,7 +137,16 @@ class FuncionesModuloController implements CrudInterface
       $data = UtilsFunctions::returnGetDecode();
       if (empty($data)) throw new Exception("Datos enviados incorrectos", HttpStatus::BAD_REQUEST);
       $file = $data['nameController'];
-      // unset($data['file']);
+
+      $data['is_main_view'] = (!isset($data['is_main_view']) || $data['is_main_view'] === '')
+        ? null
+        : (int) $data['is_main_view'];
+
+
+      // valido que el tipo de funcion sea vista y que en el campo main_view tenga informacion
+      if ($data['tp_funcion'] === 1 && is_null($data['is_main_view'])) {
+        throw new Exception("El tipo de vista debe ser obligatorio", HttpStatus::UNPROCESSABLE_ENTITY);
+      }
 
       $responseValidateFunction = $this->validateFunction($data['id_modulo'], $file, $data['nombre_funcion']);
       if (!$responseValidateFunction['status']) {
@@ -159,6 +172,14 @@ class FuncionesModuloController implements CrudInterface
       $data = UtilsFunctions::returnGetDecode();
       $data['tp_funcion'] = $data['tp_funcion'] === "render" ? (int) 1 : (int) 2;
 
+      $data['is_main_view'] = (!isset($data['is_main_view']) || $data['is_main_view'] === '')
+        ? null
+        : (int) $data['is_main_view'];
+
+      // valido que el tipo de funcion sea vista y que en el campo main_view tenga informacion
+      if ($data['tp_funcion'] === 1 && is_null($data['is_main_view'])) {
+        throw new Exception("El tipo de vista debe ser obligatorio", HttpStatus::UNPROCESSABLE_ENTITY);
+      }
 
       if (empty($data)) throw new Exception("Faltan datos para procesar la solicitud", HttpStatus::BAD_REQUEST);
       $responseValidateFunction = $this->validateFunction($data['id_modulo'], $data['nameController'], $data['nombre_funcion']);

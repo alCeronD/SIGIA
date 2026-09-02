@@ -9,8 +9,9 @@ class FuncionesModel extends Crud
     'nombre_funcion_user', //Nombre de la funcion para el usuario final.
     'nameController', //Nombre el controlador en donde está la función
     'id_modulo', // id del modulo al que pertenece la funcion
-    'tp_funcion', // tipo de la funcion
-    // 'created_at',
-    // 'updated_at'
+    'tp_funcion', // tipo de la funcion,
+    'is_main_view',
+    'created_at',
+    'updated_at'
   ];
 }

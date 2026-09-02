@@ -66,7 +66,11 @@ class ValidatePermisos
     {
         try {
             // rolId de la sesion actual del usuario:
-            $rolId = Session::getRol()['rol_id'];
+            $dataRol = Session::getRol();
+            $rolId = $dataRol['rol_id'];
+
+            $nombreRol = $dataRol['rol_nombre'];
+
 
             # paso 1- validar la sesion, en caso de que no este la sesion iniciada, devolver al index.
             if (session_status() === PHP_SESSION_NONE || !isset($_SESSION[CR_USUARIO])) {
@@ -80,6 +84,16 @@ class ValidatePermisos
                     Rect::redirectTo(Router::createRoute(CR_LOGIN, CR_LOGIN, 'index', 'false', 'index'));
                 }
             }
+
+            # Paso 1.1 - Valido que el rol sea super administrador, en caso de que lo SEA, ESTE se valida el bypass.
+            if ($nombreRol === CR_ROL_SUPER_ADMIN) {
+                return [
+                    CR_STATUS => true,
+                    CR_MESSAGE => "",
+                    CR_CODE_RESPONSE => 0
+                ];
+            }
+
             # paso 2 - traer id del modulo
             $prepareData[CR_DATA] = ['nombre_modulo' => $modulo];
 
