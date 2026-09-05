@@ -21,14 +21,10 @@ class RolesController extends ConfigController implements CrudInterface
      */
     protected array $files = [
         'css' => [
-            'rolesIndex' => ['RolesIndex.css'],
             'mostrarRoles' => ['Roles.css'],
-            'mostrarFuncionesAssoc' => ['RolesFunciones.css']
         ],
         'js' => [
-            'mostrarRoles' => ['Roles.js'],
-            'rolesIndex' => [],
-            'mostrarFuncionesAssoc' => ['RolesFunciones.js']
+            'mostrarRoles' => ['Roles.js', 'SelectorsRoles.js'],
         ]
     ];
 
@@ -58,24 +54,10 @@ class RolesController extends ConfigController implements CrudInterface
                 'label' => 'Ver Roles',
                 'url' => Router::createRoute('Roles', 'Roles', 'mostrarRoles', false, 'dashboard'),
                 'parent' => 'permisosIndexView'
-            ],
-            'mostrarFuncionesAssoc' => [
-                'label' => 'Funciones asociadas',
-                'url' => Router::createRoute('Roles', 'RolesFunciones', 'mostrarFuncionesAssoc', false, 'dashboard'),
-                'parent' => 'rolesIndex'
             ]
         ];
     }
-    /**
-     * Vista principal del modulo roles
-     *
-     * @return void
-     */
-    public function rolesIndex(): void
-    {
-        $path = BASE_PATH . RL_ROUTES_ROLES_INDEX;
-        Parent::renderView($path, __FUNCTION__);
-    }
+
     /**
      * Vista que contiene el listado de los roles.
      *

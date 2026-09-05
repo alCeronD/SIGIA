@@ -7,6 +7,7 @@
   - [Descripción](#descripción)
   - [Arquitectura Interna (Pre-documentación)](#arquitectura-interna-pre-documentación)
   - [Dependencias de Base de Datos](#dependencias-de-base-de-datos)
+  - [TODOS](#todos)
 
 ## Descripción
 
@@ -29,3 +30,7 @@ Modulo de inicio sesión que nos permite validar la existencia de nuestro usuari
 
 - Tabla principal: `usuarios`
 - Tablas secundarias: `roles`, `usuarios_roles`
+
+## TODOS
+
+- [ ] IMplementar render menu en login controller

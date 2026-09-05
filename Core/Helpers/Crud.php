@@ -371,6 +371,7 @@ abstract class Crud
         return $this;
       }
     } catch (\PDOException $th) {
+      var_dump($th);
       return [
         'status' => false,
         'sqlState' => $th->errorInfo[0], //Codigo generico de error
@@ -433,8 +434,8 @@ abstract class Crud
       }
       return [
         'status' => false,
-        'sqlState' => $e->errorInfo[0], //Codigo generico de error
-        'codeError' => $e->errorInfo[1],  //Codigo especifico del error
+        'sqlState' => $e->errorInfo[0] ?? null, //Codigo generico de error
+        'codeError' => $e->errorInfo[1] ?? null,  //Codigo especifico del error
         'messageError' => $e->getMessage()
       ];
     }

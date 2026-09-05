@@ -503,7 +503,7 @@ export const createCheckboxGeneric = ({
  * @returns {boolean}
  */
 export const validateFormData = ({ formData = null, campos = {}, mapForm = {} } = {}) => {
-  for (const [key, value] of formData.entries()) {
+  for (const [key, value] of formData.entries(formData)) {
     const isEmpty = !value || value.toString().trim() === '';
     // pasamos por referencia los valores opcionales.
     const camposOpcionales = campos;

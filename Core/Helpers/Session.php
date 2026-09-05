@@ -14,6 +14,7 @@ class Session
             session_start();
         }
 
+
         if (!isset($_SESSION['usuario'])) {
             Rect::fast('/index.php');
         }

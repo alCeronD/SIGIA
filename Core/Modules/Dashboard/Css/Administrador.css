@@ -20,8 +20,9 @@
     align-items: center;
     justify-content: center;
 
+
     .contentModule {
-      width: 50%;
+      width: 100%;
       height: inherit;
       display: flex;
       flex-direction: column;
@@ -35,9 +36,12 @@
         align-items: center;
       }
 
-      /* cambio el tamaño del icono con fontSize, no con with ni height */
+
+
+      /* cambio el tamaño del icono con fontsize, no con with ni height */
+
       i.material-icons {
-        font-size: 6rem;
+        font-size: 8rem;
       }
 
     }

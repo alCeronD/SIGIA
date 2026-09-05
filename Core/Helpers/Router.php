@@ -14,6 +14,13 @@ class Router
     if (!is_string($controller)) return;
     if (!is_string($function)) return;
 
+    // valido si el parametro controller tiene la palabra 'Controller', extraigo su posicion y aplico un slicing al parametro para quitar la palabra Controller.
+    if (str_contains($controller, "Controller")) {
+      $posicion = strpos($controller, "Controller");
+      $controller = substr($controller, 0, $posicion);
+    }
+
+
     if ($pagina != 'dashboard') {
       $url = "$pagina.php?modulo=$modulo&controlador=$controller&function=$function";
     } else {
@@ -71,6 +78,7 @@ class Router
       // Ejecutamos la función
       $objController->$function();
     } catch (\Throwable $th) {
+      ob_get_clean(); //Limpio el buffer antes de renderizar la vista de error.
       $appDebug = UtilsFunctions::validateEnvironment();
       if ($appDebug) {
         // personalizamos el mensaje visible para el usuario dependiendo del código de respuesta

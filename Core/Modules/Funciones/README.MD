@@ -42,8 +42,7 @@ Modulo que consiste en parametrizar y gestionar las funciones del sistema que se
 
 ## Todos especificos
 
-- [ ] En vista **Funciones asociadas módulo - Funciones** IMPLEMENTAR UN CAMPO ADICIONAL EN LA TABLA QUE ME PERMITA GUARDAR LOS CONTROLADORES, ESTO PORQUE CUANDO HAY UN MODULO CON VARIOS CONTROLADORES INTERNOS NO SE A QUE CONTROLADOR HACE REFERENCIA.
-- [ ] Implementar radio Button para validar si es vista main o secundaria
+- [X] En vista **Funciones asociadas módulo - Funciones** IMPLEMENTAR UN CAMPO ADICIONAL EN LA TABLA QUE ME PERMITA GUARDAR LOS CONTROLADORES, ESTO PORQUE CUANDO HAY UN MODULO CON VARIOS CONTROLADORES INTERNOS NO SE A QUE CONTROLADOR HACE REFERENCIA.
+- [X] Implementar radio Button para validar si es vista main o secundaria
 - [X] Mover los archivos que estaban en el modulo de **ROLES** al modulo que pertenecen que son **Funciones**
 - [ ] Implementar funcionalidad de log.
-- [ ] Implementar creacion de funciones directas, es decir, crear la funcionalidad y asociarla al modulo desde el modulo de **FUNCIONES**

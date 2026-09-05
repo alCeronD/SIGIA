@@ -14,17 +14,19 @@ export const vars = {
 
 export const mapConfigFunctions = {
   mapObjAdd: {
+    id_funcion: 'Identificador de la función',
     nombre_funcion: 'Nombre de la funcion',
     nombre_funcion_user: 'Nombre de la función del usuario',
     tp_funcion: 'Tipo de la función',
     is_main_view: 'Tipo de vista',
+    nameController: 'Archivo asociado',
   },
   mapObjEdit: {
     id_funcion: 'Identificador de la función',
     nombre_funcion: 'Nombre de la funcion',
     nombre_funcion_user: 'Nombre de la función del usuario',
     tp_funcion: 'Tipo de la función',
-    file: 'Archivo asociado',
+    nameController: 'Archivo asociado',
     is_main_view: 'Tipo de vista',
   },
 };

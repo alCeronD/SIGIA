@@ -3,63 +3,70 @@
 
 <?php
 // Variables para validar el menú del usuario.
-$modulos = $_SESSION['renderMenu']['modulos'];
-$vistasModulos = $_SESSION['renderMenu']['vistas'];
-$subItems = $_SESSION['renderMenu']['subMenus'];
+// $modulos = $_SESSION['renderMenu']['modulos'];
+// $vistasModulos = $_SESSION['renderMenu']['vistas'];
+// $subItems = $_SESSION['renderMenu']['subMenus'];
 
 ?>
 
-<div class="fixed-action-btn direction-top">
-  <!-- Botón flotante principal del menú -->
-  <a class="btn-floating btn-large teal darken-2 tooltipped" data-position="left" data-tooltip="Menú principal">
+<!-- <div class="fixed-action-btn direction-top"> -->
+<!-- Botón flotante principal del menú -->
+<!-- <a class="btn-floating btn-large teal darken-2 tooltipped" data-position="left" data-tooltip="Menú principal">
     <i class="material-icons">menu</i>
-  </a>
-  <ul>
+  </a> -->
+<!-- <ul> -->
 
-    <?php foreach ($modulos as $value) :
-      $nombreModulo = $value['nombreModulo'];
-      $icon = $value['iconModulo'];
-    ?>
-      <li>
-        <a class="btn-floating text-darken-2 submenu-trigger" data-tooltip="" data-submenu="submenu-<?php echo $nombreModulo ?>" id="">
-          <!-- El nombre del icono se trae desde php. -->
-          <i class="material-icons"><?php echo $icon; ?></i>
-        </a>
-      </li>
+<?php //foreach ($modulos as $value) :
+//$nombreModulo = $value['nombreModulo'];
+//$icon = $value['iconModulo'];
+?>
+<!-- <li>
+      <a class="btn-floating text-darken-2 submenu-trigger" data-tooltip="" data-submenu="submenu-<?php //echo $nombreModulo
+                                                                                                  ?>" id="">
+    <i class="material-icons"><?php //echo $icon;
+                              ?></i>
+    </a>
+    </li> -->
 
-    <?php endforeach; ?>
-    <li>
+<?php //endforeach;
+?>
+<!-- <li> -->
 
-      <a data-btnClose="dataBtnClose" class="btn-floating red " href="" data-logOut="logOut" data-Url="<?php echo Router::createRoute('Login', 'Login', 'logout', false, 'dashboard') ?>">
-        <i class="material-icons">exit_to_app</i>
-      </a>
-    </li>
+<!-- <a data-btnClose="dataBtnClose" class="btn-floating red " href="" data-logOut="logOut" data-Url="<?php //echo Router::createRoute('Login', 'Login', 'logout', false, 'dashboard')
+                                                                                                      ?>"> -->
+<!-- <i class="material-icons">exit_to_app</i> -->
+<!-- </a> -->
+<!-- </li> -->
 
-
-
-  </ul>
-</div>
+<!-- </ul> -->
+<!-- </div> -->
 
 <!-- Subitems -->
-<?php foreach ($subItems as $modulo => $funciones): ?>
-  <div id="submenu-<?php echo $modulo; ?>" class="submenu hidden ">
+<?php //foreach ($subItems as $modulo => $funciones): 
+?>
+<!-- <div id="submenu-<?php //echo $modulo; 
+                      ?>" class="submenu hidden "> -->
 
-    <?php
-    foreach ($funciones as  $key => $item):
+<?php
+//foreach ($funciones as  $key => $item):
 
-      $nombreFuncionUser = $item['nombreFuncionUser'];
-      $nombreModulo = $item['nombreModulo'];
-      $functionController = $item['nombreFuncionController'];
-    ?>
-      <a href="<?php echo Router::createRoute($nombreModulo, $nombreModulo, $functionController, false, 'dashboard'); ?>">
-        <?php echo $nombreFuncionUser; ?>
-      </a>
+//$nombreFuncionUser = $item['nombreFuncionUser'];
+//$nombreModulo = $item['nombreModulo'];
+//$functionController = $item['nombreFuncionController'];
+?>
+<!-- <a href="<?php //echo Router::createRoute($nombreModulo, $nombreModulo, $functionController, false, 'dashboard'); 
+              ?>"> -->
+<?php //echo $nombreFuncionUser; 
+?>
+<!-- </a> -->
 
-    <?php endforeach; ?>
-  </div>
-<?php endforeach; ?>
+<?php //endforeach; 
+?>
+<!-- </div> -->
+<?php //endforeach; 
+?>
 
-<style>
+<!-- <style>
   .submenu {
     position: fixed;
     background: white;
@@ -92,8 +99,8 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
   .hidden {
     display: none;
   }
-</style>
-<script>
+</style> -->
+<!-- <script>
   document.addEventListener('DOMContentLoaded', () => {
     const menu = document.querySelectorAll('.fixed-action-btn');
     M.FloatingActionButton.init(menu, {
@@ -133,7 +140,7 @@ $subItems = $_SESSION['renderMenu']['subMenus'];
       }
     });
   });
-</script>
+</script> -->
 <script type="module" src="../public/assets/js/main.js"></script>
 <script type="module" src="../public/assets/js/header.js"></script>
 </body>

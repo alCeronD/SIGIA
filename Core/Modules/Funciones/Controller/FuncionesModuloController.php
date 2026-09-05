@@ -176,6 +176,9 @@ class FuncionesModuloController implements CrudInterface
         ? null
         : (int) $data['is_main_view'];
 
+      // validamos si es null el valor para asi borrarlo del arreglo y no implementarlo en su actualizacion
+      if ($data['is_main_view'] === null) unset($data['is_main_view']);
+
       // valido que el tipo de funcion sea vista y que en el campo main_view tenga informacion
       if ($data['tp_funcion'] === 1 && is_null($data['is_main_view'])) {
         throw new Exception("El tipo de vista debe ser obligatorio", HttpStatus::UNPROCESSABLE_ENTITY);

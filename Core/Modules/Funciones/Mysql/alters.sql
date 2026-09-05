@@ -11,4 +11,4 @@ ALTER TABLE funciones
 ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
 ALTER TABLE funciones
-ADD COLUMN is_main_view TINYINT(1) NOT NULL DEFAULT 0 COMMENT '1: Es la vista principal/landing del módulo, 0: Vista secundaria o interna' AFTER `tp_funcion`;
+ADD COLUMN `is_main_view` tinyint(1) DEFAULT NULL COMMENT '1: Principal, 0: Secundaria, NULL: No aplica (función lógica)' AFTER `tp_funcion`;

@@ -22,24 +22,18 @@
 <body>
   <nav class="header">
     <div class="nav-wrapper">
-      <a href="<?php echo Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>" class="brand-logo logo center">
+      <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>" class="brand-logo logo center">
       </a>
       <!-- Icono de usuario -->
       <ul id="" class="right">
         <li class="user-dropdown">
           <div class="contentUser" id="userDropdownToggle">
-            <a href="<?php echo Router::createRoute('Usuarios', 'Usuarios', 'actualizarDatosView', false, 'dashboard'); ?>">
+            <a href="<?php echo Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'actualizarPersonalData', false, CR_DASHBOARD_LOWER_CASE); ?>">
               <i class="material-icons large">account_circle</i>
             </a>
-            <span id="rolText"> <?php echo $_SESSION['usuario']['rol_nombre']; ?> </span> <i class="material-icons">arrow_drop_down</i>
+            <span id="rolText"> <?php echo $_SESSION['usuario']['rol_nombre']; ?> </span> <i class="material-icons"></i>
           </div>
-          <ul class="submenu" id="userDropdownMenu">
-            <li>
-              <a href="<?php echo Router::createRoute('Usuarios', 'Usuarios', 'actualizarDatosView', false, 'dashboard'); ?>">
-                <i class="material-icons left">edit</i>Actualizar datos
-              </a>
-            </li>
-          </ul>
+
         </li>
       </ul>
       <!-- Botón de cerrar sesión -->

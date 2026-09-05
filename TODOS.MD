@@ -83,6 +83,15 @@ Listado de TODOS generales y específicos por cada módulo.
 - [x] Crear modulo de **Funciones** Y ajustar lo de funcionesRoles, entre otros al mismo modulo de funciones.
 - [ ] Crear las vistas personalizadas del menu basadas en el rol del usuario
 - [ ] Crear funcion para crear un arreglo encodeado para insertar o eliminar valores en un campo de tipo json
+- [ ] CRUD GENERAL - IMPELEMTNAR ELWHERE IS NOT NULL:
+
+  ```php
+  # como ejemplo:
+  use Illuminate\Support\Facades\DB;
+  $funciones = DB::table('funciones')
+    ->whereNotNull('is_main_view')
+    ->get();
+  ```
 
 ## Específicos
 
@@ -111,7 +120,7 @@ Listado de TODOS generales y específicos por cada módulo.
 
 -**Clase Permisos model**
 
-- [ ] ajustar la logica de toda la clase para usar solamente los modelos
+- [X] ajustar la logica de toda la clase para usar solamente los modelos
 
 -**Clase loginController**
 
@@ -122,6 +131,7 @@ Listado de TODOS generales y específicos por cada módulo.
 - [ ] Todo lo relacionado a lo que este en el escritorio como las tareas automaticas, implementarlas en el dashboard controller.
 
 - [ ] Exceptiones - cuando ocurre un fallo, reportar el fallo y visualizarlo en pantalla principal para visualizar el error y hacer seguimiento, hacer seguimiento dependiendo de si es local o produccion.
+- [ ] Arreglar el boton de 401, en caso de un fallback en la url que no este guardada, enviar la url de login
 
 ---
 

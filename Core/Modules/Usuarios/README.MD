@@ -65,11 +65,10 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [X] Re factorizar backend moviendo todo lo de modelo a las acciones del controlador
 - [X] Implementar y arreglar las funcionales ya definidas, estas funcionalidades estan en las historias de usuario de la documentación en el drive
 - [ ] Buscar cual es la mejor forma de implementar el actualizar la contraseña de un usuario
-- [ ] solicitar los datos de tipo de documento y roles y guardarlo en localstorage para su re utilizacion, hacerlo en el archivo usuariosIndex.js
+- [X] solicitar los datos de tipo de documento y roles y guardarlo en localstorage para su re utilizacion, hacerlo en el archivo usuariosIndex.js
 - [ ] Limpiar los datos de los nuevos usuarios usando DIRTY DATA (PYTHON)
 - [ ] Cargar datos limpios a la tabla de usuario
-- [ ] Crear mockup e historia de usuario del feature: CARGA MASIVA DE REGISTROS.
-- [ ] Investigar como implementar el anterior todo
+- [ ] Crear mockup historia de usuario e investigar como implementar el feature: CARGA MASIVA DE REGISTROS.
 - [ ] Crear historia de usuario de carga de datos mediante excel.
 - [ ] Desarrollar feature de historia de usuario carga de datos.
 - [ ] Desarrollar mockup de auditoria de usuarios e historia de usuario de auditoria.
