@@ -30,12 +30,10 @@
           <h2><?php echo $messageToTemplate ?? "Faltan credenciales para acceder a este sitio" ?></h2>
         </div>
 
-        <a href="<?php echo $_SESSION['url_anterior']; ?>" class="btn waves-effect waves-light green darken-1">
+        <a href="<?php echo $_SESSION['url_anterior'] ?? Router::createRoute(CR_LOGIN, CR_LOGIN, 'logout', false, CR_DASHBOARD_LOWER_CASE); ?>" class="btn waves-effect waves-light green darken-1">
           Volver
         </a>
-        <!-- <button type="submit" class="btn waves-effect waves-light green darken-1" style="width: 100%;">
-          Volver
-        </button> -->
+
       </div>
     </div>
   </div>

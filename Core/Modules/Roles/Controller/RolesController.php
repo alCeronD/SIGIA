@@ -201,16 +201,23 @@ class RolesController extends ConfigController implements CrudInterface
         // validamos si el nombre del rol es diferente de super administrador para eliminar las funciones y los modulos y asi evitar envio de datos erroneos.
         $allModulos = [];
 
-        if (strtoupper($nombreRol) != 'SUPERADMINISTRADOR') {
+
+        // evitamos mostrar los modulos Funciones,GestionModulos dependiendo del rol del usuario.
+        if (Session::getRol()['rol_nombre'] != "Super Administrador") {
+            // otros, incluyendo administrador
             foreach ($modulos as $key => $value) {
+                // si es diferente de administrador entonces no mostrar ni gestionModulos, ni funciones
                 if ($value['nombre_modulo'] === 'Generalcrud' || $value['nombre_modulo'] === 'Gestionmodulos' || $value['nombre_modulo'] === 'Funciones') {
                     continue;
                 }
+
                 $allModulos[] = $value;
             }
         } else {
+            // super administrador
             $allModulos = array_merge($modulos, $allModulos);
         }
+
 
         //PASO #3
         $finalFunctionsModules = [];
@@ -326,16 +333,21 @@ class RolesController extends ConfigController implements CrudInterface
                 $resultSetPermisos = $this->rfModel->insert($functionsToAdd)->prepareSql($functionsToAddPrepare)->get();
 
                 if (!$resultSetPermisos[CR_STATUS]) {
+                    $this->rfModel->rollback();
                     $dataResponse = DatabaseHandler::validateResponse($resultSetPermisos);
                     Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
                     return;
                 }
                 $message = "Permisos asociados correctamente.";
             }
-
+            // si coloco esto debajo de la funcionCreateMenu el commit no valida porque se inicia otro proceso dentro de la clase menu.
             $this->rfModel->commit();
-            $result = $this->permisosModel->renderMenu($rolId);
-            $_SESSION['renderMenu'] = $result[CR_DATA];
+            // creamos el arreglo requerido para crear el menu nuevamente y reemplazamos en la variable de session.
+            $rolSession['rl_status'] = $_SESSION[CR_USUARIO]['rl_status'];
+            $rolSession['rl_id'] = $_SESSION[CR_USUARIO]["rol_id"];
+            $menu = (new Menu())->createMenu($rolSession);
+            unset($_SESSION[CR_RENDER_MENU]);
+            $_SESSION[CR_RENDER_MENU] = $menu;
             Response::responseRequest(HttpStatus::OK, true, $message, []);
         } catch (\PDOException $th) {
             $this->rfModel->rollback();

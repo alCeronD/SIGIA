@@ -22,3 +22,4 @@ Modulo principal del sistema en donde se alojaran las tareas como alertas o vist
 - [ ] Implementar formato de alertas
 - [ ] Re factorizar dashboard.js
 - [ ] Buscar una forma de renderizar el menu y ocultar y/o mostrar iconos dependiendo de si el usuario tiene acceso al modulo
+- [ ] Todo lo relacionado a lo que este en el escritorio como las tareas automaticas, implementarlas en el dashboard controller.

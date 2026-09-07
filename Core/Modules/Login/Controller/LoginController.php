@@ -91,7 +91,8 @@ class LoginController extends ConfigController
                 "u.usu_id_estado",
                 "u.usu_email",
                 "r.rl_id",
-                "r.rl_nombre"
+                "r.rl_nombre",
+                "r.rl_status"
             ];
             $usuIdPrepare[CR_DATA] = ['usu_docum' => $data['docum']];
             # Paso 1 - traer el id del usuario para validar la existencia del usuario, su rol asociado y si esta activo.
@@ -100,6 +101,7 @@ class LoginController extends ConfigController
                 ->where(['usu_docum', '=', $data['docum']])
                 ->prepareSql($usuIdPrepare)
                 ->get()[0]['usu_id'] ?? "";
+
 
             if (empty($usuId)) throw new Exception(MSG_RL_NO_DOCUMENT, HttpStatus::BAD_REQUEST);
 
@@ -116,6 +118,7 @@ class LoginController extends ConfigController
                 ->prepareSql($dataPrepare)
                 ->get()[0];
 
+
             $rolIsActivePrepare[CR_DATA] = ['rl_id' => $usu['rl_id']];
 
             # Paso 3 - Validar que el rol del usuario este activo.
@@ -123,9 +126,10 @@ class LoginController extends ConfigController
                 ->from()
                 ->where(['rl_id', '=', $usu['rl_id']])
                 ->prepareSql($rolIsActivePrepare)
-                ->get();
+                ->get()[0];
 
-            if ($rolIsActive[0]['rl_status'] !== 1) throw new Exception(MSG_RL_NO_ACTIVE, HttpStatus::UNAUTHORIZED);
+
+            if ($rolIsActive['rl_status'] !== 1) throw new Exception(MSG_RL_NO_ACTIVE, HttpStatus::UNAUTHORIZED);
 
             # Paso 4 - validar la password enviada y la password registrada en la base de datos
             $passWordBD = $usu['usu_password'];
@@ -134,11 +138,11 @@ class LoginController extends ConfigController
                 throw new Exception(MSG_RL_DATA_ERROR, HttpStatus::BAD_REQUEST);
             }
 
-            if ($rolIsActive[0]['rl_status'] === 1 && !empty($usu)) {
+            if ($rolIsActive['rl_status'] === 1 && !empty($usu)) {
                 session_start();
                 session_regenerate_id(true);
 
-                $dataMenu = $this->renderMenu($rolIsActive);
+                $menu = (new Menu())->createMenu($rolIsActive);
                 $_SESSION[CR_USUARIO] = [
                     'id' => $usu['usu_id'],
                     'documento' => $usu['usu_docum'],
@@ -146,10 +150,11 @@ class LoginController extends ConfigController
                     'apellido' => $usu['usu_apellidos'],
                     'rol_id' => $usu['rl_id'],
                     'rol_nombre' => $usu['rl_nombre'],
-                    'email' => $usu['usu_email']
+                    'email' => $usu['usu_email'],
+                    'rl_status' => $usu['rl_status']
                 ];
                 # Paso 5 - crear la variable de session para renderizar las vistas.
-                $_SESSION[CR_RENDER_MENU] = $dataMenu;
+                $_SESSION[CR_RENDER_MENU] = $menu;
             }
 
             Response::responseRequest(HttpStatus::OK, true, MSG_RL_CONECTADO, ['url' => CR_ROUTE_DASHBOARD_LOGIN]);
@@ -198,7 +203,7 @@ class LoginController extends ConfigController
      * @param array $rolIsActive - array con todos los datos del rol del usuario.
      * @return array
      */
-    protected function renderMenu(array $rolIsActive = [])
+    public function renderMenu(array $rolIsActive = [])
     {
 
         if ($rolIsActive[0]['rl_status'] === 1 && !empty($usu)) {

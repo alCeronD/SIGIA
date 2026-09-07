@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../Helpers/Autoload.php';
+require_once BASE_PATH . '/../Modules/Roles/Const/RolesConst.php';
 class PermisosController extends ConfigController
 {
     protected array $files = [

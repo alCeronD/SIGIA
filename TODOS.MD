@@ -99,11 +99,11 @@ Listado de TODOS generales y específicos por cada módulo.
 
 | Módulo                 | Progreso | Documentación |                     Enlace a Detalles                     |
 | :--------------------- | :------: | :-----------: | :-------------------------------------------------------: |
-| **Areas**              |   90%    |  Completado   |       [Ver README](./Core/Modules/Areas/README.MD)        |
-| **Tipo Documento**     |   90%    |  Completado   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
-| **Marcas**             |   90%    |  Completado   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
-| **Roles**              |   90%    |  Completado   |       [Ver README](./Core/Modules/Roles/README.MD)        |
-| **Permisos**           |   50%    |  Completado   |      [Ver README](./Core/Modules/Permisos/README.MD)      |
+| **Areas**              |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Areas/README.MD)        |
+| **Tipo Documento**     |   90%    |   Pendiente   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
+| **Marcas**             |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
+| **Roles**              |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Roles/README.MD)        |
+| **Permisos**           |   90%    |   Pendiente   |      [Ver README](./Core/Modules/Permisos/README.MD)      |
 | **Usuarios**           |   70%    |  En Proceso   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |
 | **Categorias**         |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Categorias/README.MD)     |
 | **Dashboard**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Dashboard/README.MD)      |
@@ -112,9 +112,9 @@ Listado de TODOS generales y específicos por cada módulo.
 | **Reportes**           |    0%    |   Pendiente   |      [Ver README](./Core/Modules/Reportes/README.MD)      |
 | **SolicitudPrestamos** |    0%    |   Pendiente   | [Ver README](./Core/Modules/SolicitudPrestamos/README.MD) |
 | **ReservaPrestamos**   |    0%    |   Pendiente   |  [Ver README](./Core/Modules/ReservaPrestamos/README.MD)  |
-| **Gestionmodulos**     |    0%    |   Pendiente   |   [Ver README](./Core/Modules/Gestionmodulos/README.MD)   |
+| **Gestionmodulos**     |   100%   |   Pendiente   |   [Ver README](./Core/Modules/Gestionmodulos/README.MD)   |
 | **GeneralCrud**        |    0%    |   Pendiente   |    [Ver README](./Core/Modules/GeneralCrud/README.MD)     |
-| **Funciones**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Funciones/README.MD)      |
+| **Funciones**          |   100%   |   Pendiente   |     [Ver README](./Core/Modules/Funciones/README.MD)      |
 
 ## Archivos especificos
 
@@ -128,10 +128,12 @@ Listado de TODOS generales y específicos por cada módulo.
 
 -**Clase dashboardController**
 
-- [ ] Todo lo relacionado a lo que este en el escritorio como las tareas automaticas, implementarlas en el dashboard controller.
+- [X] Exceptiones - cuando ocurre un fallo, reportar el fallo y visualizarlo en pantalla principal para visualizar el error y hacer seguimiento, hacer seguimiento dependiendo de si es local o produccion.
+- [X] Arreglar el boton de 401, en caso de un fallback en la url que no este guardada, enviar la url de login
 
-- [ ] Exceptiones - cuando ocurre un fallo, reportar el fallo y visualizarlo en pantalla principal para visualizar el error y hacer seguimiento, hacer seguimiento dependiendo de si es local o produccion.
-- [ ] Arreglar el boton de 401, en caso de un fallback en la url que no este guardada, enviar la url de login
+-**Clase menu**
+
+- [ ] Ajustar el menu crado desde la clase Menu, colocar las funcionalidades del modulo de funciones, roles y gestion modulos dentro del MODULO **PERMISOS**
 
 ---
 
