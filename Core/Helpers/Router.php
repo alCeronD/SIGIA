@@ -71,7 +71,6 @@ class Router
       }
 
       $validatePermisos = (new ValidatePermisos())->validateAccess($modulo, $function);
-
       if (!$validatePermisos['status']) {
         throw new Exception($validatePermisos[CR_MESSAGE], $validatePermisos[CR_CODE_RESPONSE]);
       }

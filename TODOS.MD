@@ -22,8 +22,9 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Investigar e implementar rastro de miga.
   - [X] Ajustar rastro de miga, debemos crear la logica en un solo arreglo en el configController.
 - [X] Crear los campos created_at y updated_at a todas las tablas.
-- [ ] RE factorizar el menu del footer
 - [X] Arreglar archivo README.MD de los modulos que ya han sido ajustados (areas, tipo documento, marcas, roles, usuarios).
+- [ ] RE factorizar el menu del footer
+- [ ] Crear clase HandlerException para asi capturar Los Exceptions y los throable de php, es decir, los errores no naturales de la lógica de negocio
 - [ ] Buscar como implementar mensajes de error a errores genericos de codigo, no de sintaxis., ejemplo: del error
 
   ```php
@@ -42,15 +43,15 @@ Listado de TODOS generales y específicos por cada módulo.
     thrown in <b>/var/www/html/SIGIA/Core/Modules/Gestionmodulos/Controller/FuncionesController.php</b> on line <b>60</b><br />
   ```
 
-- [ ] Eliminar el parametro "PARAMETER" DE LA FUNCIONALIDAD ROUTER:URL
 - [ ] Cuando me quede sin internet el sistema no funcionaba producto de la conexion a los material icons de google, buscar una forma de evitar que el sistema se detenga cuando no haya conectividad a internet y requerir de librerias externas mediante url, una opcion es ver si podemos descargar los iconos e implementarlos en el sistema como libreria, similiar a lo que ocurre con materialize css.
 - [ ] BUSCAR UNA FORMA DE COMO GUARDAR DE MANERA ADECUADA TODOS LOS MODELOS QUE NO REQUEIREN CONTROLADORES, POR EJEMPLO EN UNA CARPETA LLAMADA MODELS DENTRO DE HELPERS.
 - [ ] Clase render - al renderizar un dato en una tabla renderizar exclusivamente el valor que esta en el id de la tabla, asi haya espacios entre ellas, si voy a cambiar la posicion de la tabla, cambiar también en donde se ubican los registros y los tds.
-- [ ] Crear funcionalidad para ejecutar la paginacion de manera dinamica, ya se hizo su renderizado, ahora se ejecutara su renderizado desde la clase propia.
 - [ ] enviar los estilos y el javascript de footer.php a archivos independientes.
-- [ ] ajustar renderizado de menu (ver si se puede implementar por peticiones) y no por variables de session(usar localstorage).
+- [ ] Crear funcion para crear un arreglo encodeado para insertar o eliminar valores en un campo de tipo json
 - [ ] Analizar posibles causas de lentitud de la aplicacion EN EL login a medida que pasa el tiempo.
-- [ ] **Documentación** = Colocar requisitos del sistema implementados y diagramas que se usaron para el proceso de creación del producto.
+- [ ] Eliminar alertas de materialize y crear las alertas propias
+- [X] Crear funcionalidad para ejecutar la paginacion de manera dinamica, ya se hizo su renderizado, ahora se ejecutara su renderizado desde la clase propia.
+
 - [X] Arreglar palabras reservada para el levantamiento de la aplicación en linux
 - [X] adicionar el tag de cuando se entrego el producto a la entidad de formación + tabla para visualizar la versión entregada.
 - [X] Arreglar rutas para verificar el correcto funcionamiento del sistema como la re direccionamiento al login, o a otros módulos de acceso.
@@ -79,11 +80,8 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Transformar en una clase el renderizado de datos
 - [X] EN PHP, AJUSTAR EL RESPONSE DE LA CLASE EN DONDE la funcion se puede transformar en una sola.
 - [X] Ajustar la seccion de seguridad de sistema en el modulo de funciones, crear l nuevo modulo.
-- [ ] En el modulo **ROLES** crear otra vista interna y otro controlador para definir plantilla por defecto del sistema.
 - [x] Crear modulo de **Funciones** Y ajustar lo de funcionesRoles, entre otros al mismo modulo de funciones.
-- [ ] Crear las vistas personalizadas del menu basadas en el rol del usuario
-- [ ] Crear funcion para crear un arreglo encodeado para insertar o eliminar valores en un campo de tipo json
-- [ ] CRUD GENERAL - IMPELEMTNAR ELWHERE IS NOT NULL:
+- [ ] CRUD GENERAL - IMPLEMENTAR ELWHERE IS NOT NULL:
 
   ```php
   # como ejemplo:
@@ -133,14 +131,20 @@ Listado de TODOS generales y específicos por cada módulo.
 
 -**Clase menu**
 
-- [ ] Ajustar el menu crado desde la clase Menu, colocar las funcionalidades del modulo de funciones, roles y gestion modulos dentro del MODULO **PERMISOS**
+- [X] Ajustar el menu creado desde la clase Menu, colocar las funcionalidades del modulo de funciones, roles y gestion modulos dentro del MODULO **PERMISOS**
+
+-**ConfigController**
+
+- [X] - Ajustar el los scripts en la posicion correcta, deben de estar abajo antes del footer, no después
 
 ---
 
 ## Documentación
 
+- [X] Adicionar archivo README.MD A cada modulo para presentar que hace cada producto.
 - [ ] Ajustar diagrama de clases
 - [ ] Crear Y/o ajustar historias de usuario
 - [ ] Adicionar requisitos requeridos para cada modulo.
 - [ ] Referenciar toda la documentación mediante un link de google drive para observar la documentación del producto
-- [X] Adicionar archivo README.MD A cada modulo para presentar que hace cada producto.
+- [ ] Colocar requisitos del sistema implementados y diagramas que se usaron para el proceso de creación del producto
+- [ ] Crear los requerimientos e historias de usuario de los nuevos modulos = GestionModulos, Funciones, Permisos

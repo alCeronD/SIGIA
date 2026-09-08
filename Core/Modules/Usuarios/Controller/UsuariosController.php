@@ -14,14 +14,14 @@ class UsuariosController extends ConfigController implements CrudInterface
     protected ServicesUsuarios $sUser;
     protected array $files = [
         "css" => [
-            'usuariosIndex' => ['UsuariosIndex.css'],
+            'usuariosIndexView' => ['UsuariosIndex.css'],
             'createUserView' => ['CreateUser.css'],
             'auditoriaUserView' => ['AuditoriasUsuarios.css'],
             'usuariosView' => ['UsuariosView.css'],
             'actualizarDatosView' => ['UpdatePersonalData.css']
         ],
         "js" => [
-            'usuariosIndex' => [],
+            'usuariosIndexView' => [],
             'createUserView' => ['CreateUser.js'],
             'auditoriaUserView' => ['AuditoriasUsuarios.js'],
             'usuariosView' => ['UsuariosView.js'],

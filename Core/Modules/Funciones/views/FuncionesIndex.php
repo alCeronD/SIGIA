@@ -9,34 +9,7 @@
         title="Volver al dashboard">&times;</a>
     </div>
     <div class="cards">
-      <!-- roles -->
-      <div class="option-card  z-depth-1 div4">
-        <div class="icons">
-          <a class="btnGetUrl" href="<?php echo Router::createRoute(CR_FUNCIONES, 'FuncionesMain', 'funcionesView', false, CR_DASHBOARD_LOWER_CASE); ?>">
-            <i class="material-icons small green-text text-darken-2 center-align">group
-            </i>
-          </a>
-        </div>
-        <div class="modalName">
-          <h5>Funciones Registradas</h5>
-          <p>Listado de Funciones registradas en el sistema</p>
-        </div>
-      </div>
-      <!-- roles Funciones -->
-      <div class="option-card  z-depth-1 div4">
-        <div class="icons">
-          <a class="btnGetUrl" href="<?php echo Router::createRoute(CR_FUNCIONES, 'FuncionesMain', 'funcionesAsociadasView', false, CR_DASHBOARD_LOWER_CASE); ?>">
-            <i class="material-icons small green-text text-darken-2 center-align">person
-            </i>
-          </a>
-        </div>
-        <div class="modalName">
-          <h5>Funciones asociadas</h5>
-          <p>Listado de funciones asociadas al rol</p>
-        </div>
-      </div>
-
-
+      <?php RenderHelper::renderSecondView('Funciones'); ?>
     </div>
   </div>
 </div>

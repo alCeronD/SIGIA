@@ -50,3 +50,20 @@ Breve explicación de qué necesidad de negocio resuelve este módulo en el sist
 - [X] implementar interfaz de crud al controlador
 - [ ] Modificar css responsive, implementar estilos a botones preview y next.
 - [ ] Arreglar bug de paginación al seleccionar una pagina en concreto y presionar el botón preview y next
+- [ ] PROBAR EL ARRAY ACCESS CON EL MODULO DE AREAS, E IMPLEMENTAR ERRORES DE EXCEPTIONES PROPIOS AL QUERY BUILDER
+
+  ```php
+  // este error se genero porque no adicione la funcionalidad get()
+      # incorrecto
+      $dataInsert = $this->fModel->insert($data)->prepareSql($dataPrepare);
+      #correcto
+      $dataInsert = $this->fModel->insert($data)->prepareSql($dataPrepare)->get();
+
+  <br />
+  <b>Fatal error</b>:  Uncaught Error: Cannot use object of type FuncionesModel as array in /var/www/html/SIGIA/Core/Modules/Gestionmodulos/Controller/FuncionesController.php:60
+  Stack trace:
+  #0 /var/www/html/SIGIA/Core/Helpers/Router.php(55): FuncionesController-&gt;store()
+  #1 /var/www/html/SIGIA/Core/dashboard.php(13): Router::ExecuteFunction()
+  #2 {main}
+    thrown in <b>/var/www/html/SIGIA/Core/Modules/Gestionmodulos/Controller/FuncionesController.php</b> on line <b>60</b><br />
+  ```

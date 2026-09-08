@@ -8,7 +8,6 @@ class RenderHelper
   {
 
     $menuSecond = $_SESSION['renderMenu']['menuSecondView'] ?? [];
-
     if (!empty($menuSecond)) {
       foreach ($menuSecond as $item) {
         if ($item['nombreModulo'] === $nombreModulo) {

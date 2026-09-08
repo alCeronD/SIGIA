@@ -32,7 +32,6 @@ spl_autoload_register(function ($className) {
 
   $dir = [
     BASE_PATH . '/',
-
   ];
 
   // Creamos las rutas y las guardamos en el arreglo.

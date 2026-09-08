@@ -10,12 +10,12 @@ class FuncionesMainController extends ConfigController
       'mostrarFuncionesAssoc' => ['RolesFunciones.css'],
       'funcionesIndexView' => ['funcionesIndexView.css'],
       'funcionesAsociadasView' => ['RolesFunciones.css'],
-      'funcionesView' => ['Funciones.js', 'VarsFunciones.js']
+      'funcionesView' => ['Funciones.css']
     ],
     'js' => [
       'mostrarFuncionesAssoc' => ['RolesFunciones.js'],
+      'funcionesView' => ['Funciones.js', 'VarsFunciones.js'],
       'funcionesAsociadasView' => ['RolesFunciones.js',],
-      'funcionesView' => ['Funciones.css']
     ]
   ];
   public function __construct()
@@ -33,7 +33,7 @@ class FuncionesMainController extends ConfigController
       ],
       'funcionesIndexView' => [
         'label' => 'Funciones',
-        'url' => Router::createRoute(CR_FUNCIONES, 'FuncionesMain', 'funcionesIndexView', false, 'dashboard'),
+        'url' => Router::createRoute('Permisos', 'Permisos', 'funcionesIndexView', false, 'dashboard'),
         'parent' => 'permisosIndexView'
       ],
       'funcionesAsociadasView' => [
@@ -54,12 +54,12 @@ class FuncionesMainController extends ConfigController
    *
    * @return void
    */
-  public function funcionesIndexView()
-  {
+  // public function funcionesIndexView()
+  // {
 
-    $path = BASE_PATH . F_ROUTE_FUNCIONES_MAIN_VIEW;
-    Parent::renderView($path, __FUNCTION__);
-  }
+  //   $path = BASE_PATH . F_ROUTE_FUNCIONES_MAIN_VIEW;
+  //   Parent::renderView($path, __FUNCTION__);
+  // }
 
   /**
    * Vista de las funciones asociadas a los roles.
