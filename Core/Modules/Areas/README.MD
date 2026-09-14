@@ -66,7 +66,7 @@ Este modulo consiste en la gestión de los departamentos que se encuentran en op
 
 - **Editar item**
 
-!['EditarItem'](/Docs/Uml/Secuencia/Configuracion/editarItem.svg)
+!['EditarItem'](/Docs/Uml/Secuencia/Configuracion/editarItem.jpg)
 
 - **Eliminar Item**
 
