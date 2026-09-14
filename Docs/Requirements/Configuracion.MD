@@ -2,7 +2,12 @@
 
 ---
 
+## Introdución
+
+En este documento encontraras los **Requerimientos funcionales** que aplican a los módulos: **Areas, tipo de documento, marcas, categoria**.
+
 - [Módulo Configuracion](#módulo-configuracion)
+  - [Introdución](#introdución)
   - [1 Matriz Resumen de Requerimientos](#1-matriz-resumen-de-requerimientos)
   - [2 Detalle de los requerimientos](#2-detalle-de-los-requerimientos)
     - [RF-CONFIG-01: Registrar Ítem](#rf-config-01-registrar-ítem)

@@ -42,7 +42,7 @@ Este modulo consiste en la gestión de los departamentos que se encuentran en op
 
 ## Requerimientos
 
-![Requerimientos](/Docs/Requirements/Configuracion.MD)
+[VER README](/Docs/Requirements/Configuracion.MD)
 
 ## Diagramas UML
 
