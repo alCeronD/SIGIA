@@ -42,17 +42,17 @@ Este modulo consiste en la gestión de los departamentos que se encuentran en op
 
 ## Requerimientos
 
-[VER README](/Docs/Requirements/Configuracion.MD)
+![Requerimientos](/Docs/Requirements/Configuracion.MD)
 
 ## Diagramas UML
 
 ### Caso de uso
 
-!['Caso de uso'](/Docs/Uml/CasoUso_Extend/Configuracion//CasoUsoConfiguracion.jpg)
+![Caso de uso](/Docs/Uml/CasoUso_Extend/Configuracion//CasoUsoConfiguracion.jpg)
 
 ### Casos de uso Extendido
 
-!['Caso de uso extendido'](/Docs/Uml/CasoUso_Extend/Configuracion/Extend_Configuracion.MD)
+![Caso de uso extendido](/Docs/Uml/CasoUso_Extend/Configuracion/Extend_Configuracion.MD)
 
 ### Diagramas de secuencia
 
