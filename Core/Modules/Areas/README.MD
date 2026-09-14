@@ -1,19 +1,25 @@
-# Modulo Areas
+# Areas
 
 ---
 
 ## Menú principal
 
-- [Modulo Areas](#modulo-areas)
+- [Areas](#areas)
   - [Menú principal](#menú-principal)
   - [Descripción](#descripción)
   - [Arquitectura Interna (Pre-documentación)](#arquitectura-interna-pre-documentación)
   - [Dependencias de Base de Datos](#dependencias-de-base-de-datos)
-    - [TODOS ESPECÍFICOS](#todos-específicos)
+  - [Requerimientos](#requerimientos)
+  - [Diagramas UML](#diagramas-uml)
+    - [Caso de uso](#caso-de-uso)
+    - [Casos de uso Extendido](#casos-de-uso-extendido)
+    - [Diagramas de secuencia](#diagramas-de-secuencia)
+    - [Diagramas de actividades](#diagramas-de-actividades)
+  - [TODOS](#todos)
 
 ## Descripción
 
-Breve explicación de qué necesidad de negocio resuelve este módulo en el sistema (ej: "Gestiona el flujo de solicitudes, aprobación y salida de bienes consumibles y devolutivos...").
+Este modulo consiste en la gestión de los departamentos que se encuentran en operación en la central didactica, se implementa este módulo con el fin de gestionar la parametrización y acceso a otros módulos como lo son [**Elementos**](/Core/Modules/Elementos/README.MD), [**Reserva Prestamos**](/Core/Modules/Reservaprestamos/README.MD), entre otros.
 
 ## Arquitectura Interna (Pre-documentación)
 
@@ -34,7 +40,57 @@ Breve explicación de qué necesidad de negocio resuelve este módulo en el sist
 
 - Tabla principal: `areas`
 
-### TODOS ESPECÍFICOS
+## Requerimientos
+
+![Requerimientos](/Docs/Requirements/Configuracion.MD)
+
+## Diagramas UML
+
+### Caso de uso
+
+!['Caso de uso'](/Docs/Uml/CasoUso_Extend/Configuracion//CasoUsoConfiguracion.jpg)
+
+### Casos de uso Extendido
+
+!['Caso de uso extendido'](/Docs/Uml/CasoUso_Extend/Configuracion/Extend_Configuracion.MD)
+
+### Diagramas de secuencia
+
+- **Crear item**
+
+!['CrearItem'](/Docs/Uml/Secuencia/Configuracion/registrarItem.jpg)
+
+- **Cambiar estado**
+
+!['Cambiar Estado'](/Docs/Uml/Secuencia/Configuracion/cambiarEstado.svg)
+
+- **Editar item**
+
+!['EditarItem'](/Docs/Uml/Secuencia/Configuracion/editarItem.svg)
+
+- **Eliminar Item**
+
+!['EliminarItem](/Docs/Uml/Secuencia/Configuracion/eliminarItem.jpg)
+
+### Diagramas de actividades
+
+- **Registrar item**
+
+!['RegistrarItem'](/Docs/Uml/Actividades/Configuracion/RegistrarItem.svg)
+
+- **Editar item**
+
+!['EditarItem'](/Docs/Uml/Actividades/Configuracion/EditarItem.svg)
+
+- **Eliminar Item**
+
+!['EliminarItem'](/Docs/Uml/Actividades/Configuracion/EliminarItem.jpg)
+
+- **Cambiar estado**
+
+!['CambiarEstado'](/Docs/Uml/Actividades/Configuracion/CambiarEstado.svg)
+
+## TODOS
 
 - **Módulo areas**
 - [X] Implementar feature de eliminar item, está el de habilitar e inhabilitar pero no eliminar registro.
@@ -48,22 +104,5 @@ Breve explicación de qué necesidad de negocio resuelve este módulo en el sist
 - [X] Implementar cantidad de registros, boton de preview y next + mostrar la pagina, ejemplo: se muestran 0 de n registros
 - [X] Implementar rastro de miga
 - [X] implementar interfaz de crud al controlador
-- [ ] Modificar css responsive, implementar estilos a botones preview y next.
+- [X] Modificar css responsive, implementar estilos a botones preview y next.
 - [ ] Arreglar bug de paginación al seleccionar una pagina en concreto y presionar el botón preview y next
-- [ ] PROBAR EL ARRAY ACCESS CON EL MODULO DE AREAS, E IMPLEMENTAR ERRORES DE EXCEPTIONES PROPIOS AL QUERY BUILDER
-
-  ```php
-  // este error se genero porque no adicione la funcionalidad get()
-      # incorrecto
-      $dataInsert = $this->fModel->insert($data)->prepareSql($dataPrepare);
-      #correcto
-      $dataInsert = $this->fModel->insert($data)->prepareSql($dataPrepare)->get();
-
-  <br />
-  <b>Fatal error</b>:  Uncaught Error: Cannot use object of type FuncionesModel as array in /var/www/html/SIGIA/Core/Modules/Gestionmodulos/Controller/FuncionesController.php:60
-  Stack trace:
-  #0 /var/www/html/SIGIA/Core/Helpers/Router.php(55): FuncionesController-&gt;store()
-  #1 /var/www/html/SIGIA/Core/dashboard.php(13): Router::ExecuteFunction()
-  #2 {main}
-    thrown in <b>/var/www/html/SIGIA/Core/Modules/Gestionmodulos/Controller/FuncionesController.php</b> on line <b>60</b><br />
-  ```

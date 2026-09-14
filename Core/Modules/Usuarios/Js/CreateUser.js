@@ -106,6 +106,9 @@ formSelectors.formUsuario.addEventListener('submit', async (e) => {
         initAlert(responseCreateUser.message, 'success');
         InitComponents.initSelect();
         formSelectors.formUsuario.reset();
+      } else {
+        initAlert(responseCreateUser.message, 'error');
+        return;
       }
     } catch (error) {
       const message = error.message || error.data?.message || 'Error al registrar el usuario';

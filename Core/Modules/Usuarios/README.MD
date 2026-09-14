@@ -72,3 +72,4 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [ ] Crear historia de usuario de carga de datos mediante excel.
 - [ ] Desarrollar feature de historia de usuario carga de datos.
 - [ ] Desarrollar mockup de auditoria de usuarios e historia de usuario de auditoria.
+OPCION AUDITORIA MODULO PRESTAMOS = CREAR AL MODULO DE SOLICITUD DE PRESTAMO O PRESTAMOS LA OPCION DE AUDITORIA, DE SABER QUIEN HIZO EL PRESTAMO Y CUANDO SE EJECUTO.

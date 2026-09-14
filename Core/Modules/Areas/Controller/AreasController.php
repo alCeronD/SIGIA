@@ -43,8 +43,8 @@ class AreasController extends ConfigController implements CrudInterface
   public function getData()
   {
     header(CONTENT_TYPE);
-    $page = (isset($_GET['pagina'])) ? (int) $_GET['pagina'] : 1;
-    $limit = (isset($_GET['limit'])) ? (int) $_GET['limit'] : LIMIT;
+    $page = (isset($_GET[CR_PAGINA])) ? (int) $_GET['pagina'] : 1;
+    $limit = (isset($_GET[CR_WORD_LIMIT])) ? (int) $_GET['limit'] : LIMIT;
     $resultCount = $this->AreasModel->getCount()->prepareSql()->get();
     // execute paginate
     $resultPaginate = UtilsFunctions::executePaginate($resultCount['rowCounts'], $limit, $page);
@@ -54,7 +54,25 @@ class AreasController extends ConfigController implements CrudInterface
       CR_OFFSET => (int) $resultPaginate[CR_OFFSET]
     ];
 
-    $resultSelect = $this->AreasModel->select()->from()->orderBy()->limit()->offset()->prepareSql($dataSql)->get();
+
+    $resultSelect = $this->AreasModel->select([
+      'ar_cod AS "ar_cod"',
+      'ar_nombre AS "ar_nombre"',
+      'ar_descripcion AS "ar_descripcion"',
+      'COALESCE(IF(
+            ar_status = 2,
+            "Inactivo",
+            "Activo"
+        ),
+        "Sin estado"
+    ) AS "ar_status"',
+    ])
+      ->from()
+      ->orderBy()
+      ->limit()
+      ->offset()
+      ->prepareSql($dataSql)
+      ->get();
     if (count($resultPaginate) > 0) {
       Response::responseRequest(HttpStatus::OK, true, "Registros", [
         CR_TOTAL_REGISTROS => $resultCount,
@@ -95,11 +113,11 @@ class AreasController extends ConfigController implements CrudInterface
     $data = UtilsFunctions::returnGetDecode();
 
     $dataUpdateSql[CR_DATA] = [
-      "ar_cod" => (int) $data['ar_cod'],
-      "ar_status" => ((int) $data['ar_status'] === 1) ? 2 : 1,
+      AR_COD => (int) $data[AR_COD],
+      COLUMN_STATUS => ((int) $data[COLUMN_STATUS] === 1) ? 2 : 1,
     ];
 
-    if (empty($data['ar_cod'])) Response::responseRequest(HttpStatus::NO_CONTENT, false, AR_MESSAGE_INFO_ITEM, []);
+    if (empty($data[AR_COD])) Response::responseRequest(HttpStatus::NO_CONTENT, false, AR_MESSAGE_INFO_ITEM, []);
     // validar si existe el elemento a actualizar.
     $resultExists = $this->AreasModel->select()->from()->where()->prepareSql($dataUpdateSql)->get();
     if (empty($resultExists[0])) {

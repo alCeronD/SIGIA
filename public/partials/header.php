@@ -22,32 +22,29 @@
 <body>
   <nav class="header">
     <div class="nav-wrapper">
-      <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>" class="brand-logo logo center">
-      </a>
       <!-- Icono de usuario -->
-      <ul id="" class="right">
-        <li class="user-dropdown">
-          <div class="contentUser" id="userDropdownToggle">
-            <a href="<?php echo Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'actualizarPersonalData', false, CR_DASHBOARD_LOWER_CASE); ?>">
-              <i class="material-icons large">account_circle</i>
-            </a>
-            <span id="rolText"> <?php echo $_SESSION['usuario']['rol_nombre']; ?> </span> <i class="material-icons"></i>
-          </div>
+      <div class="iconUser">
+        <a href="<?php echo Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'actualizarPersonalData', false, CR_DASHBOARD_LOWER_CASE); ?>">
+          <i class="material-icons large">account_circle</i>
+        </a>
+        <span id="rolText"> <?php echo $_SESSION['usuario']['rol_nombre']; ?> </span> <i class="material-icons"></i>
+      </div>
 
-        </li>
-      </ul>
+      <div class="sigiaLogo">
+        <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>" class="">
+        </a>
+      </div>
       <!-- Botón de cerrar sesión -->
-      <ul id="" class="left">
-        <li class="user-dropdown">
+      <div class="closeSesion">
+        <ul id="" class="">
           <div class="contentUser" id="userDropdownToggle">
-            <span id="btnCerrarSesion" data-logOut='logOut' data-Url='<?php echo Router::createRoute('Login', 'Login', 'logout', false, 'dashboard') ?>' data-btnClose="dataBtnClose">
-              Salir
-            </span>
-            <br>
+            <a id="btnCerrarSesion" href="<?php echo Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>"
+              class="close-btn" data-logOut='logOut' data-Url='<?php echo Router::createRoute('Login', 'Login', 'logout', false, 'dashboard') ?>' data-btnClose="dataBtnClose"
+              title="Volver al dashboard">&times;</a>
           </div>
-        </li>
-      </ul>
+        </ul>
+      </div>
+
     </div>
   </nav>
-  <?php require_once __DIR__ . '/../../Core/Helpers/modalConfirmation.php';
-  ?>
+  <?php require_once __DIR__ . '/../../Core/Helpers/modalConfirmation.php'; ?>

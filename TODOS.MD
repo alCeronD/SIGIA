@@ -26,6 +26,7 @@ Listado de TODOS generales y específicos por cada módulo.
 - [ ] RE factorizar el menu del footer
 - [ ] Crear clase HandlerException para asi capturar Los Exceptions y los throable de php, es decir, los errores no naturales de la lógica de negocio
 - [ ] Buscar como implementar mensajes de error a errores genericos de codigo, no de sintaxis., ejemplo: del error
+- [ ] PROBAR EL ARRAY ACCESS CON EL MODULO DE AREAS, E IMPLEMENTAR ERRORES DE EXCEPTIONES PROPIOS AL QUERY BUILDER
 
   ```php
   // este error se genero porque no adicione la funcionalidad get()
@@ -50,6 +51,7 @@ Listado de TODOS generales y específicos por cada módulo.
 - [ ] Crear funcion para crear un arreglo encodeado para insertar o eliminar valores en un campo de tipo json
 - [ ] Analizar posibles causas de lentitud de la aplicacion EN EL login a medida que pasa el tiempo.
 - [ ] Eliminar alertas de materialize y crear las alertas propias
+- [ ] Buscar una forma de como implementar una forma de renderizar solamente los botones de accion que el usuario solamente tiene permisos.
 - [X] Crear funcionalidad para ejecutar la paginacion de manera dinamica, ya se hizo su renderizado, ahora se ejecutara su renderizado desde la clase propia.
 
 - [X] Arreglar palabras reservada para el levantamiento de la aplicación en linux
@@ -82,6 +84,7 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Ajustar la seccion de seguridad de sistema en el modulo de funciones, crear l nuevo modulo.
 - [x] Crear modulo de **Funciones** Y ajustar lo de funcionesRoles, entre otros al mismo modulo de funciones.
 - [ ] CRUD GENERAL - IMPLEMENTAR ELWHERE IS NOT NULL:
+- [ ] Crear Modulo de estados para implementarlo en la base de datos e implementar los datos de manera dinamica
 
   ```php
   # como ejemplo:
@@ -91,13 +94,29 @@ Listado de TODOS generales y específicos por cada módulo.
     ->get();
   ```
 
+- [ ] Implementar la funcionalidad RAW para evitar el uso de COALESCE E IF EN EL SELECT
+
+  ```php
+  $resultSelect = $this->AreasModel->select([
+    'ar_cod AS "codigo"',
+    'ar_nombre AS "nombre"',
+    'ar_descripcion AS "descripcion"',
+    $this->AreasModel->raw('
+        CASE
+            WHEN ar_status = 1 THEN \'Activo\'
+            WHEN ar_status = 0 THEN \'Inactivo\'
+            ELSE \'Sin estado\'
+        END AS "estado"
+    ')])->from('areas')->orderBy('ar_cod', 'ASC')->get();
+  ```
+
 ## Específicos
 
 ## Estado de Módulos
 
 | Módulo                 | Progreso | Documentación |                     Enlace a Detalles                     |
 | :--------------------- | :------: | :-----------: | :-------------------------------------------------------: |
-| **Areas**              |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Areas/README.MD)        |
+| **Areas**              |   100%   |  En proceso   |       [Ver README](./Core/Modules/Areas/README.MD)        |
 | **Tipo Documento**     |   90%    |   Pendiente   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
 | **Marcas**             |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
 | **Roles**              |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Roles/README.MD)        |

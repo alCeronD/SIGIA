@@ -22,7 +22,6 @@ body {
   left: 50%;
   width: 350px;
   height: 350px;
-  /* background: url('/proyecto_sigia/public/assets/image/login/sigia.svg') no-repeat center center; */
   background-size: contain;
   opacity: 0.8;
   transform: translate(-50%, -50%);

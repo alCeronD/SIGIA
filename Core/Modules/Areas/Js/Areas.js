@@ -30,10 +30,11 @@ const Areas = new Render({
       button.setAttribute('data-id', `${fullRow.ar_cod}`);
       button.setAttribute('data-status', `${fullRow.ar_status}`);
       button.setAttribute('class', 'btnStatus');
+      addClassItem(button, { btnArea: 'btnArea' });
 
       let iconStatus = null;
       let propertiesButton = null;
-      if (fullRow.ar_status === 1) {
+      if (fullRow.ar_status === 'Activo') {
         propertiesButton = { btn: 'btn', waves: 'waves-orange', orange: 'orange' };
         iconStatus = createI('clear');
       } else {
@@ -52,6 +53,8 @@ const Areas = new Render({
       button.setAttribute('data-id', `${row.ar_cod}`);
       button.setAttribute('data-nombre', `${row.ar_nombre}`);
       button.setAttribute('data-desc', `${row.ar_descripcion}`);
+      addClassItem(button, { btnArea: 'btnArea' });
+
       let iconEditar = createI('border_color');
       button.appendChild(iconEditar);
       addClassItem(button, {
@@ -69,6 +72,7 @@ const Areas = new Render({
       button.setAttribute('type', 'button');
       button.setAttribute('data-id', `${row.ar_cod}`);
       button.setAttribute('class', 'btnStatus');
+      addClassItem(button, { btnArea: 'btnArea' });
       let iconStatus = null;
       let propertiesButton = null;
       propertiesButton = { btn: 'btn', waves: 'waves-red', red: 'red' };
@@ -142,9 +146,10 @@ const editarArea = (id, row) => {
 
 const changeStatus = (id, dataRow) => {
   // capturar codigo y status
-  let message = dataRow.ar_status === 1 ? s.textEstaSeguroInhabilitar : s.textEstaSeguroHabilitar;
-  let title = dataRow.ar_status === 1 ? s.titleInhabilitar : s.titleHabilitar;
-
+  let message =
+    dataRow.ar_status === 'Activo' ? s.textEstaSeguroInhabilitar : s.textEstaSeguroHabilitar;
+  let title = dataRow.ar_status === 'Activo' ? s.titleInhabilitar : s.titleHabilitar;
+  const status = dataRow.ar_status === 'Activo' ? 1 : 2;
   mostrarConfirmacion(title, message, async (response) => {
     try {
       if (!response) {
@@ -154,13 +159,13 @@ const changeStatus = (id, dataRow) => {
 
       let data = {
         ar_cod: dataRow.ar_cod,
-        ar_status: dataRow.ar_status,
+        ar_status: status,
       };
 
       const responseChangeStatus = await Areas.sendData(`${s.url}changeStatus`, 'PUT', data);
       if (responseChangeStatus.status) {
         let mesageStatus =
-          dataRow.ar_status === 1 ? successChangeStatusDisable : successChangeStatusEnable;
+          dataRow.ar_status === 'Activo' ? successChangeStatusDisable : successChangeStatusEnable;
         initAlert(mesageStatus, 'success');
         loadTable({ pagina: actualPage });
         return;

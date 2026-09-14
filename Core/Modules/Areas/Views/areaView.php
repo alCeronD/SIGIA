@@ -1,38 +1,32 @@
 <div class="container">
-    <div class="contentArea contentLayout">
-        <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
-        <div class="titleArea menuTitle">
-            <span id="textTitleAreas" class="textTitleSpan">Departamentos</span>
-            <a href="<?php echo Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard'); ?>"
-                class="close-btn"
-                title="Volver al dashboard">&times;</a>
-        </div>
-        <div class="formAr">
-            <div class="card z-depth-2">
-                <div class="card-content">
-                    <p class="flow-text card-title">Registrar departamento</p>
-                    <form id="formArea" class="formLayout">
-                        <div class="input-field contentAreaNem">
-                            <input type="text" name="ar_nombre" id="ar_nombre" class="validate">
-                            <label for="ar_nombre">Nombre del departamento *</label>
-                        </div>
-                        <div class="input-field contentDescript">
-                            <textarea name="ar_descripcion" id="ar_descripcion" class="materialize-textarea"></textarea>
-                            <label for="ar_descripcion">Descripción del departamento</label>
-                        </div>
-
-                        <div class="contentSubmit">
-                            <button type="submit" id="btnAreaSend" class=" waves-effect waves-light btn"></button>
-                        </div>
-                    </form>
-                </div>
+    <div class="contentArea">
+        <div class="headerContent">
+            <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
+            <div class="titleArea menuTitle">
+                <span id="textTitleAreas" class="textTitleSpan"><?php echo AR_DEPARTAMENTO; ?></span>
+                <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>"
+                    class="close-btn"
+                    title="Volver al dashboard">&times;</a>
             </div>
         </div>
-
+        <div class="formAr">
+            <p class="flow-text card-title"><?php echo AR_ADD_DEPARTAMENTO; ?></p>
+            <form id="formArea" class="formLayout">
+                <div class="input-field contentAreaNem">
+                    <input type="text" name="ar_nombre" id="ar_nombre" class="validate">
+                    <label for="ar_nombre"><?php echo AR_NOMBRE_DEPA; ?></label>
+                </div>
+                <div class="input-field contentDescript">
+                    <textarea name="ar_descripcion" id="ar_descripcion" class="materialize-textarea"></textarea>
+                    <label for="ar_descripcion"><?php echo AR_DESC_DEPA; ?></label>
+                </div>
+                <div class="contentSubmit">
+                    <button type="submit" id="btnAreaSend" class=" waves-effect waves-light btn"></button>
+                </div>
+            </form>
+        </div>
         <div class="tblAreas highlight striped responsive-table ">
-            <!-- Tabla de vista. -->
             <?php require_once 'tableViewArea.php'; ?>
-
         </div>
     </div>
 
