@@ -14,3 +14,6 @@ define('VAR_TP_STATUS', 'tp_status');
 
 // routes
 define('TP_ROUTE_MAIN_VIEW', '/../Modules/Tipodocumento/Views/tpDocumentoView.php');
+
+// functions
+define('TP_RENDERVIEWTP', 'renderViewTp');

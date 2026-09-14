@@ -9,6 +9,12 @@
   - [Descripción](#descripción)
   - [Arquitectura Interna (Pre-documentación)](#arquitectura-interna-pre-documentación)
   - [Dependencias de Base de Datos](#dependencias-de-base-de-datos)
+  - [Requerimientos](#requerimientos)
+  - [Diagramas UML](#diagramas-uml)
+    - [Caso de uso](#caso-de-uso)
+    - [Casos de uso Extendido](#casos-de-uso-extendido)
+    - [Diagramas de secuencia](#diagramas-de-secuencia)
+    - [Diagramas de actividades](#diagramas-de-actividades)
     - [TODOS ESPECÍFICOS](#todos-específicos)
 
 ## Descripción
@@ -32,6 +38,56 @@ Módulo auxiliar encargado de gestionar los diferentes tipos de documentos de id
 ## Dependencias de Base de Datos
 
 - Tabla principal: `tipo_documento`
+
+## Requerimientos
+
+[Ver README](/Docs/Requirements/Configuracion.MD)
+
+## Diagramas UML
+
+### Caso de uso
+
+![Caso de uso](/Docs/Uml/CasoUso_Extend/Configuracion//CasoUsoConfiguracion.jpg)
+
+### Casos de uso Extendido
+
+[Caso de uso extendido](/Docs/Uml/CasoUso_Extend/Configuracion/Extend_Configuracion.MD)
+
+### Diagramas de secuencia
+
+- **Crear item**
+
+!['CrearItem'](/Docs/Uml/Secuencia/Configuracion/registrarItem.jpg)
+
+- **Cambiar estado**
+
+!['Cambiar Estado'](/Docs/Uml/Secuencia/Configuracion/cambiarEstado.svg)
+
+- **Editar item**
+
+!['EditarItem'](/Docs/Uml/Secuencia/Configuracion/editarItem.jpg)
+
+- **Eliminar Item**
+
+!['EliminarItem](/Docs/Uml/Secuencia/Configuracion/eliminarItem.jpg)
+
+### Diagramas de actividades
+
+- **Registrar item**
+
+!['RegistrarItem'](/Docs/Uml/Actividades/Configuracion/RegistrarItem.svg)
+
+- **Editar item**
+
+!['EditarItem'](/Docs/Uml/Actividades/Configuracion/EditarItem.svg)
+
+- **Eliminar Item**
+
+!['EliminarItem'](/Docs/Uml/Actividades/Configuracion/EliminarItem.jpg)
+
+- **Cambiar estado**
+
+!['CambiarEstado'](/Docs/Uml/Actividades/Configuracion/CambiarEstado.svg)
 
 ### TODOS ESPECÍFICOS
 

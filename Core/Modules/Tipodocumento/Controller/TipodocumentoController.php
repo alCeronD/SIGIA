@@ -9,10 +9,10 @@ class TipodocumentoController extends ConfigController implements CrudInterface
   protected ServicesTipoDocumento $stp;
   protected array $files = [
     "css" => [
-      'renderViewTp' => ['TipoDocumento.css']
+      TP_RENDERVIEWTP => ['TipoDocumento.css']
     ],
     "js"  => [
-      'renderViewTp' => ['TipoDocumento.js']
+      TP_RENDERVIEWTP => ['TipoDocumento.js']
     ]
   ];
 
@@ -27,11 +27,11 @@ class TipodocumentoController extends ConfigController implements CrudInterface
   public function createRoutes()
   {
     $this->routes = [
-      'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
-      'renderViewTp' => [
+      CR_DASHBOARD_LOWER_CASE => ['label' => 'inicio', 'url' => Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE)],
+      TP_RENDERVIEWTP => [
         'label' => 'Tipo de documento',
-        'url' => Router::createRoute('Tipodocumento', 'TipoDocumento', 'renderViewTp', false, 'dashboard'),
-        'parent' => 'dashboard'
+        'url' => Router::createRoute('Tipodocumento', 'TipoDocumento', TP_RENDERVIEWTP, false, CR_DASHBOARD_LOWER_CASE),
+        'parent' => CR_DASHBOARD_LOWER_CASE
       ]
     ];
   }
@@ -39,7 +39,7 @@ class TipodocumentoController extends ConfigController implements CrudInterface
   // Vista principal
   public function renderViewTp()
   {
-    $path = BASE_PATH . TP_ROUTE_MAIN_VIEW;
+    $path = realpath(BASE_PATH . TP_ROUTE_MAIN_VIEW);
     Parent::renderView($path, __FUNCTION__);
   }
 
@@ -49,7 +49,9 @@ class TipodocumentoController extends ConfigController implements CrudInterface
     $data = UtilsFunctions::returnGetDecode();
     $page = (isset($_GET[CR_PAGINA])) ? (int) $_GET[CR_PAGINA] : 1;
     $limit = (isset($_GET[CR_WORD_LIMIT])) ? (int) $_GET[CR_WORD_LIMIT] : LIMIT;
-    $resultCount = $this->tpModel->getCount()->prepareSql()->get();
+    $resultCount = $this->tpModel->getCount()
+      ->prepareSql()
+      ->get();
     $resultPaginate = UtilsFunctions::executePaginate($resultCount[CR_ROW_COUNTS], $limit, $page);
 
     $dataSql[CR_DATA] = [
@@ -88,7 +90,7 @@ class TipodocumentoController extends ConfigController implements CrudInterface
     if (!$responseCreate[CR_STATUS]) {
 
       $dataResponse = DatabaseHandler::validateResponse($responseCreate);
-      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
       return;
     }
     Response::responseRequest(HttpStatus::OK, true, MSG_SUCCESS_CREATE, []);
@@ -102,7 +104,7 @@ class TipodocumentoController extends ConfigController implements CrudInterface
     $responseDelete = $this->tpModel->delete()->where()->prepareSql($dataDelete)->get();
     if (!$responseDelete[CR_STATUS]) {
       $dataResponse = DatabaseHandler::validateResponse($responseDelete);
-      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
       return;
     }
     Response::responseRequest(HttpStatus::OK, true, MSG_REGISTRO_ELIMINADO, []);
@@ -116,7 +118,7 @@ class TipodocumentoController extends ConfigController implements CrudInterface
     $update = $this->tpModel->update($data)->where()->prepareSql($dataUpdate)->get();
     if (!$update[CR_STATUS]) {
       $dataResponse = DatabaseHandler::validateResponse($update);
-      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
       return;
     }
     Response::responseRequest(HttpStatus::OK, true, MSG_TP_SUCCESS_UPDATE, []);
@@ -131,7 +133,7 @@ class TipodocumentoController extends ConfigController implements CrudInterface
     $responseMessage = $data[VAR_TP_STATUS] === 2 ? MSG_SUCCESS_DISABLED : MSG_SUCCESS_ENABLED;
     if (!$changeStatus[CR_STATUS]) {
       $dataResponse = DatabaseHandler::validateResponse($changeStatus);
-      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
       return;
     }
     Response::responseRequest(HttpStatus::OK, true, $responseMessage, []);

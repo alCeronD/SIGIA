@@ -259,7 +259,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!button) return;
     f.stopPropagation();
     f.preventDefault();
-
     let value = button.value;
 
     if (value === 'next') {
@@ -270,6 +269,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
+    console.log(value);
+
     if (value === 'preview') {
       actualPage--;
 
@@ -278,6 +279,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
     }
+
     loadTable({ pagina: actualPage });
   });
 });
