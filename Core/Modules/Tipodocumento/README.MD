@@ -41,7 +41,7 @@ Módulo auxiliar encargado de gestionar los diferentes tipos de documentos de id
 
 ## Requerimientos
 
-[Ver README](/Docs/Requirements/Configuracion.MD)
+[Ver Requerimientos](/Docs/Requirements/Configuracion.MD)
 
 ## Diagramas UML
 
@@ -98,4 +98,7 @@ Módulo auxiliar encargado de gestionar los diferentes tipos de documentos de id
 - [X] Crear clase js para renderizar y enviar datos.
 - [X] Aplicar lo mismo que el modulo areas.
 - [X] implementar interfaz de crud al controlador
-- [ ] Ajustar diseño responsive y estilos generales.
+- [X] Ajustar diseño responsive y estilos generales.
+- [X] Implementar Funcionalidar RAW En el query builder
+- [X] Ajustar paginacion
+- [X] Add alters de los campos created_at, updated_at

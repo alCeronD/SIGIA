@@ -42,4 +42,5 @@ Módulo auxiliar o de apoyo encargado de gestionar el catálogo de marcas dispon
 - [X] Implementar rastro de miga (breadcrumb) en la vista principal.
 - [X] Crear instancia de clase para renderizar datos
 - [X] implementar interfaz de crud al controlador
+- [X] Add alters de los campos created_at, updated_at
 - [ ] Ajustar diseño responsive y estilos generales.

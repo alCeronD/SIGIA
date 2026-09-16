@@ -100,7 +100,7 @@ class TipodocumentoController extends ConfigController implements CrudInterface
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
-    $dataDelete['data'] = $data;
+    $dataDelete[CR_DATA] = $data;
     $responseDelete = $this->tpModel->delete()->where()->prepareSql($dataDelete)->get();
     if (!$responseDelete[CR_STATUS]) {
       $dataResponse = DatabaseHandler::validateResponse($responseDelete);

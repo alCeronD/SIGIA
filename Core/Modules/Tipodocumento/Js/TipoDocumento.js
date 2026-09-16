@@ -49,7 +49,7 @@ const render = new Render({
 
       let iconStatus = null;
       let propertiesButton = null;
-      if (row.tp_status === 1) {
+      if (row.tp_status === 'Activo') {
         propertiesButton = { btn: 'btn', waves: 'waves-orange', orange: 'orange' };
         iconStatus = createI('clear');
       } else {
@@ -104,7 +104,7 @@ const eliminarItem = (id = 0) => {
           return;
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
         return;
       }
     }
@@ -119,15 +119,16 @@ const editarDepartamento = (id = 0, row = {}) => {
 };
 // function para cambiar el estado del registro
 const changeStatus = (id, fullRow) => {
-  let newStatus = fullRow.tp_status === 1 ? 2 : 1;
+  let newStatus = fullRow.tp_status === 'Activo' ? 2 : 1;
 
   let dataStatus = {
     tp_status: newStatus,
     tp_id: id,
   };
-  let title = fullRow.tp_status === 1 ? 'Inhabilitar departamento' : 'Habilitar departamento';
+  let title =
+    fullRow.tp_status === 'Activo' ? 'Inhabilitar departamento' : 'Habilitar departamento';
   let message =
-    newStatus === 1
+    newStatus === 'Activo'
       ? '¿Esta seguro de inhabilitar este registro?'
       : '¿Esta seguro de habilitar este registro?';
 
@@ -138,7 +139,6 @@ const changeStatus = (id, fullRow) => {
     }
     const responseChangeStatus = await render.sendData(`${url}changeStatus`, 'PUT', dataStatus);
     if (responseChangeStatus.status) {
-      console.log(responseChangeStatus.message);
       initAlert(responseChangeStatus.message, 'success');
       loadTable({ pagina: actualPage });
       return;
@@ -254,32 +254,39 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // renderizado del footerPaginado
   footerTp.addEventListener('click', async (f) => {
-    const button = f.target.closest('.btnPaginate');
-
-    if (!button) return;
     f.stopPropagation();
     f.preventDefault();
-    let value = button.value;
 
-    if (value === 'next') {
-      actualPage++;
-      if (actualPage > dataPaginate.cantidadPaginas) {
-        actualPage = dataPaginate.cantidadPaginas;
-        return;
-      }
+    let btnValue = f.target.closest('.btnPaginate') ? f.target.dataset.action : null;
+
+    // ejecutamos el evento para una pagina en especifico.
+    if (f.target.closest('.liPaginate')) {
+      let actualPageData = f.target.closest('.liPaginate') ? f.target.dataset.actualpage : 1;
+      loadTable({ pagina: actualPageData });
+      return;
     }
 
-    console.log(value);
-
-    if (value === 'preview') {
-      actualPage--;
-
-      if (actualPage < 1) {
-        actualPage = 1;
-        return;
+    // EJECUTAMOS LOS EVENTOS PARA LOS BOTONES BTNPAGINATE
+    if (f.target.closest('.btnPaginate')) {
+      if (!btnValue) return;
+      if (btnValue === 'preview') {
+        // re asignamos la pagina recibida por la peticion para asi reducir el valor y re enviar la peticion con la pagina anterior.
+        actualPage = dataPaginate.paginaActual;
+        actualPage--;
+        if (actualPage < 1) {
+          actualPage = 1;
+          return;
+        }
       }
-    }
+      if (btnValue === 'next') {
+        actualPage++;
+        if (actualPage > dataPaginate.cantidadPaginas) {
+          actualPage = dataPaginate.cantidadPaginas;
+          return;
+        }
+      }
 
-    loadTable({ pagina: actualPage });
+      loadTable({ pagina: actualPage });
+    }
   });
 });

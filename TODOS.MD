@@ -94,7 +94,7 @@ Listado de TODOS generales y específicos por cada módulo.
     ->get();
   ```
 
-- [ ] Implementar la funcionalidad RAW para evitar el uso de COALESCE E IF EN EL SELECT
+- [X] Implementar la funcionalidad RAW para evitar el uso de COALESCE E IF EN EL SELECT
 
   ```php
   $resultSelect = $this->AreasModel->select([
@@ -116,8 +116,8 @@ Listado de TODOS generales y específicos por cada módulo.
 
 | Módulo                 | Progreso | Documentación |                     Enlace a Detalles                     |
 | :--------------------- | :------: | :-----------: | :-------------------------------------------------------: |
-| **Areas**              |   100%   |  En proceso   |       [Ver README](./Core/Modules/Areas/README.MD)        |
-| **Tipo Documento**     |   90%    |   Pendiente   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
+| **Areas**              |   100%   |  Completado   |       [Ver README](./Core/Modules/Areas/README.MD)        |
+| **Tipo Documento**     |   95%    |  Completado   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
 | **Marcas**             |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
 | **Roles**              |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Roles/README.MD)        |
 | **Permisos**           |   90%    |   Pendiente   |      [Ver README](./Core/Modules/Permisos/README.MD)      |

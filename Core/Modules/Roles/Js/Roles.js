@@ -282,7 +282,6 @@ const renderRoles = async () => {
   getRoles = await renderClass.getData(`${url}getData`, 'GET');
 
   const dataRoles = getRoles.data;
-  console.log(getRoles);
   renderClass.renderData({
     bodyTbl: rolesUI.tables.body,
     headerTable: rolesUI.containers.header,

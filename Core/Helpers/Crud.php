@@ -1,25 +1,8 @@
 <?php
 
-use PhpParser\Node\Stmt\TryCatch;
-
-use function PHPUnit\Framework\throwException;
-
 require_once __DIR__ . '/../Helpers/Autoload.php';
 
 #Clase crud para crear toda la estructura general de consultas.
-/**
- * Listado de funciones requeridas
- * select
- * insert
- * order by
- * group by
- * inner join
- * left join
- * natural join
- * right join
- */
-
-
 abstract class Crud
 {
   protected $countLastMethod = 0;
@@ -309,6 +292,18 @@ abstract class Crud
   public function rightJoin(string $tabla = '', string $column1 = '', string $operador = '', string $column2 = '')
   {
     $this->sql .= " RIGHT JOIN $tabla ON $column1 $operador $column2";
+    return $this;
+  }
+
+  /**
+   * Funcion para escribir fragmentos de consulta SQL DIRECTAMENTE, se recomienda usar solamente para codigo SQL NATIVO.
+   *
+   * @param string $sql
+   * @return $this;
+   */
+  public function raw(String $sql = "")
+  {
+    $this->sql .= ", {$sql}";
     return $this;
   }
 

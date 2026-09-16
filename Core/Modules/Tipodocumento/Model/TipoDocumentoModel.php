@@ -7,6 +7,8 @@ class TipoDocumentoModel extends Crud
   protected $campos = [
     'tp_sigla',
     'tp_nombre',
-    'tp_status'
+    'tp_status',
+    'created_at',
+    'updated_at'
   ];
 }
