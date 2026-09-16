@@ -77,18 +77,23 @@ let dataPaginate = {};
 let data = null;
 
 // function para cargar la tabla.
-const loadTable = async (actualPage) => {
-  let responseMarcas = null;
+const loadTable = async (actualPage = 1) => {
   // si la cantidad de registros reduce a 0 ir a la pagina anterior.
-  responseMarcas = await marcas.getData(`${url}getData`, 'GET', { pagina: actualPage, limit: 4 });
+  let responseMarcas = await marcas.getData(`${url}getData`, 'GET', {
+    pagina: actualPage,
+    limit: 4,
+  });
   data = responseMarcas.data.data;
-  dataPaginate = {};
   const realActualPage = responseMarcas.data.paginaActual;
+
+  const dataPaginate = {
+    cantidadPaginas: responseMarcas.data.cantidadPaginas,
+    paginaActual: realActualPage,
+    totalRegistros: responseMarcas.data.totalRegistros,
+  };
+  // guardamos el objeto paginate en la propiedad de la instancia.
+  marcas.dataPaginate = dataPaginate;
   marcas.actualPage = realActualPage;
-  // marcas.actualPage(realActualPage); //asignar pagina real a la propiedad de la clase
-  dataPaginate['cantidadPaginas'] = responseMarcas.data.cantidadPaginas;
-  dataPaginate['paginaActual'] = realActualPage;
-  dataPaginate['totalRegistros'] = responseMarcas.data.totalRegistros;
   marcas.renderData({
     bodyTbl: tableBody,
     headerTable: headerTable,
@@ -168,44 +173,46 @@ const changeStatus = (id, row) => {
   });
 };
 
-const prueba = (f) => {
-  console.log('f DESDE PRUEBA', f);
+const executePaginate = (actualPage = 1) => {
+  console.log('executePaginate');
+  console.log(actualPage);
 };
 
-const executePaginate = (f, callback) => {
-  console.log(f);
-  callback(f);
-};
+// marcas.executePaginate({
+//   container: marcaTblFooter,
+//   dataPaginate: dataPaginate,
+//   callback: executePaginate(),
+// });
 
 //Eventos
 // paginacion.
-marcaTblFooter.addEventListener('click', (f) => {
-  executePaginate(f, prueba);
-  // f.preventDefault();
-  // f.stopPropagation();
-  // if (f.target.closest('button')) {
-  //   let valueButton = f.target.closest('button');
-  //   if (valueButton.value === 'next') {
-  //     actualPage++;
-  //     marcas.actualPage(actualPage);
-  //     // validamos si el valor de la pagina es mayor que la cantidad de paginas para asi evitar hacer peticion.
-  //     if (actualPage > dataPaginate.cantidadPaginas) {
-  //       actualPage = dataPaginate.cantidadPaginas;
-  //       return;
-  //     }
-  //   }
-  //   // capturar si el tipo es button
-  //   if (valueButton.value === 'preview') {
-  //     actualPage--;
-  //     marcas.actualPage(actualPage);
-  //     if (actualPage < 1) {
-  //       actualPage = 1;
-  //       return;
-  //     }
-  //   }
-  //   loadTable(actualPage);
-  // }
-});
+// marcaTblFooter.addEventListener('click', (f) => {
+//   executePaginate(f, prueba);
+//   f.preventDefault();
+//   f.stopPropagation();
+//   if (f.target.closest('button')) {
+//     let valueButton = f.target.closest('button');
+//     if (valueButton.value === 'next') {
+//       actualPage++;
+//       marcas.actualPage(actualPage);
+//       // validamos si el valor de la pagina es mayor que la cantidad de paginas para asi evitar hacer peticion.
+//       if (actualPage > dataPaginate.cantidadPaginas) {
+//         actualPage = dataPaginate.cantidadPaginas;
+//         return;
+//       }
+//     }
+//     // capturar si el tipo es button
+//     if (valueButton.value === 'preview') {
+//       actualPage--;
+//       marcas.actualPage(actualPage);
+//       if (actualPage < 1) {
+//         actualPage = 1;
+//         return;
+//       }
+//     }
+//     loadTable(actualPage);
+//   }
+// });
 
 // update
 marcaUpdateForm.addEventListener('submit', (g) => {
@@ -273,4 +280,5 @@ closeModal(modalMarca, closeModalBtn);
 
 document.addEventListener('DOMContentLoaded', async () => {
   await loadTable(actualPage);
+  marcas.executePaginate(marcaTblFooter, loadTable);
 });

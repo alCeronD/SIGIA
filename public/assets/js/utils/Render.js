@@ -12,6 +12,7 @@ import { addClassItem, createBtn, createI } from './index.js';
 export class Render extends HttpData {
   #data = {};
   #actualPage = null;
+  #dataPaginate = {};
   #objBotones = {};
   constructor(buttons = {}) {
     super();
@@ -307,9 +308,68 @@ export class Render extends HttpData {
     }
   }
 
+  /**
+   * Description placeholder
+   *
+   * @param {HTMLElement} [container=null]
+   * @param {Object} [dataPaginate={}]
+   * @param {Function} [callback=() => {}]
+   * @returns {void) => void}
+   */
+  executePaginate(container = null, callback) {
+    if (!container) return;
+
+    container.addEventListener('click', async (f) => {
+      f.stopPropagation();
+      f.preventDefault();
+
+      let btnValue = f.target.closest('.btnPaginate') ? f.target.dataset.action : null;
+      // ejecutamos el evento para una pagina en especifico.
+      if (f.target.closest('.liPaginate')) {
+        let actualPageData = f.target.closest('.liPaginate')
+          ? parseInt(f.target.dataset.actualpage, 10)
+          : 1;
+
+        // Validamos si la pagina actual del item li es igual al que esta asignado en la propiedad, en caso de ser asi, no hacemos la petición.
+        if (actualPageData === this.#actualPage) return;
+
+        // asigno la pagina seleccionada a la propiedad porque la vamos a re usar en el renderPaginate para pintar la pagina seleccionada
+        this.actualPage = actualPageData;
+        await callback(actualPageData);
+        return;
+      }
+
+      // EJECUTAMOS LOS EVENTOS PARA LOS BOTONES BTNPAGINATE
+      // if (f.target.closest('.btnPaginate')) {
+      //   // console.log('entra aqui btn');
+
+      //   if (!btnValue) return;
+      //   if (btnValue === 'preview') {
+      //     // re asignamos la pagina recibida por la peticion para asi reducir el valor y re enviar la peticion con la pagina anterior.
+      //     actualPage = dataPaginate.paginaActual;
+      //     actualPage--;
+      //     if (actualPage < 1) {
+      //       actualPage = 1;
+      //     }
+      //   }
+      //   if (btnValue === 'next') {
+      //     actualPage++;
+      //     if (actualPage > dataPaginate.cantidadPaginas) {
+      //       actualPage = dataPaginate.cantidadPaginas;
+      //     }
+      //   }
+      //   console.log(actualPage);
+      // }
+    });
+  }
+
   // void para guardar la pagina en la propiedad del objeto.
   set actualPage(page) {
     this.#actualPage = page;
+  }
+
+  set dataPaginate(paginate) {
+    this.#dataPaginate = paginate;
   }
 
   get objBotones() {
@@ -318,5 +378,9 @@ export class Render extends HttpData {
 
   get actualPage() {
     return this.#actualPage;
+  }
+
+  get dataPaginate() {
+    return this.#dataPaginate;
   }
 }
