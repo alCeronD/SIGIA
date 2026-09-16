@@ -258,7 +258,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     f.preventDefault();
 
     let btnValue = f.target.closest('.btnPaginate') ? f.target.dataset.action : null;
-
     // ejecutamos el evento para una pagina en especifico.
     if (f.target.closest('.liPaginate')) {
       let actualPageData = f.target.closest('.liPaginate') ? f.target.dataset.actualpage : 1;
@@ -275,14 +274,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         actualPage--;
         if (actualPage < 1) {
           actualPage = 1;
-          return;
         }
       }
       if (btnValue === 'next') {
         actualPage++;
         if (actualPage > dataPaginate.cantidadPaginas) {
           actualPage = dataPaginate.cantidadPaginas;
-          return;
         }
       }
 
