@@ -1,48 +1,22 @@
-/* ---- */
+/* por defecto, mobile */
 .contentMarca {
-  grid-template-areas:
-    "breadCrumbs breadCrumbs"
-    "titleMarca titleMarca"
-    "formMarca tblMarca";
-}
-
-.breadCrumbs {
-  grid-area: breadCrumbs;
-}
-
-.titleMarca {
-  grid-area: titleMarca;
+  width: 100%;
+  height: 80vh;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  overflow: auto;
+}
+
+/* columna de acciones de la tabla */
+#marcaTblBody tr td:last-child {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.5rem;
+  padding: 0.3rem;
+  flex-wrap: nowrap;
   align-items: center;
-}
-
-.formMarca {
-  grid-area: formMarca;
-}
-
-.tblMarca {
-  grid-area: tblMarca;
-}
-
-#marcaForm {
-  grid-template-areas:
-    "contentMarcaN"
-    "contentMarcaD"
-    "contentSubmitMa";
-}
-
-.contentMarcaN {
-  grid-area: contentMarcaN;
-}
-
-.contentMarcaD {
-  grid-area: contentMarcaD;
-}
-
-.contentSubmitMa {
-  grid-area: contentSubmitMa;
 }
 
 
@@ -59,7 +33,7 @@
 #descripcionMarca {
   width: 100%;
   resize: none;
-  height: 10rem;
+  height: 3rem;
 }
 
 #btnMarca {
@@ -67,10 +41,7 @@
   text-align: center;
 }
 
-#marcaTblBody tr td:last-child {
-  display: flex;
-  flex-direction: row;
-}
+
 
 /* Modal de marca */
 
@@ -150,4 +121,68 @@
   resize: none;
   height: 8vh;
   padding: 0.3rem;
+}
+
+@media (min-width: 1024px) {
+
+  /* ---- */
+  .contentMarca {
+    display: grid;
+    width: 100%;
+    grid-template-areas:
+      "headerContent headerContent"
+      "formMarca tblMarca";
+    grid-template-columns: 30% 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 0.3rem;
+
+    .headerContent {
+      grid-area: headerContent;
+    }
+
+    .titleMarca {
+      grid-area: titleMarca;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .formMarca {
+      grid-area: formMarca;
+
+      #marcaForm {
+        grid-template-areas:
+          "contentMarcaN"
+          "contentMarcaD"
+          "contentSubmitMa";
+
+        .contentMarcaN {
+          grid-area: contentMarcaN;
+        }
+
+        .contentMarcaD {
+          grid-area: contentMarcaD;
+        }
+
+        .contentSubmitMa {
+          grid-area: contentSubmitMa;
+        }
+      }
+    }
+
+    .tblMarca {
+      grid-area: tblMarca;
+
+      #marcaTblBody tr td:last-child {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+      }
+    }
+
+    #descripcionMarca {
+      height: 10rem;
+    }
+  }
 }

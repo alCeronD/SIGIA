@@ -34,7 +34,7 @@ const marcas = new Render({
       button.setAttribute('class', 'btnStatus');
       let iconStatus = null;
       let propertiesButton = null;
-      if (row.tp_status === 1) {
+      if (row.ma_status === 'Activo') {
         propertiesButton = { btn: 'btn', waves: 'waves-orange', orange: 'orange' };
         iconStatus = createI('clear');
       } else {
@@ -51,7 +51,7 @@ const marcas = new Render({
   btnDelete: {
     value: (row, button) => {
       button.setAttribute('type', 'button');
-      button.setAttribute('data-id', `${row.tp_id}`);
+      button.setAttribute('data-id', `${row.ma_id}`);
       button.setAttribute('class', 'btnStatus');
       let iconStatus = null;
       let propertiesButton = null;
@@ -146,20 +146,19 @@ const changeStatus = (id, row) => {
   // console.log(id, row);
 
   let dataStatus = {
-    ma_status: row.ma_status === 1 ? 2 : 1,
+    ma_status: row.ma_status === 'Activo' ? 2 : 1,
     ma_id: id,
   };
   console.log(dataStatus);
-  let title = row.ma_status === 1 ? 'Inhabilitar marca' : 'Habilitar Marca';
+  let title = row.ma_status === 'Activo' ? 'Inhabilitar marca' : 'Habilitar Marca';
   let message =
-    row.ma_status === 1
+    row.ma_status === 'Activo'
       ? '¿Está seguro de inhabilitar este registro?'
       : '¿Esta seguro de habilitar este registro?';
   mostrarConfirmacion(title, message, async (response) => {
     if (!response) return;
 
     let responseStatus = await marcas.sendData(`${url}changeStatus`, 'PUT', dataStatus);
-    console.log(responseStatus);
 
     if (responseStatus.status) {
       initAlert(responseStatus.message, 'success');
@@ -169,37 +168,45 @@ const changeStatus = (id, row) => {
   });
 };
 
+const prueba = (f) => {
+  console.log('f DESDE PRUEBA', f);
+};
+
+const executePaginate = (f, callback) => {
+  console.log(f);
+  callback(f);
+};
+
 //Eventos
 // paginacion.
 marcaTblFooter.addEventListener('click', (f) => {
-  f.preventDefault();
-  f.stopPropagation();
-
-  if (f.target.closest('button')) {
-    let valueButton = f.target.closest('button');
-
-    if (valueButton.value === 'next') {
-      actualPage++;
-      marcas.actualPage(actualPage);
-      // validamos si el valor de la pagina es mayor que la cantidad de paginas para asi evitar hacer peticion.
-      if (actualPage > dataPaginate.cantidadPaginas) {
-        actualPage = dataPaginate.cantidadPaginas;
-        return;
-      }
-    }
-    // capturar si el tipo es button
-    if (valueButton.value === 'preview') {
-      actualPage--;
-      marcas.actualPage(actualPage);
-
-      if (actualPage < 1) {
-        actualPage = 1;
-        return;
-      }
-    }
-    loadTable(actualPage);
-  }
+  executePaginate(f, prueba);
+  // f.preventDefault();
+  // f.stopPropagation();
+  // if (f.target.closest('button')) {
+  //   let valueButton = f.target.closest('button');
+  //   if (valueButton.value === 'next') {
+  //     actualPage++;
+  //     marcas.actualPage(actualPage);
+  //     // validamos si el valor de la pagina es mayor que la cantidad de paginas para asi evitar hacer peticion.
+  //     if (actualPage > dataPaginate.cantidadPaginas) {
+  //       actualPage = dataPaginate.cantidadPaginas;
+  //       return;
+  //     }
+  //   }
+  //   // capturar si el tipo es button
+  //   if (valueButton.value === 'preview') {
+  //     actualPage--;
+  //     marcas.actualPage(actualPage);
+  //     if (actualPage < 1) {
+  //       actualPage = 1;
+  //       return;
+  //     }
+  //   }
+  //   loadTable(actualPage);
+  // }
 });
+
 // update
 marcaUpdateForm.addEventListener('submit', (g) => {
   g.preventDefault();
