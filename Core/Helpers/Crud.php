@@ -307,6 +307,35 @@ abstract class Crud
     return $this;
   }
 
+  public function find(mixed $parameter)
+  {
+    if (is_int($parameter)) {
+      $dataPrepare[CR_DATA] = [
+        "limit" => 1,
+        "{$this->getKeyName()}" => $parameter
+      ];
+      //consulta basica usando el parametero int con el id
+      $sql = $this->select()
+        ->from()
+        ->where(["{$this->getKeyName()}", "=", "{$parameter}"])
+        ->limit()->prepareSql($dataPrepare)
+        ->get();
+
+
+      return $sql;
+    }
+    // var_dump(is_array($parameter));
+
+    // var_dump(is_int($parameter));
+  }
+
+  // TODO: Implementarlo en un futuro cuando mejore la implementacion del PREPARESQL
+  // public function first()
+  // {
+  //   $this->sql .= "{$this->limit()}";
+  //   return $this;
+  // }
+
   # Function para preparar la consulta y pasar los valores por referencia
   public function prepareSql(array $datos = [])
   {
@@ -444,9 +473,7 @@ abstract class Crud
   public function getCount()
   {
     $this->sql = "SELECT COUNT(*) FROM $this->table";
-    // $this->prepareSql();
-    // $this->get();
-    // return $this->get();
+
     return $this;
   }
 

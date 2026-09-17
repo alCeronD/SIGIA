@@ -20,13 +20,11 @@
                     <form id="marcaForm" class="formLayout">
                         <div class="input-field contentMarcaN">
                             <input type="text" name="ma_nombre" id="ma_nombre">
-                            <label for="ma_nombre"><?php echo MA_NOMBRE;
-                                                    ?></label>
+                            <label for="ma_nombre"><?php echo MA_NOMBRE . "*"; ?></label>
                         </div>
                         <div class="input-field contentMarcaD">
                             <textarea name="ma_descripcion" id="descripcionMarca" class="materialize-textarea"></textarea>
-                            <label for="descripcionMarca"><?php echo MA_DESCRIPTION;
-                                                            ?></label>
+                            <label for="descripcionMarca"><?php echo MA_DESCRIPTION; ?></label>
                         </div>
                         <div class="contentSubmitMa">
                             <button type="submit" class="btnSubmit btnPermiso waves-effect waves-light btn" id="btnAreaUpdate" data-url="<?php echo Router::createRoute(CR_MARCAS, CR_MARCAS, 'addRow', false, 'dashboard'); ?>"><i class="material-icons"><?php echo MA_CLASS_ICON_SEND; ?></i></button>
@@ -57,11 +55,11 @@
                     <input type="hidden" name="ma_id">
                     <div class="input-field nombreMaUpdte">
                         <input type="text" name="ma_nombre" id="nombreMarcaUpdate">
-                        <label for="ma_nombre">Nombre:</label>
+                        <label for="ma_nombre"><?php echo MA_NOMBRE . "*"; ?></label>
                     </div>
                     <div class="input-field descripMaUpdte">
                         <textarea name="ma_descripcion" id="descripcionMarcaUpdate"></textarea>
-                        <label for="ma_descripcion">Descripción</label>
+                        <label for="ma_descripcion"><?php echo MA_DESCRIPTION; ?></label>
                     </div>
                     <div class="btnMaUpdate">
                         <button type="submit" id="btnMarcaUpdate" class="btnSubmit waves-effect waves-light btn"><i class="material-icons">save</i></button>

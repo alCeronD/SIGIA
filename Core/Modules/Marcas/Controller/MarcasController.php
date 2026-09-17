@@ -85,7 +85,34 @@ class MarcasController extends ConfigController implements CrudInterface
     $data = UtilsFunctions::deleteSpace($data);
     $data['ma_id'] = (int) $data['ma_id'];
     $dataUpdate[CR_DATA] = $data;
-    $responseUpdate = $this->mModel->update($data)->where()->prepareSql($dataUpdate)->get();
+
+    $dataValidate[CR_DATA] = [
+      'limit' => 1,
+      'ma_nombre' => $data['ma_nombre']
+    ];
+    // traemos el usuario que tenga el name igual
+    $validateDiferente = $this->mModel
+      ->select()
+      ->from()
+      ->where(['ma_nombre', '=', $data['ma_nombre']])
+      ->limit()->prepareSql($dataValidate)
+      ->get();
+
+    // validamos que la llave unica (el nombre de la marca) sea igual para asi actualizarlo, en caso contrario, capturar excepcion
+
+    if (!empty($validateDiferente)) {
+      if ($validateDiferente[0]['ma_nombre'] === $data['ma_nombre'] && $validateDiferente[0]['ma_id'] != $data['ma_id']) {
+        throw new Exception("Esta marca ya esta registrada en la base de datos con diferente identificador", HttpStatus::CONFLICT);
+      }
+    }
+
+
+
+    $responseUpdate = $this->mModel
+      ->update($data)
+      ->where()
+      ->prepareSql($dataUpdate)
+      ->get();
     // validamos si la cantidad de registros a actualizar es mayor a 0, singifica que si hubo un cambio
     if ($responseUpdate == 0) {
       Response::responseRequest(HttpStatus::NO_CONTENT, true, MA_UPDATE_NA, []);
@@ -105,7 +132,10 @@ class MarcasController extends ConfigController implements CrudInterface
     $data = UtilsFunctions::deleteSpace($data);
     $data['ma_status'] = 1;
     $dataInsert[CR_DATA] = $data;
-    $responseInsert = $this->mModel->insert($data)->prepareSql($dataInsert)->get();
+    $responseInsert = $this->mModel
+      ->insert($data)
+      ->prepareSql($dataInsert)
+      ->get();
 
     if (!$responseInsert[CR_STATUS]) {
       $dataResponse = DatabaseHandler::validateResponse($responseInsert);

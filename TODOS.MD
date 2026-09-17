@@ -85,6 +85,7 @@ Listado de TODOS generales y específicos por cada módulo.
 - [x] Crear modulo de **Funciones** Y ajustar lo de funcionesRoles, entre otros al mismo modulo de funciones.
 - [ ] CRUD GENERAL - IMPLEMENTAR ELWHERE IS NOT NULL:
 - [ ] Crear Modulo de estados para implementarlo en la base de datos e implementar los datos de manera dinamica
+- [ ] Crear Metodo FIND EN Como si trabajse con laravel
 
   ```php
   # como ejemplo:

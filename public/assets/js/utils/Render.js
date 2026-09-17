@@ -311,9 +311,8 @@ export class Render extends HttpData {
   /**
    * Description placeholder
    *
-   * @param {HTMLElement} [container=null]
-   * @param {Object} [dataPaginate={}]
-   * @param {Function} [callback=() => {}]
+   * @param {HTMLElement} [container=null] - Contenedor en donde deben de estar los botones de acción de la paginación
+   * @param {Function} [callback=() => {}] - Función a ejecutar luego de ejecutar la lógica de negocio de la paginación
    * @returns {void) => void}
    */
   executePaginate(container = null, callback) {
@@ -323,7 +322,6 @@ export class Render extends HttpData {
       f.stopPropagation();
       f.preventDefault();
 
-      let btnValue = f.target.closest('.btnPaginate') ? f.target.dataset.action : null;
       // ejecutamos el evento para una pagina en especifico.
       if (f.target.closest('.liPaginate')) {
         let actualPageData = f.target.closest('.liPaginate')
@@ -335,31 +333,38 @@ export class Render extends HttpData {
 
         // asigno la pagina seleccionada a la propiedad porque la vamos a re usar en el renderPaginate para pintar la pagina seleccionada
         this.actualPage = actualPageData;
-        await callback(actualPageData);
+        await callback({ pagina: this.actualPage });
         return;
       }
 
-      // EJECUTAMOS LOS EVENTOS PARA LOS BOTONES BTNPAGINATE
-      // if (f.target.closest('.btnPaginate')) {
-      //   // console.log('entra aqui btn');
+      let btnValue = f.target.closest('.btnPaginate') ? f.target.dataset.action : null;
 
-      //   if (!btnValue) return;
-      //   if (btnValue === 'preview') {
-      //     // re asignamos la pagina recibida por la peticion para asi reducir el valor y re enviar la peticion con la pagina anterior.
-      //     actualPage = dataPaginate.paginaActual;
-      //     actualPage--;
-      //     if (actualPage < 1) {
-      //       actualPage = 1;
-      //     }
-      //   }
-      //   if (btnValue === 'next') {
-      //     actualPage++;
-      //     if (actualPage > dataPaginate.cantidadPaginas) {
-      //       actualPage = dataPaginate.cantidadPaginas;
-      //     }
-      //   }
-      //   console.log(actualPage);
-      // }
+      // EJECUTAMOS LOS EVENTOS PARA LOS BOTONES BTNPAGINATE
+      if (f.target.closest('.btnPaginate')) {
+        if (!btnValue) return;
+        if (btnValue === 'preview') {
+          if (this.actualPage === 1) return;
+          // re asignamos la pagina recibida por la peticion para asi reducir el valor y re enviar la peticion con la pagina anterior.
+          this.actualPage = this.#dataPaginate.paginaActual;
+
+          this.actualPage--;
+
+          if (this.actualPage < 1) {
+            this.actualPage = 1;
+          }
+        }
+        if (btnValue === 'next') {
+          // validamos si es la última página para asi no ejecutar la peticion
+          if (this.actualPage === this.#dataPaginate.cantidadPaginas) return;
+          this.actualPage++;
+          if (this.actualPage >= this.#dataPaginate.cantidadPaginas) {
+            this.actualPage = this.#dataPaginate.cantidadPaginas;
+          }
+        }
+
+        // ejecutamos funcion que recibimos por parametro
+        await callback({ pagina: this.actualPage });
+      }
     });
   }
 
