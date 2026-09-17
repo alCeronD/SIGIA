@@ -61,7 +61,6 @@ class ScanFiles
      *
      * @param string $modulo - nombre del modulo al cual se requieren los recursos
      * @param array $filesjs - arreglo con los nombres de los archivos js requeridos para ser renderizados con el contenedor
-     * @param array $filescss - arreglo con los nombres de los archivos css requeridos para ser renderizados con el contenedor.
      * @return void
      */
     public static function renderJs(String $modulo = '', array $filesjs = [])
@@ -81,12 +80,18 @@ class ScanFiles
         }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param string $modulo
+     * @param array $filesView
+     * @return array
+     */
     public static function renderCss(string $modulo = "", array $filesView = [])
     {
+
         $files = self::mapAssets($modulo);
-        // var_dump($files);
         $cssFiles = $files['css'][$modulo] ?? [];
-        // $cssFiles = $files['css'] ?? [];
         $cssToLoad = [];
 
         foreach ($cssFiles as $key => $value) {
@@ -96,8 +101,7 @@ class ScanFiles
                 $cssToLoad[] = $rutaLimpia;
             }
         }
-
-        return $cssToLoad; // Retornamos el array con los CSS que sí corresponden
+        return $cssToLoad;
     }
 
     //Funcion para buscar en los directorios del core los controladores pertenecientes a un modulo

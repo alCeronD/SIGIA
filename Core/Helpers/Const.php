@@ -13,6 +13,7 @@ define('CR_USUARIOS', 'Usuarios');
 define('CR_GESTION_MODULOS', 'Gestionmodulos');
 define('CR_FUNCIONES', 'Funciones');
 define('CR_TIPO_DOCUMENTO_NAME_MODULE', 'Tipodocumento');
+define('CR_CATEGORIAS', 'Categorias');
 // Words
 define('CR_CONTROLLER', 'Controller');
 define('CR_USER', 'usuario');
@@ -88,6 +89,10 @@ define('CR_ROL_SUPER_ADMIN', 'Super Administrador');
 define('CR_ROL_ADMIN', 'Administrador');
 define('CR_TIPO_DOCUMENTO', 'tipoDocumento');
 define('CR_ROLES_LOWER_CASE', 'roles');
+define('CR_CSS', 'css');
+define('CR_JS', 'js');
 
 // name Functions
 define('CR_EDITAR_ROL', 'editarRol');
+define('CR_STORE', 'store');
+define('CR_SAVE', 'save');

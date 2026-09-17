@@ -105,4 +105,4 @@ Este modulo consiste en la gestión de los departamentos que se encuentran en op
 - [X] Implementar rastro de miga
 - [X] implementar interfaz de crud al controlador
 - [X] Modificar css responsive, implementar estilos a botones preview y next.
-- [ ] Arreglar bug de paginación al seleccionar una pagina en concreto y presionar el botón preview y next
+- [X] Arreglar bug de paginación al seleccionar una pagina en concreto y presionar el botón preview y next

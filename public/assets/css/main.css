@@ -363,11 +363,29 @@ input[type="number"] {
   }
 
   .container {
-
     margin-top: 100px;
     margin-left: auto;
     margin-right: auto;
     overflow: auto;
+
+    /* Estilos del titulo del modulo  */
+    .menuTitle {
+      width: 100%;
+      max-width: 100%;
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+
+      /* .textTitleSpan {
+        font-size: 1.2rem;
+      }
+
+      .close-btn {
+        border: none;
+        text-decoration: none;
+        font-size: 2rem;
+      } */
+    }
   }
 
   /* Fin estilos header */
