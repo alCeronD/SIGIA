@@ -83,9 +83,9 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] EN PHP, AJUSTAR EL RESPONSE DE LA CLASE EN DONDE la funcion se puede transformar en una sola.
 - [X] Ajustar la seccion de seguridad de sistema en el modulo de funciones, crear l nuevo modulo.
 - [x] Crear modulo de **Funciones** Y ajustar lo de funcionesRoles, entre otros al mismo modulo de funciones.
-- [ ] CRUD GENERAL - IMPLEMENTAR ELWHERE IS NOT NULL:
 - [ ] Crear Modulo de estados para implementarlo en la base de datos e implementar los datos de manera dinamica
-- [ ] Crear Metodo FIND EN Como si trabajse con laravel
+- [X] Crear Metodo FIND EN Como si trabajse con laravel
+- [ ] CRUD GENERAL - IMPLEMENTAR ELWHERE IS NOT NULL:
 
   ```php
   # como ejemplo:
@@ -118,8 +118,8 @@ Listado de TODOS generales y específicos por cada módulo.
 | Módulo                 | Progreso | Documentación |                     Enlace a Detalles                     |
 | :--------------------- | :------: | :-----------: | :-------------------------------------------------------: |
 | **Areas**              |   100%   |  Completado   |       [Ver README](./Core/Modules/Areas/README.MD)        |
-| **Tipo Documento**     |   95%    |  Completado   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
-| **Marcas**             |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
+| **Tipo Documento**     |   100%   |  Completado   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
+| **Marcas**             |   100%   |   Pendiente   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
 | **Roles**              |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Roles/README.MD)        |
 | **Permisos**           |   90%    |   Pendiente   |      [Ver README](./Core/Modules/Permisos/README.MD)      |
 | **Usuarios**           |   70%    |  En Proceso   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |

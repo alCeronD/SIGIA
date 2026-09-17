@@ -319,7 +319,7 @@ abstract class Crud
         ->from()
         ->where(["{$this->getKeyName()}", "=", "{$parameter}"])
         ->limit()->prepareSql($dataPrepare)
-        ->get();
+        ->get()[0];
 
 
       return $sql;

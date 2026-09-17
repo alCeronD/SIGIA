@@ -83,26 +83,26 @@ class MarcasController extends ConfigController implements CrudInterface
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
     $data = UtilsFunctions::deleteSpace($data);
-    $data['ma_id'] = (int) $data['ma_id'];
+    $data[VARS_MA_ID] = (int) $data[VARS_MA_ID];
     $dataUpdate[CR_DATA] = $data;
 
     $dataValidate[CR_DATA] = [
-      'limit' => 1,
-      'ma_nombre' => $data['ma_nombre']
+      CR_WORD_LIMIT => 1,
+      VARS_MA_NOMBRE => $data[VARS_MA_NOMBRE]
     ];
     // traemos el usuario que tenga el name igual
     $validateDiferente = $this->mModel
       ->select()
       ->from()
-      ->where(['ma_nombre', '=', $data['ma_nombre']])
+      ->where([VARS_MA_NOMBRE, '=', $data[VARS_MA_NOMBRE]])
       ->limit()->prepareSql($dataValidate)
       ->get();
 
     // validamos que la llave unica (el nombre de la marca) sea igual para asi actualizarlo, en caso contrario, capturar excepcion
 
     if (!empty($validateDiferente)) {
-      if ($validateDiferente[0]['ma_nombre'] === $data['ma_nombre'] && $validateDiferente[0]['ma_id'] != $data['ma_id']) {
-        throw new Exception("Esta marca ya esta registrada en la base de datos con diferente identificador", HttpStatus::CONFLICT);
+      if ($validateDiferente[0][VARS_MA_NOMBRE] === $data[VARS_MA_NOMBRE] && $validateDiferente[0][VARS_MA_ID] != $data[VARS_MA_ID]) {
+        throw new Exception(MA_NAME_ALREADY_EXISTS, HttpStatus::CONFLICT);
       }
     }
 
@@ -165,7 +165,7 @@ class MarcasController extends ConfigController implements CrudInterface
     $dataChangeStatus[CR_DATA] = $data;
     $responseChangeStatus = $this->mModel->update($data)->where()->prepareSql($dataChangeStatus)->get();
 
-    $message = $data['ma_status'] === 1 ? MA_CHANGE_DISABLED : MA_CHANGE_ENABLED;
+    $message = $data[VARS_MA_STATUS] === 1 ? MA_CHANGE_DISABLED : MA_CHANGE_ENABLED;
 
     if (!$responseChangeStatus[CR_STATUS]) {
       $dataResponse = DatabaseHandler::validateResponse($responseChangeStatus);
