@@ -119,7 +119,7 @@ Listado de TODOS generales y específicos por cada módulo.
 | :--------------------- | :------: | :-----------: | :-------------------------------------------------------: |
 | **Areas**              |   100%   |  Completado   |       [Ver README](./Core/Modules/Areas/README.MD)        |
 | **Tipo Documento**     |   100%   |  Completado   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
-| **Marcas**             |   100%   |   Pendiente   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
+| **Marcas**             |   100%   |  Completado   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
 | **Roles**              |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Roles/README.MD)        |
 | **Permisos**           |   90%    |   Pendiente   |      [Ver README](./Core/Modules/Permisos/README.MD)      |
 | **Usuarios**           |   70%    |  En Proceso   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |
