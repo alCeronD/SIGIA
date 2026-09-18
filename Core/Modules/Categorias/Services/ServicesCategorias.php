@@ -36,27 +36,20 @@ class ServicesCategorias
     return $categorias;
   }
 
-  public function validateDuplicate(String $column = "", String $value = ""): bool
+  public function validateDuplicate(String $column = "", String $value = ""): mixed
   {
     $dataPrepare[CR_DATA] = [
       $column => $value,
       CR_WORD_LIMIT => 1
     ];
-    $duplicate = $this->cm->select(["{$column} AS '{$column}'"])
+    $duplicate = $this->cm->select()
       ->from()
       ->where(["{$column}", "=", "{$value}"])
       ->limit()
       ->prepareSql($dataPrepare)
       ->get();
 
-    if (empty($duplicate)) return false;
-
-    // validamos si el valor a registrar ya esta en la base de datos
-    if ($duplicate[0][$column] === $value) {
-      return true;
-    } else {
-      return false;
-    }
+    return $duplicate;
   }
 
   public function getCount()

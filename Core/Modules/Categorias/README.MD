@@ -88,8 +88,12 @@ Estructura del módulo:
 
 - [ ] Implementar tree del modulo
 - [ ] Ajustar Controlador
-  - [ ] Implementar getData desde la capa servicio
+  - [X] Implementar getData desde la capa servicio
+  - [X] Implementar store desde el controlador
+  - [X] Implementar save
+  - [X] Implementar delete
+  - [X] Implementar changeStatus
 - [X] Implementar css responsive
-- [ ] Implementar paginacion y renderizacion de datos desde la clase render
-- [ ] Implementar capa de services para consumir en otro modulo
+- [ ] Implementar paginacion y renderizacion de datos desde la clase render en el frontendt
+- [X] Implementar capa de services para consumir en otro modulo
 - [X] Fix: arreglar scanfiles y router cuando no hayan archivos css o javascript que renderizar, marcar el error y mostrar la plantilla de error de manera correcta

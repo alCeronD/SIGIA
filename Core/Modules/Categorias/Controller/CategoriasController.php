@@ -1,5 +1,7 @@
 <?php
 
+use function PHPUnit\Framework\matches;
+
 include_once __DIR__ . '/../../../Config/Conn.php';
 include_once __DIR__ . '/../../../Helpers/Const.php';
 include_once __DIR__ . '/../Const/CategoriasConst.php';
@@ -83,7 +85,7 @@ class CategoriasController extends ConfigController implements CrudInterface
             $data = UtilsFunctions::returnGetDecode();
             $data[CA_VAR_STATUS] = 1;
             if (empty($data))
-                throw new Exception("No se permiten campos vacios", HttpStatus::BAD_REQUEST);
+                throw new Exception(CA_MSG_EMPTY_DATA, HttpStatus::BAD_REQUEST);
             $data = UtilsFunctions::deleteSpace($data);
             // arreglo con campos obligatorios para validar que deben ser diligenciados
             $mapCampos = [CA_VAR_NOMBRE => CA_NOMBRE_CATEGORIA];
@@ -94,9 +96,11 @@ class CategoriasController extends ConfigController implements CrudInterface
             // validar que el nombre no sea duplicado.
             $duplicate = $this->sC->validateDuplicate("ca_nombre", $data[CA_VAR_NOMBRE]);
 
-            // true si es igual, false en caso contrario
-            if ($duplicate) {
-                throw new Exception("El nombre '{$data[CA_VAR_NOMBRE]}' de la categoria ya existe en la base de datos, no se permite duplicado", HttpStatus::BAD_REQUEST);
+            if (!empty($duplicate)) {
+                if ($duplicate[0]['ca_nombre'] === $data['ca_nombre']) {
+
+                    throw new Exception("El nombre '{$data[CA_VAR_NOMBRE]}' de la categoria ya existe en la base de datos, no se permite duplicado", HttpStatus::BAD_REQUEST);
+                }
             }
 
             $dataPrepare[CR_DATA] = $data;
@@ -116,11 +120,98 @@ class CategoriasController extends ConfigController implements CrudInterface
 
     public function save()
     {
-        throw new \Exception('Not implemented');
+        try {
+            header(CONTENT_TYPE);
+            $data = UtilsFunctions::returnGetDecode();
+
+            $duplicate = $this->sC->validateDuplicate("ca_nombre", $data[CA_VAR_NOMBRE]);
+
+            if (!empty($duplicate)) {
+
+                if ($duplicate[0]['ca_id'] != $data['ca_id']) {
+                    throw new Exception("La categoria '{$data[CA_VAR_NOMBRE]}' ya está asociado a otro registro identificado con el ID {$duplicate[0]['ca_id']}, no se permiten duplicados.", HttpStatus::BAD_REQUEST);
+                }
+            }
+
+            $dataPrepare[CR_DATA] = $data;
+            $resultSave = $this->cm->update($data)
+                ->where()
+                ->prepareSql($dataPrepare)
+                ->get();
+
+            if (!$resultSave[CR_STATUS]) {
+                $messageHandler = DatabaseHandler::validateResponse($resultSave);
+                throw new Exception($messageHandler[CR_MESSAGE], $messageHandler[CR_CODE_RESPONSE]);
+            }
+
+            Response::responseRequest(HttpStatus::OK, true, CA_MSG_SAVE_CATEGORY, []);
+        } catch (\Exception $th) {
+            Response::responseRequest($th->getCode(), false, $th->getMessage());
+        }
     }
 
     public function delete()
     {
-        throw new \Exception('Not implemented');
+        try {
+            header(CONTENT_TYPE);
+            $data = UtilsFunctions::returnGetDecode();
+
+            if (empty($data)) throw new Exception(CA_MSG_EMPTY_DATA, HttpStatus::BAD_REQUEST);
+            // validar que el id existe.
+            $idExists = $this->sC->validateDuplicate(CA_VAR_ID, $data[CA_VAR_ID]);
+            if (empty($idExists)) throw new Exception(CA_MSG_NO_ID, HttpStatus::NOT_FOUND);
+
+
+            $dataPrepare[CR_DATA] = $data;
+            $resultDelete = $this->cm->delete()
+                ->where([CA_VAR_ID, "=", $data[CA_VAR_ID]])
+                ->prepareSql($dataPrepare)
+                ->get();
+
+            if (!$resultDelete[CR_STATUS]) {
+                $messageHandler = DatabaseHandler::validateResponse($resultDelete);
+                throw new Exception($messageHandler[CR_MESSAGE], $messageHandler[CR_CODE_RESPONSE]);
+            }
+            Response::responseRequest(HttpStatus::OK, true, CA_MSG_DELETE_CATEGORY, []);
+        } catch (\Exception $th) {
+            Response::responseRequest($th->getCode(), false, $th->getMessage());
+        }
+    }
+
+    public function changeStatus()
+    {
+        try {
+            header(CONTENT_TYPE);
+            $data = UtilsFunctions::returnGetDecode();
+
+            if (empty($data)) throw new Exception(CA_MSG_EMPTY_DATA, HttpStatus::BAD_REQUEST);
+
+            // validamos que exista el registro antes de validar el cambio de estado
+            $validateCategoria = $this->sC->validateDuplicate(CA_VAR_ID, $data[CA_VAR_ID]);
+
+            if (empty($validateCategoria)) throw new Exception(CA_MSG_NO_DATA, HttpStatus::NOT_FOUND);
+
+            $dataPrepare[CR_DATA] = $data;
+            $resultChangeStatus = $this->cm->update($data)
+                ->where([CA_VAR_ID, "=", "{$data[CA_VAR_ID]}"])
+                ->prepareSql($dataPrepare)
+                ->get();
+
+            $responseMessage = match ($data[CA_VAR_STATUS]) {
+                1 => CA_MSG_ENABLED,
+                2 => CA_MSG_DISABLE,
+                default => "Sin estado"
+            };
+
+
+            if (!$resultChangeStatus[CR_STATUS]) {
+                $messageHandler = DatabaseHandler::validateResponse($resultChangeStatus);
+                throw new Exception($messageHandler[CR_MESSAGE], $messageHandler[CR_CODE_RESPONSE]);
+            }
+
+            Response::responseRequest(HttpStatus::OK, true, $responseMessage);
+        } catch (\Throwable $th) {
+            Response::responseRequest($th->getCode(), false, $th->getMessage());
+        }
     }
 }
