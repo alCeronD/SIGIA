@@ -11,7 +11,7 @@ ALTER TABLE `areas`
 MODIFY `ar_cod` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Código primario del area',
 AUTO_INCREMENT = 10;
 
-#Alters tabla tipo_documento
+#Alters tabla areas
 ALTER TABLE areas
 ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 

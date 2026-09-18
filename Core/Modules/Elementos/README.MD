@@ -34,3 +34,7 @@
 
 - Documentar más funciones con JSDoc como ya empezaste a hacer con `renderElements`.
 - Añadir README por módulo si el proyecto crece.
+
+### TODOS
+
+- [ ] Implementar relacion entre ca_cod (categorias) con elm_ca_cod (FORANEA DEL CODIGO DE CATEGORIA)

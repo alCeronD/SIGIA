@@ -96,7 +96,7 @@ class UtilsFunctions
      * Function para validar los campos y determinar cuales son obligatorios y cuales no.
      *
      * @param array $campos - arreglo con datos a comparar
-     * @param array $mapCapos - arreglo clave valor en donde la clave debe ser la misma que la clave del parametro campos y su valor debe ser un nombre amigable para el usuario - ['ar_nombre' => 'nombre departamento']
+     * @param array $mapCapos - arreglo clave valor en donde la clave debe ser la misma que la clave del parametro campos y su valor debe ser un nombre amigable para el usuario - ['ar_nombre' => 'nombre departamento'], se debe de enviar solo los campos obligatorios
      * @return array
      */
     public static function validateCampos(array $campos = [], array $mapCapos = [])
