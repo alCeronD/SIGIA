@@ -212,7 +212,6 @@ export class Render extends HttpData {
       ul.append(liPreview);
 
       fragmentCustomPage.append(ul);
-
       for (let actualPage = 1; actualPage <= dataPaginate.cantidadPaginas; actualPage++) {
         if (
           actualPage === 1 ||

@@ -1,6 +1,7 @@
 <?php
 
 use function PHPUnit\Framework\matches;
+use function PHPUnit\Framework\throwException;
 
 include_once __DIR__ . '/../../../Config/Conn.php';
 include_once __DIR__ . '/../../../Helpers/Const.php';
@@ -13,7 +14,7 @@ class CategoriasController extends ConfigController implements CrudInterface
     protected CategoriasModel $cm;
     protected array $files = [
         CR_CSS => ['categoriasView' => ['Categorias.css']],
-        CR_JS => []
+        CR_JS => ['categoriasView' => ['Categorias.js', 'SelectorsCategorias.js']]
     ];
     public function __construct()
     {
@@ -123,8 +124,15 @@ class CategoriasController extends ConfigController implements CrudInterface
         try {
             header(CONTENT_TYPE);
             $data = UtilsFunctions::returnGetDecode();
+            if (empty($data)) throw new Exception(CA_MSG_EMPTY_DATA, HttpStatus::BAD_REQUEST);
+            // arreglo con campos obligatorios para validar que deben ser diligenciados
+            $mapCampos = [CA_VAR_NOMBRE => CA_NOMBRE_CATEGORIA];
+            $resultValidateCampos = UtilsFunctions::validateCampos($data, $mapCampos);
+            if (!$resultValidateCampos[CR_STATUS])
+                throw new Exception($resultValidateCampos[CR_MESSAGE], $resultValidateCampos[CR_CODE_RESPONSE]);
 
             $duplicate = $this->sC->validateDuplicate("ca_nombre", $data[CA_VAR_NOMBRE]);
+            $data = UtilsFunctions::deleteSpace($data);
 
             if (!empty($duplicate)) {
 
@@ -132,6 +140,7 @@ class CategoriasController extends ConfigController implements CrudInterface
                     throw new Exception("La categoria '{$data[CA_VAR_NOMBRE]}' ya está asociado a otro registro identificado con el ID {$duplicate[0]['ca_id']}, no se permiten duplicados.", HttpStatus::BAD_REQUEST);
                 }
             }
+
 
             $dataPrepare[CR_DATA] = $data;
             $resultSave = $this->cm->update($data)

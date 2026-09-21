@@ -10,9 +10,9 @@
 
     <div class="formCategoria">
       <span class="card-title">Crear Categoría</span>
-      <form id="formCreateCategoria" method="POST" data-url=<?= Router::createRoute(CR_CATEGORIAS, CR_CATEGORIAS, CR_STORE, false, CR_DASHBOARD_LOWER_CASE) ?>">
+      <form id="formCreateCategoria" data-url=<?= Router::createRoute(CR_CATEGORIAS, CR_CATEGORIAS, CR_STORE, false, CR_DASHBOARD_LOWER_CASE) ?>">
         <div class=" input-field">
-          <input type="text" name="ca_nombre" id="ca_nombre" required>
+          <input type="text" name="ca_nombre" id="ca_nombre">
           <label for="ca_nombre">Nombre:</label>
         </div>
 
@@ -29,67 +29,51 @@
       </form>
     </div>
     <div class="tablaCategoria highlight striped responsive-table">
-      <table class="tblConfigModules">
-        <thead>
+      <table class="tblConfigModules" id="tHeaderCategoria">
+        <thead id="tHeaderCategoria">
           <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Estado</th>
-            <th>Acciones</th>
+            <th id="ca_id">id</th>
+            <th id="ca_nombre">Nombre</th>
+            <th id="ca_descripcion">Descripción</th>
+            <th id="ca_status">Estado</th>
+            <th id="">Acciones</th>
           </tr>
         </thead>
-        <tbody id="tbodyCategorias">
+        <tbody id="tBodyCategoria">
 
         </tbody>
+        <tfoot id="tFootCategoria"></tfoot>
       </table>
-      <div class="center-align" style="margin-top: 20px;">
-        <ul id="paginacion-categorias" class="pagination"></ul>
-      </div>
-
     </div>
   </div>
 </div>
 
-
 <!-- MODAL Editar Categoría -->
-<div id="modalEditarCategoria" class="modal">
-  <div class="modal-content">
-    <span id="modalTitle" class="textTitleSpan">Editar Categoría</span>
-    <button type="button" class="closeModalBtn">
-      <span class="close-modal">&times;</span>
-    </button>
+<div id="" class="modalEditarCategoria modal modal-overlay">
+  <div class="modal-content .modal-closebtn" id="modalContentCategoria">
+    <div class="titleSection">
+      <span id="modalTitle">Actualizar registro</span>
+      <button type="button" class="closeModalBtn">
+        <span class="close-modal">&times;</span>
+      </button>
+    </div>
+    <div class="formUpdate">
+      <form id="formUpdateCategoria" data-url="<?= Router::createRoute(CR_CATEGORIAS, CR_CATEGORIAS, CR_SAVE, false, CR_DASHBOARD_LOWER_CASE) ?>" class="formUpdate">
+        <input type="hidden" name="ca_id" id="modal_ca_id">
+        <div class="input-field">
+          <input type="text" id="modal_ca_nombre" name="ca_nombre">
+          <label for="modal_ca_nombre" class="active">Nombre</label>
+        </div>
 
-    <form id="formUpdateCategoria" method="POST" action="<?= Router::createRoute('categorias', 'categorias', 'updateCategoria', false, 'ajax') ?>">
-      <input type="hidden" name="ca_id" id="modal_ca_id">
+        <div class="input-field">
+          <input type="text" id="modal_ca_descripcion" name="ca_descripcion" required>
+          <label for="modal_ca_descripcion" class="active">Descripción</label>
+        </div>
 
-      <div class="input-field">
-        <input type="text" id="modal_ca_nombre" name="ca_nombre" required>
-        <label for="modal_ca_nombre" class="active">Nombre</label>
-      </div>
-
-      <div class="input-field">
-        <input type="text" id="modal_ca_descripcion" name="ca_descripcion" required>
-        <label for="modal_ca_descripcion" class="active">Descripción</label>
-      </div>
-
-      <div class="modal-footer">
         <button type="submit" class="btn waves-effect waves-light">
           <i class="material-icons left">save</i> Actualizar
         </button>
-      </div>
-
-      <div id="mensajeEditarCategoria" style="margin-top: 10px;"></div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>
-
-<!--
-<script type="module" src="../public/assets/js/Categorias/categoriasUpdateModal.js"></script>
-<script type="module" src="../public/assets/js/Categorias/categoriasRegistrar.js"></script> -->
-
-
-<script>
-  const categoriasUrl = "<?= Router::createRoute('categorias', 'categorias', 'listarCategoriasAjax') ?>";
-</script>
-<!-- <script type="module" src="../public/assets/js/Categorias/categoriaPaginado.js"></script> -->
-<!-- <script type="module" src="../public/assets/js/Categorias/categoriasDesactivar.js"></script> -->

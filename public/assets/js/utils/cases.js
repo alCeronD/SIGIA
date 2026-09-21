@@ -625,7 +625,6 @@ export const fillDataForm = (row, formulario) => {
       // habilitamos la opcion checked basada en el valor recibido.
       const radioCheck = formulario.querySelector(`input[name="${key}"][value="${value}"]`);
       if (radioCheck) {
-        // console.log(radioCheck);
         radioCheck.checked = true;
       }
     } else if (input.type === 'checkbox') {
