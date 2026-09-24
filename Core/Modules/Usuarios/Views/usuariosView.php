@@ -1,31 +1,32 @@
 <div class="container">
   <div class="contentUsuarios">
-    <?php include_once BASE_PATH . CR_ROUTE_BREADCRUMBS; ?>
-    <div class="titleUsuarios">
-      <span id="textTitle"></span>
-      <a href="<?= Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
+    <div class="headerContent">
+      <?php include_once BASE_PATH . CR_ROUTE_BREADCRUMBS; ?>
+      <div class="titleUsuarios menuTitle">
+        <span id="textTitle">Usuarios del sistema</span>
+        <a href="<?= Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
+      </div>
     </div>
 
     <div class="filtroUsuarios">
-      <div class="input-field col s4">
+      <div class="input-field">
         <select id="tipoFiltro" class="">
           <option value="" selected disabled>Filtro usuarios</option>
           <option value="documento">Filtrar por Documento</option>
           <option value="nombre">Filtrar por Nombre</option>
           <option value="estado">Filtrar por Estado</option>
         </select>
-        <!-- <label for="tipoFiltro">Filtros<span class="red-text">*</span></label> -->
-        <span>Filtros</span>
       </div>
 
       <div class="input-field col s4" id="contenedorInputFiltro">
         <!-- Aquí se agregará dinámicamente el input/select -->
-
       </div>
+
     </div>
 
+
     <div class="tblUsuarios">
-      <table id="tableConfig">
+      <table id="tableConfig" class="tableUsers">
         <thead id="tHeadUsuarios">
           <tr>
             <th id="nroDocumento">No documento</th>
@@ -48,10 +49,15 @@
 
 
 <!-- Modal -->
-<div id="modalEditarUsuario" class="modal-custom card z-depth-3">
-  <div class="modal-content-custom card-content">
-    <span class="close-modal btn-flat red-text right" title="Cerrar">&times;</span>
-    <h5 class="teal-text text-darken-3">Editar Informacion Usuario</h5>
+<div id="modalEditarUsuario" class="modal modal-overlay">
+  <div class="modalContentEditarUsuario modal-content .modal-closebtn">
+    <div class="titleSection">
+
+      <span class="teal-text text-darken-3" id="closeModalBtn">Editar Informacion Usuario</span>
+      <button type="button" class="closeModalBtn">
+        <span class="close-modal closeModalBtn" title="Cerrar">&times;</span>
+      </button>
+    </div>
 
     <form id="formUpdateDataUser">
       <input type="hidden" name="usu_id" id="usu_id">
