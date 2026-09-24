@@ -7,8 +7,6 @@
   <title>SIGIA</title>
   <link rel="icon" type="image/x-icon" href="../public/assets/image/sSigia.ico">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="../public/assets/libraries/materialize/css/materialize.min.css">
-  <link rel="stylesheet" href="../public/assets/css/main.css">
   <?php
   // la variable routesCss esta definida en el controlador de cada vista.
   if (isset($routesCss) && is_array($routesCss)): ?>
@@ -16,7 +14,8 @@
       <link rel="stylesheet" href="<?= $styleUrl; ?>">
     <?php endforeach; ?>
   <?php endif; ?>
-
+  <link rel="stylesheet" href="../public/assets/libraries/materialize/css/materialize.min.css">
+  <link rel="stylesheet" href="../public/assets/css/main.css">
 </head>
 
 <body>

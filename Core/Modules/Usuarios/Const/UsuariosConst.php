@@ -9,7 +9,7 @@ define('US_ROUTE_USUARIO_UPDATE', '/../Modules/Usuarios/Views/updatePersonalData
 define('US_ROUTE_DETAIL_USER', '/../Modules/Usuarios/Views/detailUser.php');
 
 // titles
-define('US_REGISTRAR_USUARIO', 'Registrar usuario');
+define('US_REGISTRAR_USUARIO', 'Crear usuario');
 
 // message
 define('US_MESSAGE_CREATE_USER_STORE', 'Usuario creado exitosamente');

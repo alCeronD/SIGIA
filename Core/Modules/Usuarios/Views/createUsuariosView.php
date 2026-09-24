@@ -1,10 +1,13 @@
 <div class="container">
   <div class="contentCreateUsuarios">
-    <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
-    <div class="titleUsuarios">
-      <span id="textTitle" class="teal-text text-darken-4"><?php echo US_REGISTRAR_USUARIO; ?></span>
-      <a href="<?= Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
+    <div class="headerContent">
+      <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
+      <div class="titleUsuarios menuTitle">
+        <span id="textTitle" class="teal-text text-darken-4"><?php echo US_REGISTRAR_USUARIO; ?></span>
+        <a href="<?= Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>" class="close-btn" title="Volver al dashboard">&times;</a>
+      </div>
     </div>
+
     <div class="registrarUsuario">
       <form id="formCreateUser">
         <div class="inputContent tipoDocumento input-field">

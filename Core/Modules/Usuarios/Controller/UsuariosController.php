@@ -18,14 +18,14 @@ class UsuariosController extends ConfigController implements CrudInterface
             'createUserView' => ['CreateUser.css'],
             'auditoriaUserView' => ['AuditoriasUsuarios.css'],
             'usuariosView' => ['UsuariosView.css'],
-            'actualizarDatosView' => ['UpdatePersonalData.css']
+            'actualizarPersonalData' => ['UpdatePersonalData.css']
         ],
         "js" => [
             'usuariosIndexView' => [],
             'createUserView' => ['CreateUser.js'],
             'auditoriaUserView' => ['AuditoriasUsuarios.js'],
             'usuariosView' => ['UsuariosView.js'],
-            'actualizarDatosView' => ['UpdatePersonalData.js', 'Functions-updatePersonalData.js'],
+            'actualizarPersonalData' => ['UpdatePersonalData.js', 'Functions-updatePersonalData.js'],
             'detailUser' => ['detailUser.js']
         ]
     ];
@@ -65,9 +65,9 @@ class UsuariosController extends ConfigController implements CrudInterface
                 'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'usuariosView', false, CR_DASHBOARD_LOWER_CASE),
                 'parent' => 'usuariosIndexView'
             ],
-            'actualizarDatosView' => [
+            'actualizarPersonalData' => [
                 'label' => 'Actualizar datos personales',
-                'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'updatePersonalDataView', false, CR_DASHBOARD_LOWER_CASE),
+                'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'actualizarPersonalData', false, CR_DASHBOARD_LOWER_CASE),
                 'parent' => 'usuariosIndexView'
             ],
             'detailUser' => [

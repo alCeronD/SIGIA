@@ -43,12 +43,53 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 
 - **Tabla principal:** `usuarios`
 - **Tablas asociadas:** `auditorias`, `estados_usuarios`, `tipo_documento`, `roles`, `usuarios_roles`
-- **Conexión con otros módulos:** `roles`, `tipo_documento`
+- **Conexión con otros módulos:** `roles`, `tipo_documento`, `prestamos`
 - **Relaciones:**
   - `estados_usuarios (id)` -> Llave foránea en `usuarios` para controlar si el usuario está activo, inactivo o suspendido.
   - `tipos_documento (id)` -> Llave foránea en `usuarios` para asociar el tipo de identificación (C.C., T.I., C.E., etc.).
   - `roles (id)` -> Relación para definir los permisos y el nivel de acceso del usuario dentro de SIGIA.
   - `roles_funciones (rlp_id)` -> Relacion con la tabla usuarios para guardar el rol al cual pertenece el usuario.
+
+```bash
+.
+├── Const
+│   └── UsuariosConst.php # Archivo de variables constantes usadas en el modulo
+├── Controller
+│   └── UsuariosController.php # Controlador principal del modulo
+├── Css
+│   ├── AuditoriasUsuarios.css # Css de la vista auditorias
+│   ├── CreateUser.css # Css de la vista crear usuario
+│   ├── UpdatePersonalData.css # Css de la vista actualizar datos personales
+│   ├── UsuariosIndex.css # css de la vista del MODULO PRINCIPAL
+│   └── UsuariosView.css # css del listado de los usuarios
+├── Js
+│   ├── AuditoriasUsuarios.js # script que corresponde al manejo del doom de auditorias, peticiones, entre otros
+│   ├── CreateUser.js # Script para crear el usuario en la base de datos
+│   ├── detailUser.js # Js para ver la informacion del usuario, aca se vera la informacion y los elementos que tiene o ha tenido en su mano
+│   ├── Functions-updatePersonalData.js # Archivo auxiliar que contiene las funciones del archivo UpdatePersonalData.JS
+│   ├── Functions-UsuariosView.js # Archivo auxiliar que contiene las funciones del archivo UsuariosIndex.js
+│   ├── Selectors-CreateUser.js # Selectores del doom para crear el usuario
+│   ├── Selectors-UsuariosView.js # Selectores del doom para ver los usuarios registrados
+│   ├── UpdatePersonalData.js # Script para actualizar mis datos personales
+│   ├── UsuariosIndex.js
+│   └── UsuariosView.js # Script para ver los usuarios registrados en el sistema
+├── Model
+│   ├── UsuariosModel.php # Modelo de la tabla usuarios
+│   └── UsuariosRolesModel.php # Modelo de la tabla usuarios_roles
+├── Mysql
+│   ├── alters.sql # Script con alters, estos son modificaciones que se hicieron después de entregar la primera versión del módulo
+│   └── usuarios.sql # Script con la tabla usuarios + usuarios
+├── README.MD # README PRINCIPAL DEL MODULO
+├── Services
+│   └── ServicesUsuarios.php  # Capa de servicios que sirve para conectar con otros modulos en caso de ser requerido
+└── Views
+    ├── auditoriasView.php
+    ├── createUsuariosView.php
+    ├── detailUser.php
+    ├── updatePersonalData.php
+    ├── usuariosIndex.php
+    └── usuariosView.php
+```
 
 ### TODOS ESPECÍFICOS
 
@@ -58,7 +99,9 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [X] Desarrollar historia de usuario # HU-U01 (Registrar usuario).
 - [X] Ajustar historia de usuario de paginacion de usuario y consulta con filtros # HU -U02.
 - [ ] Re factorizar css
-- [ ] Re factorizar js
+  - [X] Css refactorizado en update personalData
+  - [ ] Css refactorizado en VER USUARIO
+- [X] Re factorizar js
 - [X] Crear componente de paginacion en los registros de los usuarios.
 - [X] Implementar update
 - [X] Implementar changeStatus a los usuarios.
@@ -73,3 +116,4 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [ ] Desarrollar feature de historia de usuario carga de datos.
 - [ ] Desarrollar mockup de auditoria de usuarios e historia de usuario de auditoria.
 OPCION AUDITORIA MODULO PRESTAMOS = CREAR AL MODULO DE SOLICITUD DE PRESTAMO O PRESTAMOS LA OPCION DE AUDITORIA, DE SABER QUIEN HIZO EL PRESTAMO Y CUANDO SE EJECUTO.
+- [ ] Implementar accion de eliminar usuario

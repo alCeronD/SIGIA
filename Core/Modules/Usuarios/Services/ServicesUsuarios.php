@@ -15,7 +15,12 @@ class ServicesUsuarios
     $dataUser[CR_DATA] = [
       'usu_docum' => $docum
     ];
-    $userData = $this->userModel->select()->from()->where(['usu_docum', '=', $docum])->prepareSql($dataUser)->get();
+    $userData = $this->userModel
+      ->select()
+      ->from()
+      ->where(['usu_docum', '=', $docum])
+      ->prepareSql($dataUser)
+      ->get();
     return $userData;
   }
 
