@@ -100,15 +100,15 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [X] Ajustar historia de usuario de paginacion de usuario y consulta con filtros # HU -U02.
 - [ ] Re factorizar css
   - [X] Css refactorizado en update personalData
-  - [ ] Css refactorizado en VER USUARIO
+  - [x] Css refactorizado en VER USUARIO
 - [X] Re factorizar js
 - [X] Crear componente de paginacion en los registros de los usuarios.
 - [X] Implementar update
 - [X] Implementar changeStatus a los usuarios.
 - [X] Re factorizar backend moviendo todo lo de modelo a las acciones del controlador
 - [X] Implementar y arreglar las funcionales ya definidas, estas funcionalidades estan en las historias de usuario de la documentación en el drive
-- [ ] Buscar cual es la mejor forma de implementar el actualizar la contraseña de un usuario
 - [X] solicitar los datos de tipo de documento y roles y guardarlo en localstorage para su re utilizacion, hacerlo en el archivo usuariosIndex.js
+- [ ] Buscar cual es la mejor forma de implementar el actualizar la contraseña de un usuario
 - [ ] Limpiar los datos de los nuevos usuarios usando DIRTY DATA (PYTHON)
 - [ ] Cargar datos limpios a la tabla de usuario
 - [ ] Crear mockup historia de usuario e investigar como implementar el feature: CARGA MASIVA DE REGISTROS.
@@ -117,3 +117,5 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [ ] Desarrollar mockup de auditoria de usuarios e historia de usuario de auditoria.
 OPCION AUDITORIA MODULO PRESTAMOS = CREAR AL MODULO DE SOLICITUD DE PRESTAMO O PRESTAMOS LA OPCION DE AUDITORIA, DE SABER QUIEN HIZO EL PRESTAMO Y CUANDO SE EJECUTO.
 - [ ] Implementar accion de eliminar usuario
+- [ ] View Users = implementar los roles a los cuales se pueden asignar al usuario
+- [ ] Implementar sessionStorage para guardar los roles en la variable de storage para re utilizar los datos

@@ -7,6 +7,7 @@ import {
   initAlert,
   InitComponents,
   messages,
+  METHOD,
   mostrarConfirmacion,
   openModal,
   Render,
@@ -271,25 +272,19 @@ const verDetalle = (idRow, fullRow) => {
 };
 
 const editData = (id, fullRow) => {
-  // re asignamos las keys del objeto correspondiente al nombre del input y eliminamos las propiedades nuevas.
-  fullRow['usu_docum'] = fullRow.nroDocumento;
-  fullRow['usu_id'] = fullRow.IdUsuario;
-  fullRow['usu_apellidos'] = fullRow.apellidos;
-  fullRow['usu_nombres'] = fullRow.nombreCompleto;
-  fullRow['usu_email'] = fullRow.email;
-  fullRow['usu_telefono'] = fullRow.telefono;
-  fullRow['usu_direccion'] = fullRow.direccion;
-  fullRow['usu_password'] = fullRow.password;
-  delete fullRow.nroDocumento;
-  delete fullRow.apellidos;
-  delete fullRow.nombreCompleto;
-  delete fullRow.email;
-  delete fullRow.telefono;
-  delete fullRow.direccion;
-  delete fullRow.password;
-  delete fullRow.IdUsuario;
+  const formData = {
+    usu_id: fullRow.IdUsuario,
+    usu_docum: fullRow.nroDocumento,
+    usu_nombres: fullRow.nombreCompleto,
+    usu_apellidos: fullRow.apellidos,
+    usu_email: fullRow.email,
+    usu_telefono: fullRow.telefono,
+    usu_direccion: fullRow.direccion,
+    usu_password: fullRow.password,
+    usu_rol: fullRow.rolId, // Si el objeto trae el ID del rol
+  };
 
-  fillDataForm(fullRow, forms.formUpdateDataUser);
+  fillDataForm(formData, forms.formUpdateDataUser);
   InitComponents.initInputs(); // re iniciamos los inputs.
 
   // abrir el modal.
@@ -350,13 +345,13 @@ export const updateUser = () => {
       //   return;
 
       try {
-        const result = await Usuarios.sendData(`${vars.url}save`, 'PUT', data);
+        const result = await Usuarios.sendData(`${vars.url}save`, METHOD.PUT, data);
 
         if (result.status) {
           initAlert(result.message, 'success');
           modals.modalEditarUsuario.style.display = 'none';
           // renderizar nuevamente la pagina.
-          renderUsers({ pagina: dataPaginate.paginaActual });
+          renderUsers({ pagina: Usuarios.actualPage });
           return;
         }
       } catch (error) {

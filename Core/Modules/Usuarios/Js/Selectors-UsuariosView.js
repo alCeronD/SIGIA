@@ -34,6 +34,7 @@ export const buttons = {
 
 export const vars = {
   url: 'dashboard.php?modulo=Usuarios&controlador=Usuarios&function=',
+  urlRol: 'dashboard.php?modulo=Roles&controlador=Roles&function=',
 };
 
 export const selectors = {

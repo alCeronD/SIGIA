@@ -44,4 +44,19 @@ class ServicesRoles
     ];
     return $this->fModel->select($columns)->from('funciones fu')->innerJoin('roles_funciones rf', 'fu.id_funcion', '=', 'rf.rlp_id_funcion')->innerJoin('roles ro', 'ro.rl_id', '=', 'rf.rlp_id_rl')->innerJoin('modulos mo', 'mo.id_m', '=', 'fu.id_modulo')->where(['ro.rl_id', '=', $rol])->prepareSql($dataSelect)->get();
   }
+
+  public function accessRoles()
+  {
+    try {
+      header(CONTENT_TYPE);
+      $data = UtilsFunctions::returnGetDecode();
+      $prueba = $_GET['valorPrueba'];
+      var_dump($prueba);
+
+      // var_dump($data);
+      die();
+    } catch (\Throwable $th) {
+      //throw $th;
+    }
+  }
 }

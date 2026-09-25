@@ -20,7 +20,6 @@ class Router
       $controller = substr($controller, 0, $posicion);
     }
 
-
     if ($pagina != 'dashboard') {
       $url = "$pagina.php?modulo=$modulo&controlador=$controller&function=$function";
     } else {
@@ -46,7 +45,7 @@ class Router
       $controladorFile = ucfirst($controlador) . "Controller.php";
       $rutaFile = realpath(BASE_PATH . "/../Modules/$modulo/Controller/$controladorFile");
       if (!is_file($rutaFile)) {
-        throw new Exception("No existe el controlador", HttpStatus::NOT_FOUND);
+        throw new Exception("No existe el acceso", HttpStatus::NOT_FOUND);
       }
 
       include_once $rutaFile;
