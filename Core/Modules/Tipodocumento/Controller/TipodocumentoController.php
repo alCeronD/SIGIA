@@ -46,34 +46,37 @@ class TipodocumentoController extends ConfigController implements CrudInterface
   public function getData()
   {
     header(CONTENT_TYPE);
-    $data = UtilsFunctions::returnGetDecode();
-    $page = (isset($_GET[CR_PAGINA])) ? (int) $_GET[CR_PAGINA] : 1;
-    $limit = (isset($_GET[CR_WORD_LIMIT])) ? (int) $_GET[CR_WORD_LIMIT] : LIMIT;
-    $resultCount = $this->tpModel->getCount()
+    $page = (isset($_GET[CR_PAGINA])) ? (int) $_GET[CR_PAGINA] : null;
+    $limit = (isset($_GET[CR_WORD_LIMIT])) ? (int) $_GET[CR_WORD_LIMIT] : null;
+
+    $resultCount = $this->tpModel
+      ->getCount()
       ->prepareSql()
       ->get();
-    $resultPaginate = UtilsFunctions::executePaginate($resultCount[CR_ROW_COUNTS], $limit, $page);
+    $dataSql = [];
+    $resultPaginate = [];
+    // valido si no es nullo porque accedo a esta funcionalidad desde otros modulos pero sin los paremetros limit y page
+    if (!is_null($limit) && !is_null($page)) {
+      $resultPaginate = UtilsFunctions::executePaginate($resultCount[CR_ROW_COUNTS], $limit, $page);
+      $dataSql[CR_DATA] = [
+        CR_WORD_LIMIT           => $limit,
+        CR_OFFSET => (int) $resultPaginate[CR_OFFSET]
+      ];
+    }
 
-    $dataSql[CR_DATA] = [
-      CR_WORD_LIMIT           => $limit,
-      CR_OFFSET => (int) $resultPaginate[CR_OFFSET]
-    ];
-
-    // capturamos la data o creamos la consulta desde el servicio
-    $getAllTps = $this->stp->getAllTps(true);
-    $resultSelect = $getAllTps->prepareSql($dataSql)->get();
+    $getAllTps = is_null($limit) || is_null($page) ? $this->stp->getAllTps(false) : $this->stp->getAllTps(true);
+    $resultSelect = is_null($limit) || is_null($page) ?   $getAllTps : $getAllTps->prepareSql($dataSql)->get();
 
 
-    // consulta select basica de momento.
-    if (count($resultSelect) > 0) {
+    if (is_null($limit) || is_null($page)) {
+      Response::responseRequest(HttpStatus::OK, true, "Acceso desde sessionStorage", $resultSelect);
+    } else {
       Response::responseRequest(HttpStatus::OK, true, CR_REGISTROS, [
         CR_TOTAL_REGISTROS => $resultCount,
         CR_PAGINA_ACTUAL => ($page > $resultPaginate[CR_TOTAL_PAGINAS]) ? $resultPaginate[CR_TOTAL_PAGINAS] : $page,
         CR_CANTIDAD_PAGINAS => $resultPaginate[CR_TOTAL_PAGINAS],
         CR_DATA => $resultSelect
       ]);
-    } else if (count($resultSelect) > 0) {
-      Response::responseRequest(HttpStatus::OK, true, CR_REGISTROS, $resultSelect);
     }
   }
 

@@ -116,6 +116,7 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [ ] Desarrollar feature de historia de usuario carga de datos.
 - [ ] Desarrollar mockup de auditoria de usuarios e historia de usuario de auditoria.
 OPCION AUDITORIA MODULO PRESTAMOS = CREAR AL MODULO DE SOLICITUD DE PRESTAMO O PRESTAMOS LA OPCION DE AUDITORIA, DE SABER QUIEN HIZO EL PRESTAMO Y CUANDO SE EJECUTO.
-- [ ] Implementar accion de eliminar usuario
-- [ ] View Users = implementar los roles a los cuales se pueden asignar al usuario
-- [ ] Implementar sessionStorage para guardar los roles en la variable de storage para re utilizar los datos
+- **Crear usuario**
+  - [ ] View Users = implementar los roles a los cuales se pueden asignar al usuario
+  - [X] Implementar sessionStorage para guardar los roles en la variable de storage para re utilizar los datos
+  - [ ] Implementar feature de asignarRol

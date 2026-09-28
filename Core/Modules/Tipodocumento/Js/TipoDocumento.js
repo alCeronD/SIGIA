@@ -100,7 +100,8 @@ const eliminarItem = (id = 0) => {
         }
         if (responseDelete.status) {
           initAlert(responseDelete.message, 'success');
-          loadTable({ pagina: actualPage });
+          sessionStorage.removeItem('TPData');
+          loadTable({ pagina: render.actualPage });
           return;
         }
       } catch (error) {
@@ -139,8 +140,9 @@ const changeStatus = (id, fullRow) => {
     }
     const responseChangeStatus = await render.sendData(`${url}changeStatus`, 'PUT', dataStatus);
     if (responseChangeStatus.status) {
+      sessionStorage.removeItem('TPData');
       initAlert(responseChangeStatus.message, 'success');
-      loadTable({ pagina: actualPage });
+      loadTable({ pagina: render.actualPage });
       return;
     }
   });
@@ -161,6 +163,7 @@ const loadTable = async ({ pagina: actualPage }) => {
   const realPage = responseGetData.data.paginaActual;
 
   data = responseGetData.data.data;
+
   dataPaginate = {};
   render.actualPage = realPage;
   dataPaginate['totalRegistros'] = responseGetData.data.totalRegistros;
@@ -237,8 +240,9 @@ formTp.addEventListener('submit', (f) => {
 
         if (responseCreate.status) {
           initAlert(responseCreate.message, 'success');
+          sessionStorage.removeItem('TPData');
+          loadTable({ pagina: render.actualPage });
           formTp.reset();
-          loadTable({ pagina: actualPage });
           return;
         }
       }

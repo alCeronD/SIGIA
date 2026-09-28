@@ -21,7 +21,7 @@ class UsuariosController extends ConfigController implements CrudInterface
             'actualizarPersonalData' => ['UpdatePersonalData.css']
         ],
         "js" => [
-            'usuariosIndexView' => [],
+            'usuariosIndexView' => ['UsuariosIndex.js'],
             'createUserView' => ['CreateUser.js'],
             'auditoriaUserView' => ['AuditoriasUsuarios.js'],
             'usuariosView' => ['UsuariosView.js'],
@@ -367,4 +367,18 @@ class UsuariosController extends ConfigController implements CrudInterface
      * @return void
      */
     public function delete() {}
+
+    /**
+     * Funcion para cambiar el rol del usuario
+     *
+     * @return void
+     */
+    public function changeRolUser()
+    {
+        try {
+            header(CONTENT_TYPE);
+        } catch (\Throwable $th) {
+            Response::responseRequest($th->getCode(), false, $th->getMessage());
+        }
+    }
 }
