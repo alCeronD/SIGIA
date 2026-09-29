@@ -15,6 +15,7 @@ export const mapForm = {
 export const forms = {
   formUpdateUser: document.querySelector('#formUpdateUser'),
   formUpdateDataUser: document.querySelector('#formUpdateDataUser'),
+  formAsingUser: document.querySelector('#formAsigUser'),
 };
 
 // inputs de los formularios
@@ -22,14 +23,19 @@ export const inputForms = {
   formUpdateDataUser: {
     observacion: forms.formUpdateDataUser.querySelector('#usu_observacion'),
   },
+  formAsingUser: {
+    rolSelect: forms.formAsingUser.querySelector('#usr_rl_id'),
+  },
 };
 
 export const modals = {
   modalEditarUsuario: document.querySelector('#modalEditarUsuario'),
+  modalAsignarUsuario: document.querySelector('#modalAsigarRol'),
 };
 
 export const buttons = {
   btnCloseModalEditarUsuario: document.querySelector('.close-modal'),
+  btnCloseModalAsigRol: document.querySelector('.closeAsigRol'),
 };
 
 export const vars = {

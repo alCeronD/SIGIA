@@ -83,12 +83,12 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 ├── Services
 │   └── ServicesUsuarios.php  # Capa de servicios que sirve para conectar con otros modulos en caso de ser requerido
 └── Views
-    ├── auditoriasView.php
-    ├── createUsuariosView.php
-    ├── detailUser.php
-    ├── updatePersonalData.php
-    ├── usuariosIndex.php
-    └── usuariosView.php
+    ├── auditoriasView.php # Vista del modulo de auditoria de usuario
+    ├── createUsuariosView.php # Vista para crear el usuario
+    ├── detailUser.php # Vista para visualizar el detalle completo del usuario
+    ├── updatePersonalData.php # Vista para actualizar los datos personales del usuario
+    ├── usuariosIndex.php # Acceso a la vista principal del modulo
+    └── usuariosView.php # Listado de usuarios registrados del sistema
 ```
 
 ### TODOS ESPECÍFICOS
@@ -98,7 +98,7 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [X] Desarrollar historia de usuario # HU-U00
 - [X] Desarrollar historia de usuario # HU-U01 (Registrar usuario).
 - [X] Ajustar historia de usuario de paginacion de usuario y consulta con filtros # HU -U02.
-- [ ] Re factorizar css
+- [X] Re factorizar css
   - [X] Css refactorizado en update personalData
   - [x] Css refactorizado en VER USUARIO
 - [X] Re factorizar js
@@ -117,6 +117,6 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [ ] Desarrollar mockup de auditoria de usuarios e historia de usuario de auditoria.
 OPCION AUDITORIA MODULO PRESTAMOS = CREAR AL MODULO DE SOLICITUD DE PRESTAMO O PRESTAMOS LA OPCION DE AUDITORIA, DE SABER QUIEN HIZO EL PRESTAMO Y CUANDO SE EJECUTO.
 - **Crear usuario**
-  - [ ] View Users = implementar los roles a los cuales se pueden asignar al usuario
+  - [X] View Users = implementar los roles a los cuales se pueden asignar al usuario
   - [X] Implementar sessionStorage para guardar los roles en la variable de storage para re utilizar los datos
-  - [ ] Implementar feature de asignarRol
+  - [X] Implementar feature de asignarRol

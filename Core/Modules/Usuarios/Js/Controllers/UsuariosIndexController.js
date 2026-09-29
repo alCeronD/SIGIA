@@ -1,7 +1,6 @@
 import { HttpData, METHOD, StorageHelper } from '../../../../../public/assets/js/utils/index.js';
-// clase para exportar y crear
+// Clase controlador de la vista principal del modulo
 export class UsuariosIndexController {
-  // propiedades
   #Http = new HttpData();
   #urls = {
     rolesController: 'dashboard.php?modulo=Roles&controlador=Roles&function=',

@@ -4,9 +4,11 @@
 class ServicesUsuarios
 {
   protected UsuariosModel $userModel;
+  protected UsuariosRolesModel $userRolModel;
   public function __construct()
   {
     $this->userModel = new UsuariosModel();
+    $this->userRolModel = new UsuariosRolesModel();
   }
   // Function para extraer usuario usando el documento de identidad.
   public function getUserByDocum(int $docum)
@@ -23,6 +25,7 @@ class ServicesUsuarios
       ->get();
     return $userData;
   }
+
 
   /**
    * Function para retornar la lista de los usuarios.

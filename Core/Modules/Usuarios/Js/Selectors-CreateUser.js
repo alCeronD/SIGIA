@@ -24,7 +24,7 @@ export const formSelectors = {
   apellidosInput: document.querySelector('#usu_apellidos'),
   correoInput: document.querySelector('#usu_email'),
   textarea: document.querySelector('#usu_observacion'),
-  passwordInput: document.querySelector('#usu_password'), // Le cambié el nombre a passwordInput para mantener consistencia con los demás inputs
+  passwordInput: document.querySelector('#usu_password'),
   tipoDocumento: document.querySelector('#usu_tp_id'),
   roles: document.querySelector('#usr_rl_id'),
   observacion: document.querySelector('#usu_observacion'),

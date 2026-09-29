@@ -77,6 +77,28 @@
   }
 }
 
+.modalContentAsignarRol {
+  background-color: var(--white);
+  margin: auto;
+  padding: 8px;
+  width: 50%;
+  height: fit-content;
+  display: grid;
+  grid-template-areas:
+    "titleSection"
+    "formAsing";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+
+  .titleSection {
+    grid-area: titleSection;
+  }
+
+  .formAsing {
+    grid-area: formAsing;
+  }
+}
+
 
 
 #modalEditarUsuario {

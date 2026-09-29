@@ -67,6 +67,7 @@ define('MSG_REGISTRO_CAMBIO_ESTADO', 'Cambio de estado correctamente.');
 define('MSG_ERROR_EJECUTAR_PROCESO', 'Error al ejecutar el procedimiento.');
 define('MSG_ERROR_CAMPOS', 'Todos los campos son obligatorios');
 define('MSG_ERROR_NO_LETRAS', 'No se permiten letras');
+define('MSG_DATA_EMPTY', 'Datos vacios');
 
 // variables
 define('CR_TOTAL_REGISTROS', 'totalRegistros');

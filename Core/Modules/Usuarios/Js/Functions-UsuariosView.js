@@ -28,6 +28,7 @@ import {
   mapForm,
   messagesUser,
   titlesUsers,
+  inputForms,
 } from './Selectors-UsuariosView.js';
 
 /** Function para renderizar los filtros de la vista usuariosView */
@@ -202,6 +203,26 @@ const Usuarios = new Render({
     key: 'btnChangeStatus',
     action: (id, fullRow) => changeStatusUser(id, fullRow),
   },
+  btnSetRol: {
+    value: (fullRow, button) => {
+      // implementamos el estado del usuario.
+
+      let icon = createI('security');
+
+      let cyan = 'red darken-3';
+      let hoover = 'waves-teal';
+
+      addClassItem(button, {
+        btn: 'btn',
+        waves: 'waves-effect',
+        hoover: hoover,
+        cyan: cyan, //button color.
+      });
+      button.appendChild(icon);
+    },
+    key: 'btnChangeStatus',
+    action: (id, fullRow) => setRol(id, fullRow),
+  },
 });
 export const renderUsers = async (params = { pagina: 1 }) => {
   // si el filtro esta vacio, debemos de enviar la peticion sin parametros, en caso contrario, con el parametro especificado.
@@ -291,7 +312,44 @@ const editData = (id, fullRow) => {
   openModal(modals.modalEditarUsuario);
 };
 
+/**
+ * Funcion para asignar el rol al usuario
+ *
+ * @param {*} id
+ * @param {*} fullRow
+ */
+const setRol = (id, fullRow) => {
+  const storageDataRol = sessionStorage.getItem('RData');
+  const rolData = JSON.parse(storageDataRol);
+  let fragmentRoles = document.createDocumentFragment();
+
+  let optionDisableRoles = document.createElement('option');
+  optionDisableRoles.innerText = 'Seleccione el rol';
+  optionDisableRoles.selected = true;
+  optionDisableRoles.disabled = false;
+  optionDisableRoles.value = '';
+  fragmentRoles.append(optionDisableRoles);
+
+  rolData.forEach((element) => {
+    let optionRoles = document.createElement('option');
+    optionRoles.value = element.rl_id; //adicionamos al value el tipo de elemento
+    optionRoles.innerText = `${element.rl_nombre}`;
+    fragmentRoles.append(optionRoles);
+  });
+  // console.log(inputForms.formAsingUser.rolSelect);
+  inputForms.formAsingUser.rolSelect.append(fragmentRoles);
+  const dataForm = {
+    usu_id: fullRow.IdUsuario,
+    usu_docum: fullRow.nroDocumento,
+  };
+  fillDataForm(dataForm, forms.formAsingUser);
+  InitComponents.initSelect();
+  // debe de mostrarme modal con los roles a asignar.
+  openModal(modals.modalAsignarUsuario);
+};
+
 closeModal(modals.modalEditarUsuario, buttons.btnCloseModalEditarUsuario);
+closeModal(modals.modalAsignarUsuario, buttons.btnCloseModalAsigRol);
 
 const changeStatusUser = (id, fullRow) => {
   try {
@@ -357,6 +415,47 @@ export const updateUser = () => {
       } catch (error) {
         initAlert(error.message || 'Error en la solicitud', 'error');
       }
+    });
+  }
+};
+
+// evento para asignar EL rol usuario
+export const asingRol = () => {
+  if (forms.formAsingUser) {
+    forms.formAsingUser.addEventListener('submit', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // console.log(e.target);
+      const formData = new FormData(e.target);
+      const dataTarget = Object.fromEntries(formData);
+
+      mostrarConfirmacion(
+        'Asignar rol',
+        `Esta seguro de asignar el rol al usuario?`,
+        async (response) => {
+          try {
+            if (!response) return;
+            const responseAsigRol = await Usuarios.sendData(
+              `${vars.url}changeRol`,
+              METHOD.POST,
+              dataTarget
+            );
+
+            if (!responseAsigRol.status) {
+              throw new Error(responseAsigRol.message);
+            }
+
+            initAlert(responseAsigRol.message, 'success');
+            renderUsers({ pagina: Usuarios.actualPage });
+            modals.modalAsignarUsuario.style.display = 'none';
+            return;
+          } catch (error) {
+            initAlert(error.message, 'error');
+            console.error(error.message);
+          }
+        }
+      );
     });
   }
 };

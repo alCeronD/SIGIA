@@ -55,7 +55,7 @@
 
       <span class="teal-text text-darken-3" id="closeModalBtn">Editar Informacion Usuario</span>
       <button type="button" class="closeModalBtn">
-        <span class="close-modal closeModalBtn" title="Cerrar">&times;</span>
+        <span class="close-modal closeModalBtn " title="Cerrar">&times;</span>
       </button>
     </div>
 
@@ -102,12 +102,35 @@
         <input type="password" name="usu_password" id="usu_password">
       </div>
 
-      <div class="input-field rol">
-        <label for="rol_id" class="active">Rol</label>
-        <select name="rol_id" id="rol_id" class="browser-default">
-          <!-- renderizado con javascript -->
-          <option value="">Seleccione un rol</option>
+      <div class="inputBtn btn-update">
+        <button type="submit" class="btn  waves-effect btnInfo">
+          <i class="material-icons">save</i>
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<!-- modalAsignarRol -->
+<div id="modalAsigarRol" class="modal modal-overlay">
+  <div class="modalContentAsignarRol modal-content .modal-closebtn">
+    <div class="titleSection">
+      <span class="teal-text text-darken-3" id="closeModalBtn">Asignar Rol</span>
+      <button type="button" class="closeModalBtn">
+        <span class="close-modal closeModalBtn closeAsigRol" title="Cerrar">&times;</span>
+      </button>
+    </div>
+
+    <form id="formAsigUser" class="formAsing">
+      <input type="hidden" name="usu_id" id="usu_id">
+      <input type="hidden" name="usu_docum" id="usu_docum">
+      <div class="inputContent selectRol input-field">
+        <i class="material-icons prefix">badge</i>
+        <select name="usr_rl_id" id="usr_rl_id" class="validate">
         </select>
+        <label for="usr_rl_id"><?php echo US_WORD_ROLES; ?><span class="red-text">*</span></label>
+        <span class="helper-text" data-error="" data-success=""></span>
       </div>
 
       <div class="inputBtn btn-update">
