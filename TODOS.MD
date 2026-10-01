@@ -111,6 +111,8 @@ Listado de TODOS generales y específicos por cada módulo.
     ')])->from('areas')->orderBy('ar_cod', 'ASC')->get();
   ```
 
+- [X] Fix: implementar la pagina actual del usuario si esta no es par o impar
+
 ## Específicos
 
 ## Estado de Módulos

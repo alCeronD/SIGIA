@@ -212,31 +212,49 @@ export class Render extends HttpData {
       ul.append(liPreview);
 
       fragmentCustomPage.append(ul);
-      for (let actualPage = 1; actualPage <= dataPaginate.cantidadPaginas; actualPage++) {
-        if (
-          actualPage === 1 ||
-          actualPage === dataPaginate.cantidadPaginas ||
-          actualPage % 3 === 0
-        ) {
-          // PAGINAS ESPECIFICAS.
-          const liActualPage = document.createElement('li');
-          liActualPage.style.cursor = 'pointer';
-          liActualPage.style.pointerEvents = 'auto';
-          addClassItem(liActualPage, { btnPaginate: 'btnPaginate', liPaginate: 'liPaginate' });
-          liActualPage.dataset.actualpage = actualPage;
-          liActualPage.innerText = actualPage;
-          // si estas en la pagina actual entonces agregarle la clase para determinar que esta activa.
-          if (actualPage === parseInt(this.actualPage)) {
-            addClassItem(liActualPage, { active: 'active' });
-          } else {
-            ul.classList.remove('active');
-          }
 
-          ul.append(liActualPage);
+      // cantidad de botones definidas para visualizar en pantalla.
+      const maxBotonesVisibles = 5;
+      // calculamos rango dinamico entre la pagina actual
+      let paginaInicio = Math.max(
+        1,
+        dataPaginate.paginaActual - Math.floor(maxBotonesVisibles / 2)
+      );
+      let paginaFin = paginaInicio + maxBotonesVisibles - 1;
 
-          fragmentContainer.append(ul);
-        }
+      // Ajusta los límites si nos pasamos del total de páginas
+      if (paginaFin > dataPaginate['cantidadPaginas']) {
+        paginaFin = dataPaginate['cantidadPaginas'];
+        paginaInicio = Math.max(1, paginaFin - maxBotonesVisibles + 1);
       }
+
+      // objetivo - crear un set que me permita implementar las paginas entre el rango a crear
+      let pagesToDraw = new Set();
+      for (let index = paginaInicio; index <= paginaFin; index++) {
+        let newNumber = index;
+        pagesToDraw.add(newNumber);
+      }
+
+      pagesToDraw.forEach((element) => {
+        const liActualPage = document.createElement('li');
+        liActualPage.style.cursor = 'pointer';
+        liActualPage.style.pointerEvents = 'auto';
+        addClassItem(liActualPage, {
+          btnPaginate: 'btnPaginate',
+          liPaginate: 'liPaginate',
+        });
+        liActualPage.dataset.actualpage = element;
+        liActualPage.innerText = element;
+
+        let itemActualPage = parseInt(liActualPage.dataset.actualpage);
+        if (itemActualPage === this.actualPage) {
+          addClassItem(liActualPage, { active: 'active' });
+        } else {
+          ul.classList.remove('active');
+        }
+        ul.append(liActualPage);
+        fragmentContainer.append(ul);
+      });
 
       // BOTON NEXT
       const liNext = document.createElement('li');
@@ -250,7 +268,6 @@ export class Render extends HttpData {
       ul.append(liNext);
 
       fragmentContainer.append(ul);
-
       containerPaginate.append(fragmentContainer);
     }
     td.append(containerPaginate);
