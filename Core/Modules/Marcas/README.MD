@@ -10,6 +10,7 @@
   - [Arquitectura Interna (Pre-documentación)](#arquitectura-interna-pre-documentación)
   - [Dependencias de Base de Datos](#dependencias-de-base-de-datos)
   - [Requerimientos](#requerimientos)
+    - [Historias de usuario](#historias-de-usuario)
   - [Diagramas UML](#diagramas-uml)
     - [Caso de uso](#caso-de-uso)
     - [Casos de uso Extendido](#casos-de-uso-extendido)
@@ -42,6 +43,16 @@ Módulo auxiliar encargado de gestionar el catálogo de marcas disponibles en el
 ## Requerimientos
 
 [Ver README.md](/Docs/Requirements/Configuracion.MD)
+
+### Historias de usuario
+
+| Nombre historia          |                         Documentación                         |
+| :----------------------- | :-----------------------------------------------------------: |
+| **Cambiar estado**       | [Ver README](/Docs/User_Story/Configuracion/CambiarEstado.MD) |
+| **Eliminar item**        | [Ver README](/Docs/User_Story/Configuracion/EliminarItem.MD)  |
+| **Modificar item**       | [Ver README](/Docs/User_Story/Configuracion/ModificarItem.MD) |
+| **Registrar Item**       | [Ver README](/Docs/User_Story/Configuracion/RegistrarItem.MD) |
+| **Visualizar registros** |   [Ver README](/Docs/User_Story/Configuracion/VerItems.MD)    |
 
 ## Diagramas UML
 

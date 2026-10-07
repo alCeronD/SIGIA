@@ -9,6 +9,13 @@
   - [Descripción](#descripción)
   - [Arquitectura Interna (Pre-documentación)](#arquitectura-interna-pre-documentación)
   - [Dependencias de Base de Datos](#dependencias-de-base-de-datos)
+  - [Documentación del sistema](#documentación-del-sistema)
+    - [Requerimientos](#requerimientos)
+    - [Historias de usuario](#historias-de-usuario)
+  - [Diagramas UML](#diagramas-uml)
+    - [Caso de uso](#caso-de-uso)
+    - [Caso de uso extendido](#caso-de-uso-extendido)
+    - [Diagramas de secuencia](#diagramas-de-secuencia)
     - [TODOS ESPECÍFICOS](#todos-específicos)
 
 ## Descripción
@@ -51,7 +58,6 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
   - `roles_funciones (rlp_id)` -> Relacion con la tabla usuarios para guardar el rol al cual pertenece el usuario.
 
 ```bash
-.
 ├── Const
 │   └── UsuariosConst.php # Archivo de variables constantes usadas en el modulo
 ├── Controller
@@ -91,6 +97,46 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
     └── usuariosView.php # Listado de usuarios registrados del sistema
 ```
 
+## Documentación del sistema
+
+### Requerimientos
+
+![Ver README](./Docs/Requirements.MD)
+
+### Historias de usuario
+
+| Nombre historia                   |                      Documentación                       |
+| :-------------------------------- | :------------------------------------------------------: |
+| **Crear usuario**                 |     [Ver README](./Docs/User_Story/CrearUsuario.MD)      |
+| **Modificar Usuario**             |   [Ver README](./Docs/User_Story/ModificarUsuario.MD)    |
+| **Habilitar/Inhabilitar usuario** | [Ver README](./Docs/User_Story/Habilitar_Inhabilitar.MD) |
+| **Actualizar datos personales**   |    [Ver README](./Docs/User_Story/ActualizarDatos.MD)    |
+| **Consultar usuario**             |   [Ver README](./Docs/User_Story/ConsultarUsuario.MD)    |
+
+## Diagramas UML
+
+### Caso de uso
+
+![Caso de uso](./Docs/Uml/CasodeUso_Extend/moduloUsuariosCasoDeUso.jpg)
+
+### Caso de uso extendido
+
+[Ver readme](./Docs/Uml/CasodeUso_Extend/Extend_Usuarios.MD)
+
+### Diagramas de secuencia
+
+**Crear usuario**
+![Crear Usuario](./Docs/Uml/Secuencia/crearUsuario.jpg)
+
+**Actualizar datos personales**
+![Actualizar datos personales](./Docs/Uml/Secuencia/actualizarDatosPersonales.jpg)
+
+**Habilitar/Inhabilitar Usuario**
+![Habilitar/Inhabilitar Usuario](./Docs/Uml/Secuencia/habilitarInhabilitarUsuario.jpg)
+
+**modificar Datos Usuario**
+![modificarDatosUsuario](./Docs/Uml/Secuencia/modificarDatosUsuario.jpg)
+
 ### TODOS ESPECÍFICOS
 
 - **Módulo Usuario**
@@ -120,3 +166,12 @@ OPCION AUDITORIA MODULO PRESTAMOS = CREAR AL MODULO DE SOLICITUD DE PRESTAMO O P
   - [X] View Users = implementar los roles a los cuales se pueden asignar al usuario
   - [X] Implementar sessionStorage para guardar los roles en la variable de storage para re utilizar los datos
   - [X] Implementar feature de asignarRol
+- [ ] Implementar documentacion
+  - [X] Requerimientos
+  - [X] Historias de usuario
+  - [ ] Diagramas
+    - [X] Caso de uso
+    - [X] Caso de uso extendido
+    - [X] Secuencia
+    - [ ] Estado
+    - [ ] Actividades
