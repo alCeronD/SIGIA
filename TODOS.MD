@@ -124,7 +124,7 @@ Listado de TODOS generales y específicos por cada módulo.
 | **Marcas**             |   100%   |  Completado   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
 | **Roles**              |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Roles/README.MD)        |
 | **Permisos**           |   90%    |   Pendiente   |      [Ver README](./Core/Modules/Permisos/README.MD)      |
-| **Usuarios**           |   70%    |  En Proceso   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |
+| **Usuarios**           |   95%    |  Completado   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |
 | **Categorias**         |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Categorias/README.MD)     |
 | **Dashboard**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Dashboard/README.MD)      |
 | **Elementos**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Elementos/README.MD)      |
@@ -133,7 +133,7 @@ Listado de TODOS generales y específicos por cada módulo.
 | **SolicitudPrestamos** |    0%    |   Pendiente   | [Ver README](./Core/Modules/SolicitudPrestamos/README.MD) |
 | **ReservaPrestamos**   |    0%    |   Pendiente   |  [Ver README](./Core/Modules/ReservaPrestamos/README.MD)  |
 | **Gestionmodulos**     |   100%   |   Pendiente   |   [Ver README](./Core/Modules/Gestionmodulos/README.MD)   |
-| **GeneralCrud**        |    0%    |   Pendiente   |    [Ver README](./Core/Modules/GeneralCrud/README.MD)     |
+| **GeneralCrud**        |    0%    |      N/A      |    [Ver README](./Core/Modules/GeneralCrud/README.MD)     |
 | **Funciones**          |   100%   |   Pendiente   |     [Ver README](./Core/Modules/Funciones/README.MD)      |
 
 ## Archivos especificos
@@ -167,6 +167,6 @@ Listado de TODOS generales y específicos por cada módulo.
 - [ ] Ajustar diagrama de clases
 - [ ] Crear Y/o ajustar historias de usuario
 - [ ] Adicionar requisitos requeridos para cada modulo.
-- [ ] Referenciar toda la documentación mediante un link de google drive para observar la documentación del producto
+- [ ] Referenciar toda la documentación mediante un link de google drive para observar la documentación no solo dentro del drive sino en cada modulo
 - [ ] Colocar requisitos del sistema implementados y diagramas que se usaron para el proceso de creación del producto
 - [ ] Crear los requerimientos e historias de usuario de los nuevos modulos = GestionModulos, Funciones, Permisos

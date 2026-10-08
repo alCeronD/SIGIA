@@ -15,6 +15,8 @@
     - [Previsualización](#previsualización)
     - [Módulos del sistema](#módulos-del-sistema)
     - [Diagramas Generales](#diagramas-generales)
+      - [**DIAGRAMA DE CLASES**](#diagrama-de-clases)
+      - [**DIAGRAMA DE DESPLIEGUE**](#diagrama-de-despliegue)
     - [Requerimientos de instalación](#requerimientos-de-instalación)
       - [Instalación del proyecto](#instalación-del-proyecto)
 
@@ -64,9 +66,9 @@ Capturas del proyecto
 
 ### Diagramas Generales
 
-**DIAGRAMA DE CLASES**
+#### **DIAGRAMA DE CLASES**
 
-**DIAGRAMA DE DESPLIEGUE**
+#### **DIAGRAMA DE DESPLIEGUE**
 
 ### Requerimientos de instalación
 

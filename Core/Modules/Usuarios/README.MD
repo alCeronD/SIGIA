@@ -16,6 +16,8 @@
     - [Caso de uso](#caso-de-uso)
     - [Caso de uso extendido](#caso-de-uso-extendido)
     - [Diagramas de secuencia](#diagramas-de-secuencia)
+    - [Diagramas de actividades](#diagramas-de-actividades)
+    - [Diagramas de estados](#diagramas-de-estados)
     - [TODOS ESPECÍFICOS](#todos-específicos)
 
 ## Descripción
@@ -68,6 +70,33 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 │   ├── UpdatePersonalData.css # Css de la vista actualizar datos personales
 │   ├── UsuariosIndex.css # css de la vista del MODULO PRINCIPAL
 │   └── UsuariosView.css # css del listado de los usuarios
+├── Docs
+│   ├── Requirements.MD # Requerimientos especificos del modulo
+│   ├── Uml
+│   │   ├── Actividades # Carpeta con los diagramas de actividades
+│   │   │   ├── editarUsuario.jpg
+│   │   │   ├── habilitarInhabilitarUsuario.jpg
+│   │   │   └── registrarUsuario.jpg
+│   │   ├── CasodeUso_Extend # Archivo con el listado de el caso de uso extendido detallado + el diagrama de caso de uso
+│   │   │   ├── Extend_Usuarios.MD
+│   │   │   └── moduloUsuariosCasoDeUso.jpg
+│   │   ├── Estados # Carpeta con los diagramas de estados
+│   │   │   ├── actualizarUsuario.jpg
+│   │   │   ├── ConsultarUsuarios.jpg
+│   │   │   ├── Inhabilitar-Habilitar.jpg
+│   │   │   └── registrarUsuario.jpg
+│   │   └── Secuencia # Carpeta con los diagramas de secuencia
+│   │       ├── actualizarDatosPersonales.jpg
+│   │       ├── consultarUsuario.jpg
+│   │       ├── crearUsuario.jpg
+│   │       ├── habilitarInhabilitarUsuario.jpg
+│   │       └── modificarDatosUsuario.jpg
+│   └── User_Story # Historias de usuario del del modulo
+│       ├── ActualizarDatos.MD
+│       ├── ConsultarUsuario.MD
+│       ├── CrearUsuario.MD
+│       ├── Habilitar_Inhabilitar.MD
+│       └── ModificarUsuario.MD
 ├── Js
 │   ├── AuditoriasUsuarios.js # script que corresponde al manejo del doom de auditorias, peticiones, entre otros
 │   ├── CreateUser.js # Script para crear el usuario en la base de datos
@@ -101,7 +130,7 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 
 ### Requerimientos
 
-![Ver README](./Docs/Requirements.MD)
+[Ver README](./Docs/Requirements.MD)
 
 ### Historias de usuario
 
@@ -137,6 +166,31 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 **modificar Datos Usuario**
 ![modificarDatosUsuario](./Docs/Uml/Secuencia/modificarDatosUsuario.jpg)
 
+### Diagramas de actividades
+
+**Editar usuario**
+![Editar Usuario](./Docs/Uml/Actividades/editarUsuario.jpg)
+
+**Habilitar/Inhabilitar usuario**
+![Habilitar/Inhabilitar Usuario](./Docs/Uml/Actividades/habilitarInhabilitarUsuario.jpg)
+
+**Registrar usuario**
+![Registrar Usuario](./Docs/Uml/Actividades/registrarUsuario.jpg)
+
+### Diagramas de estados
+
+**Actualizar usuario**
+![Actualizar](./Docs/Uml/Estados/actualizarUsuario.jpg)
+
+**Consultar Usuario**
+![Consultar](./Docs/Uml/Estados/ConsultarUsuarios.jpg)
+
+**Inhabilitar/Habilitar usuario**
+![Habilitar/Inhabilitar](./Docs/Uml/Estados/Inhabilitar-Habilitar.jpg)
+
+**Registrar usuario**
+![Registrar](./Docs/Uml/Estados/registrarUsuario.jpg)
+
 ### TODOS ESPECÍFICOS
 
 - **Módulo Usuario**
@@ -166,12 +220,12 @@ OPCION AUDITORIA MODULO PRESTAMOS = CREAR AL MODULO DE SOLICITUD DE PRESTAMO O P
   - [X] View Users = implementar los roles a los cuales se pueden asignar al usuario
   - [X] Implementar sessionStorage para guardar los roles en la variable de storage para re utilizar los datos
   - [X] Implementar feature de asignarRol
-- [ ] Implementar documentacion
+- [X] Implementar documentacion
   - [X] Requerimientos
   - [X] Historias de usuario
-  - [ ] Diagramas
+  - [X] Diagramas
     - [X] Caso de uso
     - [X] Caso de uso extendido
     - [X] Secuencia
-    - [ ] Estado
-    - [ ] Actividades
+    - [X] Estado
+    - [x] Actividades
