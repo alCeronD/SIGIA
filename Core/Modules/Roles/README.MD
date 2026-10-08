@@ -69,3 +69,10 @@ Gestiona los roles de usuario dentro del sistema, permitiendo su creación, edic
 - [ ] Revisar el limite de caracteres en el input de registrar rol, debido a que este me marca un limite, error en la lógica de negocio.
 - [ ] En el modulo **ROLES** crear otra vista interna y otro controlador para definir plantilla por defecto del sistema. - TODO CANCELADO
 - [ ] Crear logs personalizados del modulo
+- [ ] Implementar documentacion
+  - [ ] requerimientos
+  - [ ] Historias de usuario
+  - [ ] Uml
+    - [ ] caso de uso
+    - [ ] secuencia
+    - [ ] actividad

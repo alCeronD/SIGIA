@@ -37,8 +37,8 @@ const renderClass = new Render({
       addClassItem(button, {
         btn: 'btn',
         waves: 'waves-effect',
-        hoover: 'waves-yellow',
-        cyan: 'yellow', //button color.
+        hoover: 'waves-green',
+        green: 'green', //button color.
       });
     },
     key: 'btnAsing',
