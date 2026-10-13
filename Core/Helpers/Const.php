@@ -92,6 +92,9 @@ define('CR_TIPO_DOCUMENTO', 'tipoDocumento');
 define('CR_ROLES_LOWER_CASE', 'roles');
 define('CR_CSS', 'css');
 define('CR_JS', 'js');
+define('CR_CONTROLADOR', 'controlador');
+define('CR_FUNCION', 'funcion');
+define('CR_IS_MAIN_VIEW', 'is_main_view');
 
 // name Functions
 define('CR_EDITAR_ROL', 'editarRol');

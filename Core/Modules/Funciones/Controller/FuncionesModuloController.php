@@ -49,7 +49,10 @@ class FuncionesModuloController implements CrudInterface
           f.is_main_view = 1, 'Principal', 'Secundaria'
           )
           ), 'Lógica') AS 'tipoDeFuncion'",
-        "f.is_main_view AS 'isMainView'"
+        "f.is_main_view AS 'isMainView'",
+        "JSON_VALUE(f.vars, '$.route.modulo') AS 'modulo'",
+        "JSON_VALUE(f.vars,'$.route.controlador') AS 'controlador'",
+        "JSON_VALUE(f.vars, '$.route.funcion') AS 'funcion'"
       ];
       $conditions = ["f.id_modulo",  "=", $id_m];
       $data = [
@@ -70,7 +73,10 @@ class FuncionesModuloController implements CrudInterface
       $getSelectFunctions = $this->sFunciones->getAllFunctionsFromModule($sql, $conditions)
         ->limit()
         ->offset()
-        ->prepareSql($dataPrepare)->get();
+        ->prepareSql($dataPrepare)
+        ->get();
+
+
 
       if (count($getSelectFunctions) > 0) {
         Response::responseRequest(HttpStatus::OK, true, "Registros", [
@@ -135,6 +141,7 @@ class FuncionesModuloController implements CrudInterface
     try {
       header(CONTENT_TYPE);
       $data = UtilsFunctions::returnGetDecode();
+
       if (empty($data)) throw new Exception("Datos enviados incorrectos", HttpStatus::BAD_REQUEST);
       $file = $data['nameController'];
 
@@ -148,17 +155,41 @@ class FuncionesModuloController implements CrudInterface
         throw new Exception("El tipo de vista debe ser obligatorio", HttpStatus::UNPROCESSABLE_ENTITY);
       }
 
+      $modulo = $data[CR_MODULO];
+      $controlador = $data[CR_CONTROLADOR];
+      $funcion = $data[CR_FUNCION];
+
+      unset($data[CR_MODULO], $data[CR_CONTROLADOR], $data[CR_FUNCION]);
+
+      // estructuramos el json que esta dentro del campo vars.
+      $dataVars = [
+        'route' => [
+          CR_MODULO => $modulo,
+          CR_CONTROLADOR => $controlador,
+          CR_FUNCION => $funcion
+        ]
+      ];
+
+      $data['vars'] = json_encode($dataVars, true);
+
       $responseValidateFunction = $this->validateFunction($data['id_modulo'], $file, $data['nombre_funcion']);
-      if (!$responseValidateFunction['status']) {
-        throw new Exception($responseValidateFunction['message'], $responseValidateFunction['codeResponse']);
+      if (!$responseValidateFunction[CR_STATUS]) {
+        throw new Exception($responseValidateFunction[CR_MESSAGE], $responseValidateFunction[CR_CODE_RESPONSE]);
       }
       $dataPrepare[CR_DATA] = $data;
 
       $dataInsert = $this->fModel->insert($data)->prepareSql($dataPrepare)->get();
-      if (!$dataInsert['status']) {
+      if (!$dataInsert[CR_STATUS]) {
         $responseHander = DatabaseHandler::validateResponse($dataInsert);
         throw new Exception($responseHander[CR_MESSAGE], $responseHander[CR_CODE_RESPONSE]);
       }
+
+      // Eliminamos el menu y renderizamos nuevamente.
+      $rolSession['rl_status'] = $_SESSION[CR_USUARIO]['rl_status'];
+      $rolSession['rl_id'] = $_SESSION[CR_USUARIO]["rol_id"];
+      $menu = (new Menu())->createMenu($rolSession);
+      unset($_SESSION[CR_RENDER_MENU]);
+      $_SESSION[CR_RENDER_MENU] = $menu;
 
       Response::responseRequest(HttpStatus::CREATED, true, 'Funcionalidad creada exitosamente', []);
     } catch (\Exception $th) {
@@ -172,20 +203,38 @@ class FuncionesModuloController implements CrudInterface
       $data = UtilsFunctions::returnGetDecode();
       $data['tp_funcion'] = $data['tp_funcion'] === "render" ? (int) 1 : (int) 2;
 
-      $data['is_main_view'] = (!isset($data['is_main_view']) || $data['is_main_view'] === '')
+      $data[CR_IS_MAIN_VIEW] = (!isset($data[CR_IS_MAIN_VIEW]) || $data[CR_IS_MAIN_VIEW] === '')
         ? null
-        : (int) $data['is_main_view'];
+        : (int) $data[CR_IS_MAIN_VIEW];
 
       // validamos si es null el valor para asi borrarlo del arreglo y no implementarlo en su actualizacion
-      if ($data['is_main_view'] === null) unset($data['is_main_view']);
+      if ($data[CR_IS_MAIN_VIEW] === null) unset($data[CR_IS_MAIN_VIEW]);
 
       // valido que el tipo de funcion sea vista y que en el campo main_view tenga informacion
-      if ($data['tp_funcion'] === 1 && is_null($data['is_main_view'])) {
+      if ($data['tp_funcion'] === 1 && is_null($data[CR_IS_MAIN_VIEW])) {
         throw new Exception("El tipo de vista debe ser obligatorio", HttpStatus::UNPROCESSABLE_ENTITY);
       }
 
       if (empty($data)) throw new Exception("Faltan datos para procesar la solicitud", HttpStatus::BAD_REQUEST);
       $responseValidateFunction = $this->validateFunction($data['id_modulo'], $data['nameController'], $data['nombre_funcion']);
+
+      $modulo = $data['route']['modulo'];
+      $controlador = $data['route']['controlador'];
+      $funcion = $data['route']['funcion'];
+
+      unset($data['route']);
+
+      // estructuramos el json que esta dentro del campo vars.
+      $dataVars = [
+        'route' => [
+          'modulo' => $modulo,
+          'controlador' => $controlador,
+          'funcion' => $funcion
+        ]
+      ];
+
+      $data['vars'] = json_encode($dataVars, true);
+
 
       if (!$responseValidateFunction['status']) {
         throw new Exception($responseValidateFunction['message'], $responseValidateFunction['codeResponse']);
@@ -198,6 +247,13 @@ class FuncionesModuloController implements CrudInterface
         $databaseResponse = DatabaseHandler::validateResponse($responseUpdate);
         throw new Exception($databaseResponse[CR_MESSAGE], $databaseResponse[CR_CODE_RESPONSE]);
       }
+
+      // Eliminamos el menu y renderizamos nuevamente para actualizar las funcionalidades.
+      $rolSession['rl_status'] = $_SESSION[CR_USUARIO]['rl_status'];
+      $rolSession['rl_id'] = $_SESSION[CR_USUARIO]["rol_id"];
+      $menu = (new Menu())->createMenu($rolSession);
+      unset($_SESSION[CR_RENDER_MENU]);
+      $_SESSION[CR_RENDER_MENU] = $menu;
 
       Response::responseRequest(HttpStatus::OK, true, "Datos de funcionalidad actualizados correctamente");
     } catch (\Exception $th) {

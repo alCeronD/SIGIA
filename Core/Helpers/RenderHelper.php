@@ -12,7 +12,7 @@ class RenderHelper
       foreach ($menuSecond as $item) {
         if ($item['nombreModulo'] === $nombreModulo) {
 ?>
-          <div class="option-card z-depth-1 div4">
+          <div class="option-card z-depth-1 div4 <?php echo $nombreModulo ?>">
             <div class="icons">
               <a href="<?= htmlspecialchars($item['url'], ENT_QUOTES, 'UTF-8'); ?>">
                 <i class="material-icons green-text text-darken-2">

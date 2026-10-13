@@ -77,6 +77,25 @@
                 </label>
               </p>
             </div>
+            <!-- RUTA PARA LA VISTA -->
+            <div class="functionRoute">
+              <span>Ruta de acceso: *</span>
+              <!-- inputs -->
+              <span>Ruta de acceso: *</span>
+              <!-- inputs -->
+              <div class="input-field modulo">
+                <label for="modulo">Modulo: *</label>
+                <input type="text" name="modulo" id="modulo">
+              </div>
+              <div class="input-fiel controlador">
+                <label for="controlador">Controlador: *</label>
+                <input type="text" name="controlador" id="controlador">
+              </div>
+              <div class="input-fiel funcion">
+                <label for="funcion">Funcion: *</label>
+                <input type="text" name="funcion" id="funcion">
+              </div>
+            </div>
           </div>
           <div class="input-fiel files">
             <!-- selector en donde van los los selects, se renderiza por javascript en la funcion RENDER SELECTS. -->
@@ -137,6 +156,22 @@
                   <span>Secundaria</span>
                 </label>
               </p>
+            </div>
+            <div class="functionRouteUpdate">
+              <span>Ruta de acceso: </span>
+              <!-- inputs -->
+              <div class="input-field modulo">
+                <label for="modulo">Modulo: </label>
+                <input type="text" name="modulo" id="modulo">
+              </div>
+              <div class="input-fiel controlador">
+                <label for="controlador">Controlador: </label>
+                <input type="text" name="controlador" id="controlador">
+              </div>
+              <div class="input-fiel funcion">
+                <label for="funcion">Funcion: </label>
+                <input type="text" name="funcion" id="funcion">
+              </div>
             </div>
           </div>
           <div class="input-fiel files">

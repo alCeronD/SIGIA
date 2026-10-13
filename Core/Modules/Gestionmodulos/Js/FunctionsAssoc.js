@@ -118,6 +118,9 @@ const editFunction = (id, row) => {
   // validamos si tiene tilde la palabra logica.
   rowObj['tp_funcion'] = tpFuncion === 'lógica' ? 'logica' : tpFuncion;
   rowObj['isMainView'] = String(row.isMainView);
+  rowObj['modulo'] = row.modulo;
+  rowObj['controlador'] = row.controlador;
+  rowObj['funcion'] = row.funcion;
 
   // container files del formularioUpdateFunctions
   const filesUpdateFunction = formUpdateFunctions.form.querySelector('.files');
@@ -144,6 +147,7 @@ const editFunction = (id, row) => {
     });
   } else {
     formUpdateFunctions.divs.contentIsMain.style.display = 'none';
+    formUpdateFunctions.divs.route.style.display = 'none';
   }
 
   // inicializamos los selects.
@@ -197,12 +201,14 @@ const changeRadioButton = (input = null, isClose = false) => {
   // muestrame el radiobutton de is_main_view si su valor es render, en caso contrario, ocultalo
   if (valueInput === 'render') {
     formAddFunctions.divs.contentIsMain.style.display = 'block';
+    formAddFunctions.divs.route.style.display = 'block';
   } else {
     // elimino los valores seleccionados
     formAddFunctions.radio_is_main_view.forEach((el) => {
       el.checked = false;
     });
     formAddFunctions.divs.contentIsMain.style.display = 'none';
+    formAddFunctions.divs.route.style.display = 'none';
   }
 
   // flag para eliminar valores seleccionados
@@ -232,9 +238,12 @@ formAddFunctions.radio.forEach((el) => {
 formUpdateFunctions.radio.forEach((el) => {
   el.addEventListener('change', (f) => {
     if (f.target.value === 'logica') {
+      console.log('se elige logica');
       formUpdateFunctions.divs.contentIsMain.style.display = 'none';
+      formUpdateFunctions.divs.route.style.display = 'none';
     } else {
       formUpdateFunctions.divs.contentIsMain.style.display = 'block';
+      formUpdateFunctions.divs.route.style.display = 'block';
     }
   });
 });
@@ -246,7 +255,7 @@ formAddFunctions.form.addEventListener('submit', (e) => {
   const formData = new FormData(e.target);
 
   let data = Object.fromEntries(formData);
-
+  console.log(data);
   if (
     !validateFormData({
       formData: formData,
@@ -302,7 +311,7 @@ formUpdateFunctions.form.addEventListener('submit', (f) => {
   if (
     !validateFormData({
       formData: formData,
-      campos: optionals,
+      campos: mapConfigFunctions.mapObjEdit.optionals,
       mapForm: mapConfigFunctions.mapObjEdit,
     })
   ) {
@@ -313,6 +322,26 @@ formUpdateFunctions.form.addEventListener('submit', (f) => {
     initAlert('El tipo de vista debe ser obligatorio', 'info');
     return;
   }
+
+  for (const [key, value] of Object.entries(data)) {
+    if (value == null || value === '') {
+      delete data[key];
+    }
+  }
+
+  const modulo = data['modulo'];
+  const controlador = data['controlador'];
+  const funcion = data['funcion'];
+
+  data['route'] = {
+    modulo: modulo,
+    controlador: controlador,
+    funcion: funcion,
+  };
+
+  delete data.modulo;
+  delete data.controlador;
+  delete data.funcion;
 
   mostrarConfirmacion(
     'Editar función',

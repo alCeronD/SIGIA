@@ -54,12 +54,12 @@ class FuncionesMainController extends ConfigController
    *
    * @return void
    */
-  // public function funcionesIndexView()
-  // {
+  public function funcionesIndexView()
+  {
 
-  //   $path = BASE_PATH . F_ROUTE_FUNCIONES_MAIN_VIEW;
-  //   Parent::renderView($path, __FUNCTION__);
-  // }
+    $path = BASE_PATH . F_ROUTE_FUNCIONES_MAIN_VIEW;
+    Parent::renderView($path, __FUNCTION__);
+  }
 
   /**
    * Vista de las funciones asociadas a los roles.

@@ -46,3 +46,4 @@ Modulo que consiste en parametrizar y gestionar las funciones del sistema que se
 - [X] Implementar radio Button para validar si es vista main o secundaria
 - [X] Mover los archivos que estaban en el modulo de **ROLES** al modulo que pertenecen que son **Funciones**
 - [ ] Implementar funcionalidad de log.
+- [X] llamar al menu una vez se cree o se actualice

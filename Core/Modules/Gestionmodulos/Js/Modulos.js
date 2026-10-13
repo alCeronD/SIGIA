@@ -1,3 +1,4 @@
+console.log('hello world from modulos');
 import { buttons, forms, modals, table, titlesModulo, vars } from './Selectors-Modulos.js';
 import {
   addClassItem,

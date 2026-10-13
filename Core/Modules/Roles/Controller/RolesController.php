@@ -22,9 +22,11 @@ class RolesController extends ConfigController implements CrudInterface
     protected array $files = [
         'css' => [
             'mostrarRoles' => ['Roles.css'],
+            'rolesMain' => ['RolesIndex.css']
         ],
         'js' => [
             'mostrarRoles' => ['Roles.js', 'SelectorsRoles.js'],
+            'rolesMain' => []
         ]
     ];
 
@@ -44,18 +46,31 @@ class RolesController extends ConfigController implements CrudInterface
 
         $this->routes = [
             // inicio
-            'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
+            'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE)],
+            // esta ruta no esta en el controlador roles, es la que pertenece en el modulo PERMISOS, la implementamos para agregar el rastro de miga.
             'permisosIndexView' => [
                 'label' => 'Seguridad del sistema',
                 'url' => Router::createRoute('Permisos', 'Permisos', 'permisosIndexView', false, CR_DASHBOARD_LOWER_CASE),
                 'parent' => 'dashboard'
             ],
+            'rolesMain' => [
+                'label' => 'Roles',
+                'url' => Router::createRoute(CR_ROLES, CR_ROLES, 'rolesMain', false, CR_DASHBOARD_LOWER_CASE),
+                'parent' => 'permisosIndexView'
+            ],
             'mostrarRoles' => [
                 'label' => 'Ver Roles',
-                'url' => Router::createRoute('Roles', 'Roles', 'mostrarRoles', false, 'dashboard'),
-                'parent' => 'permisosIndexView'
+                'url' => Router::createRoute(CR_ROLES, 'Roles', 'mostrarRoles', false, CR_DASHBOARD_LOWER_CASE),
+                'parent' => 'rolesMain'
             ]
         ];
+    }
+
+    // funcion para renderizar la vista principal el modulo
+    public function rolesMain()
+    {
+        $path = BASE_PATH . RL_ROUTES_ROLES_MAIN;
+        Parent::renderView($path, __FUNCTION__);
     }
 
     /**
@@ -65,7 +80,7 @@ class RolesController extends ConfigController implements CrudInterface
      */
     public function mostrarRoles(): void
     {
-        $path = BASE_PATH . RL_ROUTES_MOSTRAR_ROLES;
+        $path = BASE_PATH . RL_ROUTES_SHOW_ROLES;
         Parent::renderView($path, __FUNCTION__);
     }
 

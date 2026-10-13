@@ -12,3 +12,6 @@ ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIME
 
 ALTER TABLE funciones
 ADD COLUMN `is_main_view` tinyint(1) DEFAULT NULL COMMENT '1: Principal, 0: Secundaria, NULL: No aplica (función lógica)' AFTER `tp_funcion`;
+
+ALTER TABLE funciones
+ADD COLUMN vars JSON NULL COMMENT 'Campo json para guardar multiples registros' AFTER is_main_view;

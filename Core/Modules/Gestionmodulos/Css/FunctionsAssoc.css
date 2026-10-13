@@ -29,9 +29,10 @@
   background-color: var(--white);
   margin: 10% auto;
   /* 15% from the top and centered */
-  padding: 20px;
+  padding: 12px;
   width: 30%;
-  height: fit-content;
+  height: 400px;
+  overflow-y: scroll;
   display: grid;
   grid-template-areas:
     "titleSection"
@@ -50,11 +51,18 @@
     .tipoFuncion {
       display: grid;
       grid-template-areas: "contentTipoFuncion"
-        "contentIsMain";
+        "contentIsMain"
+        "functionRoute"
+      ;
 
       .contentIsMain {
         grid-area: contentIsMain;
         /* se cambia la visibilidad del elemento dependiendo de la opcion seleccionada por el usuario, siendo render la opción para visualizar el elemento. */
+        display: none;
+      }
+
+      .functionRoute {
+        grid-area: functionRoute;
         display: none;
       }
 
@@ -74,7 +82,8 @@
     .tipoFuncion {
       display: grid;
       grid-template-areas: "contentTipoFuncion"
-        "contentIsMainUpdate";
+        "contentIsMainUpdate"
+        "functionRoute";
 
       .contentIsMainUpdate {
         grid-area: contentIsMainUpdate;
@@ -85,6 +94,13 @@
       .contentTipoFuncion {
         grid-area: contentTipoFuncion;
       }
+
+      .functionRoute {
+        grid-area: functionRoute;
+        display: none;
+      }
     }
+
+
   }
 }

@@ -292,3 +292,5 @@
     gap: 8px;
   }
 }
+
+@media (min-width: 1024px) {}

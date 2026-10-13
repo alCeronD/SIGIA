@@ -28,6 +28,10 @@ export const mapConfigFunctions = {
     tp_funcion: 'Tipo de la función',
     nameController: 'Archivo asociado',
     is_main_view: 'Tipo de vista',
+    funcion: 'Ruta funcion',
+    controlador: 'Ruta controlador',
+    modulo: 'Ruta modulo',
+    optionals: ['funcion', 'controlador', 'modulo'],
   },
 };
 
@@ -59,6 +63,7 @@ export const formAddFunctions = {
     tipoFuncion: document.querySelector('.tipoFuncion'),
     files: document.querySelector('.files'),
     contentIsMain: document.querySelector('.contentIsMain'),
+    route: document.querySelector('.functionRoute'),
   },
 };
 
@@ -69,6 +74,7 @@ export const formUpdateFunctions = {
     tipoFuncion: document.querySelector('.tipoFuncion'),
     files: document.querySelector('.files'),
     contentIsMain: document.querySelector('.contentIsMainUpdate'),
+    route: document.querySelector('.functionRouteUpdate'),
   },
   radio_is_main_view: document.querySelectorAll('.is_main_view_update'),
 };

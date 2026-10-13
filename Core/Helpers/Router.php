@@ -37,9 +37,10 @@ class Router
       $controlador = $_GET['controlador'] ?? $_POST['controlador'] ?? null;
       $function = $_GET['function'] ?? $_POST['function'] ?? null;
       $_SESSION['url_anterior'] = $_SERVER['HTTP_REFERER'] ?? '';
+
+      // En caso de que no haya una ruta definida respondemos la falta de parametros
       if (!$modulo || !$controlador || !$function) {
-        header(CONTENT_TYPE);
-        Response::responseRequest(HttpStatus::BAD_REQUEST, false, "Faltan parámetros de ejecución");
+        throw new Exception("Faltan parámetros de ejecución", HttpStatus::BAD_REQUEST);
       }
 
       $controladorFile = ucfirst($controlador) . "Controller.php";
@@ -84,6 +85,7 @@ class Router
           401 => "{$th->getMessage()}",
           404 => "{$th->getMessage()} - {$th->getFile()} - {$th->getLine()}",
           403 => "{$th->getMessage()}",
+          400 => "{$th->getMessage()} - {$th->getFile()} - {$th->getLine()}",
           500 => "{$th->getMessage()} - {$th->getFile()} - {$th->getLine()}",
           default => "{$th->getMessage()}",
         };
@@ -97,10 +99,9 @@ class Router
       // capturamos el codigo de respuesta de la exception, definimos un 500 en caso de que este vacio, es decir, que sea un error propio de php como errores de sintaxis.
       $codeResponse = empty($th->getCode()) ? 500 : $th->getCode();
 
-
       // validamos si es una peticion http mediante fetch o ajax o en su defecto una re direccion directa.
       if (UtilsFunctions::ajaxGeneral()) {
-        $data =  ['previewRoute' => $_SESSION['url_anterior']];
+        $data =  ['previewRoute' => $_SESSION['url_anterior'] ?? ""];
         // validamos si mostramos el error siendo una peticion
         if ($appDebug) {
           $data['trace'] = $trace;

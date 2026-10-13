@@ -51,11 +51,11 @@ Capturas del proyecto
 | **Marcas**             |   100%   |  Completado   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
 | **Categorias**         |   100%   |  Completado   |     [Ver README](./Core/Modules/Categorias/README.MD)     |
 | **Login**              |   100%   |  Completado   |       [Ver README](./Core/Modules/Login/README.MD)        |
-| **Usuarios**           |   70%    |  En Proceso   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |
+| **Gestionmodulos**     |   100%   |   Pendiente   |   [Ver README](./Core/Modules/Gestionmodulos/README.MD)   |
+| **Usuarios**           |   90%    |  En Proceso   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |
 | **Roles**              |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Roles/README.MD)        |
-| **Permisos**           |   90%    |   Pendiente   |      [Ver README](./Core/Modules/Permisos/README.MD)      |
-| **Gestionmodulos**     |   90%    |   Pendiente   |   [Ver README](./Core/Modules/Gestionmodulos/README.MD)   |
-| **Funciones**          |   90%    |   Pendiente   |     [Ver README](./Core/Modules/Funciones/README.MD)      |
+| **Permisos**           |   100%   |      N/A      |      [Ver README](./Core/Modules/Permisos/README.MD)      |
+| **Funciones**          |   50%    |   Pendiente   |     [Ver README](./Core/Modules/Funciones/README.MD)      |
 | **Dashboard**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Dashboard/README.MD)      |
 | **Elementos**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Elementos/README.MD)      |
 | **Reportes**           |    0%    |   Pendiente   |      [Ver README](./Core/Modules/Reportes/README.MD)      |

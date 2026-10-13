@@ -13,5 +13,5 @@ define('RL_FILE_ROLES_CONTROLLER', 'Roles');
 define('RL_FILE_ROLES_FUNCIONES_CONTROLLER', 'RolesFunciones');
 
 // routes
-define('RL_ROUTES_ROLES_INDEX', '/../Modules/Roles/views/rolesIndex.php');
-define('RL_ROUTES_MOSTRAR_ROLES', '/../Modules/Roles/views/rolesViews.php');
+define('RL_ROUTES_SHOW_ROLES', '/../Modules/Roles/views/rolesViews.php');
+define('RL_ROUTES_ROLES_MAIN', '/../Modules/Roles/views/rolesMainView.php');

@@ -66,8 +66,9 @@ Gestiona los roles de usuario dentro del sistema, permitiendo su creación, edic
 - [X] Implementar rastro de miga
 - [ ] Implementar feature de all check en el modulo para asociar todos los permisos que pertenecen al modulo
 - [ ] Ajustar css
+  - [x] vista principal
+  - [ ] listado de roles
 - [ ] Revisar el limite de caracteres en el input de registrar rol, debido a que este me marca un limite, error en la lógica de negocio.
-- [ ] En el modulo **ROLES** crear otra vista interna y otro controlador para definir plantilla por defecto del sistema. - TODO CANCELADO
 - [ ] Crear logs personalizados del modulo
 - [ ] Implementar documentacion
   - [ ] requerimientos

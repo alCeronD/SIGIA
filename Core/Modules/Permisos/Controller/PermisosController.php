@@ -9,14 +9,9 @@ class PermisosController extends ConfigController
     protected array $files = [
         'js' => [
             'permisosIndexView' => ['Permisos.js'],
-            'mostrarRoles' => ['Roles.js', 'SelectorsRoles.js'],
-            'modulosView' => ['Modulos.js', 'Selectors-Modulos.js'],
         ],
         'css' => [
             'permisosIndexView' => ['Permisos.css'],
-            'mostrarRoles' => ['Roles.css'],
-            'modulosView' => ['Modulos.css'],
-            'funcionesIndexView' => ['funcionesIndexView.css'],
         ],
     ];
 
@@ -90,9 +85,9 @@ class PermisosController extends ConfigController
      *
      * @return void
      */
-    public function mostrarRoles(): void
+    public function rolesMain(): void
     {
-        $path = BASE_PATH . RL_ROUTES_MOSTRAR_ROLES;
+        $path = BASE_PATH . RL_ROUTES_ROLES_MAIN;
         Parent::renderView($path, __FUNCTION__);
     }
 }
