@@ -1,101 +1,61 @@
-:root {
-  --primary: #3a6c52;
-  --secundary: #004034;
-  --other: #ccc;
-  --white: #f0f0f0;
-  --btnEdit: #007d78;
-  --teal: #4db6ac;
-  --blue: #42a5f5;
-  --red: #ef5350;
-  --yellow: #ffa000;
-}
-
-
-/* Botón para ir al dashboard. */
-.close {
-  cursor: pointer;
-}
-
 .contentRoles {
-  grid-template-areas:
-    "breadCrumbs breadCrumbs"
-    "titleRoles titleRoles"
-    "formRl tblRoles";
-}
-
-.breadCrumbs {
-  grid-area: breadCrumbs;
   width: 100%;
-  height: 1.5rem;
-}
-
-.titleRoles {
-  grid-area: titleRoles;
+  height: auto;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
-
-.formRl {
-  grid-area: formRl;
-}
-
-.formRl #rol_descripcionInput {
-  width: 100%;
-  resize: none;
-  height: 10rem;
-}
-
-#formRol {
-  grid-template-areas:
-    "contentRlNombre"
-    "contentRlDescript"
-    "contentRlBtn";
-}
-
-.contentRlDescript {
-  grid-area: contentRlDescript;
-}
-
-.contentRlNombre {
-  grid-area: contentRlNombre;
-}
-
-.contentRlBtn {
-  grid-area: contentRlBtn;
-  text-align: center;
-}
-
-#formRol div> :nth-child(1),
-#formRol div> :nth-child(2) {
-  gap: 0.5rem;
-}
-
-#formRol div> :nth-child(3) {
-  text-align: center;
-}
-
-.tblRoles {
-  grid-area: tblRoles;
-}
-
-.tblRoles table {
-  width: 100%;
-}
-
-.tblRoles table {
-  width: 100%;
-}
-
-/* Ajustar los botones de acciones */
-.tblRoles table td:last-child {
-  display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.3rem;
-  justify-content: center;
+
+  /* tabla */
+  .tblRoles {
+    width: 100%;
+    /* Define una altura máxima para que aparezca el scroll cuando los registros crezcan */
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    /* con esto, aseguramos que el table respete el tamaño del container */
+    table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+    }
+
+    thead {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    tbody#tableBodyRoles {
+      display: block;
+      max-height: 350px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    tbody#tableBodyRoles tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    th,
+    td {
+      box-sizing: border-box;
+
+      /* con eso asigno anchos específicos por columna */
+      &:nth-child(1) {
+        width: 10%;
+      }
+    }
+  }
 }
+
 
 #modalEditar,
 #modalAsingPermisos {
@@ -182,25 +142,6 @@
   color: #e74c3c;
 }
 
-.btnEdit {
-  background-color: var(--blue);
-  color: var(--white);
-}
-
-.btnAsig {
-  background-color: var(--yellow);
-  color: var(--secundary);
-}
-
-.btnStatus {
-  background-color: var(--red);
-  color: var(--white);
-}
-
-.btnSubmitRol {
-  color: var(--secundary);
-  background-color: var(--blue);
-}
 
 /* MODAL DE ASIGNACION DE PERMISOS */
 .containerModal {
@@ -293,4 +234,68 @@
   }
 }
 
-@media (min-width: 1024px) {}
+@media (min-width: 1024px) {
+  .contentRoles {
+    display: grid;
+    grid-template-areas:
+      "headerContent headerContent"
+      "formRl tblRoles";
+    grid-template-columns: 30% auto;
+    gap: 1rem;
+
+
+    .headerContent {
+      grid-area: headerContent
+    }
+
+    .formRl {
+      grid-area: formRl;
+
+      #formRol {
+        display: grid;
+        grid-template-areas:
+          "contentRlNombre"
+          "contentRlDescript"
+          "contentRlBtn";
+
+        .contentRlDescript {
+          grid-area: contentRlDescript;
+        }
+
+        .contentRlNombre {
+          grid-area: contentRlNombre;
+        }
+
+        .contentRlBtn {
+          grid-area: contentRlBtn;
+          text-align: center;
+        }
+
+        #rol_descripcionInput {
+          width: 100%;
+          resize: none;
+          height: 10rem;
+        }
+
+      }
+    }
+
+    .tblRoles {
+      overflow-y: auto;
+      overflow-x: hidden;
+      grid-area: tblRoles;
+
+      .tblRoles table {
+        width: 100%;
+      }
+
+      /* Ajustar los botones de acciones */
+      .tblRoles table td:last-child {
+        display: flex;
+        flex-direction: row;
+        gap: 0.3rem;
+        justify-content: center;
+      }
+    }
+  }
+}
