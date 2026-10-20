@@ -85,6 +85,7 @@ Listado de TODOS generales y específicos por cada módulo.
 - [x] Crear modulo de **Funciones** Y ajustar lo de funcionesRoles, entre otros al mismo modulo de funciones.
 - [ ] Crear Modulo de estados para implementarlo en la base de datos e implementar los datos de manera dinamica
 - [X] Crear Metodo FIND EN Como si trabajse con laravel
+- [ ] Probar un escenario en donde se ejecute el programa pero NO SE INICIE EL SERVICIO DE MYSQL PARA VERIFICAR COMO SE COMPORTA.
 - [ ] CRUD GENERAL - IMPLEMENTAR ELWHERE IS NOT NULL:
 
   ```php
@@ -125,8 +126,8 @@ Listado de TODOS generales y específicos por cada módulo.
 | **Categorias**         |   100%   |  Completado   |     [Ver README](./Core/Modules/Categorias/README.MD)     |
 | **Login**              |   100%   |  Completado   |       [Ver README](./Core/Modules/Login/README.MD)        |
 | **Gestionmodulos**     |   100%   |   Pendiente   |   [Ver README](./Core/Modules/Gestionmodulos/README.MD)   |
+| **Roles**              |   95%    |  Completado   |       [Ver README](./Core/Modules/Roles/README.MD)        |
 | **Usuarios**           |   90%    |  En Proceso   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |
-| **Roles**              |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Roles/README.MD)        |
 | **Permisos**           |   100%   |      N/A      |      [Ver README](./Core/Modules/Permisos/README.MD)      |
 | **Funciones**          |   50%    |   Pendiente   |     [Ver README](./Core/Modules/Funciones/README.MD)      |
 | **Dashboard**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Dashboard/README.MD)      |
@@ -167,7 +168,7 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Adicionar archivo README.MD A cada modulo para presentar que hace cada producto.
 - [ ] Ajustar diagrama de clases
 - [ ] Crear Y/o ajustar historias de usuario
-- [ ] Adicionar requisitos requeridos para cada modulo.
+- [x] Adicionar requisitos requeridos para cada modulo.
 - [ ] Referenciar toda la documentación mediante un link de google drive para observar la documentación no solo dentro del drive sino en cada modulo
 - [ ] Colocar requisitos del sistema implementados y diagramas que se usaron para el proceso de creación del producto
 - [ ] Crear los requerimientos e historias de usuario de los nuevos modulos = GestionModulos, Funciones, Permisos

@@ -15,3 +15,8 @@ define('RL_FILE_ROLES_FUNCIONES_CONTROLLER', 'RolesFunciones');
 // routes
 define('RL_ROUTES_SHOW_ROLES', '/../Modules/Roles/views/rolesViews.php');
 define('RL_ROUTES_ROLES_MAIN', '/../Modules/Roles/views/rolesMainView.php');
+
+
+// vars
+define('RL_ID', 'rl_id');
+define('RL_STATUS', 'rl_status');
