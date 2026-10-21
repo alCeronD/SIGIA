@@ -259,7 +259,7 @@ formAddFunctions.form.addEventListener('submit', (e) => {
   if (
     !validateFormData({
       formData: formData,
-      campos: optionals,
+      campos: mapConfigFunctions.mapObjAdd.optionals,
       mapForm: mapConfigFunctions.mapObjAdd,
     })
   ) {

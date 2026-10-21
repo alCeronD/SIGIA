@@ -508,6 +508,7 @@ export const validateFormData = ({ formData = null, campos = {}, mapForm = {} } 
     // pasamos por referencia los valores opcionales.
     const camposOpcionales = campos;
     if (isEmpty && !camposOpcionales.includes(key)) {
+      console.log(mapForm[key]);
       initAlert(`El campo "${mapForm[key]}" debe ser diligenciado`, 'info');
       return false;
     }

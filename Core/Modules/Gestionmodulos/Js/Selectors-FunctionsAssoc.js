@@ -20,6 +20,10 @@ export const mapConfigFunctions = {
     tp_funcion: 'Tipo de la función',
     is_main_view: 'Tipo de vista',
     nameController: 'Archivo asociado',
+    funcion: 'Ruta funcion',
+    controlador: 'Ruta controlador',
+    modulo: 'Ruta modulo',
+    optionals: ['funcion', 'controlador', 'modulo'],
   },
   mapObjEdit: {
     id_funcion: 'Identificador de la función',
