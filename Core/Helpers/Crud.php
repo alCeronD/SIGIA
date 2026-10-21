@@ -1,6 +1,7 @@
 <?php
-
 require_once __DIR__ . '/../Helpers/Autoload.php';
+include_once realpath(BASE_PATH . '/../Config/Conn.php');
+
 
 #Clase crud para crear toda la estructura general de consultas.
 abstract class Crud

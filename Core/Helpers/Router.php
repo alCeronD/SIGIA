@@ -38,6 +38,7 @@ class Router
       $function = $_GET['function'] ?? $_POST['function'] ?? null;
       $_SESSION['url_anterior'] = $_SERVER['HTTP_REFERER'] ?? '';
 
+
       // En caso de que no haya una ruta definida respondemos la falta de parametros
       if (!$modulo || !$controlador || !$function) {
         throw new Exception("Faltan parámetros de ejecución", HttpStatus::BAD_REQUEST);

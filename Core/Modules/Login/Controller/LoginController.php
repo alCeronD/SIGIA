@@ -1,9 +1,9 @@
 <?php
 
-
-require_once __DIR__ . '/../../../Config/Conn.php';
+// require_once __DIR__ . '/../../../Config/Conn.php';
 require_once __DIR__ . '/../../../Helpers/Const.php';
 require_once BASE_PATH . '/../Modules/Login/Const/LoginConst.php';
+require_once BASE_PATH . '/Autoload.php';
 
 class LoginController extends ConfigController
 {
