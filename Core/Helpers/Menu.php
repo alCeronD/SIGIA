@@ -137,17 +137,29 @@ class Menu
 
       $menuMainView = [];
       $menuSecondView = [];
+
+
+      // arreglamos el menu en orden A-Z basado solamente en la clave.
+      ksort($menu);
+
+
       // extraemos las vistas del menu dependiendo de si son primarias o secundarias.
       foreach ($menu as $key => $views) {
-
-        if (array_key_exists('mainView', $views)) {
-          $menuMainView[] = $views['mainView'];
-        }
-
 
         if (array_key_exists('secondView', $views)) {
           array_push($menuSecondView, ...$views['secondView']);
         }
+
+        if (array_key_exists('mainView', $views)) {
+
+          $menuMainView[] = $views['mainView'];
+        }
+      }
+
+      // Extraemos los modulos de vistas permisos y validamos si el rol del usuario tiene los roles internos como permisos, gestion modulo y funciones.
+      $nombresModulos = array_column($menuMainView, 'titleModule');
+      if (in_array('Permisos', $nombresModulos)) {
+        $menuMainView = array_filter($menuMainView, fn($mp) => $mp['titleModule'] !== "Roles" && $mp['titleModule'] !== "Funciones" && $mp['titleModule'] != "Gestionmodulos");
       }
 
       return [
