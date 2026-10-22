@@ -95,6 +95,10 @@
                 <label for="funcion">Funcion: *</label>
                 <input type="text" name="funcion" id="funcion">
               </div>
+              <div class="input-fiel icono">
+                <label for="icono">Icono (representativo de la vista): </label>
+                <input type="text" name="icono" id="icono">
+              </div>
             </div>
           </div>
           <div class="input-fiel files">
@@ -171,6 +175,10 @@
               <div class="input-fiel funcion">
                 <label for="funcion">Funcion: </label>
                 <input type="text" name="funcion" id="funcion">
+              </div>
+              <div class="input-fiel icono">
+                <label for="icono">Icono (representativo de la vista): </label>
+                <input type="text" name="icono" id="icono">
               </div>
             </div>
           </div>

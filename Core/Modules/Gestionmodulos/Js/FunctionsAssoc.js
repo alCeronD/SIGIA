@@ -121,6 +121,7 @@ const editFunction = (id, row) => {
   rowObj['modulo'] = row.modulo;
   rowObj['controlador'] = row.controlador;
   rowObj['funcion'] = row.funcion;
+  rowObj['icono'] = row.icono;
 
   // container files del formularioUpdateFunctions
   const filesUpdateFunction = formUpdateFunctions.form.querySelector('.files');
@@ -217,6 +218,16 @@ const changeRadioButton = (input = null, isClose = false) => {
       el.checked = false;
     });
   }
+};
+
+/**
+ * Function para eliminar los espacios del medio y transformar toda la palabra en minuscula.
+ *
+ * @param {*} word
+ * @returns {*}
+ */
+const setWordIcon = (word) => {
+  return word.replace(' ', '_').trim().toLowerCase();
 };
 
 buttons.btnAddFunction.addEventListener('click', (e) => {
@@ -343,13 +354,17 @@ formUpdateFunctions.form.addEventListener('submit', (f) => {
   delete data.controlador;
   delete data.funcion;
 
+  const icono = setWordIcon(data['icono']);
+  data['icono'] = icono;
+
+  console.log(data);
+
   mostrarConfirmacion(
     'Editar función',
     '¿Está seguro de editar la funcionalidad?',
     async (response) => {
       try {
         if (!response) return;
-
         const responseUpdateFunction = await Funciones.sendData(`${url}`, METHOD.PUT, data);
 
         if (!responseUpdateFunction.status) throw new Error(responseUpdateFunction.message);

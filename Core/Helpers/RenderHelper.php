@@ -16,7 +16,7 @@ class RenderHelper
             <div class="icons">
               <a href="<?= htmlspecialchars($item['url'], ENT_QUOTES, 'UTF-8'); ?>">
                 <i class="material-icons green-text text-darken-2">
-                  <?= htmlspecialchars($item['icono'], ENT_QUOTES, 'UTF-8'); ?>
+                  <?= htmlspecialchars($item['iconoVista'], ENT_QUOTES, 'UTF-8'); ?>
                 </i>
               </a>
             </div>

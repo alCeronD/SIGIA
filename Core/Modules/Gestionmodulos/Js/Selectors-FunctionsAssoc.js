@@ -23,6 +23,7 @@ export const mapConfigFunctions = {
     funcion: 'Ruta funcion',
     controlador: 'Ruta controlador',
     modulo: 'Ruta modulo',
+    icono: 'Icono de la funcion',
     optionals: ['funcion', 'controlador', 'modulo'],
   },
   mapObjEdit: {
@@ -35,6 +36,7 @@ export const mapConfigFunctions = {
     funcion: 'Ruta funcion',
     controlador: 'Ruta controlador',
     modulo: 'Ruta modulo',
+    icono: 'Icono de la funcion',
     optionals: ['funcion', 'controlador', 'modulo'],
   },
 };

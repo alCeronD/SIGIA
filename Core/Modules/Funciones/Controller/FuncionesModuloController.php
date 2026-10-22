@@ -52,7 +52,8 @@ class FuncionesModuloController implements CrudInterface
         "f.is_main_view AS 'isMainView'",
         "JSON_VALUE(f.vars, '$.route.modulo') AS 'modulo'",
         "JSON_VALUE(f.vars,'$.route.controlador') AS 'controlador'",
-        "JSON_VALUE(f.vars, '$.route.funcion') AS 'funcion'"
+        "JSON_VALUE(f.vars, '$.route.funcion') AS 'funcion'",
+        "JSON_VALUE(f.vars, '$.icono[0]') AS 'icono'",
       ];
       $conditions = ["f.id_modulo",  "=", $id_m];
       $data = [
@@ -125,6 +126,12 @@ class FuncionesModuloController implements CrudInterface
         throw new Exception($responseDta[CR_MESSAGE], $responseDta[CR_CODE_RESPONSE]);
       }
       $this->rfMode->commit();
+      // Eliminamos el menu y renderizamos nuevamente para actualizar las funcionalidades.
+      $rolSession['rl_status'] = $_SESSION[CR_USUARIO]['rl_status'];
+      $rolSession['rl_id'] = $_SESSION[CR_USUARIO]["rol_id"];
+      $menu = (new Menu())->createMenu($rolSession);
+      unset($_SESSION[CR_RENDER_MENU]);
+      $_SESSION[CR_RENDER_MENU] = $menu;
       Response::responseRequest(HttpStatus::OK, true, "Función eliminada correctamente", []);
     } catch (\Exception $th) {
       $this->rfMode->rollback();
@@ -221,8 +228,10 @@ class FuncionesModuloController implements CrudInterface
       $modulo = $data['route']['modulo'];
       $controlador = $data['route']['controlador'];
       $funcion = $data['route']['funcion'];
+      $icono = $data['icono'];
 
       unset($data['route']);
+      unset($data['icono']);
 
       // estructuramos el json que esta dentro del campo vars.
       $dataVars = [
@@ -230,7 +239,8 @@ class FuncionesModuloController implements CrudInterface
           'modulo' => $modulo,
           'controlador' => $controlador,
           'funcion' => $funcion
-        ]
+        ],
+        'icono' => [$icono]
       ];
 
       $data['vars'] = json_encode($dataVars, true);

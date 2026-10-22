@@ -62,7 +62,8 @@ class Menu
         "fu.is_main_view AS 'isMainView'",
         "fu.nameController AS 'controlador'",
         "mo.nombre_modulo AS 'nombreModulo'",
-        "mo.icono AS 'icono'"
+        "mo.icono AS `icono`",
+        "COALESCE(JSON_VALUE(fu.vars, '$.icono[0]'))  AS `iconoVista`"
       ];
 
       $rolId = $rolIsActive['rl_id'];
@@ -106,6 +107,8 @@ class Menu
         $controlador = $value['controlador'] ?? null;
         $funcion = $value['nombreFuncionController'] ?? null;
         $icono = $value['icono'] ?? null;
+        $iconoVista = $value['iconoVista'] ?? 'home';
+
         $nombreFuncionUser = $value['nombreFuncionUser'] ?? null;
 
         // rutas de acceso al modulo, en caso de que no hayan rutas asignadas, se implementan string vacios.
@@ -120,7 +123,8 @@ class Menu
             'labelFuncion' => $nombreFuncionUser,
             'titleModule' => $nombreModulo,
             'url' => Router::createRoute($moduloVars, $controladorVars, $funcionVars, false, CR_DASHBOARD_LOWER_CASE),
-            'icono' => $icono
+            'icono' => $icono,
+            'iconoVista' => $iconoVista
           ];
         }
 
@@ -130,7 +134,8 @@ class Menu
             'nombreModulo' => $nombreModulo,
             'labelFuncion' => $nombreFuncionUser,
             'url' =>  Router::createRoute($moduloVars, $controladorVars, $funcionVars, false, CR_DASHBOARD_LOWER_CASE),
-            'icono' => $icono
+            'icono' => $icono,
+            'iconoVista' => $iconoVista
           ];
         }
       }
