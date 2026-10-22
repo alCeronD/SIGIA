@@ -202,11 +202,9 @@ Gestiona los roles de usuario dentro del sistema, permitiendo su creación, edic
   - [x] vista principal
   - [X] listado de roles
 - [X] Revisar el limite de caracteres en el input de registrar rol, debido a que este me marca un limite, error en la lógica de negocio.
-- [ ] Implementar feature de all check en el modulo para asociar todos los permisos que pertenecen al modulo
-- [ ] EN LA FUNCION delete implementar logica de negocio para validar el rol a borrar, no se puede borrar el rol que tenga las palabras reservadas ADMINISTRADOR O SUPER ADMINISTRADOR.
-- [ ] A la funcion SET PERMISOS IMPLEMENTAR VALIDADOR DE DATOS, EN CASO DE QUE LOS DATOS ENVIADOS SEAN INCORRECTOS.
-- [ ] Al crear los permisos y aplicar el commit, verificar el menu, que id estamos enviando, si el id del usuario logueado o de otro usuario
-- [ ] Crear logs personalizados del modulo
+- [X] EN LA FUNCION delete implementar logica de negocio para validar el rol a borrar, no se puede borrar el rol que tenga las palabras reservadas ADMINISTRADOR O SUPER ADMINISTRADOR.
+- [x] A la funcion SET PERMISOS IMPLEMENTAR VALIDADOR DE DATOS, EN CASO DE QUE LOS DATOS ENVIADOS SEAN INCORRECTOS.
+- [x] Al crear los permisos y aplicar el commit, verificar el menu, que id estamos enviando, si el id del usuario logueado o de otro usuario
 - [X] Implementar documentacion
   - [x] requerimientos
   - [X] Historias de usuario
@@ -216,3 +214,4 @@ Gestiona los roles de usuario dentro del sistema, permitiendo su creación, edic
     - [x] secuencia
     - [x] actividad
     - [x] estado
+- [ ] Crear logs personalizados del modulo

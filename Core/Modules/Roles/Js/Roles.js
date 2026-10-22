@@ -231,6 +231,7 @@ rolesUI.buttons.preconfirm.addEventListener('click', (e) => {
 
   modalConfirmacion.open();
   // Evento de confirmación para enviar la data o no.
+
   mostrarConfirmacion(
     'Roles y permisos',
     'Estas seguro de asignar estos permisos al usuario',

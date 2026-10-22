@@ -19,7 +19,16 @@ class ServicesRoles
 
   public function getAllRoles()
   {
-    return $this->rlModel->select()->from()->prepareSql()->get();
+    return $this->rlModel
+      ->select()
+      ->raw("CASE
+          WHEN rl_status = 1 THEN 'Activo'
+          WHEN rl_status = 2 THEN 'Inactivo'
+          ELSE 'Sin estado'
+        END AS 'rl_status'")
+      ->from()
+      ->prepareSql()
+      ->get();
   }
 
 

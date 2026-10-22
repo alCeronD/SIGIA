@@ -19,4 +19,10 @@ define('RL_ROUTES_ROLES_MAIN', '/../Modules/Roles/views/rolesMainView.php');
 
 // vars
 define('RL_ID', 'rl_id');
+define('ROL_ID', 'rol_id');
 define('RL_STATUS', 'rl_status');
+define('RL_NOMBRE', 'rol_nombre');
+define('ID_FUNCION', 'idFuncion');
+define('VARS_RL_ID_MODULO', 'id_modulo');
+define('ID_FUNCION_TWO', 'id_funcion');
+define('RL_NOMBRE_MODULO', 'nombre_modulo');

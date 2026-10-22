@@ -14,6 +14,7 @@ define('CR_GESTION_MODULOS', 'Gestionmodulos');
 define('CR_FUNCIONES', 'Funciones');
 define('CR_TIPO_DOCUMENTO_NAME_MODULE', 'Tipodocumento');
 define('CR_CATEGORIAS', 'Categorias');
+define('CR_PERMISOS', 'Permisos');
 // Words
 define('CR_CONTROLLER', 'Controller');
 define('CR_USER', 'usuario');

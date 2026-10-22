@@ -52,10 +52,10 @@ class RolesController extends ConfigController implements CrudInterface
             // esta ruta no esta en el controlador roles, es la que pertenece en el modulo PERMISOS, la implementamos para agregar el rastro de miga.
         ];
 
-        if (in_array('Permisos', $modulos)) {
+        if (in_array(CR_PERMISOS, $modulos)) {
             $this->routes['permisosIndexView'] = [
                 'label' => 'Seguridad del sistema',
-                'url' => Router::createRoute('Permisos', 'Permisos', 'permisosIndexView', false, CR_DASHBOARD_LOWER_CASE),
+                'url' => Router::createRoute(CR_PERMISOS, CR_PERMISOS, 'permisosIndexView', false, CR_DASHBOARD_LOWER_CASE),
                 'parent' => 'dashboard'
             ];
         }
@@ -64,7 +64,7 @@ class RolesController extends ConfigController implements CrudInterface
             'label' => 'Roles',
             'url' => Router::createRoute(CR_ROLES, CR_ROLES, 'rolesMain', false, CR_DASHBOARD_LOWER_CASE),
             // Si hay permisos cuelga de 'permisosIndexView', si no, cuelga directamente de 'dashboard'
-            'parent' => in_array('Permisos', $modulos) ? 'permisosIndexView' : 'dashboard'
+            'parent' => in_array(CR_PERMISOS, $modulos) ? 'permisosIndexView' : 'dashboard'
         ];
 
         $this->routes['mostrarRoles'] = [
@@ -98,11 +98,11 @@ class RolesController extends ConfigController implements CrudInterface
         $dtaRoles = $this->sRoles->getAllRoles();
         $dataRol = Session::getRol();
 
-        if ($dataRol['rol_nombre'] === CR_ROL_ADMIN) {
+        if ($dataRol[RL_NOMBRE] === CR_ROL_ADMIN) {
             // El Admin NO ve su propio rol ni el de Super Admin
             $roles = array_values(array_filter(
                 $dtaRoles,
-                fn($r) => $r[RL_ID] !== $dataRol['rol_id'] && $r['rl_nombre'] !== CR_ROL_SUPER_ADMIN
+                fn($r) => $r[RL_ID] !== $dataRol[ROL_ID] && $r['rl_nombre'] !== CR_ROL_SUPER_ADMIN
             ));
         } else {
             // El Super Admin ve TODOS los roles (ya aseguramos que si llegó aquí es Super Admin)
@@ -110,7 +110,7 @@ class RolesController extends ConfigController implements CrudInterface
         }
 
         if (count($roles) > 0) {
-            Response::responseRequest(HttpStatus::OK, true, 'registros', $roles);
+            Response::responseRequest(HttpStatus::OK, true, CR_REGISTROS, $roles);
         }
     }
 
@@ -175,28 +175,53 @@ class RolesController extends ConfigController implements CrudInterface
 
     public function delete(): void
     {
-        header(CONTENT_TYPE);
-        $data = UtilsFunctions::returnGetDecode();
-        $dataDelete[CR_DATA] = $data;
-        // VALIDAMOS SI EL ROL A ELIMINAR ES ADMINISTRADOR O SUPER ADMINISTRADOR.
-        if ($data[RL_ID] === 2 || $data[RL_ID] === 53) {
-            Response::responseRequest(HttpStatus::UNAUTHORIZED, false, RL_MESSAGE_ERROR_DELETE, []);
-        }
-        $responseDeleteRol = $this->modeloRol
-            ->delete()
-            ->where()
-            ->prepareSql($dataDelete)
-            ->get();
-        // si el estatus es falso, validamos el codigo de error
-        if (!$responseDeleteRol[CR_STATUS]) {
+        try {
+            header(CONTENT_TYPE);
+            $data = UtilsFunctions::returnGetDecode();
 
-            $dataResponse = DatabaseHandler::validateResponse($responseDeleteRol);
-            // ese error de codigo representa un error en las relaciones producto de que este registro esta asociado en otra tabla.
-            $message = $responseDeleteRol['codeError'] === 1451 ? 'El rol tiene funciones asociadas, si desea eliminar el rol, primero elimine las funciones asociados en el el modulo "funciones roles"' : $dataResponse[CR_MESSAGE];
-            Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $message, []);
-            return;
+            if (empty($data)) throw new Exception("Datos enviados incorrectos", HttpStatus::BAD_REQUEST);
+
+            $dataDelete[CR_DATA] = $data;
+
+            # 1. Validamos que rol vamos a borrar. y su existencia
+            $dataRol = $this->modeloRol
+                ->select()
+                ->from()
+                ->where()
+                ->prepareSql($dataDelete)
+                ->get()[0];
+
+            if (empty($dataRol)) throw new Exception("El rol proporcionado es incorrecto", HttpStatus::CONFLICT);
+
+            $nombreDelRol = strtoupper($dataRol['rl_nombre']);
+
+            // validamos si el rol a eliminar tiene la palabra reservada ADMIN, siendo SUPER ADMINISTRADOR O ADMINISTRADOR, asi evitamos que se borre el rol
+            if (str_contains($nombreDelRol, 'ADMIN')) {
+                throw new Exception("No puedes eliminar este rol administrativo del sistema", HttpStatus::CONFLICT);
+            }
+
+            // VALIDAMOS SI EL ROL A ELIMINAR ES ADMINISTRADOR O SUPER ADMINISTRADOR.
+            if ($data[RL_ID] === 2 || $data[RL_ID] === 53) {
+                Response::responseRequest(HttpStatus::UNAUTHORIZED, false, RL_MESSAGE_ERROR_DELETE, []);
+            }
+            $responseDeleteRol = $this->modeloRol
+                ->delete()
+                ->where()
+                ->prepareSql($dataDelete)
+                ->get();
+            // si el estatus es falso, validamos el codigo de error
+            if (!$responseDeleteRol[CR_STATUS]) {
+
+                $dataResponse = DatabaseHandler::validateResponse($responseDeleteRol);
+                // ese error de codigo representa un error en las relaciones producto de que este registro esta asociado en otra tabla.
+                $message = $responseDeleteRol['codeError'] === 1451 ? 'El rol tiene funciones asociadas, si desea eliminar el rol, primero elimine las funciones asociados en el el modulo "funciones roles"' : $dataResponse[CR_MESSAGE];
+                Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $message, []);
+                return;
+            }
+            Response::responseRequest(HttpStatus::OK, true, RL_MESSAGE_SUCCESS_DELETE, []);
+        } catch (\Exception $th) {
+            Response::responseRequest($th->getCode(), false, $th->getMessage());
         }
-        Response::responseRequest(HttpStatus::OK, true, RL_MESSAGE_SUCCESS_DELETE, []);
     }
 
     /**
@@ -239,11 +264,11 @@ class RolesController extends ConfigController implements CrudInterface
 
 
         // evitamos mostrar los modulos Funciones,GestionModulos dependiendo del rol del usuario.
-        if (Session::getRol()['rol_nombre'] != "Super Administrador") {
+        if (Session::getRol()[RL_NOMBRE] != "Super Administrador") {
             // otros, incluyendo administrador
             foreach ($modulos as $key => $value) {
                 // si es diferente de administrador entonces no mostrar ni gestionModulos, ni funciones
-                if ($value['nombre_modulo'] === 'Generalcrud' || $value['nombre_modulo'] === 'Gestionmodulos' || $value['nombre_modulo'] === 'Funciones') {
+                if ($value[RL_NOMBRE_MODULO] === 'Gestionmodulos' || $value[RL_NOMBRE_MODULO] === 'Funciones') {
                     continue;
                 }
 
@@ -258,16 +283,16 @@ class RolesController extends ConfigController implements CrudInterface
         //PASO #3
         $finalFunctionsModules = [];
         foreach ($allModulos as $value) {
-            $finalFunctionsModules[$value['nombre_modulo']] = [];
+            $finalFunctionsModules[$value[RL_NOMBRE_MODULO]] = [];
         }
 
         foreach ($allFunctions as $key =>  $funcion) {
             foreach ($allModulos as $key2 => $value2) {
-                if ($value2['id_m'] === $funcion['id_modulo']) {
-                    $finalFunctionsModules[$value2['nombre_modulo']][] = [
-                        'idFuncion'     => $funcion['id_funcion'],
+                if ($value2['id_m'] === $funcion[VARS_RL_ID_MODULO]) {
+                    $finalFunctionsModules[$value2[RL_NOMBRE_MODULO]][] = [
+                        ID_FUNCION     => $funcion[ID_FUNCION_TWO],
                         'nmFuncion'     => $funcion['nombre_funcion'],
-                        'idModulo'      => $funcion['id_modulo'],
+                        'idModulo'      => $funcion[VARS_RL_ID_MODULO],
                         'nmFuncionUser' => $funcion['nombre_funcion_user']
                     ];
                     break;
@@ -293,10 +318,16 @@ class RolesController extends ConfigController implements CrudInterface
         try {
             header(CONTENT_TYPE);
             $data = UtilsFunctions::returnGetDecode();
+            if (empty($data)) throw new Exception("Datos invalidos", HttpStatus::BAD_REQUEST);
+
+            if (!array_key_exists('rolId', $data)) throw new Exception("El rol debe ser obligatorio para su ejecucion", HttpStatus::BAD_REQUEST);
+
+            if (empty($data['funcionesPorEliminar']) && empty($data['funcionesPorAsociar'])) throw new Exception("No se enviaron permisos para eliminar o asociar al rol", HttpStatus::BAD_REQUEST);
+
             $rolId = $data['rolId'];
             $message = "Proceso ejecutado correctamente";
-            $funcionesPorEliminar = $data['funcionesPorEliminar'];
-            $funcionesPorAsociar = $data['funcionesPorAsociar'];
+            $funcionesPorEliminar = $data['funcionesPorEliminar'] ?? [];
+            $funcionesPorAsociar = $data['funcionesPorAsociar'] ?? [];
 
             /**
              * PASOS PARA EJECUTAR LA ASIGNACION DE PERMISOS AL ROL.
@@ -310,7 +341,7 @@ class RolesController extends ConfigController implements CrudInterface
             //PASO1
             $allFunctionsAssoc = $this->sRoles->getSetRolesFunciones($data['rolId']);
             // Extramos solamente los ids de las funciones
-            $allFunctionsAssoc = array_column($allFunctionsAssoc, 'idFuncion');
+            $allFunctionsAssoc = array_column($allFunctionsAssoc, ID_FUNCION);
             sort($allFunctionsAssoc);
             sort($funcionesPorAsociar);
 
@@ -336,7 +367,7 @@ class RolesController extends ConfigController implements CrudInterface
 
                 if (!$resultDeleteRolesFunciones[CR_STATUS]) {
                     $dataResponse = DatabaseHandler::validateResponse($resultDeleteRolesFunciones);
-                    Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+                    Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
                     return;
                 }
                 $message = "Permisos eliminados del rol correctamente";
@@ -371,7 +402,7 @@ class RolesController extends ConfigController implements CrudInterface
                 if (!$resultSetPermisos[CR_STATUS]) {
                     $this->rfModel->rollback();
                     $dataResponse = DatabaseHandler::validateResponse($resultSetPermisos);
-                    Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+                    Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
                     return;
                 }
                 $message = "Permisos asociados correctamente.";
@@ -380,7 +411,7 @@ class RolesController extends ConfigController implements CrudInterface
             $this->rfModel->commit();
             // creamos el arreglo requerido para crear el menu nuevamente y reemplazamos en la variable de session.
             $rolSession[RL_STATUS] = $_SESSION[CR_USUARIO][RL_STATUS];
-            $rolSession[RL_ID] = $_SESSION[CR_USUARIO]["rol_id"];
+            $rolSession[RL_ID] = $_SESSION[CR_USUARIO][ROL_ID];
             $menu = (new Menu())->createMenu($rolSession);
             unset($_SESSION[CR_RENDER_MENU]);
             $_SESSION[CR_RENDER_MENU] = $menu;
