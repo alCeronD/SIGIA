@@ -24,28 +24,40 @@ class FuncionesMainController extends ConfigController
   }
   public function createRoutes()
   {
+
+    $vistasSecundarias = $_SESSION['renderMenu']['menuSecondView'];
+    $modulos = array_column($vistasSecundarias, 'nombreModulo');
+
     $this->routes = [
-      'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
-      'permisosIndexView' => [
+      // inicio
+      'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE)],
+      // esta ruta no esta en el controlador roles, es la que pertenece en el modulo PERMISOS, la implementamos para agregar el rastro de miga.
+    ];
+
+    if (in_array('Permisos', $modulos)) {
+      $this->routes['permisosIndexView'] = [
         'label' => 'Seguridad del sistema',
         'url' => Router::createRoute('Permisos', 'Permisos', 'permisosIndexView', false, CR_DASHBOARD_LOWER_CASE),
         'parent' => 'dashboard'
-      ],
-      'funcionesIndexView' => [
-        'label' => 'Funciones',
-        'url' => Router::createRoute('Permisos', 'Permisos', 'funcionesIndexView', false, 'dashboard'),
-        'parent' => 'permisosIndexView'
-      ],
-      'funcionesAsociadasView' => [
-        'label' => 'Funciones Asociadas',
-        'url' => Router::createRoute(CR_FUNCIONES, 'FuncionesMain', 'funcionesAsociadasView', false, 'dashboard'),
-        'parent' => 'funcionesIndexView'
-      ],
-      'funcionesView' => [
-        'label' => 'Listado de funciones',
-        'url' => Router::createRoute(CR_FUNCIONES, 'FuncionesMain', 'funcionesView', false, 'dashboard'),
-        'parent' => 'funcionesIndexView'
-      ]
+      ];
+    }
+
+    $this->routes['funcionesIndexView'] = [
+      'label' => 'Funciones',
+      'url' => in_array('Permisos', $modulos) ? Router::createRoute('Permisos', 'Permisos', 'funcionesIndexView', false, 'dashboard') : Router::createRoute('Funciones', 'FuncionesMain', 'funcionesIndexView', false, CR_DASHBOARD_LOWER_CASE),
+      'parent' => in_array('Permisos', $modulos) ? 'permisosIndexView' : 'dashboard'
+    ];
+
+    $this->routes['funcionesAsociadasView'] = [
+      'label' => 'Funciones Asociadas',
+      'url' => Router::createRoute(CR_FUNCIONES, 'FuncionesMain', 'funcionesAsociadasView', false, 'dashboard'),
+      'parent' => 'funcionesIndexView'
+    ];
+
+    $this->routes['funcionesView'] = [
+      'label' => 'Listado de funciones',
+      'url' => Router::createRoute(CR_FUNCIONES, 'FuncionesMain', 'funcionesView', false, 'dashboard'),
+      'parent' => 'funcionesIndexView'
     ];
   }
 

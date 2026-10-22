@@ -21,6 +21,10 @@ class FuncionesAsociadasController extends ConfigController
 
   public function createRoutes()
   {
+
+    $vistasSecundarias = $_SESSION['renderMenu']['menuSecondView'];
+    $modulos = array_column($vistasSecundarias, 'nombreModulo');
+
     $this->routes = [
       'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
       'permisosIndexView' => [

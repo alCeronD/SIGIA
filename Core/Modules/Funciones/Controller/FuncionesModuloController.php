@@ -261,8 +261,6 @@ class FuncionesModuloController implements CrudInterface
     }
   }
 
-
-
   /**
    * Function para validar si la funcionalidad existe en el sistema, se re utiliza en la funcion store y save.
    *

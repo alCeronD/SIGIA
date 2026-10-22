@@ -43,26 +43,34 @@ class RolesController extends ConfigController implements CrudInterface
     }
     public function createRoutes()
     {
+        $vistasSecundarias = $_SESSION['renderMenu']['menuSecondView'];
+        $modulos = array_column($vistasSecundarias, 'nombreModulo');
 
         $this->routes = [
             // inicio
             'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE)],
             // esta ruta no esta en el controlador roles, es la que pertenece en el modulo PERMISOS, la implementamos para agregar el rastro de miga.
-            'permisosIndexView' => [
+        ];
+
+        if (in_array('Permisos', $modulos)) {
+            $this->routes['permisosIndexView'] = [
                 'label' => 'Seguridad del sistema',
                 'url' => Router::createRoute('Permisos', 'Permisos', 'permisosIndexView', false, CR_DASHBOARD_LOWER_CASE),
                 'parent' => 'dashboard'
-            ],
-            'rolesMain' => [
-                'label' => 'Roles',
-                'url' => Router::createRoute(CR_ROLES, CR_ROLES, 'rolesMain', false, CR_DASHBOARD_LOWER_CASE),
-                'parent' => 'permisosIndexView'
-            ],
-            'mostrarRoles' => [
-                'label' => 'Ver Roles',
-                'url' => Router::createRoute(CR_ROLES, 'Roles', 'mostrarRoles', false, CR_DASHBOARD_LOWER_CASE),
-                'parent' => 'rolesMain'
-            ]
+            ];
+        }
+
+        $this->routes['rolesMain'] = [
+            'label' => 'Roles',
+            'url' => Router::createRoute(CR_ROLES, CR_ROLES, 'rolesMain', false, CR_DASHBOARD_LOWER_CASE),
+            // Si hay permisos cuelga de 'permisosIndexView', si no, cuelga directamente de 'dashboard'
+            'parent' => in_array('Permisos', $modulos) ? 'permisosIndexView' : 'dashboard'
+        ];
+
+        $this->routes['mostrarRoles'] = [
+            'label' => 'Ver Roles',
+            'url' => Router::createRoute(CR_ROLES, 'Roles', 'mostrarRoles', false, CR_DASHBOARD_LOWER_CASE),
+            'parent' => 'rolesMain'
         ];
     }
 
