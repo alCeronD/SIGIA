@@ -25,41 +25,6 @@ Gestiona los roles de usuario dentro del sistema, permitiendo su creación, edic
 
 ## Arquitectura Interna (Pre-documentación)
 
-- **Constantes:** `Const/RolesConst.php` -> Constantes globales del módulo, contiene títulos, variables, mensajes de respuesta, entre otros.
-- **Controlador Principal (Roles):** `Controller/RolesController.php` -> Gestiona las peticiones HTTP, renderizado de vistas base y respuestas JSON para operaciones CRUD sobre los roles
-- **Controlador de Funciones:** `Controller/FuncionesController.php` -> Atiende las peticiones y gestión de los endpoints relativos a funciones del sistema.
-- **Controlador de Asignaciones:** `Controller/RolesFuncionesController.php` -> Administra el flujo de asignación y desvinculación (eliminación) de las funciones vinculadas a los roles.
-- **Estilos:**
-  - `Css/Roles.css` -> Reglas de estilo para los formularios y vistas generales de roles.
-  - `Css/RolesFunciones.css` -> Estilos específicos para la interfaz de asignación de funciones y gestión de permisos.
-  - `Css/RolesIndex.css` -> Estilos para la maquetación del panel/listado principal de roles.
-- **JavaScript Principal:**
-  - `Js/Roles.js` -> Lógica frontend para la gestión de roles (creación, edición, cambio de estado y eliminación) y manipulación del DOM.
-  - `Js/RolesFunciones.js` -> Todo lo relacionado a la paginación, y peticiones transaccionales de la vista rolesFunciones
-  - `Js/SelectorsRoles.js` -> Selectores DOM reutilizables en los scripts del módulo.
-- **Modelos:**
-  - `Model/RolesModel.php` -> Acceso a datos y consultas SQL para la tabla base de roles.
-  - `Model/FuncionesModel.php` -> Acceso a datos para la consulta y gestión de las funciones registradas del sistema
-  - `Model/RolesFuncionesModel.php` -> Consultas SQL y gestión de la relación entre roles y sus funciones/permisos asignados.
-- **Servicios:**
-  - `Services/ServicesRoles.php` -> Lógica de negocio para acoplar la información re utilizable de los roles.
-  - `Services/ServicesFunciones.php` -> Lógica de negocio para re utilizar las funcionalidades asociadas al sistema.
-- **Documentación:** `README.MD` -> Documentación técnica general y especificaciones operativas del módulo.
-- **Vistas Clave:**
-  - `views/rolesIndex.php` -> Vista principal del modulo de roles
-  - `views/rolesViews.php` -> Vista que muestra el listado de los roles registrados en el sistema.
-  - `views/rolesRegistrar.php` -> Formulario o interfaz para el registro de nuevos roles.
-  - `views/rolesFunciones.php` -> Vista para visualizar las FUNCIONES QUE ESTÁN ASOCIADAS a un rol específico.
-  - `views/modalAsing.php` -> Ventana modal para la asignación y desvinculación de funciones a un rol.
-  - `views/modalEditar.php` -> Ventana modal para la edición de la información básica del rol.
-
-## Dependencias de Base de Datos
-
-- Tabla principal: `roles`
-- Tablas asociadas: `roles_funciones`,`funciones`,`modulos`
-- **Conexión con otros módulos**: N/A
-- **Relaciones:**:  `rlp_id_rl` -> llave foranea de la tabla `roles_funciones` que se relaciona con la tabla `roles`
-
 ```bash
 # Estructura interna del modulo
 
@@ -123,6 +88,13 @@ Gestiona los roles de usuario dentro del sistema, permitiendo su creación, edic
     └── rolesViews.php
 
 ```
+
+## Dependencias de Base de Datos
+
+- Tabla principal: `roles`
+- Tablas asociadas: `roles_funciones`,`funciones`,`modulos`
+- **Conexión con otros módulos**: N/A
+- **Relaciones:**:  `rlp_id_rl` -> llave foranea de la tabla `roles_funciones` que se relaciona con la tabla `roles`
 
 ## Documentación del sistema
 
