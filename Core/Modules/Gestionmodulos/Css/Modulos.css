@@ -1,67 +1,42 @@
-:root {
-  --primary: #3a6c52;
-  --secundary: #004034;
-  --other: #ccc;
-  --white: #f0f0f0;
-  --btnEdit: #007d78;
-  --teal: #4db6ac;
-  --blue: #42a5f5;
-  --red: #ef5350;
-  --yellow: #ffa000;
-}
-
-/* Botón para ir al dashboard. */
-.close {
-  cursor: pointer;
-}
-
-
-/* MODULO AREAS */
+/* por defecto, diseño mobile */
 .contentModulos {
-  grid-template-areas:
-    "breadCrumbs breadCrumbs"
-    "titleModulos titleModulos"
-    "contentFormModulos contentTableModulos";
+  display: flex;
+  width: 100%;
   height: fit-content;
-  width: 100%;
-}
+  flex-direction: column;
+  flex-wrap: nowrap;
+  overflow: auto;
 
-.breadCrumbs {
-  grid-area: breadCrumbs;
-}
+  .headerContent {
+    width: 100%;
+  }
 
-.titleModulos {
-  grid-area: titleModulos;
-  width: 100%;
-}
-
-
-.contentFormModulos {
-  grid-area: contentFormModulos;
-  width: 100%;
-
-  .contentRoute {
-    display: flex;
-    gap: 0.3rem;
-    flex-direction: row;
-    flex-wrap: nowrap;
+  .contentFormModulos {
+    width: 70%;
+    margin: 0 auto;
+    height: auto;
   }
 
 }
 
-.contentTableModulos {
-  grid-area: contentTableModulos;
-  width: 100%;
-  overflow-y: auto;
-  height: auto;
+/* FORMULARIO DE CREACION */
+
+#formModuloCreate {
+  .contentSubmit {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
+
+/* modal */
 .modalContentModulos {
   background-color: var(--white);
   margin: 10% auto;
-  /* 15% from the top and centered */
   padding: 20px;
-  width: 30%;
+  width: 70%;
   height: fit-content;
   display: grid;
   grid-template-areas:
@@ -69,12 +44,81 @@
     "formUpdate";
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
+
+  .titleSection {
+    display: flex;
+    justify-content: space-between;
+    font-size: 2rem;
+    grid-area: titleSection;
+
+
+    /* boton de cerrar */
+    button {
+      border: none;
+    }
+  }
+
+  .formUpdate {
+    grid-area: formUpdate;
+    /* centro el boton, no use flex en esta ocasion. */
+    text-align: center;
+  }
 }
 
-.titleSection {
-  grid-area: titleSection;
-}
 
-.formUpdate {
-  grid-area: formUpdate;
+
+/* tamaños de pc en adelante */
+@media (min-width: 1024px) {
+  .contentModulos {
+    overflow: auto;
+    display: grid;
+    height: fit-content;
+    width: 100%;
+    grid-template-columns: 40% auto;
+    grid-template-rows: auto 1fr;
+    gap: 0.3rem;
+    grid-template-areas:
+      "headerContent headerContent"
+      "contentFormModulos contentTableModulos";
+
+    .headerContent {
+      grid-area: headerContent;
+    }
+
+    .contentFormModulos {
+      grid-area: contentFormModulos;
+      width: 100%;
+      height: fit-content;
+
+
+      #formModuloCreate {
+
+        /* contenedor de los campos de la ruta de acceso. */
+        .contentRoute {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          gap: 0.8rem;
+        }
+
+        .contentSubmit {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
+    }
+
+    .contentTableModulos {
+      grid-area: contentTableModulos;
+      width: 100%;
+      overflow-y: scroll;
+      height: 100%;
+    }
+  }
+
+  .modalContentModulos {
+    width: 35%;
+  }
 }

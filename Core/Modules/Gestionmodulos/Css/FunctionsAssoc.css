@@ -1,36 +1,14 @@
 /* archivo para editar la vista de las funciones asociadas al modulo. */
 
-.contentFunctions {
-  grid-template-areas:
-    "breadCrumbs breadCrumbs"
-    "titleModulos titleModulos"
-    "contentTableFunctios contentTableFunctios";
-  height: fit-content;
-  width: 100%;
-}
 
-.breadCrumbs {
-  grid-area: breadCrumbs;
-}
 
-.titleModulos {
-  grid-area: titleModulos;
-  width: 100%;
-}
-
-.contentTableFunctios {
-  grid-area: contentTableFunctios;
-  width: 100%;
-  height: fit-content;
-  overflow-y: scroll;
-}
-
+/* modal de edicion de la funcionalidad */
 .modalContentFunctions {
   background-color: var(--white);
   margin: 10% auto;
   /* 15% from the top and centered */
   padding: 12px;
-  width: 30%;
+  width: 75%;
   height: 400px;
   overflow-y: scroll;
   display: grid;
@@ -39,6 +17,21 @@
     "formUpdate";
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
+  gap: 0.3rem;
+
+  .titleSection {
+    display: flex;
+    justify-content: space-between;
+
+    #modalTitle {
+      font-size: 1.8rem;
+    }
+
+    #closeModalBtnEdit {
+      font-size: 2rem;
+      border: none;
+    }
+  }
 
   /* formulario de insert */
   .formInsert,
@@ -103,4 +96,60 @@
 
 
   }
+}
+
+
+.contentFunctions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  height: fit-content;
+  overflow: auto;
+
+  .headerContent {
+    width: 100%;
+  }
+
+  .contentTableFunctios {
+
+    #tFooterFunciones {
+      overflow-y: scroll;
+    }
+  }
+}
+
+
+@media (min-width: 1024px) {
+  .contentFunctions {
+    display: grid;
+    grid-template-areas:
+      "headerContent headerContent"
+      "contentTableFunctios contentTableFunctios";
+    height: fit-content;
+    width: 100%;
+
+    .headerContent {
+      grid-area: headerContent;
+      /* con esto hago que el si hay scroll el item se quede arriba y desaparezca */
+      position: relative;
+    }
+
+    .contentTableFunctios {
+      height: auto;
+      grid-area: contentTableFunctios;
+      width: 100%;
+      height: fit-content;
+      /* overflow-y: scroll; */
+
+      #tFooterFunciones {
+        overflow-y: scroll;
+      }
+    }
+  }
+
+  .modalContentFunctions {
+    width: 35%;
+  }
+
 }

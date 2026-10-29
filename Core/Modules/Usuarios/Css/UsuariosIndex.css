@@ -4,18 +4,20 @@
   width: 100%;
   height: 85vh;
   grid-template-areas:
-    "breadCrumbs breadCrumbs"
+    "headerContent headerContent"
     "cards cards";
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto 1fr;
   gap: 0.3rem;
+
+  .headerContent {
+    grid-area: headerContent;
+    width: 100%;
+  }
+
+
 }
 
-.breadCrumbs {
-  grid-area: breadCrumbs;
-  width: 100%;
-  height: 1.5rem;
-}
 
 .cards {
   margin-top: 0.5rem;

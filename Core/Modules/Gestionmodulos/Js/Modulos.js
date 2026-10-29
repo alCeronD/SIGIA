@@ -177,8 +177,10 @@ const showFunctionsAssoc = (id, row) => {
 
 const changeStatus = (id, dataRow) => {
   // capturar codigo y status
-  let message = dataRow.estatus_modulo === 1 ? titlesModulo.inactiveUser : titlesModulo.activeUser;
-  let title = dataRow.estatus_modulo === 1 ? titlesModulo.inactiveUser : titlesModulo.activeUser;
+  let message =
+    dataRow.estatus_modulo === 'Activo' ? titlesModulo.inactiveUser : titlesModulo.activeUser;
+  let title =
+    dataRow.estatus_modulo === 'Activo' ? titlesModulo.inactiveUser : titlesModulo.activeUser;
   mostrarConfirmacion(title, message, async (response) => {
     try {
       if (!response) return;

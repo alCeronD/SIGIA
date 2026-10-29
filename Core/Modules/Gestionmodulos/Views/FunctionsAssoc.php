@@ -1,14 +1,17 @@
 <div class="container">
   <div class="contentFunctions">
-    <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
-    <div class="titleModulos menuTitle">
-      <!-- implementamos el texto con javascript. -->
-      <span id="textTitleFunctions" class="textTitleSpan"></span>
-      <button class="button waves-effect  btn" id="btnAddFunction"><i class="material-icons">add</i></button>
-      <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>"
-        class="close-btn"
-        title="Volver al dashboard">&times;</a>
+    <div class="headerContent">
+      <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
+      <div class="titleModulos menuTitle">
+        <!-- implementamos el texto con javascript. -->
+        <span id="textTitleFunctions" class="textTitleSpan"></span>
+        <button class="button waves-effect  btn" id="btnAddFunction"><i class="material-icons">add</i></button>
+        <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>"
+          class="close-btn"
+          title="Volver al dashboard">&times;</a>
+      </div>
     </div>
+
     <div class="contentTableFunctios">
       <table id="tableFunctions" class="tableConfig tblConfigModules">
         <thead id="tblHeaderFunctions">

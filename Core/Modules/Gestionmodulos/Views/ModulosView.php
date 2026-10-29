@@ -1,12 +1,15 @@
 <div class="container">
-  <div class="contentModulos contentLayout">
-    <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
-    <div class="titleModulos menuTitle">
-      <span id="textTitleAreas" class="textTitleSpan"><?php echo GM_TITLE ?></span>
-      <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>"
-        class="close-btn"
-        title="Volver al dashboard">&times;</a>
+  <div class="contentModulos">
+    <div class="headerContent">
+      <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
+      <div class="titleModulos menuTitle">
+        <span id="textTitleAreas" class="textTitleSpan"><?php echo GM_TITLE ?></span>
+        <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>"
+          class="close-btn"
+          title="Volver al dashboard">&times;</a>
+      </div>
     </div>
+
     <div class="contentFormModulos">
       <div class="card z-depth-2">
         <div class="card-content">
@@ -59,7 +62,7 @@
   </div>
 
   <!-- modal -->
-  <div id="modalEditModulo" class="modal modal-overlay">
+  <div id="modalEditModulo" class=" modal-overlay">
     <!-- Modal content -->
     <div class="modalContentModulos modal-content .modal-closebtn">
       <div class="titleSection">

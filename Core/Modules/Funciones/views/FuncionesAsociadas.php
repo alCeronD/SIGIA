@@ -1,13 +1,16 @@
 <!-- vista que nos permite ver las funciones asociadas al rol -->
 <div class="container">
   <div class="contentRolesFunciones">
-    <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
-    <div class="titleRolesRunciones menuTitle">
-      <span id="textTitleAreas" class="textTitleSpan">Gestión de funciones asociadas al rol</span>
-      <a href="<?php echo Router::createRoute('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
-        class="close-btn"
-        title="Volver al dashboard">&times;</a>
+    <div class="headerContent">
+      <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
+      <div class="titleRolesRunciones menuTitle">
+        <span id="textTitleAreas" class="textTitleSpan">Gestión de funciones asociadas al rol</span>
+        <a href="<?php echo Router::createRoute('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
+          class="close-btn"
+          title="Volver al dashboard">&times;</a>
+      </div>
     </div>
+
     <div class="selectRol input-field">
       <select id="selectRol">
       </select>

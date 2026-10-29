@@ -116,51 +116,48 @@ input[type="number"] {
 
 /* el headerContainer tiene dentro de un div el breadCrumb y el titleMenu */
 .headerContent {
-  position: sticky;
-  right: 0;
-  top: 0;
+
+
+  /* Estilos del titulo del modulo  */
+  .menuTitle {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+
+
+    .textTitleSpan {
+      font-size: 1.2rem;
+    }
+
+    /* Botón de cerrar */
+    .close-btn {
+      border: none;
+      text-decoration: none;
+      font-size: 2rem;
+    }
+  }
+
+  /* ESTILOS RASTRO DE MIGA */
+  #breadCrumbs {
+    position: sticky;
+    right: 0;
+    top: 0;
+    background-color: var(--btnEdit);
+    width: 100%;
+    height: 3rem;
+    /* con esto ajustamos la linea del parrafo del texto del rastro de miga */
+    line-height: 3rem;
+    display: flex;
+    align-items: flex-start;
+    overflow-y: scroll;
+    resize: vertical;
+  }
 }
 
 /* Fin estilos del contenedor principal */
-
-
-
-/* Estilos del titulo del modulo  */
-.menuTitle {
-  width: 100%;
-  max-width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: column;
-
-  .textTitleSpan {
-    font-size: 1.2rem;
-  }
-
-  /* Botón de cerrar */
-  .close-btn {
-    border: none;
-    text-decoration: none;
-    font-size: 2rem;
-  }
-}
-
-
-/* ESTILOS RASTRO DE MIGA */
-#breadCrumbs {
-  background-color: var(--btnEdit);
-  width: 100%;
-  height: 3rem;
-  /* con esto ajustamos la linea del parrafo del texto del rastro de miga */
-  line-height: 3rem;
-  display: flex;
-  align-items: flex-start;
-  overflow-y: scroll;
-  resize: vertical;
-}
-
-
 
 
 
