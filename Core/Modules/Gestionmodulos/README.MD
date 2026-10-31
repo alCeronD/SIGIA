@@ -28,31 +28,31 @@ Este modulo contiene todo lo relacionado a las funciones que se asocian al modul
 
 ```bash
 .
-├── Const
+├── Const # Archivo con variables constantes del modulo
 │   └── GestionModulosConst.php
 ├── Controller
-│   └── GestionmodulosController.php
+│   └── GestionmodulosController.php # Controlador principal del módulo
 ├── Css
-│   ├── FunctionsAssoc.css
-│   └── Modulos.css
+│   ├── FunctionsAssoc.css # css de la vista funciones asociadas al módulo N
+│   └── Modulos.css # css de la vista de módulos
 ├── Docs
 ├── Js
-│   ├── FunctionsAssoc.js
-│   ├── Modulos.js
-│   ├── Selectors-FunctionsAssoc.js
-│   └── Selectors-Modulos.js
+│   ├── FunctionsAssoc.js # script que maneja la logica del doom, y peticiones https para asignar las funciones al módulo
+│   ├── Modulos.js # script que manipula el doom y transfiere datos entre el front y el backend
+│   ├── Selectors-FunctionsAssoc.js # selectores de las funciones asociadas
+│   └── Selectors-Modulos.js # selectores del archivo modulos.js
 ├── Model
-│   ├── ModulosModel.php
-│   └── TipoFuncionModel.php
+│   ├── ModulosModel.php # tabla MODULOS
+│   └── TipoFuncionModel.php # tabla tipo_funcion
 ├── README.MD
 ├── Services
-│   └── ServicesGestionModulos.php
+│   └── ServicesGestionModulos.php # servicio para conectar entre diferentes modulos en caso de ser requerido
 ├── Sql
-│   ├── Alters.sql
-│   └── Modulos.sql
+│   ├── Alters.sql # alters de la tabla modulos
+│   └── Modulos.sql # tabla modulos + alters iniciales
 └── Views
-    ├── FunctionsAssoc.php
-    └── ModulosView.php
+    ├── FunctionsAssoc.php # vista de las funciones asociadas del modulo, se cambia su informacion de manera dinamica, sirve como plantilla
+    └── ModulosView.php # vista principal del modulo
 
 ```
 
@@ -89,80 +89,77 @@ Este modulo contiene todo lo relacionado a las funciones que se asocian al modul
 
 ### Caso de uso
 
-![Caso de uso](./Docs/Uml/CasodeUso_Extend/gestionModulosCasoDeUso.jpg)
+![Caso de uso](./Docs/Uml/CasodeUso_Extend/casoDeUsoGestionModulo.jpg)
 
 ### Caso de extendido
 
-[Ver readme](./Docs/Uml/CasodeUso_Extend/Extend_gestionmodulos.MD)
+[Ver readme](./Docs/Uml/CasodeUso_Extend/Extend_GestionMod.MD)
 
 ### Diagramas de secuencia
 
 **Crear modulo**
-![Crear modulo](./Docs/Uml/Secuencia/)
+![Crear modulo](./Docs/Uml/Secuencia/crearModulo.jpg)
 
 **Inhabilitar-habilitar modulo**
-![Inhabilitar-habilitar modulo](./Docs/Uml/Secuencia/)
-
-**ELiminar modulo**
-![ELiminar modulo](./Docs/Uml/Secuencia/)
+![Inhabilitar-habilitar modulo](./Docs/Uml/Secuencia/activarInactivarModulo.jpg)
 
 **Editar modulo**
-![Editar modulo](./Docs/Uml/Secuencia/)
+![Editar modulo](./Docs/Uml/Secuencia/editarModulo.jpg)
 
 **Asociar Funciones**
-![Asociar Funciones](./Docs/Uml/Secuencia/)
+![Asociar Funciones](./Docs/Uml/Secuencia/asignarFuncion.jpg)
 
 **Editar funciones asociadas**
-![Editar funciones asociadas](./Docs/Uml/Secuencia/)
+![Editar funciones asociadas](./Docs/Uml/Secuencia/editarFuncionModulo.jpg)
 
 **Eliminar funciones asociadas**
-![Eliminar funciones asociadas](./Docs/Uml/Secuencia/)
+![Eliminar funciones asociadas](./Docs/Uml/Secuencia/eliminarFuncionAsociada.jpg)
 
 ### Diagrama de actividades
 
 **Crear modulo**
-![Crear modulo](./Docs/Uml/Actividades/)
+![Crear modulo](./Docs/Uml/Actividades/crearModulo.jpg)
 
 **Inhabilitar-habilitar modulo**
-![Inhabilitar-habilitar modulo](./Docs/Uml/Actividades/)
+![Inhabilitar-habilitar modulo](./Docs/Uml/Actividades/habilitarInhabilitarModulo.jpg)
 
-**ELiminar modulo**
-![ELiminar modulo](./Docs/Uml/Actividades/)
+**Eliminar modulo**
+![ELiminar modulo](./Docs/Uml/Actividades/eliminarModulo.jpg)
 
 **Editar modulo**
-![Editar modulo](./Docs/Uml/Actividades/)
+![Editar modulo](./Docs/Uml/Actividades/editarModulo.jpg)
 
 **Asociar Funciones**
-![Asociar Funciones](./Docs/Uml/Actividades/)
+![Asociar Funciones](./Docs/Uml/Actividades/asignarFuncion.jpg)
 
 **Editar funciones asociadas**
-![Editar funciones asociadas](./Docs/Uml/Actividades/)
+![Editar funciones asociadas](./Docs/Uml/Actividades/editFuncionAsociada.jpg)
 
 **Eliminar funciones asociadas**
-![Eliminar funciones asociadas](./Docs/Uml/Actividades/)
+![Eliminar funciones asociadas](./Docs/Uml/Actividades/delteFuncionAsociada.jpg)
 
 ### Diagrama de estados
 
 **Crear modulo**
-![Crear modulo](./Docs/Uml/Estado/)
+![Crear modulo](./Docs/Uml/Estado/crearModulo.jpg)
 
 **Inhabilitar-habilitar modulo**
-![Inhabilitar-habilitar modulo](./Docs/Uml/Estado/)
+![Inhabilitar-habilitar modulo](./Docs/Uml/Estado/habilitarInhabilitarModulo.jpg)
 
 **ELiminar modulo**
-![ELiminar modulo](./Docs/Uml/Estado/)
+![ELiminar modulo](./Docs/Uml/Estado/eliminarModulo.jpg)
 
 **Editar modulo**
-![Editar modulo](./Docs/Uml/Estado/)
+![Editar modulo](./Docs/Uml/Estado/editarModulo.jpg)
 
 **Asociar Funciones**
-![Asociar Funciones](./Docs/Uml/Estado/)
+![Asociar Funciones](./Docs/Uml/Estado/asignarFuncion.jpg)
 
 **Editar funciones asociadas**
-![Editar funciones asociadas](./Docs/Uml/Estado/)
+![Editar funciones asociadas](./Docs/Uml/Estado/editarFuncionAsignada.jpg)
 
 **Eliminar funciones asociadas**
-![Eliminar funciones asociadas](./Docs/Uml/Estado/)
+![Eliminar funciones asociadas](./Docs/Uml/Estado/eliminarFuncionAsignada.jpg)
 
 ## TODOS especificos del modulo
 

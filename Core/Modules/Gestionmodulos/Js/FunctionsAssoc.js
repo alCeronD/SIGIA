@@ -266,7 +266,6 @@ formAddFunctions.form.addEventListener('submit', (e) => {
   const formData = new FormData(e.target);
 
   let data = Object.fromEntries(formData);
-  console.log(data);
   if (
     !validateFormData({
       formData: formData,
@@ -303,7 +302,6 @@ formAddFunctions.form.addEventListener('submit', (e) => {
       initAlert(responseAddFunction.message, 'success');
       return;
     } catch (error) {
-      console.error(error.message);
       initAlert(error.message, 'error');
       return;
     }
@@ -334,6 +332,7 @@ formUpdateFunctions.form.addEventListener('submit', (f) => {
     return;
   }
 
+  // eliminar campos vacios no obligatorios
   for (const [key, value] of Object.entries(data)) {
     if (value == null || value === '') {
       delete data[key];

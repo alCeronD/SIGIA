@@ -185,7 +185,7 @@ class GestionmodulosController extends ConfigController implements CrudInterface
 
       $dataUpdatePrepare[CR_DATA] = $data;
       $responseUpdateModule = $this->modulosModel->update($data)->where()->prepareSql($dataUpdatePrepare)->get();
-      if (!$responseUpdateModule['status']) {
+      if (!$responseUpdateModule[CR_STATUS]) {
         $dbaMessageHandler = DatabaseHandler::validateResponse($responseUpdateModule);
         throw new Exception($dbaMessageHandler[CR_MESSAGE], $dbaMessageHandler[CR_CODE_RESPONSE]);
       }
