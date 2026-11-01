@@ -1,110 +1,83 @@
-/* Variables para los colores */
-:root {
-  --primary: #3a6c52;
-  --secundary: #004034;
-  --other: #ccc;
-  --white: #f0f0f0;
-  --btnEdit: #007d78;
-  --teal: #4db6ac;
-  --blue: #42a5f5;
-  --red: #ef5350;
-  --info: #004034;
-  --success: #3a6c52;
-  --warning: #fb8c00;
-  --error: #b71c1c;
-  --error2: #e57373;
-}
-
 /* ----------------- Contenedor General ----------------- */
 .contentElements {
   display: grid;
   grid-template-rows: auto auto auto;
   grid-template-areas:
-    "headerElementsModal"
+    "headerContent"
     "contentTableElements"
     "footerElements";
   width: 100%;
   height: auto;
-}
 
-.headerElementsModal {
-  grid-area: headerElementsModal;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.8rem;
-
-  .tituloHeaderElement {
-    flex: 3;
+  .headerContent {
+    grid-area: headerContent;
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: flex-start;
-    font-size: 25pt;
-  }
-
-  .btnAddHeaderElement {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .filtroHeaderElement {
-    flex: 1;
-    display: flex;
-    align-items: center;
-  }
-  .buscarHeaderElement {
-    flex: 3;
-    display: flex;
-  }
-}
-
-.contentTableElements {
-  grid-area: contentTableElements;
-}
-
-.footerElements {
-  grid-area: footerElements;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-
-  .pages {
-    width: 50%;
-    display: flex;
-    justify-content: center;
+    justify-content: space-between;
     gap: 0.8rem;
+
+    .tituloHeaderElement {
+      flex: 3;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      font-size: 25pt;
+    }
+
+    .btnAddHeaderElement {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .filtroHeaderElement {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .buscarHeaderElement {
+      flex: 3;
+      display: flex;
+    }
   }
-  .notes {
-    width: 50%;
+
+  .contentTableElements {
+    grid-area: contentTableElements;
+  }
+
+  .footerElements {
+    grid-area: footerElements;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+
+    .pages {
+      width: 50%;
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+
+    .notes {
+      width: 50%;
+    }
   }
 }
 
-/* ----------------- Título ----------------- */
-.container-fluid h2 {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-}
 
-/* ----------------- Fila de Filtros y Botón ----------------- */
-.row.mb-3 {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  align-items: center;
-  gap: 20px;
-}
 
-.row.mb-3 > .col-md-8 {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-}
+
+
+
+
+
 
 /* ----------------- Inputs y Select ----------------- */
 .form-select,
@@ -332,7 +305,8 @@
   grid-template-areas:
     "selectPlaca contentPlacaAssoc"
     "tableResult tableResult";
-  row-gap: 1rem; /* opcional: separación vertical entre áreas */
+  row-gap: 1rem;
+  /* opcional: separación vertical entre áreas */
 }
 
 .selectPlaca {
@@ -382,7 +356,8 @@
 }
 
 .input-field {
-  flex: 1; /* que cada uno tome el 50% */
+  flex: 1;
+  /* que cada uno tome el 50% */
 }
 
 #observacionInput {
@@ -395,10 +370,11 @@
   resize: none;
 }
 
-.contentPlaca > .inputPlaca {
+.contentPlaca>.inputPlaca {
   width: 100%;
 }
-.contentPlaca > .inputSerie {
+
+.contentPlaca>.inputSerie {
   width: 100%;
 }
 
@@ -467,7 +443,8 @@
   background-color: #fff;
   width: 40%;
   max-width: 500px;
-  margin: 0 auto 16px auto; /* <-- Esto centra horizontalmente */
+  margin: 0 auto 16px auto;
+  /* <-- Esto centra horizontalmente */
   display: block;
 }
 
@@ -497,7 +474,7 @@
   align-items: center;
 }
 
-#modalEditarElemento > #modalContentElements {
+#modalEditarElemento>#modalContentElements {
   padding: 20px;
   display: grid;
   grid-template-areas:
@@ -517,7 +494,8 @@
 #modalEditarElemento .modalContentForm {
   grid-area: modalContentForm;
 }
-#modalEditarElemento > #modalContentElements {
+
+#modalEditarElemento>#modalContentElements {
   padding: 20px;
   display: grid;
   grid-template-areas:
@@ -669,6 +647,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .modalContentExistencia {
   background-color: var(--white);
   width: 50%;

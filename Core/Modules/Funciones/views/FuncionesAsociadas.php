@@ -5,7 +5,7 @@
       <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
       <div class="titleRolesRunciones menuTitle">
         <span id="textTitleAreas" class="textTitleSpan">Gestión de funciones asociadas al rol</span>
-        <a href="<?php echo Router::createRoute('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
+        <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>"
           class="close-btn"
           title="Volver al dashboard">&times;</a>
       </div>

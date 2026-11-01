@@ -1391,6 +1391,7 @@ closeModal(addElementModal, cerrarModalBtn, () => {
     modalForm.reset();
   }
 });
+closeModal();
 const modalCerrarVerMas = document.querySelector('#modalCerrarVerMas');
 closeModal(modalVerMas, modalCerrarVerMas);
 // boton de cerrar modal addexistencia

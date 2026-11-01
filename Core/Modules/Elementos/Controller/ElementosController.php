@@ -273,150 +273,150 @@ class ElementosController
     }
 }
 
-$elementosController = new ElementosController();
-if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+// $elementosController = new ElementosController();
+// if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 
-    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+//     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
-        $case = $_GET['action'] ?? '';
-        //valor de la página, por defecto, es la página #1.
-        $pages = (int) ($_GET['pages'] ?? 1);
+//         $case = $_GET['action'] ?? '';
+//         //valor de la página, por defecto, es la página #1.
+//         $pages = (int) ($_GET['pages'] ?? 1);
 
-        // Esto se puede cambiar, en ves de switch case, arreglo con su calve y valor y ahí validar la información.
-        switch ($case) {
-            case 'elements':
-                $type = $_GET['type'];
-                $isBusqueda = (empty($_GET['isBusqueda'])) ? null : (($_GET['isBusqueda']) == "true" ? true : false);
-                $value = (string) (empty($_GET['value'])) ? null : $_GET['value'];
-
-
-                if (method_exists($elementosController, 'getElements')) {
-                    if (!$isBusqueda) {
-                        $elementosController->getElements(
-                            pages: $pages,
-                            type: $type
-                        );
-                    } else {
-                        $elementosController->getElements($pages, $type, $isBusqueda, $value);
-                    }
-                }
-                break;
-            case 'onlyElement':
-                $valueInput = strtolower($_GET['valueInput']);
-                if (method_exists($elementosController, 'getElement')) {
-                    $elementosController->getElement($valueInput);
-                }
-
-                break;
-
-            case 'areas':
-
-                if (method_exists($elementosController, 'getItems')) {
-                    $elementosController->getItems($case);
-                }
-
-                break;
-            case 'categoria':
-
-                if (method_exists($elementosController, 'getItems')) {
-                    $elementosController->getItems($case);
-                }
-
-                break;
-
-            case 'marcas':
-                if (method_exists($elementosController, 'getItems')) {
-                    $elementosController->getItems($case);
-                }
-                break;
-
-            case 'placas':
-                if (method_exists($elementosController, 'getPlacas')) {
-                    $elementosController->getPlacas($case);
-                }
-
-                break;
+//         // Esto se puede cambiar, en ves de switch case, arreglo con su calve y valor y ahí validar la información.
+//         switch ($case) {
+//             case 'elements':
+//                 $type = $_GET['type'];
+//                 $isBusqueda = (empty($_GET['isBusqueda'])) ? null : (($_GET['isBusqueda']) == "true" ? true : false);
+//                 $value = (string) (empty($_GET['value'])) ? null : $_GET['value'];
 
 
-            case 'validateSerie':
-                if ($_GET['isRegistrar'] === 'true') {
-                    $isRegistrar = true;
-                } else {
-                    $isRegistrar = false;
-                }
+//                 if (method_exists($elementosController, 'getElements')) {
+//                     if (!$isBusqueda) {
+//                         $elementosController->getElements(
+//                             pages: $pages,
+//                             type: $type
+//                         );
+//                     } else {
+//                         $elementosController->getElements($pages, $type, $isBusqueda, $value);
+//                     }
+//                 }
+//                 break;
+//             case 'onlyElement':
+//                 $valueInput = strtolower($_GET['valueInput']);
+//                 if (method_exists($elementosController, 'getElement')) {
+//                     $elementosController->getElement($valueInput);
+//                 }
 
-                $serie = (string) $_GET['serie'];
+//                 break;
 
-                if (method_exists($elementosController, 'getResultValidateSerie')) {
-                    if ($isRegistrar) {
-                        $elementosController->getResultValidateSerie(serie: $serie, isRegistrar: $isRegistrar);
-                    } else {
-                        $codigo = (int) $_GET['codigo'];
-                        $elementosController->getResultValidateSerie($serie, $codigo, $isRegistrar);
-                    }
-                }
-                break;
+//             case 'areas':
 
+//                 if (method_exists($elementosController, 'getItems')) {
+//                     $elementosController->getItems($case);
+//                 }
 
-            default:
-                Response::fail('error de acción.');
-                break;
-        }
-    }
+//                 break;
+//             case 'categoria':
 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $input = file_get_contents("php://input");
+//                 if (method_exists($elementosController, 'getItems')) {
+//                     $elementosController->getItems($case);
+//                 }
 
-        //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
-        $data = json_decode($input, true);
+//                 break;
 
-        $action = $data['action'];
-        unset($data['action']);
+//             case 'marcas':
+//                 if (method_exists($elementosController, 'getItems')) {
+//                     $elementosController->getItems($case);
+//                 }
+//                 break;
 
-        switch ($action) {
+//             case 'placas':
+//                 if (method_exists($elementosController, 'getPlacas')) {
+//                     $elementosController->getPlacas($case);
+//                 }
 
-            case 'registrar':
-                $elemento = $data;
-                if (method_exists($elementosController, 'addElement')) {
-                    $elementosController->addElement($elemento);
-                }
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
-        $input = file_get_contents("php://input");
-
-        //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
-        $data = json_decode($input, true);
-
-        $action = $data['action'];
-        unset($data['action']);
+//                 break;
 
 
-        switch ($action) {
-            case 'updateElement':
-                if (method_exists($elementosController, 'editarElemento')) {
-                    $elementosController->editarElemento($data);
-                }
-                break;
-            case 'statusElement':
-                if (method_exists($elementosController, 'cambiarEstadoElemento')) {
-                    $elementosController->cambiarEstadoElemento($data);
-                }
-                break;
-            case 'ChangeExistencia':
-                if (method_exists($elementosController, 'editarExistencia')) {
-                    $elementosController->editarExistencia($data);
-                }
-                break;
-            default:
-                # code...
-                break;
-        }
-    }
-    exit();
-}
+//             case 'validateSerie':
+//                 if ($_GET['isRegistrar'] === 'true') {
+//                     $isRegistrar = true;
+//                 } else {
+//                     $isRegistrar = false;
+//                 }
+
+//                 $serie = (string) $_GET['serie'];
+
+//                 if (method_exists($elementosController, 'getResultValidateSerie')) {
+//                     if ($isRegistrar) {
+//                         $elementosController->getResultValidateSerie(serie: $serie, isRegistrar: $isRegistrar);
+//                     } else {
+//                         $codigo = (int) $_GET['codigo'];
+//                         $elementosController->getResultValidateSerie($serie, $codigo, $isRegistrar);
+//                     }
+//                 }
+//                 break;
+
+
+//             default:
+//                 Response::fail('error de acción.');
+//                 break;
+//         }
+//     }
+
+//     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+//         $input = file_get_contents("php://input");
+
+//         //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
+//         $data = json_decode($input, true);
+
+//         $action = $data['action'];
+//         unset($data['action']);
+
+//         switch ($action) {
+
+//             case 'registrar':
+//                 $elemento = $data;
+//                 if (method_exists($elementosController, 'addElement')) {
+//                     $elementosController->addElement($elemento);
+//                 }
+//                 break;
+
+//             default:
+//                 break;
+//         }
+//     }
+
+//     if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
+//         $input = file_get_contents("php://input");
+
+//         //TODO: validar si data llego bien, en caso de que no, devolver un error 500.
+//         $data = json_decode($input, true);
+
+//         $action = $data['action'];
+//         unset($data['action']);
+
+
+//         switch ($action) {
+//             case 'updateElement':
+//                 if (method_exists($elementosController, 'editarElemento')) {
+//                     $elementosController->editarElemento($data);
+//                 }
+//                 break;
+//             case 'statusElement':
+//                 if (method_exists($elementosController, 'cambiarEstadoElemento')) {
+//                     $elementosController->cambiarEstadoElemento($data);
+//                 }
+//                 break;
+//             case 'ChangeExistencia':
+//                 if (method_exists($elementosController, 'editarExistencia')) {
+//                     $elementosController->editarExistencia($data);
+//                 }
+//                 break;
+//             default:
+//                 # code...
+//                 break;
+//         }
+//     }
+//     exit();
+// }
