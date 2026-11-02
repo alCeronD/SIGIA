@@ -11,11 +11,20 @@ class ElementosMainController extends ConfigController
   protected array $files = [
     "css" => [
       "elementosMainView" => ['ElementosMain.css'],
-      "elementosView" => ['ElementosView.css']
+      "elementosView" => [
+        'ElementosView.css',
+        'folder' => [
+          'nameFolder' => 'ElementosView',
+          'files' => ['prueba4.css', 'prueba.css']
+        ]
+      ],
     ],
     "js" => [
       "elementosMainView" => ['ElementosMain.js'],
-      "elementosView" => ['ElementosView.js', 'SelectorsElementosView.js']
+      "elementosView" => [
+        'folder' => 'ElementosView',
+        'files' => ['ElementosView.js', 'SelectorsElementosView.js']
+      ]
     ]
   ];
 

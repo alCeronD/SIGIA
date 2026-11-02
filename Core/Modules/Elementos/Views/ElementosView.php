@@ -69,9 +69,9 @@
 </div>
 
 <?php
-require_once 'modalElementos.php';
-require_once 'modalEditarElemento.php';
-require_once 'modalVerMas.php';
-require_once 'modalConfirmacion.php';
-require_once 'modalAddExistencia.php';
+// require_once 'modalElementos.php';
+// require_once 'modalEditarElemento.php';
+// require_once 'modalVerMas.php';
+// require_once 'modalConfirmacion.php';
+// require_once 'modalAddExistencia.php';
 ?>
