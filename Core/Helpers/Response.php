@@ -39,9 +39,10 @@ class Response
     public static function responseTemplate(int $codeResponse = 1, String $message = "", array $data = [])
     {
         try {
+            ob_get_clean(); //Limpio el buffer antes de renderizar la vista de error.
             $nameTemplate = "{$codeResponse}.php";
             $routeRemplate = realpath(BASE_PATH . "/../../public/templates/$nameTemplate");
-            $previewRoute = $data['previewRoute'];
+            $previewRoute = $data['previewRoute'] ?? Router::createRoute('Login', 'Login', 'index', false, 'index');
             if (!file_exists($routeRemplate)) throw new Exception($message, 404);
             $codeResponseTemplate = $codeResponse;
             $messageToTemplate = $message;

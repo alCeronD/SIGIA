@@ -9,6 +9,15 @@
   - [Descripción](#descripción)
   - [Arquitectura Interna (Pre-documentación)](#arquitectura-interna-pre-documentación)
   - [Dependencias de Base de Datos](#dependencias-de-base-de-datos)
+  - [Documentación del sistema](#documentación-del-sistema)
+    - [Requerimientos](#requerimientos)
+    - [Historias de usuario](#historias-de-usuario)
+  - [Diagramas UML](#diagramas-uml)
+    - [Caso de uso](#caso-de-uso)
+    - [Caso de uso extendido](#caso-de-uso-extendido)
+    - [Diagramas de secuencia](#diagramas-de-secuencia)
+    - [Diagramas de actividades](#diagramas-de-actividades)
+    - [Diagramas de estados](#diagramas-de-estados)
     - [TODOS ESPECÍFICOS](#todos-específicos)
 
 ## Descripción
@@ -43,12 +52,144 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 
 - **Tabla principal:** `usuarios`
 - **Tablas asociadas:** `auditorias`, `estados_usuarios`, `tipo_documento`, `roles`, `usuarios_roles`
-- **Conexión con otros módulos:** `roles`, `tipo_documento`
+- **Conexión con otros módulos:** `roles`, `tipo_documento`, `prestamos`
 - **Relaciones:**
   - `estados_usuarios (id)` -> Llave foránea en `usuarios` para controlar si el usuario está activo, inactivo o suspendido.
   - `tipos_documento (id)` -> Llave foránea en `usuarios` para asociar el tipo de identificación (C.C., T.I., C.E., etc.).
   - `roles (id)` -> Relación para definir los permisos y el nivel de acceso del usuario dentro de SIGIA.
   - `roles_funciones (rlp_id)` -> Relacion con la tabla usuarios para guardar el rol al cual pertenece el usuario.
+
+```bash
+├── Const
+│   └── UsuariosConst.php # Archivo de variables constantes usadas en el modulo
+├── Controller
+│   └── UsuariosController.php # Controlador principal del modulo
+├── Css
+│   ├── AuditoriasUsuarios.css # Css de la vista auditorias
+│   ├── CreateUser.css # Css de la vista crear usuario
+│   ├── UpdatePersonalData.css # Css de la vista actualizar datos personales
+│   ├── UsuariosIndex.css # css de la vista del MODULO PRINCIPAL
+│   └── UsuariosView.css # css del listado de los usuarios
+├── Docs
+│   ├── Requirements.MD # Requerimientos especificos del modulo
+│   ├── Uml
+│   │   ├── Actividades # Carpeta con los diagramas de actividades
+│   │   │   ├── editarUsuario.jpg
+│   │   │   ├── habilitarInhabilitarUsuario.jpg
+│   │   │   └── registrarUsuario.jpg
+│   │   ├── CasodeUso_Extend # Archivo con el listado de el caso de uso extendido detallado + el diagrama de caso de uso
+│   │   │   ├── Extend_Usuarios.MD
+│   │   │   └── moduloUsuariosCasoDeUso.jpg
+│   │   ├── Estados # Carpeta con los diagramas de estados
+│   │   │   ├── actualizarUsuario.jpg
+│   │   │   ├── ConsultarUsuarios.jpg
+│   │   │   ├── Inhabilitar-Habilitar.jpg
+│   │   │   └── registrarUsuario.jpg
+│   │   └── Secuencia # Carpeta con los diagramas de secuencia
+│   │       ├── actualizarDatosPersonales.jpg
+│   │       ├── consultarUsuario.jpg
+│   │       ├── crearUsuario.jpg
+│   │       ├── habilitarInhabilitarUsuario.jpg
+│   │       └── modificarDatosUsuario.jpg
+│   └── User_Story # Historias de usuario del del modulo
+│       ├── ActualizarDatos.MD
+│       ├── ConsultarUsuario.MD
+│       ├── CrearUsuario.MD
+│       ├── Habilitar_Inhabilitar.MD
+│       └── ModificarUsuario.MD
+├── Js
+│   ├── AuditoriasUsuarios.js # script que corresponde al manejo del doom de auditorias, peticiones, entre otros
+│   ├── CreateUser.js # Script para crear el usuario en la base de datos
+│   ├── detailUser.js # Js para ver la informacion del usuario, aca se vera la informacion y los elementos que tiene o ha tenido en su mano
+│   ├── Functions-updatePersonalData.js # Archivo auxiliar que contiene las funciones del archivo UpdatePersonalData.JS
+│   ├── Functions-UsuariosView.js # Archivo auxiliar que contiene las funciones del archivo UsuariosIndex.js
+│   ├── Selectors-CreateUser.js # Selectores del doom para crear el usuario
+│   ├── Selectors-UsuariosView.js # Selectores del doom para ver los usuarios registrados
+│   ├── UpdatePersonalData.js # Script para actualizar mis datos personales
+│   ├── UsuariosIndex.js
+│   └── UsuariosView.js # Script para ver los usuarios registrados en el sistema
+├── Model
+│   ├── UsuariosModel.php # Modelo de la tabla usuarios
+│   └── UsuariosRolesModel.php # Modelo de la tabla usuarios_roles
+├── Mysql
+│   ├── alters.sql # Script con alters, estos son modificaciones que se hicieron después de entregar la primera versión del módulo
+│   └── usuarios.sql # Script con la tabla usuarios + usuarios
+├── README.MD # README PRINCIPAL DEL MODULO
+├── Services
+│   └── ServicesUsuarios.php  # Capa de servicios que sirve para conectar con otros modulos en caso de ser requerido
+└── Views
+    ├── auditoriasView.php # Vista del modulo de auditoria de usuario
+    ├── createUsuariosView.php # Vista para crear el usuario
+    ├── detailUser.php # Vista para visualizar el detalle completo del usuario
+    ├── updatePersonalData.php # Vista para actualizar los datos personales del usuario
+    ├── usuariosIndex.php # Acceso a la vista principal del modulo
+    └── usuariosView.php # Listado de usuarios registrados del sistema
+```
+
+## Documentación del sistema
+
+### Requerimientos
+
+[Ver README](./Docs/Requirements.MD)
+
+### Historias de usuario
+
+| Nombre historia                   |                      Documentación                       |
+| :-------------------------------- | :------------------------------------------------------: |
+| **Crear usuario**                 |     [Ver README](./Docs/User_Story/CrearUsuario.MD)      |
+| **Modificar Usuario**             |   [Ver README](./Docs/User_Story/ModificarUsuario.MD)    |
+| **Habilitar/Inhabilitar usuario** | [Ver README](./Docs/User_Story/Habilitar_Inhabilitar.MD) |
+| **Actualizar datos personales**   |    [Ver README](./Docs/User_Story/ActualizarDatos.MD)    |
+| **Consultar usuario**             |   [Ver README](./Docs/User_Story/ConsultarUsuario.MD)    |
+
+## Diagramas UML
+
+### Caso de uso
+
+![Caso de uso](./Docs/Uml/CasodeUso_Extend/moduloUsuariosCasoDeUso.jpg)
+
+### Caso de uso extendido
+
+[Ver readme](./Docs/Uml/CasodeUso_Extend/Extend_Usuarios.MD)
+
+### Diagramas de secuencia
+
+**Crear usuario**
+![Crear Usuario](./Docs/Uml/Secuencia/crearUsuario.jpg)
+
+**Actualizar datos personales**
+![Actualizar datos personales](./Docs/Uml/Secuencia/actualizarDatosPersonales.jpg)
+
+**Habilitar/Inhabilitar Usuario**
+![Habilitar/Inhabilitar Usuario](./Docs/Uml/Secuencia/habilitarInhabilitarUsuario.jpg)
+
+**modificar Datos Usuario**
+![modificarDatosUsuario](./Docs/Uml/Secuencia/modificarDatosUsuario.jpg)
+
+### Diagramas de actividades
+
+**Editar usuario**
+![Editar Usuario](./Docs/Uml/Actividades/editarUsuario.jpg)
+
+**Habilitar/Inhabilitar usuario**
+![Habilitar/Inhabilitar Usuario](./Docs/Uml/Actividades/habilitarInhabilitarUsuario.jpg)
+
+**Registrar usuario**
+![Registrar Usuario](./Docs/Uml/Actividades/registrarUsuario.jpg)
+
+### Diagramas de estados
+
+**Actualizar usuario**
+![Actualizar](./Docs/Uml/Estados/actualizarUsuario.jpg)
+
+**Consultar Usuario**
+![Consultar](./Docs/Uml/Estados/ConsultarUsuarios.jpg)
+
+**Inhabilitar/Habilitar usuario**
+![Habilitar/Inhabilitar](./Docs/Uml/Estados/Inhabilitar-Habilitar.jpg)
+
+**Registrar usuario**
+![Registrar](./Docs/Uml/Estados/registrarUsuario.jpg)
 
 ### TODOS ESPECÍFICOS
 
@@ -57,15 +198,17 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [X] Desarrollar historia de usuario # HU-U00
 - [X] Desarrollar historia de usuario # HU-U01 (Registrar usuario).
 - [X] Ajustar historia de usuario de paginacion de usuario y consulta con filtros # HU -U02.
-- [ ] Re factorizar css
-- [ ] Re factorizar js
+- [X] Re factorizar css
+  - [X] Css refactorizado en update personalData
+  - [x] Css refactorizado en VER USUARIO
+- [X] Re factorizar js
 - [X] Crear componente de paginacion en los registros de los usuarios.
 - [X] Implementar update
 - [X] Implementar changeStatus a los usuarios.
 - [X] Re factorizar backend moviendo todo lo de modelo a las acciones del controlador
 - [X] Implementar y arreglar las funcionales ya definidas, estas funcionalidades estan en las historias de usuario de la documentación en el drive
-- [ ] Buscar cual es la mejor forma de implementar el actualizar la contraseña de un usuario
 - [X] solicitar los datos de tipo de documento y roles y guardarlo en localstorage para su re utilizacion, hacerlo en el archivo usuariosIndex.js
+- [ ] Buscar cual es la mejor forma de implementar el actualizar la contraseña de un usuario
 - [ ] Limpiar los datos de los nuevos usuarios usando DIRTY DATA (PYTHON)
 - [ ] Cargar datos limpios a la tabla de usuario
 - [ ] Crear mockup historia de usuario e investigar como implementar el feature: CARGA MASIVA DE REGISTROS.
@@ -73,3 +216,16 @@ El modulo de usuarios tiene como finalidad la respectiva gestión de los datos d
 - [ ] Desarrollar feature de historia de usuario carga de datos.
 - [ ] Desarrollar mockup de auditoria de usuarios e historia de usuario de auditoria.
 OPCION AUDITORIA MODULO PRESTAMOS = CREAR AL MODULO DE SOLICITUD DE PRESTAMO O PRESTAMOS LA OPCION DE AUDITORIA, DE SABER QUIEN HIZO EL PRESTAMO Y CUANDO SE EJECUTO.
+- **Crear usuario**
+  - [X] View Users = implementar los roles a los cuales se pueden asignar al usuario
+  - [X] Implementar sessionStorage para guardar los roles en la variable de storage para re utilizar los datos
+  - [X] Implementar feature de asignarRol
+- [X] Implementar documentacion
+  - [X] Requerimientos
+  - [X] Historias de usuario
+  - [X] Diagramas
+    - [X] Caso de uso
+    - [X] Caso de uso extendido
+    - [X] Secuencia
+    - [X] Estado
+    - [x] Actividades

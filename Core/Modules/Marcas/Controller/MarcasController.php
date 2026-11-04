@@ -22,10 +22,10 @@ class MarcasController extends ConfigController implements CrudInterface
   public function createRoutes()
   {
     $this->routes = [
-      'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
+      CR_DASHBOARD_LOWER_CASE => ['label' => 'inicio', 'url' => Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE)],
       'renderViewMarca' => [
         'label' => 'Marcas',
-        'url' => Router::createRoute('Marcas', 'Marcas', 'renderViewMarca', false, 'dashboard'),
+        'url' => Router::createRoute(CR_MARCAS, CR_MARCAS, 'renderViewMarca', false, CR_DASHBOARD_LOWER_CASE),
         'parent' => 'dashboard'
       ],
     ];
@@ -47,7 +47,25 @@ class MarcasController extends ConfigController implements CrudInterface
       CR_OFFSET => (int) $resultPaginate[CR_OFFSET]
     ];
     // crear consulta de envio de datos.
-    $responseGetData = $this->mModel->select()->from()->orderBy()->limit()->offset()->prepareSql($dataSql)->get();
+    $responseGetData = $this->mModel
+      ->select([
+        "ma_id AS 'ma_id'",
+        'ma_nombre AS "ma_nombre"',
+        "ma_descripcion AS 'ma_descripcion'"
+      ])
+      ->raw(
+        "CASE
+          WHEN ma_status = 1 THEN 'Activo'
+          WHEN ma_status = 2 THEN 'Inactivo'
+          ELSE 'Sin estado'
+        END AS 'ma_status'"
+      )
+      ->from()
+      ->orderBy()
+      ->limit()
+      ->offset()
+      ->prepareSql($dataSql)
+      ->get();
 
     if ($resultPaginate) {
       Response::responseRequest(HttpStatus::OK, true, "Registros", [
@@ -65,9 +83,36 @@ class MarcasController extends ConfigController implements CrudInterface
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
     $data = UtilsFunctions::deleteSpace($data);
-    $data['ma_id'] = (int) $data['ma_id'];
-    $dataUpdate['data'] = $data;
-    $responseUpdate = $this->mModel->update($data)->where()->prepareSql($dataUpdate)->get();
+    $data[VARS_MA_ID] = (int) $data[VARS_MA_ID];
+    $dataUpdate[CR_DATA] = $data;
+
+    $dataValidate[CR_DATA] = [
+      CR_WORD_LIMIT => 1,
+      VARS_MA_NOMBRE => $data[VARS_MA_NOMBRE]
+    ];
+    // traemos el usuario que tenga el name igual
+    $validateDiferente = $this->mModel
+      ->select()
+      ->from()
+      ->where([VARS_MA_NOMBRE, '=', $data[VARS_MA_NOMBRE]])
+      ->limit()->prepareSql($dataValidate)
+      ->get();
+
+    // validamos que la llave unica (el nombre de la marca) sea igual para asi actualizarlo, en caso contrario, capturar excepcion
+
+    if (!empty($validateDiferente)) {
+      if ($validateDiferente[0][VARS_MA_NOMBRE] === $data[VARS_MA_NOMBRE] && $validateDiferente[0][VARS_MA_ID] != $data[VARS_MA_ID]) {
+        throw new Exception(MA_NAME_ALREADY_EXISTS, HttpStatus::CONFLICT);
+      }
+    }
+
+
+
+    $responseUpdate = $this->mModel
+      ->update($data)
+      ->where()
+      ->prepareSql($dataUpdate)
+      ->get();
     // validamos si la cantidad de registros a actualizar es mayor a 0, singifica que si hubo un cambio
     if ($responseUpdate == 0) {
       Response::responseRequest(HttpStatus::NO_CONTENT, true, MA_UPDATE_NA, []);
@@ -75,7 +120,7 @@ class MarcasController extends ConfigController implements CrudInterface
 
     if (!$responseUpdate[CR_STATUS]) {
       $dataResponse = DatabaseHandler::validateResponse($responseUpdate);
-      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
       return;
     }
     Response::responseRequest(HttpStatus::OK, true, MA_UPDATE_SUCCESS, []);
@@ -86,12 +131,15 @@ class MarcasController extends ConfigController implements CrudInterface
     $data = UtilsFunctions::returnGetDecode();
     $data = UtilsFunctions::deleteSpace($data);
     $data['ma_status'] = 1;
-    $dataInsert['data'] = $data;
-    $responseInsert = $this->mModel->insert($data)->prepareSql($dataInsert)->get();
+    $dataInsert[CR_DATA] = $data;
+    $responseInsert = $this->mModel
+      ->insert($data)
+      ->prepareSql($dataInsert)
+      ->get();
 
     if (!$responseInsert[CR_STATUS]) {
       $dataResponse = DatabaseHandler::validateResponse($responseInsert);
-      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
       return;
     }
     Response::responseRequest(HttpStatus::OK, true, MA_INSERT_SUCCESS, []);
@@ -100,12 +148,12 @@ class MarcasController extends ConfigController implements CrudInterface
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
-    $dataDelete['data'] = $data;
+    $dataDelete[CR_DATA] = $data;
     $responseDelete = $this->mModel->delete()->where()->prepareSql($dataDelete)->get();
 
     if (!$responseDelete[CR_STATUS]) {
       $dataResponse = DatabaseHandler::validateResponse($responseDelete);
-      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
       return;
     }
     Response::responseRequest(HttpStatus::OK, true, MA_DELETE_SUCCESS, []);
@@ -114,14 +162,14 @@ class MarcasController extends ConfigController implements CrudInterface
   {
     header(CONTENT_TYPE);
     $data = UtilsFunctions::returnGetDecode();
-    $dataChangeStatus['data'] = $data;
+    $dataChangeStatus[CR_DATA] = $data;
     $responseChangeStatus = $this->mModel->update($data)->where()->prepareSql($dataChangeStatus)->get();
 
-    $message = $data['ma_status'] === 1 ? MA_CHANGE_DISABLED : MA_CHANGE_ENABLED;
+    $message = $data[VARS_MA_STATUS] === 1 ? MA_CHANGE_DISABLED : MA_CHANGE_ENABLED;
 
     if (!$responseChangeStatus[CR_STATUS]) {
       $dataResponse = DatabaseHandler::validateResponse($responseChangeStatus);
-      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
       return;
     }
     Response::responseRequest(HttpStatus::OK, true, $message, []);

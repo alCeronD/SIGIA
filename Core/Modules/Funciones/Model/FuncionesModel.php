@@ -10,7 +10,8 @@ class FuncionesModel extends Crud
     'nameController', //Nombre el controlador en donde está la función
     'id_modulo', // id del modulo al que pertenece la funcion
     'tp_funcion', // tipo de la funcion,
-    'is_main_view',
+    'is_main_view', // validar mediante 1 o 0 si es una vista principal o secundaria
+    'vars', // campo de tipo json para validar e implementar actualizaciones de datos.
     'created_at',
     'updated_at'
   ];

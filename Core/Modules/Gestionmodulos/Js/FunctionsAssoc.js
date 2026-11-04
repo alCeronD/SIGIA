@@ -118,6 +118,10 @@ const editFunction = (id, row) => {
   // validamos si tiene tilde la palabra logica.
   rowObj['tp_funcion'] = tpFuncion === 'lógica' ? 'logica' : tpFuncion;
   rowObj['isMainView'] = String(row.isMainView);
+  rowObj['modulo'] = row.modulo;
+  rowObj['controlador'] = row.controlador;
+  rowObj['funcion'] = row.funcion;
+  rowObj['icono'] = row.icono;
 
   // container files del formularioUpdateFunctions
   const filesUpdateFunction = formUpdateFunctions.form.querySelector('.files');
@@ -144,6 +148,7 @@ const editFunction = (id, row) => {
     });
   } else {
     formUpdateFunctions.divs.contentIsMain.style.display = 'none';
+    formUpdateFunctions.divs.route.style.display = 'none';
   }
 
   // inicializamos los selects.
@@ -197,12 +202,14 @@ const changeRadioButton = (input = null, isClose = false) => {
   // muestrame el radiobutton de is_main_view si su valor es render, en caso contrario, ocultalo
   if (valueInput === 'render') {
     formAddFunctions.divs.contentIsMain.style.display = 'block';
+    formAddFunctions.divs.route.style.display = 'block';
   } else {
     // elimino los valores seleccionados
     formAddFunctions.radio_is_main_view.forEach((el) => {
       el.checked = false;
     });
     formAddFunctions.divs.contentIsMain.style.display = 'none';
+    formAddFunctions.divs.route.style.display = 'none';
   }
 
   // flag para eliminar valores seleccionados
@@ -211,6 +218,16 @@ const changeRadioButton = (input = null, isClose = false) => {
       el.checked = false;
     });
   }
+};
+
+/**
+ * Function para eliminar los espacios del medio y transformar toda la palabra en minuscula.
+ *
+ * @param {*} word
+ * @returns {*}
+ */
+const setWordIcon = (word) => {
+  return word.replace(' ', '_').trim().toLowerCase();
 };
 
 buttons.btnAddFunction.addEventListener('click', (e) => {
@@ -232,9 +249,12 @@ formAddFunctions.radio.forEach((el) => {
 formUpdateFunctions.radio.forEach((el) => {
   el.addEventListener('change', (f) => {
     if (f.target.value === 'logica') {
+      console.log('se elige logica');
       formUpdateFunctions.divs.contentIsMain.style.display = 'none';
+      formUpdateFunctions.divs.route.style.display = 'none';
     } else {
       formUpdateFunctions.divs.contentIsMain.style.display = 'block';
+      formUpdateFunctions.divs.route.style.display = 'block';
     }
   });
 });
@@ -246,11 +266,10 @@ formAddFunctions.form.addEventListener('submit', (e) => {
   const formData = new FormData(e.target);
 
   let data = Object.fromEntries(formData);
-
   if (
     !validateFormData({
       formData: formData,
-      campos: optionals,
+      campos: mapConfigFunctions.mapObjAdd.optionals,
       mapForm: mapConfigFunctions.mapObjAdd,
     })
   ) {
@@ -283,7 +302,6 @@ formAddFunctions.form.addEventListener('submit', (e) => {
       initAlert(responseAddFunction.message, 'success');
       return;
     } catch (error) {
-      console.error(error.message);
       initAlert(error.message, 'error');
       return;
     }
@@ -302,7 +320,7 @@ formUpdateFunctions.form.addEventListener('submit', (f) => {
   if (
     !validateFormData({
       formData: formData,
-      campos: optionals,
+      campos: mapConfigFunctions.mapObjEdit.optionals,
       mapForm: mapConfigFunctions.mapObjEdit,
     })
   ) {
@@ -314,13 +332,38 @@ formUpdateFunctions.form.addEventListener('submit', (f) => {
     return;
   }
 
+  // eliminar campos vacios no obligatorios
+  for (const [key, value] of Object.entries(data)) {
+    if (value == null || value === '') {
+      delete data[key];
+    }
+  }
+
+  const modulo = data['modulo'];
+  const controlador = data['controlador'];
+  const funcion = data['funcion'];
+
+  data['route'] = {
+    modulo: modulo,
+    controlador: controlador,
+    funcion: funcion,
+  };
+
+  delete data.modulo;
+  delete data.controlador;
+  delete data.funcion;
+
+  const icono = setWordIcon(data['icono']);
+  data['icono'] = icono;
+
+  console.log(data);
+
   mostrarConfirmacion(
     'Editar función',
     '¿Está seguro de editar la funcionalidad?',
     async (response) => {
       try {
         if (!response) return;
-
         const responseUpdateFunction = await Funciones.sendData(`${url}`, METHOD.PUT, data);
 
         if (!responseUpdateFunction.status) throw new Error(responseUpdateFunction.message);

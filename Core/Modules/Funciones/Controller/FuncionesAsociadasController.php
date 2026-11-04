@@ -21,6 +21,10 @@ class FuncionesAsociadasController extends ConfigController
 
   public function createRoutes()
   {
+
+    $vistasSecundarias = $_SESSION['renderMenu']['menuSecondView'];
+    $modulos = array_column($vistasSecundarias, 'nombreModulo');
+
     $this->routes = [
       'dashboard' => ['label' => 'inicio', 'url' => Router::createRoute('Dashboard', 'Dashboard', 'dashboard', false, 'dashboard')],
       'permisosIndexView' => [
@@ -140,7 +144,7 @@ class FuncionesAsociadasController extends ConfigController
     $responseDeleteFunciones = $this->rfModel->delete()->where()->prepareSql($dataDelete)->get();
     if (!$responseDeleteFunciones[CR_STATUS]) {
       $dataResponse = DatabaseHandler::validateResponse($responseDeleteFunciones);
-      Response::responseRequest($dataResponse['codeResponse'], false, $dataResponse['message'], []);
+      Response::responseRequest($dataResponse[CR_CODE_RESPONSE], false, $dataResponse[CR_MESSAGE], []);
       return;
     }
     Response::responseRequest(HttpStatus::OK, true, RLF_MESSAGE_SUCCESS_DELETE, []);

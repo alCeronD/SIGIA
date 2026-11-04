@@ -6,6 +6,7 @@ import {
   validateFormData,
 } from '../../../../public/assets/js/utils/index.js';
 import {
+  asingRol,
   executePaginate,
   renderFilters,
   renderUsers,
@@ -18,5 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderFilters();
   executePaginate();
   updateUser();
+  asingRol();
   InitComponents.initSelect();
 });

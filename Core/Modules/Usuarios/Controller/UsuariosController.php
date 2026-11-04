@@ -18,14 +18,14 @@ class UsuariosController extends ConfigController implements CrudInterface
             'createUserView' => ['CreateUser.css'],
             'auditoriaUserView' => ['AuditoriasUsuarios.css'],
             'usuariosView' => ['UsuariosView.css'],
-            'actualizarDatosView' => ['UpdatePersonalData.css']
+            'actualizarPersonalData' => ['UpdatePersonalData.css']
         ],
         "js" => [
-            'usuariosIndexView' => [],
+            'usuariosIndexView' => ['UsuariosIndex.js'],
             'createUserView' => ['CreateUser.js'],
             'auditoriaUserView' => ['AuditoriasUsuarios.js'],
             'usuariosView' => ['UsuariosView.js'],
-            'actualizarDatosView' => ['UpdatePersonalData.js', 'Functions-updatePersonalData.js'],
+            'actualizarPersonalData' => ['UpdatePersonalData.js', 'Functions-updatePersonalData.js'],
             'detailUser' => ['detailUser.js']
         ]
     ];
@@ -65,9 +65,9 @@ class UsuariosController extends ConfigController implements CrudInterface
                 'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'usuariosView', false, CR_DASHBOARD_LOWER_CASE),
                 'parent' => 'usuariosIndexView'
             ],
-            'actualizarDatosView' => [
+            'actualizarPersonalData' => [
                 'label' => 'Actualizar datos personales',
-                'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'updatePersonalDataView', false, CR_DASHBOARD_LOWER_CASE),
+                'url' => Router::createRoute(CR_USUARIOS, CR_USUARIOS, 'actualizarPersonalData', false, CR_DASHBOARD_LOWER_CASE),
                 'parent' => 'usuariosIndexView'
             ],
             'detailUser' => [
@@ -367,4 +367,91 @@ class UsuariosController extends ConfigController implements CrudInterface
      * @return void
      */
     public function delete() {}
+
+    /**
+     * Funcion para cambiar el rol del usuario
+     *
+     * @return void
+     */
+    public function changeRol()
+    {
+        try {
+            header(CONTENT_TYPE);
+            $data = UtilsFunctions::returnGetDecode();
+
+            if (empty($data)) throw new Exception(MSG_DATA_EMPTY, HttpStatus::BAD_REQUEST);
+
+            // PASOS - VALIDAR QUE EL USUARIO EXISTA.
+            $usuarioExists = $this->sUser->getUserByDocum($data['usu_docum']);
+
+            if (empty($usuarioExists))
+                throw new Exception(US_MESSAGE_USER_NOT_FOUND, HttpStatus::NOT_FOUND);
+
+
+            // PASOS - VALIDAR QUE EL USUARIO YA TENGA ROL
+            // MODELO USUARIOS ROLES = VALIDAMOS QUE EXISTA CON EL ID.
+            $data[CR_DATA] = [
+                'usr_usu_id' => $data['usu_id']
+            ];
+            $userAlreadyRol = $this->usuariosRModel
+                ->select()
+                ->from()
+                ->where(['usr_usu_id', '=', "{$data['usu_id']}"])
+                ->prepareSql($data)
+                ->get();
+
+            $setRol = null;
+            $dataSetRol = [
+                'usr_usu_id' => (int) $data['usu_id'],
+                'usr_rl_id' => (int) $data['usr_rl_id']
+            ];
+
+            $message = "";
+            $codeResponse = null;
+            // EN CASO DE YA TENER ROL, HACER UN UPDATE, SINO UN INSERT.
+            if (empty($userAlreadyRol)) {
+
+                // insert
+                $dataPrepareInsert[CR_DATA] = $dataSetRol;
+                $setRol = $this->usuariosRModel
+                    ->insert($dataSetRol)
+                    ->prepareSql($dataPrepareInsert)
+                    ->get();
+                $message = "Rol asignado correctamente al usuario";
+                $codeResponse = HttpStatus::CREATED;
+            } else {
+                // update
+                $getDataPrepare[CR_DATA] = $dataSetRol;
+
+                // 1 TRAEMOS EL ID IDENTIFICADOR DE LA TABLA USUARIOS_ROLES para actualizar el rol especifico.
+                $getData = $this->usuariosRModel->select()
+                    ->from()
+                    ->where(["usr_usu_id", "=", $dataSetRol['usr_usu_id']]) //Id de la tabla usuarios
+                    ->prepareSql($getDataPrepare)
+                    ->get()[0]['usr_id'];
+
+                $dataSetRol['usr_id'] = $getData;
+                $dataPrepareUpdate[CR_DATA] = $dataSetRol;
+
+
+                $setRol = $this->usuariosRModel
+                    ->update($dataSetRol)
+                    ->where()
+                    ->prepareSql($dataPrepareUpdate)
+                    ->get();
+                $message = "Se ha actualizado el rol del usuario correctamente.";
+                $codeResponse = HttpStatus::OK;
+            }
+
+
+            if (!$setRol[CR_STATUS]) {
+                $errorHandler = DatabaseHandler::validateResponse($setRol);
+                throw new Exception($errorHandler[CR_MESSAGE], $errorHandler[CR_CODE_RESPONSE]);
+            }
+
+            Response::responseRequest($codeResponse, true, $message, []);
+        } catch (\Throwable $th) {
+            Response::responseRequest($th->getCode(), false, $th->getMessage());
+        }
+    }
 }

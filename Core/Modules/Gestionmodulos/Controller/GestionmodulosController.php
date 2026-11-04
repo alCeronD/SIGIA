@@ -100,12 +100,10 @@ class GestionmodulosController extends ConfigController implements CrudInterface
       'nombre_modulo AS `nombre_modulo`',
       'icono AS `icono`',
       'descripcion AS `descripcion`',
-      'IF(status_modulo = 1, "Activo", "Inactivo" ) AS `status_modulo`',
       'vars AS `ruta`'
     ];
 
     $queryModules = ($this->sModulos->getAllModulos(true, $sql))->prepareSql($dataSql)->get(); //enviamos flag true para continuar con la consulta, false para devolver el arreglo con todos los modulos.
-
 
     // a los datos que tengan la key ruta y este tenga informacion, se hace la destructuracion
     foreach ($queryModules as $key => $value) {
@@ -187,7 +185,7 @@ class GestionmodulosController extends ConfigController implements CrudInterface
 
       $dataUpdatePrepare[CR_DATA] = $data;
       $responseUpdateModule = $this->modulosModel->update($data)->where()->prepareSql($dataUpdatePrepare)->get();
-      if (!$responseUpdateModule['status']) {
+      if (!$responseUpdateModule[CR_STATUS]) {
         $dbaMessageHandler = DatabaseHandler::validateResponse($responseUpdateModule);
         throw new Exception($dbaMessageHandler[CR_MESSAGE], $dbaMessageHandler[CR_CODE_RESPONSE]);
       }

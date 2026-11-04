@@ -34,3 +34,12 @@
 
 - Documentar más funciones con JSDoc como ya empezaste a hacer con `renderElements`.
 - Añadir README por módulo si el proyecto crece.
+
+### TODOS
+
+- [ ] Implementar relacion entre ca_cod (categorias) con elm_ca_cod (FORANEA DEL CODIGO DE CATEGORIA)
+- [ ] Implementar vista inicial y re direccionamiento a las vistas iniciales
+- [ ] Transformar el archivo elementos.js en controlador para acceder a las diferentes funcionalidades
+- [ ] Implementar acceso a las auditorias del modulo
+- [ ] Re factorizar todo el controlador y modelo de las transacciones del modulo elementos.
+- [ ] Ver si podemos acceder a las capas de servicio del modulo areas, categorias, marcas, etc.

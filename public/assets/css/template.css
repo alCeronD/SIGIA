@@ -3,7 +3,6 @@ body {
   height: 100%;
   margin: 0;
   font-family: "Open Sans", "Helvetica Neue", sans-serif;
-  /* background-color: #f3d3d3; */
   background-image: repeating-linear-gradient(45deg, rgba(255, 0, 100, 0.1) 0, rgba(194, 143, 163, 0.1) 1px, transparent 1px, transparent 20px),
     repeating-linear-gradient(-45deg, rgba(255, 0, 100, 0.1) 0, rgba(255, 0, 100, 0.1) 1px, transparent 1px, transparent 20px);
   background-size: 42px 42px;

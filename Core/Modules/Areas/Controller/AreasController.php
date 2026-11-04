@@ -7,10 +7,10 @@ class AreasController extends ConfigController implements CrudInterface
 {
   protected AreasModel $AreasModel;
   protected array $files = [
-    "css" => [
+    CR_CSS => [
       'renderViewArea' => ['Areas.css']
     ],
-    "js"  => [
+    CR_JS  => [
       'renderViewArea' => ['Areas.js', 'Functions.js', 'Selectors.js']
     ]
   ];

@@ -48,9 +48,14 @@ formUpdatePersonalData.addEventListener('submit', (f) => {
           dataUpdate
         );
 
+        if (!responseUpdatePersonalData.status) {
+          initAlert(responseUpdatePersonalData.message, 'error');
+          return;
+        }
+
         if (responseUpdatePersonalData.status) {
           initAlert(responseUpdatePersonalData.message, 'success');
-          formUpdatePersonalData.reset(); //reiniciar el usuario
+          formUpdatePersonalData.reset(); //reiniciar el formulario
           // enviar la peticion nuevamente.
           getPersonalData();
         }

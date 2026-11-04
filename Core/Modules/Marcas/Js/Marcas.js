@@ -6,6 +6,7 @@ import {
   mostrarConfirmacion,
   openModal,
   Render,
+  validateFormData,
 } from '../../../../public/assets/js/utils/index.js';
 
 const marcas = new Render({
@@ -34,7 +35,7 @@ const marcas = new Render({
       button.setAttribute('class', 'btnStatus');
       let iconStatus = null;
       let propertiesButton = null;
-      if (row.tp_status === 1) {
+      if (row.ma_status === 'Activo') {
         propertiesButton = { btn: 'btn', waves: 'waves-orange', orange: 'orange' };
         iconStatus = createI('clear');
       } else {
@@ -51,7 +52,7 @@ const marcas = new Render({
   btnDelete: {
     value: (row, button) => {
       button.setAttribute('type', 'button');
-      button.setAttribute('data-id', `${row.tp_id}`);
+      button.setAttribute('data-id', `${row.ma_id}`);
       button.setAttribute('class', 'btnStatus');
       let iconStatus = null;
       let propertiesButton = null;
@@ -74,21 +75,34 @@ let marcaInsertForm = document.querySelector('#marcaForm');
 const url = 'dashboard.php?modulo=Marcas&controlador=Marcas&function=';
 let actualPage = 1;
 let dataPaginate = {};
+// mapeo de campos del formulario
+const mapCampos = {
+  ma_nombre: 'Nombre marca',
+  ma_descripcion: 'Descripción marca',
+};
+// campos opcionales
+let campos = ['ma_descripcion'];
+
 let data = null;
 
 // function para cargar la tabla.
-const loadTable = async (actualPage) => {
-  let responseMarcas = null;
+const loadTable = async ({ pagina: actualPage = 1 } = {}) => {
   // si la cantidad de registros reduce a 0 ir a la pagina anterior.
-  responseMarcas = await marcas.getData(`${url}getData`, 'GET', { pagina: actualPage, limit: 4 });
+  let responseMarcas = await marcas.getData(`${url}getData`, 'GET', {
+    pagina: actualPage,
+    limit: 4,
+  });
   data = responseMarcas.data.data;
-  dataPaginate = {};
   const realActualPage = responseMarcas.data.paginaActual;
+
+  const dataPaginate = {
+    cantidadPaginas: responseMarcas.data.cantidadPaginas,
+    paginaActual: realActualPage,
+    totalRegistros: responseMarcas.data.totalRegistros,
+  };
+  // guardamos el objeto paginate en la propiedad de la instancia.
+  marcas.dataPaginate = dataPaginate;
   marcas.actualPage = realActualPage;
-  // marcas.actualPage(realActualPage); //asignar pagina real a la propiedad de la clase
-  dataPaginate['cantidadPaginas'] = responseMarcas.data.cantidadPaginas;
-  dataPaginate['paginaActual'] = realActualPage;
-  dataPaginate['totalRegistros'] = responseMarcas.data.totalRegistros;
   marcas.renderData({
     bodyTbl: tableBody,
     headerTable: headerTable,
@@ -135,7 +149,7 @@ const eliminarMarca = (id) => {
         return;
       }
       initAlert(responseDelete.message, 'success');
-      loadTable(actualPage);
+      loadTable({ pagina: marcas.actualPage });
       return;
     } catch (error) {
       console.error(error);
@@ -146,66 +160,36 @@ const changeStatus = (id, row) => {
   // console.log(id, row);
 
   let dataStatus = {
-    ma_status: row.ma_status === 1 ? 2 : 1,
+    ma_status: row.ma_status === 'Activo' ? 2 : 1,
     ma_id: id,
   };
-  console.log(dataStatus);
-  let title = row.ma_status === 1 ? 'Inhabilitar marca' : 'Habilitar Marca';
+  let title = row.ma_status === 'Activo' ? 'Inhabilitar marca' : 'Habilitar Marca';
   let message =
-    row.ma_status === 1
+    row.ma_status === 'Activo'
       ? '¿Está seguro de inhabilitar este registro?'
       : '¿Esta seguro de habilitar este registro?';
   mostrarConfirmacion(title, message, async (response) => {
     if (!response) return;
 
     let responseStatus = await marcas.sendData(`${url}changeStatus`, 'PUT', dataStatus);
-    console.log(responseStatus);
 
     if (responseStatus.status) {
       initAlert(responseStatus.message, 'success');
-      loadTable(actualPage);
+      loadTable({ pagina: marcas.actualPage });
       return;
     }
   });
 };
 
-//Eventos
-// paginacion.
-marcaTblFooter.addEventListener('click', (f) => {
-  f.preventDefault();
-  f.stopPropagation();
-
-  if (f.target.closest('button')) {
-    let valueButton = f.target.closest('button');
-
-    if (valueButton.value === 'next') {
-      actualPage++;
-      marcas.actualPage(actualPage);
-      // validamos si el valor de la pagina es mayor que la cantidad de paginas para asi evitar hacer peticion.
-      if (actualPage > dataPaginate.cantidadPaginas) {
-        actualPage = dataPaginate.cantidadPaginas;
-        return;
-      }
-    }
-    // capturar si el tipo es button
-    if (valueButton.value === 'preview') {
-      actualPage--;
-      marcas.actualPage(actualPage);
-
-      if (actualPage < 1) {
-        actualPage = 1;
-        return;
-      }
-    }
-    loadTable(actualPage);
-  }
-});
 // update
 marcaUpdateForm.addEventListener('submit', (g) => {
   g.preventDefault();
   g.stopPropagation();
   let formData = new FormData(g.target);
   let dataUpdate = Object.fromEntries(formData);
+
+  // validar campos obligatorios
+  if (!validateFormData({ formData: formData, campos: campos, mapForm: mapCampos })) return;
 
   try {
     mostrarConfirmacion(
@@ -219,6 +203,12 @@ marcaUpdateForm.addEventListener('submit', (g) => {
 
         const responseMarca = await marcas.sendData(`${url}save`, 'PUT', dataUpdate);
         // 204 en caso de que el update nos devuelva un 0, significa que no hubo filas afectadas.
+
+        if (!responseMarca.status) {
+          initAlert(responseMarca.message, 'error');
+          return;
+        }
+
         if (responseMarca.status === 204) {
           modalMarca.style.display = 'none';
           return;
@@ -227,13 +217,15 @@ marcaUpdateForm.addEventListener('submit', (g) => {
         if (responseMarca.status) {
           modalMarca.style.display = 'none';
           initAlert(responseMarca.message, 'success');
-          loadTable(actualPage);
+          loadTable({ pagina: actualPage });
           return;
         }
       }
     );
   } catch (error) {
     console.error(error);
+    initAlert(error.message, 'error');
+    return;
   }
 });
 // insert
@@ -243,6 +235,9 @@ marcaInsertForm.addEventListener('submit', (e) => {
   let formData = new FormData(e.target);
   let insertData = Object.fromEntries(formData);
 
+  // validar campos obligatorios
+  if (!validateFormData({ formData: formData, campos: campos, mapForm: mapCampos })) return;
+
   try {
     mostrarConfirmacion('crear marca', '¿Esta seguro de crear esta marca?', async (response) => {
       if (!response) return;
@@ -251,9 +246,9 @@ marcaInsertForm.addEventListener('submit', (e) => {
 
       if (responseInsert.status) {
         initAlert(responseInsert.message, 'success');
+        loadTable({ pagina: marcas.actualPage });
         // limpiar formulario
         e.target.reset();
-        loadTable(actualPage);
         return;
       }
     });
@@ -265,5 +260,6 @@ marcaInsertForm.addEventListener('submit', (e) => {
 closeModal(modalMarca, closeModalBtn);
 
 document.addEventListener('DOMContentLoaded', async () => {
-  await loadTable(actualPage);
+  await loadTable({ pagina: marcas.actualPage });
+  marcas.executePaginate(marcaTblFooter, loadTable);
 });

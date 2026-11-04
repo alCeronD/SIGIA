@@ -9,15 +9,19 @@ import { addClassItem, createBtn, createI } from './index.js';
  * @typedef {Render}
  * @extends {HttpData} - Clase que extiende de httpData, esta clase tiene la forma de hacer envios de peticiones al backend.
  */
-export class Render extends HttpData {
+export class Render {
   #data = {};
   #actualPage = null;
+  #dataPaginate = {};
   #objBotones = {};
-  constructor(buttons = {}) {
-    super();
+  #http = null;
+  constructor(buttons = {}, httpInstance = null) {
+    // super();
     // aplicamos spread (copiamos) el objeto recibido y lo guardamos en la propiedad.
     this.#objBotones = { ...buttons };
     this.#actualPage = 1;
+    this.#http = httpInstance || new HttpData();
+    console.log(this.#http);
   }
 
   /**
@@ -212,31 +216,48 @@ export class Render extends HttpData {
 
       fragmentCustomPage.append(ul);
 
-      for (let actualPage = 1; actualPage <= dataPaginate.cantidadPaginas; actualPage++) {
-        if (
-          actualPage === 1 ||
-          actualPage === dataPaginate.cantidadPaginas ||
-          actualPage % 3 === 0
-        ) {
-          // PAGINAS ESPECIFICAS.
-          const liActualPage = document.createElement('li');
-          liActualPage.style.cursor = 'pointer';
-          liActualPage.style.pointerEvents = 'auto';
-          addClassItem(liActualPage, { btnPaginate: 'btnPaginate', liPaginate: 'liPaginate' });
-          liActualPage.dataset.actualpage = actualPage;
-          liActualPage.innerText = actualPage;
-          // si estas en la pagina actual entonces agregarle la clase para determinar que esta activa.
-          if (actualPage === parseInt(this.actualPage)) {
-            addClassItem(liActualPage, { active: 'active' });
-          } else {
-            ul.classList.remove('active');
-          }
+      // cantidad de botones definidas para visualizar en pantalla.
+      const maxBotonesVisibles = 5;
+      // calculamos rango dinamico entre la pagina actual
+      let paginaInicio = Math.max(
+        1,
+        dataPaginate.paginaActual - Math.floor(maxBotonesVisibles / 2)
+      );
+      let paginaFin = paginaInicio + maxBotonesVisibles - 1;
 
-          ul.append(liActualPage);
-
-          fragmentContainer.append(ul);
-        }
+      // Ajusta los límites si nos pasamos del total de páginas
+      if (paginaFin > dataPaginate['cantidadPaginas']) {
+        paginaFin = dataPaginate['cantidadPaginas'];
+        paginaInicio = Math.max(1, paginaFin - maxBotonesVisibles + 1);
       }
+
+      // objetivo - crear un set que me permita implementar las paginas entre el rango a crear
+      let pagesToDraw = new Set();
+      for (let index = paginaInicio; index <= paginaFin; index++) {
+        let newNumber = index;
+        pagesToDraw.add(newNumber);
+      }
+
+      pagesToDraw.forEach((element) => {
+        const liActualPage = document.createElement('li');
+        liActualPage.style.cursor = 'pointer';
+        liActualPage.style.pointerEvents = 'auto';
+        addClassItem(liActualPage, {
+          btnPaginate: 'btnPaginate',
+          liPaginate: 'liPaginate',
+        });
+        liActualPage.dataset.actualpage = element;
+        liActualPage.innerText = element;
+
+        let itemActualPage = parseInt(liActualPage.dataset.actualpage);
+        if (itemActualPage === this.actualPage) {
+          addClassItem(liActualPage, { active: 'active' });
+        } else {
+          ul.classList.remove('active');
+        }
+        ul.append(liActualPage);
+        fragmentContainer.append(ul);
+      });
 
       // BOTON NEXT
       const liNext = document.createElement('li');
@@ -250,7 +271,6 @@ export class Render extends HttpData {
       ul.append(liNext);
 
       fragmentContainer.append(ul);
-
       containerPaginate.append(fragmentContainer);
     }
     td.append(containerPaginate);
@@ -307,9 +327,93 @@ export class Render extends HttpData {
     }
   }
 
+  /**
+   * Description placeholder
+   *
+   * @param {HTMLElement} [container=null] - Contenedor en donde deben de estar los botones de acción de la paginación
+   * @param {Function} [callback=() => {}] - Función a ejecutar luego de ejecutar la lógica de negocio de la paginación
+   * @returns {void) => void}
+   */
+  executePaginate(container = null, callback) {
+    if (!container) return;
+
+    container.addEventListener('click', async (f) => {
+      f.stopPropagation();
+      f.preventDefault();
+
+      // ejecutamos el evento para una pagina en especifico.
+      if (f.target.closest('.liPaginate')) {
+        let actualPageData = f.target.closest('.liPaginate')
+          ? parseInt(f.target.dataset.actualpage, 10)
+          : 1;
+
+        // Validamos si la pagina actual del item li es igual al que esta asignado en la propiedad, en caso de ser asi, no hacemos la petición.
+        if (actualPageData === this.#actualPage) return;
+
+        // asigno la pagina seleccionada a la propiedad porque la vamos a re usar en el renderPaginate para pintar la pagina seleccionada
+        this.actualPage = actualPageData;
+        await callback({ pagina: this.actualPage });
+        return;
+      }
+
+      let btnValue = f.target.closest('.btnPaginate') ? f.target.dataset.action : null;
+
+      // EJECUTAMOS LOS EVENTOS PARA LOS BOTONES BTNPAGINATE
+      if (f.target.closest('.btnPaginate')) {
+        if (!btnValue) return;
+        if (btnValue === 'preview') {
+          if (this.actualPage === 1) return;
+          // re asignamos la pagina recibida por la peticion para asi reducir el valor y re enviar la peticion con la pagina anterior.
+          this.actualPage = this.#dataPaginate.paginaActual;
+
+          this.actualPage--;
+
+          if (this.actualPage < 1) {
+            this.actualPage = 1;
+          }
+        }
+        if (btnValue === 'next') {
+          // validamos si es la última página para asi no ejecutar la peticion
+          if (this.actualPage === this.#dataPaginate.cantidadPaginas) return;
+          this.actualPage++;
+          if (this.actualPage >= this.#dataPaginate.cantidadPaginas) {
+            this.actualPage = this.#dataPaginate.cantidadPaginas;
+          }
+        }
+
+        // ejecutamos funcion que recibimos por parametro
+        await callback({ pagina: this.actualPage });
+      }
+    });
+  }
+
+  /**
+   * getData y send data son opciones momentaneas para la implementacion de desheredar la clase render y httpd
+   *
+   * @async
+   * @param {*} url
+   * @param {string} [method='GET']
+   * @param {{}} [parameters={}]
+   * @param {boolean} [asText=false]
+   * @param {{}} [data={}]
+   * @returns {unknown}
+   */
+  async getData(url, method = 'GET', parameters = {}, asText = false, data = {}) {
+    return await this.#http.getData(url, method, parameters, asText, data);
+  }
+
+  async sendData(url, method = 'POST', data = {}) {
+    return await this.#http.sendData(url, method, data);
+  }
+
   // void para guardar la pagina en la propiedad del objeto.
+
   set actualPage(page) {
     this.#actualPage = page;
+  }
+
+  set dataPaginate(paginate) {
+    this.#dataPaginate = paginate;
   }
 
   get objBotones() {
@@ -318,5 +422,9 @@ export class Render extends HttpData {
 
   get actualPage() {
     return this.#actualPage;
+  }
+
+  get dataPaginate() {
+    return this.#dataPaginate;
   }
 }

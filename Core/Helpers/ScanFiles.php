@@ -6,9 +6,7 @@ class ScanFiles
 {
 
     protected static array $nameAssetsFiles = [];
-    protected array $nameFilesCss = [];
-    protected $modulo;
-    protected $file;
+    protected String $modulo;
 
     public function __construct(String $modulo = 'Dashboard')
     {
@@ -19,49 +17,69 @@ class ScanFiles
     public static function mapAssets(String $module = 'Dashboard', array $files = [])
     {
 
+        // validamos si ya se ha realizado el escaneo de los archivos, limpiamos los datos y volvemos a re ejecutar el escaneo de archivos.
+        if (!empty(self::$nameAssetsFiles)) {
+            self::$nameAssetsFiles = [];
+        }
+
         if (!is_string($module)) return;
 
         $relativePathAssetsCss = __DIR__ . "/../Modules/{$module}/Css/";
         $relativePathAssetsJs = __DIR__ . "/../Modules/{$module}/Js/";
         $allFileAssets['css'] = glob($relativePathAssetsCss . "*", GLOB_MARK);
         $allFileAssets['js'] = glob($relativePathAssetsJs . "*", GLOB_MARK);
-        $fileAssets = glob($relativePathAssetsCss . '*', GLOB_MARK);
-        foreach ($fileAssets as $key => $value) {
-            $filesAssets = basename($value);
-            if (str_contains($filesAssets, '.css')) {
-                // guarde las urls en donde la key sea el nombre del modulo.
-                self::$nameAssetsFiles[$module] = $fileAssets[$key];
-            }
-        }
-        $pruebaAssetsFiles = [];
-        // se cicla por la primera unidad que es la clave css y la clave js
-        foreach ($allFileAssets as $key => $value) {
-            // se ciclan las rutas.
-            foreach ($value as $key2 => $value2) {
-                $fileAssets = basename($value2);
-                $finalRoute = strstr($value2, 'Modules/');
-                // var_dump($fileAssets);
 
-                if (str_contains($fileAssets, '.css')) {
-                    $pruebaAssetsFiles['css'][$module][$fileAssets] = $finalRoute;
-                }
-                // Solo importamos el archivo que contenga el nombredelmodulo.js
-                if (str_contains($fileAssets, '.js')) {
-                    // var_dump($fileAssets);
-                    $pruebaAssetsFiles['js'][$module][$fileAssets] = $finalRoute;
+        // rutas css con todos los elementos css del modulo que se recibe por parametro.
+        $fileAssetsCss = glob($relativePathAssetsCss . '*', GLOB_MARK);
+
+        // rutas js con todos los elementos del modulo.
+        $fileAssetsJS = glob($relativePathAssetsJs . "*", GLOB_MARK);
+
+        foreach ($fileAssetsCss as $key => $value) {
+
+            // validamos si el valor escaneado es un director, en caso de ser asi, volvemos a re escanear los datos
+            if (is_dir($value)) {
+                # extraemos el nombre del folder
+                $subFolder = basename($value);
+                // EXTRAMOS todos los archivos que se encuentren dentro del sub folder
+                $routesSubFiles = glob($value . "*", GLOB_MARK);
+                $subFiles = array_map(fn($fn) => basename($fn), $routesSubFiles);
+                self::$nameAssetsFiles['css'][$module]['folder'] = $routesSubFiles;
+            } else {
+                $filesAssets = basename($value);
+                if (str_contains($filesAssets, '.css')) {
+                    // guarde las urls en donde la key sea el nombre del modulo.
+                    self::$nameAssetsFiles['css'][$module][] = $filesAssets;
                 }
             }
         }
 
-        return $pruebaAssetsFiles;
+
+        foreach ($fileAssetsJS as $key => $value) {
+
+            if (is_dir($value)) {
+                # extraemos el nombre del folder
+                // EXTRAMOS todos los archivos que se encuentren dentro del sub folder
+                $routesSubFiles = glob($value . "*", GLOB_MARK);
+                $subFiles = array_map(fn($fn) => basename($fn), $routesSubFiles);
+                self::$nameAssetsFiles['js'][$module]['folder'] = $routesSubFiles;
+            } else {
+                $filesAssets = basename($value);
+                if (str_contains($filesAssets, '.js')) {
+                    // guarde las urls en donde la key sea el nombre del modulo.
+                    self::$nameAssetsFiles['js'][$module][] = $filesAssets;
+                }
+            }
+        }
+
+        return self::$nameAssetsFiles;
     }
 
     /**
      * Function para renderizar los recursos css y javascript.
      *
      * @param string $modulo - nombre del modulo al cual se requieren los recursos
-     * @param array $filesjs - arreglo con los nombres de los archivos js requeridos para ser renderizados con el contenedor
-     * @param array $filescss - arreglo con los nombres de los archivos css requeridos para ser renderizados con el contenedor.
+     * @param array $filesjs - arreglo con los nombres de los archivos js requeridos para ser renderizados con el contenedor, esto se crea en el controlador de cada modulo
      * @return void
      */
     public static function renderJs(String $modulo = '', array $filesjs = [])
@@ -74,35 +92,69 @@ class ScanFiles
         if (empty($jsFiles)) return;
 
         foreach ($jsFiles as $key => $value) {
-            if (in_array("{$key}", $filesjs)) {
-                $rutaLimpia = htmlspecialchars("/../../Core/Modules/$modulo/Js/{$key}", ENT_QUOTES, 'UTF-8');
-                echo '<script type="module" src="' . $rutaLimpia . '"></script>' . PHP_EOL;
+
+            if (!is_array($value)) {
+                if (in_array($value, $filesjs)) {
+                    $rutaLimpia = htmlspecialchars("/../../Core/Modules/$modulo/Js/{$value}", ENT_QUOTES, 'UTF-8');
+                    echo '<script type="module" src="' . $rutaLimpia . '"></script>' . PHP_EOL;
+                }
+            } else {
+                $folder = array_key_exists('folder', $filesjs) ? $filesjs['folder'] : [];
+                // var_dump($folder);
+                if (empty($folder)) continue;
+                $nameFolder = $folder['nameFolder'];
+                $files = $folder['files'];
+                foreach ($files as $fl) {
+                    $rutaLimpia = htmlspecialchars("/../../Core/Modules/$modulo/Js/{$nameFolder}/{$fl}", ENT_QUOTES, 'UTF-8');
+                    echo '<script type="module" src="' . $rutaLimpia . '"></script>' . PHP_EOL;
+                }
             }
         }
     }
 
-    public static function renderCss(string $modulo = "", array $filesView = [])
+    /**
+     * Function para renderizar el css
+     *
+     * @param string $modulo - nombre del modulo
+     * @param array $filesController - listado de archivos que se establecieron en el controlador del modulo
+     * @return array
+     */
+    public static function renderCss(string $modulo = "", array $filesController = [])
     {
-        $files = self::mapAssets($modulo);
-        // var_dump($files);
-        $cssFiles = $files['css'][$modulo] ?? [];
-        // $cssFiles = $files['css'] ?? [];
-        $cssToLoad = [];
 
+        $files = self::mapAssets($modulo);
+        $cssFiles = $files['css'][$modulo] ?? [];
+        $cssToLoad = [];
         foreach ($cssFiles as $key => $value) {
-            // Buscamos si el archivo de la vista actual está configurado
-            if (in_array("{$key}", $filesView)) {
-                $rutaLimpia = htmlspecialchars("/Core/Modules/$modulo/Css/{$key}", ENT_QUOTES, 'UTF-8');
-                $cssToLoad[] = $rutaLimpia;
+            if (!is_array($value)) {
+                // Buscamos si el archivo de la vista actual está configurado
+                if (in_array("{$value}", $filesController)) {
+                    $rutaLimpia = htmlspecialchars("/Core/Modules/$modulo/Css/{$value}", ENT_QUOTES, 'UTF-8');
+                    $cssToLoad[] = $rutaLimpia;
+                }
+            } else {
+                // validamos que los archivos del controlador tengan las claves "folder" y "files"
+                $folder = array_key_exists('folder', $filesController) ? $filesController['folder'] : [];
+                // hacemos que pase al siguiente elemento del arreglo, esto sin dañar los renderizados adicionales.
+                if (empty($folder)) continue;
+                $nameFolder = $folder['nameFolder'];
+                $files = $folder['files'];
+                foreach ($files as $valueFiles) {
+                    $rutaLimpia = htmlspecialchars("/Core/Modules/$modulo/Css/{$nameFolder}/{$valueFiles}", ENT_QUOTES, 'UTF-8');
+                    $cssToLoad[] = $rutaLimpia;
+                }
             }
         }
-
-        return $cssToLoad; // Retornamos el array con los CSS que sí corresponden
+        return $cssToLoad;
     }
 
-    //Funcion para buscar en los directorios del core los controladores pertenecientes a un modulo
 
-
+    /**
+     * Funcion para buscar en los directorios del core los controladores pertenecientes a un modulo
+     *
+     * @param string $modulo
+     * @return void
+     */
     public static function getControllers(String $modulo = '')
     {
         try {
@@ -118,17 +170,14 @@ class ScanFiles
                 throw new Exception("No hay controladores disponibles", HttpStatus::BAD_REQUEST);
             }
 
-
             // asignamos la misma value a la key, porque la necesitamos para validar su dato.
             $controlls = [];
             foreach ($controllers as $key => $value) {
                 $valueParse =  str_replace(".php", "", $value);
                 $controlls[$valueParse] = $valueParse;
             }
-            // return $controlls;
             return ['status' => true, 'controlls' => $controlls];
         } catch (\Exception $th) {
-            // throw $th;
             return ['status' => false, 'throw' => $th];
         }
     }

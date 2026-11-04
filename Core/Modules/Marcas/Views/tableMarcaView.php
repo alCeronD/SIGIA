@@ -1,4 +1,4 @@
-<table class="tableConfig tblConfigModules" id="tableConfigMarca">
+<table class="tableConfig" id="tableConfigMarca">
     <thead id="tblHeaderMarca">
         <tr>
             <th id="ma_id">Código</th>

@@ -1,7 +1,8 @@
 // aca podemos hacer una peticion al tipo de documento y roles y guardar el resultado en localStorage
 
-import { Storage } from '../../../../public/assets/js/utils/index.js';
+import { StorageHelper } from '../../../../public/assets/js/utils/Storage.js';
+import { UsuariosIndexController } from './Controllers/UsuariosIndexController.js';
 
-// guardaremos los tipos de documento y roles en localstorage
-// Storage.addValue({ key: 'tpDocumentoData', item: JSON.stringify(tpDocumentoData) });
-// Storage.addValue({ key: 'rolesData', item: JSON.stringify(rolesData) });
+document.addEventListener('DOMContentLoaded', () => {
+  const UIController = new UsuariosIndexController();
+});

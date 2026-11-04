@@ -9,7 +9,8 @@ import {
 } from './utils/index.js';
 
 // Inicializar selects de materialize.
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
+  InitComponents.initInputs();
   // inicializar selects
   InitComponents.initSelect();
   //inicializar los modales

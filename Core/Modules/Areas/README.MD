@@ -10,6 +10,7 @@
   - [Arquitectura Interna (Pre-documentación)](#arquitectura-interna-pre-documentación)
   - [Dependencias de Base de Datos](#dependencias-de-base-de-datos)
   - [Requerimientos](#requerimientos)
+    - [Historias de usuario](#historias-de-usuario)
   - [Diagramas UML](#diagramas-uml)
     - [Caso de uso](#caso-de-uso)
     - [Casos de uso Extendido](#casos-de-uso-extendido)
@@ -43,6 +44,16 @@ Este modulo consiste en la gestión de los departamentos que se encuentran en op
 ## Requerimientos
 
 [Requerimientos](/Docs/Requirements/Configuracion.MD)
+
+### Historias de usuario
+
+| Nombre historia          |                         Documentación                         |
+| :----------------------- | :-----------------------------------------------------------: |
+| **Cambiar estado**       | [Ver README](/Docs/User_Story/Configuracion/CambiarEstado.MD) |
+| **Eliminar item**        | [Ver README](/Docs/User_Story/Configuracion/EliminarItem.MD)  |
+| **Modificar item**       | [Ver README](/Docs/User_Story/Configuracion/ModificarItem.MD) |
+| **Registrar Item**       | [Ver README](/Docs/User_Story/Configuracion/RegistrarItem.MD) |
+| **Visualizar registros** |   [Ver README](/Docs/User_Story/Configuracion/VerItems.MD)    |
 
 ## Diagramas UML
 
@@ -105,4 +116,4 @@ Este modulo consiste en la gestión de los departamentos que se encuentran en op
 - [X] Implementar rastro de miga
 - [X] implementar interfaz de crud al controlador
 - [X] Modificar css responsive, implementar estilos a botones preview y next.
-- [ ] Arreglar bug de paginación al seleccionar una pagina en concreto y presionar el botón preview y next
+- [X] Arreglar bug de paginación al seleccionar una pagina en concreto y presionar el botón preview y next

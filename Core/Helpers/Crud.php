@@ -1,25 +1,9 @@
 <?php
-
-use PhpParser\Node\Stmt\TryCatch;
-
-use function PHPUnit\Framework\throwException;
-
 require_once __DIR__ . '/../Helpers/Autoload.php';
+include_once realpath(BASE_PATH . '/../Config/Conn.php');
+
 
 #Clase crud para crear toda la estructura general de consultas.
-/**
- * Listado de funciones requeridas
- * select
- * insert
- * order by
- * group by
- * inner join
- * left join
- * natural join
- * right join
- */
-
-
 abstract class Crud
 {
   protected $countLastMethod = 0;
@@ -312,6 +296,47 @@ abstract class Crud
     return $this;
   }
 
+  /**
+   * Funcion para escribir fragmentos de consulta SQL DIRECTAMENTE, se recomienda usar solamente para codigo SQL NATIVO.
+   *
+   * @param string $sql
+   * @return $this;
+   */
+  public function raw(String $sql = "")
+  {
+    $this->sql .= ", {$sql}";
+    return $this;
+  }
+
+  public function find(mixed $parameter)
+  {
+    if (is_int($parameter)) {
+      $dataPrepare[CR_DATA] = [
+        "limit" => 1,
+        "{$this->getKeyName()}" => $parameter
+      ];
+      //consulta basica usando el parametero int con el id
+      $sql = $this->select()
+        ->from()
+        ->where(["{$this->getKeyName()}", "=", "{$parameter}"])
+        ->limit()->prepareSql($dataPrepare)
+        ->get()[0];
+
+
+      return $sql;
+    }
+    // var_dump(is_array($parameter));
+
+    // var_dump(is_int($parameter));
+  }
+
+  // TODO: Implementarlo en un futuro cuando mejore la implementacion del PREPARESQL
+  // public function first()
+  // {
+  //   $this->sql .= "{$this->limit()}";
+  //   return $this;
+  // }
+
   # Function para preparar la consulta y pasar los valores por referencia
   public function prepareSql(array $datos = [])
   {
@@ -449,9 +474,7 @@ abstract class Crud
   public function getCount()
   {
     $this->sql = "SELECT COUNT(*) FROM $this->table";
-    // $this->prepareSql();
-    // $this->get();
-    // return $this->get();
+
     return $this;
   }
 

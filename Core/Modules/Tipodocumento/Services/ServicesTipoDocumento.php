@@ -21,10 +21,25 @@ class ServicesTipoDocumento
   {
     if ($flagPaginate) {
       // Devuelve la misma instancia del modelo para complementar la consulta.
-      return $this->tpModel->select()->from()->orderBy()->limit()->offset();
+      return $this->tpModel->select([
+        "tp_id AS 'tp_id'",
+        "tp_sigla AS 'tp_sigla'",
+        "tp_nombre AS 'tp_nombre'"
+      ])->raw("CASE
+          WHEN tp_status = 1 THEN 'Activo'
+          WHEN tp_status = 2 THEN 'Inactivo'
+          ELSE 'Sin estado'
+        END AS 'tp_status'")
+        ->from()
+        ->orderBy()
+        ->limit()
+        ->offset();
     } else {
       // Devuelve el arreglo con los resultados de la consulta
-      return $this->tpModel->select()->from()->prepareSql()->get();
+      return $this->tpModel->select()
+        ->from()
+        ->prepareSql()
+        ->get();
     }
   }
 }

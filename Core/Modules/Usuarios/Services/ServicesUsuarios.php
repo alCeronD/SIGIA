@@ -4,9 +4,11 @@
 class ServicesUsuarios
 {
   protected UsuariosModel $userModel;
+  protected UsuariosRolesModel $userRolModel;
   public function __construct()
   {
     $this->userModel = new UsuariosModel();
+    $this->userRolModel = new UsuariosRolesModel();
   }
   // Function para extraer usuario usando el documento de identidad.
   public function getUserByDocum(int $docum)
@@ -15,9 +17,15 @@ class ServicesUsuarios
     $dataUser[CR_DATA] = [
       'usu_docum' => $docum
     ];
-    $userData = $this->userModel->select()->from()->where(['usu_docum', '=', $docum])->prepareSql($dataUser)->get();
+    $userData = $this->userModel
+      ->select()
+      ->from()
+      ->where(['usu_docum', '=', $docum])
+      ->prepareSql($dataUser)
+      ->get();
     return $userData;
   }
+
 
   /**
    * Function para retornar la lista de los usuarios.

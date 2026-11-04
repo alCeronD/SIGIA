@@ -37,8 +37,8 @@ const renderClass = new Render({
       addClassItem(button, {
         btn: 'btn',
         waves: 'waves-effect',
-        hoover: 'waves-yellow',
-        cyan: 'yellow', //button color.
+        hoover: 'waves-green',
+        green: 'green', //button color.
       });
     },
     key: 'btnAsing',
@@ -231,6 +231,7 @@ rolesUI.buttons.preconfirm.addEventListener('click', (e) => {
 
   modalConfirmacion.open();
   // Evento de confirmación para enviar la data o no.
+
   mostrarConfirmacion(
     'Roles y permisos',
     'Estas seguro de asignar estos permisos al usuario',

@@ -1,4 +1,5 @@
 // selectores del modulo
+console.log('hello world from modulos');
 
 export const table = {
   table: document.querySelector('#tableModulos'),

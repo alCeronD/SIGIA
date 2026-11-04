@@ -37,37 +37,40 @@ abstract class ConfigController implements ConfigInterface
    */
   public function renderView(string $pathView = '', string $nameFunction = '')
   {
-    if (ob_get_length()) ob_clean();
-    $allJs = $this->getFilesJs();
-    $allCss = $this->getFilesCss();
-    $routes = $this->getAllRoutes();
+    try {
+      if (ob_get_length()) ob_clean();
+      $allJs = $this->getFilesJs();
+      $allCss = $this->getFilesCss();
+      $routes = $this->getAllRoutes();
 
-    $breadCrumbData = $this->renderBreadCrumb($nameFunction);
+      $breadCrumbData = $this->renderBreadCrumb($nameFunction);
 
-    $modulesAndFunctions = $routes['modulesRoutes'] ?? [];
-    $routesPlaceHolders = $routes['placeholders'] ?? [];
-    $setRoutes = $routes['setFunctions'] ?? [];
+      $modulesAndFunctions = $routes['modulesRoutes'] ?? [];
+      $routesPlaceHolders = $routes['placeholders'] ?? [];
+      $setRoutes = $routes['setFunctions'] ?? [];
 
+      // Extraemos los recursos dependiendo de la function ejecutada.
+      $specificCss = $allCss[$nameFunction] ?? [];
+      $specificJs = $allJs[$nameFunction] ?? [];
 
-    // Extraemos los recursos dependiendo de la function ejecutada.
-    $specificCss = $allCss[$nameFunction] ?? [];
-    $specificJs = $allJs[$nameFunction] ?? [];
-
-
-
-    $routesCss = ScanFiles::renderCss($_GET[CR_MODULO], $specificCss); //Renderizamos los css y lo usamos en header.php
-
-
-    if (UtilsFunctions::getActualModule() === 'Login') {
-      include_once $pathView; //Ruta relativa de la vista
-    } else {
-      $routesCss = ScanFiles::renderCss($_GET[CR_MODULO], $specificCss); //Renderizamos los css y lo usamos en header.php
-      include_once BASE_PATH . CR_ROUTE_HEADER;
-      include_once $pathView; //Ruta relativa de la vista
-      ScanFiles::renderJs($_GET[CR_MODULO], $specificJs); //Renderizamos los js
-      include_once BASE_PATH . CR_ROUTE_FOOTER;
+      if (UtilsFunctions::getActualModule() === 'Login') {
+        include_once $pathView; //Ruta relativa de la vista
+      } else {
+        $routesCss = ScanFiles::renderCss($_GET[CR_MODULO], $specificCss); //Renderizamos los css y lo usamos en header.php
+        include_once BASE_PATH . CR_ROUTE_HEADER;
+        // antes de incluir la vista, validamos si es o no un archivo
+        if (!is_file($pathView)) {
+          throw new Exception("No se ha encontrado la ruta", HttpStatus::NOT_FOUND);
+        };
+        include_once $pathView; //Ruta relativa de la vista
+        ScanFiles::renderJs($_GET[CR_MODULO], $specificJs); //Renderizamos los js
+        include_once BASE_PATH . CR_ROUTE_FOOTER;
+      }
+      exit;
+    } catch (\Exception $th) {
+      ob_clean();
+      Response::responseTemplate($th->getCode(), $th->getMessage(), []);
     }
-    exit;
   }
 
   protected function renderBreadCrumb(string $nameFunction = ''): array

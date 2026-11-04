@@ -1,256 +1,216 @@
-/* MODULO USUARIOS */
-.contentCreateUsuarios {
-  display: grid;
-  width: 100%;
-  height: 85vh;
-  grid-template-areas:
-    "breadCrumbs"
-    "titleUsuarios"
-    "filtroUsuarios"
-    "tblUsuarios";
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto 1fr;
-  gap: 0.3rem;
-  padding: 1rem;
-}
-
-.breadCrumbs {
-  grid-area: breadCrumbs;
-  width: 100%;
-  height: 1.5rem;
-}
-
-.titleUsuarios {
-  grid-area: titleUsuarios;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.registrarUsuario {
-  display: flex;
-  width: 80%;
-  align-items: center;
-  margin-left: 10%;
-  margin-bottom: 10%;
-  /* overflow: auto; */
-}
-
-.tblUsuarios {
-  width: 50%;
-  grid-area: titleUsuarios;
-}
-
-#textTitle {
-  font-size: 20pt;
-}
-
-.filtroUsuarios {
-  display: flex;
-  align-items: center;
-}
-
-#contenedorInputFiltro {
-  display: none;
-}
-
-
-
-#tableConfig {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #ddd;
-}
-
-#tableConfig thead {
-  background-color: #f2f2f2;
-}
-
-#tableConfig th,
-#tableConfig td {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-#tableConfig tr:nth-child(even) {
-  background-color: #fafafa;
-}
-
-#tableConfig tr:hover {
-  background-color: #f1f1f1;
-}
-
-.close {
-  cursor: pointer;
-  font-size: 1.5rem;
-  text-decoration: none;
-  color: #039be5 !important;
-}
-
-/* CCS REGISTRAR USUARIOS */
-#formCreateUser {
-  display: grid;
-  grid-template-areas:
-    "tipoDocumento cedula rol"
-    "nombres apellidos telefono"
-    "password email direccion"
-    "observaciones observaciones observaciones"
-    "inputBtn inputBtn inputBtn";
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  width: 100%;
-  max-width: 1000px;
-  box-sizing: border-box;
-}
-
-.tipoDocumento {
-  grid-area: tipoDocumento;
-}
-
-.cedula {
-  grid-area: cedula;
-}
-
-.rol {
-  grid-area: rol;
-}
-
-.nombres {
-  grid-area: nombres;
-}
-
-.apellidos {
-  grid-area: apellidos;
-}
-
-.telefono {
-  grid-area: telefono;
-}
-
-.password {
-  grid-area: password;
-}
-
-.email {
-  grid-area: email;
-}
-
-.direccion {
-  grid-area: direccion;
-}
-
-.observaciones {
-  grid-area: observaciones;
-}
-
-.inputBtn {
-  grid-area: inputBtn;
-  display: flex;
-  align-items: center !important;
-  justify-items: center !important;
-  width: 100%;
-  min-height: 1.3rem;
-}
-
-.inputContent {
-  display: flex;
-  flex-direction: column;
-}
-
-.labelForm {
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
-}
-
-.inputForm {
-  max-width: 100%;
-  min-width: 0;
-  height: 2rem;
-  border: none;
-  border-bottom: 2px solid #ccc;
-}
-
-textarea {
-  resize: none;
-  min-height: 4rem;
-}
-
-
-
-.inputContentUpdate {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  width: 50% !important;
-  height: 35px;
-  gap: .5em;
-}
-
-
-
-.close-modal {
-  position: absolute;
-  right: 15px;
-  top: 10px;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.input-field label {
-  transform: none !important;
-  font-size: 1rem;
-  left: 0 !important;
-}
-
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
+  #textTitle {
+    font-size: 10pt;
   }
 
-  to {
-    opacity: 1;
-    transform: scale(1);
+  .contentCreateUsuarios {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    overflow: auto;
+    width: 100%;
+    height: auto;
+
+    .registrarUsuario {
+      width: 100%;
+      flex-wrap: nowrap;
+      height: 80vh;
+      display: flex;
+      flex-wrap: nowrap;
+      flex-direction: column;
+
+      #formCreateUser {
+        display: grid;
+        grid-template-areas: "tipoDocumento cedula"
+          "rol nombres"
+          "apellidos telefono"
+          "password email"
+          "direccion observaciones"
+          "inputBtn inputBtn";
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+        gap: 0.3rem;
+        width: 100%;
+        height: 100%;
+
+        .inputContent {
+          width: 100%;
+          height: 30px;
+        }
+
+        .tipoDocumento {
+          grid-area: tipoDocumento;
+
+          /* los items select les cambiamos el tamaño, esto solo aplica para materialize */
+          .select-wrapper ul {
+            height: 100px;
+          }
+        }
+
+        .cedula {
+          grid-area: cedula;
+        }
+
+        .rol {
+          grid-area: rol;
+
+          /* los items select les cambiamos el tamaño, esto solo aplica para materialize */
+          .select-wrapper ul {
+            height: 100px;
+          }
+        }
+
+        .nombres {
+          grid-area: nombres;
+        }
+
+        .apellidos {
+          grid-area: apellidos;
+        }
+
+        .telefono {
+          grid-area: telefono;
+        }
+
+        .password {
+          grid-area: password;
+        }
+
+        .email {
+          grid-area: email;
+        }
+
+        .direccion {
+          grid-area: direccion;
+        }
+
+        .observaciones {
+          grid-area: observaciones;
+        }
+
+        .inputBtn {
+          grid-area: inputBtn;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+      }
+    }
   }
-}
 
-/* UpdateDatosUsuarios desde el Header */
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: auto;
-  gap: 1rem;
-}
 
-.formField {
-  display: flex;
-  flex-direction: column;
-}
+  /* Tablets y pantallas medianas */
+  @media (max-width: 768px) {}
 
-.formButton {
-  grid-column: span 2;
-  text-align: center;
-}
+  /* pantallas grandes  */
+  @media (min-width: 1024px) {
+    #textTitle {
+      font-size: 20pt;
+    }
 
-@media (max-width: 600px) {
-  .form-grid {
-    grid-template-columns: 1fr;
+    /* MODULO USUARIOS */
+    .contentCreateUsuarios {
+      display: grid;
+      width: 100%;
+      height: 80vh;
+      grid-template-areas:
+        "headerContent"
+        "registrarUsuario";
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      gap: 0.3rem;
+
+
+      .headerContent {
+        grid-area: headerContent;
+        width: 100%;
+        height: fit-content;
+      }
+
+      .registrarUsuario {
+        grid-area: registrarUsuario;
+        width: 100%;
+        height: auto;
+        overflow: hidden;
+
+        #formCreateUser {
+          display: grid;
+          width: 100%;
+          grid-template-areas:
+            "tipoDocumento cedula rol"
+            "nombres apellidos telefono"
+            "password email direccion"
+            "observaciones observaciones observaciones"
+            "inputBtn inputBtn inputBtn";
+          grid-template-columns: repeat(3, 1fr);
+          grid-template-rows: auto;
+          gap: 1rem;
+          height: fit-content;
+
+          .inputContent {
+            width: 100%;
+            height: 60px;
+          }
+
+          .tipoDocumento {
+            grid-area: tipoDocumento;
+
+            .select-wrapper ul {
+              height: fit-content;
+            }
+          }
+
+          .cedula {
+            grid-area: cedula;
+          }
+
+          .rol {
+            grid-area: rol;
+
+            /* los items select les cambiamos el tamaño, esto solo aplica para materialize */
+            .select-wrapper ul {
+              height: fit-content;
+            }
+          }
+
+          .nombres {
+            grid-area: nombres;
+          }
+
+          .apellidos {
+            grid-area: apellidos;
+          }
+
+          .telefono {
+            grid-area: telefono;
+          }
+
+          .password {
+            grid-area: password;
+          }
+
+          .email {
+            grid-area: email;
+          }
+
+          .direccion {
+            grid-area: direccion;
+          }
+
+          .observaciones {
+            grid-area: observaciones;
+          }
+
+          .inputBtn {
+            grid-area: inputBtn;
+            display: flex;
+            align-items: center !important;
+            justify-items: center !important;
+            width: 100%;
+            min-height: 1.3rem;
+          }
+        }
+      }
+
+    }
   }
-
-  .formButton {
-    grid-column: span 1;
-  }
-}
-
-/* ========================= */
-/* RESPONSIVE USUARIOS */
-/* ========================= */
-
-/* Tablets y pantallas medianas */
-@media (max-width: 768px) {}
-
-/* Móviles pequeños */
-@media (max-width: 600px) {}

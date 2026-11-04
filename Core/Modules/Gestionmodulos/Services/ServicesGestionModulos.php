@@ -13,8 +13,8 @@ class ServicesGestionModulos
   /**
    * Function para devolver el listado de los modulos.
    *
-   * //@param boolean $paginate
-   * //@return ModulosModel|array
+   * @param boolean $paginate
+   * @return ModulosModel|array
    */
   public function getAllModulos(bool $paginate = false, array $query = [])
   {
@@ -24,7 +24,16 @@ class ServicesGestionModulos
       return $this->mModel->select()->from()->prepareSql()->get();
     } else if (!empty($query)) { //validamos si no esta vacia la consulta para evitar el error.
 
-      return $this->mModel->select($query)->from()->orderBy()->limit()->offset();
+      return $this->mModel->select($query)
+        ->raw("CASE
+          WHEN status_modulo = 1 THEN 'Activo'
+          WHEN status_modulo = 0 THEN 'Inactivo'
+          ELSE 'Sin estado'
+          END AS 'status_modulo'")
+        ->from()
+        ->orderBy()
+        ->limit()
+        ->offset();
     }
   }
 

@@ -9,7 +9,7 @@ define('US_ROUTE_USUARIO_UPDATE', '/../Modules/Usuarios/Views/updatePersonalData
 define('US_ROUTE_DETAIL_USER', '/../Modules/Usuarios/Views/detailUser.php');
 
 // titles
-define('US_REGISTRAR_USUARIO', 'Registrar usuario');
+define('US_REGISTRAR_USUARIO', 'Crear usuario');
 
 // message
 define('US_MESSAGE_CREATE_USER_STORE', 'Usuario creado exitosamente');
@@ -18,7 +18,7 @@ define('US_MESSAGE_UPDATE_PERSONAL_DATA', ' Actualizados con exito');
 define('US_MESSAGE_USER_ENABLED', 'Usuario habilitado correctamente');
 define('US_MESSAGE_USER_DISABLED', 'Usuario Inhabilitado correctamente');
 define('US_MESSAGE_ERROR_ENTITY', 'No se ha completado la operacion, Datos enviados incorrectamente');
-
+define('US_MESSAGE_USER_NOT_FOUND', 'El usuario no está registrado en la base de datos');
 
 // vars users
 define('US_VAR_USU_ID_ESTADO', 'usu_id_estado');
@@ -28,3 +28,4 @@ define('US_VAR_USU_ID', 'usu_id');
 // wors users
 define('US_WORD_TIPO_DOCUMENTO', 'Tipo documento:');
 define('US_WORD_NRO_IDENTIFICACION', 'Número de identificación:');
+define('US_WORD_ROLES', 'Roles');

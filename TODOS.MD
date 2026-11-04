@@ -83,8 +83,10 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] EN PHP, AJUSTAR EL RESPONSE DE LA CLASE EN DONDE la funcion se puede transformar en una sola.
 - [X] Ajustar la seccion de seguridad de sistema en el modulo de funciones, crear l nuevo modulo.
 - [x] Crear modulo de **Funciones** Y ajustar lo de funcionesRoles, entre otros al mismo modulo de funciones.
-- [ ] CRUD GENERAL - IMPLEMENTAR ELWHERE IS NOT NULL:
 - [ ] Crear Modulo de estados para implementarlo en la base de datos e implementar los datos de manera dinamica
+- [X] Crear Metodo FIND EN Como si trabajse con laravel
+- [ ] Probar un escenario en donde se ejecute el programa pero NO SE INICIE EL SERVICIO DE MYSQL PARA VERIFICAR COMO SE COMPORTA.
+- [ ] CRUD GENERAL - IMPLEMENTAR ELWHERE IS NOT NULL:
 
   ```php
   # como ejemplo:
@@ -94,7 +96,7 @@ Listado de TODOS generales y específicos por cada módulo.
     ->get();
   ```
 
-- [ ] Implementar la funcionalidad RAW para evitar el uso de COALESCE E IF EN EL SELECT
+- [X] Implementar la funcionalidad RAW para evitar el uso de COALESCE E IF EN EL SELECT
 
   ```php
   $resultSelect = $this->AreasModel->select([
@@ -110,28 +112,30 @@ Listado de TODOS generales y específicos por cada módulo.
     ')])->from('areas')->orderBy('ar_cod', 'ASC')->get();
   ```
 
+- [X] Fix: implementar la pagina actual del usuario si esta no es par o impar
+
 ## Específicos
 
 ## Estado de Módulos
 
 | Módulo                 | Progreso | Documentación |                     Enlace a Detalles                     |
 | :--------------------- | :------: | :-----------: | :-------------------------------------------------------: |
-| **Areas**              |   100%   |  En proceso   |       [Ver README](./Core/Modules/Areas/README.MD)        |
-| **Tipo Documento**     |   90%    |   Pendiente   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
-| **Marcas**             |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
-| **Roles**              |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Roles/README.MD)        |
-| **Permisos**           |   90%    |   Pendiente   |      [Ver README](./Core/Modules/Permisos/README.MD)      |
-| **Usuarios**           |   70%    |  En Proceso   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |
-| **Categorias**         |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Categorias/README.MD)     |
-| **Dashboard**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Dashboard/README.MD)      |
+| **Areas**              |   100%   |  Completado   |       [Ver README](./Core/Modules/Areas/README.MD)        |
+| **Tipo Documento**     |   100%   |  Completado   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
+| **Marcas**             |   100%   |  Completado   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
+| **Categorias**         |   100%   |  Completado   |     [Ver README](./Core/Modules/Categorias/README.MD)     |
+| **Login**              |   100%   |  Completado   |       [Ver README](./Core/Modules/Login/README.MD)        |
+| **Roles**              |   100%   |  Completado   |       [Ver README](./Core/Modules/Roles/README.MD)        |
+| **Funciones**          |   100%   |  Completado   |     [Ver README](./Core/Modules/Funciones/README.MD)      |
+| **Usuarios**           |   90%    |  Completado   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |
+| **Gestionmodulos**     |   100%   |  Completado   |   [Ver README](./Core/Modules/Gestionmodulos/README.MD)   |
+| **Permisos**           |   100%   |      N/A      |      [Ver README](./Core/Modules/Permisos/README.MD)      |
+| **Dashboard**          |   50%    |   Pendiente   |     [Ver README](./Core/Modules/Dashboard/README.MD)      |
 | **Elementos**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Elementos/README.MD)      |
-| **Login**              |   100%   |   Pendiente   |       [Ver README](./Core/Modules/Login/README.MD)        |
 | **Reportes**           |    0%    |   Pendiente   |      [Ver README](./Core/Modules/Reportes/README.MD)      |
 | **SolicitudPrestamos** |    0%    |   Pendiente   | [Ver README](./Core/Modules/SolicitudPrestamos/README.MD) |
 | **ReservaPrestamos**   |    0%    |   Pendiente   |  [Ver README](./Core/Modules/ReservaPrestamos/README.MD)  |
-| **Gestionmodulos**     |   100%   |   Pendiente   |   [Ver README](./Core/Modules/Gestionmodulos/README.MD)   |
-| **GeneralCrud**        |    0%    |   Pendiente   |    [Ver README](./Core/Modules/GeneralCrud/README.MD)     |
-| **Funciones**          |   100%   |   Pendiente   |     [Ver README](./Core/Modules/Funciones/README.MD)      |
+| **AUDITORIAS**         |    0%    |      N/A      |               [Ver README](./Core/Modules/)               |
 
 ## Archivos especificos
 
@@ -163,7 +167,7 @@ Listado de TODOS generales y específicos por cada módulo.
 - [X] Adicionar archivo README.MD A cada modulo para presentar que hace cada producto.
 - [ ] Ajustar diagrama de clases
 - [ ] Crear Y/o ajustar historias de usuario
-- [ ] Adicionar requisitos requeridos para cada modulo.
-- [ ] Referenciar toda la documentación mediante un link de google drive para observar la documentación del producto
+- [x] Adicionar requisitos requeridos para cada modulo.
+- [ ] Referenciar toda la documentación mediante un link de google drive para observar la documentación no solo dentro del drive sino en cada modulo
 - [ ] Colocar requisitos del sistema implementados y diagramas que se usaron para el proceso de creación del producto
 - [ ] Crear los requerimientos e historias de usuario de los nuevos modulos = GestionModulos, Funciones, Permisos

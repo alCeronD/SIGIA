@@ -62,7 +62,8 @@ class Menu
         "fu.is_main_view AS 'isMainView'",
         "fu.nameController AS 'controlador'",
         "mo.nombre_modulo AS 'nombreModulo'",
-        "mo.icono AS 'icono'"
+        "mo.icono AS `icono`",
+        "COALESCE(JSON_VALUE(fu.vars, '$.icono[0]'))  AS `iconoVista`"
       ];
 
       $rolId = $rolIsActive['rl_id'];
@@ -76,12 +77,16 @@ class Menu
       foreach ($idsModulosFromUser as $key => $idM) {
         $reference = "mo_id_m{$key}";
         $modAssocPrepare[CR_DATA][$reference] = $idM;
-        // $referencesIn[] = $reference;
         $referencesIn[$reference] = $idM;
       }
 
       # Consulta del paso 5.2
       $modAssoc = $this->fModel->select($sqlFModel)
+        ->raw(
+          "JSON_VALUE(fu.vars, '$.route.modulo') AS moduloVars,
+          JSON_VALUE(fu.vars, '$.route.controlador') AS controladorVars,
+          JSON_VALUE(fu.vars, '$.route.funcion') AS funcionVars"
+        )
         ->from("{$this->fModel->getTable()} fu")
         ->innerJoin("{$this->tpModel->getTable()} tpf", "tpf.{$this->tpModel->getKeyName()}", '=', "fu.tp_funcion")
         ->innerJoin("{$this->rfModel->getTable()} rof", "rof.rlp_id_funcion", "=", "fu.{$this->fModel->getKeyName()}")
@@ -90,14 +95,11 @@ class Menu
         ->where(['tpf.id_tp_funcion', '=', 1])
         ->where(['r.rl_id', '=', $rolIsActive['rl_id']])
         ->whereIn($referencesIn, 'mo.id_m')
-        ->prepareSql($modAssocPrepare)
-        ->get(); //en el parametro IN LE ENVIAMOS EL ARREGLO CON LAS REFERENCIAS, es decir, mo_id_m1, mo_id_m2, mo_id_mN;
+        ->prepareSql($modAssocPrepare)->get(); //en el parametro IN LE ENVIAMOS EL ARREGLO CON LAS REFERENCIAS, es decir, mo_id_m1, mo_id_m2, mo_id_mN;
 
 
       // AHORA QUE YA TENEMOS TODO, NECESITAMOS CREAR LAS VISTAS.
       # 5.3 - Crear las vistas
-      $nameModules = array_column($modulesFromUser, 'nombreModulo');
-
       $menu = [];
       foreach ($modAssoc as $key => $value) {
 
@@ -105,7 +107,14 @@ class Menu
         $controlador = $value['controlador'] ?? null;
         $funcion = $value['nombreFuncionController'] ?? null;
         $icono = $value['icono'] ?? null;
+        $iconoVista = $value['iconoVista'] ?? 'home';
+
         $nombreFuncionUser = $value['nombreFuncionUser'] ?? null;
+
+        // rutas de acceso al modulo, en caso de que no hayan rutas asignadas, se implementan string vacios.
+        $moduloVars = $value['moduloVars'] ?? "";
+        $controladorVars = $value['controladorVars'] ?? "";
+        $funcionVars = $value['funcionVars'] ?? "";
 
         $isMainView = $value['isMainView'] ?? null;
 
@@ -113,8 +122,9 @@ class Menu
           $menu[$nombreModulo]['mainView'] = [
             'labelFuncion' => $nombreFuncionUser,
             'titleModule' => $nombreModulo,
-            'url' => Router::createRoute($nombreModulo, $controlador, $funcion, false, CR_DASHBOARD_LOWER_CASE),
-            'icono' => $icono
+            'url' => Router::createRoute($moduloVars, $controladorVars, $funcionVars, false, CR_DASHBOARD_LOWER_CASE),
+            'icono' => $icono,
+            'iconoVista' => $iconoVista
           ];
         }
 
@@ -123,30 +133,39 @@ class Menu
             'titleModule' => $nombreModulo,
             'nombreModulo' => $nombreModulo,
             'labelFuncion' => $nombreFuncionUser,
-            'url' => Router::createRoute($nombreModulo, $controlador, $funcion, false, CR_DASHBOARD_LOWER_CASE),
-            'icono' => $icono
+            'url' =>  Router::createRoute($moduloVars, $controladorVars, $funcionVars, false, CR_DASHBOARD_LOWER_CASE),
+            'icono' => $icono,
+            'iconoVista' => $iconoVista
           ];
         }
       }
 
       $menuMainView = [];
       $menuSecondView = [];
+
+
+      // arreglamos el menu en orden A-Z basado solamente en la clave.
+      ksort($menu);
+
+
       // extraemos las vistas del menu dependiendo de si son primarias o secundarias.
       foreach ($menu as $key => $views) {
-
-        if (array_key_exists('mainView', $views)) {
-          $menuMainView[] = $views['mainView'];
-        }
-
 
         if (array_key_exists('secondView', $views)) {
           array_push($menuSecondView, ...$views['secondView']);
         }
+
+        if (array_key_exists('mainView', $views)) {
+
+          $menuMainView[] = $views['mainView'];
+        }
       }
 
-      // var_dump($menuMainView);
-      // var_dump($menuSecondView);
-      // die();
+      // Extraemos los modulos de vistas permisos y validamos si el rol del usuario tiene los roles internos como permisos, gestion modulo y funciones.
+      $nombresModulos = array_column($menuMainView, 'titleModule');
+      if (in_array('Permisos', $nombresModulos)) {
+        $menuMainView = array_filter($menuMainView, fn($mp) => $mp['titleModule'] !== "Roles" && $mp['titleModule'] !== "Funciones" && $mp['titleModule'] != "Gestionmodulos");
+      }
 
       return [
         'status' => true,

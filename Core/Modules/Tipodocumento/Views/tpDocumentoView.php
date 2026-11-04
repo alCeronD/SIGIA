@@ -1,12 +1,14 @@
 <div class="container">
 
-    <div class="contentTpDocumento contentLayout">
-        <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
-        <div class="titleTp menuTitle">
-            <span id="textTitleAreas" class="textTitleSpan">Tipos de documento</span>
-            <a href="<?php echo Router::createRoute('dashboard', 'dashboard', 'dashboard', false, 'dashboard'); ?>"
-                class="close-btn"
-                title="Volver al dashboard">&times;</a>
+    <div class="contentTpDocumento">
+        <div class="headerContent">
+            <?php include_once BASE_PATH . '/../../public/partials/breadCrumbs.php'; ?>
+            <div class="titleTp menuTitle">
+                <span id="textTitleAreas" class="textTitleSpan"><?php echo TITLE_TIPO_DOCUMENTO; ?></span>
+                <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>"
+                    class="close-btn"
+                    title="Volver al dashboard">&times;</a>
+            </div>
         </div>
         <div class="formTpDocumento">
             <div class="card z-depth-2">
@@ -22,7 +24,9 @@
                             <label for="tp_nombre">Nombre:</label>
                         </div>
                         <div class="tpButton">
-                            <button type="submit" class="btnSubmit waves-effect waves-light btn" id="btnAreaUpdate"><i class="material-icons">send</i><button>
+                            <button type="submit" class="btnSubmit waves-effect waves-light btn" id="btnTpAdd">
+                                <i class="material-icons">send</i>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -63,7 +67,5 @@
             </div>
         </div>
     </div>
-
-    <?php require_once __DIR__ . '/../../../Helpers/modalConfirmation.php'; ?>
 
 </div>

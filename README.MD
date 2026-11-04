@@ -15,6 +15,8 @@
     - [Previsualización](#previsualización)
     - [Módulos del sistema](#módulos-del-sistema)
     - [Diagramas Generales](#diagramas-generales)
+      - [**DIAGRAMA DE CLASES**](#diagrama-de-clases)
+      - [**DIAGRAMA DE DESPLIEGUE**](#diagrama-de-despliegue)
     - [Requerimientos de instalación](#requerimientos-de-instalación)
       - [Instalación del proyecto](#instalación-del-proyecto)
 
@@ -45,28 +47,27 @@ Capturas del proyecto
 | Módulo                 | Progreso | Documentación |                     Enlace a Detalles                     |
 | :--------------------- | :------: | :-----------: | :-------------------------------------------------------: |
 | **Areas**              |   100%   |  Completado   |       [Ver README](./Core/Modules/Areas/README.MD)        |
-| **Tipo Documento**     |   90%    |  En proceso   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
-| **Marcas**             |   90%    |  En proceso   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
-| **Roles**              |   90%    |   Pendiente   |       [Ver README](./Core/Modules/Roles/README.MD)        |
-| **Permisos**           |   90%    |   Pendiente   |      [Ver README](./Core/Modules/Permisos/README.MD)      |
-| **Usuarios**           |   70%    |  En Proceso   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |
-| **Categorias**         |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Categorias/README.MD)     |
-| **Dashboard**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Dashboard/README.MD)      |
+| **Tipo Documento**     |   100%   |  Completado   |   [Ver README](./Core/Modules/TipoDocumento/README.MD)    |
+| **Marcas**             |   100%   |  Completado   |       [Ver README](./Core/Modules/Marcas/README.MD)       |
+| **Categorias**         |   100%   |  Completado   |     [Ver README](./Core/Modules/Categorias/README.MD)     |
+| **Login**              |   100%   |  Completado   |       [Ver README](./Core/Modules/Login/README.MD)        |
+| **Roles**              |   100%   |  Completado   |       [Ver README](./Core/Modules/Roles/README.MD)        |
+| **Funciones**          |   100%   |  Completado   |     [Ver README](./Core/Modules/Funciones/README.MD)      |
+| **Usuarios**           |   90%    |  Completado   |      [Ver README](./Core/Modules/Usuarios/README.MD)      |
+| **Gestionmodulos**     |   100%   |  Completado   |   [Ver README](./Core/Modules/Gestionmodulos/README.MD)   |
+| **Permisos**           |   100%   |      N/A      |      [Ver README](./Core/Modules/Permisos/README.MD)      |
+| **Dashboard**          |   50%    |   Pendiente   |     [Ver README](./Core/Modules/Dashboard/README.MD)      |
 | **Elementos**          |    0%    |   Pendiente   |     [Ver README](./Core/Modules/Elementos/README.MD)      |
-| **Login**              |   100%   |   Pendiente   |       [Ver README](./Core/Modules/Login/README.MD)        |
 | **Reportes**           |    0%    |   Pendiente   |      [Ver README](./Core/Modules/Reportes/README.MD)      |
 | **SolicitudPrestamos** |    0%    |   Pendiente   | [Ver README](./Core/Modules/SolicitudPrestamos/README.MD) |
 | **ReservaPrestamos**   |    0%    |   Pendiente   |  [Ver README](./Core/Modules/ReservaPrestamos/README.MD)  |
-| **Gestionmodulos**     |   100%   |   Pendiente   |   [Ver README](./Core/Modules/Gestionmodulos/README.MD)   |
-| **GeneralCrud**        |    0%    |   Pendiente   |    [Ver README](./Core/Modules/GeneralCrud/README.MD)     |
-| **Funciones**          |   100%   |   Pendiente   |     [Ver README](./Core/Modules/Funciones/README.MD)      |
-| **Estados**            |    0%    |      N/A      |               [Ver README](./Core/Modules/)               |
+| **AUDITORIAS**         |    0%    |      N/A      |               [Ver README](./Core/Modules/)               |
 
 ### Diagramas Generales
 
-**DIAGRAMA DE CLASES**
+#### **DIAGRAMA DE CLASES**
 
-**DIAGRAMA DE DESPLIEGUE**
+#### **DIAGRAMA DE DESPLIEGUE**
 
 ### Requerimientos de instalación
 
