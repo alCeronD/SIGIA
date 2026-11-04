@@ -7,7 +7,6 @@ class ScanFiles
 
     protected static array $nameAssetsFiles = [];
     protected String $modulo;
-    protected $file;
 
     public function __construct(String $modulo = 'Dashboard')
     {
@@ -17,6 +16,11 @@ class ScanFiles
     //Función que sirve para mapear los css o javascript, solo mapea hasta que llegue a la carpeta.
     public static function mapAssets(String $module = 'Dashboard', array $files = [])
     {
+
+        // validamos si ya se ha realizado el escaneo de los archivos, limpiamos los datos y volvemos a re ejecutar el escaneo de archivos.
+        if (!empty(self::$nameAssetsFiles)) {
+            self::$nameAssetsFiles = [];
+        }
 
         if (!is_string($module)) return;
 
@@ -45,74 +49,37 @@ class ScanFiles
                 $filesAssets = basename($value);
                 if (str_contains($filesAssets, '.css')) {
                     // guarde las urls en donde la key sea el nombre del modulo.
-                    // self::$nameAssetsFiles['css'][$module][] = $fileAssetsCss[$key];
                     self::$nameAssetsFiles['css'][$module][] = $filesAssets;
                 }
             }
-
-            // $filesAssets = basename($value);
-            // if (str_contains($filesAssets, '.css')) {
-            //     // guarde las urls en donde la key sea el nombre del modulo.
-            //     self::$nameAssetsFiles[$module] = $fileAssetsCss[$key];
-            // }
         }
 
-        // var_dump(self::$nameAssetsFiles);
 
         foreach ($fileAssetsJS as $key => $value) {
 
-            $fileAssets =  basename($value); #extraigo el ultimo nombre del archivo de la ruta en caso de que el string termine con un slash dejamos la ruta.
-            $finalRoute = strstr($value, 'Modules/');
-
-            if (str_contains($fileAssets, '.js')) {
-                // $pruebaAssetsFiles['js'][$module][$fileAssets] = $finalRoute;
-                // self::$nameAssetsFiles['js'][$module][$fileAssets] = $finalRoute;
-                self::$nameAssetsFiles['js'][$module][$fileAssets] = $fileAssetsJS[$key];
+            if (is_dir($value)) {
+                # extraemos el nombre del folder
+                // EXTRAMOS todos los archivos que se encuentren dentro del sub folder
+                $routesSubFiles = glob($value . "*", GLOB_MARK);
+                $subFiles = array_map(fn($fn) => basename($fn), $routesSubFiles);
+                self::$nameAssetsFiles['js'][$module]['folder'] = $routesSubFiles;
+            } else {
+                $filesAssets = basename($value);
+                if (str_contains($filesAssets, '.js')) {
+                    // guarde las urls en donde la key sea el nombre del modulo.
+                    self::$nameAssetsFiles['js'][$module][] = $filesAssets;
+                }
             }
         }
 
-
         return self::$nameAssetsFiles;
-
-        $pruebaAssetsFiles = [];
-        // se cicla por la primera unidad que es la clave css y la clave js
-        // foreach ($allFileAssets as $key => $value) {
-
-        //     // se ciclan las rutas.
-        //     foreach ($value as $key2 => $value2) {
-
-        //         // $fileAssets = basename($value2); #extraigo el ultimo nombre del archivo de la ruta
-        //         $fileAssets =  basename($value2); #extraigo el ultimo nombre del archivo de la ruta en caso de que el string termine con un slash dejamos la ruta.
-        //         $finalRoute = strstr($value2, 'Modules/');
-
-
-        //         // en caso de que sean directorios
-        //         if (is_dir($value2)) {
-        //             $subFiles = glob($value2 . "*", GLOB_MARK);
-        //             // var_dump($value2);
-        //             var_dump($subFiles);
-        //         } else {
-
-        //             // archivos directos en la carpeta css o js de cada modulo
-        //             if (str_contains($fileAssets, '.css')) {
-        //                 $pruebaAssetsFiles['css'][$module][$fileAssets] = $finalRoute;
-        //             }
-        //             // Solo importamos el archivo que contenga el nombredelmodulo.js
-        //             if (str_contains($fileAssets, '.js')) {
-        //                 $pruebaAssetsFiles['js'][$module][$fileAssets] = $finalRoute;
-        //             }
-        //         }
-        //     }
-        // }
-
-
     }
 
     /**
      * Function para renderizar los recursos css y javascript.
      *
      * @param string $modulo - nombre del modulo al cual se requieren los recursos
-     * @param array $filesjs - arreglo con los nombres de los archivos js requeridos para ser renderizados con el contenedor
+     * @param array $filesjs - arreglo con los nombres de los archivos js requeridos para ser renderizados con el contenedor, esto se crea en el controlador de cada modulo
      * @return void
      */
     public static function renderJs(String $modulo = '', array $filesjs = [])
@@ -125,9 +92,22 @@ class ScanFiles
         if (empty($jsFiles)) return;
 
         foreach ($jsFiles as $key => $value) {
-            if (in_array("{$key}", $filesjs)) {
-                $rutaLimpia = htmlspecialchars("/../../Core/Modules/$modulo/Js/{$key}", ENT_QUOTES, 'UTF-8');
-                echo '<script type="module" src="' . $rutaLimpia . '"></script>' . PHP_EOL;
+
+            if (!is_array($value)) {
+                if (in_array($value, $filesjs)) {
+                    $rutaLimpia = htmlspecialchars("/../../Core/Modules/$modulo/Js/{$value}", ENT_QUOTES, 'UTF-8');
+                    echo '<script type="module" src="' . $rutaLimpia . '"></script>' . PHP_EOL;
+                }
+            } else {
+                $folder = array_key_exists('folder', $filesjs) ? $filesjs['folder'] : [];
+                // var_dump($folder);
+                if (empty($folder)) continue;
+                $nameFolder = $folder['nameFolder'];
+                $files = $folder['files'];
+                foreach ($files as $fl) {
+                    $rutaLimpia = htmlspecialchars("/../../Core/Modules/$modulo/Js/{$nameFolder}/{$fl}", ENT_QUOTES, 'UTF-8');
+                    echo '<script type="module" src="' . $rutaLimpia . '"></script>' . PHP_EOL;
+                }
             }
         }
     }
@@ -168,9 +148,13 @@ class ScanFiles
         return $cssToLoad;
     }
 
-    //Funcion para buscar en los directorios del core los controladores pertenecientes a un modulo
 
-
+    /**
+     * Funcion para buscar en los directorios del core los controladores pertenecientes a un modulo
+     *
+     * @param string $modulo
+     * @return void
+     */
     public static function getControllers(String $modulo = '')
     {
         try {
@@ -186,21 +170,15 @@ class ScanFiles
                 throw new Exception("No hay controladores disponibles", HttpStatus::BAD_REQUEST);
             }
 
-
             // asignamos la misma value a la key, porque la necesitamos para validar su dato.
             $controlls = [];
             foreach ($controllers as $key => $value) {
                 $valueParse =  str_replace(".php", "", $value);
                 $controlls[$valueParse] = $valueParse;
             }
-            // return $controlls;
             return ['status' => true, 'controlls' => $controlls];
         } catch (\Exception $th) {
-            // throw $th;
             return ['status' => false, 'throw' => $th];
         }
     }
 }
-
-
-// ScanFiles::mapAssets('Elementos');

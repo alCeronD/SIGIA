@@ -1,5 +1,7 @@
 <script src="../public/assets/libraries/materialize/js/materialize.min.js"></script>
 <script type="module" src="../public/assets/js/main.js"></script>
+<script type="module" src="../public/assets/js/header.js"></script>
+
 
 <?php
 // Variables para validar el menú del usuario.
@@ -42,9 +44,9 @@
 <!-- </div> -->
 
 <!-- Subitems -->
-<?php //foreach ($subItems as $modulo => $funciones): 
+<?php //foreach ($subItems as $modulo => $funciones):
 ?>
-<!-- <div id="submenu-<?php //echo $modulo; 
+<!-- <div id="submenu-<?php //echo $modulo;
                       ?>" class="submenu hidden "> -->
 
 <?php
@@ -54,16 +56,16 @@
 //$nombreModulo = $item['nombreModulo'];
 //$functionController = $item['nombreFuncionController'];
 ?>
-<!-- <a href="<?php //echo Router::createRoute($nombreModulo, $nombreModulo, $functionController, false, 'dashboard'); 
+<!-- <a href="<?php //echo Router::createRoute($nombreModulo, $nombreModulo, $functionController, false, 'dashboard');
               ?>"> -->
-<?php //echo $nombreFuncionUser; 
+<?php //echo $nombreFuncionUser;
 ?>
 <!-- </a> -->
 
-<?php //endforeach; 
+<?php //endforeach;
 ?>
 <!-- </div> -->
-<?php //endforeach; 
+<?php //endforeach;
 ?>
 
 <!-- <style>
@@ -141,8 +143,7 @@
     });
   });
 </script> -->
-<script type="module" src="../public/assets/js/main.js"></script>
-<script type="module" src="../public/assets/js/header.js"></script>
+<!-- <script type="module" src="../public/assets/js/main.js"></script> -->
 </body>
 
 </html>

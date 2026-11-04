@@ -8,6 +8,11 @@ require_once BASE_PATH . '/../Modules/Elementos/Const/ElementosConst.php';
 class ElementosMainController extends ConfigController
 {
   // Archivos css y js de las diferences vistas.
+  /**
+   * Arreglo con los archivos css y js que pertenecen a cada VISTA DEL MODULO
+   *
+   * @var array
+   */
   protected array $files = [
     "css" => [
       "elementosMainView" => ['ElementosMain.css'],
@@ -22,8 +27,11 @@ class ElementosMainController extends ConfigController
     "js" => [
       "elementosMainView" => ['ElementosMain.js'],
       "elementosView" => [
-        'folder' => 'ElementosView',
-        'files' => ['ElementosView.js', 'SelectorsElementosView.js']
+        'ElementosView.js',
+        'folder' => [
+          'nameFolder' => 'ElementosView',
+          'files' => ['ControllerElementosView.js', 'SelectorsElementosView.js']
+        ]
       ]
     ]
   ];
