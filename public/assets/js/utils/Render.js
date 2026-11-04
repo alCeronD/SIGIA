@@ -9,16 +9,19 @@ import { addClassItem, createBtn, createI } from './index.js';
  * @typedef {Render}
  * @extends {HttpData} - Clase que extiende de httpData, esta clase tiene la forma de hacer envios de peticiones al backend.
  */
-export class Render extends HttpData {
+export class Render {
   #data = {};
   #actualPage = null;
   #dataPaginate = {};
   #objBotones = {};
-  constructor(buttons = {}) {
-    super();
+  #http = null;
+  constructor(buttons = {}, httpInstance = null) {
+    // super();
     // aplicamos spread (copiamos) el objeto recibido y lo guardamos en la propiedad.
     this.#objBotones = { ...buttons };
     this.#actualPage = 1;
+    this.#http = httpInstance || new HttpData();
+    console.log(this.#http);
   }
 
   /**
@@ -384,7 +387,27 @@ export class Render extends HttpData {
     });
   }
 
+  /**
+   * getData y send data son opciones momentaneas para la implementacion de desheredar la clase render y httpd
+   *
+   * @async
+   * @param {*} url
+   * @param {string} [method='GET']
+   * @param {{}} [parameters={}]
+   * @param {boolean} [asText=false]
+   * @param {{}} [data={}]
+   * @returns {unknown}
+   */
+  async getData(url, method = 'GET', parameters = {}, asText = false, data = {}) {
+    return await this.#http.getData(url, method, parameters, asText, data);
+  }
+
+  async sendData(url, method = 'POST', data = {}) {
+    return await this.#http.sendData(url, method, data);
+  }
+
   // void para guardar la pagina en la propiedad del objeto.
+
   set actualPage(page) {
     this.#actualPage = page;
   }
