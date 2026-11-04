@@ -1,9 +1,5 @@
 <?php
 
-use function PHPUnit\Framework\matches;
-use function PHPUnit\Framework\throwException;
-
-include_once __DIR__ . '/../../../Config/Conn.php';
 include_once __DIR__ . '/../../../Helpers/Const.php';
 include_once __DIR__ . '/../Const/CategoriasConst.php';
 include_once BASE_PATH . '/Autoload.php';

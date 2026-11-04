@@ -31,9 +31,31 @@ class ServicesCategorias
         ->from();
     } else {
       // devolvemos todos los registros sin necesidad de paginar.
-      $categorias = null;
+      $categorias = $this->cm->select()
+        ->from()
+        ->prepareSql()
+        ->get();
     }
     return $categorias;
+  }
+
+  /**
+   * Function para acceder a los recursos desde otro modulo
+   *
+   * @return void
+   */
+  public function getCategoriasEndpoint()
+  {
+    // validamos que el metodo de acceso es get.
+    UtilsFunctions::validateMethod('GET');
+
+    // Llamamos a la lógica interna de obtención de datos
+    $categorias = $this->getCategorias(false);
+    if (empty($categorias)) {
+      $categorias = [];
+    }
+
+    Response::responseRequest(HttpStatus::OK, true, "Categorias", $categorias);
   }
 
   public function validateDuplicate(String $column = "", String $value = ""): mixed

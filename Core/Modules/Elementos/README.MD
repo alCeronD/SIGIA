@@ -42,4 +42,5 @@
 - [ ] Transformar el archivo elementos.js en controlador para acceder a las diferentes funcionalidades
 - [ ] Implementar acceso a las auditorias del modulo
 - [ ] Re factorizar todo el controlador y modelo de las transacciones del modulo elementos.
+  - [x] Implementar getdata y acceso a la carpeta services de los diferentes modulos como categorias, marcas, departamentos.
 - [ ] Ver si podemos acceder a las capas de servicio del modulo areas, categorias, marcas, etc.

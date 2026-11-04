@@ -6,7 +6,7 @@
             <div class="titleRolesRunciones menuTitle">
                 <span id="textTitleAreas" class="textTitleSpan">Gestión de elementos del sistema</span>
                 <!-- agregar elemento nuevo -->
-                <button type="button" class="waves-effect waves-light btn" id="btnAddModalElements">+</button>
+                <button type="button" class="waves-effect waves-light btn" id="btnAddElement">+</button>
                 <a href="<?php echo Router::createRoute(CR_DASHBOARD, CR_DASHBOARD, CR_DASHBOARD_LOWER_CASE, false, CR_DASHBOARD_LOWER_CASE); ?>"
                     class="close-btn"
                     title="Volver al dashboard">&times;</a>
@@ -35,7 +35,7 @@
             </div> -->
         </div>
         <div class="contentTableElements">
-            <table class="table table-striped table-bordered table-responsive-fixed text-center align-middle" id="tblElements">
+            <table class="table table-striped table-bordered table-responsive-fixed text-center align-middle" id="tableElements">
                 <thead class="table-light">
                     <tr>
                         <th>Placa</th>
@@ -69,9 +69,9 @@
 </div>
 
 <?php
-// require_once 'modalElementos.php';
-// require_once 'modalEditarElemento.php';
-// require_once 'modalVerMas.php';
-// require_once 'modalConfirmacion.php';
-// require_once 'modalAddExistencia.php';
+require_once 'modalElementos.php';
+require_once 'modalEditarElemento.php';
+require_once 'modalVerMas.php';
+require_once 'modalConfirmacion.php';
+require_once 'modalAddExistencia.php';
 ?>

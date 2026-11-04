@@ -44,8 +44,15 @@ class Router
         throw new Exception("Faltan parámetros de ejecución", HttpStatus::BAD_REQUEST);
       }
 
-      $controladorFile = ucfirst($controlador) . "Controller.php";
-      $rutaFile = realpath(BASE_PATH . "/../Modules/$modulo/Controller/$controladorFile");
+      // validamos si tiene la palabra Services, para asi cambiar la ruta de acceso y omitir el permiso.
+      if (str_contains($controlador, 'Services')) {
+        $controladorFile = ucfirst($controlador) . ".php";
+        $rutaFile = realpath(BASE_PATH . "/../Modules/{$modulo}/Services/{$controladorFile}");
+      } else {
+        $controladorFile = ucfirst($controlador) . "Controller.php";
+        $rutaFile = realpath(BASE_PATH . "/../Modules/$modulo/Controller/$controladorFile");
+      }
+
       if (!is_file($rutaFile)) {
         throw new Exception("No existe el acceso", HttpStatus::NOT_FOUND);
       }
@@ -53,7 +60,7 @@ class Router
       include_once $rutaFile;
 
       // Crear el nombre de la clase
-      $nameController = $controlador . "Controller";
+      $nameController = str_contains($controlador, 'Services') ? $controlador : $controlador . "Controller";
 
       $objController = new $nameController();
 
@@ -71,10 +78,20 @@ class Router
         throw new Exception("No se puede ejecutar esta acción porque es una acción interna del sistema", HttpStatus::UNAUTHORIZED);
       }
 
-      $validatePermisos = (new ValidatePermisos())->validateAccess($modulo, $function);
-      if (!$validatePermisos['status']) {
-        throw new Exception($validatePermisos[CR_MESSAGE], $validatePermisos[CR_CODE_RESPONSE]);
+      // SI ES UN SERVICIO ENTONCES NO VALIDAR PERMISO PORQUE ES PUBLICO.
+      if (!str_contains($controlador, 'Services')) {
+        $validatePermisos = (new ValidatePermisos())->validateAccess($modulo, $function);
+        if (!$validatePermisos['status']) {
+          throw new Exception($validatePermisos[CR_MESSAGE], $validatePermisos[CR_CODE_RESPONSE]);
+        }
       }
+
+      // $validatePermisos = (new ValidatePermisos())->validateAccess($modulo, $function);
+      // if (!$validatePermisos['status']) {
+      //   throw new Exception($validatePermisos[CR_MESSAGE], $validatePermisos[CR_CODE_RESPONSE]);
+      // }
+
+
       // Ejecutamos la función
       $objController->$function();
     } catch (\Throwable $th) {

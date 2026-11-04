@@ -27,7 +27,7 @@ class ElementosMainController extends ConfigController
     "js" => [
       "elementosMainView" => ['ElementosMain.js'],
       "elementosView" => [
-        'ElementosView.js',
+        'ElmView.js',
         'folder' => [
           'nameFolder' => 'ElementosView',
           'files' => ['ControllerElementosView.js', 'SelectorsElementosView.js']

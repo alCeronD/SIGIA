@@ -151,4 +151,13 @@ class UtilsFunctions
     {
         return filter_var($_ENV['APP_DEBUG'] ?? false, FILTER_VALIDATE_BOOLEAN);
     }
+
+    public static function validateMethod(String $method = 'GET')
+    {
+        // validamos si el metodo es solo get.
+        if ($_SERVER['REQUEST_METHOD'] !== $method) {
+            header(CONTENT_TYPE);
+            Response::responseRequest(HttpStatus::METHOD_NOT_ALLOWED, false, "Método HTTP no permitido para este recurso.");
+        }
+    }
 }
